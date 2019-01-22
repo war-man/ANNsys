@@ -1,0 +1,187 @@
+﻿.capitalize {
+    text-transform: capitalize;
+}
+.hoadon {
+  font-size: 11px;
+  color: #000;
+  margin-right: 3px;
+}
+
+.info {
+  font-size: 14px;
+  margin-top: 10px;
+}
+
+.merge-alert {
+  font-weight: normal;
+  font-style: italic;
+  font-size: 18px;
+}
+
+img {
+  width: 60%!important;
+  margin: auto;
+}
+
+h1 {
+  margin-bottom: 10px!important;
+  font-size: 22px!important;
+  text-align: center;
+}
+
+h1.invoice-return {
+    font-size: 18px!important;
+}
+
+.refund {
+  text-align: center;
+  font-size: 40px;
+  padding-bottom: 25px;
+}
+
+.hoadon .ct {
+  padding-bottom: 10px;
+}
+
+.hoadon .ct-title {
+  font-weight: 500;
+  color: black;
+  display: inline-block;
+  vertical-align: top;
+}
+
+.hoadon .ct-detail {
+  display: inline-block;
+  vertical-align: top;
+}
+
+.hoadon .head {
+  margin-bottom: 15px;
+}
+
+.hoadon .head .logo {
+  background-color: #ffffff;
+  text-align: center;
+  margin-top: 0;
+}
+
+.hoadon .table-1 {
+  margin-bottom: 10px;
+  font-size: 13px;
+}
+
+.hoadon .table-1 table {
+  word-break: break-word;
+  border-collapse: collapse;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  color: black;
+}
+
+.hoadon .table-1 table .col-left {
+  width: 40%;
+}
+
+.hoadon .table-1 table th,
+            .hoadon .table-1 table td {
+  padding: 5px 10px;
+  border: 1px solid black;
+  border-right: none;
+  border-left: none;
+}
+
+.hoadon .table-1 table th:nth-child(1),
+                .hoadon .table-1 table td:nth-child(1) {
+  color: black;
+  font-weight: 600;
+}
+
+.hoadon .table-1 table th:nth-child(2),
+                .hoadon .table-1 table td:nth-child(2) {
+  text-align: left;
+  font-weight: 400;
+}
+
+.hoadon .table-2 {
+  margin-bottom: 10px;
+}
+
+.hoadon .table-2 table {
+  border-collapse: collapse;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  color: black;
+  word-break: break-word;
+}
+
+.hoadon .table-2 table col.stt {
+  width: 10%;
+}
+
+.hoadon .table-2 table col.sanpham {
+  width: 36%;
+}
+
+.hoadon .table-2 table col.soluong {
+  width: 10%;
+}
+
+.hoadon .table-2 table col.gia {
+  width: 20%;
+}
+
+.hoadon .table-2 table col.tong {
+  width: 24%;
+}
+
+.hoadon .table-2 table th,
+            .hoadon .table-2 table td {
+  padding: 3px;
+  border: 1px solid black;
+  border-left: none;
+  border-right: none;
+  text-align: left;
+}
+
+.hoadon .table-2 table th {
+  background-color: #f8f8f8;
+  color: black;
+  vertical-align: middle;
+}
+
+.hoadon .table-2 table td:nth-child(1) {
+  font-weight: 500;
+}
+
+.hoadon .table-2 table td[colspan="4"] {
+  text-align: right;
+}
+
+.hoadon .table-2 table td[colspan="5"] {
+  text-align: right;
+}
+
+.hoadon .table-2 table td.strong {
+  font-weight: 600;
+}
+
+.hoadon .print-invoice-return table col.sanpham {
+  width: 31%;
+}
+
+.hoadon .print-invoice-return table col.soluong {
+  width: 10%;
+}
+
+.hoadon .print-invoice-return table col.gia {
+  width: 20%;
+}
+.hoadon .print-invoice-return table col.phi {
+  width: 15%;
+}
+
+.hoadon .print-invoice-return table col.tong {
+  width: 24%;
+}
