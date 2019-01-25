@@ -193,7 +193,7 @@ namespace IM_PJ.Controllers
                     {
                         entity.Province = "";
                     }
-                    
+
                 }
 
                 list.Add(entity);
@@ -279,113 +279,140 @@ namespace IM_PJ.Controllers
 
         public static List<CustomerOut> Filter(string text, string by, int Provice, string CreatedDate)
         {
-            string textsearch = '"' + text + '"';
-            var list = new List<CustomerOut>();
-            var sql = @"select c.ID, c.CustomerName, c.Nick, c.CustomerPhone, c.CustomerPhone2, c.Zalo, c.Facebook, c.CreatedBy, c.CreatedDate, c.Avatar, c.ShippingType, c.PaymentType, c.TransportCompanyID, c.TransportCompanySubID, c.ProvinceID as Province
-                        from tbl_Customer c
-                         WHERE 1 = 1";
+            var result = new List<CustomerOut>();
+            using (var dbe = new inventorymanagementEntities())
+            {
+                var customers = dbe.tbl_Customer;
 
-            if (!string.IsNullOrEmpty(textsearch))
-            {
-                sql += " AND (CONTAINS(c.CustomerName,'" + textsearch + "') OR CONTAINS(c.Nick,'" + textsearch + "') OR c.CustomerPhone like '%" + text + "%' OR c.CustomerPhone2 like '%" + text + "%' OR c.CustomerPhoneBackup like '%" + text + "%' OR c.Facebook like '%" + text + "%' OR c.Zalo like '%" + text + "%')";
-            }
-           
-            if (Provice > 0)
-            {
-                sql += " AND c.ProvinceID  = " + Provice;
-            }
-
-            if (!string.IsNullOrEmpty(by))
-            {
-                sql += " AND c.CreatedBy = N'" + by + "'";
-            }
-
-            if (CreatedDate != "")
-            {
-                DateTime fromdate = DateTime.Today;
-                DateTime todate = DateTime.Now;
-                switch (CreatedDate)
+                // Condition text
+                if (!string.IsNullOrEmpty(text))
                 {
-                    case "today":
-                        fromdate = DateTime.Today;
-                        todate = DateTime.Now;
-                        break;
-                    case "yesterday":
-                        fromdate = fromdate.AddDays(-1);
-                        todate = DateTime.Today;
-                        break;
-                    case "beforeyesterday":
-                        fromdate = DateTime.Today.AddDays(-2);
-                        todate = DateTime.Today.AddDays(-1);
-                        break;
-                    case "week":
-                        int days = DateTime.Today.DayOfWeek == DayOfWeek.Sunday ? 7 : (int)DateTime.Today.DayOfWeek;
-                        fromdate = fromdate.AddDays(-days + 1);
-                        todate = DateTime.Now;
-                        break;
-                    case "month":
-                        fromdate = new DateTime(fromdate.Year, fromdate.Month, 1);
-                        todate = DateTime.Now;
-                        break;
-                    case "7days":
-                        fromdate = DateTime.Today.AddDays(-6);
-                        todate = DateTime.Now;
-                        break;
-                    case "30days":
-                        fromdate = DateTime.Today.AddDays(-29);
-                        todate = DateTime.Now;
-                        break;
+                    customers.Where(x =>
+                        x.CustomerName.Contains(text) ||
+                        x.Nick.Contains(text) ||
+                        x.CustomerPhone.Contains(text) ||
+                        x.CustomerPhone2.Contains(text) ||
+                        x.CustomerPhoneBackup.Contains(text) ||
+                        x.Facebook.Contains(text) ||
+                        x.Zalo.Contains(text)
+                    );
                 }
 
-                sql += "	AND	CONVERT(datetime, c.CreatedDate, 121) BETWEEN CONVERT(datetime, '" + fromdate.ToString() + "', 121) AND CONVERT(datetime, '" + todate.ToString() + "', 121)";
+                // Condition provice
+                if (Provice > 0)
+                {
+                    customers.Where(x => x.ProvinceID == Provice);
+                }
+
+                // Condition by
+                if (!string.IsNullOrEmpty(by))
+                {
+                    customers.Where(x => x.CreatedBy == by);
+                }
+
+                // Condition by create date
+                if (!string.IsNullOrEmpty(CreatedDate))
+                {
+                    DateTime fromdate = DateTime.Today;
+                    DateTime todate = DateTime.Now;
+
+                    switch (CreatedDate)
+                    {
+                        case "today":
+                            fromdate = DateTime.Today;
+                            todate = DateTime.Now;
+                            break;
+                        case "yesterday":
+                            fromdate = fromdate.AddDays(-1);
+                            todate = DateTime.Today;
+                            break;
+                        case "beforeyesterday":
+                            fromdate = DateTime.Today.AddDays(-2);
+                            todate = DateTime.Today.AddDays(-1);
+                            break;
+                        case "week":
+                            int days = DateTime.Today.DayOfWeek == DayOfWeek.Sunday ? 7 : (int)DateTime.Today.DayOfWeek;
+                            fromdate = fromdate.AddDays(-days + 1);
+                            todate = DateTime.Now;
+                            break;
+                        case "month":
+                            fromdate = new DateTime(fromdate.Year, fromdate.Month, 1);
+                            todate = DateTime.Now;
+                            break;
+                        case "7days":
+                            fromdate = DateTime.Today.AddDays(-6);
+                            todate = DateTime.Now;
+                            break;
+                        case "30days":
+                            fromdate = DateTime.Today.AddDays(-29);
+                            todate = DateTime.Now;
+                            break;
+                    }
+
+                    customers
+                        .Where(x => x.CreatedDate >= fromdate && x.CreatedDate <= todate)
+                        .OrderBy(x => x.ID);
+                }
+
+                // Get info order
+                var inforOrder = dbe.tbl_Order
+                    .Join(
+                        dbe.tbl_OrderDetail,
+                        order => order.ID,
+                        detail => detail.OrderID,
+                        (order, detail) => new
+                        {
+                            CustomerID = order.CustomerID,
+                            Order = 1,
+                            Quantity = detail.Quantity.Value
+                        })
+                    .GroupBy(x => x.CustomerID)
+                    .Select(g => new
+                    {
+                        CustomerID = g.Key.Value,
+                        TotalOrder = g.Sum(x => x.Order),
+                        TotalQuantity = g.Sum(x => x.Quantity)
+                    })
+                    .OrderBy(x => x.CustomerID);
+
+                result = customers
+                    .GroupJoin(
+                        inforOrder,
+                        customer => customer.ID,
+                        order => order.CustomerID,
+                        (customer, order) => new {
+                            customer,
+                            order
+                        })
+                    .SelectMany(
+                        x => x.order.DefaultIfEmpty(),
+                        (parent, child) => new CustomerOut()
+                        {
+                            ID = parent.customer.ID,
+                            CustomerName = parent.customer.CustomerName,
+                            CustomerPhone = parent.customer.CustomerPhone,
+                            CustomerPhone2 = parent.customer.CustomerPhone2,
+                            Zalo = parent.customer.Zalo,
+                            Facebook = parent.customer.Facebook,
+                            CreatedDate = parent.customer.CreatedDate.HasValue ? parent.customer.CreatedDate.Value : DateTime.Now,
+                            CreatedBy = parent.customer.CreatedBy,
+                            Nick = parent.customer.Nick,
+                            Province = parent.customer.ProvinceID.HasValue ? parent.customer.ProvinceID.Value.ToString() : String.Empty,
+                            Avatar = !string.IsNullOrEmpty(parent.customer.Avatar) ? parent.customer.Avatar : "/uploads/avatars/no-avatar.png",
+                            ShippingType = parent.customer.ShippingType.HasValue ? parent.customer.ShippingType.Value : 0,
+                            PaymentType = parent.customer.PaymentType.HasValue ? parent.customer.PaymentType.Value : 0,
+                            TransportCompanyID = parent.customer.TransportCompanyID.HasValue ? parent.customer.TransportCompanyID.Value : 0,
+                            TransportCompanySubID = parent.customer.TransportCompanySubID.HasValue ? parent.customer.TransportCompanySubID.Value : 0,
+                            TotalOrder = child != null ? child.TotalOrder : 0,
+                            TotalQuantity = child != null ? child.TotalQuantity : 0
+                        })
+                    .OrderByDescending(x => x.TotalQuantity)
+                    .ToList();
             }
 
-            var reader = (IDataReader)SqlHelper.ExecuteDataReader(sql);
-            while (reader.Read())
-            {
-                var entity = new CustomerOut();
-                if (reader["ID"] != DBNull.Value)
-                    entity.ID = reader["ID"].ToString().ToInt(0);
-                if (reader["CustomerName"] != DBNull.Value)
-                    entity.CustomerName = reader["CustomerName"].ToString();
-                if (reader["CustomerPhone"] != DBNull.Value)
-                    entity.CustomerPhone = reader["CustomerPhone"].ToString();
-                if (reader["CustomerPhone2"] != DBNull.Value)
-                    entity.CustomerPhone2 = reader["CustomerPhone2"].ToString();
-                if (reader["Zalo"] != DBNull.Value)
-                    entity.Zalo = reader["Zalo"].ToString();
-                if (reader["Facebook"] != DBNull.Value)
-                    entity.Facebook = reader["Facebook"].ToString();
-                if (reader["CreatedDate"] != DBNull.Value)
-                    entity.CreatedDate = Convert.ToDateTime(reader["CreatedDate"]);
-                if (reader["CreatedBy"] != DBNull.Value)
-                    entity.CreatedBy = reader["CreatedBy"].ToString();
-                if (reader["Nick"] != DBNull.Value)
-                    entity.Nick = reader["Nick"].ToString();
-                if (reader["Province"] != DBNull.Value)
-                    entity.Province = reader["Province"].ToString();
-                if (!string.IsNullOrEmpty(reader["Avatar"].ToString()))
-                {
-                    entity.Avatar = reader["Avatar"].ToString();
-                }
-                else
-                {
-                    entity.Avatar = "/uploads/avatars/no-avatar.png";
-                }
-                if (reader["ShippingType"] != DBNull.Value)
-                    entity.ShippingType = reader["ShippingType"].ToString().ToInt(0);
-                if (reader["PaymentType"] != DBNull.Value)
-                    entity.PaymentType = reader["PaymentType"].ToString().ToInt(0);
-                if (reader["TransportCompanyID"] != DBNull.Value)
-                    entity.TransportCompanyID = reader["TransportCompanyID"].ToString().ToInt(0);
-                if (reader["TransportCompanySubID"] != DBNull.Value)
-                    entity.TransportCompanySubID = reader["TransportCompanySubID"].ToString().ToInt(0);
-                list.Add(entity);
-            }
-
-            reader.Close();
-            return list;
+            return result;
         }
+
         public static List<CustomerGet> GetNotInGroupByGroupID(int GroupID)
         {
             var list = new List<CustomerGet>();
@@ -489,6 +516,9 @@ namespace IM_PJ.Controllers
             public int TransportCompanyID { get; set; }
             public int TransportCompanySubID { get; set; }
             public string CustomerPhone2 { get; set; }
+
+            public int TotalOrder { get; set; }
+            public double TotalQuantity { get; set; }
         }
         #endregion
     }

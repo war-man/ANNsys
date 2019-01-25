@@ -122,33 +122,35 @@ namespace IM_PJ
             List<CustomerOut> rs = new List<CustomerOut>();
 
             var customers = CustomerController.Filter(TextSearch, CreatedBy, Province, CreatedDate);
-            if (customers.Count > 0)
-            {
-                foreach (var item in customers)
-                {
-                    var discount = DiscountCustomerController.getbyCustID(item.ID);
-                    if (discount != null)
-                    {
-                        foreach (var temp in discount)
-                        {
-                            item.DiscountName += temp.DiscountName + "|";
-                            item.DisID += temp.DiscountGroupID + "|";
-                        }
-                    }
-                    rs.Add(item);
-                }
-            }
+            rs = customers;
+            //if (customers.Count > 0)
+            //{
+            //    foreach (var item in customers)
+            //    {
+            //        var discount = DiscountCustomerController.getbyCustID(item.ID);
+            //        if (discount != null)
+            //        {
+            //            foreach (var temp in discount)
+            //            {
+            //                item.DiscountName += temp.DiscountName + "|";
+            //                item.DisID += temp.DiscountGroupID + "|";
+            //            }
+            //        }
+            //        rs.Add(item);
+            //    }
+            //}
 
             string username = Request.Cookies["userLoginSystem"].Value;
             var acc = AccountController.GetByUsername(username);
             if (acc.RoleID != 0)
             {
-                rs = rs.Where(x => x.CreatedBy == acc.Username).OrderByDescending(x => x.ID).ToList();
+                //rs = rs.Where(x => x.CreatedBy == acc.Username).OrderByDescending(x => x.ID).ToList();
+                rs = rs.Where(x => x.CreatedBy == acc.Username).ToList();
                 pagingall(rs);
             }
             else
             {
-                rs = rs.OrderByDescending(x => x.ID).ToList();
+                //rs = rs.OrderByDescending(x => x.ID).ToList();
                 pagingall(rs);
             }
 
@@ -202,25 +204,6 @@ namespace IM_PJ
                 {
                     var item = acs[i];
                     html.Append("<tr>");
-                    
-                    var order = OrderController.GetByCustomerID(item.ID);
-                    int TotalQuantity = 0;
-                    int TotalOrder = 0;
-                    if (order != null)
-                    {
-                        foreach (var temp in order)
-                        {
-                            var detail = OrderDetailController.GetByOrderID(temp.ID);
-                            TotalOrder++;
-                            if (detail != null)
-                            {
-                                foreach (var vl in detail)
-                                {
-                                    TotalQuantity += Convert.ToInt32(vl.Quantity);
-                                }
-                            }
-                        }
-                    }
 
                     html.Append("   <td><a href=\"/chi-tiet-khach-hang?id=" + item.ID + "\"><img src=\"" + item.Avatar + "\"/></a></td>");
                     html.Append("   <td class=\"customer-name-link capitalize\">" + item.Nick + "</td>");
@@ -239,33 +222,33 @@ namespace IM_PJ
 
                     if (!string.IsNullOrEmpty(item.Province))
                     {
-                        var pro = ProvinceController.GetByID(item.Province.ToInt());
-                        if (pro != null)
-                        {
-                            html.Append("   <td>" + pro.ProvinceName + "</td>");
-                        }
-                        else
-                        {
+                        //var pro = ProvinceController.GetByID(item.Province.ToInt());
+                        //if (pro != null)
+                        //{
+                        //    html.Append("   <td>" + pro.ProvinceName + "</td>");
+                        //}
+                        //else
+                        //{
                             html.Append("   <td></td>");
-                        }
+                        //}
                     }
                     else
                     {
                         html.Append("   <td></td>");
                     }
 
-                    if (TotalOrder > 0)
+                    if (item.TotalOrder > 0)
                     {
-                        html.Append("   <td>" + TotalOrder + " đơn</td>");
+                        html.Append("   <td>" + item.TotalOrder + " đơn</td>");
                     }
                     else
                     {
                         html.Append("   <td></td>");
                     }
 
-                    if (TotalQuantity > 0)
+                    if (item.TotalQuantity > 0)
                     {
-                        html.Append("   <td>" + TotalQuantity + " cái</td>");
+                        html.Append("   <td>" + item.TotalQuantity + " cái</td>");
                     }
                     else
                     {
