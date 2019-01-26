@@ -15,7 +15,6 @@ namespace IM_PJ
 {
     public partial class sua_thong_tin_nha_xe : System.Web.UI.Page
     {
-        private int PageCount;
 
         protected void Page_Load(object sender, EventArgs e)
         {

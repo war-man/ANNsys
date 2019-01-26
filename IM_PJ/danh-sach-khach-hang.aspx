@@ -19,7 +19,7 @@
                         <div class="filter-control">
                             <div class="row">
                                 <div class="col-md-3">
-                                    <asp:TextBox ID="txtTextSearch" runat="server" CssClass="form-control" placeholder="Tìm khách hàng" autocomplete="off"></asp:TextBox>
+                                    <asp:TextBox ID="txtTextSearch" runat="server" CssClass="form-control"></asp:TextBox>
                                 </div>
                                 <div class="col-md-2">
                                     <asp:DropDownList ID="ddlProvince" runat="server" CssClass="form-control"></asp:DropDownList>

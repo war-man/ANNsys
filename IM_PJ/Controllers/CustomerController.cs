@@ -478,9 +478,34 @@ namespace IM_PJ.Controllers
                     .ToList();
             }
 
-            return result
-                    .OrderByDescending(x => x.TotalQuantity)
-                    .ToList();
+            result = result.OrderByDescending(x => x.ID).ToList();
+
+            if (!string.IsNullOrEmpty(Sort))
+            {
+                switch (Sort)
+                {
+                    case "latest":
+                        result = result.OrderByDescending(x => x.CreatedDate).ToList();
+                        break;
+                    case "oldest":
+                        result = result.OrderBy(x => x.CreatedDate).ToList();
+                        break;
+                    case "orderdesc":
+                        result = result.OrderByDescending(x => x.TotalOrder).ToList();
+                        break;
+                    case "orderasc":
+                        result = result.OrderBy(x => x.TotalOrder).ToList();
+                        break;
+                    case "itemdesc":
+                        result = result.OrderByDescending(x => x.TotalQuantity).ToList();
+                        break;
+                    case "itemasc":
+                        result = result.OrderBy(x => x.TotalQuantity).ToList();
+                        break;
+                }
+            }
+
+            return result;
         }
 
         public static List<CustomerGet> GetNotInGroupByGroupID(int GroupID)
