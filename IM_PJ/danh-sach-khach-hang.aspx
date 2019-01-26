@@ -18,11 +18,22 @@
                     <div class="filter-above-wrap clear">
                         <div class="filter-control">
                             <div class="row">
-                                <div class="col-md-5">
+                                <div class="col-md-3">
                                     <asp:TextBox ID="txtTextSearch" runat="server" CssClass="form-control" placeholder="Tìm khách hàng" autocomplete="off"></asp:TextBox>
                                 </div>
                                 <div class="col-md-2">
                                     <asp:DropDownList ID="ddlProvince" runat="server" CssClass="form-control"></asp:DropDownList>
+                                </div>
+                                <div class="col-md-2">
+                                    <asp:DropDownList ID="ddlSort" runat="server" CssClass="form-control">
+                                        <asp:ListItem Value="" Text="Sắp xếp"></asp:ListItem>
+                                        <asp:ListItem Value="latest" Text="Mới nhất"></asp:ListItem>
+                                        <asp:ListItem Value="oldest" Text="Cũ nhất"></asp:ListItem>
+                                        <asp:ListItem Value="orderdesc" Text="Số đơn hàng giảm dần"></asp:ListItem>
+                                        <asp:ListItem Value="orderasc" Text="Số đơn hàng tăng dần"></asp:ListItem>
+                                        <asp:ListItem Value="itemdesc" Text="Số lượng mua giảm dần"></asp:ListItem>
+                                        <asp:ListItem Value="itemasc" Text="Số lượng mua tăng dần"></asp:ListItem>
+                                    </asp:DropDownList>
                                 </div>
                                 <div class="col-md-2">
                                     <asp:DropDownList ID="ddlCreatedDate" runat="server" CssClass="form-control">
