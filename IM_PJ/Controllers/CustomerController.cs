@@ -280,6 +280,7 @@ namespace IM_PJ.Controllers
         public static List<CustomerOut> Filter(string text, string by, int Provice, string CreatedDate)
         {
             var result = new List<CustomerOut>();
+
             using (var dbe = new inventorymanagementEntities())
             {
                 var customers = dbe.tbl_Customer;
@@ -354,38 +355,16 @@ namespace IM_PJ.Controllers
                         .OrderBy(x => x.ID);
                 }
 
-                // Get info order
-                var inforOrder = dbe.tbl_Order
-                    .Join(
-                        dbe.tbl_OrderDetail,
-                        order => order.ID,
-                        detail => detail.OrderID,
-                        (order, detail) => new
-                        {
-                            CustomerID = order.CustomerID,
-                            Order = 1,
-                            Quantity = detail.Quantity.Value
-                        })
-                    .GroupBy(x => x.CustomerID)
-                    .Select(g => new
-                    {
-                        CustomerID = g.Key.Value,
-                        TotalOrder = g.Sum(x => x.Order),
-                        TotalQuantity = g.Sum(x => x.Quantity)
-                    })
-                    .OrderBy(x => x.CustomerID);
-
+                // Get customer of province
                 result = customers
                     .GroupJoin(
-                        inforOrder,
-                        customer => customer.ID,
-                        order => order.CustomerID,
-                        (customer, order) => new {
-                            customer,
-                            order
-                        })
+                        dbe.tbl_Province,
+                        cus => cus.ProvinceID,
+                        pro => pro.ID,
+                        (customer, province) => new { customer, province }
+                    )
                     .SelectMany(
-                        x => x.order.DefaultIfEmpty(),
+                        x => x.province.DefaultIfEmpty(),
                         (parent, child) => new CustomerOut()
                         {
                             ID = parent.customer.ID,
@@ -403,14 +382,119 @@ namespace IM_PJ.Controllers
                             PaymentType = parent.customer.PaymentType.HasValue ? parent.customer.PaymentType.Value : 0,
                             TransportCompanyID = parent.customer.TransportCompanyID.HasValue ? parent.customer.TransportCompanyID.Value : 0,
                             TransportCompanySubID = parent.customer.TransportCompanySubID.HasValue ? parent.customer.TransportCompanySubID.Value : 0,
-                            TotalOrder = child != null ? child.TotalOrder : 0,
-                            TotalQuantity = child != null ? child.TotalQuantity : 0
-                        })
-                    .OrderByDescending(x => x.TotalQuantity)
+                            ProvinceName = child != null ? child.ProvinceName : String.Empty
+                        }
+                    )
+                    .OrderBy(x => x.ID)
+                    .ToList();
+
+                // Get info order
+                var orderInfo = dbe.tbl_Order
+                    .Join(
+                        customers,
+                        order => order.CustomerID,
+                        customer => customer.ID,
+                        (order, customer) => order
+                    )
+                    .Join(
+                        dbe.tbl_OrderDetail,
+                        order => order.ID,
+                        detail => detail.OrderID,
+                        (order, detail) => new
+                        {
+                            CustomerID = order.CustomerID,
+                            Order = order.ID,
+                            Quantity = detail.Quantity.Value
+                        }
+                    )
+                    .GroupBy(x => x.CustomerID)
+                    .Select(g => new
+                        {
+                            CustomerID = g.Key.Value,
+                            TotalOrder = g.Select(x => x.Order).Distinct().Count(),
+                            TotalQuantity = g.Sum(x => x.Quantity)
+                        }
+                    )
+                    .OrderBy(x => x.CustomerID)
+                    .ToList();
+
+                result.GroupJoin(
+                        orderInfo,
+                        customer => customer.ID,
+                        order => order.CustomerID,
+                        (customer, order) => new { customer, order }
+                    )
+                    .SelectMany(
+                        x => x.order.DefaultIfEmpty(),
+                        (parent, child) =>
+                        {
+                            parent.customer.TotalOrder = child != null ? child.TotalOrder : 0;
+                            parent.customer.TotalQuantity = child != null ? child.TotalQuantity : 0;
+
+                            return parent.customer;
+                        }
+                    )
+                    .OrderBy(x => x.ID)
+                    .ToList();
+
+                // Get discount customer
+                var discounts = dbe.tbl_DiscountCustomer
+                    .Join(
+                        customers,
+                        discount => discount.UID,
+                        customer => customer.ID,
+                        (discount, customer) => discount
+                    )
+                    .Where(x => x.IsHidden == false)
+                    .GroupJoin(
+                        dbe.tbl_DiscountGroup,
+                        cus => cus.DiscountGroupID,
+                        grp => grp.ID,
+                        (cus, grp) => new { cus, grp }
+                    )
+                    .SelectMany(
+                        x => x.grp.DefaultIfEmpty(),
+                        (parent, child) => new
+                        {
+                            CustomerID = parent.cus.UID,
+                            DiscountGroupID = parent.cus.DiscountGroupID.HasValue ? parent.cus.DiscountGroupID.Value.ToString() : String.Empty,
+                            DiscountName = child != null ? child.DiscountName : String.Empty
+                        }
+                    )
+                    .AsEnumerable()
+                    .GroupBy(x => x.CustomerID)
+                    .Select(g => new
+                        {
+                            CustomerID = g.Key.Value,
+                            DiscountGroupID = string.Join("|", g.Select(i => i.DiscountGroupID)),
+                            DiscountName = string.Join("|", g.Select(i => i.DiscountName))
+                        }
+                    )
+                    .OrderBy(x => x.CustomerID)
+                    .ToList();
+
+                result.GroupJoin(
+                        discounts,
+                        cus => cus.ID,
+                        dis => dis.CustomerID,
+                        (customer, discount) => new { customer, discount }
+                    )
+                    .SelectMany(
+                        x => x.discount.DefaultIfEmpty(),
+                        (parent, child) =>
+                        {
+                            parent.customer.DisID = child != null ? child.DiscountGroupID : String.Empty;
+                            parent.customer.DiscountName = child != null ? child.DiscountName : String.Empty;
+
+                            return parent.customer;
+                        }
+                    )
                     .ToList();
             }
 
-            return result;
+            return result
+                    .OrderByDescending(x => x.TotalQuantity)
+                    .ToList();
         }
 
         public static List<CustomerGet> GetNotInGroupByGroupID(int GroupID)
@@ -519,6 +603,7 @@ namespace IM_PJ.Controllers
 
             public int TotalOrder { get; set; }
             public double TotalQuantity { get; set; }
+            public string ProvinceName { get; set; }
         }
         #endregion
     }

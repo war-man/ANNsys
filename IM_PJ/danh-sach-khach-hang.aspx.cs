@@ -123,34 +123,16 @@ namespace IM_PJ
 
             var customers = CustomerController.Filter(TextSearch, CreatedBy, Province, CreatedDate);
             rs = customers;
-            //if (customers.Count > 0)
-            //{
-            //    foreach (var item in customers)
-            //    {
-            //        var discount = DiscountCustomerController.getbyCustID(item.ID);
-            //        if (discount != null)
-            //        {
-            //            foreach (var temp in discount)
-            //            {
-            //                item.DiscountName += temp.DiscountName + "|";
-            //                item.DisID += temp.DiscountGroupID + "|";
-            //            }
-            //        }
-            //        rs.Add(item);
-            //    }
-            //}
 
             string username = Request.Cookies["userLoginSystem"].Value;
             var acc = AccountController.GetByUsername(username);
             if (acc.RoleID != 0)
             {
-                //rs = rs.Where(x => x.CreatedBy == acc.Username).OrderByDescending(x => x.ID).ToList();
                 rs = rs.Where(x => x.CreatedBy == acc.Username).ToList();
                 pagingall(rs);
             }
             else
             {
-                //rs = rs.OrderByDescending(x => x.ID).ToList();
                 pagingall(rs);
             }
 
@@ -220,17 +202,9 @@ namespace IM_PJ
                         html.Append("   <td></td>");
                     }
 
-                    if (!string.IsNullOrEmpty(item.Province))
+                    if (!string.IsNullOrEmpty(item.ProvinceName))
                     {
-                        //var pro = ProvinceController.GetByID(item.Province.ToInt());
-                        //if (pro != null)
-                        //{
-                        //    html.Append("   <td>" + pro.ProvinceName + "</td>");
-                        //}
-                        //else
-                        //{
-                            html.Append("   <td></td>");
-                        //}
+                        html.Append("   <td>" + item.ProvinceName + "</td>");
                     }
                     else
                     {
