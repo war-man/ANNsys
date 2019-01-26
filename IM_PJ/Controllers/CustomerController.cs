@@ -336,7 +336,7 @@ namespace IM_PJ.Controllers
                             )
                         )
                     )
-                    .Where(x => Provice <= 0 || (Provice > 0 && x.ProvinceID == Provice))
+                    .Where(x => Province <= 0 || (Province > 0 && x.ProvinceID == Province))
                     .Where(x => string.IsNullOrEmpty(by) || (!string.IsNullOrEmpty(by) && x.CreatedBy == by))
                     .Where(x => string.IsNullOrEmpty(CreatedDate) || (!string.IsNullOrEmpty(CreatedDate) && x.CreatedDate >= fromdate && x.CreatedDate <= todate))
                     .OrderBy(x => x.ID);
