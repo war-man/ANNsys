@@ -283,81 +283,66 @@ namespace IM_PJ.Controllers
 
             using (var dbe = new inventorymanagementEntities())
             {
-                var customers = dbe.tbl_Customer;
-                var cust = customers.ToList();
+                DateTime fromdate = DateTime.Today;
+                DateTime todate = DateTime.Now;
 
-                // Condition text
-                if (!string.IsNullOrEmpty(text))
+                switch (CreatedDate)
                 {
-                    cust = customers.Where(x =>
-                        x.CustomerName.Contains(text) ||
-                        x.Nick.Contains(text) ||
-                        x.CustomerPhone.Contains(text) ||
-                        x.CustomerPhone2.Contains(text) ||
-                        x.CustomerPhoneBackup.Contains(text) ||
-                        x.Facebook.Contains(text) ||
-                        x.Zalo.Contains(text)
-                    ).ToList();
+                    case "today":
+                        fromdate = DateTime.Today;
+                        todate = DateTime.Now;
+                        break;
+                    case "yesterday":
+                        fromdate = fromdate.AddDays(-1);
+                        todate = DateTime.Today;
+                        break;
+                    case "beforeyesterday":
+                        fromdate = DateTime.Today.AddDays(-2);
+                        todate = DateTime.Today.AddDays(-1);
+                        break;
+                    case "week":
+                        int days = DateTime.Today.DayOfWeek == DayOfWeek.Sunday ? 7 : (int)DateTime.Today.DayOfWeek;
+                        fromdate = fromdate.AddDays(-days + 1);
+                        todate = DateTime.Now;
+                        break;
+                    case "month":
+                        fromdate = new DateTime(fromdate.Year, fromdate.Month, 1);
+                        todate = DateTime.Now;
+                        break;
+                    case "7days":
+                        fromdate = DateTime.Today.AddDays(-6);
+                        todate = DateTime.Now;
+                        break;
+                    case "30days":
+                        fromdate = DateTime.Today.AddDays(-29);
+                        todate = DateTime.Now;
+                        break;
                 }
 
-                // Condition provice
-                if (Province > 0)
-                {
-                    cust = customers.Where(x => x.ProvinceID == Province).ToList();
-                }
-
-                // Condition by
-                if (!string.IsNullOrEmpty(by))
-                {
-                    cust = customers.Where(x => x.CreatedBy == by).ToList();
-                }
-
-                // Condition by create date
-                if (!string.IsNullOrEmpty(CreatedDate))
-                {
-                    DateTime fromdate = DateTime.Today;
-                    DateTime todate = DateTime.Now;
-
-                    switch (CreatedDate)
-                    {
-                        case "today":
-                            fromdate = DateTime.Today;
-                            todate = DateTime.Now;
-                            break;
-                        case "yesterday":
-                            fromdate = fromdate.AddDays(-1);
-                            todate = DateTime.Today;
-                            break;
-                        case "beforeyesterday":
-                            fromdate = DateTime.Today.AddDays(-2);
-                            todate = DateTime.Today.AddDays(-1);
-                            break;
-                        case "week":
-                            int days = DateTime.Today.DayOfWeek == DayOfWeek.Sunday ? 7 : (int)DateTime.Today.DayOfWeek;
-                            fromdate = fromdate.AddDays(-days + 1);
-                            todate = DateTime.Now;
-                            break;
-                        case "month":
-                            fromdate = new DateTime(fromdate.Year, fromdate.Month, 1);
-                            todate = DateTime.Now;
-                            break;
-                        case "7days":
-                            fromdate = DateTime.Today.AddDays(-6);
-                            todate = DateTime.Now;
-                            break;
-                        case "30days":
-                            fromdate = DateTime.Today.AddDays(-29);
-                            todate = DateTime.Now;
-                            break;
-                    }
-
-                    cust = customers
-                        .Where(x => x.CreatedDate >= fromdate && x.CreatedDate <= todate)
-                        .OrderBy(x => x.ID).ToList();
-                }
+                var customers = dbe.tbl_Customer
+                    .Where(
+                        x =>
+                        string.IsNullOrEmpty(text) ||
+                        (
+                            !string.IsNullOrEmpty(text) &&
+                            (
+                                x.CustomerName.Contains(text) ||
+                                x.Nick.Contains(text) ||
+                                x.CustomerPhone.Contains(text) ||
+                                x.CustomerPhone2.Contains(text) ||
+                                x.CustomerPhoneBackup.Contains(text) ||
+                                x.Facebook.Contains(text) ||
+                                x.Zalo.Contains(text)
+                            )
+                        )
+                    )
+                    .Where(x => Provice <= 0 || (Provice > 0 && x.ProvinceID == Provice))
+                    .Where(x => string.IsNullOrEmpty(by) || (!string.IsNullOrEmpty(by) && x.CreatedBy == by))
+                    .Where(x => string.IsNullOrEmpty(CreatedDate) || (!string.IsNullOrEmpty(CreatedDate) && x.CreatedDate >= fromdate && x.CreatedDate <= todate))
+                    .OrderBy(x => x.ID);
 
                 // Get customer of province
-                result = cust
+                result = customers
                     .GroupJoin(
                         dbe.tbl_Province,
                         cus => cus.ProvinceID,
@@ -410,11 +395,11 @@ namespace IM_PJ.Controllers
                     )
                     .GroupBy(x => x.CustomerID)
                     .Select(g => new
-                    {
-                        CustomerID = g.Key.Value,
-                        TotalOrder = g.Select(x => x.Order).Distinct().Count(),
-                        TotalQuantity = g.Sum(x => x.Quantity)
-                    }
+                        {
+                            CustomerID = g.Key.Value,
+                            TotalOrder = g.Select(x => x.Order).Distinct().Count(),
+                            TotalQuantity = g.Sum(x => x.Quantity)
+                        }
                     )
                     .OrderBy(x => x.CustomerID)
                     .ToList();
@@ -465,11 +450,11 @@ namespace IM_PJ.Controllers
                     .AsEnumerable()
                     .GroupBy(x => x.CustomerID)
                     .Select(g => new
-                    {
-                        CustomerID = g.Key.Value,
-                        DiscountGroupID = string.Join("|", g.Select(i => i.DiscountGroupID)),
-                        DiscountName = string.Join("|", g.Select(i => i.DiscountName))
-                    }
+                        {
+                            CustomerID = g.Key.Value,
+                            DiscountGroupID = string.Join("|", g.Select(i => i.DiscountGroupID)),
+                            DiscountName = string.Join("|", g.Select(i => i.DiscountName))
+                        }
                     )
                     .OrderBy(x => x.CustomerID)
                     .ToList();
@@ -490,38 +475,12 @@ namespace IM_PJ.Controllers
                             return parent.customer;
                         }
                     )
-                    .OrderByDescending(x => x.ID)
                     .ToList();
             }
 
-            result = result.OrderByDescending(x => x.ID).ToList();
-
-            if (!string.IsNullOrEmpty(Sort))
-            {
-                switch (Sort)
-                {
-                    case "latest":
-                        result = result.OrderByDescending(x => x.CreatedDate).ToList();
-                        break;
-                    case "oldest":
-                        result = result.OrderBy(x => x.CreatedDate).ToList();
-                        break;
-                    case "orderdesc":
-                        result = result.OrderByDescending(x => x.TotalOrder).ToList();
-                        break;
-                    case "orderasc":
-                        result = result.OrderBy(x => x.TotalOrder).ToList();
-                        break;
-                    case "itemdesc":
-                        result = result.OrderByDescending(x => x.TotalQuantity).ToList();
-                        break;
-                    case "itemasc":
-                        result = result.OrderBy(x => x.TotalQuantity).ToList();
-                        break;
-                }
-            }
-
-            return result;
+            return result
+                    .OrderByDescending(x => x.TotalQuantity)
+                    .ToList();
         }
 
         public static List<CustomerGet> GetNotInGroupByGroupID(int GroupID)
