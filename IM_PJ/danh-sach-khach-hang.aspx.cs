@@ -25,7 +25,7 @@ namespace IM_PJ
                     string username = Request.Cookies["userLoginSystem"].Value;
                     var acc = AccountController.GetByUsername(username);
                     int agent = acc.AgentID.ToString().ToInt();
-                    
+
                     if (acc != null)
                     {
                         if (acc.RoleID == 0)
@@ -96,6 +96,7 @@ namespace IM_PJ
             int Province = 0;
             string CreatedBy = "";
             string CreatedDate = "";
+            string Sort = "";
 
             if (Request.QueryString["textsearch"] != null)
             {
@@ -113,15 +114,20 @@ namespace IM_PJ
             {
                 CreatedDate = Request.QueryString["createddate"];
             }
+            if (Request.QueryString["sort"] != null)
+            {
+                Sort = Request.QueryString["sort"];
+            }
 
             txtTextSearch.Text = TextSearch;
             ddlProvince.SelectedValue = Province.ToString();
             ddlCreatedBy.SelectedValue = CreatedBy.ToString();
             ddlCreatedDate.SelectedValue = CreatedDate.ToString();
+            ddlSort.SelectedValue = Sort.ToString();
 
             List<CustomerOut> rs = new List<CustomerOut>();
 
-            var customers = CustomerController.Filter(TextSearch, CreatedBy, Province, CreatedDate);
+            var customers = CustomerController.Filter(TextSearch, CreatedBy, Province, CreatedDate, Sort);
             rs = customers;
 
             string username = Request.Cookies["userLoginSystem"].Value;
@@ -139,7 +145,7 @@ namespace IM_PJ
             ltrNumberOfCustomer.Text = rs.Count().ToString();
 
         }
-        
+
         #region Paging
         public void pagingall(List<CustomerOut> acs)
         {
@@ -197,7 +203,7 @@ namespace IM_PJ
                     {
                         html.Append("   <td><a class=\"link\" href=\"" + item.Facebook + "\" target=\"_blank\">Xem</a></td>");
                     }
-                       else
+                    else
                     {
                         html.Append("   <td></td>");
                     }
@@ -421,12 +427,11 @@ namespace IM_PJ
 
         protected void btnSearch_Click(object sender, EventArgs e)
         {
-            string search = txtTextSearch.Text;
             string request = "/danh-sach-khach-hang?";
 
-            if (search != "")
+            if (txtTextSearch.Text != "")
             {
-                request += "&textsearch=" + search;
+                request += "&textsearch=" + txtTextSearch.Text;
             }
 
             if (ddlProvince.SelectedValue != "")
@@ -442,6 +447,11 @@ namespace IM_PJ
             if (ddlCreatedDate.SelectedValue != "")
             {
                 request += "&createddate=" + ddlCreatedDate.SelectedValue;
+            }
+
+            if (ddlSort.SelectedValue != "")
+            {
+                request += "&sort=" + ddlSort.SelectedValue;
             }
 
             Response.Redirect(request);

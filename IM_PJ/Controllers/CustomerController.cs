@@ -277,7 +277,7 @@ namespace IM_PJ.Controllers
             return list;
         }
 
-        public static List<CustomerOut> Filter(string text, string by, int Provice, string CreatedDate)
+        public static List<CustomerOut> Filter(string text, string by, int Province, string CreatedDate, string Sort)
         {
             var result = new List<CustomerOut>();
 
