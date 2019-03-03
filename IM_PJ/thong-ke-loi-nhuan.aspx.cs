@@ -72,9 +72,11 @@ namespace IM_PJ
                 TotalProfitPerOrder = Math.Ceiling(TotalProfit / reportModel.TotalNumberOfOrder);
             }
 
-            ltrTotalProfit.Text += string.Format("{0:N0}", TotalProfit);
-            ltrProfitPerDay.Text += string.Format("{0:N0}", TotalProfitPerDay);
-            ltrProfitPerOrder.Text += string.Format("{0:N0}", TotalProfitPerOrder);
+            double TotalActualRevenue = reportModel.TotalSalePrice - reportModel.TotalRefundPrice - reportModel.TotalSaleDiscount;
+
+            ltrTotalProfit.Text = string.Format("{0:N0}", TotalProfit);
+            ltrProfitPerDay.Text = string.Format("{0:N0}", TotalProfitPerDay);
+            ltrProfitPerOrder.Text = string.Format("{0:N0}", TotalProfitPerOrder);
 
             ltrTotalSalePrice.Text = string.Format("{0:N0}", reportModel.TotalSalePrice);
             ltrTotalSaleCost.Text = string.Format("{0:N0}", reportModel.TotalSaleCost);
@@ -83,6 +85,8 @@ namespace IM_PJ
             ltrTotalRefundPrice.Text = string.Format("{0:N0}", reportModel.TotalRefundPrice);
             ltrTotalRefundCost.Text = string.Format("{0:N0}", reportModel.TotalRefundCost);
             ltrTotalRefundFee.Text = string.Format("{0:N0}", reportModel.TotalRefundFee);
+
+            ltrTotalActualRevenue.Text = string.Format("{0:N0}", TotalActualRevenue);
 
             ltrTotalOtherFee.Text = string.Format("{0:N0}", reportModel.TotalOtherFee);
 

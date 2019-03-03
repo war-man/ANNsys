@@ -62,7 +62,7 @@ namespace IM_PJ
                         Session["userLoginSystem"] = username;
                         Session.Timeout = 43200;
                         Response.Cookies["userLoginSystem"].Value = username;
-                        Response.Cookies["userLoginSystem"].Expires = DateTime.Now.AddDays(60);
+                        Response.Cookies["userLoginSystem"].Expires = DateTime.Now.AddDays(90);
                         Response.Redirect("/trang-chu");
                     }
                     else

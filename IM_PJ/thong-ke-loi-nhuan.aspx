@@ -144,6 +144,16 @@
                                 <div class="col-md-4">
                                     <div class="report-column">
                                         <div class="report-label">
+                                            Tổng doanh thu thực tế:
+                                        </div>
+                                        <div class="report-value">
+                                            <asp:Literal ID="ltrTotalActualRevenue" runat="server" EnableViewState="false"></asp:Literal>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="report-column">
+                                        <div class="report-label">
                                             Tổng phí vận chuyển:
                                         </div>
                                         <div class="report-value">
