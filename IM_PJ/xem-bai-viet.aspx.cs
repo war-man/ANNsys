@@ -49,14 +49,17 @@ namespace IM_PJ
                 {
                     ViewState["ID"] = id;
 
-                    ltrEdit.Text = "";
+                    ltrEditTop.Text = "";
+
                     if (Convert.ToInt32(ViewState["role"]) == 0 || Convert.ToInt32(ViewState["role"]) == 1)
                     {
-                        ltrEdit.Text += "<a href=\"/sua-bai-viet?id=" + p.ID + "\" class=\"btn primary-btn fw-btn not-fullwidth\"><i class=\"fa fa-pencil-square-o\" aria-hidden=\"true\"></i> Chỉnh sửa</a>";
-                        ltrEdit.Text += "<a href=\"/tao-bai-viet\" class=\"btn primary-btn fw-btn not-fullwidth print-invoice-merged\"><i class=\"fa fa-file-text-o\" aria-hidden=\"true\"></i> Thêm mới</a>";
+                        ltrEditTop.Text += "<a href=\"/sua-bai-viet?id=" + p.ID + "\" class=\"btn primary-btn fw-btn not-fullwidth\"><i class=\"fa fa-pencil-square-o\" aria-hidden=\"true\"></i> Chỉnh sửa</a>";
+                        ltrEditTop.Text += "<a href=\"/tao-bai-viet\" class=\"btn primary-btn fw-btn not-fullwidth print-invoice-merged\"><i class=\"fa fa-file-text-o\" aria-hidden=\"true\"></i> Thêm mới</a>";
                     }
-                    ltrEdit.Text += "<a href=\"javascript:;\" onclick=\"copyPostInfo(" + p.ID + ")\" class=\"btn primary-btn not-fullwidth print-invoice-merged\"><i class=\"fa fa-files-o\"></i> Copy nội dung</a>";
-                    ltrEdit.Text += "<a href=\"javascript:;\" onclick=\"getAllPostImage('" + p.ID + "');\" class=\"btn primary-btn not-fullwidth print-invoice-merged\"><i class=\"fa fa-cloud-download\"></i> Tải tất cả hình ảnh</a>";
+                    ltrEditTop.Text += "<a href=\"javascript:;\" onclick=\"copyPostInfo(" + p.ID + ")\" class=\"btn primary-btn not-fullwidth print-invoice-merged\"><i class=\"fa fa-files-o\"></i> Copy nội dung</a>";
+                    ltrEditTop.Text += "<a href=\"javascript:;\" onclick=\"getAllPostImage('" + p.ID + "');\" class=\"btn primary-btn not-fullwidth print-invoice-merged\"><i class=\"fa fa-cloud-download\"></i> Tải tất cả hình ảnh</a>";
+
+                    ltrEditBottom.Text = ltrEditTop.Text;
 
                     ltrTitle.Text = p.Title;
                     ltrContent.Text = p.Content;

@@ -52,7 +52,7 @@ namespace IM_PJ.Controllers
         {
             using (var dbe = new inventorymanagementEntities())
             {
-                tbl_DiscountCustomer ui = dbe.tbl_DiscountCustomer.Where(a => a.ID == ID).SingleOrDefault();
+                tbl_DiscountCustomer ui = dbe.tbl_DiscountCustomer.Where(a => a.UID == ID).SingleOrDefault();
                 if (ui != null)
                 {
                     dbe.tbl_DiscountCustomer.Remove(ui);
@@ -69,7 +69,7 @@ namespace IM_PJ.Controllers
         {
             using (var dbe = new inventorymanagementEntities())
             {
-                tbl_DiscountCustomer ai = dbe.tbl_DiscountCustomer.Where(a => a.ID == ID).FirstOrDefault();
+                tbl_DiscountCustomer ai = dbe.tbl_DiscountCustomer.Where(a => a.UID == ID).FirstOrDefault();
                 if (ai != null)
                 {
                     return ai;

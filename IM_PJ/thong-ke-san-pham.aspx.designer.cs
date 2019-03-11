@@ -10,150 +10,114 @@
 namespace IM_PJ {
     
     
-    public partial class cai_dat {
+    public partial class thong_ke_san_pham {
         
         /// <summary>
-        /// lblError control.
+        /// txtTextSearch control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblError;
+        protected global::System.Web.UI.WebControls.TextBox txtTextSearch;
         
         /// <summary>
-        /// txtSecurityCode control.
+        /// rFromDate control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtSecurityCode;
+        protected global::Telerik.Web.UI.RadDatePicker rFromDate;
         
         /// <summary>
-        /// txtConfirmSecurityCode control.
+        /// rToDate control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtConfirmSecurityCode;
+        protected global::Telerik.Web.UI.RadDatePicker rToDate;
         
         /// <summary>
-        /// RequiredFieldValidator2 control.
+        /// btnSearch control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.RequiredFieldValidator RequiredFieldValidator2;
+        protected global::System.Web.UI.WebControls.Button btnSearch;
         
         /// <summary>
-        /// pNumOfDateToChangeProduct control.
+        /// ltrTotalRemain control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::Telerik.Web.UI.RadNumericTextBox pNumOfDateToChangeProduct;
+        protected global::System.Web.UI.WebControls.Literal ltrTotalRemain;
         
         /// <summary>
-        /// RequiredFieldValidator1 control.
+        /// ltrTotalRemainPerDay control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.RequiredFieldValidator RequiredFieldValidator1;
+        protected global::System.Web.UI.WebControls.Literal ltrTotalRemainPerDay;
         
         /// <summary>
-        /// pNumOfProductCanChange control.
+        /// ltrTotalSold control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::Telerik.Web.UI.RadNumericTextBox pNumOfProductCanChange;
+        protected global::System.Web.UI.WebControls.Literal ltrTotalSold;
         
         /// <summary>
-        /// RequiredFieldValidator6 control.
+        /// ltrTotalRefund control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.RequiredFieldValidator RequiredFieldValidator6;
+        protected global::System.Web.UI.WebControls.Literal ltrTotalRefund;
         
         /// <summary>
-        /// pFeeChangeProduct control.
+        /// ltrTotalProfit control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::Telerik.Web.UI.RadNumericTextBox pFeeChangeProduct;
+        protected global::System.Web.UI.WebControls.Literal ltrTotalProfit;
         
         /// <summary>
-        /// pReturnRule1 control.
+        /// ltrTotalRevenue control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::Telerik.Web.UI.RadEditor pReturnRule1;
+        protected global::System.Web.UI.WebControls.Literal ltrTotalRevenue;
         
         /// <summary>
-        /// pReturnRule2 control.
+        /// ltrTotalStock control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::Telerik.Web.UI.RadEditor pReturnRule2;
+        protected global::System.Web.UI.WebControls.Literal ltrTotalStock;
         
         /// <summary>
-        /// pCSSPrintBarcode control.
+        /// ltrTotalStockValue control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox pCSSPrintBarcode;
-        
-        /// <summary>
-        /// ddlHideProduct control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlHideProduct;
-        
-        /// <summary>
-        /// btnLogin control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnLogin;
-        
-        /// <summary>
-        /// hdfTempVariable control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.HiddenField hdfTempVariable;
-        
-        /// <summary>
-        /// hdfVariableFull control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.HiddenField hdfVariableFull;
+        protected global::System.Web.UI.WebControls.Literal ltrTotalStockValue;
     }
 }

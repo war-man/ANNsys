@@ -50,6 +50,10 @@
                                         <td><a href="thong-ke-nhan-vien">Nhân viên</a></td>
                                         <td><a href="thong-ke-nhan-vien" class="btn primary-btn h45-btn">Chi tiết</a></td>
                                     </tr>
+                                    <tr>
+                                        <td><a href="thong-ke-san-pham">Sản phẩm</a></td>
+                                        <td><a href="thong-ke-san-pham" class="btn primary-btn h45-btn">Chi tiết</a></td>
+                                    </tr>
                                 </tbody>
                             </table>
                         </div>

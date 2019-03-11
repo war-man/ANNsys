@@ -150,6 +150,7 @@
           <Property Name="SecurityCode" Type="nvarchar" MaxLength="60" />
           <Property Name="RetailReturnRule" Type="nvarchar(max)" />
           <Property Name="CSSPrintBarcode" Type="text" />
+          <Property Name="HideProduct" Type="int" />
         </EntityType>
         <EntityType Name="tbl_Customer">
           <Key>
@@ -1435,6 +1436,7 @@ warning 6002: The table/view 'inventorymanagement.dbo.View_ProductList' does not
           <Property Name="SecurityCode" Type="String" MaxLength="60" FixedLength="false" Unicode="true" />
           <Property Name="RetailReturnRule" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="CSSPrintBarcode" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="HideProduct" Type="Int32" />
         </EntityType>
         <EntityType Name="tbl_Product">
           <Key>
@@ -2163,6 +2165,7 @@ warning 6002: The table/view 'inventorymanagement.dbo.View_ProductList' does not
           <EntitySetMapping Name="tbl_Config">
             <EntityTypeMapping TypeName="inventorymanagementModel.tbl_Config">
               <MappingFragment StoreEntitySet="tbl_Config">
+                <ScalarProperty Name="HideProduct" ColumnName="HideProduct" />
                 <ScalarProperty Name="CSSPrintBarcode" ColumnName="CSSPrintBarcode" />
                 <ScalarProperty Name="RetailReturnRule" ColumnName="RetailReturnRule" />
                 <ScalarProperty Name="SecurityCode" ColumnName="SecurityCode" />

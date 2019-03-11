@@ -511,7 +511,7 @@ namespace IM_PJ.Controllers
         public static List<CustomerGet> GetNotInGroupByGroupID(int GroupID)
         {
             var list = new List<CustomerGet>();
-            var sql = @"SELECT  l.ID, l.CustomerName, l.CustomerPhone FROM tbl_Customer l";
+            var sql = @"SELECT  l.ID, l.CustomerName, l.CustomerPhone, l.CreatedBy FROM tbl_Customer l";
             sql += " LEFT JOIN (Select UID, CustomerName from tbl_DiscountCustomer where DiscountGroupID = " + GroupID + " ) as r ON  r.UID = l.ID";
             sql += " WHERE r.UID IS NULL";
 
@@ -525,6 +525,36 @@ namespace IM_PJ.Controllers
                     entity.CustomerName = reader["CustomerName"].ToString();
                 if (reader["CustomerPhone"] != DBNull.Value)
                     entity.CustomerPhone = reader["CustomerPhone"].ToString();
+                if (reader["CreatedBy"] != DBNull.Value)
+                    entity.CreatedBy = reader["CreatedBy"].ToString();
+                list.Add(entity);
+            }
+            reader.Close();
+            return list;
+        }
+        public static List<tbl_Customer> GetInGroupByGroupID(int GroupID)
+        {
+            var list = new List<tbl_Customer>();
+            var sql = @"SELECT  l.ID, l.CustomerName, l.CustomerPhone, l.Nick, l.CreatedBy, r.CreatedDate as CreatedDate FROM tbl_Customer l";
+            sql += " LEFT JOIN (Select UID, CustomerName, CreatedDate from tbl_DiscountCustomer where DiscountGroupID = " + GroupID + " ) as r ON  r.UID = l.ID";
+            sql += " WHERE r.UID IS NOT NULL";
+
+            var reader = (IDataReader)SqlHelper.ExecuteDataReader(sql);
+            while (reader.Read())
+            {
+                var entity = new tbl_Customer();
+                if (reader["ID"] != DBNull.Value)
+                    entity.ID = reader["ID"].ToString().ToInt(0);
+                if (reader["Nick"] != DBNull.Value)
+                    entity.Nick = reader["Nick"].ToString();
+                if (reader["CustomerName"] != DBNull.Value)
+                    entity.CustomerName = reader["CustomerName"].ToString();
+                if (reader["CustomerPhone"] != DBNull.Value)
+                    entity.CustomerPhone = reader["CustomerPhone"].ToString();
+                if (reader["CreatedBy"] != DBNull.Value)
+                    entity.CreatedBy = reader["CreatedBy"].ToString();
+                if (reader["CreatedDate"] != DBNull.Value)
+                    entity.CreatedDate = Convert.ToDateTime(reader["CreatedDate"]);
                 list.Add(entity);
             }
             reader.Close();
@@ -587,6 +617,7 @@ namespace IM_PJ.Controllers
             public int ID { get; set; }
             public string CustomerName { get; set; }
             public string CustomerPhone { get; set; }
+            public string CreatedBy { get; set; }
         }
 
         public class CustomerOut

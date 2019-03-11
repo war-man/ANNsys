@@ -50,6 +50,7 @@ namespace IM_PJ
                 pReturnRule1.Content = p.ChangeGoodsRule;
                 pReturnRule2.Content = p.RetailReturnRule;
                 pCSSPrintBarcode.Text = p.CSSPrintBarcode;
+                ddlHideProduct.SelectedValue = p.HideProduct.ToString();
             }
         }
         protected void btnLogin_Click(object sender, EventArgs e)
@@ -83,7 +84,7 @@ namespace IM_PJ
                         }
                     }
 
-                    ConfigController.Update(1, Convert.ToDouble(pNumOfDateToChangeProduct.Value), Convert.ToDouble(pNumOfProductCanChange.Value), Convert.ToDouble(pFeeChangeProduct.Value), 0, pReturnRule1.Content, pReturnRule2.Content, DateTime.Now, username, pCSSPrintBarcode.Text);
+                    ConfigController.Update(1, Convert.ToDouble(pNumOfDateToChangeProduct.Value), Convert.ToDouble(pNumOfProductCanChange.Value), Convert.ToDouble(pFeeChangeProduct.Value), 0, pReturnRule1.Content, pReturnRule2.Content, DateTime.Now, username, pCSSPrintBarcode.Text, Convert.ToInt32(ddlHideProduct.SelectedValue));
 
                     PJUtils.ShowMessageBoxSwAlert("Cập nhật thành công", "s", true, Page);
                 }

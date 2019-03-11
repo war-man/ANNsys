@@ -459,7 +459,7 @@
 
                 // Ruler Price - ReducedPrice >= 10,000 VND
                 if ((Price - ReducedPrice) > 11000) {
-                    alert("Giá đã bán không thể giảm hơn 11,000đ..");
+                    alert("Giá đã bán không thể giảm hơn 11.000đ.");
                     row.find(".reducedPrice").val(formatThousands(SoldPrice, ","));
                     ReducedPrice = SoldPrice;
                 }
@@ -552,17 +552,17 @@
                 }
                 else {
                     if (item.ChangeType == 1) {
-                        html += "               <option value='1' selected>Đổi size</option>\n";
+                        html += "               <option value='1' selected>Đổi size - màu</option>\n";
                         html += "               <option value='2'>Đổi sản phẩm khác</option>\n";
                         html += "               <option value='3'>Đổi hàng lỗi</option>\n";
                     }
                     else if (item.ChangeType == 2) {
-                        html += "               <option value='1'>Đổi size</option>\n";
+                        html += "               <option value='1'>Đổi size - màu</option>\n";
                         html += "               <option value='2' selected>Đổi sản phẩm khác</option>\n";
                         html += "               <option value='3'>Đổi hàng lỗi</option>\n";
                     }
                     else {
-                        html += "               <option value='1'>Đổi size</option>\n";
+                        html += "               <option value='1'>Đổi size - màu</option>\n";
                         html += "               <option value='2'>Đổi sản phẩm khác</option>\n";
                         html += "               <option value='3' selected>Đổi hàng lỗi</option>\n";
                     }

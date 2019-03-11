@@ -10,7 +10,7 @@
                 <div class="col-md-12">
                     <div class="panel panelborderheading">
                         <div class="panel-heading clear">
-                            <h3 class="page-title left not-margin-bot">Thêm khách hàng vào nhóm</h3>
+                            <h3 class="page-title left not-margin-bot">Thêm khách hàng vào nhóm: <strong><asp:Literal ID="ltrGroupName" runat="server" EnableViewState="false"></asp:Literal></strong></h3>
                         </div>
                         <div class="panel-body">
                             <div class="form-row">
@@ -36,9 +36,10 @@
                                 <tbody>
                                     <tr>
                                         <th>Họ tên</th>
+                                        <th>Nick</th>
                                         <th>Điện thoại</th>
-                                        <th>Ẩn</th>
-                                        <th>Ngày tạo</th>
+                                        <th>Nhân viên</th>
+                                        <th>Ngày vào nhóm</th>
                                         <th>Thao tác</th>
                                     </tr>
                                     <asp:Literal ID="ltrList" runat="server" EnableViewState="false"></asp:Literal>
@@ -50,27 +51,9 @@
             </div>
         </div>
         <asp:HiddenField ID="hdfCustomerID" runat="server" />
-        <asp:Button ID="btnHidden" runat="server" OnClick="btnHidden_Click" Style="display: none" />
-        <asp:Button ID="btnShow" runat="server" OnClick="btnShow_Click" Style="display: none" />
         <asp:Button ID="btnDelete" runat="server" OnClick="btnDelete_Click" Style="display: none" />
     </main>
     <script type="text/javascript">
-        function hiddencustomer(obj) {
-            var c = confirm("Bạn muốn ẩn khách hàng này?");
-            if (c == true) {
-                var id = obj.parent().parent().attr("data-id");
-                $("#<%=hdfCustomerID.ClientID%>").val(id);
-                $("#<%=btnHidden.ClientID%>").click();
-            }
-        }
-        function showcustomer(obj) {
-            var c = confirm("Bạn muốn hiện khách hàng này?");
-            if (c == true) {
-                var id = obj.parent().parent().attr("data-id");
-                $("#<%=hdfCustomerID.ClientID%>").val(id);
-                $("#<%=btnShow.ClientID%>").click();
-            }
-        }
         function deletecustomer(obj) {
             var c = confirm("Bạn muốn xóa khách hàng này ra khỏi nhóm?");
             if (c == true) {

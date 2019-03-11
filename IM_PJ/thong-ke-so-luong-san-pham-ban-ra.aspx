@@ -60,7 +60,7 @@
                             <div class="col-md-2">
                                 <div class="report-column">
                                     <div class="report-label">
-                                        SL còn lại trung bình:
+                                        SL còn lại mỗi ngày:
                                     </div>
                                     <div class="report-value">
                                         <asp:Literal ID="ltrAverageTotalRemain" runat="server" EnableViewState="false"></asp:Literal>
@@ -80,7 +80,7 @@
                             <div class="col-md-2">
                                 <div class="report-column">
                                     <div class="report-label">
-                                        SL bán ra trung bình:
+                                        SL bán ra mỗi ngày:
                                     </div>
                                     <div class="report-value">
                                         <asp:Literal ID="ltrAverageTotalSales" runat="server" EnableViewState="false"></asp:Literal>
@@ -100,7 +100,7 @@
                             <div class="col-md-2">
                                 <div class="report-column">
                                     <div class="report-label">
-                                        SL đổi trả trung bình:
+                                        SL đổi trả mỗi ngày:
                                     </div>
                                     <div class="report-value">
                                         <asp:Literal ID="ltrAverageTotalRefund" runat="server" EnableViewState="false"></asp:Literal>

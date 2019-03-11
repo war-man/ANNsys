@@ -27,5 +27,6 @@ namespace IM_PJ.Models
         public string SecurityCode { get; set; }
         public string RetailReturnRule { get; set; }
         public string CSSPrintBarcode { get; set; }
+        public Nullable<int> HideProduct { get; set; }
     }
 }

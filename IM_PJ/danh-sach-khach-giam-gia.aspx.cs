@@ -50,7 +50,7 @@ namespace IM_PJ
                 customer = customer.OrderBy(o => o.CustomerName).ToList();
                 foreach (var p in customer)
                 {
-                    ListItem listitem = new ListItem(p.CustomerName + " - " + p.CustomerPhone, p.ID.ToString());
+                    ListItem listitem = new ListItem(p.CustomerName + " - " + p.CustomerPhone + " - " + p.CreatedBy, p.ID.ToString());
                     ddlCustomer.Items.Add(listitem);
                 }
                 ddlCustomer.DataBind();
@@ -58,7 +58,7 @@ namespace IM_PJ
         }
         public void LoadCustomerIn(int groupID)
         {
-            var c = DiscountCustomerController.GetByGroupID(groupID);
+            var c = CustomerController.GetInGroupByGroupID(groupID);
             if (c.Count > 0)
             {
                 pagingall(c.OrderBy(o => o.CustomerName).ToList());
@@ -75,11 +75,12 @@ namespace IM_PJ
                     ViewState["ID"] = id;
                     LoadCustomerIn(id);
                     LoadCustomerNotIn(id);
+                    ltrGroupName.Text = d.DiscountName;
                 }
             }
         }
         #region Paging
-        public void pagingall(List<tbl_DiscountCustomer> acs)
+        public void pagingall(List<tbl_Customer> acs)
         {
             int PageSize = 15;
             StringBuilder html = new StringBuilder();
@@ -102,19 +103,17 @@ namespace IM_PJ
                 {
                     var item = acs[i];
                     html.Append("<tr data-id=\"" + item.ID + "\">");
-                    html.Append("   <td>" + item.CustomerName + "</td>");
+                    html.Append("   <td class=\"customer-name-link capitalize\"><a href=\"/chi-tiet-khach-hang?id=" + item.ID + "\">" + item.CustomerName + "</a></td>");
+                    html.Append("   <td class=\"customer-name-link capitalize\">" + item.Nick + "</td>");
                     html.Append("   <td>" + item.CustomerPhone + "</td>");
-                    html.Append("   <td class=\"ishidden\">" + PJUtils.IsHiddenStatus(Convert.ToBoolean(item.IsHidden)) + "</td>");
+                    html.Append("   <td>" + item.CreatedBy + "</td>");
+
                     string date = "";
                     if (item.CreatedDate != null)
                         date = string.Format("{0:dd/MM/yyyy}", item.CreatedDate);
                     html.Append("   <td>" + date + "</td>");
-                    html.Append("   <td>");
-                    if (item.IsHidden == true)
-                        html.Append("       <a href=\"javascript:;\" onclick=\"showcustomer($(this))\" class=\"btn primary-btn fw-btn not-fullwidth\">Hiện</a>");
-                    else
-                        html.Append("       <a href=\"javascript:;\" onclick=\"hiddencustomer($(this))\" class=\"btn primary-btn fw-btn not-fullwidth\">Ẩn</a>");
 
+                    html.Append("   <td>");
                     html.Append("       <a href=\"javascript:;\" onclick=\"deletecustomer($(this))\" class=\"btn primary-btn fw-btn not-fullwidth\">Xóa</a>");
                     html.Append("   </td>");
                     html.Append("</tr>");
@@ -289,50 +288,6 @@ namespace IM_PJ
             }
         }
 
-        protected void btnHidden_Click(object sender, EventArgs e)
-        {
-            string username = Request.Cookies["userLoginSystem"].Value;
-            var acc = AccountController.GetByUsername(username);
-            if (acc != null)
-            {
-                if (acc.RoleID == 0)
-                {
-                    int ID = hdfCustomerID.Value.ToInt(0);
-                    if (ID > 0)
-                    {
-                        var c = DiscountCustomerController.GetByID(ID);
-                        if (c != null)
-                        {
-                            DiscountCustomerController.UpdateIsHidden(c.ID, true, DateTime.Now, username);
-                            PJUtils.ShowMessageBoxSwAlert("Ẩn khách hàng thành công", "s", true, Page);
-                        }
-                    }
-                }
-            }
-        }
-
-        protected void btnShow_Click(object sender, EventArgs e)
-        {
-            string username = Request.Cookies["userLoginSystem"].Value;
-            var acc = AccountController.GetByUsername(username);
-            if (acc != null)
-            {
-                if (acc.RoleID == 0)
-                {
-                    int ID = hdfCustomerID.Value.ToInt(0);
-                    if (ID > 0)
-                    {
-                        var c = DiscountCustomerController.GetByID(ID);
-                        if (c != null)
-                        {
-                            DiscountCustomerController.UpdateIsHidden(c.ID, false, DateTime.Now, username);
-                            PJUtils.ShowMessageBoxSwAlert("Hiện khách hàng thành công", "s", true, Page);
-                        }
-                    }
-                }
-            }
-        }
-
         protected void btnDelete_Click(object sender, EventArgs e)
         {
             string username = Request.Cookies["userLoginSystem"].Value;
@@ -347,8 +302,8 @@ namespace IM_PJ
                         var c = DiscountCustomerController.GetByID(ID);
                         if (c != null)
                         {
-                            DiscountCustomerController.Delete(c.ID);
-                            PJUtils.ShowMessageBoxSwAlert("Xóa khách hàng thành công", "s", true, Page);
+                            DiscountCustomerController.Delete(ID);
+                            PJUtils.ShowMessageBoxSwAlert("Xóa khách hàng ra khỏi nhóm thành công", "s", true, Page);
                         }
                     }
                 }

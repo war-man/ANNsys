@@ -133,6 +133,13 @@ namespace IM_PJ
         #region Paging
         public void pagingall(List<ProductSQL> acs)
         {
+            var config = ConfigController.GetByTop1();
+            string cssClass = "col-xs-6";
+            if(config.HideProduct == 1)
+            {
+                cssClass = "col-xs-4";
+            }
+
             int PageSize = 20;
             StringBuilder html = new StringBuilder();
             html.Append("<div class='row'>");
@@ -170,7 +177,7 @@ namespace IM_PJ
 
                     if (!string.IsNullOrEmpty(item.ProductContent))
                     {
-                        html.Append("   <p>🔖 " + item.ProductContent + "</p>");
+                        html.Append("   <p>🔖 " + Regex.Replace(item.ProductContent, @"<img\s[^>]*>(?:\s*?</img>)?", "") + "</p>");
                     }
 
                     html.Append("   <p>🔖 " + item.ProductInstockStatus + " (" + string.Format("{0:N0}", item.TotalProductInstockQuantityLeft) + " cái)</p>");
@@ -178,18 +185,29 @@ namespace IM_PJ
                     html.Append("     </div>");
                     html.Append("</div>");
 
+
                     html.Append("<div class='row'>");
                     html.Append("     <div class='col-xs-12'>");
-                    html.Append("          <div class='col-xs-6'>");
+                    html.Append("          <div class='" + cssClass + "'>");
                     html.Append("               <div class='row'>");
                     html.Append("                  <a href=\"javascript:;\" class=\"btn primary-btn copy-btn h45-btn\" onclick=\"copyProductInfo(" + item.ID + ")\"><i class=\"fa fa-files-o\" aria-hidden=\"true\"></i> Copy</a>");
                     html.Append("               </div>");
                     html.Append("          </div>");
-                    html.Append("          <div class='col-xs-6'>");
+                    html.Append("          <div class='" + cssClass + "'>");
                     html.Append("               <div class='row'>");
                     html.Append("                  <a href =\"javascript:;\" class=\"btn primary-btn h45-btn\" onclick=\"getAllProductImage('" + item.ProductSKU + "');\"><i class=\"fa fa-cloud-download\" aria-hidden=\"true\"></i> Tải hình</a>");
                     html.Append("               </div>");
                     html.Append("          </div>");
+
+                    if (config.HideProduct == 1)
+                    {
+                        html.Append("          <div class='col-xs-4'>");
+                        html.Append("               <div class='row'>");
+                        html.Append("                  <a href =\"javascript:;\" class=\"btn primary-btn h45-btn hidden-" + item.ID + " download-btn\" onclick=\"ShowUpProductToWeb('" + item.ProductSKU + "', '" + item.ID + "', 'false', 'false', 'hidden');\"><i class=\"fa fa-times\" aria-hidden=\"true\"></i> Ẩn</a>");
+                        html.Append("               </div>");
+                        html.Append("          </div>");
+                    }
+
                     html.Append("     </div>");
                     html.Append("</div>");
 

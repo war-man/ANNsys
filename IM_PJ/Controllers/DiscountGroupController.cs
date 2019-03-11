@@ -77,7 +77,7 @@ namespace IM_PJ.Controllers
             using (var dbe = new inventorymanagementEntities())
             {
                 List<tbl_DiscountGroup> ags = new List<tbl_DiscountGroup>();
-                ags = dbe.tbl_DiscountGroup.Where(c => c.DiscountName.Contains(s) || c.DiscountAmountPercent.ToString().Contains(s)).ToList();
+                ags = dbe.tbl_DiscountGroup.Where(c => c.DiscountName.Contains(s) || c.DiscountAmountPercent.ToString().Contains(s)).OrderByDescending(x => x.DiscountAmount).ToList();
                 return ags;
             }
         }

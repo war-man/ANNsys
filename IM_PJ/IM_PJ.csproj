@@ -318,6 +318,7 @@
     <Content Include="App_Themes\Ann\js\download-post-image.js" />
     <Content Include="App_Themes\Ann\js\download-product-image.js" />
     <Content Include="App_Themes\Ann\js\jquery.cookie.js" />
+    <Content Include="App_Themes\Ann\js\sync-product-small.js" />
     <Content Include="App_Themes\Ann\js\sync-product.js" />
     <Content Include="App_Themes\Ann\js\HoldOn.js" />
     <Content Include="App_Themes\Ann\js\html2canvas.js" />
@@ -481,6 +482,7 @@
     <Content Include="them-moi-nha-xe.aspx" />
     <Content Include="them-moi-nhan-vien.aspx" />
     <Content Include="them-moi-noi-den-nha-xe.aspx" />
+    <Content Include="thong-ke-san-pham.aspx" />
     <Content Include="thong-ke-nhan-vien.aspx" />
     <Content Include="thong-ke-phi-van-chuyen.aspx" />
     <Content Include="thong-tin-don-hang-chuyen-hoan.aspx" />
@@ -1497,6 +1499,13 @@
     </Compile>
     <Compile Include="thong-ke-chiet-khau.aspx.designer.cs">
       <DependentUpon>thong-ke-chiet-khau.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="thong-ke-san-pham.aspx.cs">
+      <DependentUpon>thong-ke-san-pham.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="thong-ke-san-pham.aspx.designer.cs">
+      <DependentUpon>thong-ke-san-pham.aspx</DependentUpon>
     </Compile>
     <Compile Include="thong-ke-nhan-vien.aspx.cs">
       <DependentUpon>thong-ke-nhan-vien.aspx</DependentUpon>

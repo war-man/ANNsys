@@ -740,6 +740,26 @@ namespace IM_PJ.Controllers
                              .ToList();
             }
         }
+        public static int getTotalProductsSold(int ID)
+        {
+            using (var con = new inventorymanagementEntities())
+            {
+
+                return Convert.ToInt32(con.tbl_StockManager
+                    .Where(x => x.ProductID == ID && x.ProductVariableID == 0 && x.Type == 2)
+                    .Sum(x => x.Quantity));
+            }
+        }
+        public static int getTotalProductsRefund(int ID)
+        {
+            using (var con = new inventorymanagementEntities())
+            {
+
+                return Convert.ToInt32(con.tbl_StockManager
+                    .Where(x => x.ProductID == ID && x.ProductVariableID == 0 && x.Type == 1)
+                    .Sum(x => x.Quantity));
+            }
+        }
         public static List<tbl_StockManager> GetStockVariable()
         {
             using (var con = new inventorymanagementEntities())

@@ -418,7 +418,7 @@ namespace IM_PJ
                         html.Append("   <td>" + string.Format("{0:N0}", item.CostOfGood) + "</td>");
                     }
                     html.Append("   <td>" + string.Format("{0:N0}", item.RetailPrice) + "</td>");
-                    html.Append("   <td>" + string.Format("{0:N0}", item.TotalProductInstockQuantityLeft) + "</td>");
+                    html.Append("   <td><a target=\"_blank\" href=\"/thong-ke-san-pham?SKU=" + item.ProductSKU + "\">" + string.Format("{0:N0}", item.TotalProductInstockQuantityLeft) + "</a></td>");
                     html.Append("   <td>" + item.ProductInstockStatus + "</td>");
                     html.Append("   <td>" + item.CategoryName + "</td>");
                     string date = string.Format("{0:dd/MM/yyyy}", item.CreatedDate);

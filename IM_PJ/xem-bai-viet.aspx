@@ -28,13 +28,16 @@
                         </div>
                         <div class="panel-body">
                             <div class="form-row">
+                                <asp:Literal ID="ltrEditTop" runat="server"></asp:Literal>
+                            </div>
+                            <div class="form-row">
                                 <asp:Literal ID="ltrContent" runat="server"></asp:Literal>
                             </div>
                             <div class="form-row">
                                 <asp:Literal ID="imageGallery" runat="server"></asp:Literal>
                             </div>
                             <div class="form-row">
-                                <asp:Literal ID="ltrEdit" runat="server"></asp:Literal>
+                                <asp:Literal ID="ltrEditBottom" runat="server"></asp:Literal>
                             </div>
                         </div>
                     </div>

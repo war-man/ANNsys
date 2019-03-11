@@ -155,9 +155,9 @@ namespace IM_PJ
             int PageSize = 30;
             StringBuilder html = new StringBuilder();
             html.Append("<tr>");
-            html.Append("     <th class='image-column'>Ảnh</th>");
-            html.Append("     <th class='nick-column'>Nick đặt hàng</th>");
+            //html.Append("     <th class='image-column'>Ảnh</th>");
             html.Append("     <th class='name-column'>Họ tên</th>");
+            html.Append("     <th class='nick-column'>Nick đặt hàng</th>");
             html.Append("     <th class='phone-column'>Điện thoại</th>");
             html.Append("     <th class='zalo-column'>Zalo</th>");
             html.Append("     <th class='facebook-column'>FB</th>");
@@ -168,7 +168,6 @@ namespace IM_PJ
             {
                 html.Append("     <th class='staff-column'>Nhân viên</th>");
             }
-            html.Append("     <th class='group-column'>Nhóm</th>");
             html.Append("     <th class='date-column'>Ngày tạo</th>");
             html.Append("     <th class='action-column'></th>");
             html.Append("</tr>");
@@ -193,9 +192,9 @@ namespace IM_PJ
                     var item = acs[i];
                     html.Append("<tr>");
 
-                    html.Append("   <td><a href=\"/chi-tiet-khach-hang?id=" + item.ID + "\"><img src=\"" + item.Avatar + "\"/></a></td>");
-                    html.Append("   <td class=\"customer-name-link capitalize\">" + item.Nick + "</td>");
+                    //html.Append("   <td><a href=\"/chi-tiet-khach-hang?id=" + item.ID + "\"><img src=\"" + item.Avatar + "\"/></a></td>");
                     html.Append("   <td class=\"customer-name-link capitalize\"><a href=\"/chi-tiet-khach-hang?id=" + item.ID + "\">" + item.CustomerName + "</a></td>");
+                    html.Append("   <td class=\"customer-name-link capitalize\">" + item.Nick + "</td>");
                     html.Append("   <td>" + item.CustomerPhone + "</td>");
                     html.Append("   <td>" + item.Zalo + "</td>");
 
@@ -238,17 +237,6 @@ namespace IM_PJ
                     if (acc.RoleID == 0)
                     {
                         html.Append("   <td>" + item.CreatedBy + "</td>");
-                    }
-
-                    if (!string.IsNullOrEmpty(item.DiscountName))
-                    {
-                        string[] dis = item.DiscountName.Split('|');
-                        if (dis.Count() > 1)
-                            html.Append("   <td>" + dis[0] + "</br>" + dis[1] + "</td>");
-                    }
-                    else
-                    {
-                        html.Append("   <td>" + item.DiscountName + "</td>");
                     }
 
                     string date = string.Format("{0:dd/MM/yyyy}", item.CreatedDate);

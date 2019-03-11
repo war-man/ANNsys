@@ -11,7 +11,7 @@ namespace IM_PJ.Controllers
     {
         #region CRUD
         public static string Update(int ID, double NumOfDateToChangeProduct, double NumOfProductCanChange, double FeeChangeProduct, double FeeDiscountPerProduct,
-            string ChangeGoodsRule, string RetailReturnRule, DateTime ModifiedDate, string ModifiedBy, string CSSPrintBarcode)
+            string ChangeGoodsRule, string RetailReturnRule, DateTime ModifiedDate, string ModifiedBy, string CSSPrintBarcode, int HideProduct)
         {
             using (var dbe = new inventorymanagementEntities())
             {
@@ -27,6 +27,7 @@ namespace IM_PJ.Controllers
                     ui.ModifiedBy = ModifiedBy;
                     ui.ModifiedDate = ModifiedDate;
                     ui.CSSPrintBarcode = CSSPrintBarcode;
+                    ui.HideProduct = HideProduct;
                     int kq = dbe.SaveChanges();
                     return kq.ToString();
                 }

@@ -19,7 +19,7 @@
                                     Mã bảo mật
                                 </div>
                                 <div class="row-right">
-                                    <asp:TextBox ID="txtSecurityCode" runat="server" CssClass="form-control" placeholder="Chỉ nhập khi cần thay đổi" TextMode="Password"></asp:TextBox>
+                                    <asp:TextBox ID="txtSecurityCode" runat="server" CssClass="form-control" placeholder="Chỉ nhập khi cần thay đổi" autocomplete="new-password" TextMode="Password"></asp:TextBox>
                                 </div>
                             </div>
                             <div class="form-row">
@@ -66,7 +66,7 @@
                                     Nội quy đổi trả hàng mua sỉ
                                 </div>
                                 <div class="row-right">
-                                    <telerik:RadEditor runat="server" ID="pReturnRule1" Width="100%" Height="500px" ToolsFile="~/FilesResources/ToolContent.xml" Skin="Metro" DialogHandlerUrl="~/Telerik.Web.UI.DialogHandler.axd" AutoResizeHeight="False">
+                                    <telerik:RadEditor runat="server" ID="pReturnRule1" Width="100%" Height="400px" ToolsFile="~/FilesResources/ToolContent.xml" Skin="Metro" DialogHandlerUrl="~/Telerik.Web.UI.DialogHandler.axd" AutoResizeHeight="False">
                                         <ImageManager ViewPaths="~/uploads/images" UploadPaths="~/uploads/images" DeletePaths="~/uploads/images" />
                                     </telerik:RadEditor>
                                 </div>
@@ -76,7 +76,7 @@
                                     Nội quy đổi trả hàng mua lẻ
                                 </div>
                                 <div class="row-right">
-                                    <telerik:RadEditor runat="server" ID="pReturnRule2" Width="100%" Height="500px" ToolsFile="~/FilesResources/ToolContent.xml" Skin="Metro" DialogHandlerUrl="~/Telerik.Web.UI.DialogHandler.axd" AutoResizeHeight="False">
+                                    <telerik:RadEditor runat="server" ID="pReturnRule2" Width="100%" Height="300px" ToolsFile="~/FilesResources/ToolContent.xml" Skin="Metro" DialogHandlerUrl="~/Telerik.Web.UI.DialogHandler.axd" AutoResizeHeight="False">
                                         <ImageManager ViewPaths="~/uploads/images" UploadPaths="~/uploads/images" DeletePaths="~/uploads/images" />
                                     </telerik:RadEditor>
                                 </div>
@@ -87,6 +87,17 @@
                                 </div>
                                 <div class="row-right">
                                     <asp:TextBox ID="pCSSPrintBarcode" TextMode="MultiLine" runat="server" CssClass="form-control" Height="400px"></asp:TextBox>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="row-left">
+                                    Bật tắt Ẩn/Hiện sản phẩm
+                                </div>
+                                <div class="row-right">
+                                    <asp:DropDownList ID="ddlHideProduct" runat="server" CssClass="form-control">
+                                        <asp:ListItem Value="0" Text="Tắt"></asp:ListItem>
+                                        <asp:ListItem Value="1" Text="Bật"></asp:ListItem>
+                                    </asp:DropDownList>
                                 </div>
                             </div>
                             <div class="form-row">

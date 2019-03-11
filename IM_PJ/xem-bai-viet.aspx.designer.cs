@@ -22,6 +22,15 @@ namespace IM_PJ {
         protected global::System.Web.UI.WebControls.Literal ltrTitle;
         
         /// <summary>
+        /// ltrEditTop control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Literal ltrEditTop;
+        
+        /// <summary>
         /// ltrContent control.
         /// </summary>
         /// <remarks>
@@ -40,13 +49,13 @@ namespace IM_PJ {
         protected global::System.Web.UI.WebControls.Literal imageGallery;
         
         /// <summary>
-        /// ltrEdit control.
+        /// ltrEditBottom control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Literal ltrEdit;
+        protected global::System.Web.UI.WebControls.Literal ltrEditBottom;
         
         /// <summary>
         /// hdfTempVariable control.

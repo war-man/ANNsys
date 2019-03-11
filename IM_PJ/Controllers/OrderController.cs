@@ -1300,6 +1300,13 @@ namespace IM_PJ.Controllers
 
         #endregion
 
+        public class OrderReport
+        {
+            public int ID { get; set; }
+            public int Quantity { get; set; }
+            public double TotalRevenue { get; set; }
+            public double TotalCost { get; set; }
+        }
         public class OrderList
         {
             public int ID { get; set; }
@@ -1540,6 +1547,54 @@ namespace IM_PJ.Controllers
                     TotalRefundFee = TotalRefundFee
                 };
             }
+        }
+
+        public static ProductReportModel getProductReport(string SKU, DateTime fromDate, DateTime toDate)
+        {
+            var list = new List<OrderReport>();
+            var sql = new StringBuilder();
+
+            sql.AppendLine(String.Format("SELECT Ord.ID, SUM(ISNULL(OrdDetail.Quantity, 0)) AS Quantity, SUM(OrdDetail.Quantity * ISNULL(Product.CostOfGood, Variable.CostOfGood)) AS TotalCost, SUM(OrdDetail.Quantity * (OrdDetail.Price - Ord.DiscountPerProduct)) AS TotalRevenue"));
+            sql.AppendLine(String.Format("FROM tbl_Order AS Ord"));
+            sql.AppendLine(String.Format("INNER JOIN tbl_OrderDetail AS OrdDetail"));
+            sql.AppendLine(String.Format("ON 	Ord.ID = OrdDetail.OrderID"));
+            sql.AppendLine(String.Format("LEFT JOIN tbl_ProductVariable AS Variable"));
+            sql.AppendLine(String.Format("ON 	OrdDetail.SKU = Variable.SKU"));
+            sql.AppendLine(String.Format("LEFT JOIN tbl_Product AS Product"));
+            sql.AppendLine(String.Format("ON 	OrdDetail.SKU = Product.ProductSKU"));
+            sql.AppendLine(String.Format("WHERE 1 = 1"));
+            sql.AppendLine(String.Format("	AND Ord.ExcuteStatus = 2"));
+            sql.AppendLine(String.Format("	AND Ord.PaymentStatus = 3"));
+            sql.AppendLine(String.Format("	AND OrdDetail.SKU LIKE '{0}%'", SKU));
+            sql.AppendLine(String.Format("	AND	CONVERT(datetime, Ord.DateDone, 121) BETWEEN CONVERT(datetime, '{0}', 121) AND CONVERT(datetime, '{1}', 121)", fromDate.ToString(), toDate.ToString()));
+            sql.AppendLine(String.Format("GROUP BY Ord.ID"));
+
+            var reader = (IDataReader)SqlHelper.ExecuteDataReader(sql.ToString());
+            while (reader.Read())
+            {
+                var entity = new OrderReport();
+
+                entity.ID = Convert.ToInt32(reader["ID"]);
+                entity.Quantity = Convert.ToInt32(reader["Quantity"]);
+                entity.TotalRevenue = Convert.ToDouble(reader["TotalRevenue"]);
+                entity.TotalCost = Convert.ToDouble(reader["TotalCost"]);
+                list.Add(entity);
+            }
+            reader.Close();
+
+            return new ProductReportModel()
+            {
+                totalSold = list.Sum(x => x.Quantity),
+                totalRevenue = list.Sum(x => x.TotalRevenue),
+                totalCost = list.Sum(x=> x.TotalCost)
+            };
+        }
+
+        public class ProductReportModel
+        {
+            public int totalSold { get; set; }
+            public double totalRevenue { get; set; }
+            public double totalCost { get; set; }
         }
     }
 }

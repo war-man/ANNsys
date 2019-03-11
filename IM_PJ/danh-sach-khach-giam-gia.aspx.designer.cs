@@ -13,6 +13,15 @@ namespace IM_PJ {
     public partial class danh_sach_khach_giam_gia {
         
         /// <summary>
+        /// ltrGroupName control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Literal ltrGroupName;
+        
+        /// <summary>
         /// ddlCustomer control.
         /// </summary>
         /// <remarks>
@@ -47,24 +56,6 @@ namespace IM_PJ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.HiddenField hdfCustomerID;
-        
-        /// <summary>
-        /// btnHidden control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnHidden;
-        
-        /// <summary>
-        /// btnShow control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnShow;
         
         /// <summary>
         /// btnDelete control.
