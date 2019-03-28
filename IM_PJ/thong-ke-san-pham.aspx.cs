@@ -75,6 +75,7 @@ namespace IM_PJ
             rFromDate.SelectedDate = fromdate;
             rToDate.SelectedDate = todate;
             totalDays = Convert.ToInt32((todate - fromdate).TotalDays);
+
             if(totalDays <= 0)
             {
                 totalDays = 1;
