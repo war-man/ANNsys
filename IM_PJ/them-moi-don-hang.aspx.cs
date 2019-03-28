@@ -55,7 +55,7 @@ namespace IM_PJ
                         }
                         var agent = acc.AgentID;
 
-                        Response.Cookies["refundt"].Value = "1";
+                        hdSession.Value = "1";
 
                         if (agent == 1)
                         {
@@ -95,12 +95,12 @@ namespace IM_PJ
         public static string getReturnOrder(string order, string remove)
         {
             JavaScriptSerializer serializer = new JavaScriptSerializer();
+
             if (remove.ToInt() == 0)
             {
                 var or = RefundGoodController.GetOrderByID(order.ToInt());
                 if (or != null)
                 {
-                    HttpContext.Current.Response.Cookies["refundt"].Value = or.ID + "|" + or.TotalPrice;
                     return serializer.Serialize(or);
                 }
                 else
@@ -110,7 +110,6 @@ namespace IM_PJ
             }
             else
             {
-                HttpContext.Current.Response.Cookies["refundt"].Value = "1";
                 return serializer.Serialize(null);
             }
         }
@@ -276,16 +275,13 @@ namespace IM_PJ
                             }
                         }
 
-                        string refund = Request.Cookies["refundt"].Value;
+                        string refund = hdSession.Value;
                         if (refund != "1")
                         {
                             string[] RefundID = refund.Split('|');
                             var update = RefundGoodController.UpdateStatus(RefundID[0].ToInt(), username, 2, OrderID);
                             var updateor = OrderController.UpdateRefund(OrderID, RefundID[0].ToInt(), username);
                         }
-
-                        Response.Cookies["refundt"].Expires = DateTime.Now.AddDays(-1d);
-                        Response.Cookies.Add(Response.Cookies["refundt"]);
 
                         PJUtils.ShowMessageBoxSwAlertCallFunction("Tạo đơn hàng thành công", "s", true, "redirectTo(" + OrderID + ")", Page);
                     }

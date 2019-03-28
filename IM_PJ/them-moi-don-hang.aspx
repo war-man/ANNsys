@@ -224,6 +224,7 @@
             <asp:HiddenField ID="hdfChietKhau" runat="server" />
             <asp:HiddenField ID="hdfDonHangTra" runat="server" />
             <asp:HiddenField ID="hdfTongTienConLai" runat="server" />
+            <asp:HiddenField ID="hdSession" runat="server" />
 
         </main>
     </asp:Panel>
@@ -420,7 +421,7 @@ function searchReturnOrder() {
 }
 
 // get return order
-function getReturnOrder() {
+    function getReturnOrder() {
     var order = $("#txtOrderRefund").val();
     var name = $("#<%=txtFullname.ClientID%>").val();
     var phone = $("#<%=txtPhone.ClientID%>").val();
@@ -434,6 +435,8 @@ function getReturnOrder() {
             success: function(msg) {
                 if (msg.d != "null") {
                     var data = JSON.parse(msg.d);
+                    $("#<%=hdSession.ClientID%>").val(data.ID + "|" + data.TotalPrice);
+                    
                     if (data.CustomerName == name && data.CustomerPhone == phone) {
                         $(".returnorder").removeClass("hide");
                         $(".totalpriceorderall").removeClass("price-red");
@@ -457,6 +460,7 @@ function getReturnOrder() {
                         swal("Thông báo", "Đơn hàng đổi trả không thuộc khách hàng này!", "error");
                     }
                 } else {
+                    $("#<%=hdSession.ClientID%>").val(1)
                     swal("Thông báo", "Đơn hàng đổi trả không tồn tại hoặc đã được trừ tiền!", "error");
                 }
             },
@@ -491,6 +495,7 @@ function deleteReturnOrder() {
             $(".find2").removeAttr("onclick");
             $(".totalpricedetail").html("0");
             $("#<%=hdfDonHangTra.ClientID%>").val(0);
+            $("#<%=hdSession.ClientID%>").val(1);
             $(".refund").addClass("hide");
             $(".totalpriceorderrefund").html("0");
             $("#txtOrderRefund").val(0);
