@@ -422,6 +422,8 @@
             <asp:HiddenField ID="hdfTongTienConLai" runat="server" />
             <asp:HiddenField ID="hdfSoLuong" runat="server" />
             <asp:HiddenField runat="server" ID="hdfcheckR" />
+            <asp:HiddenField ID="hdOrderInfoID" runat="server" />
+            <asp:HiddenField ID="hdSession" runat="server" />
         </main>
     </asp:Panel>
     <style>
@@ -826,6 +828,7 @@
                         success: function(msg) {
                             if (msg.d != "null") {
                                 var data = JSON.parse(msg.d);
+                                $("#<%=hdSession.ClientID%>").val(data.ID + "|" + data.TotalPrice);
                                 if (data.CustomerName == name && data.CustomerPhone == phone) {
                                     $(".subtotal").removeClass("hide");
                                     $(".returnorder").removeClass("hide");
@@ -850,6 +853,7 @@
                                     swal("Thông báo", "Đơn hàng đổi trả không thuộc khách hàng này!", "error");
                                 }
                             } else if (order == existorder[0]) {
+                                $("#<%=hdSession.ClientID%>").val(0);
                                 swal("Thông báo", "Đơn hàng đổi trả này đã thêm vào trước đó!\nHãy đổi về trạng thái 'Chưa trừ tiền' để thêm lại lần nữa!\nSau khi đổi trạng thái, trở lại giao diện này để thêm lại!", "error");
                                 viewReturnOrder(order);
                             } else {
@@ -887,6 +891,7 @@
                         $(".find2").removeAttr("onclick");
                         $(".totalpricedetail").html("0");
                         $("#<%=hdfDonHangTra.ClientID%>").val(0);
+                        $("#<%=hdSession.ClientID%>").val(0);
                         $(".refund").addClass("hide");
                         $(".totalpriceorderrefund").html("0");
                         $("#txtOrderRefund").val(0);
@@ -1066,10 +1071,11 @@
 
                                             deleteOrder();
 
+                                            let order_id = $("#<%=hdOrderInfoID.ClientID%>").val()
                                             $.ajax({
                                                 type: "POST",
                                                 url: "/thong-tin-don-hang.aspx/UpdateStatus",
-                                                data: "{}",
+                                                data: "{OrderId: " + order_id + "}",
                                                 contentType: "application/json; charset=utf-8",
                                                 dataType: "json",
                                                 success: function (msg) {

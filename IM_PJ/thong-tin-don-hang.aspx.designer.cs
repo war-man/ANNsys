@@ -688,6 +688,24 @@ namespace IM_PJ {
         protected global::System.Web.UI.WebControls.HiddenField hdfcheckR;
         
         /// <summary>
+        /// hdOrderInfoID control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField hdOrderInfoID;
+        
+        /// <summary>
+        /// hdSession control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField hdSession;
+        
+        /// <summary>
         /// rAjax control.
         /// </summary>
         /// <remarks>

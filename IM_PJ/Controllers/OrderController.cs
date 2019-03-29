@@ -106,7 +106,7 @@ namespace IM_PJ.Controllers
             }
         }
 
-        public static int UpdateRefund(int ID, int RefundsGoodsID, string created)
+        public static int UpdateRefund(int ID, int? RefundsGoodsID, string created)
         {
             using (var dbe = new inventorymanagementEntities())
             {
