@@ -130,6 +130,8 @@ namespace IM_PJ
                 }
                 else
                 {
+                    this.Title = String.Format("{0} - Khách hàng", d.CustomerName.ToTitleCase());
+
                     string username = HttpContext.Current.Request.Cookies["userLoginSystem"].Value;
                     var acc = AccountController.GetByUsername(username);
                     if (acc.RoleID != 0)

@@ -102,6 +102,8 @@ namespace IM_PJ
             }
             else
             {
+                this.Title = String.Format("{0} - Sản phẩm", p.ProductSKU.ToTitleCase());
+
                 ViewState["ID"] = id;
                 ViewState["cateID"] = p.CategoryID;
                 ViewState["SKU"] = p.ProductSKU;

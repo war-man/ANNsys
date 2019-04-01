@@ -47,6 +47,8 @@ namespace IM_PJ
                 }
                 else
                 {
+                    this.Title = String.Format("{0} - Bài viết", p.Title.ToTitleCase());
+
                     ViewState["ID"] = id;
 
                     ltrEditTop.Text = "";

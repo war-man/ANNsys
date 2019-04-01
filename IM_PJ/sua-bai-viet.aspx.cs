@@ -91,6 +91,8 @@ namespace IM_PJ
                 }
                 else
                 {
+                    this.Title = String.Format("{0} - Sửa bài viết", p.Title.ToTitleCase());
+
                     ViewState["ID"] = id;
                     ViewState["cateID"] = p.CategoryID;
                     hdfParentID.Value = p.CategoryID.ToString();

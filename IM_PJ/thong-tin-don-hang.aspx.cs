@@ -79,6 +79,8 @@ namespace IM_PJ
                 }
                 else
                 {
+                    
+
                     // chuyển sang giao diện xem đơn chuyển hoàn nếu trạng thái xử lý đã chuyển hoàn
                     if (order.ExcuteStatus == 4)
                     {
@@ -111,7 +113,9 @@ namespace IM_PJ
                     int AgentID = Convert.ToInt32(order.AgentID);
                     txtPhone.Text = order.CustomerPhone;
                     txtFullname.Text = order.CustomerName;
-                    this.Title = String.Format("{0} - Thông tin đơn hàng", txtFullname.Text.ToTitleCase());
+
+                    
+
                     txtAddress.Text = order.CustomerAddress;
                     var cus = CustomerController.GetByID(order.CustomerID.Value);
                     if (cus != null)
@@ -138,6 +142,10 @@ namespace IM_PJ
                             txtFacebook.Enabled = true;
                         }
                     }
+
+                    // Title
+                    this.Title = String.Format("({0}) {1} - Đơn hàng", order.ID, cus.Nick.ToTitleCase());
+
                     int customerID = Convert.ToInt32(order.CustomerID);
                     ltrViewDetail.Text = "<a href=\"javascript:;\" class=\"btn primary-btn fw-btn not-fullwidth\" onclick=\"viewCustomerDetail('" + customerID + "')\"><i class=\"fa fa-address-card-o\" aria-hidden=\"true\"></i> Xem chi tiết</a>";
                     ltrViewDetail.Text += "<a href=\"javascript:;\" class=\"btn primary-btn fw-btn not-fullwidth edit-customer-btn\" onclick=\"refreshCustomerInfo('" + customerID + "')\"><i class=\"fa fa-refresh\" aria-hidden=\"true\"></i> Làm mới</a>";

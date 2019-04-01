@@ -64,6 +64,7 @@ namespace IM_PJ
                     }
                     else
                     {
+                        
                         if (acc.RoleID != 0)
                         {
                             if (r.CreatedBy != acc.Username)
@@ -158,6 +159,9 @@ namespace IM_PJ
                                 ltrInfo.Text += "</div>";
                             }
                         }
+
+                        // Title
+                        this.Title = String.Format("({0}) {1} - Đổi trả", r.ID, cus.Nick.ToTitleCase());
 
                         ltrTotal.Text = string.Format("{0:N0}", Convert.ToDouble(r.TotalPrice));
                         ltrQuantity.Text = string.Format("{0:N0}", Convert.ToDouble(r.TotalQuantity));

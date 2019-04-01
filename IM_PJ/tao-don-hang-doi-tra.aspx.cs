@@ -59,6 +59,8 @@ namespace IM_PJ
             if (HttpContext.Current.Items["xem-don-hang-doi-tra"] != null)
             {
                 this.hdfListProduct.Value = HttpContext.Current.Items["xem-don-hang-doi-tra"].ToString();
+                
+                this.Title = String.Format("Làm lại đơn hàng trả");
             }
         }
 
