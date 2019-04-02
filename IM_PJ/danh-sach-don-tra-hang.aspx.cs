@@ -227,11 +227,11 @@ namespace IM_PJ
 
                     if (!string.IsNullOrEmpty(item.Nick))
                     {
-                        html.Append("   <td><a class=\"customer-name-link capitalize\" href=\"/xem-don-hang-doi-tra?id=" + item.ID + "\">" + item.Nick + "</a><br><span class=\"name-bottom-nick\">(" + item.CustomerName + ")</span></td>");
+                        html.Append("   <td><a class=\"customer-name-link\" href=\"/xem-don-hang-doi-tra?id=" + item.ID + "\">" + item.Nick.ToTitleCase() + "</a><br><span class=\"name-bottom-nick\">(" + item.CustomerName.ToTitleCase() + ")</span></td>");
                     }
                     else
                     {
-                        html.Append("   <td><a class=\"customer-name-link capitalize\" href=\"/xem-don-hang-doi-tra?id=" + item.ID + "\">" + item.CustomerName + "</a></td>");
+                        html.Append("   <td><a class=\"customer-name-link\" href=\"/xem-don-hang-doi-tra?id=" + item.ID + "\">" + item.CustomerName.ToTitleCase() + "</a></td>");
                     }
 
                     html.Append("   <td>" + string.Format("{0:N0}", Convert.ToDouble(item.Quantity)) + "</td>");

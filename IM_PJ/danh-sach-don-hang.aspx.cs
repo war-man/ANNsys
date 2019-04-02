@@ -429,11 +429,11 @@ namespace IM_PJ
 
                     if (!string.IsNullOrEmpty(item.Nick))
                     {
-                        html.Append("   <td><a class=\"col-customer-name-link capitalize\" href=\"/thong-tin-don-hang?id=" + item.ID + "\">" + item.Nick + "</a><br><span class=\"name-bottom-nick\">(" + item.CustomerName + ")</span></td>");
+                        html.Append("   <td><a class=\"col-customer-name-link\" href=\"/thong-tin-don-hang?id=" + item.ID + "\">" + item.Nick.ToTitleCase() + "</a><br><span class=\"name-bottom-nick\">(" + item.CustomerName.ToTitleCase() + ")</span></td>");
                     }
                     else
                     {
-                        html.Append("   <td><a class=\"col-customer-name-link capitalize\" href=\"/thong-tin-don-hang?id=" + item.ID + "\">" + item.CustomerName + "</a></td>");
+                        html.Append("   <td><a class=\"col-customer-name-link\" href=\"/thong-tin-don-hang?id=" + item.ID + "\">" + item.CustomerName.ToTitleCase() + "</a></td>");
                     }
 
                     html.Append("   <td>" + item.Quantity + "</td>");
