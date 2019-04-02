@@ -103,8 +103,8 @@ namespace IM_PJ
                 {
                     var item = acs[i];
                     html.Append("<tr data-id=\"" + item.ID + "\">");
-                    html.Append("   <td class=\"customer-name-link capitalize\"><a href=\"/chi-tiet-khach-hang?id=" + item.ID + "\">" + item.CustomerName + "</a></td>");
-                    html.Append("   <td class=\"customer-name-link capitalize\">" + item.Nick + "</td>");
+                    html.Append("   <td class=\"customer-name-link\"><a href=\"/chi-tiet-khach-hang?id=" + item.ID + "\">" + item.CustomerName.ToTitleCase() + "</a></td>");
+                    html.Append("   <td class=\"customer-name-link\">" + item.Nick.ToTitleCase() + "</td>");
                     html.Append("   <td>" + item.CustomerPhone + "</td>");
                     html.Append("   <td>" + item.CreatedBy + "</td>");
 

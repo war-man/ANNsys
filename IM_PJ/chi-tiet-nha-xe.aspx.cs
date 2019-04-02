@@ -127,8 +127,8 @@ namespace IM_PJ
 
                     rowHtml += Environment.NewLine + String.Format("<tr>");
                     rowHtml += Environment.NewLine + String.Format("    <td>{0}</td>", i + 1);
-                    rowHtml += Environment.NewLine + String.Format("    <td class=\"customer-name-link capitalize\"><a href=\"/chi-tiet-noi-den-nha-xe?id={0}&subid={1}\">{2}</a></td>", company.ID, company.SubID, company.ShipTo);
-                    rowHtml += Environment.NewLine + String.Format("    <td class=\"capitalize\">{0}</td>", company.Address);
+                    rowHtml += Environment.NewLine + String.Format("    <td class=\"customer-name-link\"><a href=\"/chi-tiet-noi-den-nha-xe?id={0}&subid={1}\">{2}</a></td>", company.ID, company.SubID, company.ShipTo.ToTitleCase());
+                    rowHtml += Environment.NewLine + String.Format("    <td>{0}</td>", company.Address.ToTitleCase());
                     rowHtml += Environment.NewLine + String.Format("    <td>{0}</td>", company.Prepay ? "Trả trước" : "Trả sau");
                     rowHtml += Environment.NewLine + String.Format("    <td>{0}</td>", company.COD ? "Có" : "Không");
                     rowHtml += Environment.NewLine + String.Format("    <td>{0:dd/MM/yyyy}</td>", company.CreatedDate);

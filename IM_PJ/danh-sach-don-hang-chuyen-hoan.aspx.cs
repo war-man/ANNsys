@@ -189,16 +189,16 @@ namespace IM_PJ
                     {
                         if (!string.IsNullOrEmpty(customer.Nick))
                         {
-                            html.Append("   <td><a class=\"customer-name-link capitalize\" href=\"/thong-tin-don-hang-chuyen-hoan?id=" + item.ID + "\">" + customer.Nick + "</a><br><span class=\"name-bottom-nick\">(" + item.CustomerName + ")</span></td>");
+                            html.Append("   <td><a class=\"customer-name-link\" href=\"/thong-tin-don-hang-chuyen-hoan?id=" + item.ID + "\">" + customer.Nick.ToTitleCase() + "</a><br><span class=\"name-bottom-nick\">(" + item.CustomerName.ToTitleCase() + ")</span></td>");
                         }
                         else
                         {
-                            html.Append("   <td><a class=\"customer-name-link capitalize\" href=\"/thong-tin-don-hang-chuyen-hoan?id=" + item.ID + "\">" + item.CustomerName + "</a></td>");
+                            html.Append("   <td><a class=\"customer-name-link\" href=\"/thong-tin-don-hang-chuyen-hoan?id=" + item.ID + "\">" + item.CustomerName.ToTitleCase() + "</a></td>");
                         }
                     }
                     else
                     {
-                        html.Append("   <td><a class=\"customer-name-link capitalize\" href=\"/thong-tin-don-hang-chuyen-hoan?id=" + item.ID + "\">" + item.CustomerName + "</a></td>");
+                        html.Append("   <td><a class=\"customer-name-link\" href=\"/thong-tin-don-hang-chuyen-hoan?id=" + item.ID + "\">" + item.CustomerName.ToTitleCase() + "</a></td>");
                     }
                     
                     var orderdetails = OrderDetailController.GetByOrderID(item.ID);

@@ -134,28 +134,28 @@ namespace IM_PJ
                 string transportCompanyAddress = "";
                 string transportCompanyNote = "";
 
-                string CustomerAddress = order.CustomerAddress;
+                string CustomerAddress = order.CustomerAddress.ToTitleCase();
 
                 if (company != null)
                 {
-                    transportCompany = "<strong>" + company.CompanyName + "</strong>";
+                    transportCompany = "<strong>" + company.CompanyName.ToTitleCase() + "</strong>";
                     if(company.CompanyPhone != "")
                     {
                         transportCompanyPhone = "<span class=\"transport-info\">(" + company.CompanyPhone + ")</span>";
                     }
 
-                    transportCompanyAddress = "<p class=\"transport-info capitalize\">" + company.CompanyAddress + "</p>";
+                    transportCompanyAddress = "<p class=\"transport-info\">" + company.CompanyAddress.ToTitleCase() + "</p>";
 
                     if(company.Note != "")
                     {
-                        transportCompanyNote = "<span class=\"transport-info capitalize\"> - " + company.Note + "</span>";
+                        transportCompanyNote = "<span class=\"transport-info\"> - " + company.Note.ToTitleCase() + "</span>";
                     }
 
                     var subID = Convert.ToInt32(order.TransportCompanySubID);
                     var shipto = TransportCompanyController.GetReceivePlaceByID(company.ID, subID);
                     if (shipto != null && subID > 0)
                     {
-                        CustomerAddress = "<span class=\"phone\">" + shipto.ShipTo + "</span>";
+                        CustomerAddress = "<span class=\"phone\">" + shipto.ShipTo.ToTitleCase() + "</span>";
                     }
                     else
                     {
@@ -226,7 +226,7 @@ namespace IM_PJ
                 }
                 rowHtml += Environment.NewLine + String.Format("    </div>");
                 rowHtml += Environment.NewLine + String.Format("    <div class=\"bottom-right\">");
-                rowHtml += Environment.NewLine + String.Format("        <p><span>Người nhận: <span class=\"name\">{0}</span></span></p>", order.CustomerName);
+                rowHtml += Environment.NewLine + String.Format("        <p><span>Người nhận: <span class=\"name\">{0}</span></span></p>", order.CustomerName.ToTitleCase());
 
                 string CustomerPhone2 = "";
 

@@ -223,14 +223,14 @@ namespace IM_PJ
                         productPrint += "<tbody>";
                         productPrint += "<tr>";
                         productPrint += "<td>Khách hàng</td>";
-                        productPrint += "<td class=\"capitalize\">" + order.CustomerName + "</td>";
+                        productPrint += "<td>" + order.CustomerName.ToTitleCase() + "</td>";
                         productPrint += "</tr>";
 
                         if (!string.IsNullOrEmpty(customer.Nick))
                         {
                             productPrint += "<tr>";
                             productPrint += "<td>Nick đặt hàng</td>";
-                            productPrint += "<td class=\"capitalize\">" + customer.Nick + "</td>";
+                            productPrint += "<td>" + customer.Nick.ToTitleCase() + "</td>";
                             productPrint += "</tr>";
                         }
 
