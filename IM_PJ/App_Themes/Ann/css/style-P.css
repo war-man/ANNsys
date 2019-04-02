@@ -1,11 +1,12 @@
 ﻿.account-note {
     background: #fff;
     position: fixed;
-    right: 85px;
-    bottom: 50px;
+    left: 25px;
+    bottom: 25px;
     width: 200px;
     height: 50px;
     border: rgba(248, 119, 3, 0.5) 5px solid;
+    z-index: 9999;
 }
 .account-note .button-note {
     height: 40px;

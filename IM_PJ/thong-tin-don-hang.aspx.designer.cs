@@ -22,13 +22,13 @@ namespace IM_PJ {
         protected global::System.Web.UI.WebControls.Panel parent;
         
         /// <summary>
-        /// ltrOrderID control.
+        /// ltrHeading control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Literal ltrOrderID;
+        protected global::System.Web.UI.WebControls.Literal ltrHeading;
         
         /// <summary>
         /// ltrOrderType control.

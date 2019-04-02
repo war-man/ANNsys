@@ -65,6 +65,7 @@ namespace IM_PJ
                     else
                     {
                         
+
                         if (acc.RoleID != 0)
                         {
                             if (r.CreatedBy != acc.Username)
@@ -72,7 +73,7 @@ namespace IM_PJ
                                 PJUtils.ShowMessageBoxSwAlertError("Đơn hàng này không phải của bạn", "e", true, "/danh-sach-don-tra-hang", Page);
                             }
                         }
-                        ltrOrderID.Text = ID.ToString();
+                        
                         ltrCreateBy.Text = r.CreatedBy;
                         ltrCreateDate.Text = r.CreatedDate.ToString();
                         ltrOrderStatus.Text = PJUtils.RefundStatus(Convert.ToInt32(r.Status));
@@ -161,7 +162,8 @@ namespace IM_PJ
                         }
 
                         // Title
-                        this.Title = String.Format("({0}) {1} - Đổi trả", r.ID, cus.Nick.ToTitleCase());
+                        this.Title = String.Format("{0} - Đổi trả", cus.Nick != "" ? cus.Nick.ToTitleCase() : cus.CustomerName.ToTitleCase());
+                        ltrHeading.Text = "Đơn đổi trả #" + ID.ToString() + " - " + (cus.Nick != "" ? cus.Nick.ToTitleCase() : cus.CustomerName.ToTitleCase());
 
                         ltrTotal.Text = string.Format("{0:N0}", Convert.ToDouble(r.TotalPrice));
                         ltrQuantity.Text = string.Format("{0:N0}", Convert.ToDouble(r.TotalQuantity));

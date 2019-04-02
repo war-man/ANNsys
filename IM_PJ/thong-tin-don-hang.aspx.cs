@@ -79,7 +79,6 @@ namespace IM_PJ
                 }
                 else
                 {
-                    
 
                     // chuyển sang giao diện xem đơn chuyển hoàn nếu trạng thái xử lý đã chuyển hoàn
                     if (order.ExcuteStatus == 4)
@@ -114,8 +113,6 @@ namespace IM_PJ
                     txtPhone.Text = order.CustomerPhone;
                     txtFullname.Text = order.CustomerName;
 
-                    
-
                     txtAddress.Text = order.CustomerAddress;
                     var cus = CustomerController.GetByID(order.CustomerID.Value);
                     if (cus != null)
@@ -144,7 +141,8 @@ namespace IM_PJ
                     }
 
                     // Title
-                    this.Title = String.Format("({0}) {1} - Đơn hàng", order.ID, cus.Nick.ToTitleCase());
+                    this.Title = String.Format("{0} - Đơn hàng", cus.Nick != "" ? cus.Nick.ToTitleCase() : cus.CustomerName.ToTitleCase());
+                    ltrHeading.Text = "Đơn hàng #" + ID.ToString() + " - " + (cus.Nick != "" ? cus.Nick.ToTitleCase() : cus.CustomerName.ToTitleCase());
 
                     int customerID = Convert.ToInt32(order.CustomerID);
                     ltrViewDetail.Text = "<a href=\"javascript:;\" class=\"btn primary-btn fw-btn not-fullwidth\" onclick=\"viewCustomerDetail('" + customerID + "')\"><i class=\"fa fa-address-card-o\" aria-hidden=\"true\"></i> Xem chi tiết</a>";
@@ -450,7 +448,7 @@ namespace IM_PJ
                     pOtherFee.Value = Convert.ToDouble(order.OtherFeeValue);
 
                     ltrTotalAfterCK.Text = string.Format("{0:N0}", (Convert.ToDouble(order.TotalPriceNotDiscount) - Convert.ToDouble(order.TotalDiscount)));
-                    ltrOrderID.Text = ID.ToString();
+                    
                     ltrCreateBy.Text = order.CreatedBy;
                     ltrCreateDate.Text = order.CreatedDate.ToString();
                     ltrDateDone.Text = "Chưa hoàn tất";
@@ -485,7 +483,7 @@ namespace IM_PJ
             {
                 foreach (var p in TransportCompany)
                 {
-                    ListItem listitem = new ListItem(p.CompanyName, p.ID.ToString());
+                    ListItem listitem = new ListItem(p.CompanyName.ToTitleCase(), p.ID.ToString());
                     ddlTransportCompanyID.Items.Add(listitem);
                 }
                 ddlTransportCompanyID.DataBind();
@@ -504,7 +502,7 @@ namespace IM_PJ
                 {
                     foreach (var p in ShipTo)
                     {
-                        ListItem listitem = new ListItem(p.ShipTo, p.SubID.ToString());
+                        ListItem listitem = new ListItem(p.ShipTo.ToTitleCase(), p.SubID.ToString());
                         ddlTransportCompanySubID.Items.Add(listitem);
                     }
                 }

@@ -12,7 +12,7 @@
                     <div class="col-md-12">
                         <div class="panel panelborderheading">
                             <div class="panel-heading clear">
-                                <h3 class="page-title left not-margin-bot">Thông tin đơn hàng đổi trả #<asp:Literal ID="ltrOrderID" runat="server"></asp:Literal></h3>
+                                <h3 class="page-title left not-margin-bot"><asp:Literal ID="ltrHeading" runat="server"></asp:Literal></h3>
                             </div>
                             <div class="panel-body">
                                 <div class="row pad">
