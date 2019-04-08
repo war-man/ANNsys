@@ -2,7 +2,7 @@
 
 <%@ Register Assembly="Telerik.Web.UI" Namespace="Telerik.Web.UI" TagPrefix="telerik" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
-    <script src="/App_Themes/Ann/js/search-customer.js?v=2113"></script>
+    <script src="/App_Themes/Ann/js/search-customer.js?v=2115"></script>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <asp:Panel ID="parent" runat="server">
@@ -23,7 +23,7 @@
                                         </div>
                                     </div>
                                     <div class="col-md-3">
-                                        <label class="left pad10">Nhân viên tạo đơn: </label>
+                                        <label class="left pad10">Nhân viên: </label>
                                         <div class="ordercreateby">
                                             <asp:Literal ID="ltrCreateBy" runat="server"></asp:Literal>
                                         </div>
@@ -35,7 +35,7 @@
                                         </div>
                                     </div>
                                     <div class="col-md-4">
-                                        <label class="left pad10">Ngày hoàn tất: </label>
+                                        <label class="left pad10">Hoàn tất: </label>
                                         <div class="orderdatedone">
                                             <asp:Literal ID="ltrDateDone" runat="server"></asp:Literal>
                                         </div>
@@ -153,7 +153,7 @@
                             <asp:Literal ID="ltrCustomerType" runat="server"></asp:Literal>
                             <div class="post-above clear">
                                 <div class="search-box left">
-                                    <input type="text" id="txtSearch" disabled class="form-control sku-input" placeholder="SKU (F3)" autocomplete="off">
+                                    <input type="text" id="txtSearch" disabled class="form-control sku-input" placeholder="NHẬP MÃ SẢN PHẨM (F3)" autocomplete="off">
                                 </div>
                                 <div class="right">
                                     <a href="javascript:;" class="link-btn" onclick="searchProduct()"><i class="fa fa-search"></i></a>

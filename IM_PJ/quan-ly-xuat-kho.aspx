@@ -10,7 +10,7 @@
                         </div>
                         <div class="panel-body">
                             <div class="form-row">
-                                <input type="text" id="txtSearch" class="form-control sku-input" placeholder="SKU (F3)" style="width: 40%; float: left; margin-right: 10px" autocomplete="off" />
+                                <input type="text" id="txtSearch" class="form-control sku-input" placeholder="NHẬP MÃ SẢN PHẨM (F3)" style="width: 40%; float: left; margin-right: 10px" autocomplete="off" />
                                 <asp:Literal ID="ltrSupplier" runat="server"></asp:Literal>
                                 <a href="javascript:;" class="btn primary-btn fw-btn not-fullwidth" style="margin-right: 10px" onclick="searchProduct()"><i class="fa fa-search" aria-hidden="true"></i> Tìm</a>
                             </div>

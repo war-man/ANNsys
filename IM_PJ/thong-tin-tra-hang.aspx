@@ -2,7 +2,7 @@
 
 <%@ Register Assembly="Telerik.Web.UI" Namespace="Telerik.Web.UI" TagPrefix="telerik" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
-    <script src="/App_Themes/Ann/js/search-customer.js?v=2113"></script>
+    <script src="/App_Themes/Ann/js/search-customer.js?v=2115"></script>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <asp:Panel ID="parent" runat="server">
@@ -17,7 +17,7 @@
                             <div class="panel-body">
                                 <div class="row pad">
                                     <div class="col-md-4">
-                                        <label class="left pad10">Nhân viên tạo đơn: </label>
+                                        <label class="left pad10">Nhân viên: </label>
                                         <div class="ordercreateby">
                                             <asp:Literal ID="ltrCreateBy" runat="server"></asp:Literal>
                                         </div>

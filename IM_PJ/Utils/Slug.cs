@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web;
@@ -10,16 +11,21 @@ namespace IM_PJ
     {
         public static string ConvertToSlug(string value)
         {
+            string extension = Path.GetExtension(value);
+
+            //Get file name
+            value = Path.GetFileNameWithoutExtension(value);
+
             //First to lower case
             value = value.ToLower();
 
             //Remove all accents
             Regex regex = new Regex("\\p{IsCombiningDiacriticalMarks}+");
             value = value.Normalize(System.Text.NormalizationForm.FormD);
-            value = regex.Replace(value, String.Empty);
+            value = regex.Replace(value, String.Empty).Replace('\u0111', 'd').Replace('\u0110', 'D');
 
-            //Replace spaces 
-            value = Regex.Replace(value, @"\s", "-", RegexOptions.Compiled);
+            //Replace spaces or _
+            value = Regex.Replace(value, @"\s|_", "-", RegexOptions.Compiled);
 
             //Remove invalid chars 
             value = Regex.Replace(value, @"[^\w\s\p{Pd}]", "", RegexOptions.Compiled);
@@ -30,7 +36,7 @@ namespace IM_PJ
             //Replace double occurences of - or \_ 
             value = Regex.Replace(value, @"([-_]){2,}", "$1", RegexOptions.Compiled);
 
-            return value;
+            return value + extension;
         }
     }
 }

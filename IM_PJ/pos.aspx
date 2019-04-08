@@ -2,7 +2,7 @@
 
 <%@ Register Assembly="Telerik.Web.UI" Namespace="Telerik.Web.UI" TagPrefix="telerik" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
-    <script src="/App_Themes/Ann/js/search-customer.js?v=2113"></script>
+    <script src="/App_Themes/Ann/js/search-customer.js?v=2115"></script>
     <script src="/App_Themes/Ann/js/search-product.js?v=07122018"></script>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
@@ -137,7 +137,7 @@
                             </select>
                             <div class="post-above clear">
                                 <div class="search-box left" style="width: 80%;">
-                                    <input type="text" id="txtSearch" class="form-control sku-input" placeholder="SKU (F3)" autocomplete="off">
+                                    <input type="text" id="txtSearch" class="form-control sku-input" placeholder="NHẬP MÃ SẢN PHẨM (F3)" autocomplete="off">
                                 </div>
                                 <div class="right">
                                     <a href="javascript:;" class="link-btn" onclick="searchProduct()" title="Tìm sản phẩm"><i class="fa fa-search"></i></a>
@@ -249,23 +249,13 @@
         <script type="text/javascript">
             "use strict";
 
-            // set height for div product list
-            $(".search-product-content").height($(window).height() - 150);
-
-            // hide header in template
-            $("#header").html("");
-
-            // search Product by SKU
-            $("#txtSearch").keydown(function(event) {
-                if (event.which === 13) {
-                    searchProduct();
-                    event.preventDefault();
-                    return false;
-                }
-            });
-
             // focus to searchProduct input when page on ready
-            $(document).ready(function() {
+            $(document).ready(function () {
+                // hide header in template
+                $("#header").html("");
+
+                $(".account-note").html("").hide();
+
                 $("#txtSearch").focus();
 
                 $(".product-result").dblclick(function () {
@@ -283,8 +273,21 @@
                         this.value = this.value.replace(/\D/g, '');
                     }
                 });
-
             });
+
+            // set height for div product list
+            $(".search-product-content").height($(window).height() - 150);
+
+            // search Product by SKU
+            $("#txtSearch").keydown(function(event) {
+                if (event.which === 13) {
+                    searchProduct();
+                    event.preventDefault();
+                    return false;
+                }
+            });
+
+            
 
             // check data before close page or refresh page
             function stopNavigate(event) {
