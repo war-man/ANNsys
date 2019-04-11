@@ -271,16 +271,22 @@ namespace IM_PJ
                     if (item.StatusID == 1)
                     {
                         html.Append("   <td id='statusName'><span class='bg-blue'>" + item.StatusName + "</span></td>");
+                    }
+                    else
+                    {
+                        html.Append("   <td id='statusName'><span class='bg-red'>" + item.StatusName + "</span></td>");
+                    }
+                    html.Append("   <td><strong>" + String.Format("{0:#,###}", Convert.ToDouble(item.TotalPrice - TotalRefund)) + "</strong></td>");
+                    if (item.StatusID == 1)
+                    {
                         html.Append("   <td id='moneyReceive'><strong>" + String.Format("{0:#,###}", item.MoneyReceive) + "</strong></td>");
                         html.Append("   <td id='doneAt'>" + String.Format("{0:yyyy-MM-dd HH:mm:ss}", item.CreatedDate) + "</td>");
                     }
                     else
                     {
-                        html.Append("   <td id='statusName'><span class='bg-red'>" + item.StatusName + "</span></td>");
                         html.Append("   <td id='moneyReceive'></td>");
                         html.Append("   <td id='doneAt'></td>");
                     }
-                    html.Append("   <td><strong>" + String.Format("{0:#,###}", Convert.ToDouble(item.TotalPrice - TotalRefund)) + "</strong></td>");
                     if (acc.RoleID == 0)
                     {
                         html.Append("   <td>" + item.CreatedBy + "</td>");
