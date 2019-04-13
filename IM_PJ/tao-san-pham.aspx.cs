@@ -377,6 +377,23 @@ namespace IM_PJ
                             }
                             string updateImage = ProductController.UpdateImage(kq.ToInt(), ProductImage);
 
+                            //Phần thêm ảnh đại diện sản phẩm sạch không có đóng dấu
+                            string ProductImageClean = "";
+                            if (ProductThumbnailImageClean.UploadedFiles.Count > 0)
+                            {
+                                foreach (UploadedFile f in ProductThumbnailImageClean.UploadedFiles)
+                                {
+                                    var o = path + kq + '-' + Slug.ConvertToSlug(Path.GetFileName(f.FileName));
+                                    try
+                                    {
+                                        f.SaveAs(Server.MapPath(o));
+                                        ProductImageClean = o;
+                                    }
+                                    catch { }
+                                }
+                            }
+                            string updateImageClean = ProductController.UpdateImageClean(kq.ToInt(), ProductImageClean);
+
                             //Phần thêm thư viện ảnh sản phẩm
                             string IMG = "";
                             if (hinhDaiDien.UploadedFiles.Count > 0)

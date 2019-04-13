@@ -54,7 +54,7 @@ namespace IM_PJ.Controllers
         public static string Update(int ID, int CategoryID, int ProductOldID, string ProductTitle, string ProductContent, string ProductSKU, double ProductStock,
             int StockStatus, bool ManageStock, double Regular_Price, double CostOfGood, double Retail_Price, string ProductImage, int ProductType,
             bool IsHidden, DateTime ModifiedDate, string ModifiedBy, int SupplierID, string SupplierName, string Materials,
-            double MinimumInventoryLevel, double MaximumInventoryLevel)
+            double MinimumInventoryLevel, double MaximumInventoryLevel, string ProductImageClean)
         {
             using (var dbe = new inventorymanagementEntities())
             {
@@ -84,6 +84,7 @@ namespace IM_PJ.Controllers
                     ui.Materials = Materials;
                     ui.MinimumInventoryLevel = MinimumInventoryLevel;
                     ui.MaximumInventoryLevel = MaximumInventoryLevel;
+                    ui.ProductImageClean = ProductImageClean;
                     int kq = dbe.SaveChanges();
                     return kq.ToString();
                 }
@@ -100,6 +101,22 @@ namespace IM_PJ.Controllers
                 if (ui != null)
                 {
                     ui.ProductImage = ProductImage;
+                    int kq = dbe.SaveChanges();
+                    return kq.ToString();
+                }
+                else
+                    return null;
+            }
+        }
+
+        public static string UpdateImageClean(int ID, string ProductImageClean)
+        {
+            using (var dbe = new inventorymanagementEntities())
+            {
+                tbl_Product ui = dbe.tbl_Product.Where(a => a.ID == ID).SingleOrDefault();
+                if (ui != null)
+                {
+                    ui.ProductImageClean = ProductImageClean;
                     int kq = dbe.SaveChanges();
                     return kq.ToString();
                 }
@@ -685,6 +702,9 @@ namespace IM_PJ.Controllers
                 }
                 else
                 {
+                    // luôn cho kho = 10 để khi đồng bộ sản phẩm thì trạng thái là còn hàng
+                    quantityLeft = 10;
+
                     // check show homepage
 
                     if (showHomePage == 1)
@@ -708,7 +728,12 @@ namespace IM_PJ.Controllers
                 {
                     entity.ProductImage = reader["ProductImage"].ToString();
 
-                    if(changeProductName == 1)
+                    if (!string.IsNullOrEmpty(reader["ProductImageClean"].ToString()))
+                    {
+                        entity.ProductImageClean = reader["ProductImageClean"].ToString();
+                    }
+
+                    if (changeProductName == 1)
                     {
                         if (reader["CategoryName"] != DBNull.Value)
                         {
@@ -755,6 +780,7 @@ namespace IM_PJ.Controllers
                     }
 
                     entity.TotalProductInstockQuantityLeft = quantityLeft;
+
                     if (reader["Regular_Price"] != DBNull.Value)
                         entity.RegularPrice = Convert.ToDouble(reader["Regular_Price"].ToString());
                     if (reader["CostOfGood"] != DBNull.Value)
@@ -1011,6 +1037,11 @@ namespace IM_PJ.Controllers
                     entity.ProductImage = "/App_Themes/Ann/image/placeholder.png";
                 }
 
+                if (!string.IsNullOrEmpty(reader["ProductImageClean"].ToString()))
+                {
+                    entity.ProductImageClean = reader["ProductImageClean"].ToString();
+                }
+
                 if (reader["ProductTitle"] != DBNull.Value)
                     entity.ProductTitle = reader["ProductTitle"].ToString();
                 if (reader["ProductSKU"] != DBNull.Value)
@@ -1039,6 +1070,7 @@ namespace IM_PJ.Controllers
                 }
 
                 entity.TotalProductInstockQuantityLeft = quantityLeft;
+
                 if (reader["Regular_Price"] != DBNull.Value)
                     entity.RegularPrice = Convert.ToDouble(reader["Regular_Price"].ToString());
                 if (reader["CostOfGood"] != DBNull.Value)
@@ -1312,6 +1344,7 @@ namespace IM_PJ.Controllers
             public int ProductStyle { get; set; }
             public int ShowHomePage { get; set; }
             public string Materials { get; set; }
+            public string ProductImageClean { get; set; }
         }
 
         public class ProductStockReport

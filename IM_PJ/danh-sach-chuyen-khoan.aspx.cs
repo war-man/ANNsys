@@ -73,6 +73,7 @@ namespace IM_PJ
                     }
                     ddlCreatedBy.DataBind();
                 }
+
                 // Add Customer Bank drop down list
                 var cusBanks = BankController.getDropDownList();
                 cusBanks[0].Text = "Ngân hàng chuyển khoản";
@@ -106,7 +107,7 @@ namespace IM_PJ
             if (acc != null)
             {
                 int OrderType = 0;
-                int PaymentStatus = 0;
+                int TransferStatus = 0;
                 int ExcuteStatus = 0;
                 int BankReceive = 0;
                 string TextSearch = "";
@@ -121,17 +122,13 @@ namespace IM_PJ
                 {
                     OrderType = Request.QueryString["ordertype"].ToInt(0);
                 }
-                if (Request.QueryString["paymentstatus"] != null)
+                if (Request.QueryString["transferstatus"] != null)
                 {
-                    PaymentStatus = Request.QueryString["paymentstatus"].ToInt(0);
+                    TransferStatus = Request.QueryString["transferstatus"].ToInt(0);
                 }
                 if (Request.QueryString["excutestatus"] != null)
                 {
                     ExcuteStatus = Request.QueryString["excutestatus"].ToInt(0);
-                }
-                if (Request.QueryString["createdby"] != null)
-                {
-                    CreatedBy = Request.QueryString["createdby"];
                 }
                 if (Request.QueryString["createdby"] != null)
                 {
@@ -148,7 +145,7 @@ namespace IM_PJ
 
                 txtSearchOrder.Text = TextSearch;
                 ddlOrderType.SelectedValue = OrderType.ToString();
-                ddlPaymentStatus.SelectedValue = PaymentStatus.ToString();
+                ddlTransferStatus.SelectedValue = ddlTransferStatus.ToString();
                 ddlCreatedBy.SelectedValue = CreatedBy.ToString();
                 ddlCreatedDate.SelectedValue = CreatedDate.ToString();
 
@@ -156,7 +153,7 @@ namespace IM_PJ
                 rs = OrderController.Filter(
                     TextSearch, OrderType,
                     ExcuteStatus,
-                    PaymentStatus,
+                    TransferStatus,
                     2, // Chuyển khoản
                     0, // All
                     String.Empty, // All
@@ -188,7 +185,58 @@ namespace IM_PJ
                 }
 
                 pagingall(rs);
+
                 ltrNumberOfOrder.Text = rs.Count().ToString();
+
+                // THỐNG KÊ ĐƠN HÀNG
+                int TotalOrders = rs.Count;
+                int TotalProducts = 0;
+
+                double TotalMoneyOrder = 0;
+                double TotalMoneyReceive = 0;
+
+                for (int i = 0; i < rs.Count; i++)
+                {
+                    var item = rs[i];
+
+                    // Tính tổng số sản phẩm trong tổng số đơn hàng
+                    TotalProducts += item.Quantity;
+
+                    // Tính số tiền
+                    TotalMoneyOrder += item.TotalPrice;
+                    TotalMoneyReceive += Convert.ToDouble(item.MoneyReceive);
+                }
+
+                StringBuilder htmlReport = new StringBuilder();
+
+                htmlReport.AppendLine(String.Format("<div class='row pad'>"));
+                htmlReport.AppendLine(String.Format("    <div class='col-md-3'>"));
+                htmlReport.AppendLine(String.Format("        <label class='left pad10'>Tổng số đơn hàng: </label>"));
+                htmlReport.AppendLine(String.Format("        <div class='ordertype'>"));
+                htmlReport.AppendLine(String.Format("            {0}", TotalOrders.ToString()));
+                htmlReport.AppendLine(String.Format("        </div>"));
+                htmlReport.AppendLine(String.Format("    </div>"));
+                htmlReport.AppendLine(String.Format("    <div class='col-md-3'>"));
+                htmlReport.AppendLine(String.Format("        <label class='left pad10'>Tổng tiền đơn hàng: </label>"));
+                htmlReport.AppendLine(String.Format("        <div class='orderquantity'>"));
+                htmlReport.AppendLine(String.Format("            {0}", string.Format("{0:N0}", TotalMoneyOrder).ToString()));
+                htmlReport.AppendLine(String.Format("        </div>"));
+                htmlReport.AppendLine(String.Format("    </div>"));
+                htmlReport.AppendLine(String.Format("    <div class='col-md-3'>"));
+                htmlReport.AppendLine(String.Format("        <label class='left pad10'>Tổng tiền đã nhận: </label>"));
+                htmlReport.AppendLine(String.Format("        <div class='ordertotalprice'>"));
+                htmlReport.AppendLine(String.Format("            {0}", string.Format("{0:N0}", TotalMoneyReceive).ToString()));
+                htmlReport.AppendLine(String.Format("        </div>"));
+                htmlReport.AppendLine(String.Format("    </div>"));
+                htmlReport.AppendLine(String.Format("    <div class='col-md-3'> "));
+                htmlReport.AppendLine(String.Format("        <label class='left pad10'>Tổng sản phẩm: </label>"));
+                htmlReport.AppendLine(String.Format("        <div class='ordernote'>"));
+                htmlReport.AppendLine(String.Format("            {0}", TotalProducts.ToString()));
+                htmlReport.AppendLine(String.Format("        </div>"));
+                htmlReport.AppendLine(String.Format("    </div>"));
+                htmlReport.AppendLine(String.Format("</div>"));
+
+                ltrReport.Text = htmlReport.ToString();
             }
         }
 
@@ -209,7 +257,7 @@ namespace IM_PJ
             html.Append("    <th>Mua</th>");
             html.Append("    <th>Chuyển từ</th>");
             html.Append("    <th>Tài khoản nhận</th>");
-            html.Append("    <th>Trạng Thái</th>");
+            html.Append("    <th>Trạng thái</th>");
             html.Append("    <th>Tổng đơn</th>");
             html.Append("    <th>Đã nhận</th>");
             html.Append("    <th>Thời gian chuyển</th>");
@@ -286,7 +334,7 @@ namespace IM_PJ
                     html.Append("   <td id='accBankName'>" + item.AccBankName + "</td>");
                     if (item.TransferStatus == 1)
                     {
-                        html.Append("   <td id='statusName'><span class='bg-blue'>" + item.StatusName + "</span></td>");
+                        html.Append("   <td id='statusName'><span class='bg-green'>" + item.StatusName + "</span></td>");
                     }
                     else
                     {
@@ -379,6 +427,7 @@ namespace IM_PJ
             }
 
             ltrList.Text = html.ToString();
+
         }
         public static Int32 GetIntFromQueryString(String key)
         {
@@ -529,9 +578,9 @@ namespace IM_PJ
                 request += "&ordertype=" + ddlOrderType.SelectedValue;
             }
 
-            if (ddlPaymentStatus.SelectedValue != "")
+            if (ddlTransferStatus.SelectedValue != "")
             {
-                request += "&paymentstatus=" + ddlPaymentStatus.SelectedValue;
+                request += "&transferstatus=" + ddlTransferStatus.SelectedValue;
             }
 
             if (ddlCreatedBy.SelectedValue != "")

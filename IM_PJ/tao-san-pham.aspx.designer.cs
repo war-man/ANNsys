@@ -193,6 +193,33 @@ namespace IM_PJ {
         protected global::System.Web.UI.WebControls.HiddenField ListProductThumbnail;
         
         /// <summary>
+        /// ProductThumbnailImageClean control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::Telerik.Web.UI.RadAsyncUpload ProductThumbnailImageClean;
+        
+        /// <summary>
+        /// ProductThumbnailClean control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Image ProductThumbnailClean;
+        
+        /// <summary>
+        /// ListProductThumbnailClean control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField ListProductThumbnailClean;
+        
+        /// <summary>
         /// ddlShowHomePage control.
         /// </summary>
         /// <remarks>

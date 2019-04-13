@@ -1,4 +1,4 @@
-﻿<%@ Page Title="Danh sách đơn hàng" Language="C#" MasterPageFile="~/MasterPage.Master" AutoEventWireup="true" CodeBehind="danh-sach-chuyen-khoan.aspx.cs" Inherits="IM_PJ.danh_sach_chuyen_khoan" EnableSessionState="ReadOnly" %>
+﻿<%@ Page Title="Danh sách chuyển khoản" Language="C#" MasterPageFile="~/MasterPage.Master" AutoEventWireup="true" CodeBehind="danh-sach-chuyen-khoan.aspx.cs" Inherits="IM_PJ.danh_sach_chuyen_khoan" EnableSessionState="ReadOnly" %>
 
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
@@ -12,13 +12,10 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
-                    <h3 class="page-title left">Danh sách đơn hàng 
-                        <span>(<asp:Literal ID="ltrNumberOfOrder" runat="server" EnableViewState="false"></asp:Literal>đơn)
+                    <h3 class="page-title left">Danh sách chuyển khoản ngân hàng 
+                        <span>(<asp:Literal ID="ltrNumberOfOrder" runat="server" EnableViewState="false"></asp:Literal> đơn)
                         </span>
                     </h3>
-                    <div class="right above-list-btn">
-                        <a href="/them-moi-don-hang" class="h45-btn primary-btn btn">Thêm mới</a>
-                    </div>
                 </div>
             </div>
             <div class="row">
@@ -28,6 +25,13 @@
                             <div class="row">
                                 <div class="col-md-5">
                                     <asp:TextBox ID="txtSearchOrder" runat="server" CssClass="form-control" placeholder="Tìm đơn hàng" autocomplete="off"></asp:TextBox>
+                                </div>
+                                <div class="col-md-2">
+                                    <asp:DropDownList ID="ddlTransferStatus" runat="server" CssClass="form-control">
+                                        <asp:ListItem Value="" Text="Trạng thái"></asp:ListItem>
+                                        <asp:ListItem Value="1" Text="Đã nhận tiền"></asp:ListItem>
+                                        <asp:ListItem Value="2" Text="Chưa nhận tiền"></asp:ListItem>
+                                    </asp:DropDownList>
                                 </div>
                                 <div class="col-md-2">
                                     <asp:DropDownList ID="ddlCreatedDate" runat="server" CssClass="form-control">
@@ -56,25 +60,18 @@
                     <div class="filter-above-wrap clear">
                         <div class="filter-control">
                             <div class="row">
-                                <div class="col-md-5">
+                                <div class="col-md-7">
+                                </div>
+                                <div class="col-md-2">
                                     <asp:DropDownList ID="ddlBankReceive" runat="server" CssClass="form-control"></asp:DropDownList>
                                 </div>
                                 <div class="col-md-2">
                                     <asp:DropDownList ID="ddlOrderType" runat="server" CssClass="form-control">
-                                        <asp:ListItem Value="" Text="Loại"></asp:ListItem>
+                                        <asp:ListItem Value="" Text="Loại đơn"></asp:ListItem>
                                         <asp:ListItem Value="1" Text="Lẻ"></asp:ListItem>
                                         <asp:ListItem Value="2" Text="Sỉ"></asp:ListItem>
                                     </asp:DropDownList>
                                 </div>
-                                <div class="col-md-2">
-                                    <asp:DropDownList ID="ddlPaymentStatus" runat="server" CssClass="form-control">
-                                        <asp:ListItem Value="" Text="Thanh toán"></asp:ListItem>
-                                        <asp:ListItem Value="1" Text="Chưa thanh toán"></asp:ListItem>
-                                        <asp:ListItem Value="2" Text="Thanh toán thiếu"></asp:ListItem>
-                                        <asp:ListItem Value="3" Text="Đã thanh toán"></asp:ListItem>
-                                    </asp:DropDownList>
-                                </div>
-
                                 <div class="col-md-1">
                                     <a href="/danh-sach-chuyen-khoan" class="btn primary-btn h45-btn"><i class="fa fa-times" aria-hidden="true"></i></a>
                                 </div>
@@ -102,6 +99,18 @@
                     </div>
                 </div>
             </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="panel panelborderheading">
+                        <div class="panel-heading clear">
+                            <h3 class="page-title left not-margin-bot">Thống kê chuyển khoản</h3>
+                        </div>
+                        <div class="panel-body">
+                            <asp:Literal ID="ltrReport" runat="server" EnableViewState="false"></asp:Literal>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <!-- Modal -->
@@ -115,7 +124,7 @@
                     </div>
                     <div class="modal-body">
                         <asp:HiddenField ID="hdOrderID" runat="server" />
-                        <div class="row">
+                        <div class="row form-group">
                             <div class="col-xs-3">
                                 <p>Chuyển từ</p>
                             </div>
@@ -123,7 +132,7 @@
                                 <asp:DropDownList ID="ddlCustomerBank" runat="server" CssClass="form-control"></asp:DropDownList>
                             </div>
                         </div>
-                        <div class="row">
+                        <div class="row form-group">
                             <div class="col-xs-3">
                                 <p>Tài khoản nhận</p>
                             </div>
@@ -131,15 +140,15 @@
                                 <asp:DropDownList ID="ddlAccoutBank" runat="server" CssClass="form-control"></asp:DropDownList>
                             </div>
                         </div>
-                        <div class="row">
+                        <div class="row form-group">
                             <div class="col-xs-3">
-                                <p>Trạng Thái</p>
+                                <p>Trạng thái</p>
                             </div>
                             <div class="col-xs-9">
                                 <asp:DropDownList ID="ddlStatus" runat="server" CssClass="form-control"></asp:DropDownList>
                             </div>
                         </div>
-                        <div class="row">
+                        <div class="row form-group">
                             <div class="col-xs-3">
                                 <p>Tổng đơn</p>
                             </div>
@@ -147,7 +156,7 @@
                                 <asp:TextBox ID="txtPrice" runat="server" CssClass="form-control text-align-right" ReadOnly="True"></asp:TextBox>
                             </div>
                         </div>
-                        <div class="row">
+                        <div class="row form-group">
                             <div class="col-xs-3">
                                 <p>Đã nhận</p>
                             </div>
@@ -155,33 +164,31 @@
                                 <asp:TextBox ID="txtMoneyReceived" runat="server" CssClass="form-control text-right" placeholder="Số tiền khách đã chuyển" data-type="currency" onkeypress='return event.charCode >= 48 && event.charCode <= 57'></asp:TextBox>
                             </div>
                         </div>
-                        <div class="row">
+                        <div class="row form-group">
                             <div class="col-xs-3">
-                                <p>Thời gian chuyển</p>
+                                <p>Thời gian</p>
                             </div>
                             <div class="col-xs-9">
-                                <div class="form-group">
-                                    <div class="input-group date" id="dtDoneAt">
-                                        <input type="text" class="form-control" />
-                                        <span class="input-group-addon">
-                                            <span class="glyphicon glyphicon-calendar"></span>
-                                        </span>
-                                    </div>
+                                <div class="input-group date" id="dtDoneAt">
+                                    <input type="text" class="form-control" />
+                                    <span class="input-group-addon">
+                                        <span class="glyphicon glyphicon-calendar"></span>
+                                    </span>
                                 </div>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-xs-3">
-                                <p>Note</p>
+                                <p>Ghi chú</p>
                             </div>
                             <div class="col-xs-9">
-                                <asp:TextBox ID="txtNote" runat="server" CssClass="form-control text-left" placeholder="Chú thích" Rows="3" TextMode="MultiLine"></asp:TextBox>
+                                <asp:TextBox ID="txtNote" runat="server" CssClass="form-control text-left" placeholder="Chú thích" Rows="2" TextMode="MultiLine"></asp:TextBox>
                             </div>
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button id="closeTransfer" type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                        <button id="updateTransfer" type="button" class="btn btn-primary">Save changes</button>
+                        <button id="closeTransfer" type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
+                        <button id="updateTransfer" type="button" class="btn btn-primary">Lưu</button>
                     </div>
                 </div>
             </div>
@@ -265,7 +272,7 @@
                                 }
                             },
                             error: function (xmlhttprequest, textstatus, errorthrow) {
-                                swal("Thông báo", "Đã có vấn đề lấy thông tin chuyển hoàn", "error");
+                                swal("Thông báo", "Đã có vấn đề lấy thông tin chuyển khoản", "error");
                             }
                         });
                     }
@@ -341,7 +348,7 @@
                             if (status == 1)
                             {
                                 statusNameDOM.children("span").removeClass();
-                                statusNameDOM.children("span").addClass("bg-blue");
+                                statusNameDOM.children("span").addClass("bg-green");
                                 if (money)
                                 {
                                     row.find('#moneyReceive').html(formatThousands(money));

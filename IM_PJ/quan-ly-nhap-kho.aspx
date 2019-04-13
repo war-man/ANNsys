@@ -321,6 +321,7 @@
 
         function inProduct() {
             if ($(".product-result").length > 0) {
+                HoldOn.open();
                 var note = $("#txtnote").val();
                 var list = "";
                 var barcode = "";

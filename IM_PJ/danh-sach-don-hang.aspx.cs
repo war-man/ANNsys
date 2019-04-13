@@ -439,14 +439,17 @@ namespace IM_PJ
                     html.Append("   <td>" + item.Quantity + "</td>");
                     html.Append("   <td>" + PJUtils.OrderExcuteStatus(Convert.ToInt32(item.ExcuteStatus)) + "</td>");
                     html.Append("   <td>" + PJUtils.OrderPaymentStatus(Convert.ToInt32(item.PaymentStatus)) + "</td>");
+
                     #region Phương thức thanh toán
                     html.Append("   <td>");
                     html.Append(PJUtils.PaymentType(Convert.ToInt32(item.PaymentType)));
+                    
                     // Đã nhận tiền
                     if (item.TransferStatus.HasValue && item.TransferStatus.Value == 1)
-                        html.Append("       <br/><span class='bg-blue'>Đã nhận tiền</span>");
+                        html.Append("       <br/><span class='bg-green'>Đã nhận tiền</span>");
                     html.Append("   </td>");
                     #endregion
+
                     html.Append("   <td>" + PJUtils.ShippingType(Convert.ToInt32(item.ShippingType)) + "</td>");
                     html.Append("   <td><strong>" + string.Format("{0:N0}", Convert.ToDouble(item.TotalPrice - TotalRefund)) + "</strong></td>");
 

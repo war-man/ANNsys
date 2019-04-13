@@ -492,6 +492,7 @@ warning 6002: The table/view 'inventorymanagement.dbo.BankAccount' does not have
           <Property Name="SupplierName" Type="nvarchar(max)" />
           <Property Name="ProductStyle" Type="int" />
           <Property Name="ShowHomePage" Type="int" />
+          <Property Name="ProductImageClean" Type="nvarchar(max)" />
         </EntityType>
         <EntityType Name="tbl_ProductImage">
           <Key>
@@ -1543,6 +1544,7 @@ warning 6002: The table/view 'inventorymanagement.dbo.View_ProductList' does not
           <Property Name="SupplierName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="ProductStyle" Type="Int32" />
           <Property Name="ShowHomePage" Type="Int32" />
+          <Property Name="ProductImageClean" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="tbl_Post">
           <Key>
@@ -2313,6 +2315,7 @@ warning 6002: The table/view 'inventorymanagement.dbo.View_ProductList' does not
           <EntitySetMapping Name="tbl_Product">
             <EntityTypeMapping TypeName="inventorymanagementModel.tbl_Product">
               <MappingFragment StoreEntitySet="tbl_Product">
+                <ScalarProperty Name="ProductImageClean" ColumnName="ProductImageClean" />
                 <ScalarProperty Name="ShowHomePage" ColumnName="ShowHomePage" />
                 <ScalarProperty Name="ProductStyle" ColumnName="ProductStyle" />
                 <ScalarProperty Name="SupplierName" ColumnName="SupplierName" />

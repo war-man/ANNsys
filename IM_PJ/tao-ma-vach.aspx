@@ -486,6 +486,8 @@
             function payall() {
 
                 if ($(".product-result").length > 0) {
+                    HoldOn.open();
+
                     var list = "";
 
                     $(".product-result").each(function () {

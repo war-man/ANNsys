@@ -152,10 +152,17 @@ namespace IM_PJ
                     txtMaterials.Text = p.Materials;
                     pMinimumInventoryLevel.Text = p.MinimumInventoryLevel.ToString();
                     pMaximumInventoryLevel.Text = p.MaximumInventoryLevel.ToString();
+
                     if(p.ProductImage != null)
                     {
                         ListProductThumbnail.Value = p.ProductImage;
                         ProductThumbnail.ImageUrl = p.ProductImage;
+                    }
+
+                    if (p.ProductImageClean != null)
+                    {
+                        ListProductThumbnailClean.Value = p.ProductImageClean;
+                        ProductThumbnailClean.ImageUrl = p.ProductImageClean;
                     }
 
                     var image = ProductImageController.GetByProductID(id);
@@ -325,6 +332,30 @@ namespace IM_PJ
                     }
                 }
 
+                //Phần thêm ảnh đại diện sản phẩm sạch không đóng dấu
+                string ProductImageClean = ListProductThumbnailClean.Value;
+                if (ProductThumbnailImageClean.UploadedFiles.Count > 0)
+                {
+                    foreach (UploadedFile f in ProductThumbnailImageClean.UploadedFiles)
+                    {
+                        var o = path + ProductID + '-' + Slug.ConvertToSlug(Path.GetFileName(f.FileName));
+                        try
+                        {
+                            f.SaveAs(Server.MapPath(o));
+                            ProductImageClean = o;
+                        }
+                        catch { }
+                    }
+                }
+
+                if (ProductImageClean != ListProductThumbnailClean.Value)
+                {
+                    if (File.Exists(Server.MapPath(ListProductThumbnailClean.Value)))
+                    {
+                        File.Delete(Server.MapPath(ListProductThumbnailClean.Value));
+                    }
+                }
+
                 // Delete Image Gallery
 
                 string deleteImageGallery = hdfDeleteImageGallery.Value;
@@ -356,7 +387,7 @@ namespace IM_PJ
                 string kq = ProductController.Update(ProductID, CategoryID, 0, ProductTitle, ProductContent, ProductSKU, ProductStock,
                     StockStatus, ManageStock, Regular_Price, CostOfGood, Retail_Price, ProductImage, 0,
                     IsHidden, DateTime.Now, username, ddlSupplier.SelectedValue.ToInt(0), ddlSupplier.SelectedItem.ToString(),
-                    txtMaterials.Text, MinimumInventoryLevel, MaximumInventoryLevel);
+                    txtMaterials.Text, MinimumInventoryLevel, MaximumInventoryLevel, ProductImageClean);
 
                 // Upload image gallery
 

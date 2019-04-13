@@ -460,7 +460,19 @@ namespace IM_PJ
                     ltrOrderNote.Text = order.OrderNote;
                     ltrOrderQuantity.Text = ProductQuantity.ToString();
                     ltrOrderTotalPrice.Text = string.Format("{0:N0}", Convert.ToDouble(order.TotalPrice));
-                    ltrOrderStatus.Text = PJUtils.OrderExcuteStatus(Convert.ToInt32(order.ExcuteStatus));
+
+                    if(order.ExcuteStatus == 1)
+                    {
+                        ltrOrderStatus.Text = "Đang xử lý";
+                    }
+                    else if(order.ExcuteStatus == 2)
+                    {
+                        ltrOrderStatus.Text = "Đã hoàn tất";
+                    }
+                    else
+                    {
+                        ltrOrderStatus.Text = "Đã hủy";
+                    }
 
                     ltrOrderType.Text = PJUtils.OrderType(Convert.ToInt32(order.OrderType));
                     ltrPrint.Text = "<a href=\"javascript:;\" onclick=\"warningPrintInvoice(" + ID + ")\" class=\"btn primary-btn fw-btn not-fullwidth\"><i class=\"fa fa-print\" aria-hidden=\"true\"></i> In hóa đơn</a>";

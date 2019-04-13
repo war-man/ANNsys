@@ -137,6 +137,11 @@ namespace IM_PJ
                             item.ProductContent += String.Format("<p><img src='/wp-content/uploads/{0}' alt='{1}'/></p>", item.ProductImage.Split('/')[3], item.ProductTitle);
                         }
 
+                        if (!string.IsNullOrEmpty(item.ProductImageClean))
+                        {
+                            item.ProductImage = item.ProductImageClean + "|" + item.ProductImage;
+                        }
+
                         var productImage = ProductImageController.GetByProductID(item.ID);
 
                         if (productImage.Count() > 0)
@@ -188,7 +193,12 @@ namespace IM_PJ
                         {
                             item.ProductContent += String.Format("<p><img src='/wp-content/uploads/{0}' alt='{1}'/></p>", item.ProductImage.Split('/')[3], item.ProductTitle);
                         }
-                        
+
+                        if (!string.IsNullOrEmpty(item.ProductImageClean))
+                        {
+                            item.ProductImage = item.ProductImageClean + "|" + item.ProductImage;
+                        }
+
                         var productImage = ProductImageController.GetByProductID(item.ID);
 
                         if (productImage.Count() > 0)

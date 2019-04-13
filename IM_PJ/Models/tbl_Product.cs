@@ -40,5 +40,6 @@ namespace IM_PJ.Models
         public string SupplierName { get; set; }
         public Nullable<int> ProductStyle { get; set; }
         public Nullable<int> ShowHomePage { get; set; }
+        public string ProductImageClean { get; set; }
     }
 }

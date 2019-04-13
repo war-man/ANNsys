@@ -198,11 +198,25 @@
                                 <div class="row-right">
                                     <telerik:RadAsyncUpload Skin="Metro" runat="server" ID="ProductThumbnailImage" ChunkSize="0"
                                         Localization-Select="Chọn ảnh" AllowedFileExtensions=".jpeg,.jpg,.png"
-                                        MultipleFileSelection="Disabled" OnClientFileSelected="OnClientFileSelected1" MaxFileInputsCount="1"  OnClientFileUploadRemoved="OnClientFileUploadRemoved">
+                                        MultipleFileSelection="Disabled" OnClientFileSelected="OnClientFileSelected1" MaxFileInputsCount="1"  OnClientFileUploadRemoved="OnClientFileUploadRemoved1">
                                     </telerik:RadAsyncUpload>
                                     <asp:Image runat="server" ID="ProductThumbnail" Width="200" />
                                     <asp:HiddenField runat="server" ID="ListProductThumbnail" ClientIDMode="Static" />
                                     <div class="hidProductThumbnail"></div>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="row-left">
+                                    Ảnh đại diện sạch
+                                </div>
+                                <div class="row-right">
+                                    <telerik:RadAsyncUpload Skin="Metro" runat="server" ID="ProductThumbnailImageClean" ChunkSize="0"
+                                        Localization-Select="Chọn ảnh" AllowedFileExtensions=".jpeg,.jpg,.png"
+                                        MultipleFileSelection="Disabled" OnClientFileSelected="OnClientFileSelected2" MaxFileInputsCount="1"  OnClientFileUploadRemoved="OnClientFileUploadRemoved2">
+                                    </telerik:RadAsyncUpload>
+                                    <asp:Image runat="server" ID="ProductThumbnailClean" Width="200" />
+                                    <asp:HiddenField runat="server" ID="ListProductThumbnailClean" ClientIDMode="Static" />
+                                    <div class="hidProductThumbnailClean"></div>
                                 </div>
                             </div>
                             <div class="form-row">
@@ -779,8 +793,22 @@
                 }
             }
 
-            function OnClientFileUploadRemoved(sender, args) {
+            function OnClientFileSelected2(sender, args) {
+                if ($telerik.isIE) return;
+                else {
+                    truncateName(args);
+                    var file = args.get_fileInputField().files.item(args.get_rowIndex());
+                    showThumbnail(file, args);
+                    $("#<%= ProductThumbnailClean.ClientID %>").hide();
+                }
+            }
+
+            function OnClientFileUploadRemoved1(sender, args) {
                     $("#<%= ProductThumbnail.ClientID %>").show();
+            }
+
+            function OnClientFileUploadRemoved2(sender, args) {
+                    $("#<%= ProductThumbnailClean.ClientID %>").show();
             }
 
         </script>

@@ -31,6 +31,15 @@ namespace IM_PJ {
         protected global::System.Web.UI.WebControls.TextBox txtSearchOrder;
         
         /// <summary>
+        /// ddlTransferStatus control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList ddlTransferStatus;
+        
+        /// <summary>
         /// ddlCreatedDate control.
         /// </summary>
         /// <remarks>
@@ -76,15 +85,6 @@ namespace IM_PJ {
         protected global::System.Web.UI.WebControls.DropDownList ddlOrderType;
         
         /// <summary>
-        /// ddlPaymentStatus control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlPaymentStatus;
-        
-        /// <summary>
         /// ltrList control.
         /// </summary>
         /// <remarks>
@@ -92,6 +92,15 @@ namespace IM_PJ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Literal ltrList;
+        
+        /// <summary>
+        /// ltrReport control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Literal ltrReport;
         
         /// <summary>
         /// hdOrderID control.

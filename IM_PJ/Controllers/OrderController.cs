@@ -353,7 +353,7 @@ namespace IM_PJ.Controllers
             }
         }
 
-        public static List<OrderList> Filter(string TextSearch, int OrderType, int ExcuteStatus, int PaymentStatus, int PaymentType, int ShippingType, string Discount, string OtherFee, string CreatedBy, string CreatedDate)
+        public static List<OrderList> Filter(string TextSearch, int OrderType, int ExcuteStatus, int TransferStatus, int PaymentType, int ShippingType, string Discount, string OtherFee, string CreatedBy, string CreatedDate)
         {
             var list = new List<OrderList>();
             var sql = new StringBuilder();
@@ -423,9 +423,16 @@ namespace IM_PJ.Controllers
                 sql.AppendLine(String.Format("	AND Ord.OrderType = {0}", OrderType));
             }
 
-            if (PaymentStatus > 0)
+            if (TransferStatus > 0)
             {
-                sql.AppendLine(String.Format("	AND Ord.PaymentStatus = {0}", PaymentStatus));
+                if(TransferStatus == 1)
+                {
+                    sql.AppendLine(String.Format("	AND Transfer.Status = 1", TransferStatus));
+                }
+                else if(TransferStatus == 2)
+                {
+                    sql.AppendLine(String.Format("	AND Transfer.Status IS NULL", TransferStatus));
+                }
             }
 
             if (PaymentType > 0)
