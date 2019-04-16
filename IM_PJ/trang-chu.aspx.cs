@@ -8,6 +8,9 @@ using IM_PJ.Controllers;
 using System.Text;
 using System.Text.RegularExpressions;
 using NHST.Bussiness;
+using System.Web.Services;
+using System.Configuration;
+using System.IO;
 
 namespace IM_PJ
 {

@@ -34,8 +34,8 @@
                                     </asp:DropDownList>
                                 </div>
                                 <div class="col-md-2">
-                                    <asp:DropDownList ID="ddlCreatedDate" runat="server" CssClass="form-control">
-                                        <asp:ListItem Value="" Text="Tất cả thời gian"></asp:ListItem>
+                                    <asp:DropDownList ID="ddlTransferDoneAt" runat="server" CssClass="form-control">
+                                        <asp:ListItem Value="" Text="Ngày chuyển khoản"></asp:ListItem>
                                         <asp:ListItem Value="today" Text="Hôm nay"></asp:ListItem>
                                         <asp:ListItem Value="yesterday" Text="Hôm qua"></asp:ListItem>
                                         <asp:ListItem Value="beforeyesterday" Text="Hôm kia"></asp:ListItem>
@@ -211,7 +211,7 @@
 
                     orderIDDOM.val(row.dataset["orderid"]);
                     pickerDOM.datetimepicker({
-                        format: 'YYYY-MM-DD hh:mm:ss',
+                        format: 'YYYY-MM-DD HH:mm:ss',
                         date: new Date()
                     });
 
@@ -314,7 +314,7 @@
                         'AccBankID': accBankID,
                         'Money': money ? money : 0,
                         'DoneAt': doneAt,
-                        'Status': 1,
+                        'Status': status,
                         'Note': note
                     };
                     $.ajax({
@@ -340,10 +340,15 @@
                             row.attr("data-moneyreceived", money);
                             row.attr("data-doneat", doneAt);
                             row.attr("data-transfernote", note);
-
-                            row.find('#cusBankName').html(cusBankName);
-                            row.find('#accBankName').html(accBankName);
+                            if ($("#<%=ddlCustomerBank.ClientID%>").val() != 0) {
+                                row.find('#cusBankName').html(cusBankName);
+                            }
+                            if ($("#<%=ddlAccoutBank.ClientID%>").val() != 0) {
+                                row.find('#accBankName').html(accBankName);
+                            }
+                            
                             statusNameDOM.children("span").html(statusName);
+
                             // Đã nhận tiền
                             if (status == 1)
                             {

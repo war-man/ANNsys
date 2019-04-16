@@ -528,6 +528,7 @@
     <Content Include="sp.aspx" />
     <Content Include="danh-sach-bai-viet.aspx" />
     <Content Include="tao-bai-viet.aspx" />
+    <Content Include="uploadf.aspx" />
     <Content Include="them-chiet-khau.aspx" />
     <Content Include="them-danh-muc.aspx" />
     <Content Include="tao-don-hang-doi-tra.aspx" />
@@ -1401,6 +1402,13 @@
     </Compile>
     <Compile Include="tao-bai-viet.aspx.designer.cs">
       <DependentUpon>tao-bai-viet.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="uploadf.aspx.cs">
+      <DependentUpon>uploadf.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="uploadf.aspx.designer.cs">
+      <DependentUpon>uploadf.aspx</DependentUpon>
     </Compile>
     <Compile Include="tao-san-pham.aspx.cs">
       <DependentUpon>tao-san-pham.aspx</DependentUpon>

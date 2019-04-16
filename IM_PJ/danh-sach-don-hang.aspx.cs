@@ -91,6 +91,7 @@ namespace IM_PJ
                 string TextSearch = "";
                 string CreatedBy = "";
                 string CreatedDate = "";
+                string TransferDoneAt = "";
                 string QuantityFilter = "";
                 int Quantity = 0;
                 int QuantityMin = 0;
@@ -173,7 +174,7 @@ namespace IM_PJ
 
 
                 List<OrderList> rs = new List<OrderList>();
-                rs = OrderController.Filter(TextSearch, OrderType, ExcuteStatus, PaymentStatus, PaymentType, ShippingType, Discount, OtherFee, CreatedBy, CreatedDate);
+                rs = OrderController.Filter(TextSearch, OrderType, ExcuteStatus, PaymentStatus, 0, PaymentType, ShippingType, Discount, OtherFee, CreatedBy, CreatedDate, TransferDoneAt);
 
                 if (acc.RoleID == 0)
                 {

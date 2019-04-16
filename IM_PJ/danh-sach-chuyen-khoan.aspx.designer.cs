@@ -40,13 +40,13 @@ namespace IM_PJ {
         protected global::System.Web.UI.WebControls.DropDownList ddlTransferStatus;
         
         /// <summary>
-        /// ddlCreatedDate control.
+        /// ddlTransferDoneAt control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlCreatedDate;
+        protected global::System.Web.UI.WebControls.DropDownList ddlTransferDoneAt;
         
         /// <summary>
         /// ddlCreatedBy control.

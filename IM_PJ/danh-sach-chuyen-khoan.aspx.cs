@@ -97,7 +97,7 @@ namespace IM_PJ
                 ddlStatus.Items.Add(new ListItem("Trạng thái giao dịch", "0"));
                 ddlStatus.Items.Add(new ListItem("Đã nhận tiền", "1"));
                 ddlStatus.Items.Add(new ListItem("Chưa nhận tiền", "2"));
-                ddlStatus.SelectedIndex = 1;
+                ddlStatus.SelectedIndex = 0;
             }
         }
         public void LoadData()
@@ -113,6 +113,7 @@ namespace IM_PJ
                 string TextSearch = "";
                 string CreatedBy = "";
                 string CreatedDate = "";
+                string TransferDoneAt = "";
 
                 if (Request.QueryString["textsearch"] != null)
                 {
@@ -134,9 +135,9 @@ namespace IM_PJ
                 {
                     CreatedBy = Request.QueryString["createdby"];
                 }
-                if (Request.QueryString["createddate"] != null)
+                if (Request.QueryString["transferdoneat"] != null)
                 {
-                    CreatedDate = Request.QueryString["createddate"];
+                    TransferDoneAt = Request.QueryString["transferdoneat"];
                 }
                 if (Request.QueryString["bankreceive"] != null)
                 {
@@ -145,21 +146,24 @@ namespace IM_PJ
 
                 txtSearchOrder.Text = TextSearch;
                 ddlOrderType.SelectedValue = OrderType.ToString();
-                ddlTransferStatus.SelectedValue = ddlTransferStatus.ToString();
+                ddlTransferStatus.SelectedValue = TransferStatus.ToString();
+                ddlBankReceive.SelectedValue = BankReceive.ToString();
                 ddlCreatedBy.SelectedValue = CreatedBy.ToString();
-                ddlCreatedDate.SelectedValue = CreatedDate.ToString();
+                ddlTransferDoneAt.SelectedValue = TransferDoneAt.ToString();
 
                 List<OrderList> rs = new List<OrderList>();
                 rs = OrderController.Filter(
                     TextSearch, OrderType,
                     ExcuteStatus,
+                    0,
                     TransferStatus,
                     2, // Chuyển khoản
                     0, // All
                     String.Empty, // All
                     String.Empty, // All
                     CreatedBy,
-                    CreatedDate
+                    CreatedDate,
+                    TransferDoneAt
                 );
 
                 if (acc.RoleID == 0)
@@ -344,7 +348,7 @@ namespace IM_PJ
                     if (item.TransferStatus == 1)
                     {
                         html.Append("   <td id='moneyReceive'><strong>" + String.Format("{0:#,###}", item.MoneyReceive) + "</strong></td>");
-                        html.Append("   <td id='doneAt'>" + String.Format("{0:yyyy-MM-dd HH:mm:ss}", item.CreatedDate) + "</td>");
+                        html.Append("   <td id='doneAt'>" + String.Format("{0:dd/MM/yyyy HH:mm}", item.DoneAt) + "</td>");
                     }
                     else
                     {
@@ -588,9 +592,9 @@ namespace IM_PJ
                 request += "&createdby=" + ddlCreatedBy.SelectedValue;
             }
 
-            if (ddlCreatedDate.SelectedValue != "")
+            if (ddlTransferDoneAt.SelectedValue != "")
             {
-                request += "&createddate=" + ddlCreatedDate.SelectedValue;
+                request += "&transferdoneat=" + ddlTransferDoneAt.SelectedValue;
             }
 
             if (ddlBankReceive.SelectedValue != "0")

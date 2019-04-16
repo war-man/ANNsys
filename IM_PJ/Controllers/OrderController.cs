@@ -353,7 +353,7 @@ namespace IM_PJ.Controllers
             }
         }
 
-        public static List<OrderList> Filter(string TextSearch, int OrderType, int ExcuteStatus, int TransferStatus, int PaymentType, int ShippingType, string Discount, string OtherFee, string CreatedBy, string CreatedDate)
+        public static List<OrderList> Filter(string TextSearch, int OrderType, int ExcuteStatus, int PaymentStatus, int TransferStatus, int PaymentType, int ShippingType, string Discount, string OtherFee, string CreatedBy, string CreatedDate, string TransferDoneAt)
         {
             var list = new List<OrderList>();
             var sql = new StringBuilder();
@@ -423,15 +423,20 @@ namespace IM_PJ.Controllers
                 sql.AppendLine(String.Format("	AND Ord.OrderType = {0}", OrderType));
             }
 
+            if (PaymentStatus > 0)
+            {
+                sql.AppendLine(String.Format("	AND Ord.PaymentStatus = {0}", PaymentStatus));
+            }
+
             if (TransferStatus > 0)
             {
                 if(TransferStatus == 1)
                 {
-                    sql.AppendLine(String.Format("	AND Transfer.Status = 1", TransferStatus));
+                    sql.AppendLine(String.Format("	AND Transfer.Status = 1"));
                 }
                 else if(TransferStatus == 2)
                 {
-                    sql.AppendLine(String.Format("	AND Transfer.Status IS NULL", TransferStatus));
+                    sql.AppendLine(String.Format("	AND Transfer.Status IS NULL"));
                 }
             }
 
@@ -469,6 +474,54 @@ namespace IM_PJ.Controllers
                 }
             }
 
+            if (TransferDoneAt != "")
+            {
+                DateTime fromdate = DateTime.Today;
+                DateTime todate = DateTime.Now;
+                switch (TransferDoneAt)
+                {
+                    case "today":
+                        fromdate = DateTime.Today;
+                        todate = DateTime.Now;
+                        break;
+                    case "yesterday":
+                        fromdate = fromdate.AddDays(-1);
+                        todate = DateTime.Today;
+                        break;
+                    case "beforeyesterday":
+                        fromdate = DateTime.Today.AddDays(-2);
+                        todate = DateTime.Today.AddDays(-1);
+                        break;
+                    case "week":
+                        int days = DateTime.Today.DayOfWeek == DayOfWeek.Sunday ? 7 : (int)DateTime.Today.DayOfWeek;
+                        fromdate = fromdate.AddDays(-days + 1);
+                        todate = DateTime.Now;
+                        break;
+                    case "thismonth":
+                        fromdate = new DateTime(fromdate.Year, fromdate.Month, 1);
+                        todate = DateTime.Now;
+                        break;
+                    case "lastmonth":
+                        var thismonth = new DateTime(fromdate.Year, fromdate.Month, 1);
+                        fromdate = thismonth.AddMonths(-1);
+                        todate = thismonth;
+                        break;
+                    case "beforelastmonth":
+                        thismonth = new DateTime(fromdate.Year, fromdate.Month, 1);
+                        fromdate = thismonth.AddMonths(-2);
+                        todate = thismonth.AddMonths(-1);
+                        break;
+                    case "7days":
+                        fromdate = fromdate.AddDays(-6);
+                        todate = DateTime.Now;
+                        break;
+                    case "30days":
+                        fromdate = fromdate.AddDays(-29);
+                        todate = DateTime.Now;
+                        break;
+                }
+                sql.AppendLine(String.Format("	AND	CONVERT(datetime, Transfer.DoneAt, 121) BETWEEN CONVERT(datetime, '{0}', 121) AND CONVERT(datetime, '{1}', 121)", fromdate.ToString(), todate.ToString()));
+            }
 
             if (CreatedBy != "")
             {
