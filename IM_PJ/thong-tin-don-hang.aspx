@@ -1,4 +1,4 @@
-﻿<%@ Page Title="Thông tin đơn hàng" Language="C#" MasterPageFile="~/MasterPage.Master" AutoEventWireup="true" CodeBehind="thong-tin-don-hang.aspx.cs" Inherits="IM_PJ.thong_tin_don_hang" EnableSessionState="ReadOnly" %>
+﻿<%@ Page Title="Thông tin đơn hàng" Language="C#" MasterPageFile="~/MasterPage.Master" AutoEventWireup="true" CodeBehind="thong-tin-don-hang.aspx.cs" Inherits="IM_PJ.thong_tin_don_hang" EnableSessionState="ReadOnly" enableEventValidation="false" %>
 
 <%@ Register Assembly="Telerik.Web.UI" Namespace="Telerik.Web.UI" TagPrefix="telerik" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
@@ -13,7 +13,8 @@
                     <div class="col-md-12">
                         <div class="panel panelborderheading">
                             <div class="panel-heading clear">
-                                <h3 class="page-title left not-margin-bot"><asp:Literal ID="ltrHeading" runat="server"></asp:Literal></h3>
+                                <h3 class="page-title left not-margin-bot">
+                                    <asp:Literal ID="ltrHeading" runat="server"></asp:Literal></h3>
                             </div>
                             <div class="panel-body">
                                 <div class="row pad">
@@ -61,7 +62,7 @@
                                             <asp:Literal ID="ltrOrderStatus" runat="server"></asp:Literal>
                                         </div>
                                     </div>
-                                    <div class="col-md-3"> 
+                                    <div class="col-md-3">
                                         <label class="left pad10">Ghi chú: </label>
                                         <div class="ordernote">
                                             <asp:Literal ID="ltrOrderNote" runat="server"></asp:Literal>
@@ -82,7 +83,7 @@
                         <div class="panel panelborderheading">
                             <div class="panel-heading clear">
                                 <h3 class="page-title left not-margin-bot">Thông tin khách hàng</h3>
-                                <a href="javascript:;" class="search-customer" onclick="searchCustomer()"><i class="fa fa-search" aria-hidden="true"></i> Tìm khách hàng (F1)</a>
+                                <a href="javascript:;" class="search-customer" onclick="searchCustomer()"><i class="fa fa-search" aria-hidden="true"></i>Tìm khách hàng (F1)</a>
                             </div>
                             <div class="panel-body">
                                 <div class="row">
@@ -129,11 +130,12 @@
                                             <label>Facebook</label>
                                             <div class="row">
                                                 <div class="col-md-10 fb">
-                                                <asp:TextBox ID="txtFacebook" CssClass="form-control" runat="server" Enabled="false" placeholder="Đường link chat Facebook" autocomplete="off"></asp:TextBox>
+                                                    <asp:TextBox ID="txtFacebook" CssClass="form-control" runat="server" Enabled="false" placeholder="Đường link chat Facebook" autocomplete="off"></asp:TextBox>
                                                 </div>
                                                 <div class="col-md-2">
                                                     <div class="row">
-                                                        <span class="link-facebook"><asp:Literal ID="ltrFb" runat="server"></asp:Literal></span>
+                                                        <span class="link-facebook">
+                                                            <asp:Literal ID="ltrFb" runat="server"></asp:Literal></span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -219,7 +221,7 @@
                             <div class="post-row clear">
                                 <div class="left">Phí vận chuyển</div>
                                 <div class="right totalDiscount">
-                                    <a class="btn btn-feeship link-btn" href="javascript:;" id="calfeeship" onclick="calFeeShip()"><i class="fa fa-check-square-o" aria-hidden="true"></i> Miễn phí</a>
+                                    <a class="btn btn-feeship link-btn" href="javascript:;" id="calfeeship" onclick="calFeeShip()"><i class="fa fa-check-square-o" aria-hidden="true"></i>Miễn phí</a>
                                     <telerik:RadNumericTextBox runat="server" CssClass="form-control width-notfull" Skin="MetroTouch"
                                         ID="pFeeShip" MinValue="0" NumberFormat-GroupSizes="3" Value="0" NumberFormat-DecimalDigits="0"
                                         oninput="countTotal()" IncrementSettings-InterceptMouseWheel="false" IncrementSettings-InterceptArrowKeys="false">
@@ -227,9 +229,12 @@
                                 </div>
                             </div>
                             <div class="post-row clear otherfee hide">
-                                <div class="left"><span class="otherfee-name"><asp:Literal ID="ltrOtherFeeName" runat="server"></asp:Literal></span><a href="javascript:;" style="text-decoration: underline; float: right; font-size: 12px; font-style: italic; padding-left: 10px;" onclick="removeOtherFee()">(Xóa)</a></div>
+                                <div class="left">
+                                    <span class="otherfee-name">
+                                        <asp:Literal ID="ltrOtherFeeName" runat="server"></asp:Literal></span><a href="javascript:;" style="text-decoration: underline; float: right; font-size: 12px; font-style: italic; padding-left: 10px;" onclick="removeOtherFee()">(Xóa)</a>
+                                </div>
                                 <div class="right otherfee-value">
-                                    <asp:TextBox ID="txtOtherFeeName" CssClass="form-control" runat="server" Style="display: none" ></asp:TextBox>
+                                    <asp:TextBox ID="txtOtherFeeName" CssClass="form-control" runat="server" Style="display: none"></asp:TextBox>
                                     <telerik:RadNumericTextBox runat="server" CssClass="form-control width-notfull" Skin="MetroTouch"
                                         ID="pOtherFee" NumberFormat-GroupSizes="3" Value="0" NumberFormat-DecimalDigits="0"
                                         oninput="countTotal()" IncrementSettings-InterceptMouseWheel="false" IncrementSettings-InterceptArrowKeys="false">
@@ -243,12 +248,15 @@
                                 </div>
                             </div>
                             <div class="post-row clear returnorder hide">
-                                <div class="left">Đơn hàng trả
+                                <div class="left">
+                                    Đơn hàng trả
                                     <a href="javascript:;" class="find3 hide" style="text-decoration: underline; float: right; font-size: 12px; font-style: italic; padding-left: 10px;" onclick="searchReturnOrder()">(Tìm đơn khác)</a>
                                     <a href="javascript:;" class="find3 hide" style="text-decoration: underline; float: right; font-size: 12px; font-style: italic; padding-left: 10px;" onclick="deleteReturnOrder()">(Bỏ qua)</a>
                                     <a href="javascript:;" class="find2 hide" style="text-decoration: underline; float: right; font-size: 12px; font-style: italic; padding-left: 10px;"></a>
                                 </div>
-                                <div class="right totalpriceorderrefund"><asp:Literal runat="server" ID="ltrTotalPriceRefund"></asp:Literal></div>
+                                <div class="right totalpriceorderrefund">
+                                    <asp:Literal runat="server" ID="ltrTotalPriceRefund"></asp:Literal>
+                                </div>
                             </div>
                             <div class="post-row clear refund hide">
                                 <div class="left">Tổng tiền còn lại</div>
@@ -318,26 +326,22 @@
                                     </div>
                                 </div>
                                 <div id="row-transport-company" class="form-row transport-company">
-                                    <asp:UpdatePanel ID="up" runat="server">
-                                        <ContentTemplate>
-                                            <div class="form-row">
-                                                <div class="row-left">
-                                                    Chành xe
-                                                </div>
-                                                <div class="row-right">
-                                                    <asp:DropDownList ID="ddlTransportCompanyID" DataTextField="TransportCompanyID" DataValueField="ID" AppendDataBoundItems="True" AutoPostBack="True" OnSelectedIndexChanged="ddlTransportCompanyID_SelectedIndexChanged" runat="server" CssClass="form-control"></asp:DropDownList>
-                                                </div>
-                                            </div>
-                                            <div class="form-row">
-                                                <div class="row-left">
-                                                    Nơi nhận
-                                                </div>
-                                                <div class="row-right">
-                                                    <asp:DropDownList ID="ddlTransportCompanySubID" DataTextField="TransportCompanySubID" DataValueField="ID" AppendDataBoundItems="True" AutoPostBack="false" runat="server" CssClass="form-control"></asp:DropDownList>
-                                                </div>
-                                            </div>
-                                        </ContentTemplate>
-                                    </asp:UpdatePanel>
+                                    <div class="form-row">
+                                        <div class="row-left">
+                                            Chành xe
+                                        </div>
+                                        <div class="row-right">
+                                            <asp:DropDownList ID="ddlTransportCompanyID" runat="server" CssClass="form-control customerlist select2" Height="40px" Width="100%" onchange="onChangeTransportCompany($(this))"></asp:DropDownList>
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="row-left">
+                                            Nơi nhận
+                                        </div>
+                                        <div class="row-right">
+                                            <asp:DropDownList ID="ddlTransportCompanySubID" runat="server" CssClass="form-control customerlist select2" Height="40px" Width="100%"></asp:DropDownList>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div id="row-postal-delivery-type" class="form-row postal-delivery-type hide">
                                     <div class="row-left">
@@ -368,10 +372,10 @@
                                 </div>
                                 <div class="panel-post">
                                     <div class="post-table-links clear">
-                                        <a href="javascript:;" class="btn link-btn" id="payall" style="background-color: #f87703; float: right" title="Hoàn tất đơn hàng" onclick="payAll()"><i class="fa fa-floppy-o"></i> Xác nhận</a>
+                                        <a href="javascript:;" class="btn link-btn" id="payall" style="background-color: #f87703; float: right" title="Hoàn tất đơn hàng" onclick="payAll()"><i class="fa fa-floppy-o"></i>Xác nhận</a>
                                         <asp:Button ID="btnOrder" runat="server" OnClick="btnOrder_Click" Style="display: none" />
-                                        <a href="javascript:;" class="btn link-btn" style="background-color: #ffad00; float: right;" title="Nhập đơn hàng đổi trả" onclick="searchReturnOrder()"><i class="fa fa-refresh"></i> Đổi trả</a>
-                                        <a href="javascript:;" class="btn link-btn" style="background-color: #607D8B; float: right;" title="Thêm phí khác vào đơn hàng" onclick="addOtherFee()"><i class="fa fa-plus"></i> Thêm phí khác</a>
+                                        <a href="javascript:;" class="btn link-btn" style="background-color: #ffad00; float: right;" title="Nhập đơn hàng đổi trả" onclick="searchReturnOrder()"><i class="fa fa-refresh"></i>Đổi trả</a>
+                                        <a href="javascript:;" class="btn link-btn" style="background-color: #607D8B; float: right;" title="Thêm phí khác vào đơn hàng" onclick="addOtherFee()"><i class="fa fa-plus"></i>Thêm phí khác</a>
                                     </div>
                                     <div id="img-out"></div>
                                 </div>
@@ -386,9 +390,9 @@
                         <div class="panel-buttonbar">
                             <div class="panel-post">
                                 <div class="post-table-links clear">
-                                    <a href="javascript:;" class="btn link-btn" style="background-color: #f87703; float: right" title="Hoàn tất đơn hàng" onclick="payAll()"><i class="fa fa-floppy-o"></i> Xác nhận</a>
-                                    <a href="javascript:;" class="btn link-btn" style="background-color: #ffad00; float: right;" title="Nhập đơn hàng đổi trả" onclick="searchReturnOrder()"><i class="fa fa-refresh"></i> Đổi trả</a>
-                                    <a href="javascript:;" class="btn link-btn" style="background-color: #607D8B; float: right;" title="Thêm phí khác vào đơn hàng" onclick="addOtherFee()"><i class="fa fa-plus"></i> Thêm phí khác</a>
+                                    <a href="javascript:;" class="btn link-btn" style="background-color: #f87703; float: right" title="Hoàn tất đơn hàng" onclick="payAll()"><i class="fa fa-floppy-o"></i>Xác nhận</a>
+                                    <a href="javascript:;" class="btn link-btn" style="background-color: #ffad00; float: right;" title="Nhập đơn hàng đổi trả" onclick="searchReturnOrder()"><i class="fa fa-refresh"></i>Đổi trả</a>
+                                    <a href="javascript:;" class="btn link-btn" style="background-color: #607D8B; float: right;" title="Thêm phí khác vào đơn hàng" onclick="addOtherFee()"><i class="fa fa-plus"></i>Thêm phí khác</a>
                                 </div>
                             </div>
                         </div>
@@ -430,6 +434,7 @@
         .search-product-content {
             background: #fff;
         }
+
         .search-box {
             width: 90%;
         }
@@ -468,7 +473,6 @@
             pointer-events: none;
             opacity: 0.7;
         }
-
     </style>
     <telerik:RadAjaxManager ID="rAjax" runat="server">
         <AjaxSettings>
@@ -864,33 +868,33 @@
                             alert('lỗi');
                         }
                     });
-                } else {
-                    swal("Thông báo", "Hãy nhập thông tin khách hàng trước!", "info");
-                }
+            } else {
+                swal("Thông báo", "Hãy nhập thông tin khách hàng trước!", "info");
             }
+        }
 
-            // view return order by click button
-            function viewReturnOrder(ID) {
-                var win = window.open("/thong-tin-tra-hang?id=" + ID + "", '_blank');
-                win.focus();
-            }
+        // view return order by click button
+        function viewReturnOrder(ID) {
+            var win = window.open("/thong-tin-tra-hang?id=" + ID + "", '_blank');
+            win.focus();
+        }
 
-            // delete return order
-            function deleteReturnOrder() {
-                $.ajax({
-                    type: "POST",
-                    url: "/thong-tin-don-hang.aspx/findReturnOrder",
-                    data: "{order:'0', remove:'1'}",
-                    contentType: "application/json; charset=utf-8",
-                    dataType: "json",
-                    success: function(msg) {
-                        $(".find3").addClass("hide");
-                        $(".find1").removeClass("hide");
-                        $(".find2").addClass("hide");
-                        $(".find2").html("");
-                        $(".find2").removeAttr("onclick");
-                        $(".totalpricedetail").html("0");
-                        $("#<%=hdfDonHangTra.ClientID%>").val(0);
+        // delete return order
+        function deleteReturnOrder() {
+            $.ajax({
+                type: "POST",
+                url: "/thong-tin-don-hang.aspx/findReturnOrder",
+                data: "{order:'0', remove:'1'}",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function(msg) {
+                    $(".find3").addClass("hide");
+                    $(".find1").removeClass("hide");
+                    $(".find2").addClass("hide");
+                    $(".find2").html("");
+                    $(".find2").removeAttr("onclick");
+                    $(".totalpricedetail").html("0");
+                    $("#<%=hdfDonHangTra.ClientID%>").val(0);
                         $("#<%=hdSession.ClientID%>").val(0);
                         $(".refund").addClass("hide");
                         $(".totalpriceorderrefund").html("0");
@@ -1039,10 +1043,10 @@
                             $("#<%=hdfListProduct.ClientID%>").val(list);
                             insertOrder();
                         }
-                    }
+            }
                         // Nếu không có sản phẩm trong đơn
-                    else {
-                        let excuteStatus = Number($("#<%=ddlExcuteStatus.ClientID%>").val());
+            else {
+                let excuteStatus = Number($("#<%=ddlExcuteStatus.ClientID%>").val());
 
                         if (excuteStatus == 3) {
 
@@ -1119,39 +1123,39 @@
                     }
                     else if (address == "") {
                         $("#<%= txtAddress.ClientID%>").focus();
-                        swal("Thông báo", "Hãy nhập địa chỉ khách hàng!", "error");
-                    }
-                }
-            }
-
-            function checkPrepayTransport(ID, SubID) {
-                var t = 0;
-                $.ajax({
-                    type: "POST",
-                    async: false,
-                    url: "/them-moi-don-hang.aspx/checkPrepayTransport",
-                    data: "{ID:" + ID + ", SubID:" + SubID + "}",
-                    contentType: "application/json; charset=utf-8",
-                    dataType: "json",
-                    success: function (msg) {
-                        if (msg.d == "yes") {
-                            t = 1;
-                        } else {
-                            t = 0;
+                            swal("Thông báo", "Hãy nhập địa chỉ khách hàng!", "error");
                         }
-                    },
-                    error: function (xmlhttprequest, textstatus, errorthrow) {
-                        alert('lỗi');
-                    }
-                });
-                return t;
-            }
+        }
+    }
 
-            // insert order
-            function insertOrder() {
-                var shippingtype = $(".shipping-type").val();
-                var checkAllValue = true;
-                var fs = $("#<%=pFeeShip.ClientID%>").val();
+    function checkPrepayTransport(ID, SubID) {
+        var t = 0;
+        $.ajax({
+            type: "POST",
+            async: false,
+            url: "/them-moi-don-hang.aspx/checkPrepayTransport",
+            data: "{ID:" + ID + ", SubID:" + SubID + "}",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (msg) {
+                if (msg.d == "yes") {
+                    t = 1;
+                } else {
+                    t = 0;
+                }
+            },
+            error: function (xmlhttprequest, textstatus, errorthrow) {
+                alert('lỗi');
+            }
+        });
+        return t;
+    }
+
+    // insert order
+    function insertOrder() {
+        var shippingtype = $(".shipping-type").val();
+        var checkAllValue = true;
+        var fs = $("#<%=pFeeShip.ClientID%>").val();
                 var feeship = parseFloat(fs.replace(/\,/g, ''));
 
                 if (shippingtype == 2 || shippingtype == 3) {
@@ -1204,9 +1208,9 @@
                 }
                 
 
-                if (feeship > 0 && feeship < 10000) {
-                    checkAllValue = false;
-                    $("#<%=pFeeShip.ClientID%>").focus();
+            if (feeship > 0 && feeship < 10000) {
+                checkAllValue = false;
+                $("#<%=pFeeShip.ClientID%>").focus();
                     swal({
                         title: "Lạ vậy:",
                         text: "Sao phí vận chuyển lại nhỏ hơn <strong>10.000đ</strong> nè?<br><br>Xem lại nha!",
@@ -1403,9 +1407,9 @@
                 reIndex();
             }
 
-            // check empty
-            function notEmpty() {
-                if ($("#<%=pDiscount.ClientID%>").val() == '') {
+                // check empty
+                function notEmpty() {
+                    if ($("#<%=pDiscount.ClientID%>").val() == '') {
                     var dis = 0;
                     $("#<%=pDiscount.ClientID%>").val(formatThousands(dis, ','));
                 }
@@ -1419,7 +1423,7 @@
                 }
             }
 
-            // count total order
+                // count total order
             function countTotal() {
                 var total = parseFloat($("#<%=hdfTotalPriceNotDiscount.ClientID%>").val());
                 var quantity = 0;
@@ -1463,7 +1467,7 @@
                 $("#<%=hdfTotalPrice.ClientID%>").val(totalleft);
             }
 
-            // get product price
+                // get product price
             function getProductPrice(obj) {
                 var customertype = obj.val();
                 if ($(".product-result").length > 0) {
@@ -1483,7 +1487,7 @@
                 }
             }
 
-            // press key
+                // press key
             function keypress(e) {
                 var keypressed = null;
                 if (window.event) {
@@ -1499,7 +1503,7 @@
                 }
             }
 
-            // format price
+                // format price
             var formatThousands = function(n, dp) {
                 var s = '' + (Math.floor(n)),
                     d = n % 1,
@@ -1598,6 +1602,38 @@
 
                         break;
                 }
+            }
+
+            function onChangeTransportCompany(transport)
+            {
+                let transComID = transport.val();
+                $.ajax({
+                    url: "thong-tin-don-hang.aspx/GetTransportSub",
+                    type: "POST",
+                    data: JSON.stringify({'transComID': transComID}),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (msg) {
+                        let data = JSON.parse(msg.d);
+                        if (data)
+                        {
+                            let tranSubDOM = $("#<%=ddlTransportCompanySubID.ClientID%>");
+                            tranSubDOM.html("")
+                            data.forEach((item) => {
+                                tranSubDOM.append("<option value='" + item.key + "'>" + item.value + "</option>")
+                            });
+
+                            let tranSubContainerDOM = $("[id$=ddlTransportCompanySubID-container]");
+                            tranSubContainerDOM.attr("title", "Chọn nơi nhận");
+                            tranSubContainerDOM.html("Chọn nơi nhận");
+                            
+                            $("#<%=ddlTransportCompanySubID.ClientID%>").select();
+                        }
+                    },
+                    error: function (err) {
+                        swal("Thông báo", "Đã có vấn đề trong việc cập nhật thông tin vận chuyển", "error");
+                    }
+                });
             }
         </script>
     </telerik:RadScriptBlock>
