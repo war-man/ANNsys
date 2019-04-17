@@ -519,70 +519,79 @@ function deleteReturnOrder() {
 
 // pay order on click button
     function payAll() {
-    var phone = $("#<%=txtPhone.ClientID%>").val();
-    var name = $("#<%= txtFullname.ClientID%>").val();
-    var nick = $("#<%= txtNick.ClientID%>").val();
-    var address = $("#<%= txtAddress.ClientID%>").val();
-    if (phone != "" && name != "" && nick != "" && address != "") {
-        if ($(".product-result").length > 0) {
-            getAllPrice(true);
-            var list = "";
-            var count = 0;
-            var ordertype = $(".customer-type").val();
-            $(".product-result").each(function() {
-                var id = $(this).attr("data-productid");
-                var sku = $(this).attr("data-sku");
-                var producttype = $(this).attr("data-producttype");
-                var productvariablename = $(this).attr("data-productvariablename");
-                var productvariablevalue = $(this).attr("data-productvariablevalue");
-                var productname = $(this).attr("data-productname");
-                var productimageorigin = $(this).attr("data-productimageorigin");
-                var productvariable = $(this).attr("data-productvariable");
-                var price = $(this).find(".gia-san-pham").attr("data-price");
-                var productvariablesave = $(this).attr("data-productvariablesave");
-                var quantity = parseFloat($(this).find(".in-quantity").val());
-                var quantityInstock = parseFloat($(this).attr("data-quantityinstock"));
-                var productvariableid = $(this).attr("data-productvariableid");
+        var phone = $("#<%=txtPhone.ClientID%>").val();
+        var name = $("#<%= txtFullname.ClientID%>").val();
+        var nick = $("#<%= txtNick.ClientID%>").val();
+        var address = $("#<%= txtAddress.ClientID%>").val();
+        var facebooklink = $("#<%= txtFacebook.ClientID%>").val();
 
-                if (quantity > 0) {
+        if (phone == "" || name == "" || nick == "" || address == "" || (facebooklink == "" && $("#<%= hdfUsernameCurrent.ClientID%>").val() == "nhom_facebook") ) {
+            if (name == "") {
+                $("#<%= txtFullname.ClientID%>").focus();
+                swal("Thông báo", "Hãy nhập tên khách hàng!", "error");
+            }
+            else if (phone == "") {
+                $("#<%= txtPhone.ClientID%>").focus();
+                swal("Thông báo", "Hãy nhập số điện thoại khách hàng!", "error");
+            }
+            else if (nick == "") {
+                $("#<%= txtNick.ClientID%>").focus();
+                swal("Thông báo", "Hãy nhập Nick đặt hàng của khách hàng!", "error");
+            }
+            else if (facebooklink == "" && $("#<%= hdfUsernameCurrent.ClientID%>").val() == "nhom_facebook") {
+                $("#<%= txtFacebook.ClientID%>").prop('disabled', false);
+                $("#<%= txtFacebook.ClientID%>").focus();
+                swal("Thông báo", "Hãy nhập link Facebook của khách này!", "error");
+            }
+            else if (address == "") {
+                $("#<%= txtAddress.ClientID%>").focus();
+                swal("Thông báo", "Hãy nhập địa chỉ khách hàng!", "error");
+            }
+        } 
+        else {
+            if ($(".product-result").length > 0) {
+                getAllPrice(true);
+                var list = "";
+                var count = 0;
+                var ordertype = $(".customer-type").val();
+                $(".product-result").each(function() {
+                    var id = $(this).attr("data-productid");
+                    var sku = $(this).attr("data-sku");
+                    var producttype = $(this).attr("data-producttype");
+                    var productvariablename = $(this).attr("data-productvariablename");
+                    var productvariablevalue = $(this).attr("data-productvariablevalue");
+                    var productname = $(this).attr("data-productname");
+                    var productimageorigin = $(this).attr("data-productimageorigin");
+                    var productvariable = $(this).attr("data-productvariable");
+                    var price = $(this).find(".gia-san-pham").attr("data-price");
+                    var productvariablesave = $(this).attr("data-productvariablesave");
+                    var quantity = parseFloat($(this).find(".in-quantity").val());
+                    var quantityInstock = parseFloat($(this).attr("data-quantityinstock"));
+                    var productvariableid = $(this).attr("data-productvariableid");
 
-                    list += id + "," + sku + "," + producttype + "," + productvariablename + "," + productvariablevalue + "," + quantity + "," +
-                        productname + "," + productimageorigin + "," + productvariablesave + "," + price + "," + productvariablesave + "," + productvariableid + ";";
-                    count++;
+                    if (quantity > 0) {
+
+                        list += id + "," + sku + "," + producttype + "," + productvariablename + "," + productvariablevalue + "," + quantity + "," +
+                            productname + "," + productimageorigin + "," + productvariablesave + "," + price + "," + productvariablesave + "," + productvariableid + ";";
+                        count++;
+                    }
+                });
+                if (count > 0) {
+                    $("#<%=hdfOrderType.ClientID %>").val(ordertype);
+                    $("#<%=hdfListProduct.ClientID%>").val(list);
+
+                    showOrderStatus();
+                } else {
+                    $("#txtSearch").focus();
+                    swal("Thông báo", "Hãy nhập sản phẩm!", "error");
                 }
-            });
-            if (count > 0) {
-                $("#<%=hdfOrderType.ClientID %>").val(ordertype);
-                $("#<%=hdfListProduct.ClientID%>").val(list);
-
-                showOrderStatus();
             } else {
                 $("#txtSearch").focus();
                 swal("Thông báo", "Hãy nhập sản phẩm!", "error");
             }
-        } else {
-            $("#txtSearch").focus();
-            swal("Thông báo", "Hãy nhập sản phẩm!", "error");
         }
-    } else {
-        if (name == "") {
-            $("#<%= txtFullname.ClientID%>").focus();
-            swal("Thông báo", "Hãy nhập tên khách hàng!", "error");
-        }
-        else if (phone == "") {
-            $("#<%= txtPhone.ClientID%>").focus();
-            swal("Thông báo", "Hãy nhập số điện thoại khách hàng!", "error");
-        }
-        else if (nick == "") {
-            $("#<%= txtNick.ClientID%>").focus();
-            swal("Thông báo", "Hãy nhập Nick đặt hàng của khách hàng!", "error");
-        }
-        else if (address == "") {
-            $("#<%= txtAddress.ClientID%>").focus();
-            swal("Thông báo", "Hãy nhập địa chỉ khách hàng!", "error");
-        }
+
     }
-}
 
 // insert order
     function insertOrder() {

@@ -914,8 +914,33 @@
                 var name = $("#<%= txtFullname.ClientID%>").val();
                 var nick = $("#<%= txtNick.ClientID%>").val();
                 var address = $("#<%= txtAddress.ClientID%>").val();
-                if (phone != "" && name != "" && nick != "" && address != "") {
-                    
+                var facebooklink = $("#<%= txtFacebook.ClientID%>").val();
+
+                if (phone == "" || name == "" || nick == "" || address == "" || (facebooklink == "" && $("#<%= hdfUsernameCurrent.ClientID%>").val() == "nhom_facebook") ) {
+                    if (name == "") {
+                        $("#<%= txtFullname.ClientID%>").focus();
+                        swal("Thông báo", "Hãy nhập tên khách hàng!", "error");
+                    }
+                    else if (phone == "") {
+                        $("#<%= txtPhone.ClientID%>").focus();
+                        swal("Thông báo", "Hãy nhập số điện thoại khách hàng!", "error");
+                    }
+                    else if (nick == "") {
+                        $("#<%= txtNick.ClientID%>").prop('disabled', false);
+                        $("#<%= txtNick.ClientID%>").focus();
+                        swal("Thông báo", "Hãy nhập Nick đặt hàng của khách hàng!", "error");
+                    }
+                    else if (facebooklink == "" && $("#<%= hdfUsernameCurrent.ClientID%>").val() == "nhom_facebook") {
+                        $("#<%= txtFacebook.ClientID%>").prop('disabled', false);
+                        $("#<%= txtFacebook.ClientID%>").focus();
+                        swal("Thông báo", "Hãy nhập link Facebook của khách này!", "error");
+                    }
+                    else if (address == "") {
+                        $("#<%= txtAddress.ClientID%>").focus();
+                        swal("Thông báo", "Hãy nhập địa chỉ khách hàng!", "error");
+                    }
+
+                } else {
                     // Nếu có sản phẩm trong đơn hàng
                     if ($(".product-result").length > 0) {
                         getAllPrice(true);
@@ -1100,26 +1125,6 @@
                             $("#txtSearch").focus();
                             swal("Thông báo", "Hãy nhập sản phẩm!", "error");
                         }
-                    }
-
-                } else {
-                    if (name == "") {
-                        $("#<%= txtFullname.ClientID%>").focus();
-                        swal("Thông báo", "Hãy nhập tên khách hàng!", "error");
-                    }
-                    else if (phone == "") {
-                        $("#<%= txtPhone.ClientID%>").focus();
-                        swal("Thông báo", "Hãy nhập số điện thoại khách hàng!", "error");
-                    }
-                    else if (nick == "") {
-                        $("#<%= txtNick.ClientID%>").prop('disabled', false);
-                        $("#<%= txtNick.ClientID%>").focus();
-                        swal("Thông báo", "Hãy nhập Nick đặt hàng của khách hàng!", "error");
-                        
-                    }
-                    else if (address == "") {
-                        $("#<%= txtAddress.ClientID%>").focus();
-                        swal("Thông báo", "Hãy nhập địa chỉ khách hàng!", "error");
                     }
                 }
             }

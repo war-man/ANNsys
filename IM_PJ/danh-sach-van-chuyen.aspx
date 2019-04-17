@@ -316,6 +316,9 @@
                             data: fileData,
                             contentType: false,
                             processData: false,
+                            beforeSend: function() {
+                                HoldOn.open();
+                            },
                             success: function (result) {
                                 let row = $("tr[data-orderid='" + orderID + "'");
                                 let deliveryStatusDom = row.children("#deliveryStatus").children("span");
@@ -373,8 +376,10 @@
                                 deliveryStatusDom.html(deliveryStatusName);
 
                                 $("#closeDelivery").click();
+                                HoldOn.close();
                             },
                             error: function (err) {
+                                HoldOn.close();
                                 swal("Thông báo", "Đã có vấn đề trong việc cập nhật thông tin vận chuyển", "error");
                             }
                         });
