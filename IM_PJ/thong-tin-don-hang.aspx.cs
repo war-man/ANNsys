@@ -500,7 +500,6 @@ namespace IM_PJ
                     ListItem listitem = new ListItem(p.CompanyName.ToTitleCase(), p.ID.ToString());
                     ddlTransportCompanyID.Items.Add(listitem);
                 }
-                ddlTransportCompanyID.DataBind();
             }
         }
 
@@ -524,9 +523,35 @@ namespace IM_PJ
             }
         }
 
-        protected void ddlTransportCompanyID_SelectedIndexChanged(object sender, EventArgs e)
+        [WebMethod]
+        public static string GetTransportSub(int transComID)
         {
-            LoadTransportCompanySubID(ddlTransportCompanyID.SelectedValue.ToInt(0));
+            if (transComID > 0)
+            {
+                var data = new List<object>();
+                data.Add(new
+                {
+                    key = "0",
+                    value = "Chọn nơi nhận"
+                });
+
+                var ShipTo = TransportCompanyController.GetReceivePlace(transComID);
+
+                foreach (var p in ShipTo)
+                {
+                    data.Add(new
+                    {
+                        key = p.SubID.ToString(),
+                        value = p.ShipTo.ToTitleCase()
+                    });
+                }
+
+                JavaScriptSerializer serializer = new JavaScriptSerializer();
+
+                return serializer.Serialize(data);
+            }
+
+            return String.Empty;
         }
 
         [WebMethod]
