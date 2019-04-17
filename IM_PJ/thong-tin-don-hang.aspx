@@ -221,7 +221,7 @@
                             <div class="post-row clear">
                                 <div class="left">Phí vận chuyển</div>
                                 <div class="right totalDiscount">
-                                    <a class="btn btn-feeship link-btn" href="javascript:;" id="calfeeship" onclick="calFeeShip()"><i class="fa fa-check-square-o" aria-hidden="true"></i>Miễn phí</a>
+                                    <a class="btn btn-feeship link-btn" href="javascript:;" id="calfeeship" onclick="calFeeShip()"><i class="fa fa-check-square-o" aria-hidden="true"></i> Miễn phí</a>
                                     <telerik:RadNumericTextBox runat="server" CssClass="form-control width-notfull" Skin="MetroTouch"
                                         ID="pFeeShip" MinValue="0" NumberFormat-GroupSizes="3" Value="0" NumberFormat-DecimalDigits="0"
                                         oninput="countTotal()" IncrementSettings-InterceptMouseWheel="false" IncrementSettings-InterceptArrowKeys="false">
@@ -372,10 +372,10 @@
                                 </div>
                                 <div class="panel-post">
                                     <div class="post-table-links clear">
-                                        <a href="javascript:;" class="btn link-btn" id="payall" style="background-color: #f87703; float: right" title="Hoàn tất đơn hàng" onclick="payAll()"><i class="fa fa-floppy-o"></i>Xác nhận</a>
+                                        <a href="javascript:;" class="btn link-btn" id="payall" style="background-color: #f87703; float: right" title="Hoàn tất đơn hàng" onclick="payAll()"><i class="fa fa-floppy-o"></i> Xác nhận</a>
                                         <asp:Button ID="btnOrder" runat="server" OnClick="btnOrder_Click" Style="display: none" />
-                                        <a href="javascript:;" class="btn link-btn" style="background-color: #ffad00; float: right;" title="Nhập đơn hàng đổi trả" onclick="searchReturnOrder()"><i class="fa fa-refresh"></i>Đổi trả</a>
-                                        <a href="javascript:;" class="btn link-btn" style="background-color: #607D8B; float: right;" title="Thêm phí khác vào đơn hàng" onclick="addOtherFee()"><i class="fa fa-plus"></i>Thêm phí khác</a>
+                                        <a href="javascript:;" class="btn link-btn" style="background-color: #ffad00; float: right;" title="Nhập đơn hàng đổi trả" onclick="searchReturnOrder()"><i class="fa fa-refresh"></i> Đổi trả</a>
+                                        <a href="javascript:;" class="btn link-btn" style="background-color: #607D8B; float: right;" title="Thêm phí khác vào đơn hàng" onclick="addOtherFee()"><i class="fa fa-plus"></i> Thêm phí khác</a>
                                     </div>
                                     <div id="img-out"></div>
                                 </div>
@@ -390,9 +390,9 @@
                         <div class="panel-buttonbar">
                             <div class="panel-post">
                                 <div class="post-table-links clear">
-                                    <a href="javascript:;" class="btn link-btn" style="background-color: #f87703; float: right" title="Hoàn tất đơn hàng" onclick="payAll()"><i class="fa fa-floppy-o"></i>Xác nhận</a>
-                                    <a href="javascript:;" class="btn link-btn" style="background-color: #ffad00; float: right;" title="Nhập đơn hàng đổi trả" onclick="searchReturnOrder()"><i class="fa fa-refresh"></i>Đổi trả</a>
-                                    <a href="javascript:;" class="btn link-btn" style="background-color: #607D8B; float: right;" title="Thêm phí khác vào đơn hàng" onclick="addOtherFee()"><i class="fa fa-plus"></i>Thêm phí khác</a>
+                                    <a href="javascript:;" class="btn link-btn" style="background-color: #f87703; float: right" title="Hoàn tất đơn hàng" onclick="payAll()"><i class="fa fa-floppy-o"></i> Xác nhận</a>
+                                    <a href="javascript:;" class="btn link-btn" style="background-color: #ffad00; float: right;" title="Nhập đơn hàng đổi trả" onclick="searchReturnOrder()"><i class="fa fa-refresh"></i> Đổi trả</a>
+                                    <a href="javascript:;" class="btn link-btn" style="background-color: #607D8B; float: right;" title="Thêm phí khác vào đơn hàng" onclick="addOtherFee()"><i class="fa fa-plus"></i> Thêm phí khác</a>
                                 </div>
                             </div>
                         </div>
@@ -526,7 +526,6 @@
                     getAllPrice();
                     $("#calfeeship").html("<i class=\"fa fa-pencil-square-o\" aria-hidden=\"true\"></i> Tính phí").css("background-color", "#f87703");
                 }
-        
             }
 
             function addOtherFee() {
@@ -1044,7 +1043,6 @@
                             // Chỉ admin mới được khôi phục đơn hàng hủy
                             if ($("#<%=hdfRoleID.ClientID%>").val() == 0)
                             {
-                                $("#<%=txtOrderNote.ClientID %>").val("Đã khôi phục từ trạng thái hủy bởi " + $("#<%=hdfUsernameCurrent.ClientID%>").val());
                                 deleteOrder();
                                 $("#<%=hdfOrderType.ClientID %>").val(ordertype);
                                 $("#<%=hdfListProduct.ClientID%>").val(list);
@@ -1060,7 +1058,6 @@
                             // Chỉ admin mới được đổi trạng thái Đã hoàn tất sang trạng thái Đang xử lý
                             if ($("#<%=hdfRoleID.ClientID%>").val() == 0)
                             {
-                                $("#<%=txtOrderNote.ClientID %>").val("Đã đổi trạng thái từ Đã hoàn tất sang Đang xử lý bởi " + $("#<%=hdfUsernameCurrent.ClientID%>").val());
                                 deleteOrder();
                                 $("#<%=hdfOrderType.ClientID %>").val(ordertype);
                                 $("#<%=hdfListProduct.ClientID%>").val(list);
@@ -1311,7 +1308,7 @@
             }
 
             // get all price
-            function getAllPrice(is_payAll_call=false) {
+            function getAllPrice(is_payAll_call = false) {
                 if ($(".product-result").length > 0)
                 {
                     var totalprice = 0;
@@ -1642,7 +1639,7 @@
                         break;
                 }
             }
-
+            
             function onChangeTransportCompany(transport)
             {
                 let transComID = transport.val();
@@ -1666,7 +1663,10 @@
                             tranSubContainerDOM.attr("title", "Chọn nơi nhận");
                             tranSubContainerDOM.html("Chọn nơi nhận");
                             
-                            $("#<%=ddlTransportCompanySubID.ClientID%>").select();
+                            setTimeout(function() {
+                                $("#<%=ddlTransportCompanySubID.ClientID%>").select2("open");
+                            }, 200);  
+                            
                         }
                     },
                     error: function (err) {

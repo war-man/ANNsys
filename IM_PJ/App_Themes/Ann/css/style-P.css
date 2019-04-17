@@ -1,4 +1,21 @@
-﻿#invoice-image img {
+﻿.select2-container--default .select2-selection--single {
+    border: solid 1px #e1e1e1;
+}
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+    line-height: 40px;
+    padding-left: 15px;
+}
+.select2-container .select2-selection--single {
+    height: 40px;
+}
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: 38px;
+    right: 10px;
+}
+.select2-container--default .select2-selection--single .select2-selection__arrow b {
+    border-color: #000 transparent transparent transparent;
+}
+#invoice-image img {
     cursor: pointer;
 }
 .account-note {
@@ -46,7 +63,7 @@
 }
 .order-info {
     margin-right: 45px;
-    font-size: 13px;
+    font-size: 14px;
     border-bottom: 1px dashed #d3d3d3;
     padding-bottom: 5px;
 }
@@ -717,7 +734,6 @@ img {
 .bg-red {
     background: #FF675B;
     color: #fff;
-    width: fit-content;
     display: block;
     padding: 5px 6px;
     white-space: nowrap;
@@ -727,7 +743,6 @@ img {
 .bg-brown {
     background: #795548;
     color: #fff;
-    width: fit-content;
     display: block;
     padding: 5px 6px;
     white-space: nowrap;
@@ -737,7 +752,6 @@ img {
 .bg-black {
     background: #2A2A2A;
     color: #fff;
-    width: fit-content;
     display: block;
     padding: 5px 6px;
     white-space: nowrap;
@@ -748,7 +762,6 @@ img {
 .bg-bronze {
     background: #bca56d;
     color: #fff;
-    width: fit-content;
     display: block;
     padding: 5px 6px;
     white-space: nowrap;
@@ -759,7 +772,6 @@ img {
 .bg-green {
     background: #73a724;
     color: #fff;
-    width: fit-content;
     display: block;
     padding: 5px 6px;
     white-space: nowrap;
@@ -770,7 +782,6 @@ img {
 .bg-yellow {
     background: #ffba00;
     color: #fff;
-    width: fit-content;
     display: block;
     padding: 5px 6px;
     white-space: nowrap;
@@ -781,7 +792,6 @@ img {
 .bg-blue {
     background: #2ea2cc;
     color: #fff;
-    width: fit-content;
     display: block;
     padding: 5px 6px;
     white-space: nowrap;

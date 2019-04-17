@@ -30,6 +30,8 @@ namespace IM_PJ
 
                     if (acc != null)
                     {
+                        LoadShipper();
+                        LoadTransportCompany();
                         if (acc.RoleID == 0)
                         {
                             LoadCreatedBy(agent);
@@ -51,7 +53,30 @@ namespace IM_PJ
                 LoadData();
             }
         }
+        public void LoadShipper()
+        {
+            var shipper = ShipperController.getDropDownList();
+            shipper[0].Text = "Nhân viên giao hàng";
+            ddlShipperFilter.Items.Clear();
+            ddlShipperFilter.Items.AddRange(shipper.ToArray());
+            ddlShipperFilter.DataBind();
 
+        }
+        public void LoadTransportCompany()
+        {
+            var TransportCompany = TransportCompanyController.GetTransportCompany();
+            ddlTransportCompany.Items.Clear();
+            ddlTransportCompany.Items.Insert(0, new ListItem("Chành xe", "0"));
+            if (TransportCompany.Count > 0)
+            {
+                foreach (var p in TransportCompany)
+                {
+                    ListItem listitem = new ListItem(p.CompanyName.ToTitleCase(), p.ID.ToString());
+                    ddlTransportCompany.Items.Add(listitem);
+                }
+                ddlTransportCompany.DataBind();
+            }
+        }
         public void LoadCreatedBy(int AgentID, tbl_Account acc = null)
         {
             if (acc != null)
@@ -63,7 +88,7 @@ namespace IM_PJ
             {
                 var CreateBy = AccountController.GetAllNotSearch();
                 ddlCreatedBy.Items.Clear();
-                ddlCreatedBy.Items.Insert(0, new ListItem("Nhân viên", ""));
+                ddlCreatedBy.Items.Insert(0, new ListItem("Nhân viên tạo đơn", ""));
                 if (CreateBy.Count > 0)
                 {
                     foreach (var p in CreateBy)
@@ -96,6 +121,8 @@ namespace IM_PJ
                 int Quantity = 0;
                 int QuantityMin = 0;
                 int QuantityMax = 0;
+                int TransportCompany = 0;
+                int ShipperID = 0;
 
                 if (Request.QueryString["textsearch"] != null)
                 {
@@ -151,6 +178,14 @@ namespace IM_PJ
                         QuantityMax = Request.QueryString["quantitymax"].ToInt();
                     }
                 }
+                if (Request.QueryString["transportcompany"] != null)
+                {
+                    TransportCompany = Request.QueryString["transportcompany"].ToInt(0);
+                }
+                if (Request.QueryString["shipperid"] != null)
+                {
+                    ShipperID = Request.QueryString["shipperid"].ToInt(0);
+                }
 
                 txtSearchOrder.Text = TextSearch;
                 ddlOrderType.SelectedValue = OrderType.ToString();
@@ -167,10 +202,11 @@ namespace IM_PJ
                 txtQuantity.Text = Quantity.ToString();
                 txtQuantityMin.Text = QuantityMin.ToString();
                 txtQuantityMax.Text = QuantityMax.ToString();
-
+                ddlTransportCompany.SelectedValue = TransportCompany.ToString();
+                ddlShipperFilter.SelectedValue = ShipperID.ToString();
 
                 List<OrderList> rs = new List<OrderList>();
-                rs = OrderController.Filter(TextSearch, OrderType, ExcuteStatus, PaymentStatus, 0, PaymentType, ShippingType, Discount, OtherFee, CreatedBy, CreatedDate, TransferDoneAt, 0);
+                rs = OrderController.Filter(TextSearch, OrderType, ExcuteStatus, PaymentStatus, 0, PaymentType, ShippingType, Discount, OtherFee, CreatedBy, CreatedDate, TransferDoneAt, TransportCompany);
 
                 if (acc.RoleID == 0)
                 {
@@ -188,7 +224,8 @@ namespace IM_PJ
                 {
                     rs = rs.Where(x => x.CreatedBy == acc.Username && x.ExcuteStatus != 4).ToList();
                 }
-
+                if (ShipperID != 0)
+                    rs = rs.Where(x => x.ShipperID == ShipperID).ToList();
                 if (QuantityFilter != "")
                 {
                     if (QuantityFilter == "greaterthan")
@@ -206,7 +243,6 @@ namespace IM_PJ
                 }
 
                 pagingall(rs);
-
 
 
                 ltrNumberOfOrder.Text = rs.Count().ToString();
@@ -504,9 +540,14 @@ namespace IM_PJ
                     {
                         html.Append("<span class='order-info'><strong>Phí khác:</strong> " + string.Format("{0:N0}", Convert.ToDouble(item.OtherFeeValue)) + " (" + item.OtherFeeName.Trim() + ")</span>");
                     }
-                    if (item.FeeShipping > 0)
+                    if (item.ShippingType == 4)
                     {
-                        html.Append("<span class='order-info'><strong>Phí vận chuyển:</strong> " + string.Format("{0:N0}", Convert.ToDouble(item.FeeShipping)) + "</span>");
+                        if (item.TransportCompanyID != 0)
+                        {
+                            var transport = TransportCompanyController.GetTransportCompanyByID(Convert.ToInt32(item.TransportCompanyID));
+                            var transportsub = TransportCompanyController.GetReceivePlaceByID(Convert.ToInt32(item.TransportCompanyID), Convert.ToInt32(item.TransportCompanySubID));
+                            html.Append("<span class='order-info'><strong>Gửi xe: </strong> " + transport.CompanyName.ToTitleCase() + " (" + transportsub.ShipTo.ToTitleCase() + ")</span>");
+                        }
                     }
                     if (!string.IsNullOrEmpty(item.ShippingCode))
                     {
@@ -521,14 +562,13 @@ namespace IM_PJ
                         }
                         html.Append("<span class='order-info'><strong>Mã vận đơn:</strong> " + item.ShippingCode + moreInfo + "</span>");
                     }
-                    if(item.ShippingType == 4)
+                    if (item.FeeShipping > 0)
                     {
-                        if (item.TransportCompanyID != 0)
-                        {
-                            var transport = TransportCompanyController.GetTransportCompanyByID(Convert.ToInt32(item.TransportCompanyID));
-                            var transportsub = TransportCompanyController.GetReceivePlaceByID(Convert.ToInt32(item.TransportCompanyID), Convert.ToInt32(item.TransportCompanySubID));
-                            html.Append("<span class='order-info'><strong>Gửi xe: </strong> " + transport.CompanyName.ToTitleCase() + " (" + transportsub.ShipTo.ToTitleCase() + ")</span>");
-                        }
+                        html.Append("<span class='order-info'><strong>Phí vận chuyển:</strong> " + string.Format("{0:N0}", Convert.ToDouble(item.FeeShipping)) + "</span>");
+                    }
+                    if ((item.ShippingType == 4 || item.ShippingType == 5) && !string.IsNullOrEmpty(item.ShipperName))
+                    {
+                        html.Append("<span class='order-info'><strong>Nhân viên giao hàng:</strong> " + item.ShipperName + "</span>");
                     }
                     if (!string.IsNullOrEmpty(item.OrderNote))
                     {
@@ -760,12 +800,17 @@ namespace IM_PJ
                     request += "&quantityfilter=" + ddlQuantityFilter.SelectedValue + "&quantitymin=" + txtQuantityMin.Text + "&quantitymax=" + txtQuantityMax.Text;
                 }
             }
+            if (ddlTransportCompany.SelectedValue != "0")
+            {
+                request += "&transportcompany=" + ddlTransportCompany.SelectedValue;
+            }
+            if (ddlShipperFilter.SelectedValue != "0")
+            {
+                request += "&shipperid=" + ddlShipperFilter.SelectedValue;
+            }
+
             Response.Redirect(request);
         }
-        public class danhmuccon1
-        {
-            public tbl_Category cate1 { get; set; }
-            public string parentName { get; set; }
-        }
+
     }
 }
