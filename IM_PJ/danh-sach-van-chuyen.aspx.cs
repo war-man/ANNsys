@@ -31,14 +31,12 @@ namespace IM_PJ
 
                     if (acc != null)
                     {
-                        LoadShipper(agent);
+                        
                         if (acc.RoleID == 0)
                         {
+                            LoadShipper();
                             LoadCreatedBy(agent);
-                        }
-                        else if (acc.RoleID == 2)
-                        {
-                            LoadCreatedBy(agent, acc);
+                            LoadTransportCompany();
                         }
                         else
                         {
@@ -51,6 +49,21 @@ namespace IM_PJ
                     Response.Redirect("/dang-nhap");
                 }
                 LoadData();
+            }
+        }
+        public void LoadTransportCompany()
+        {
+            var TransportCompany = TransportCompanyController.GetTransportCompany();
+            ddlTransportCompany.Items.Clear();
+            ddlTransportCompany.Items.Insert(0, new ListItem("Chành xe", "0"));
+            if (TransportCompany.Count > 0)
+            {
+                foreach (var p in TransportCompany)
+                {
+                    ListItem listitem = new ListItem(p.CompanyName.ToTitleCase(), p.ID.ToString());
+                    ddlTransportCompany.Items.Add(listitem);
+                }
+                ddlTransportCompany.DataBind();
             }
         }
         public void LoadCreatedBy(int AgentID, tbl_Account acc = null)
@@ -76,7 +89,7 @@ namespace IM_PJ
                 }
             }
         }
-        public void LoadShipper(int AgentID)
+        public void LoadShipper()
         {
             var shipper = ShipperController.getDropDownList();
             shipper[0].Text = "Nhân viên giao hàng";
@@ -95,6 +108,7 @@ namespace IM_PJ
             if (acc != null)
             {
                 string TextSearch = "";
+                int TransportCompany = 0;
                 int ShipType = 0;
                 int PaymentType = 0;
                 int ShipperID = 0;
@@ -102,8 +116,11 @@ namespace IM_PJ
                 int DeliveryStatus = 0;
                 string CreatedDate = "";
                 string CreatedBy = "";
+
                 if (Request.QueryString["textsearch"] != null)
                     TextSearch = Request.QueryString["textsearch"].Trim();
+                if (Request.QueryString["transportcompany"] != null)
+                    TransportCompany = Request.QueryString["transportcompany"].ToInt(0);
                 if (Request.QueryString["shippingtype"] != null)
                     ShipType = Request.QueryString["shippingtype"].ToInt(0);
                 if (Request.QueryString["paymenttype"] != null)
@@ -120,6 +137,7 @@ namespace IM_PJ
                     CreatedBy = Request.QueryString["createdby"];
 
                 txtSearchOrder.Text = TextSearch;
+                ddlTransportCompany.SelectedValue = TransportCompany.ToString();
                 ddlShippingType.SelectedValue = ShipType.ToString();
                 ddlPaymentType.SelectedValue = PaymentType.ToString();
                 ddlShipperFilter.SelectedValue = ShipperID.ToString();
@@ -141,7 +159,8 @@ namespace IM_PJ
                     CreatedBy, // ALL
                     CreatedDate,
                     String.Empty,
-                    String.Empty
+                    String.Empty,
+                    TransportCompany
                 );
 
                 if (acc.RoleID == 0)
@@ -498,6 +517,9 @@ namespace IM_PJ
 
             if (search != "")
                 request += "&textsearch=" + search;
+
+            if (ddlTransportCompany.SelectedValue != "0")
+                request += "&transportcompany=" + ddlTransportCompany.SelectedValue;
 
             if (ddlShippingType.SelectedValue != "0")
                 request += "&shippingtype=" + ddlShippingType.SelectedValue;

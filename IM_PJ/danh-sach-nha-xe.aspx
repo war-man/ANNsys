@@ -19,7 +19,7 @@
                     <div class="filter-above-wrap clear">
                         <div class="filter-control">
                             <div class="row">
-                                <div class="col-md-3">
+                                <div class="col-md-5">
                                     <asp:TextBox ID="txtTextSearch" runat="server" CssClass="form-control" placeholder="Tìm nhà xe"></asp:TextBox>
                                 </div>
                                 <div class="col-md-2">
@@ -47,9 +47,6 @@
                                         <asp:ListItem Value="7days" Text="7 ngày"></asp:ListItem>
                                         <asp:ListItem Value="30days" Text="30 ngày"></asp:ListItem>
                                     </asp:DropDownList>
-                                </div>
-                                <div class="col-md-2">
-                                    <asp:DropDownList ID="ddlCreatedBy" runat="server" CssClass="form-control create"></asp:DropDownList>
                                 </div>
                                 <div class="col-md-1">
                                     <a href="javascript:;" onclick="searchTransport()" class="btn primary-btn h45-btn"><i class="fa fa-search"></i></a>

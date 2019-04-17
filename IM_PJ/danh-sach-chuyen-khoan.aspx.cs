@@ -34,10 +34,6 @@ namespace IM_PJ
                         {
                             LoadCreatedBy(agent);
                         }
-                        else if (acc.RoleID == 2)
-                        {
-                            LoadCreatedBy(agent, acc);
-                        }
                         else
                         {
                             Response.Redirect("/trang-chu");
@@ -163,7 +159,8 @@ namespace IM_PJ
                     String.Empty, // All
                     CreatedBy,
                     CreatedDate,
-                    TransferDoneAt
+                    TransferDoneAt,
+                    0
                 );
 
                 if (acc.RoleID == 0)

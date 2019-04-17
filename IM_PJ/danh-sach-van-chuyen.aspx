@@ -66,6 +66,7 @@
                         <div class="filter-control">
                             <div class="row">
                                 <div class="col-md-3">
+                                    <asp:DropDownList ID="ddlTransportCompany" runat="server" CssClass="form-control"></asp:DropDownList>
                                 </div>
                                 <div class="col-md-2">
                                     <asp:DropDownList ID="ddlShipperFilter" runat="server" CssClass="form-control"></asp:DropDownList>

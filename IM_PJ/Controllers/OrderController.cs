@@ -353,7 +353,7 @@ namespace IM_PJ.Controllers
             }
         }
 
-        public static List<OrderList> Filter(string TextSearch, int OrderType, int ExcuteStatus, int PaymentStatus, int TransferStatus, int PaymentType, int ShippingType, string Discount, string OtherFee, string CreatedBy, string CreatedDate, string TransferDoneAt)
+        public static List<OrderList> Filter(string TextSearch, int OrderType, int ExcuteStatus, int PaymentStatus, int TransferStatus, int PaymentType, int ShippingType, string Discount, string OtherFee, string CreatedBy, string CreatedDate, string TransferDoneAt, int TransportCompany)
         {
             var list = new List<OrderList>();
             var sql = new StringBuilder();
@@ -440,6 +440,11 @@ namespace IM_PJ.Controllers
             {
                 string TextSearchName = '"' + TextSearch + '"';
                 sql.AppendLine(String.Format("	AND ( (convert(nvarchar, Ord.ID) LIKE '{0}') OR CONTAINS(Ord.CustomerName, '{1}') OR CONTAINS(Customer.Nick, '{1}') OR (Ord.CustomerPhone = '{0}') OR (Ord.CustomerNewPhone = '{0}') OR (Ord.ShippingCode = '{0}') OR (OrdDetail.SKU LIKE '{0}%') OR (Ord.OrderNote LIKE '%{0}%'))", TextSearch, TextSearchName));
+            }
+
+            if (TransportCompany > 0)
+            {
+                sql.AppendLine(String.Format("	AND Ord.TransportCompanyID = {0}", TransportCompany));
             }
 
             if (OrderType > 0)
