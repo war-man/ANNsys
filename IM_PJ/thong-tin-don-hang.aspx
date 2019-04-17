@@ -1168,7 +1168,6 @@
                     else if (address == "") {
                         $("#<%= txtAddress.ClientID%>").focus();
                             swal("Thông báo", "Hãy nhập địa chỉ khách hàng!", "error");
->>>>>>> Change common at TransoftCompany
                         }
         }
     }
