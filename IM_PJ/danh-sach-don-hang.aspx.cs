@@ -133,10 +133,6 @@ namespace IM_PJ
                 {
                     CreatedBy = Request.QueryString["createdby"];
                 }
-                if (Request.QueryString["createdby"] != null)
-                {
-                    CreatedBy = Request.QueryString["createdby"];
-                }
                 if(Request.QueryString["createddate"] != null)
                 {
                     CreatedDate = Request.QueryString["createddate"];
@@ -441,17 +437,27 @@ namespace IM_PJ
                     html.Append("   <td>" + PJUtils.OrderExcuteStatus(Convert.ToInt32(item.ExcuteStatus)) + "</td>");
                     html.Append("   <td>" + PJUtils.OrderPaymentStatus(Convert.ToInt32(item.PaymentStatus)) + "</td>");
 
+
                     #region Phương thức thanh toán
                     html.Append("   <td>");
                     html.Append(PJUtils.PaymentType(Convert.ToInt32(item.PaymentType)));
-                    
                     // Đã nhận tiền
                     if (item.TransferStatus.HasValue && item.TransferStatus.Value == 1)
                         html.Append("       <br/><span class='bg-green'>Đã nhận tiền</span>");
                     html.Append("   </td>");
                     #endregion
 
-                    html.Append("   <td>" + PJUtils.ShippingType(Convert.ToInt32(item.ShippingType)) + "</td>");
+
+                    #region Giao hàng
+                    html.Append("   <td>");
+                    html.Append(PJUtils.ShippingType(Convert.ToInt32(item.ShippingType)));
+                    // Đã giao hàng
+                    if (item.DeliveryStatus.HasValue && item.DeliveryStatus.Value == 1)
+                        html.Append("       <br/><span class='bg-green'>Đã giao</span>");
+                    html.Append("   </td>");
+                    #endregion
+
+
                     html.Append("   <td><strong>" + string.Format("{0:N0}", Convert.ToDouble(item.TotalPrice - TotalRefund)) + "</strong></td>");
 
                     if (acc.RoleID == 0)
@@ -473,6 +479,8 @@ namespace IM_PJ
                     html.Append("       <a href=\"/print-invoice?id=" + item.ID + "\" title=\"In hóa đơn\" target=\"_blank\" class=\"btn primary-btn h45-btn\"><i class=\"fa fa-print\" aria-hidden=\"true\"></i></a>");
                     html.Append("       <a href=\"/print-shipping-note?id=" + item.ID + "\" title=\"In phiếu gửi hàng\" target=\"_blank\" class=\"btn primary-btn btn-red h45-btn\"><i class=\"fa fa-file-text-o\" aria-hidden=\"true\"></i></a>");
                     html.Append("       <a href=\"/chi-tiet-khach-hang?id=" + item.CustomerID + "\" title=\"Thông tin khách hàng " + item.CustomerName + "\" target=\"_blank\" class=\"btn primary-btn btn-black h45-btn\"><i class=\"fa fa-user-circle\" aria-hidden=\"true\"></i></a>");
+                    if (item.DeliveryStatus.HasValue && item.DeliveryStatus.Value == 1 && !string.IsNullOrEmpty(item.InvoiceImage))
+                        html.Append("       <a href='" + item.InvoiceImage + "' title='Biên nhận gửi hàng' target='_blank' class='btn primary-btn btn-blue h45-btn'><i class=\"fa fa-file-text-o\" aria-hidden=\"true\"></i></a>");
                     html.Append("   </td>");
                     html.Append("</tr>");
 
@@ -481,7 +489,7 @@ namespace IM_PJ
                     html.Append("<tr class='tr-more-info'>");
                     html.Append("   <td colspan='2'>");
                     html.Append("   </td>");
-                    html.Append("   <td colspan='4'>");
+                    html.Append("   <td colspan='11'>");
 
                     if(RefundsGoodsID != 0)
                     {
@@ -526,9 +534,6 @@ namespace IM_PJ
                     {
                         html.Append("<span class='order-info'><strong>Ghi chú:</strong> " + item.OrderNote + "</span>");
                     }
-                    html.Append("   </td>");
-                    html.Append("   <td colspan='7'>");
-                    
                     html.Append("   </td>");
                     html.Append("</tr>");
                 }

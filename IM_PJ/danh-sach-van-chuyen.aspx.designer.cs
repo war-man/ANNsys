@@ -49,6 +49,15 @@ namespace IM_PJ {
         protected global::System.Web.UI.WebControls.DropDownList ddlPaymentType;
         
         /// <summary>
+        /// ddlCreatedDate control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList ddlCreatedDate;
+        
+        /// <summary>
         /// btnSearch control.
         /// </summary>
         /// <remarks>
@@ -67,15 +76,6 @@ namespace IM_PJ {
         protected global::System.Web.UI.WebControls.DropDownList ddlShipperFilter;
         
         /// <summary>
-        /// ddlCreatedDate control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlCreatedDate;
-        
-        /// <summary>
         /// ddlInvoiceStatus control.
         /// </summary>
         /// <remarks>
@@ -92,6 +92,15 @@ namespace IM_PJ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList ddlDeliveryStatusFilter;
+        
+        /// <summary>
+        /// ddlCreatedBy control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList ddlCreatedBy;
         
         /// <summary>
         /// ltrList control.
@@ -121,6 +130,33 @@ namespace IM_PJ {
         protected global::System.Web.UI.WebControls.DropDownList ddlDeliveryStatusModal;
         
         /// <summary>
+        /// ddlShipperModal control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList ddlShipperModal;
+        
+        /// <summary>
+        /// txtColOfOrd control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtColOfOrd;
+        
+        /// <summary>
+        /// txtCosOfDel control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtCosOfDel;
+        
+        /// <summary>
         /// uploadInvoiceImage control.
         /// </summary>
         /// <remarks>
@@ -137,33 +173,6 @@ namespace IM_PJ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.HiddenField hdfImageOld;
-        
-        /// <summary>
-        /// txtColOfOrd control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtColOfOrd;
-        
-        /// <summary>
-        /// ddlShipperModal control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlShipperModal;
-        
-        /// <summary>
-        /// txtCosOfDel control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtCosOfDel;
         
         /// <summary>
         /// txtNote control.

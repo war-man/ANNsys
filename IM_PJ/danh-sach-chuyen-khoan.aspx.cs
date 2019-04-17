@@ -264,7 +264,7 @@ namespace IM_PJ
             html.Append("    <th>Trạng thái</th>");
             html.Append("    <th>Tổng đơn</th>");
             html.Append("    <th>Đã nhận</th>");
-            html.Append("    <th>Thời gian chuyển</th>");
+            html.Append("    <th>Ngày nhận</th>");
             if (acc.RoleID == 0)
             {
                 html.Append("    <th>Nhân viên</th>");
@@ -317,7 +317,7 @@ namespace IM_PJ
                     TrTag.AppendLine(String.Format("data-statusid='{0:#}' ", item.TransferStatus));
                     TrTag.AppendLine(String.Format("data-statusname='{0}' ", item.StatusName));
                     TrTag.AppendLine(String.Format("data-price='{0:#}' ", Convert.ToDouble(item.TotalPrice - TotalRefund)));
-                    TrTag.AppendLine(String.Format("data-moneyreceived='{0:#}' ", item.MoneyReceive));
+                    TrTag.AppendLine(String.Format("data-moneyreceived='{0:#}' ", item.MoneyReceive != 0 ? item.MoneyReceive : Convert.ToDecimal(item.TotalPrice - TotalRefund)));
                     TrTag.AppendLine(String.Format("data-doneat='{0:yyyy-MM-dd HH:mm:ss}' ", item.DoneAt));
                     TrTag.AppendLine(String.Format("data-transfernote='{0}' ", item.TransferNote));
                     TrTag.AppendLine("/>");
@@ -348,7 +348,7 @@ namespace IM_PJ
                     if (item.TransferStatus == 1)
                     {
                         html.Append("   <td id='moneyReceive'><strong>" + String.Format("{0:#,###}", item.MoneyReceive) + "</strong></td>");
-                        html.Append("   <td id='doneAt'>" + String.Format("{0:dd/MM/yyyy HH:mm}", item.DoneAt) + "</td>");
+                        html.Append("   <td id='doneAt'>" + String.Format("{0:dd/MM HH:mm}", item.DoneAt) + "</td>");
                     }
                     else
                     {
@@ -360,7 +360,7 @@ namespace IM_PJ
                         html.Append("   <td>" + item.CreatedBy + "</td>");
                     }
                     html.Append("   <td>");
-                    html.Append("       <button type='button' class='btn btn-info btn-lg' data-toggle='modal' data-target='#TransferBankModal' data-backdrop='static' data-keyboard='false' title='Cập nhật thông tin chuyển khoản'><span class='glyphicon glyphicon-edit'></span></button>");
+                    html.Append("       <button type='button' class='btn primary-btn h45-btn' data-toggle='modal' data-target='#TransferBankModal' data-backdrop='static' data-keyboard='false' title='Cập nhật thông tin chuyển khoản'><span class='glyphicon glyphicon-edit'></span></button>");
                     html.Append("   </td>");
                     html.Append("</tr>");
 

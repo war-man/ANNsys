@@ -1,4 +1,4 @@
-﻿<%@ Page Title="Danh sách vận chuyển" Language="C#" MasterPageFile="~/MasterPage.Master" AutoEventWireup="true" CodeBehind="danh-sach-van-chuyen.aspx.cs" Inherits="IM_PJ.danh_sach_van_chuyen" EnableSessionState="ReadOnly" %>
+﻿<%@ Page Title="Danh sách giao hàng" Language="C#" MasterPageFile="~/MasterPage.Master" AutoEventWireup="true" CodeBehind="danh-sach-van-chuyen.aspx.cs" Inherits="IM_PJ.danh_sach_van_chuyen" EnableSessionState="ReadOnly" %>
 
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
@@ -12,13 +12,9 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
-                    <h3 class="page-title left">Danh sách đơn hàng 
-                        <span>(<asp:Literal ID="ltrNumberOfOrder" runat="server" EnableViewState="false"></asp:Literal>đơn)
+                    <h3 class="page-title left">Danh sách giao hàng  <span>(<asp:Literal ID="ltrNumberOfOrder" runat="server" EnableViewState="false"></asp:Literal> đơn)
                         </span>
                     </h3>
-                    <div class="right above-list-btn">
-                        <a href="/them-moi-don-hang" class="h45-btn primary-btn btn">Thêm mới</a>
-                    </div>
                 </div>
             </div>
             <div class="row">
@@ -31,12 +27,12 @@
                                 </div>
                                 <div class="col-md-2">
                                     <asp:DropDownList ID="ddlShippingType" runat="server" CssClass="form-control">
-                                        <asp:ListItem Value="0" Text="Giao hàng"></asp:ListItem>
+                                        <asp:ListItem Value="0" Text="Kiểu giao hàng"></asp:ListItem>
                                         <asp:ListItem Value="4" Text="Chuyển xe"></asp:ListItem>
                                         <asp:ListItem Value="5" Text="Nhân viên giao"></asp:ListItem>
                                     </asp:DropDownList>
                                 </div>
-                                <div class="col-md-3">
+                                <div class="col-md-2">
                                     <asp:DropDownList ID="ddlPaymentType" runat="server" CssClass="form-control">
                                         <asp:ListItem Value="0" Text="Kiểu thanh toán"></asp:ListItem>
                                         <asp:ListItem Value="1" Text="Tiền mặt"></asp:ListItem>
@@ -44,19 +40,6 @@
                                         <asp:ListItem Value="3" Text="Thu hộ"></asp:ListItem>
                                         <asp:ListItem Value="4" Text="Công nợ"></asp:ListItem>
                                     </asp:DropDownList>
-                                </div>
-                                <div class="col-md-1">
-                                    <a href="javascript:;" onclick="searchOrder()" class="btn primary-btn h45-btn"><i class="fa fa-search"></i></a>
-                                    <asp:Button ID="btnSearch" runat="server" CssClass="btn primary-btn h45-btn" OnClick="btnSearch_Click" Style="display: none" />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="filter-above-wrap clear">
-                        <div class="filter-control">
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <asp:DropDownList ID="ddlShipperFilter" runat="server" CssClass="form-control"></asp:DropDownList>
                                 </div>
                                 <div class="col-md-2">
                                     <asp:DropDownList ID="ddlCreatedDate" runat="server" CssClass="form-control">
@@ -72,20 +55,38 @@
                                         <asp:ListItem Value="30days" Text="30 ngày"></asp:ListItem>
                                     </asp:DropDownList>
                                 </div>
+                                <div class="col-md-1">
+                                    <a href="javascript:;" onclick="searchOrder()" class="btn primary-btn h45-btn"><i class="fa fa-search"></i></a>
+                                    <asp:Button ID="btnSearch" runat="server" CssClass="btn primary-btn h45-btn" OnClick="btnSearch_Click" Style="display: none" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="filter-above-wrap clear">
+                        <div class="filter-control">
+                            <div class="row">
+                                <div class="col-md-3">
+                                </div>
+                                <div class="col-md-2">
+                                    <asp:DropDownList ID="ddlShipperFilter" runat="server" CssClass="form-control"></asp:DropDownList>
+                                </div>
                                 <div class="col-md-2">
                                     <asp:DropDownList ID="ddlInvoiceStatus" runat="server" CssClass="form-control">
-                                        <asp:ListItem Value="0" Text="Phiếu gửi hàng"></asp:ListItem>
+                                        <asp:ListItem Value="0" Text="Biên nhận gửi hàng"></asp:ListItem>
                                         <asp:ListItem Value="1" Text="Có"></asp:ListItem>
                                         <asp:ListItem Value="2" Text="Không"></asp:ListItem>
                                     </asp:DropDownList>
                                 </div>
                                 <div class="col-md-2">
                                     <asp:DropDownList ID="ddlDeliveryStatusFilter" runat="server" CssClass="form-control">
-                                        <asp:ListItem Value="0" Text="Trạng thái vận chuyển"></asp:ListItem>
+                                        <asp:ListItem Value="0" Text="Trạng thái giao hàng"></asp:ListItem>
                                         <asp:ListItem Value="1" Text="Đã giao"></asp:ListItem>
                                         <asp:ListItem Value="2" Text="Chưa giao"></asp:ListItem>
                                         <asp:ListItem Value="3" Text="Đang giao"></asp:ListItem>
                                     </asp:DropDownList>
+                                </div>
+                                <div class="col-md-2">
+                                    <asp:DropDownList ID="ddlCreatedBy" runat="server" CssClass="form-control"></asp:DropDownList>
                                 </div>
                                 <div class="col-md-1">
                                     <a href="/danh-sach-van-chuyen" class="btn primary-btn h45-btn"><i class="fa fa-times" aria-hidden="true"></i></a>
@@ -123,84 +124,82 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal">&times;</button>
-                        <h4 class="modal-title">Cập nhật thông tin chuyển khoản</h4>
+                        <h4 class="modal-title">Cập nhật thông tin giao hàng</h4>
                     </div>
                     <div class="modal-body">
                         <asp:HiddenField ID="hdOrderID" runat="server" />
-                        <div class="row">
+                        <div class="row form-group">
                             <div class="col-xs-3">
                                 <p>Trạng thái</p>
                             </div>
                             <div class="col-xs-9">
                                 <asp:DropDownList ID="ddlDeliveryStatusModal" runat="server" CssClass="form-control">
-                                    <asp:ListItem Value="0" Text="Trạng thái vận chuyển"></asp:ListItem>
+                                    <asp:ListItem Value="0" Text="Trạng thái giao hàng"></asp:ListItem>
                                     <asp:ListItem Value="1" Text="Đã giao"></asp:ListItem>
                                     <asp:ListItem Value="2" Text="Chưa giao"></asp:ListItem>
                                     <asp:ListItem Value="3" Text="Đang giao"></asp:ListItem>
                                 </asp:DropDownList>
                             </div>
                         </div>
-                        <div class="row">
+                        <div class="row form-group">
                             <div class="col-xs-3">
-                                <p>Hóa đơn</p>
-                            </div>
-                            <div class="col-xs-9">
-                                <asp:FileUpload runat="server" ID="uploadInvoiceImage" onchange='showImageGallery(this,$(this));'/>
-                                <ul id="invoice-image"></ul>
-                                <asp:HiddenField ID="hdfImageOld" runat="server" />
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-xs-3">
-                                <p>Tiền thu hộ</p>
-                            </div>
-                            <div class="col-xs-9">
-                                <asp:TextBox ID="txtColOfOrd" runat="server" CssClass="form-control text-right" placeholder="Số tiền thu hộ" data-type="currency" onkeypress='return event.charCode >= 48 && event.charCode <= 57'></asp:TextBox>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-xs-3">
-                                <p>Shipper</p>
+                                <p>Người giao</p>
                             </div>
                             <div class="col-xs-9">
                                 <asp:DropDownList ID="ddlShipperModal" runat="server" CssClass="form-control"></asp:DropDownList>
                             </div>
                         </div>
-                        <div class="row">
+                        <div class="row form-group">
+                            <div class="col-xs-3">
+                                <p>Thu hộ</p>
+                            </div>
+                            <div class="col-xs-9">
+                                <asp:TextBox ID="txtColOfOrd" runat="server" CssClass="form-control text-right" placeholder="Số tiền thu hộ" data-type="currency" onkeypress='return event.charCode >= 48 && event.charCode <= 57'></asp:TextBox>
+                            </div>
+                        </div>
+                        <div class="row form-group">
                             <div class="col-xs-3">
                                 <p>Phí</p>
                             </div>
                             <div class="col-xs-9">
-                                <asp:TextBox ID="txtCosOfDel" runat="server" CssClass="form-control text-right" placeholder="Số tiền shipper" data-type="currency" onkeypress='return event.charCode >= 48 && event.charCode <= 57'></asp:TextBox>
+                                <asp:TextBox ID="txtCosOfDel" runat="server" CssClass="form-control text-right" placeholder="Phí vận chuyển" data-type="currency" onkeypress='return event.charCode >= 48 && event.charCode <= 57'></asp:TextBox>
                             </div>
                         </div>
-                        <div class="row">
+                        <div class="row form-group">
                             <div class="col-xs-3">
-                                <p>Thời gian chuyển</p>
+                                <p>Biên nhận</p>
                             </div>
                             <div class="col-xs-9">
-                                <div class="form-group">
-                                    <div class="input-group date" id="dtDoneAt">
-                                        <input type="text" class="form-control" />
-                                        <span class="input-group-addon">
-                                            <span class="glyphicon glyphicon-calendar"></span>
-                                        </span>
-                                    </div>
+                                <asp:FileUpload runat="server" ID="uploadInvoiceImage" disabled onchange='showImageGallery(this,$(this));'/>
+                                <ul id="invoice-image"></ul>
+                                <asp:HiddenField ID="hdfImageOld" runat="server" />
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <div class="col-xs-3">
+                                <p>Ngày giao</p>
+                            </div>
+                            <div class="col-xs-9">
+                                <div class="input-group date" id="dtDoneAt">
+                                    <input type="text" class="form-control" />
+                                    <span class="input-group-addon">
+                                        <span class="glyphicon glyphicon-calendar"></span>
+                                    </span>
                                 </div>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-xs-3">
-                                <p>Note</p>
+                                <p>Ghi chú</p>
                             </div>
                             <div class="col-xs-9">
-                                <asp:TextBox ID="txtNote" runat="server" CssClass="form-control text-left" placeholder="Chú thích" Rows="3" TextMode="MultiLine"></asp:TextBox>
+                                <asp:TextBox ID="txtNote" runat="server" CssClass="form-control text-left" placeholder="Ghi chú"></asp:TextBox>
                             </div>
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button id="closeDelivery" type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                        <button id="updateDelivery" type="button" class="btn btn-primary">Save changes</button>
+                        <button id="closeDelivery" type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
+                        <button id="updateDelivery" type="button" class="btn btn-primary">Lưu</button>
                     </div>
                 </div>
             </div>
@@ -224,41 +223,59 @@
 
                     // Init modal
                     pickerDOM.datetimepicker({
-                        format: 'YYYY-MM-DD hh:mm:ss',
+                        format: 'YYYY-MM-DD HH:mm:ss',
                         date: new Date()
                     });
 
                     // Không phải là thu hộ
-                    if (paymenttype != 3)
+                    if (paymenttype != 3){
                         colOfOrdDOM.parent().parent().attr("hidden", true);
-                    else
+                        colOfOrdDOM.val("");
+                    }
+                    else{
                         colOfOrdDOM.parent().parent().removeAttr("hidden");
+                        colOfOrdDOM.val(row.dataset["coloford"]);
+                    }
+                        
                     // Không phải hình thức nhân viên giao
-                    if (shippingtype != 5)
+                    if (shippingtype != 5){
                         cosOfDelDOM.parent().parent().attr("hidden", true);
-                    else
+                        cosOfDelDOM.val("");
+                    }
+                    else {
                         cosOfDelDOM.parent().parent().removeAttr("hidden");
+                        cosOfDelDOM.val(row.dataset["cosofdev"]);
+                    }
 
                     orderIDDOM.val(row.dataset["orderid"]);
                     $("#<%=uploadInvoiceImage.ClientID%>").val("");
                     $("#invoice-image").html("");
                     $("#<%=hdfImageOld.ClientID%>").val("");
+
                     if (row.dataset["invoiceimage"])
                     {
                         $("#<%=hdfImageOld.ClientID%>").val(row.dataset["invoiceimage"]);
                         addInvoiceImage(row.dataset["invoiceimage"]);
                     }
+
                     deliveryDOM.val(row.dataset["deliverystatus"]);
-                    colOfOrdDOM.val(row.dataset["coloford"]);
+                    
                     if (row.dataset["shipperid"])
                         shipperDOM.val(row.dataset["shipperid"]);
                     else
                         shipperDOM.val(0);
-                    cosOfDelDOM.val(row.dataset["cosofdev"]);
+                    
                     if (row.dataset["deliverydate"])
                         pickerDOM.data('date', row.dataset["deliverydate"])
                     noteDOM.val(row.dataset["shippernote"]);
 
+                    // xử lý khi chọn trạng thái giao hàng
+                    if (row.dataset["deliverystatus"] == "1") {
+                        $("#<%=uploadInvoiceImage.ClientID%>").prop('disabled', false);
+                    }
+                    else {
+                        $("#<%=uploadInvoiceImage.ClientID%>").prop('disabled', true);
+                    }
                 })
 
                 $("#updateDelivery").click(e => {
@@ -286,61 +303,104 @@
 
                     var fileData = new FormData();
                     fileData.append("ImageNew", invoiceImages.length > 0 ? invoiceImages[0] : null);
-                    fileData.append("Delivery", JSON.stringify(data))
+                    fileData.append("Delivery", JSON.stringify(data));
 
-                    $.ajax({
-                        url: "DeliveryHandler.ashx",
-                        type: "POST",
-                        data: fileData,
-                        contentType: false,
-                        processData: false,
-                        success: function (result) {
-                            let row = $("tr[data-orderid='" + orderID + "'");
-                            let deliveryStatusDom = row.children("#deliveryStatus").children("span");
-                            let shiperName = $("#<%=ddlShipperModal.ClientID%> :selected").text();
-                            let deliveryStatusName = $("#<%=ddlDeliveryStatusModal.ClientID%> :selected").text();
+                    if ((status == 1 || status == 3) && shipperID == 0) {
+                        swal("Thông báo", "Chưa chọn người giao hàng", "error");
+                    }
+                    else {
+                        $.ajax({
+                            url: "DeliveryHandler.ashx",
+                            type: "POST",
+                            data: fileData,
+                            contentType: false,
+                            processData: false,
+                            success: function (result) {
+                                let row = $("tr[data-orderid='" + orderID + "'");
+                                let deliveryStatusDom = row.children("#deliveryStatus").children("span");
+                                let shiperName = $("#<%=ddlShipperModal.ClientID%> :selected").text();
+                                let deliveryStatusName = $("#<%=ddlDeliveryStatusModal.ClientID%> :selected").text();
 
-                            // Update screen
-                            row.attr("data-shipperid", shipperID);
-                            row.attr("data-deliverystatus", status);
-                            row.attr("data-invoiceimage", result);
-                            row.attr("data-coloford", colOfOrd);
-                            row.attr("data-cosofdev", cosOfDel);
-                            row.attr("data-deliverydate", startAt);
-                            row.attr("data-shippernote", note);
+                                // Update screen
+                                row.attr("data-shipperid", shipperID);
+                                row.attr("data-deliverystatus", status);
+                                row.attr("data-invoiceimage", result);
+                                row.attr("data-coloford", colOfOrd);
+                                row.attr("data-cosofdev", cosOfDel);
+                                row.attr("data-deliverydate", startAt);
+                                row.attr("data-shippernote", note);
 
-                            if (shipperID == "0")
-                                row.children("#shiperName").html("");
-                            else
-                                row.children("#shiperName").html(shiperName);
-                            deliveryStatusDom.removeClass();
-                            switch(status)
-                            {
-                                case "1":
-                                    deliveryStatusDom.addClass("bg-green");
-                                    break;
-                                case "2":
-                                    deliveryStatusDom.addClass("bg-red");
-                                    break;
-                                case "3":
-                                    deliveryStatusDom.addClass("bg-blue");
-                                    break;
-                                default:
-                                    deliveryStatusName = "";
-                                    break;
+                                if (shipperID == "0")
+                                    row.children("#shiperName").html("");
+                                else
+                                    row.children("#shiperName").html(shiperName);
+
+                                deliveryStatusDom.removeClass();
+                                switch(status)
+                                {
+                                    case "1":
+                                        deliveryStatusDom.addClass("bg-green");
+                                        row.children("#delDate").html(formatDate(startAt));
+                                        row.children("#colOfOrd").children("strong").html(formatThousands(colOfOrd));
+                                        row.children("#cosOfDel").children("strong").html(formatThousands(cosOfDel));
+                                        if (row.children("#updateButton").find('#downloadInvoiceImage').length) {
+                                            row.find("#downloadInvoiceImage").show();
+                                            row.find("#downloadInvoiceImage").attr("href", result);
+                                        }
+                                        else {
+                                            row.children("#updateButton").append("<a id='downloadInvoiceImage' href='" + result + "' title='Biên nhận gửi hàng' target='_blank' class='btn primary-btn btn-blue h45-btn'><i class=\"fa fa-file-text-o\" aria-hidden=\"true\"></i></a>");
+                                        }
+                                        break;
+                                    case "2":
+                                        deliveryStatusDom.addClass("bg-red");
+                                        row.find("#downloadInvoiceImage").hide();
+                                        break;
+                                    case "3":
+                                        deliveryStatusDom.addClass("bg-blue");
+                                        row.find("#downloadInvoiceImage").hide();
+                                        break;
+                                    default:
+                                        deliveryStatusName = "";
+                                        break;
+                                }
+                                deliveryStatusDom.html(deliveryStatusName);
+
+                                $("#closeDelivery").click();
+                            },
+                            error: function (err) {
+                                swal("Thông báo", "Đã có vấn đề trong việc cập nhật thông tin vận chuyển", "error");
                             }
-                            deliveryStatusDom.html(deliveryStatusName);
-                            row.children("#colOfOrd").children("strong").html(colOfOrd)
-                            row.children("#cosOfDel").children("strong").html(cosOfDel)
-                            row.children("#delDate").html(startAt)
-                            $("#closeDelivery").click();
-                        },
-                        error: function (err) {
-                            swal("Thông báo", "Đã có vấn đề trong việc cập nhật thông tin vận chuyển", "error");
-                        }
-                    });
+                        });
+                    }
+                    
                 });
             });
+
+            $("#<%=ddlDeliveryStatusModal.ClientID%>").on('change', function() {
+                if (this.value == "1") {
+                    $("#<%=uploadInvoiceImage.ClientID%>").prop('disabled', false);
+                }
+                else {
+                    $("#<%=uploadInvoiceImage.ClientID%>").prop('disabled', true);
+                }
+            });
+
+            function clickImage() {
+                $("#<%=uploadInvoiceImage.ClientID%>").click();
+            }
+
+            function formatDate(dateString) {
+                var date = new Date(dateString);
+
+                var day = ('0' + date.getDate()).slice(-2);
+                var month = ('0' + (date.getMonth() + 1)).slice(-2);
+                var hours = date.getHours();
+                hours = hours < 10 ? '0' + hours : hours;
+                var minutes = date.getMinutes();
+                minutes = minutes < 10 ? '0' + minutes : minutes;
+
+                return day + '/' + month + ' ' + hours + ':' + minutes;
+            }
 
             // Parse URL Queries
             function url_query(query) {
@@ -495,14 +555,15 @@
                     }
                 });
             }
+
             function addInvoiceImage(src) {
                 let imageHTML = "";
-                imageHTML += "<liv>"
-                imageHTML += "    <image src='" + src + "' />"
+                imageHTML += "<li>"
+                imageHTML += "    <img onclick='clickImage()' src='" + src + "' />"
                 imageHTML += "    <a href='javascript:;' onclick='deleteImageGallery($(this))' class='btn-delete'>"
                 imageHTML += "        <i class='fa fa-times' aria-hidden='true'></i> Xóa hình"
                 imageHTML += "    </a>"
-                imageHTML += "</liv>"
+                imageHTML += "</li>"
                 $("#invoice-image").html(imageHTML);
             }
         </script>

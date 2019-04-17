@@ -31,6 +31,7 @@ namespace IM_PJ
 
                     if (acc != null)
                     {
+                        LoadShipper(agent);
                         if (acc.RoleID == 0)
                         {
                             LoadCreatedBy(agent);
@@ -52,8 +53,30 @@ namespace IM_PJ
                 LoadData();
             }
         }
-
         public void LoadCreatedBy(int AgentID, tbl_Account acc = null)
+        {
+            if (acc != null)
+            {
+                ddlCreatedBy.Items.Clear();
+                ddlCreatedBy.Items.Insert(0, new ListItem(acc.Username, acc.Username));
+            }
+            else
+            {
+                var CreateBy = AccountController.GetAllNotSearch();
+                ddlCreatedBy.Items.Clear();
+                ddlCreatedBy.Items.Insert(0, new ListItem("Nhân viên tạo đơn", ""));
+                if (CreateBy.Count > 0)
+                {
+                    foreach (var p in CreateBy)
+                    {
+                        ListItem listitem = new ListItem(p.Username, p.Username);
+                        ddlCreatedBy.Items.Add(listitem);
+                    }
+                    ddlCreatedBy.DataBind();
+                }
+            }
+        }
+        public void LoadShipper(int AgentID)
         {
             var shipper = ShipperController.getDropDownList();
             shipper[0].Text = "Nhân viên giao hàng";
@@ -78,7 +101,7 @@ namespace IM_PJ
                 int InvoiceStatus = 0;
                 int DeliveryStatus = 0;
                 string CreatedDate = "";
-
+                string CreatedBy = "";
                 if (Request.QueryString["textsearch"] != null)
                     TextSearch = Request.QueryString["textsearch"].Trim();
                 if (Request.QueryString["shippingtype"] != null)
@@ -93,23 +116,50 @@ namespace IM_PJ
                     DeliveryStatus = Request.QueryString["deliverystatus"].ToInt(0);
                 if (Request.QueryString["createddate"] != null)
                     CreatedDate = Request.QueryString["createddate"];
+                if (Request.QueryString["createdby"] != null)
+                    CreatedBy = Request.QueryString["createdby"];
 
                 txtSearchOrder.Text = TextSearch;
+                ddlShippingType.SelectedValue = ShipType.ToString();
+                ddlPaymentType.SelectedValue = PaymentType.ToString();
+                ddlShipperFilter.SelectedValue = ShipperID.ToString();
+                ddlInvoiceStatus.SelectedValue = InvoiceStatus.ToString();
+                ddlDeliveryStatusFilter.SelectedValue = DeliveryStatus.ToString();
                 ddlCreatedDate.SelectedValue = CreatedDate.ToString();
+                ddlCreatedBy.SelectedValue = CreatedBy.ToString();
 
                 List<OrderList> rs = new List<OrderList>();
                 rs = OrderController.Filter(
                     TextSearch, 
                     0,
+                    2,
                     0,
                     0,
                     PaymentType,
                     ShipType, // All
                     String.Empty, // All
-                    String.Empty, // All
-                    String.Empty, // ALL
-                    CreatedDate
+                    CreatedBy, // ALL
+                    CreatedDate,
+                    String.Empty,
+                    String.Empty
                 );
+
+                if (acc.RoleID == 0)
+                {
+                    hdfcreate.Value = "1";
+                    if (CreatedBy != "")
+                    {
+                        rs = rs.Where(x => x.CreatedBy == CreatedBy && x.ExcuteStatus != 4).ToList();
+                    }
+                    else
+                    {
+                        rs = rs.Where(x => x.ExcuteStatus != 4).ToList();
+                    }
+                }
+                else
+                {
+                    rs = rs.Where(x => x.CreatedBy == acc.Username && x.ExcuteStatus != 4).ToList();
+                }
 
                 if (ShipType == 0)
                     rs = rs.Where(x => x.ShippingType == 4 || x.ShippingType == 5).ToList();
@@ -117,6 +167,7 @@ namespace IM_PJ
                     rs = rs.Where(x => x.ShipperID == ShipperID).ToList();
                 if (DeliveryStatus != 0)
                     rs = rs.Where(x => x.DeliveryStatus == DeliveryStatus).ToList();
+
                 switch(InvoiceStatus)
                 {
                     case 1:
@@ -157,7 +208,7 @@ namespace IM_PJ
             html.Append("    <th>Tổng tiền</th>");
             html.Append("    <th>Đã thu</th>");
             html.Append("    <th>Phí</th>");
-            html.Append("    <th>Thời gian</th>");
+            html.Append("    <th>Ngày giao</th>");
             if (acc.RoleID == 0)
             {
                 html.Append("    <th>Nhân viên</th>");
@@ -206,9 +257,9 @@ namespace IM_PJ
                     TrTag.AppendLine(String.Format("data-shippingtype='{0}' ", item.ShippingType));
                     TrTag.AppendLine(String.Format("data-deliverystatus='{0}' ", item.DeliveryStatus));
                     TrTag.AppendLine(String.Format("data-invoiceimage='{0}' ", item.InvoiceImage));
-                    TrTag.AppendLine(String.Format("data-coloford='{0:#}' ", item.CollectionOfOrder));
+                    TrTag.AppendLine(String.Format("data-coloford='{0:#}' ", item.CollectionOfOrder != null ? item.CollectionOfOrder : Convert.ToDecimal(item.TotalPrice - TotalRefund) ));
                     TrTag.AppendLine(String.Format("data-shipperid='{0}' ", item.ShipperID));
-                    TrTag.AppendLine(String.Format("data-cosofdev='{0:#}' ", item.CostOfDelivery));
+                    TrTag.AppendLine(String.Format("data-cosofdev='{0:#}' ", item.CostOfDelivery != null ? item.CostOfDelivery :  Convert.ToDecimal(item.FeeShipping) ));
                     TrTag.AppendLine(String.Format("data-deliverydate='{0:yyyy-MM-dd HH:mm:ss}' ", item.DeliveryDate));
                     TrTag.AppendLine(String.Format("data-shippernote='{0}' ", item.ShipNote));
                     TrTag.AppendLine("/>");
@@ -239,11 +290,15 @@ namespace IM_PJ
                         html.Append("   <td id='cosOfDel'><strong>" + String.Format("{0:#,###}", item.CostOfDelivery) + "</strong></td>");
                     else
                         html.Append("   <td></td>");
-                    html.Append("   <td id='delDate'><strong>" + String.Format("{0:dd/MM/yyyy HH:mm:ss}", item.DeliveryDate) + "</strong></td>");
+                    html.Append("   <td id='delDate'>" + String.Format("{0:dd/MM HH:mm}", item.DeliveryDate) + "</td>");
                     if (acc.RoleID == 0)
                         html.Append("   <td>" + item.CreatedBy + "</td>");
-                    html.Append("   <td>");
-                    html.Append("       <button type='button' class='btn btn-info btn-lg' data-toggle='modal' data-target='#TransferBankModal' data-backdrop='static' data-keyboard='false' title='Cập nhật thông tin chuyển khoản'><span class='glyphicon glyphicon-edit'></span></button>");
+                    html.Append("   <td id='updateButton'>");
+                    html.Append("       <button type='button' class='btn primary-btn h45-btn' data-toggle='modal' data-target='#TransferBankModal' data-backdrop='static' data-keyboard='false' title='Cập nhật thông tin chuyển khoản'><span class='glyphicon glyphicon-edit'></span></button>");
+                    if (item.DeliveryStatus == 1 && !string.IsNullOrEmpty(item.InvoiceImage))
+                    {
+                        html.Append("       <a id='downloadInvoiceImage' href='" + item.InvoiceImage + "' title='Biên nhận gửi hàng' target='_blank' class='btn primary-btn btn-blue h45-btn'><i class=\"fa fa-file-text-o\" aria-hidden=\"true\"></i></a>");
+                    }
                     html.Append("   </td>");
                     html.Append("</tr>");
 
@@ -269,19 +324,6 @@ namespace IM_PJ
                     if (item.FeeShipping > 0)
                     {
                         html.Append("<span class='order-info'><strong>Phí vận chuyển:</strong> " + string.Format("{0:N0}", Convert.ToDouble(item.FeeShipping)) + "</span>");
-                    }
-                    if (!string.IsNullOrEmpty(item.ShippingCode))
-                    {
-                        string moreInfo = "";
-                        if (item.ShippingType == 3)
-                        {
-                            moreInfo = " (<a href='https://proship.vn/quan-ly-van-don/?isInvoiceFilter=1&amp;generalInfo=" + item.ShippingCode + "' target='_blank'>Xem</a>)";
-                        }
-                        if (item.ShippingType == 2)
-                        {
-                            moreInfo = " (Chuyển " + ((item.PostalDeliveryType == 1) ? "thường" : "nhanh") + ")";
-                        }
-                        html.Append("<span class='order-info'><strong>Mã vận đơn:</strong> " + item.ShippingCode + moreInfo + "</span>");
                     }
                     if (item.ShippingType == 4)
                     {
@@ -474,6 +516,9 @@ namespace IM_PJ
 
             if (ddlCreatedDate.SelectedValue != "")
                 request += "&createddate=" + ddlCreatedDate.SelectedValue;
+
+            if (ddlCreatedBy.SelectedValue != "")
+                request += "&createdby=" + ddlCreatedBy.SelectedValue;
 
             Response.Redirect(request);
         }

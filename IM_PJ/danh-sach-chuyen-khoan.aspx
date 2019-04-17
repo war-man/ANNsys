@@ -182,7 +182,7 @@
                                 <p>Ghi chú</p>
                             </div>
                             <div class="col-xs-9">
-                                <asp:TextBox ID="txtNote" runat="server" CssClass="form-control text-left" placeholder="Chú thích" Rows="2" TextMode="MultiLine"></asp:TextBox>
+                                <asp:TextBox ID="txtNote" runat="server" CssClass="form-control text-left" placeholder="Ghi chú"></asp:TextBox>
                             </div>
                         </div>
                     </div>
@@ -215,18 +215,8 @@
                         date: new Date()
                     });
 
-                    // Money receive
-                    let moneyReceive = row.dataset["moneyreceived"]
-                    if (moneyReceive)
-                    {
-                        moneyReceivedDOM.val(formatThousands(row.dataset["moneyreceived"]));
-                    }
-                    else
-                    {
-                        moneyReceivedDOM.val("")
-                    }
-
                     let status = row.dataset["statusid"];
+
                     // Đã nhận tiền
                     if (status && status == 1) {
                         moneyReceivedDOM.removeAttr("disabled");
@@ -239,8 +229,10 @@
                         pickerDOM.val(row.dataset["doneat"]);
                     }
                     else {
+                        moneyReceivedDOM.val("");
                         moneyReceivedDOM.attr("disabled", true);
                     }
+
                     statusDOM.val(status)
                     priceDOM.val(formatThousands(row.dataset["price"]))
 
@@ -305,6 +297,9 @@
                     let accBankID = $("#<%=ddlAccoutBank.ClientID%>").val();
                     let status = $("#<%=ddlStatus.ClientID%>").val();
                     let money = $("#<%=txtMoneyReceived.ClientID%>").val().replace(/\,/g, '');
+                    if (money == "") {
+                        money = $("#<%=txtPrice.ClientID%>").val().replace(/\,/g, '');
+                    }
                     let doneAt = $("#dtDoneAt").data('date');
                     let note = $("#<%=txtNote.ClientID%>").val();
 
@@ -317,69 +312,90 @@
                         'Status': status,
                         'Note': note
                     };
-                    $.ajax({
-                        type: "POST",
-                        url: "/danh-sach-chuyen-khoan.aspx/updateTransfer",
-                        data: JSON.stringify({'transfer': data}),
-                        contentType: "application/json; charset=utf-8",
-                        dataType: "json",
-                        success: function (msg) {
-                            let row = $("tr[data-orderid='" + orderID + "'");
-                            let statusNameDOM = row.find('#statusName');
-                            let cusBankName = $("#<%=ddlCustomerBank.ClientID%> :selected").text();
-                            let accBankName = $("#<%=ddlAccoutBank.ClientID%> :selected").text();
-                            let statusName = $("#<%=ddlStatus.ClientID%> :selected").text();
 
-                            // Update screen
-                            row.attr("data-cusbankid", cusBankID);
-                            row.attr("data-cusbankname", cusBankName);
-                            row.attr("data-accbankid", accBankID);
-                            row.attr("data-accbankname", accBankName);
-                            row.attr("data-statusid", status);
-                            row.attr("data-statusname", statusName);
-                            row.attr("data-moneyreceived", money);
-                            row.attr("data-doneat", doneAt);
-                            row.attr("data-transfernote", note);
-                            if ($("#<%=ddlCustomerBank.ClientID%>").val() != 0) {
-                                row.find('#cusBankName').html(cusBankName);
-                            }
-                            if ($("#<%=ddlAccoutBank.ClientID%>").val() != 0) {
-                                row.find('#accBankName').html(accBankName);
-                            }
+                    if (status == 1 && (cusBankID == 0 || accBankID == 0)) {
+                        swal("Thông báo", "Chưa chọn ngân hàng", "error");
+                    }
+                    else {
+                        $.ajax({
+                            type: "POST",
+                            url: "/danh-sach-chuyen-khoan.aspx/updateTransfer",
+                            data: JSON.stringify({'transfer': data}),
+                            contentType: "application/json; charset=utf-8",
+                            dataType: "json",
+                            success: function (msg) {
+                                let row = $("tr[data-orderid='" + orderID + "'");
+                                let statusNameDOM = row.find('#statusName');
+                                let cusBankName = $("#<%=ddlCustomerBank.ClientID%> :selected").text();
+                                let accBankName = $("#<%=ddlAccoutBank.ClientID%> :selected").text();
+                                let statusName = $("#<%=ddlStatus.ClientID%> :selected").text();
+
+                                // Update screen
+                                row.attr("data-cusbankid", cusBankID);
+                                row.attr("data-cusbankname", cusBankName);
+                                row.attr("data-accbankid", accBankID);
+                                row.attr("data-accbankname", accBankName);
+                                row.attr("data-statusid", status);
+                                row.attr("data-statusname", statusName);
+                                row.attr("data-moneyreceived", money);
+                                row.attr("data-doneat", doneAt);
+                                row.attr("data-transfernote", note);
+                                if ($("#<%=ddlCustomerBank.ClientID%>").val() != 0) {
+                                    row.find('#cusBankName').html(cusBankName);
+                                }
+                                if ($("#<%=ddlAccoutBank.ClientID%>").val() != 0) {
+                                    row.find('#accBankName').html(accBankName);
+                                }
                             
-                            statusNameDOM.children("span").html(statusName);
+                                statusNameDOM.children("span").html(statusName);
 
-                            // Đã nhận tiền
-                            if (status == 1)
-                            {
-                                statusNameDOM.children("span").removeClass();
-                                statusNameDOM.children("span").addClass("bg-green");
-                                if (money)
+                                // Đã nhận tiền
+                                if (status == 1)
                                 {
-                                    row.find('#moneyReceive').html(formatThousands(money));
+                                    statusNameDOM.children("span").removeClass();
+                                    statusNameDOM.children("span").addClass("bg-green");
+                                    if (money)
+                                    {
+                                        row.find('#moneyReceive').html('<strong>' + formatThousands(money) + '</strong>');
+                                    }
+                                    else
+                                    {
+                                        row.find('#moneyReceive').html("");
+                                    }
+                                    row.find('#doneAt').html(formatDate(doneAt));
                                 }
                                 else
                                 {
+                                    statusNameDOM.children("span").removeClass();
+                                    statusNameDOM.children("span").addClass("bg-red");
                                     row.find('#moneyReceive').html("");
+                                    row.find('#doneAt').html("");
                                 }
-                                row.find('#doneAt').html(doneAt);
-                            }
-                            else
-                            {
-                                statusNameDOM.children("span").removeClass();
-                                statusNameDOM.children("span").addClass("bg-red");
-                                row.find('#moneyReceive').html("");
-                                row.find('#doneAt').html("");
-                            }
 
-                            $("#closeTransfer").click();
-                        },
-                        error: function (xmlhttprequest, textstatus, errorthrow) {
-                            swal("Thông báo", "Đã có vấn đề trong việc cập nhật thông tin chuyển khoản", "error");
-                        }
-                    });
+                                $("#closeTransfer").click();
+                            },
+                            error: function (xmlhttprequest, textstatus, errorthrow) {
+                                swal("Thông báo", "Đã có vấn đề trong việc cập nhật thông tin chuyển khoản", "error");
+                            }
+                        });
+                    }
+                    
                 });
             });
+
+
+            function formatDate(dateString) {
+                var date = new Date(dateString);
+
+                var day = ('0' + date.getDate()).slice(-2);
+                var month = ('0' + (date.getMonth() + 1)).slice(-2);
+                var hours = date.getHours();
+                hours = hours < 10 ? '0' + hours : hours;
+                var minutes = date.getMinutes();
+                minutes = minutes < 10 ? '0' + minutes : minutes;
+
+                return day + '/' + month + ' ' + hours + ':' + minutes;
+            }
 
             // Parse URL Queries
             function url_query(query) {

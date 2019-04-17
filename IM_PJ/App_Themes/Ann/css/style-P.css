@@ -1,4 +1,7 @@
-﻿.account-note {
+﻿#invoice-image img {
+    cursor: pointer;
+}
+.account-note {
     background: #fff;
     position: fixed;
     left: 165px;
@@ -395,6 +398,9 @@ a.bg-button:hover {
 }
 .btn-black {
     background-color: #686868!important;
+}
+.btn-blue {
+    background-color: #428bca!important;
 }
 .sku-input {
     text-transform: uppercase;
