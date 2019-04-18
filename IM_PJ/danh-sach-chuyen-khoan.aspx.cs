@@ -59,7 +59,7 @@ namespace IM_PJ
             {
                 var CreateBy = AccountController.GetAllNotSearch();
                 ddlCreatedBy.Items.Clear();
-                ddlCreatedBy.Items.Insert(0, new ListItem("Nhân viên", ""));
+                ddlCreatedBy.Items.Insert(0, new ListItem("Nhân viên tạo đơn", ""));
                 if (CreateBy.Count > 0)
                 {
                     foreach (var p in CreateBy)
@@ -102,7 +102,6 @@ namespace IM_PJ
             var acc = AccountController.GetByUsername(username);
             if (acc != null)
             {
-                int OrderType = 0;
                 int TransferStatus = 0;
                 int ExcuteStatus = 0;
                 int BankReceive = 0;
@@ -114,10 +113,6 @@ namespace IM_PJ
                 if (Request.QueryString["textsearch"] != null)
                 {
                     TextSearch = Request.QueryString["textsearch"].Trim();
-                }
-                if (Request.QueryString["ordertype"] != null)
-                {
-                    OrderType = Request.QueryString["ordertype"].ToInt(0);
                 }
                 if (Request.QueryString["transferstatus"] != null)
                 {
@@ -131,6 +126,10 @@ namespace IM_PJ
                 {
                     CreatedBy = Request.QueryString["createdby"];
                 }
+                if (Request.QueryString["createddate"] != null)
+                {
+                    CreatedDate = Request.QueryString["createddate"];
+                }
                 if (Request.QueryString["transferdoneat"] != null)
                 {
                     TransferDoneAt = Request.QueryString["transferdoneat"];
@@ -141,15 +140,17 @@ namespace IM_PJ
                 }
 
                 txtSearchOrder.Text = TextSearch;
-                ddlOrderType.SelectedValue = OrderType.ToString();
                 ddlTransferStatus.SelectedValue = TransferStatus.ToString();
+                ddlExcuteStatus.SelectedValue = ExcuteStatus.ToString();
                 ddlBankReceive.SelectedValue = BankReceive.ToString();
                 ddlCreatedBy.SelectedValue = CreatedBy.ToString();
+                ddlCreatedDate.SelectedValue = CreatedDate.ToString();
                 ddlTransferDoneAt.SelectedValue = TransferDoneAt.ToString();
 
                 List<OrderList> rs = new List<OrderList>();
                 rs = OrderController.Filter(
-                    TextSearch, OrderType,
+                    TextSearch, 
+                    0,
                     ExcuteStatus,
                     0,
                     TransferStatus,
@@ -253,15 +254,16 @@ namespace IM_PJ
             StringBuilder html = new StringBuilder();
             html.Append("<tr>");
             html.Append("    <th>Mã</th>");
-            html.Append("    <th>Loại</th>");
             html.Append("    <th class='col-customer'>Khách hàng</th>");
             html.Append("    <th>Mua</th>");
+            html.Append("    <th>Xử lý đơn</th>");
             html.Append("    <th>Chuyển từ</th>");
             html.Append("    <th>Tài khoản nhận</th>");
             html.Append("    <th>Trạng thái</th>");
             html.Append("    <th>Tổng đơn</th>");
             html.Append("    <th>Đã nhận</th>");
-            html.Append("    <th>Ngày nhận</th>");
+            html.Append("    <th>Ngày nhận tiền</th>");
+            html.Append("    <th>Hoàn tất đơn</th>");
             if (acc.RoleID == 0)
             {
                 html.Append("    <th>Nhân viên</th>");
@@ -308,7 +310,6 @@ namespace IM_PJ
 
                     html.Append(TrTag.ToString());
                     html.Append("   <td><a href=\"/thong-tin-don-hang?id=" + item.ID + "\">" + item.ID + "</a></td>");
-                    html.Append("   <td>" + PJUtils.OrderTypeStatus(Convert.ToInt32(item.OrderType)) + "</td>");
                     if (!string.IsNullOrEmpty(item.Nick))
                     {
                         html.Append("   <td><a class=\"col-customer-name-link\" href=\"/thong-tin-don-hang?id=" + item.ID + "\">" + item.Nick.ToTitleCase() + "</a><br><span class=\"name-bottom-nick\">(" + item.CustomerName.ToTitleCase() + ")</span></td>");
@@ -318,6 +319,7 @@ namespace IM_PJ
                         html.Append("   <td><a class=\"col-customer-name-link\" href=\"/thong-tin-don-hang?id=" + item.ID + "\">" + item.CustomerName.ToTitleCase() + "</a></td>");
                     }
                     html.Append("   <td>" + item.Quantity + "</td>");
+                    html.Append("   <td>" + PJUtils.OrderExcuteStatus(Convert.ToInt32(item.ExcuteStatus)) + "</td>");
                     html.Append("   <td id='cusBankName'>" + item.CusBankName + "</td>");
                     html.Append("   <td id='accBankName'>" + item.AccBankName + "</td>");
                     if (item.TransferStatus == 1)
@@ -339,6 +341,14 @@ namespace IM_PJ
                         html.Append("   <td id='moneyReceive'></td>");
                         html.Append("   <td id='doneAt'></td>");
                     }
+
+                    string datedone = "";
+                    if (item.ExcuteStatus == 2)
+                    {
+                        datedone = string.Format("{0:dd/MM}", item.DateDone);
+                    }
+                    html.Append("   <td>" + datedone + "</td>");
+
                     if (acc.RoleID == 0)
                     {
                         html.Append("   <td>" + item.CreatedBy + "</td>");
@@ -350,9 +360,9 @@ namespace IM_PJ
 
                     // thông tin thêm
                     html.Append("<tr class='tr-more-info'>");
-                    html.Append("   <td colspan='2'>");
+                    html.Append("   <td colspan='1'>");
                     html.Append("   </td>");
-                    html.Append("   <td colspan='11'>");
+                    html.Append("   <td colspan='12'>");
 
                     if (item.TotalRefund != 0)
                     {
@@ -561,9 +571,9 @@ namespace IM_PJ
                 request += "&textsearch=" + search;
             }
 
-            if (ddlOrderType.SelectedValue != "")
+            if (ddlExcuteStatus.SelectedValue != "")
             {
-                request += "&ordertype=" + ddlOrderType.SelectedValue;
+                request += "&excutestatus=" + ddlExcuteStatus.SelectedValue;
             }
 
             if (ddlTransferStatus.SelectedValue != "")
@@ -574,6 +584,11 @@ namespace IM_PJ
             if (ddlCreatedBy.SelectedValue != "")
             {
                 request += "&createdby=" + ddlCreatedBy.SelectedValue;
+            }
+
+            if (ddlCreatedDate.SelectedValue != "")
+            {
+                request += "&createddate=" + ddlCreatedDate.SelectedValue;
             }
 
             if (ddlTransferDoneAt.SelectedValue != "")
