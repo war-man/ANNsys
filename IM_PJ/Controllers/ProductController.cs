@@ -702,9 +702,7 @@ namespace IM_PJ.Controllers
                 }
                 else
                 {
-                    // luôn cho kho = 10 để khi đồng bộ sản phẩm thì trạng thái là còn hàng
-                    quantityLeft = 10;
-
+                    
                     // check show homepage
 
                     if (showHomePage == 1)
@@ -756,11 +754,11 @@ namespace IM_PJ.Controllers
                         }
                     }
                     
-                        
+                    // get SKU
                     if (reader["ProductSKU"] != DBNull.Value)
                         entity.ProductSKU = reader["ProductSKU"].ToString();
 
-
+                    // sản phẩm đã nhập kho
                     if (reader["QuantityLeft"] != DBNull.Value)
                     {
                         quantityLeft = Convert.ToDouble(reader["QuantityLeft"]);
@@ -776,7 +774,9 @@ namespace IM_PJ.Controllers
                     }
                     else
                     {
-                        entity.StockStatus = 3;
+                        // Sản phẩm chưa nhập kho thì cho kho = 1 để khi đồng bộ sản phẩm thì trạng thái là còn hàng
+                        quantityLeft = 1;
+                        entity.StockStatus = 1;
                     }
 
                     entity.TotalProductInstockQuantityLeft = quantityLeft;

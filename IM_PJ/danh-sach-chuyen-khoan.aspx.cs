@@ -161,7 +161,8 @@ namespace IM_PJ
                     CreatedBy,
                     CreatedDate,
                     TransferDoneAt,
-                    0
+                    0,
+                    ""
                 );
 
                 if (acc.RoleID == 0)
@@ -304,7 +305,7 @@ namespace IM_PJ
                     TrTag.AppendLine(String.Format("data-statusname='{0}' ", item.StatusName));
                     TrTag.AppendLine(String.Format("data-price='{0:#}' ", Convert.ToDouble(item.TotalPrice - item.TotalRefund)));
                     TrTag.AppendLine(String.Format("data-moneyreceived='{0:#}' ", item.MoneyReceive != 0 ? item.MoneyReceive : Convert.ToDecimal(item.TotalPrice - item.TotalRefund)));
-                    TrTag.AppendLine(String.Format("data-doneat='{0:yyyy-MM-dd HH:mm:ss}' ", item.DoneAt));
+                    TrTag.AppendLine(String.Format("data-doneat='{0:dd/MM/yyyy HH:mm}' ", item.DoneAt));
                     TrTag.AppendLine(String.Format("data-transfernote='{0}' ", item.TransferNote));
                     TrTag.AppendLine("/>");
 

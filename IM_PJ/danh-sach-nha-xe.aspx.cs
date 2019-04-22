@@ -205,7 +205,7 @@ namespace IM_PJ
                     String rowHtml = String.Empty;
 
                     rowHtml += Environment.NewLine + String.Format("<tr>");
-                    rowHtml += Environment.NewLine + String.Format("    <td class=\"customer-name-link\"><a href=\"/sua-thong-tin-nha-xe?id={0}\">{1}</a></td>", company.ID, company.CompanyName.ToTitleCase());
+                    rowHtml += Environment.NewLine + String.Format("    <td class=\"customer-name-link\"><a href=\"/chi-tiet-nha-xe?id={0}\">{1}</a></td>", company.ID, company.CompanyName.ToTitleCase());
                     rowHtml += Environment.NewLine + String.Format("    <td>{0}</td>", company.CompanyPhone);
                     rowHtml += Environment.NewLine + String.Format("    <td>{0}</td>", company.CompanyAddress.ToTitleCase());
                     rowHtml += Environment.NewLine + String.Format("    <td>{0}</td>", company.Prepay ? "Trả trước" : "Trả sau");

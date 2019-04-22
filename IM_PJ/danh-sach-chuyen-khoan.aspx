@@ -73,6 +73,9 @@
                                     </asp:DropDownList>
                                 </div>
                                 <div class="col-md-2">
+                                    <asp:DropDownList ID="ddlBankReceive" runat="server" CssClass="form-control"></asp:DropDownList>
+                                </div>
+                                <div class="col-md-2">
                                     <asp:DropDownList ID="ddlTransferDoneAt" runat="server" CssClass="form-control">
                                         <asp:ListItem Value="" Text="Thời gian nhận tiền"></asp:ListItem>
                                         <asp:ListItem Value="today" Text="Hôm nay"></asp:ListItem>
@@ -85,9 +88,6 @@
                                         <asp:ListItem Value="beforelastmonth" Text="Tháng trước nữa"></asp:ListItem>
                                         <asp:ListItem Value="30days" Text="30 ngày"></asp:ListItem>
                                     </asp:DropDownList>
-                                </div>
-                                <div class="col-md-2">
-                                    <asp:DropDownList ID="ddlBankReceive" runat="server" CssClass="form-control"></asp:DropDownList>
                                 </div>
                                 <div class="col-md-1">
                                     <a href="/danh-sach-chuyen-khoan" class="btn primary-btn h45-btn"><i class="fa fa-times" aria-hidden="true"></i></a>
@@ -228,7 +228,7 @@
 
                     orderIDDOM.val(row.dataset["orderid"]);
                     pickerDOM.datetimepicker({
-                        format: 'YYYY-MM-DD HH:mm:ss',
+                        format: 'DD/MM/YYYY HH:mm',
                         date: new Date()
                     });
 
@@ -252,6 +252,11 @@
 
                     statusDOM.val(status)
                     priceDOM.val(formatThousands(row.dataset["price"]))
+
+                    if (row.dataset["doneat"])
+                        pickerDOM.data("DateTimePicker").date(row.dataset["doneat"]);
+                    else
+                        pickerDOM.data("DateTimePicker").date(moment(new Date).format('DD/MM/YYYY HH:mm'));
 
                     // Note
                     noteDOM.val(row.dataset["transfernote"]);
@@ -325,7 +330,7 @@
                         'CusBankID': cusBankID,
                         'AccBankID': accBankID,
                         'Money': money ? money : 0,
-                        'DoneAt': doneAt,
+                        'DoneAt': formatDateToInsert(doneAt),
                         'Status': status,
                         'Note': note
                     };
@@ -400,18 +405,20 @@
                 });
             });
 
+            function formatDateToInsert(dateString) {
+                var date = dateString.split(' ');
+                var datetmp = date[0].split('/');
+                var hourtmp = date[1].split(':');
+
+                return datetmp[2] + '-' + datetmp[1] + '-' + datetmp[0] + ' ' + hourtmp[0] + ':' + hourtmp[1] + ':00';
+            }
 
             function formatDate(dateString) {
-                var date = new Date(dateString);
+                var date = dateString.split(' ');
+                var datetmp = date[0].split('/');
+                var hourtmp = date[1].split(':');
 
-                var day = ('0' + date.getDate()).slice(-2);
-                var month = ('0' + (date.getMonth() + 1)).slice(-2);
-                var hours = date.getHours();
-                hours = hours < 10 ? '0' + hours : hours;
-                var minutes = date.getMinutes();
-                minutes = minutes < 10 ? '0' + minutes : minutes;
-
-                return day + '/' + month + ' ' + hours + ':' + minutes;
+                return datetmp[0] + '/' + datetmp[1] + ' ' + hourtmp[0] + ':' + hourtmp[1];
             }
 
             // Parse URL Queries

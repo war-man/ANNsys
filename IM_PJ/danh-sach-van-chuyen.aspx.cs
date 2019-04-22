@@ -109,20 +109,21 @@ namespace IM_PJ
             {
                 string TextSearch = "";
                 int TransportCompany = 0;
-                int ShipType = 0;
+                int ShippingType = 0;
                 int PaymentType = 0;
                 int ShipperID = 0;
                 int InvoiceStatus = 0;
                 int DeliveryStatus = 0;
                 string CreatedDate = "";
                 string CreatedBy = "";
+                string DeliveryStartAt = "";
 
                 if (Request.QueryString["textsearch"] != null)
                     TextSearch = Request.QueryString["textsearch"].Trim();
                 if (Request.QueryString["transportcompany"] != null)
                     TransportCompany = Request.QueryString["transportcompany"].ToInt(0);
                 if (Request.QueryString["shippingtype"] != null)
-                    ShipType = Request.QueryString["shippingtype"].ToInt(0);
+                    ShippingType = Request.QueryString["shippingtype"].ToInt(0);
                 if (Request.QueryString["paymenttype"] != null)
                     PaymentType = Request.QueryString["paymenttype"].ToInt(0);
                 if (Request.QueryString["shipperid"] != null)
@@ -135,32 +136,37 @@ namespace IM_PJ
                     CreatedDate = Request.QueryString["createddate"];
                 if (Request.QueryString["createdby"] != null)
                     CreatedBy = Request.QueryString["createdby"];
+                if (Request.QueryString["deliverystartat"] != null)
+                    DeliveryStartAt = Request.QueryString["deliverystartat"];
 
                 txtSearchOrder.Text = TextSearch;
                 ddlTransportCompany.SelectedValue = TransportCompany.ToString();
-                ddlShippingType.SelectedValue = ShipType.ToString();
+                ddlShippingType.SelectedValue = ShippingType.ToString();
                 ddlPaymentType.SelectedValue = PaymentType.ToString();
                 ddlShipperFilter.SelectedValue = ShipperID.ToString();
                 ddlInvoiceStatus.SelectedValue = InvoiceStatus.ToString();
                 ddlDeliveryStatusFilter.SelectedValue = DeliveryStatus.ToString();
                 ddlCreatedDate.SelectedValue = CreatedDate.ToString();
                 ddlCreatedBy.SelectedValue = CreatedBy.ToString();
+                ddlCreatedBy.SelectedValue = CreatedBy.ToString();
+                ddlDeliveryStartAt.SelectedValue = DeliveryStartAt.ToString();
 
                 List<OrderList> rs = new List<OrderList>();
                 rs = OrderController.Filter(
                     TextSearch, 
-                    0,
-                    2,
-                    0,
-                    0,
-                    PaymentType,
-                    ShipType, // All
-                    String.Empty, // All
-                    CreatedBy, // ALL
-                    CreatedDate,
-                    String.Empty,
-                    String.Empty,
-                    TransportCompany
+                    0, // Ordertype
+                    2, // Excutestatus
+                    0, // PaymentStatus
+                    0, // TransferStatus
+                    PaymentType, // PaymentType
+                    ShippingType, // ShippingType All
+                    String.Empty, // Discount All
+                    String.Empty, // OtherFee
+                    CreatedBy, // CreatedBy
+                    CreatedDate, // CreatedDate
+                    String.Empty, // TransferDoneAt
+                    TransportCompany, // TransportCompany
+                    DeliveryStartAt // DeliveryStartAt
                 );
 
                 if (acc.RoleID == 0)
@@ -180,7 +186,7 @@ namespace IM_PJ
                     rs = rs.Where(x => x.CreatedBy == acc.Username && x.ExcuteStatus != 4).ToList();
                 }
 
-                if (ShipType == 0)
+                if (ShippingType == 0)
                     rs = rs.Where(x => x.ShippingType == 4 || x.ShippingType == 5).ToList();
                 if (ShipperID != 0)
                     rs = rs.Where(x => x.ShipperID == ShipperID).ToList();
@@ -228,6 +234,8 @@ namespace IM_PJ
             html.Append("    <th>Đã thu</th>");
             html.Append("    <th>Phí</th>");
             html.Append("    <th>Ngày giao</th>");
+            html.Append("    <th>Hoàn tất đơn</th>");
+
             if (acc.RoleID == 0)
             {
                 html.Append("    <th>Nhân viên</th>");
@@ -266,7 +274,7 @@ namespace IM_PJ
                     TrTag.AppendLine(String.Format("data-coloford='{0:#}' ", item.CollectionOfOrder != null ? item.CollectionOfOrder : Convert.ToDecimal(item.TotalPrice - item.TotalRefund) ));
                     TrTag.AppendLine(String.Format("data-shipperid='{0}' ", item.ShipperID));
                     TrTag.AppendLine(String.Format("data-cosofdev='{0:#}' ", item.CostOfDelivery != null ? item.CostOfDelivery :  Convert.ToDecimal(item.FeeShipping) ));
-                    TrTag.AppendLine(String.Format("data-deliverydate='{0:yyyy-MM-dd HH:mm:ss}' ", item.DeliveryDate));
+                    TrTag.AppendLine(String.Format("data-deliverydate='{0:dd/MM/yyyy HH:mm}' ", item.DeliveryDate));
                     TrTag.AppendLine(String.Format("data-shippernote='{0}' ", item.ShipNote));
                     TrTag.AppendLine("/>");
 
@@ -285,20 +293,31 @@ namespace IM_PJ
                     html.Append("   <td>" + PJUtils.PaymentType(Convert.ToInt32(item.PaymentType)) + "</td>");
                     html.Append("   <td id='shiperName'>" + item.ShipperName + "</td>");
                     html.Append("   <td id='deliveryStatus'>" + PJUtils.DeliveryStatus(Convert.ToInt32(item.DeliveryStatus)) + "</td>");
+                    // Tổng đơn hàng
                     html.Append("   <td><strong>" + String.Format("{0:#,###}", Convert.ToDouble(item.TotalPrice - item.TotalRefund)) + "</strong></td>");
-                    // Thu hộ
-                    if (item.PaymentType == 3)
+                    // Số tiền đã thu chỉ hiện khi thanh toán kiểu thu hộ và đơn hàng đã giao
+                    if (item.PaymentType == 3 && item.DeliveryStatus == 1)
                         html.Append("   <td id='colOfOrd'><strong>" + String.Format("{0:#,###}", item.CollectionOfOrder) + "</strong></td>");
                     else
-                        html.Append("   <td></td>");
-                    // Nhân viên giao
-                    if (item.ShippingType == 5)
+                        html.Append("   <td id='colOfOrd'><strong></strong></td>");
+                    // Phí giao hàng khi nhân viên giao
+                    if (item.ShippingType == 5 && item.DeliveryStatus == 1)
                         html.Append("   <td id='cosOfDel'><strong>" + String.Format("{0:#,###}", item.CostOfDelivery) + "</strong></td>");
                     else
-                        html.Append("   <td></td>");
-                    html.Append("   <td id='delDate'>" + String.Format("{0:dd/MM HH:mm}", item.DeliveryDate) + "</td>");
-                    if (acc.RoleID == 0)
-                        html.Append("   <td>" + item.CreatedBy + "</td>");
+                        html.Append("   <td id='cosOfDel'><strong></strong></td>");
+                    // Ngày giao
+                    if(item.DeliveryStatus == 1)
+                        html.Append("   <td id='delDate'>" + String.Format("{0:dd/MM HH:mm}", item.DeliveryDate) + "</td>");
+                    else
+                        html.Append("   <td id='delDate'></td>");
+                    // Ngày hoàn tất đơn
+                    string datedone = "";
+                    if (item.ExcuteStatus == 2)
+                    {
+                        datedone = string.Format("{0:dd/MM}", item.DateDone);
+                    }
+                    html.Append("   <td>" + datedone + "</td>");
+                    html.Append("   <td>" + item.CreatedBy + "</td>");
                     html.Append("   <td id='updateButton'>");
                     html.Append("       <button type='button' class='btn primary-btn h45-btn' data-toggle='modal' data-target='#TransferBankModal' data-backdrop='static' data-keyboard='false' title='Cập nhật thông tin chuyển khoản'><span class='glyphicon glyphicon-edit'></span></button>");
                     if (item.DeliveryStatus == 1 && !string.IsNullOrEmpty(item.InvoiceImage))
@@ -312,7 +331,7 @@ namespace IM_PJ
                     html.Append("<tr class='tr-more-info'>");
                     html.Append("   <td colspan='1'>");
                     html.Append("   </td>");
-                    html.Append("   <td colspan='12'>");
+                    html.Append("   <td colspan='13'>");
 
                     if (item.TotalRefund != 0)
                     {
@@ -528,6 +547,9 @@ namespace IM_PJ
 
             if (ddlCreatedBy.SelectedValue != "")
                 request += "&createdby=" + ddlCreatedBy.SelectedValue;
+
+            if (ddlDeliveryStartAt.SelectedValue != "")
+                request += "&deliverystartat=" + ddlDeliveryStartAt.SelectedValue;
 
             Response.Redirect(request);
         }

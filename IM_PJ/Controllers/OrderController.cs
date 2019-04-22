@@ -353,7 +353,7 @@ namespace IM_PJ.Controllers
             }
         }
 
-        public static List<OrderList> Filter(string TextSearch, int OrderType, int ExcuteStatus, int PaymentStatus, int TransferStatus, int PaymentType, int ShippingType, string Discount, string OtherFee, string CreatedBy, string CreatedDate, string TransferDoneAt, int TransportCompany)
+        public static List<OrderList> Filter(string TextSearch, int OrderType, int ExcuteStatus, int PaymentStatus, int TransferStatus, int PaymentType, int ShippingType, string Discount, string OtherFee, string CreatedBy, string CreatedDate, string TransferDoneAt, int TransportCompany, string DeliveryStartAt)
         {
             var list = new List<OrderList>();
             var sqlMain = new StringBuilder();
@@ -373,6 +373,8 @@ namespace IM_PJ.Controllers
             sqlSub.AppendLine("ON    Ord.CustomerID = Customer.ID");
             sqlSub.AppendLine("LEFT JOIN BankTransfer AS Transfer");
             sqlSub.AppendLine("ON    Ord.ID = Transfer.OrderID");
+            sqlSub.AppendLine("LEFT JOIN Delivery AS Del");
+            sqlSub.AppendLine("ON    Ord.ID = Del.OrderID");
             #endregion
             #region filter by condition
             sqlSub.AppendLine("WHERE 1 = 1");
@@ -406,6 +408,55 @@ namespace IM_PJ.Controllers
             if (ShippingType > 0)
             {
                 sqlSub.AppendLine(String.Format("    AND Ord.ShippingType = {0}", ShippingType));
+            }
+            // Filter Delivery Start At
+            if (DeliveryStartAt != "")
+            {
+                DateTime fromdate = DateTime.Today;
+                DateTime todate = DateTime.Now;
+                switch (DeliveryStartAt)
+                {
+                    case "today":
+                        fromdate = DateTime.Today;
+                        todate = DateTime.Now;
+                        break;
+                    case "yesterday":
+                        fromdate = fromdate.AddDays(-1);
+                        todate = DateTime.Today;
+                        break;
+                    case "beforeyesterday":
+                        fromdate = DateTime.Today.AddDays(-2);
+                        todate = DateTime.Today.AddDays(-1);
+                        break;
+                    case "week":
+                        int days = DateTime.Today.DayOfWeek == DayOfWeek.Sunday ? 7 : (int)DateTime.Today.DayOfWeek;
+                        fromdate = fromdate.AddDays(-days + 1);
+                        todate = DateTime.Now;
+                        break;
+                    case "thismonth":
+                        fromdate = new DateTime(fromdate.Year, fromdate.Month, 1);
+                        todate = DateTime.Now;
+                        break;
+                    case "lastmonth":
+                        var thismonth = new DateTime(fromdate.Year, fromdate.Month, 1);
+                        fromdate = thismonth.AddMonths(-1);
+                        todate = thismonth;
+                        break;
+                    case "beforelastmonth":
+                        thismonth = new DateTime(fromdate.Year, fromdate.Month, 1);
+                        fromdate = thismonth.AddMonths(-2);
+                        todate = thismonth.AddMonths(-1);
+                        break;
+                    case "7days":
+                        fromdate = fromdate.AddDays(-6);
+                        todate = DateTime.Now;
+                        break;
+                    case "30days":
+                        fromdate = fromdate.AddDays(-29);
+                        todate = DateTime.Now;
+                        break;
+                }
+                sqlSub.AppendLine(String.Format("    AND    CONVERT(datetime, Del.StartAt, 121) BETWEEN CONVERT(datetime, '{0}', 121) AND CONVERT(datetime, '{1}', 121)", fromdate.ToString(), todate.ToString()));
             }
             // Filter Transport Company
             if (TransportCompany > 0)

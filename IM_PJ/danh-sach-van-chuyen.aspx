@@ -22,7 +22,7 @@
                     <div class="filter-above-wrap clear">
                         <div class="filter-control">
                             <div class="row">
-                                <div class="col-md-5">
+                                <div class="col-md-3">
                                     <asp:TextBox ID="txtSearchOrder" runat="server" CssClass="form-control" placeholder="Tìm đơn hàng" autocomplete="off"></asp:TextBox>
                                 </div>
                                 <div class="col-md-2">
@@ -42,8 +42,11 @@
                                     </asp:DropDownList>
                                 </div>
                                 <div class="col-md-2">
+                                    <asp:DropDownList ID="ddlCreatedBy" runat="server" CssClass="form-control"></asp:DropDownList>
+                                </div>
+                                <div class="col-md-2">
                                     <asp:DropDownList ID="ddlCreatedDate" runat="server" CssClass="form-control">
-                                        <asp:ListItem Value="" Text="Tất cả thời gian"></asp:ListItem>
+                                        <asp:ListItem Value="" Text="Thời gian đơn hàng"></asp:ListItem>
                                         <asp:ListItem Value="today" Text="Hôm nay"></asp:ListItem>
                                         <asp:ListItem Value="yesterday" Text="Hôm qua"></asp:ListItem>
                                         <asp:ListItem Value="beforeyesterday" Text="Hôm kia"></asp:ListItem>
@@ -87,7 +90,18 @@
                                     </asp:DropDownList>
                                 </div>
                                 <div class="col-md-2">
-                                    <asp:DropDownList ID="ddlCreatedBy" runat="server" CssClass="form-control"></asp:DropDownList>
+                                    <asp:DropDownList ID="ddlDeliveryStartAt" runat="server" CssClass="form-control">
+                                        <asp:ListItem Value="" Text="Thời gian giao hàng"></asp:ListItem>
+                                        <asp:ListItem Value="today" Text="Hôm nay"></asp:ListItem>
+                                        <asp:ListItem Value="yesterday" Text="Hôm qua"></asp:ListItem>
+                                        <asp:ListItem Value="beforeyesterday" Text="Hôm kia"></asp:ListItem>
+                                        <asp:ListItem Value="week" Text="Tuần này"></asp:ListItem>
+                                        <asp:ListItem Value="7days" Text="7 ngày"></asp:ListItem>
+                                        <asp:ListItem Value="thismonth" Text="Tháng này"></asp:ListItem>
+                                        <asp:ListItem Value="lastmonth" Text="Tháng trước"></asp:ListItem>
+                                        <asp:ListItem Value="beforelastmonth" Text="Tháng trước nữa"></asp:ListItem>
+                                        <asp:ListItem Value="30days" Text="30 ngày"></asp:ListItem>
+                                    </asp:DropDownList>
                                 </div>
                                 <div class="col-md-1">
                                     <a href="/danh-sach-van-chuyen" class="btn primary-btn h45-btn"><i class="fa fa-times" aria-hidden="true"></i></a>
@@ -224,22 +238,22 @@
 
                     // Init modal
                     pickerDOM.datetimepicker({
-                        format: 'YYYY-MM-DD HH:mm:ss',
+                        format: 'DD/MM/YYYY HH:mm',
                         date: new Date()
                     });
 
                     // Không phải là thu hộ
-                    if (paymenttype != 3){
+                    if (paymenttype != 3) {
                         colOfOrdDOM.parent().parent().attr("hidden", true);
                         colOfOrdDOM.val("");
                     }
-                    else{
+                    else {
                         colOfOrdDOM.parent().parent().removeAttr("hidden");
                         colOfOrdDOM.val(row.dataset["coloford"]);
                     }
-                        
+
                     // Không phải hình thức nhân viên giao
-                    if (shippingtype != 5){
+                    if (shippingtype != 5) {
                         cosOfDelDOM.parent().parent().attr("hidden", true);
                         cosOfDelDOM.val("");
                     }
@@ -253,21 +267,23 @@
                     $("#invoice-image").html("");
                     $("#<%=hdfImageOld.ClientID%>").val("");
 
-                    if (row.dataset["invoiceimage"])
-                    {
+                    if (row.dataset["invoiceimage"]) {
                         $("#<%=hdfImageOld.ClientID%>").val(row.dataset["invoiceimage"]);
                         addInvoiceImage(row.dataset["invoiceimage"]);
                     }
 
                     deliveryDOM.val(row.dataset["deliverystatus"]);
-                    
+
                     if (row.dataset["shipperid"])
                         shipperDOM.val(row.dataset["shipperid"]);
                     else
                         shipperDOM.val(0);
-                    
+
                     if (row.dataset["deliverydate"])
-                        pickerDOM.data('date', row.dataset["deliverydate"])
+                        pickerDOM.data("DateTimePicker").date(row.dataset["deliverydate"]);
+                    else
+                        pickerDOM.data("DateTimePicker").date(moment(new Date).format('DD/MM/YYYY HH:mm'));
+
                     noteDOM.val(row.dataset["shippernote"]);
 
                     // xử lý khi chọn trạng thái giao hàng
@@ -277,7 +293,7 @@
                     else {
                         $("#<%=uploadInvoiceImage.ClientID%>").prop('disabled', true);
                     }
-                })
+                });
 
                 $("#updateDelivery").click(e => {
                     let orderID = $("#<%=hdOrderID.ClientID%>").val();
@@ -287,7 +303,7 @@
                     let colOfOrd = $("#<%=txtColOfOrd.ClientID%>").val();
                     let shipperID = $("#<%=ddlShipperModal.ClientID%>").val();
                     let cosOfDel = $("#<%=txtCosOfDel.ClientID%>").val();
-                    let startAt = $('#dtDoneAt').data('date');
+                    let startAt = $("#dtDoneAt").data('date');
                     let note = $("#<%=txtNote.ClientID%>").val();
 
                     let data = {
@@ -297,7 +313,7 @@
                         'Image': imageOld,
                         'COD': cosOfDel ? cosOfDel : 0,
                         'COO': colOfOrd ? colOfOrd : 0,
-                        'StartAt': startAt,
+                        'StartAt': formatDateToInsert(startAt),
                         'ShipNote': note
                     };
 
@@ -345,8 +361,10 @@
                                     case "1":
                                         deliveryStatusDom.addClass("bg-green");
                                         row.children("#delDate").html(formatDate(startAt));
-                                        row.children("#colOfOrd").children("strong").html(formatThousands(colOfOrd));
-                                        row.children("#cosOfDel").children("strong").html(formatThousands(cosOfDel));
+                                        if (colOfOrd)
+                                            row.children("#colOfOrd").children("strong").html(formatThousands(colOfOrd));
+                                        if (cosOfDel)
+                                            row.children("#cosOfDel").children("strong").html(formatThousands(cosOfDel));
                                         if (result)
                                         {
                                             if (row.children("#updateButton").find('#downloadInvoiceImage').length) {
@@ -364,10 +382,12 @@
                                     case "2":
                                         deliveryStatusDom.addClass("bg-red");
                                         row.find("#downloadInvoiceImage").hide();
+                                        row.children("#delDate").html("");
                                         break;
                                     case "3":
                                         deliveryStatusDom.addClass("bg-blue");
                                         row.find("#downloadInvoiceImage").hide();
+                                        row.children("#delDate").html("");
                                         break;
                                     default:
                                         deliveryStatusName = "";
@@ -401,18 +421,34 @@
                 $("#<%=uploadInvoiceImage.ClientID%>").click();
             }
 
-            function formatDate(dateString) {
-                var date = new Date(dateString);
+            function formatDateToInsert(dateString) {
+                var date = dateString.split(' ');
+                var datetmp = date[0].split('/');
+                var hourtmp = date[1].split(':');
 
-                var day = ('0' + date.getDate()).slice(-2);
-                var month = ('0' + (date.getMonth() + 1)).slice(-2);
-                var hours = date.getHours();
-                hours = hours < 10 ? '0' + hours : hours;
-                var minutes = date.getMinutes();
-                minutes = minutes < 10 ? '0' + minutes : minutes;
-
-                return day + '/' + month + ' ' + hours + ':' + minutes;
+                return datetmp[2] + '-' + datetmp[1] + '-' + datetmp[0] + ' ' + hourtmp[0] + ':' + hourtmp[1] + ':00';
             }
+
+            function formatDate(dateString) {
+                var date = dateString.split(' ');
+                var datetmp = date[0].split('/');
+                var hourtmp = date[1].split(':');
+
+                return datetmp[0] + '/' + datetmp[1] + ' ' + hourtmp[0] + ':' + hourtmp[1];
+            }
+
+            //function formatDate(dateString) {
+            //    var date = new Date(dateString);
+
+            //    var day = ('0' + date.getDate()).slice(-2);
+            //    var month = ('0' + (date.getMonth() + 1)).slice(-2);
+            //    var hours = date.getHours();
+            //    hours = hours < 10 ? '0' + hours : hours;
+            //    var minutes = date.getMinutes();
+            //    minutes = minutes < 10 ? '0' + minutes : minutes;
+
+            //    return day + '/' + month + ' ' + hours + ':' + minutes;
+            //}
 
             // Parse URL Queries
             function url_query(query) {

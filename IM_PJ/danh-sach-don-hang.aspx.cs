@@ -206,7 +206,7 @@ namespace IM_PJ
                 ddlShipperFilter.SelectedValue = ShipperID.ToString();
 
                 List<OrderList> rs = new List<OrderList>();
-                rs = OrderController.Filter(TextSearch, OrderType, ExcuteStatus, PaymentStatus, 0, PaymentType, ShippingType, Discount, OtherFee, CreatedBy, CreatedDate, TransferDoneAt, TransportCompany);
+                rs = OrderController.Filter(TextSearch, OrderType, ExcuteStatus, PaymentStatus, 0, PaymentType, ShippingType, Discount, OtherFee, CreatedBy, CreatedDate, TransferDoneAt, TransportCompany, "");
 
                 if (acc.RoleID == 0)
                 {
