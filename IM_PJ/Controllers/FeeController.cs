@@ -26,7 +26,8 @@ namespace IM_PJ.Controllers
                             UUID = fee.UUID,
                             FeeTypeID = fee.FeeTypeID,
                             FeeTypeName = feetype.Name,
-                            FeePrice = fee.FeePrice
+                            FeePrice = fee.FeePrice,
+                            Note = fee.Note
                         })
                     .ToArray();
                 result = serializer.Serialize(fees);

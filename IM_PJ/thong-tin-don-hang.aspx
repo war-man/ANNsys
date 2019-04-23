@@ -521,11 +521,12 @@
 
             // FeeModel
             class Fee {
-                constructor(UUID, FeeTypeID, FeeTypeName, FeePrice) {
+                constructor(UUID, FeeTypeID, FeeTypeName, FeePrice, Note) {
                     this.UUID = UUID;
                     this.FeeTypeID = FeeTypeID;
                     this.FeeTypeName = FeeTypeName;
                     this.FeePrice = FeePrice;
+                    this.Note = Note ? " (" + Note + ")" : "";
                 }
 
                 stringJSON() {
@@ -665,7 +666,7 @@
 
                     addHTML += "<div id='" + fee.UUID + "' class='post-row clear otherfee' data-feeid='" + fee.FeeTypeID + "' data-pricetype='" + positiveNumber + "' data-price='" + fee.FeePrice + "'>";
                     addHTML += "    <div class='left'>";
-                    addHTML += "        <span class='otherfee-name'>" + fee.FeeTypeName + "</span>";
+                    addHTML += "        <span class='otherfee-name'>" + fee.FeeTypeName + fee.Note + "</span>";
                     addHTML += "        <a href='javascript:;' style='text-decoration: underline; float: right; font-size: 12px; font-style: italic; padding-left: 10px;' onclick='removeOtherFee(`" + fee.UUID + "`)'>";
                     addHTML += "            (Xóa)";
                     addHTML += "        </a>";
@@ -844,7 +845,8 @@
                             item.UUID,
                             item.FeeTypeID,
                             item.FeeTypeName,
-                            item.FeePrice
+                            item.FeePrice,
+                            item.Note
                         );
 
                         fees.push(fee);
