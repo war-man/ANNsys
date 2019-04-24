@@ -1,4 +1,19 @@
-﻿.select2-container--default .select2-selection--single {
+﻿#feePrice {
+    cursor: pointer;
+    border-color: #cdcdcd;
+    width: 160px;
+    padding: 5px;
+    height: 36px;
+    line-height: 20px;
+    font-weight: 100;
+    font-size: 16px;
+    font-family: "Segoe UI",Arial,Helvetica,sans-serif;
+    color: #000;
+}
+.btn-edit-fee {
+    background-color: #000!important;
+}
+.select2-container--default .select2-selection--single {
     border: solid 1px #e1e1e1;
 }
 .select2-container--default .select2-selection--single .select2-selection__rendered {

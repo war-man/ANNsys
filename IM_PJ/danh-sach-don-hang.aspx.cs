@@ -465,9 +465,19 @@ namespace IM_PJ
                     #region Phương thức thanh toán
                     html.Append("   <td>");
                     html.Append(PJUtils.PaymentType(Convert.ToInt32(item.PaymentType)));
-                    // Đã nhận tiền
-                    if (item.TransferStatus.HasValue && item.TransferStatus.Value == 1)
-                        html.Append("       <br/><span class='bg-green'>Đã nhận tiền</span>");
+                    // Đã nhận tiền chuyển khoản
+                    if(item.PaymentType == 2)
+                    {
+                        if (item.TransferStatus.HasValue && item.TransferStatus.Value == 1)
+                        {
+                            html.Append("       <br/><span class='bg-green'>Đã nhận tiền</span>");
+                        }
+                        else
+                        {
+                            if (acc.RoleID == 0)
+                                html.Append("       <br/><a target='_blank' href='/danh-sach-chuyen-khoan?&textsearch=" + item.ID + "'><span class='bg-black'>Cập nhật</span></a>");
+                        }
+                    }
                     html.Append("   </td>");
                     #endregion
 
@@ -526,7 +536,7 @@ namespace IM_PJ
                     }
                     if (item.OtherFeeValue != 0)
                     {
-                        html.Append("<span class='order-info'><strong>Phí:</strong> " + string.Format("{0:N0}", Convert.ToDouble(item.OtherFeeValue)) + " (<a href='#feeInfoModal' data-toggle='modal' data-backdrop='static' onclick='openFeeInfoModal(" + item.ID + ")'>" + item.OtherFeeName.Trim() + "</a>)</span>");
+                        html.Append("<span class='order-info'><strong>Phí khác:</strong> " + string.Format("{0:N0}", Convert.ToDouble(item.OtherFeeValue)) + " (<a href='#feeInfoModal' data-toggle='modal' data-backdrop='static' onclick='openFeeInfoModal(" + item.ID + ")'>" + item.OtherFeeName.Trim() + "</a>)</span>");
                     }
                     if (item.ShippingType == 4)
                     {

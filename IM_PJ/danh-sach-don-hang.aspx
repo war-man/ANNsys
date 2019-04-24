@@ -184,14 +184,14 @@
         
         <asp:HiddenField ID="hdfcreate" runat="server" />
 
-        <!-- Modal -->
+        <!-- Modal phí khác -->
         <div class="modal fade" id="feeInfoModal" role="dialog">
             <div class="modal-dialog">
                 <!-- Modal content-->
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal">&times;</button>
-                        <h4 class="modal-title">Thông tin loại phí</h4>
+                        <h4 class="modal-title">Các loại phí khác</h4>
                     </div>
                     <div class="modal-body">
                         <div class="row">
@@ -199,7 +199,7 @@
                                 <thead>
                                     <tr>
                                     <th>Tên loại phí</th>
-                                    <th>Lastname</th>
+                                    <th>Số tiền</th>
                                     </tr>
                                 </thead>
                                 <tbody id="feeInfo">
@@ -286,6 +286,7 @@
 
                 return addHTML;
             }
+
             function openFeeInfoModal(orderID) {
                 let tbodyDOM = $("tbody[id='feeInfo']");
                 // Clear body

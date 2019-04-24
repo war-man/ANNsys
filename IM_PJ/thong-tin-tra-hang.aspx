@@ -29,7 +29,7 @@
                                         </div>
                                     </div>
                                     <div class="col-md-4">
-                                        <label class="left pad10">Trạng thái: </label>
+                                        <label class="left pad10"></label>
                                         <div class="orderstatus">
                                             <asp:Literal ID="ltrOrderStatus" runat="server"></asp:Literal>
                                         </div>

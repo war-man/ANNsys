@@ -685,9 +685,11 @@ namespace IM_PJ.Controllers
             sqlMain.AppendLine("LEFT JOIN (");
             sqlMain.AppendLine("    SELECT");
             sqlMain.AppendLine("        Fee.OrderID");
-            sqlMain.AppendLine("    ,   N'Phí khác' AS OtherFeeName");
+            sqlMain.AppendLine("    ,   (CASE WHEN COUNT(Fee.OrderID) = 1 THEN MAX(FeeType.Name) ELSE N'Nhiều phí khác' END) AS OtherFeeName");
             sqlMain.AppendLine("    ,   SUM(ISNULL(Fee.FeePrice, 0)) AS OtherFeeValue");
             sqlMain.AppendLine("    FROM Fee");
+            sqlMain.AppendLine("    INNER JOIN FeeType");
+            sqlMain.AppendLine("    ON    Fee.FeeTypeID = FeeType.ID");
             sqlMain.AppendLine("    GROUP BY Fee.OrderID");
             sqlMain.AppendLine(") AS FeeSub");
             sqlMain.AppendLine("ON    Ord.ID = FeeSub.OrderID");

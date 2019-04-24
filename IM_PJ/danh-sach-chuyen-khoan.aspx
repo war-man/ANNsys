@@ -130,7 +130,37 @@
             </div>
         </div>
 
-        <!-- Modal -->
+        <!-- Modal phí khác -->
+        <div class="modal fade" id="feeInfoModal" role="dialog">
+            <div class="modal-dialog">
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Các loại phí khác</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                    <th>Tên loại phí</th>
+                                    <th>Số tiền</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="feeInfo">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal cập nhật chuyển khoản -->
         <div class="modal fade" id="TransferBankModal" role="dialog">
             <div class="modal-dialog">
                 <!-- Modal content-->
@@ -543,6 +573,55 @@
                 var updated_len = input_val.length;
                 caret_pos = updated_len - original_len + caret_pos;
                 input[0].setSelectionRange(caret_pos, caret_pos);
+            }
+
+            function createFeeInfoHTML(fee, is_total) {
+                if (!is_total) {
+                    is_total = false;
+                }
+                let addHTML = "";
+
+                if (is_total) {
+                    addHTML += "<tr class='info'>";
+                    addHTML += "    <td style='text-align: right'>" + fee.FeeTypeName + "</td>";
+                    addHTML += "    <td>" + formatThousands(fee.FeePrice) + "</td>";
+                    addHTML += "</tr>";
+                }
+                else {
+                    addHTML += "<tr>";
+                    addHTML += "    <td>" + fee.FeeTypeName + "</td>";
+                    addHTML += "    <td>" + formatThousands(fee.FeePrice) + "</td>";
+                    addHTML += "</tr>";
+                }
+
+                return addHTML;
+            }
+
+            function openFeeInfoModal(orderID) {
+                let tbodyDOM = $("tbody[id='feeInfo']");
+                // Clear body
+                tbodyDOM.html("");
+                $.ajax({
+                    type: "POST",
+                    url: "/danh-sach-don-hang.aspx/getFeeInfo",
+                    data: JSON.stringify({ 'orderID': orderID }),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: (response) => {
+                        if (response.d) {
+                            let data = JSON.parse(response.d);
+                            let feeTotal = 0;
+                            data.forEach((item) => {
+                                feeTotal += item.FeePrice;
+                                tbodyDOM.append(createFeeInfoHTML(item));
+                            });
+                            tbodyDOM.append(createFeeInfoHTML({ "FeeTypeName": "Tổng", "FeePrice": feeTotal }, true));
+                        }
+                    },
+                    error: (xmlhttprequest, textstatus, errorthrow) => {
+                        swal("Thông báo", "Có lỗi trong quá trình lấy thông tin phí", "error");
+                    }
+                })
             }
         </script>
     </main>

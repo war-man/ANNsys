@@ -418,8 +418,11 @@
                     addHTML += "<div id='" + fee.UUID + "' class='post-row clear otherfee' data-feeid='" + fee.FeeTypeID + "' data-price='" + fee.FeePrice + "'>";
                     addHTML += "    <div class='left'>";
                     addHTML += "        <span class='otherfee-name'>" + fee.FeeTypeName + "</span>";
-                    addHTML += "        <a href='javascript:;' style='text-decoration: underline; float: right; font-size: 12px; font-style: italic; padding-left: 10px;' onclick='removeOtherFee(`" + fee.UUID + "`)'>";
-                    addHTML += "            (Xóa)";
+                    addHTML += "        <a href='javascript:;' class='btn btn-feeship link-btn' onclick='removeOtherFee(`" + fee.UUID + "`)'>";
+                    addHTML += "            <i class='fa fa-times' aria-hidden='true'></i> Xóa";
+                    addHTML += "        </a>";
+                    addHTML += "        <a href='javascript:;' class='btn btn-feeship link-btn btn-edit-fee' onclick='editOtherFee()'>";
+                    addHTML += "            <i class='fa fa-pencil-square-o' aria-hidden='true'></i> Sửa";
                     addHTML += "        </a>";
                     addHTML += "    </div>";
                     addHTML += "    <div class='right otherfee-value' onclick='openFeeUpdateModal($(this))'>";
@@ -553,6 +556,14 @@
                     else
                     {
                         feePriceDOM.removeAttr("disabled");
+                        feePriceDOM.focus();
+                    }
+                });
+                // event press the enter key in txtFeePrice
+                $("#<%=txtFeePrice.ClientID%>").keydown(function (event) {
+                    if (event.which === 13) {
+                        $("#updateFee").click();
+                        return false;
                     }
                 });
                 // event updateFee click
@@ -804,12 +815,17 @@
                 $(".discount").removeClass("hide");
                 $("#<%=pDiscount.ClientID%>").focus();
             }
-
+            // remove other fee by click button
             function removeOtherFee() {
                 $("#" + uuid).remove();
                 fees = fees.filter((item) => { return item.UUID != uuid; });
                 $("#<%=hdfOtherFees.ClientID%>").val(JSON.stringify(fees));
                 getAllPrice();
+            }
+            // edit other fee by click button
+            function editOtherFee() {
+                $(".otherfee-value").click();
+                //getAllPrice();
             }
 
             function showConfirmOrder() {
