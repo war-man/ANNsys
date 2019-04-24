@@ -155,10 +155,10 @@
                             </div>
                             <div class="post-row clear returnorder hide">
                                 <div class="left">
-                                    Đơn hàng trả
-                                    <a href="javascript:;" class="find3 hide" style="text-decoration: underline; float: right; font-size: 12px; font-style: italic; padding-left: 10px;" onclick="searchReturnOrder()">(Tìm đơn khác)</a>
-                                    <a href="javascript:;" class="find3 hide" style="text-decoration: underline; float: right; font-size: 12px; font-style: italic; padding-left: 10px;" onclick="deleteReturnOrder()">(Bỏ qua)</a>
-                                    <a href="javascript:;" class="find2 hide" style="text-decoration: underline; float: right; font-size: 12px; font-style: italic; padding-left: 10px;"></a>
+                                    Trừ hàng trả
+                                    <a href="javascript:;" class="find2 hide btn btn-feeship link-btn"></a>
+                                    <a href="javascript:;" class="find3 hide btn btn-feeship link-btn btn-edit-fee" onclick="searchReturnOrder()"><i class="fa fa-refresh" aria-hidden="true"></i> Chọn đơn khác</a>
+                                    <a href="javascript:;" class="find3 hide btn btn-feeship link-btn" onclick="deleteReturnOrder()"><i class="fa fa-times" aria-hidden="true"></i> Bỏ qua</a>
                                 </div>
                                 <div class="right totalpriceorderrefund"></div>
                             </div>
@@ -817,7 +817,7 @@
                     $(".totalpricedetail").addClass("price-red");
                     $(".find3").removeClass("hide");
                     $(".find1").addClass("hide");
-                    $(".find2").html("(Xem đơn hàng " + refundGood.ID + ")");
+                    $(".find2").html("<i class='fa fa-share' aria-hidden='true'></i> Xem đơn hàng trả " + refundGood.ID);
                     $(".find2").attr("onclick", "viewReturnOrder(" + refundGood.ID + ")");
                     $(".find2").removeClass("hide");
                     $(".totalpricedetail").html(totalPrice);

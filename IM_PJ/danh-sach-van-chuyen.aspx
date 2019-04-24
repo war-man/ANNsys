@@ -7,7 +7,71 @@
     <script src="/Scripts/moment.min.js"></script>
     <script src="/Scripts/moment-with-locales.min.js"></script>
     <script src="/Scripts/bootstrap-datetimepicker.min.js"></script>
-
+    <style>
+        @media (max-width: 768px) {
+            table.shop_table_responsive thead {
+	            display: none;
+            }
+            .shop_table_responsive.table > tbody > tr:nth-of-type(2n) td {
+                border-top: none;
+                border-bottom: none!important;
+            }
+            table.shop_table_responsive > tbody > tr > td:first-child {
+	            border-left: none;
+                padding-left: 20px;
+            }
+            table.shop_table_responsive > tbody > tr > td:last-child {
+	            border-right: none;
+                padding-left: 20px;
+            }
+            table.shop_table_responsive > tbody > tr > td {
+	            height: 40px;
+            }
+            table.shop_table_responsive > tbody > tr > td.customer-td {
+	            height: 60px;
+            }
+            table.shop_table_responsive > tbody > tr > td.update-button {
+                height: 80px;
+            }
+            table.shop_table_responsive .bg-bronze,
+            table.shop_table_responsive .bg-red,
+            table.shop_table_responsive .bg-blue,
+            table.shop_table_responsive .bg-yellow,
+            table.shop_table_responsive .bg-black,
+            table.shop_table_responsive .bg-green {
+                display: initial;
+            }
+            table.shop_table_responsive tbody td {
+	            background-color: #f8f8f8;
+	            display: block;
+	            text-align: right;
+	            border: none;
+	            padding: 20px;
+            }
+            table.shop_table_responsive > tbody > tr.tr-more-info > td {
+                height: initial;
+            }
+            table.shop_table_responsive > tbody > tr.tr-more-info > td span {
+                display: block;
+                text-align: left;
+                margin-bottom: 10px;
+                margin-right: 0;
+            }
+            table.shop_table_responsive > tbody > tr.tr-more-info > td:nth-child(2):before {
+                content: none;
+            }
+            table.shop_table_responsive tbody td:before {
+	            content: attr(data-title) ": ";
+	            font-weight: 700;
+	            float: left;
+	            text-transform: uppercase;
+	            font-size: 14px;
+            }
+            table.shop_table_responsive tbody td:empty {
+                display: none;
+            }
+        }
+    </style>
     <main id="main-wrap">
         <div class="container">
             <div class="row">
@@ -116,10 +180,8 @@
                             </div>
                         </div>
                         <div class="responsive-table">
-                            <table class="table table-checkable table-product table-new-product">
-                                <tbody>
-                                    <asp:Literal ID="ltrList" runat="server" EnableViewState="false"></asp:Literal>
-                                </tbody>
+                            <table class="table shop_table_responsive table-checkable table-product table-new-product">
+                                <asp:Literal ID="ltrList" runat="server" EnableViewState="false"></asp:Literal>
                             </table>
                         </div>
                         <div class="panel-footer clear">
@@ -362,10 +424,14 @@
                             data: fileData,
                             contentType: false,
                             processData: false,
-                            beforeSend: function() {
+                            beforeSend: function () {
                                 HoldOn.open();
                             },
                             success: function (result) {
+                                $("#closeDelivery").click();
+                                HoldOn.close();
+
+                                let status = $("#<%=ddlDeliveryStatusModal.ClientID%>").val();
                                 let row = $("tr[data-orderid='" + orderID + "'");
                                 let deliveryStatusDom = row.children("#deliveryStatus").children("span");
                                 let shiperName = $("#<%=ddlShipperModal.ClientID%> :selected").text();
@@ -381,22 +447,26 @@
                                 row.attr("data-shippernote", note);
 
                                 if (shipperID == "0")
+                                {
                                     row.children("#shiperName").html("");
+                                }
                                 else
+                                {
                                     row.children("#shiperName").html(shiperName);
+                                }
 
                                 deliveryStatusDom.removeClass();
-                                switch(status)
-                                {
+
+                                switch (status) {
                                     case "1":
                                         deliveryStatusDom.addClass("bg-green");
                                         row.children("#delDate").html(formatDate(startAt));
                                         if (colOfOrd)
-                                            row.children("#colOfOrd").children("strong").html(formatThousands(colOfOrd));
+                                            row.children("#colOfOrd").html("<strong>" +
+                                                 formatThousands(colOfOrd) + "</strong>");
                                         if (cosOfDel)
-                                            row.children("#cosOfDel").children("strong").html(formatThousands(cosOfDel));
-                                        if (result)
-                                        {
+                                            row.children("#cosOfDel").html("<strong>" + formatThousands(cosOfDel) + "</strong>");
+                                        if (result) {
                                             if (row.children("#updateButton").find('#downloadInvoiceImage').length) {
                                                 row.find("#downloadInvoiceImage").show();
                                                 row.find("#downloadInvoiceImage").attr("href", result);
@@ -423,10 +493,8 @@
                                         deliveryStatusName = "";
                                         break;
                                 }
-                                deliveryStatusDom.html(deliveryStatusName);
 
-                                $("#closeDelivery").click();
-                                HoldOn.close();
+                                deliveryStatusDom.html(deliveryStatusName);
                             },
                             error: function (err) {
                                 HoldOn.close();
@@ -434,8 +502,8 @@
                             }
                         });
                     }
-                    
                 });
+
             });
 
             $("#<%=ddlDeliveryStatusModal.ClientID%>").on('change', function() {
