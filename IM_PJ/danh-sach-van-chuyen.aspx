@@ -462,15 +462,7 @@
                                 HoldOn.open();
                             },
                             success: function (result) {
-<<<<<<< HEAD
-                                $("#closeDelivery").click();
-                                HoldOn.close();
-
-                                let status = $("#<%=ddlDeliveryStatusModal.ClientID%>").val();
-                                let row = $("tr[data-orderid='" + orderID + "'");
-=======
                                 let row = $("tr[data-orderid='" + orderID + "']");
->>>>>>> Update print delivery
                                 let deliveryStatusDom = row.children("#deliveryStatus").children("span");
                                 let checkPrint = row.find("td>input[type='checkbox']");
                                 let shiperName = $("#<%=ddlShipperModal.ClientID%> :selected").text();
@@ -545,6 +537,9 @@
                                 }
 
                                 deliveryStatusDom.html(deliveryStatusName);
+
+                                $("#closeDelivery").click();
+                                HoldOn.close();
                             },
                             error: function (err) {
                                 HoldOn.close();
@@ -554,8 +549,6 @@
                     }
                 });
 
-<<<<<<< HEAD
-=======
                 $("#startPrint").click(e => {
                     let shipperID = $("#<%=ddfShipperPrintModal.ClientID%>").val();
 
@@ -569,7 +562,6 @@
                         swal("Thông báo", "Chưa chọn người giao hàng", "error");
                     }
                 });
->>>>>>> Update print delivery
             });
 
             $("#<%=ddlDeliveryStatusModal.ClientID%>").on('change', function() {
@@ -778,7 +770,6 @@
                 $("#invoice-image").html(imageHTML);
             }
 
-<<<<<<< HEAD
             function createFeeInfoHTML(fee, is_total) {
                 if (!is_total) {
                     is_total = false;
@@ -826,7 +817,8 @@
                         swal("Thông báo", "Có lỗi trong quá trình lấy thông tin phí", "error");
                     }
                 })
-=======
+            }
+
             function changeCheckPrintAll(checked) {
                 let childDOM = $("td>input[type='checkbox']").not("[disabled='disabled']");
 
@@ -901,7 +893,6 @@
                         window.open(url);
                     }
                 }
->>>>>>> Update print delivery
             }
         </script>
     </main>
