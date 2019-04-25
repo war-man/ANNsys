@@ -15,6 +15,17 @@
             background-color: #E91E63;
             color: #fff;
         }
+        @media (max-width: 769px) {
+            ul.image-gallery li {
+                width: 100%;
+            }
+            .btn {
+                width: 100%!important;
+                float: left;
+                margin-bottom: 10px;
+                margin-left: 0;
+            }
+        }
     </style>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">

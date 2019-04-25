@@ -79,6 +79,9 @@
             font-size: 20px;
             color: #ff0023;
         }
+        .bg-green, .bg-red, .bg-yellow {
+            display: initial;
+        }
     </style>
 </head>
 <body>

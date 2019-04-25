@@ -244,6 +244,7 @@ namespace IM_PJ
             html.Append("    <th></th>");
             html.Append("</tr>");
             html.Append("</thead>");
+
             html.Append("<tbody>");
             if (acs.Count > 0)
             {
@@ -281,7 +282,7 @@ namespace IM_PJ
                     TrTag.AppendLine("/>");
 
                     html.Append(TrTag.ToString());
-                    html.Append("   <td data-title='Mã'><a href=\"/thong-tin-don-hang?id=" + item.ID + "\">" + item.ID + "</a></td>");
+                    html.Append("   <td data-title='Mã đơn'><a href=\"/thong-tin-don-hang?id=" + item.ID + "\">" + item.ID + "</a></td>");
                     if (!string.IsNullOrEmpty(item.Nick))
                     {
                         html.Append("   <td data-title='Khách hàng' class='customer-td'><a class=\"col-customer-name-link\" href=\"/thong-tin-don-hang?id=" + item.ID + "\">" + item.Nick.ToTitleCase() + "</a><br><span class=\"name-bottom-nick\">(" + item.CustomerName.ToTitleCase() + ")</span></td>");
@@ -331,9 +332,8 @@ namespace IM_PJ
 
                     // thông tin thêm
                     html.Append("<tr class='tr-more-info'>");
-                    html.Append("   <td colspan='1' data-title='Thông tin thêm'>");
-                    html.Append("   </td>");
-                    html.Append("   <td colspan='13'>");
+                    html.Append("<td colspan='1'></td>");
+                    html.Append("<td colspan='13'>");
 
                     if (item.TotalRefund != 0)
                     {
@@ -364,7 +364,7 @@ namespace IM_PJ
                     {
                         html.Append("<span class='order-info'><strong>Ghi chú:</strong> " + item.OrderNote + "</span>");
                     }
-                    html.Append("   </td>");
+                    html.Append("</td>");
                     html.Append("</tr>");
                 }
 
@@ -381,6 +381,7 @@ namespace IM_PJ
                 }
             }
             html.Append("</tbody>");
+
             ltrList.Text = html.ToString();
         }
         public static Int32 GetIntFromQueryString(String key)

@@ -363,6 +363,7 @@ namespace IM_PJ
 
             int PageSize = 30;
             StringBuilder html = new StringBuilder();
+            html.Append("<thead>");
             html.Append("<tr>");
             html.Append("    <th class='image-column'>Ảnh</th>");
             html.Append("    <th class='name-column'>Sản phẩm</th>");
@@ -383,7 +384,9 @@ namespace IM_PJ
             }
             html.Append("    <th class='action-column'></th>");
             html.Append("</tr>");
+            html.Append("</thead>");
 
+            html.Append("<tbody>");
             if (acs.Count > 0)
             {
                 int TotalItems = acs.Count;
@@ -411,32 +414,32 @@ namespace IM_PJ
                     html.Append("</td>");
 
                     html.Append("   <td class=\"customer-name-link\"><a href=\"/xem-san-pham?id=" + item.ID + "\">" + item.ProductTitle + "</a></td>");
-                    html.Append("   <td class=\"customer-name-link\">" + item.ProductSKU + "</td>");
-                    html.Append("   <td>" + string.Format("{0:N0}", item.RegularPrice) + "</td>");
+                    html.Append("   <td data-title='Mã' class=\"customer-name-link\">" + item.ProductSKU + "</td>");
+                    html.Append("   <td data-title='Giá sỉ'>" + string.Format("{0:N0}", item.RegularPrice) + "</td>");
                     if (acc.RoleID == 0)
                     {
-                        html.Append("   <td>" + string.Format("{0:N0}", item.CostOfGood) + "</td>");
+                        html.Append("   <td data-title='Giá vốn'>" + string.Format("{0:N0}", item.CostOfGood) + "</td>");
                     }
-                    html.Append("   <td>" + string.Format("{0:N0}", item.RetailPrice) + "</td>");
-                    html.Append("   <td><a target=\"_blank\" href=\"/thong-ke-san-pham?SKU=" + item.ProductSKU + "\">" + string.Format("{0:N0}", item.TotalProductInstockQuantityLeft) + "</a></td>");
-                    html.Append("   <td>" + item.ProductInstockStatus + "</td>");
-                    html.Append("   <td>" + item.CategoryName + "</td>");
+                    html.Append("   <td data-title='Giá lẻ'>" + string.Format("{0:N0}", item.RetailPrice) + "</td>");
+                    html.Append("   <td data-title='Kho'><a target=\"_blank\" href=\"/thong-ke-san-pham?SKU=" + item.ProductSKU + "\">" + string.Format("{0:N0}", item.TotalProductInstockQuantityLeft) + "</a></td>");
+                    html.Append("   <td data-title='Trạng thái'>" + item.ProductInstockStatus + "</td>");
+                    html.Append("   <td data-title='Danh mục'>" + item.CategoryName + "</td>");
                     string date = string.Format("{0:dd/MM/yyyy}", item.CreatedDate);
-                    html.Append("   <td>" + date + "</td>");
+                    html.Append("   <td data-title='Ngày tạo'>" + date + "</td>");
 
                     if (acc.RoleID == 0 || acc.RoleID == 1)
                     {
                         if (item.ShowHomePage == 0)
                         {
-                            html.Append("   <td><span id='showHomePage_" + item.ID + "'><a href='javascript:;' data-product-id='" + item.ID + "' data-value='0' class='bg-black bg-button' onclick='changeShowHomePage($(this))'>Đang ẩn</a></span></td>");
+                            html.Append("   <td data-title='Trang chủ'><span id='showHomePage_" + item.ID + "'><a href='javascript:;' data-product-id='" + item.ID + "' data-value='0' class='bg-black bg-button' onclick='changeShowHomePage($(this))'>Đang ẩn</a></span></td>");
                         }
                         else
                         {
-                            html.Append("   <td><span id='showHomePage_" + item.ID + "'><a href='javascript:;' data-product-id='" + item.ID + "' data-value='1' class='bg-green bg-button' onclick='changeShowHomePage($(this))'>Đang hiện</a></span></td>");
+                            html.Append("   <td data-title='Trang chủ'><span id='showHomePage_" + item.ID + "'><a href='javascript:;' data-product-id='" + item.ID + "' data-value='1' class='bg-green bg-button' onclick='changeShowHomePage($(this))'>Đang hiện</a></span></td>");
                         }
                     }
 
-                    html.Append("   <td>");
+                    html.Append("   <td data-title='Thao tác' class='update-button'>");
                     html.Append("       <a href=\"javascript:;\" title=\"Download tất cả hình sản phẩm này\" class=\"btn primary-btn h45-btn\" onclick=\"getAllProductImage('" + item.ProductSKU + "');\"><i class=\"fa fa-file-image-o\" aria-hidden=\"true\"></i></a>");
                     html.Append("       <a target=\"_blank\" href=\"https://www.facebook.com/search/posts/?q=" + item.ProductSKU + "&filters_rp_author=%7B%22name%22%3A%22author%22%2C%22args%22%3A%22100012594165130%22%7D&filters_rp_chrono_sort=%7B%22name%22%3A%22chronosort%22%2C%22args%22%3A%22%22%7D\" title=\"Tìm trên facebook\" class=\"btn primary-btn btn-black h45-btn\"><i class=\"fa fa-facebook-official\" aria-hidden=\"true\"></i></a>");
 
@@ -447,7 +450,6 @@ namespace IM_PJ
 
                     html.Append("  </td>");
                     html.Append("</tr>");
-
                 }
 
             }
@@ -455,9 +457,9 @@ namespace IM_PJ
             {
                 html.Append("<tr><td colspan=\"11\">Không tìm thấy sản phẩm...</td></tr>");
             }
+            html.Append("</tbody>");
 
             ltrList.Text = html.ToString();
-
         }
         public static Int32 GetIntFromQueryString(String key)
         {

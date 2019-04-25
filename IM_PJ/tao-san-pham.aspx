@@ -14,51 +14,51 @@
         .variable-select {
             float: left;
             width: 30%;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
             border: solid 1px #4a4a4a;
-            margin-left: 10px;
+            margin-right: 15px;
         }
 
-            .variable-select .variablename {
-                float: left;
-                width: 100%;
-                margin-right: 10px;
-                background: blue;
-                color: #fff;
-                text-align: center;
-                padding: 10px 0;
-                line-height: 40px;
-            }
+        .variable-select .variablename {
+            float: left;
+            width: 100%;
+            margin-right: 10px;
+            background: blue;
+            color: #fff;
+            text-align: center;
+            padding: 10px 0;
+            line-height: 40px;
+        }
 
-            .variable-select .variablevalue {
-                float: left;
-                width: 100%;
-                padding: 10px;
-            }
+        .variable-select .variablevalue {
+            float: left;
+            width: 100%;
+            padding: 10px;
+        }
 
-                .variable-select .variablevalue .variablevalue-item {
-                    float: left;
-                    width: 100%;
-                    clear: both;
-                    margin-bottom: 10px;
-                    border-bottom: solid 1px #ccc;
-                    padding-bottom: 5px;
-                }
+        .variable-select .variablevalue .variablevalue-item {
+            float: left;
+            width: 100%;
+            clear: both;
+            margin-bottom: 10px;
+            border-bottom: solid 1px #ccc;
+            padding-bottom: 5px;
+        }
 
-                    .variable-select .variablevalue .variablevalue-item:last-child {
-                        border: none;
-                    }
+        .variable-select .variablevalue .variablevalue-item:last-child {
+            border: none;
+        }
 
-                    .variable-select .variablevalue .variablevalue-item .v-value {
-                        float: left;
-                        width: 78%;
-                        line-height: 40px;
-                    }
+        .variable-select .variablevalue .variablevalue-item .v-value {
+            float: left;
+            width: 78%;
+            line-height: 40px;
+        }
 
-                    .variable-select .variablevalue .variablevalue-item .v-delete {
-                        float: left;
-                        width: 20%;
-                    }
+        .variable-select .variablevalue .variablevalue-item .v-delete {
+            float: left;
+            width: 20%;
+        }
 
         #selectvariabletitle {
             float: left;
@@ -76,6 +76,51 @@
 
         .width {
             width: calc(100% - 100px);
+        }
+        .variable-name-select {
+            float: left; 
+            width: 30%; 
+            padding-right: 15px;
+        }
+        .variable-value-select {
+            float: left; 
+            width: 30%; 
+            padding-right: 15px;
+        }
+        .variable-button-select {
+            float: left; 
+            width: 30%;
+            padding-right: 15px;
+        }
+        .generat-variable-content {
+            float: left;
+            width: 100%;
+            margin: 20px 0;
+            display: none;
+        }
+        .generat-variable-content .item-var-gen {
+            float: left;
+            width: 100%;
+            margin: 15px 0;
+            border: dotted 1px #ccc;
+            padding: 15px 0;
+        }
+
+        @media (max-width: 769px) {
+            .RadUpload .ruInputs li {
+                width: 100%;
+            }
+            .variable-select {
+                width: 100%;
+            }
+            #selectvariabletitle {
+                width: 100%;
+            }
+            .variable-name-select, .variable-value-select, .variable-button-select {
+                width: 100%;
+                padding-top: 15px;
+                padding-right: 0;
+            }
         }
     </style>
 </asp:Content>
@@ -265,40 +310,24 @@
                                 <div class="row-right">
                                     <asp:UpdatePanel ID="up" runat="server">
                                         <ContentTemplate>
-                                            <div style="float: left; width: 30%; margin-left: 10px;">
+                                            <div class="variable-name-select">
                                                 <asp:DropDownList runat="server" ID="ddlVariablename" CssClass="form-control" DataTextField="VariableName"
                                                     DataValueField="ID" AppendDataBoundItems="True" AutoPostBack="True" OnSelectedIndexChanged="ddlVariablename_SelectedIndexChanged" />
                                             </div>
-                                            <div style="float: left; width: 30%; margin-left: 10px;">
+                                            <div class="variable-value-select">
                                                 <asp:DropDownList runat="server" ID="ddlVariableValue" CssClass="form-control" DataTextField="VariableValue"
                                                     DataValueField="ID" AppendDataBoundItems="True" AutoPostBack="True" />
                                             </div>
                                         </ContentTemplate>
                                     </asp:UpdatePanel>
-                                    <div style="float: left; width: 30%; margin-left: 10px;">
+                                    <div class="variable-button-select">
                                         <a href="javascript:;" onclick="chooseVariable()" class="btn primary-btn fw-btn not-fullwidth">Chọn</a>
                                     </div>
 
-                                    <div class="variableselect" style="float: left; width: 100%">
+                                    <div class="variableselect">
                                         <span id="selectvariabletitle">Các thuộc tính đã chọn: 
                                             <a href="javascript:;" onclick="generateVariable()" id="generateVariable" class="btn primary-btn fw-btn not-fullwidth">Thiết lập biến thể</a></span>
                                     </div>
-                                    <style>
-                                        .generat-variable-content {
-                                            float: left;
-                                            width: 100%;
-                                            margin: 20px 0;
-                                            display: none;
-                                        }
-
-                                            .generat-variable-content .item-var-gen {
-                                                float: left;
-                                                width: 100%;
-                                                margin: 15px 0;
-                                                border: dotted 1px #ccc;
-                                                padding: 15px 0;
-                                            }
-                                    </style>
                                     <div class="generat-variable-content">
                                         <div class="row">
                                             <div class="col-md-10">

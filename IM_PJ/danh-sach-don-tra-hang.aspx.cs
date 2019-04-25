@@ -187,6 +187,7 @@ namespace IM_PJ
 
             int PageSize = 30;
             StringBuilder html = new StringBuilder();
+            html.Append("<thead>");
             html.Append("<tr>");
             html.Append("    <th>Mã</th>");
             html.Append("    <th>Khách hàng</th>");
@@ -201,8 +202,9 @@ namespace IM_PJ
             }
             html.Append("    <th>Ngày tạo</th>");
             html.Append("    <th></th>");
-            html.Append("</tr>");
+            html.Append("</thead>");
 
+            html.Append("<tbody>");
             if (acs.Count > 0)
             {
                 int TotalItems = acs.Count;
@@ -223,40 +225,40 @@ namespace IM_PJ
                 {
                     var item = acs[i];
                     html.Append("<tr>");
-                    html.Append("   <td><a href=\"/xem-don-hang-doi-tra?id=" + item.ID + "\">" + item.ID + "</a></td>");
+                    html.Append("   <td data-title='Mã đơn'><a href=\"/xem-don-hang-doi-tra?id=" + item.ID + "\">" + item.ID + "</a></td>");
 
                     if (!string.IsNullOrEmpty(item.Nick))
                     {
-                        html.Append("   <td><a class=\"customer-name-link\" href=\"/xem-don-hang-doi-tra?id=" + item.ID + "\">" + item.Nick.ToTitleCase() + "</a><br><span class=\"name-bottom-nick\">(" + item.CustomerName.ToTitleCase() + ")</span></td>");
+                        html.Append("   <td data-title='Khách hàng' class='customer-td'><a class=\"customer-name-link\" href=\"/xem-don-hang-doi-tra?id=" + item.ID + "\">" + item.Nick.ToTitleCase() + "</a><br><span class=\"name-bottom-nick\">(" + item.CustomerName.ToTitleCase() + ")</span></td>");
                     }
                     else
                     {
-                        html.Append("   <td><a class=\"customer-name-link\" href=\"/xem-don-hang-doi-tra?id=" + item.ID + "\">" + item.CustomerName.ToTitleCase() + "</a></td>");
+                        html.Append("   <td data-title='Khách hàng' class='customer-td'><a class=\"customer-name-link\" href=\"/xem-don-hang-doi-tra?id=" + item.ID + "\">" + item.CustomerName.ToTitleCase() + "</a></td>");
                     }
 
-                    html.Append("   <td>" + string.Format("{0:N0}", Convert.ToDouble(item.Quantity)) + "</td>");
-                    html.Append("   <td>" + string.Format("{0:N0}", Convert.ToDouble(item.TotalRefundFee)) + "</td>");
-                    html.Append("   <td><strong>" + string.Format("{0:N0}", Convert.ToDouble(item.TotalPrice)) + "</strong></td>");
-                    html.Append("   <td>" + PJUtils.RefundStatus(Convert.ToInt32(item.Status)) + "</td>");
+                    html.Append("   <td data-title='Số lượng'>" + string.Format("{0:N0}", Convert.ToDouble(item.Quantity)) + "</td>");
+                    html.Append("   <td data-title='Phí đổi hàng'>" + string.Format("{0:N0}", Convert.ToDouble(item.TotalRefundFee)) + "</td>");
+                    html.Append("   <td data-title='Tổng tiền'><strong>" + string.Format("{0:N0}", Convert.ToDouble(item.TotalPrice)) + "</strong></td>");
+                    html.Append("   <td data-title='Trạng thái'>" + PJUtils.RefundStatus(Convert.ToInt32(item.Status)) + "</td>");
 
                     if(item.OrderSaleID > 0)
                     {
-                        html.Append("   <td><a class=\"customer-name-link\" target=\"_blank\" title=\"Bấm vào xem đơn hàng trừ tiền\" href=\"/thong-tin-don-hang?id=" + item.OrderSaleID + "\">" + item.OrderSaleID + " (Xem đơn)</a></td>");
+                        html.Append("   <td data-title='Đơn trừ tiền'><a class=\"customer-name-link\" target=\"_blank\" title=\"Bấm vào xem đơn hàng trừ tiền\" href=\"/thong-tin-don-hang?id=" + item.OrderSaleID + "\">" + item.OrderSaleID + " (Xem đơn)</a></td>");
                     }
                     else
                     {
-                        html.Append("   <td></td>");
+                        html.Append("   <td data-title='Đơn trừ tiền'></td>");
                     }
 
                     if (acc.RoleID == 0)
                     {
-                        html.Append("   <td>" + item.CreatedBy + "</td>");
+                        html.Append("   <td data-title='Nhân viên'>" + item.CreatedBy + "</td>");
                     }
 
                     string date = string.Format("{0:dd/MM}", item.CreatedDate);
-                    html.Append("   <td>" + date + "</td>");
+                    html.Append("   <td data-title='Ngày tạo'>" + date + "</td>");
 
-                    html.Append("   <td>");
+                    html.Append("   <td data-title='Thao tác' class='update-button'>");
                     html.Append("       <a href=\"/print-invoice-return?id=" + item.ID + "\" title=\"In hóa đơn\" target=\"_blank\" class=\"btn primary-btn h45-btn\"><i class=\"fa fa-print\" aria-hidden=\"true\"></i></a>");
                     html.Append("       <a href=\"/print-return-order-image?id=" + item.ID + "\" title=\"Lấy ảnh đơn hàng\" target=\"_blank\" class=\"btn primary-btn btn-red h45-btn\"><i class=\"fa fa-picture-o\" aria-hidden=\"true\"></i></a>");
                     html.Append("   </td>");

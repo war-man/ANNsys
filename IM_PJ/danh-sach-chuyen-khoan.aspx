@@ -2,12 +2,95 @@
 
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
-</asp:Content>
-<asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <script src="/Scripts/moment.min.js"></script>
     <script src="/Scripts/moment-with-locales.min.js"></script>
     <script src="/Scripts/bootstrap-datetimepicker.min.js"></script>
-
+    <style>
+        @media (max-width: 768px) {
+            table.shop_table_responsive thead {
+	            display: none;
+            }
+            table.shop_table_responsive > tbody > tr > td:nth-of-type(1):before {
+                content: "#";
+                font-size: 20px;
+                margin-right: 2px;
+            }
+            table.shop_table_responsive > tbody > tr > td:nth-of-type(1) {
+                text-align: left;
+                font-size: 20px;
+                font-weight: bold;
+                height: 50px;
+            }
+            table.shop_table_responsive > tbody > tr:nth-of-type(2n) td {
+                border-top: none;
+                border-bottom: none!important;
+            }
+            table.shop_table_responsive > tbody > tr > td:first-child {
+	            border-left: none;
+                padding-left: 20px;
+            }
+            table.shop_table_responsive > tbody > tr > td:last-child {
+	            border-right: none;
+                padding-left: 20px;
+            }
+            table.shop_table_responsive > tbody > tr > td {
+	            height: 40px;
+            }
+            table.shop_table_responsive > tbody > tr > td.customer-td {
+	            height: 60px;
+            }
+            table.shop_table_responsive > tbody > tr > td.payment-type, table.shop_table_responsive > tbody > tr > td.shipping-type {
+                height: 70px;
+            }
+            table.shop_table_responsive > tbody > tr > td .new-status-btn {
+                display: block;
+                margin-top: 10px;
+            }
+            table.shop_table_responsive > tbody > tr > td.update-button {
+                height: 85px;
+            }
+            table.shop_table_responsive .bg-bronze,
+            table.shop_table_responsive .bg-red,
+            table.shop_table_responsive .bg-blue,
+            table.shop_table_responsive .bg-yellow,
+            table.shop_table_responsive .bg-black,
+            table.shop_table_responsive .bg-green {
+                display: initial;
+                float: right;
+            }
+            table.shop_table_responsive tbody td {
+	            background-color: #f8f8f8;
+	            display: block;
+	            text-align: right;
+	            border: none;
+	            padding: 20px;
+            }
+            table.shop_table_responsive > tbody > tr.tr-more-info > td {
+                height: initial;
+            }
+            table.shop_table_responsive > tbody > tr.tr-more-info > td span {
+                display: block;
+                text-align: left;
+                margin-bottom: 10px;
+                margin-right: 0;
+            }
+            table.shop_table_responsive > tbody > tr.tr-more-info > td:nth-child(2):before {
+                content: none;
+            }
+            table.shop_table_responsive tbody td:before {
+	            content: attr(data-title) ": ";
+	            font-weight: 700;
+	            float: left;
+	            text-transform: uppercase;
+	            font-size: 14px;
+            }
+            table.shop_table_responsive tbody td:empty {
+                display: none;
+            }
+        }
+    </style>
+</asp:Content>
+<asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <main id="main-wrap">
         <div class="container">
             <div class="row">
@@ -102,10 +185,8 @@
                             </div>
                         </div>
                         <div class="responsive-table">
-                            <table class="table table-checkable table-product table-new-product">
-                                <tbody>
-                                    <asp:Literal ID="ltrList" runat="server" EnableViewState="false"></asp:Literal>
-                                </tbody>
+                            <table class="table table-checkable table-product table-new-product shop_table_responsive">
+                                <asp:Literal ID="ltrList" runat="server" EnableViewState="false"></asp:Literal>
                             </table>
                         </div>
                         <div class="panel-footer clear">
@@ -172,50 +253,50 @@
                     <div class="modal-body">
                         <asp:HiddenField ID="hdOrderID" runat="server" />
                         <div class="row form-group">
-                            <div class="col-xs-3">
+                            <div class="col-md-3 col-xs-4">
                                 <p>Chuyển từ</p>
                             </div>
-                            <div class="col-xs-9">
+                            <div class="col-md-9 col-xs-8">
                                 <asp:DropDownList ID="ddlCustomerBank" runat="server" CssClass="form-control"></asp:DropDownList>
                             </div>
                         </div>
                         <div class="row form-group">
-                            <div class="col-xs-3">
-                                <p>Tài khoản nhận</p>
+                            <div class="col-md-3 col-xs-4">
+                                <p>TK nhận</p>
                             </div>
-                            <div class="col-xs-9">
+                            <div class="col-md-9 col-xs-8">
                                 <asp:DropDownList ID="ddlAccoutBank" runat="server" CssClass="form-control"></asp:DropDownList>
                             </div>
                         </div>
                         <div class="row form-group">
-                            <div class="col-xs-3">
+                            <div class="col-md-3 col-xs-4">
                                 <p>Trạng thái</p>
                             </div>
-                            <div class="col-xs-9">
+                            <div class="col-md-9 col-xs-8">
                                 <asp:DropDownList ID="ddlStatus" runat="server" CssClass="form-control"></asp:DropDownList>
                             </div>
                         </div>
                         <div class="row form-group">
-                            <div class="col-xs-3">
+                            <div class="col-md-3 col-xs-4">
                                 <p>Tổng đơn</p>
                             </div>
-                            <div class="col-xs-9 text-right">
+                            <div class="col-md-9 col-xs-8 text-right">
                                 <asp:TextBox ID="txtPrice" runat="server" CssClass="form-control text-align-right" ReadOnly="True"></asp:TextBox>
                             </div>
                         </div>
                         <div class="row form-group">
-                            <div class="col-xs-3">
+                            <div class="col-md-3 col-xs-4">
                                 <p>Đã nhận</p>
                             </div>
-                            <div class="col-xs-9">
+                            <div class="col-md-9 col-xs-8">
                                 <asp:TextBox ID="txtMoneyReceived" runat="server" CssClass="form-control text-right" placeholder="Số tiền khách đã chuyển" data-type="currency" onkeypress='return event.charCode >= 48 && event.charCode <= 57'></asp:TextBox>
                             </div>
                         </div>
                         <div class="row form-group">
-                            <div class="col-xs-3">
+                            <div class="col-md-3 col-xs-4">
                                 <p>Thời gian</p>
                             </div>
-                            <div class="col-xs-9">
+                            <div class="col-md-9 col-xs-8">
                                 <div class="input-group date" id="dtDoneAt">
                                     <input type="text" class="form-control" />
                                     <span class="input-group-addon">
@@ -225,10 +306,10 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-xs-3">
+                            <div class="col-md-3 col-xs-4">
                                 <p>Ghi chú</p>
                             </div>
-                            <div class="col-xs-9">
+                            <div class="col-md-9 col-xs-8">
                                 <asp:TextBox ID="txtNote" runat="server" CssClass="form-control text-left" placeholder="Ghi chú"></asp:TextBox>
                             </div>
                         </div>
@@ -376,7 +457,7 @@
                             contentType: "application/json; charset=utf-8",
                             dataType: "json",
                             success: function (msg) {
-                                let row = $("tr[data-orderid='" + orderID + "'");
+                                let row = $("tr[data-orderid='" + orderID + "']");
                                 let statusNameDOM = row.find('#statusName');
                                 let cusBankName = $("#<%=ddlCustomerBank.ClientID%> :selected").text();
                                 let accBankName = $("#<%=ddlAccoutBank.ClientID%> :selected").text();

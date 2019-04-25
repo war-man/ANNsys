@@ -1,6 +1,90 @@
 ﻿<%@ Page Title="Danh sách đơn hàng" Language="C#" MasterPageFile="~/MasterPage.Master" AutoEventWireup="true" CodeBehind="danh-sach-don-hang.aspx.cs" Inherits="IM_PJ.danh_sach_don_hang" EnableSessionState="ReadOnly" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
+    <style>
+        @media (max-width: 768px) {
+            table.shop_table_responsive thead {
+	            display: none;
+            }
+            table.shop_table_responsive > tbody > tr > td:nth-of-type(1):before {
+                content: "#";
+                font-size: 20px;
+                margin-right: 2px;
+            }
+            table.shop_table_responsive > tbody > tr > td:nth-of-type(1) {
+                text-align: left;
+                font-size: 20px;
+                font-weight: bold;
+                height: 50px;
+            }
+            table.shop_table_responsive > tbody > tr:nth-of-type(2n) td {
+                border-top: none;
+                border-bottom: none!important;
+            }
+            table.shop_table_responsive > tbody > tr > td:first-child {
+	            border-left: none;
+                padding-left: 20px;
+            }
+            table.shop_table_responsive > tbody > tr > td:last-child {
+	            border-right: none;
+                padding-left: 20px;
+            }
+            table.shop_table_responsive > tbody > tr > td {
+	            height: 40px;
+            }
+            table.shop_table_responsive > tbody > tr > td.customer-td {
+	            height: 60px;
+            }
+            table.shop_table_responsive > tbody > tr > td.payment-type, table.shop_table_responsive > tbody > tr > td.shipping-type {
+                height: 70px;
+            }
+            table.shop_table_responsive > tbody > tr > td .new-status-btn {
+                display: block;
+                margin-top: 10px;
+            }
+            table.shop_table_responsive > tbody > tr > td.update-button {
+                height: 85px;
+            }
+            table.shop_table_responsive .bg-bronze,
+            table.shop_table_responsive .bg-red,
+            table.shop_table_responsive .bg-blue,
+            table.shop_table_responsive .bg-yellow,
+            table.shop_table_responsive .bg-black,
+            table.shop_table_responsive .bg-green {
+                display: initial;
+                float: right;
+            }
+            table.shop_table_responsive tbody td {
+	            background-color: #f8f8f8;
+	            display: block;
+	            text-align: right;
+	            border: none;
+	            padding: 20px;
+            }
+            table.shop_table_responsive > tbody > tr.tr-more-info > td {
+                height: initial;
+            }
+            table.shop_table_responsive > tbody > tr.tr-more-info > td span {
+                display: block;
+                text-align: left;
+                margin-bottom: 10px;
+                margin-right: 0;
+            }
+            table.shop_table_responsive > tbody > tr.tr-more-info > td:nth-child(2):before {
+                content: none;
+            }
+            table.shop_table_responsive tbody td:before {
+	            content: attr(data-title) ": ";
+	            font-weight: 700;
+	            float: left;
+	            text-transform: uppercase;
+	            font-size: 14px;
+            }
+            table.shop_table_responsive tbody td:empty {
+                display: none;
+            }
+        }
+    </style>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <main id="main-wrap">
@@ -154,10 +238,8 @@
                             </div>
                         </div>
                         <div class="responsive-table">
-                            <table class="table table-checkable table-product table-new-product">
-                                <tbody>
-                                    <asp:Literal ID="ltrList" runat="server" EnableViewState="false"></asp:Literal>
-                                </tbody>
+                            <table class="table table-checkable table-product table-new-product shop_table_responsive">
+                                <asp:Literal ID="ltrList" runat="server" EnableViewState="false"></asp:Literal>
                             </table>
                         </div>
                         <div class="panel-footer clear">

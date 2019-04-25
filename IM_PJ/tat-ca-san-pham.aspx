@@ -14,6 +14,98 @@
         .btn.download-btn:hover {
             color: #ff8400;
         }
+        table.shop_table_responsive > tbody > tr:nth-of-type(2n+1) td {
+            border-bottom: solid 1px #e1e1e1!important;
+        }
+        @media (max-width: 768px) {
+            table.shop_table_responsive thead {
+	            display: none;
+            }
+            table.shop_table_responsive > tbody > tr > td:nth-of-type(1):before {
+                content: "";
+            }
+            table.shop_table_responsive > tbody > tr > td:nth-of-type(1) {
+                height: auto;
+                padding-bottom: 0;
+            }
+            table.shop_table_responsive > tbody > tr > td:nth-of-type(2):before {
+                content: "";
+            }
+            table.shop_table_responsive > tbody > tr > td:nth-of-type(2) {
+                content: "";
+                text-align: left;
+            }
+            table.shop_table_responsive > tbody > tr:nth-of-type(2n) td {
+                border-top: none;
+                border-bottom: none!important;
+            }
+            table.shop_table_responsive > tbody > tr:nth-of-type(2n+1) td {
+                border-bottom: none!important;
+                background-color: #fff;
+            }
+            table.shop_table_responsive > tbody > tr > td:first-child {
+	            border-left: none;
+                padding-left: 20px;
+            }
+            table.shop_table_responsive > tbody > tr > td:last-child {
+	            border-right: none;
+                padding-left: 20px;
+            }
+            table.shop_table_responsive > tbody > tr > td {
+	            height: 40px;
+            }
+            table.shop_table_responsive > tbody > tr > td.customer-td {
+	            height: 60px;
+            }
+            table.shop_table_responsive > tbody > tr > td.payment-type, table.shop_table_responsive > tbody > tr > td.shipping-type {
+                height: 70px;
+            }
+            table.shop_table_responsive > tbody > tr > td .new-status-btn {
+                display: block;
+                margin-top: 10px;
+            }
+            table.shop_table_responsive > tbody > tr > td.update-button {
+                height: 85px;
+            }
+            table.shop_table_responsive .bg-bronze,
+            table.shop_table_responsive .bg-red,
+            table.shop_table_responsive .bg-blue,
+            table.shop_table_responsive .bg-yellow,
+            table.shop_table_responsive .bg-black,
+            table.shop_table_responsive .bg-green {
+                display: initial;
+                float: right;
+            }
+            table.shop_table_responsive tbody td {
+	            background-color: #f8f8f8;
+	            display: block;
+	            text-align: right;
+	            border: none;
+	            padding: 20px;
+            }
+            table.shop_table_responsive > tbody > tr.tr-more-info > td {
+                height: initial;
+            }
+            table.shop_table_responsive > tbody > tr.tr-more-info > td span {
+                display: block;
+                text-align: left;
+                margin-bottom: 10px;
+                margin-right: 0;
+            }
+            table.shop_table_responsive > tbody > tr.tr-more-info > td:nth-child(2):before {
+                content: none;
+            }
+            table.shop_table_responsive tbody td:before {
+	            content: attr(data-title) ": ";
+	            font-weight: 700;
+	            float: left;
+	            text-transform: uppercase;
+	            font-size: 14px;
+            }
+            table.shop_table_responsive tbody td:empty {
+                display: none;
+            }
+        }
     </style>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
@@ -115,10 +207,8 @@
                             </div>
                         </div>
                         <div class="responsive-table">
-                            <table class="table table-checkable table-product all-product-table">
-                                <tbody>
-                                    <asp:Literal ID="ltrList" runat="server" EnableViewState="false"></asp:Literal>
-                                </tbody>
+                            <table class="table table-checkable table-product all-product-table shop_table_responsive">
+                                <asp:Literal ID="ltrList" runat="server" EnableViewState="false"></asp:Literal>
                             </table>
                         </div>
                         <div class="panel-footer clear">

@@ -9,13 +9,13 @@
             margin: 20px 0;
         }
 
-            .generat-variable-content .item-var-gen {
-                    float: left;
-                    width: 100%;
-                    margin: 15px 0;
-                    border: dotted 1px #ccc;
-                    padding: 15px 0;
-            }
+        .generat-variable-content .item-var-gen {
+                float: left;
+                width: 100%;
+                margin: 15px 0;
+                border: dotted 1px #ccc;
+                padding: 15px 0;
+        }
         .variableselect {
             float: left;
             width: 100%;
@@ -88,6 +88,20 @@
 
         .width {
             width: calc(100% - 100px);
+        }
+        .img-product {
+            width: 200px;
+        }
+        @media (max-width: 769px) {
+            .RadUpload .ruInputs li {
+                width: 100%;
+            }
+            .img-product {
+                width: 100%;
+            }
+            ul.image-gallery li {
+                width: 100%;
+            }
         }
     </style>
 </asp:Content>
@@ -200,7 +214,7 @@
                                         Localization-Select="Chọn ảnh" AllowedFileExtensions=".jpeg,.jpg,.png"
                                         MultipleFileSelection="Disabled" OnClientFileSelected="OnClientFileSelected1" MaxFileInputsCount="1"  OnClientFileUploadRemoved="OnClientFileUploadRemoved1">
                                     </telerik:RadAsyncUpload>
-                                    <asp:Image runat="server" ID="ProductThumbnail" Width="200" />
+                                    <asp:Image runat="server" ID="ProductThumbnail" class="img-product" />
                                     <asp:HiddenField runat="server" ID="ListProductThumbnail" ClientIDMode="Static" />
                                     <div class="hidProductThumbnail"></div>
                                 </div>
@@ -397,7 +411,7 @@
 
                         var reader = new FileReader();
                         reader.onload = function (e) {
-                            $(".image-gallery").append("<li><img src='" + e.target.result + "' /><a href='javascript:;' data-image-id='' onclick='deleteImageGallery($(this))' class='btn-delete'><i class=\"fa fa-times\" aria-hidden=\"true\"></i> Xóa hình</a></li>'")
+                            $(".image-gallery").append("<li><img src='" + e.target.result + "' /><a href='javascript:;' data-image-id='' onclick='deleteImageGallery($(this))' class='btn-delete'><i class=\"fa fa-times\" aria-hidden=\"true\"></i> Xóa hình</a></li>")
                             base64 += e.target.result + "|";
                         }
                         reader.readAsDataURL(input.files[i]);

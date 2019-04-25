@@ -140,7 +140,7 @@ namespace IM_PJ
                 cssClass = "col-xs-4";
             }
 
-            int PageSize = 20;
+            int PageSize = 15;
             StringBuilder html = new StringBuilder();
             html.Append("<div class='row'>");
 
