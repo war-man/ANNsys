@@ -444,6 +444,7 @@
     <Content Include="FilesResources\ToolContentAccount.xml" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="login-hidden-page.aspx" />
+    <Content Include="print-delivery.aspx" />
     <Content Include="Scripts\bootstrap-datetimepicker.js" />
     <Content Include="Scripts\bootstrap-datetimepicker.min.js" />
     <Content Include="Scripts\bootstrap.js" />
@@ -890,6 +891,13 @@
     </Compile>
     <Compile Include="bv.aspx.designer.cs">
       <DependentUpon>bv.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="print-delivery.aspx.cs">
+      <DependentUpon>print-delivery.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="print-delivery.aspx.designer.cs">
+      <DependentUpon>print-delivery.aspx</DependentUpon>
     </Compile>
     <Compile Include="sua-thong-tin-nha-xe.aspx.cs">
       <DependentUpon>sua-thong-tin-nha-xe.aspx</DependentUpon>

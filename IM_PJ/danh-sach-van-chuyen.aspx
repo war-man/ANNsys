@@ -173,6 +173,13 @@
                             </div>
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <a href="#PrintModal" class="btn primary-btn fw-btn not-fullwidth" data-toggle="modal" data-backdrop='static' data-keyboard='false'>
+                                <i class="fa fa-print" aria-hidden="true"></i> In phiếu giao hàng
+                            </a>
+                        </div>
+                    </div>
                     <div class="panel-table clear">
                         <div class="panel-footer clear">
                             <div class="pagination">
@@ -312,6 +319,33 @@
             </div>
         </div>
 
+        <!-- Modal -->
+        <div class="modal fade" id="PrintModal" role="dialog">
+            <div class="modal-dialog">
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Cập nhật thông tin phiếu</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row form-group">
+                            <div class="col-xs-3">
+                                <p>Người giao</p>
+                            </div>
+                            <div class="col-xs-9">
+                                <asp:DropDownList ID="ddfShipperPrintModal" runat="server" CssClass="form-control"></asp:DropDownList>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button id="closePrint" type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
+                        <button id="startPrint" type="button" class="btn btn-primary">In</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <asp:HiddenField ID="hdfcreate" runat="server" />
         <script type="text/javascript">
             $(document).ready(() => {
@@ -428,12 +462,17 @@
                                 HoldOn.open();
                             },
                             success: function (result) {
+<<<<<<< HEAD
                                 $("#closeDelivery").click();
                                 HoldOn.close();
 
                                 let status = $("#<%=ddlDeliveryStatusModal.ClientID%>").val();
                                 let row = $("tr[data-orderid='" + orderID + "'");
+=======
+                                let row = $("tr[data-orderid='" + orderID + "']");
+>>>>>>> Update print delivery
                                 let deliveryStatusDom = row.children("#deliveryStatus").children("span");
+                                let checkPrint = row.find("td>input[type='checkbox']");
                                 let shiperName = $("#<%=ddlShipperModal.ClientID%> :selected").text();
                                 let deliveryStatusName = $("#<%=ddlDeliveryStatusModal.ClientID%> :selected").text();
 
@@ -445,6 +484,17 @@
                                 row.attr("data-cosofdev", cosOfDel);
                                 row.attr("data-deliverydate", startAt);
                                 row.attr("data-shippernote", note);
+
+                                // Checkbox Print disable when status delivery != "Chưa giao hàng"
+                                if (status != "2")
+                                {
+                                    checkPrint.prop('checked', false);
+                                    checkPrint.attr('disabled', true);
+                                }
+                                else
+                                {
+                                    checkPrint.removeAttr('disabled');
+                                }
 
                                 if (shipperID == "0")
                                 {
@@ -504,6 +554,22 @@
                     }
                 });
 
+<<<<<<< HEAD
+=======
+                $("#startPrint").click(e => {
+                    let shipperID = $("#<%=ddfShipperPrintModal.ClientID%>").val();
+
+                    if (shipperID != "0")
+                    {
+                        prindelivery(shipperID);
+                        $("#closePrint").click();
+                    }
+                    else
+                    {
+                        swal("Thông báo", "Chưa chọn người giao hàng", "error");
+                    }
+                });
+>>>>>>> Update print delivery
             });
 
             $("#<%=ddlDeliveryStatusModal.ClientID%>").on('change', function() {
@@ -712,6 +778,7 @@
                 $("#invoice-image").html(imageHTML);
             }
 
+<<<<<<< HEAD
             function createFeeInfoHTML(fee, is_total) {
                 if (!is_total) {
                     is_total = false;
@@ -759,6 +826,82 @@
                         swal("Thông báo", "Có lỗi trong quá trình lấy thông tin phí", "error");
                     }
                 })
+=======
+            function changeCheckPrintAll(checked) {
+                let childDOM = $("td>input[type='checkbox']").not("[disabled='disabled']");
+
+                childDOM.each((index, element) => {
+                    element.checked = checked;
+                });
+            }
+
+            function changeCheckPrint() {
+                let parentDOM = $("#checkPrintAll");
+                let childDOM = $("td>input[type='checkbox']").not("[disabled='disabled']");
+
+                if (childDOM.length == 0) {
+                    parentDOM.prop('checked', false);
+                }
+                else
+                {
+                    childDOM.each((index, element) => {
+                        parentDOM.prop('checked', element.checked);
+                        if (!element.checked) return false;
+                    });
+                }
+            }
+
+            function prindelivery(shipperID) {
+                let childDOM = $("td>input[type='checkbox']:checked");
+                let orders = [];
+
+                if (childDOM.length == 0)
+                {
+                    swal("Thông báo", "Bạn có chắc là đã chọn phiếu để in giáo hàng chưa", "error");
+                }
+                else
+                {
+                    childDOM.each((index, element) => {
+                        let parent = element.parentElement.parentElement;
+                        let orderID = parent.dataset["orderid"]
+                        let row = $("tr[data-orderid='" + orderID + "']");
+                        let deliveryStatusDom = row.children("#deliveryStatus").children("span");
+                        let shiperName = $("#<%=ddfShipperPrintModal.ClientID%> :selected").text();
+                        let now = new Date();
+
+                        // add order
+                        orders.push(orderID);
+
+                        // Update screen
+                        row.attr("data-shipperid", shipperID);
+                        row.attr("data-deliverystatus", 3);
+                        row.attr("data-deliverydate", now.format("dd/MM/yyyy HH:mm"));
+
+                        // Update screen
+                        element.checked = false;
+                        element.disabled = true;
+                        row.children("#shiperName").html(shiperName);
+                        deliveryStatusDom.removeClass();
+                        deliveryStatusDom.addClass("bg-blue");
+                        deliveryStatusDom.html("Đang giao");
+                        row.find("#downloadInvoiceImage").hide();
+                        row.children("#delDate").html("");
+                    });
+
+                    changeCheckPrint();
+
+                    let key = uuid.v4();
+                    if (key)
+                    {
+                        let date = new Date();
+                        let minutes = 30;
+                        date.setTime(date.getTime() + (minutes * 60 * 1000));
+                        $.cookie(key, JSON.stringify(orders), { expires: date });
+                        let url = "/print-delivery?shipperid=" + shipperID + "&key=" + key;
+                        window.open(url);
+                    }
+                }
+>>>>>>> Update print delivery
             }
         </script>
     </main>
