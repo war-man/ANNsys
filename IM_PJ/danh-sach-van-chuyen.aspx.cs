@@ -288,6 +288,12 @@ namespace IM_PJ
                     TrTag.AppendLine("/>");
 
                     html.Append(TrTag.ToString());
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+                    html.Append("   <td data-title='Mã'><a href=\"/thong-tin-don-hang?id=" + item.ID + "\">" + item.ID + "</a></td>");
+=======
+>>>>>>> Update print delivery
                     // Hoán đơn giao hàng không được trể quá 2 ngày
                     // và hình thức giáo hàng là chuyễn xe
                     // và gói hàng chưa được giao
@@ -300,6 +306,10 @@ namespace IM_PJ
                         html.Append("   <td><input type='checkbox'  onchange='changeCheckPrint()' disabled='disabled'/></td>");
                     }
                     html.Append("   <td><a href=\"/thong-tin-don-hang?id=" + item.ID + "\">" + item.ID + "</a></td>");
+<<<<<<< HEAD
+=======
+>>>>>>> Update print delivery
+>>>>>>> Update print delivery
                     if (!string.IsNullOrEmpty(item.Nick))
                     {
                         html.Append("   <td data-title='Khách hàng' class='customer-td'><a class=\"col-customer-name-link\" href=\"/thong-tin-don-hang?id=" + item.ID + "\">" + item.Nick.ToTitleCase() + "</a><br><span class=\"name-bottom-nick\">(" + item.CustomerName.ToTitleCase() + ")</span></td>");
@@ -349,7 +359,15 @@ namespace IM_PJ
 
                     // thông tin thêm
                     html.Append("<tr class='tr-more-info'>");
+<<<<<<< HEAD
                     html.Append("   <td colspan='2'>");
+=======
+<<<<<<< HEAD
+                    html.Append("   <td colspan='1' data-title='Thông tin thêm'>");
+=======
+                    html.Append("   <td colspan='2'>");
+>>>>>>> Update print delivery
+>>>>>>> Update print delivery
                     html.Append("   </td>");
                     html.Append("   <td colspan='13'>");
 
