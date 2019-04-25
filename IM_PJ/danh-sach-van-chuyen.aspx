@@ -480,19 +480,11 @@
                                 HoldOn.open();
                             },
                             success: function (result) {
-<<<<<<< HEAD
-                                let row = $("tr[data-orderid='" + orderID + "']");
-=======
-<<<<<<< HEAD
                                 $("#closeDelivery").click();
                                 HoldOn.close();
 
                                 let status = $("#<%=ddlDeliveryStatusModal.ClientID%>").val();
                                 let row = $("tr[data-orderid='" + orderID + "'");
-=======
-                                let row = $("tr[data-orderid='" + orderID + "']");
->>>>>>> Update print delivery
->>>>>>> Update print delivery
                                 let deliveryStatusDom = row.children("#deliveryStatus").children("span");
                                 let checkPrint = row.find("td>input[type='checkbox']");
                                 let shiperName = $("#<%=ddlShipperModal.ClientID%> :selected").text();
@@ -580,11 +572,6 @@
                     
                 });
 
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-=======
->>>>>>> Update print delivery
                 $("#startPrint").click(e => {
                     let shipperID = $("#<%=ddfShipperPrintModal.ClientID%>").val();
 
@@ -598,10 +585,6 @@
                         swal("Thông báo", "Chưa chọn người giao hàng", "error");
                     }
                 });
-<<<<<<< HEAD
-=======
->>>>>>> Update print delivery
->>>>>>> Update print delivery
             });
 
             $("#<%=ddlDeliveryStatusModal.ClientID%>").on('change', function() {
@@ -858,7 +841,7 @@
                         swal("Thông báo", "Có lỗi trong quá trình lấy thông tin phí", "error");
                     }
                 })
-=======
+
             function changeCheckPrintAll(checked) {
                 let childDOM = $("td>input[type='checkbox']").not("[disabled='disabled']");
 
@@ -934,6 +917,82 @@
                     }
                 }
 >>>>>>> Update print delivery
+            }
+
+            function changeCheckPrintAll(checked) {
+                let childDOM = $("td>input[type='checkbox']").not("[disabled='disabled']");
+
+                childDOM.each((index, element) => {
+                    element.checked = checked;
+                });
+            }
+
+            function changeCheckPrint() {
+                let parentDOM = $("#checkPrintAll");
+                let childDOM = $("td>input[type='checkbox']").not("[disabled='disabled']");
+
+                if (childDOM.length == 0) {
+                    parentDOM.prop('checked', false);
+                }
+                else
+                {
+                    childDOM.each((index, element) => {
+                        parentDOM.prop('checked', element.checked);
+                        if (!element.checked) return false;
+                    });
+                }
+            }
+
+            function prindelivery(shipperID) {
+                let childDOM = $("td>input[type='checkbox']:checked");
+                let orders = [];
+
+                if (childDOM.length == 0)
+                {
+                    swal("Thông báo", "Bạn có chắc là đã chọn phiếu để in giáo hàng chưa", "error");
+                }
+                else
+                {
+                    childDOM.each((index, element) => {
+                        let parent = element.parentElement.parentElement;
+                        let orderID = parent.dataset["orderid"]
+                        let row = $("tr[data-orderid='" + orderID + "']");
+                        let deliveryStatusDom = row.children("#deliveryStatus").children("span");
+                        let shiperName = $("#<%=ddfShipperPrintModal.ClientID%> :selected").text();
+                        let now = new Date();
+
+                        // add order
+                        orders.push(orderID);
+
+                        // Update screen
+                        row.attr("data-shipperid", shipperID);
+                        row.attr("data-deliverystatus", 3);
+                        row.attr("data-deliverydate", now.format("dd/MM/yyyy HH:mm"));
+
+                        // Update screen
+                        element.checked = false;
+                        element.disabled = true;
+                        row.children("#shiperName").html(shiperName);
+                        deliveryStatusDom.removeClass();
+                        deliveryStatusDom.addClass("bg-blue");
+                        deliveryStatusDom.html("Đang giao");
+                        row.find("#downloadInvoiceImage").hide();
+                        row.children("#delDate").html("");
+                    });
+
+                    changeCheckPrint();
+
+                    let key = uuid.v4();
+                    if (key)
+                    {
+                        let date = new Date();
+                        let minutes = 30;
+                        date.setTime(date.getTime() + (minutes * 60 * 1000));
+                        $.cookie(key, JSON.stringify(orders), { expires: date });
+                        let url = "/print-delivery?shipperid=" + shipperID + "&key=" + key;
+                        window.open(url);
+                    }
+                }
             }
 
             function changeCheckPrintAll(checked) {
