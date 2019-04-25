@@ -793,7 +793,6 @@
                 $("#invoice-image").html(imageHTML);
             }
 
-<<<<<<< HEAD
             function createFeeInfoHTML(fee, is_total) {
                 if (!is_total) {
                     is_total = false;
@@ -841,6 +840,7 @@
                         swal("Thông báo", "Có lỗi trong quá trình lấy thông tin phí", "error");
                     }
                 })
+            }
 
             function changeCheckPrintAll(checked) {
                 let childDOM = $("td>input[type='checkbox']").not("[disabled='disabled']");
@@ -916,7 +916,6 @@
                         window.open(url);
                     }
                 }
->>>>>>> Update print delivery
             }
 
             function changeCheckPrintAll(checked) {
