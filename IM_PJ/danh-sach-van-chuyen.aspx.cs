@@ -93,13 +93,18 @@ namespace IM_PJ
         {
             var shipper = ShipperController.getDropDownList();
             shipper[0].Text = "Nhân viên giao hàng";
+            // drop down list at filter page
             ddlShipperFilter.Items.Clear();
             ddlShipperFilter.Items.AddRange(shipper.ToArray());
             ddlShipperFilter.DataBind();
+            // drop down list at update delivery modal
             ddlShipperModal.Items.Clear();
             ddlShipperModal.Items.AddRange(shipper.ToArray());
             ddlShipperModal.DataBind();
-
+            // drop down list at print delivery modal
+            ddfShipperPrintModal.Items.Clear();
+            ddfShipperPrintModal.Items.AddRange(shipper.ToArray());
+            ddfShipperPrintModal.DataBind();
         }
         public void LoadData()
         {
@@ -223,6 +228,7 @@ namespace IM_PJ
 
             StringBuilder html = new StringBuilder();
             html.Append("<tr>");
+            html.Append("    <th><input id='checkPrintAll' type='checkbox' onchange='changeCheckPrintAll($(this).prop(`checked`))'/></th>");
             html.Append("    <th>Mã</th>");
             html.Append("    <th class='col-customer'>Khách hàng</th>");
             html.Append("    <th>Mua</th>");
@@ -279,6 +285,17 @@ namespace IM_PJ
                     TrTag.AppendLine("/>");
 
                     html.Append(TrTag.ToString());
+                    // Hoán đơn giao hàng không được trể quá 2 ngày
+                    // và hình thức giáo hàng là chuyễn xe
+                    // và gói hàng chưa được giao
+                    if (item.CreatedDate.Date >= DateTime.Now.Date.AddDays(-2) && item.ShippingType == 4 && item.DeliveryStatus == 2)
+                    {
+                        html.Append("   <td><input type='checkbox' onchange='changeCheckPrint()'/></td>");
+                    }
+                    else
+                    {
+                        html.Append("   <td><input type='checkbox'  onchange='changeCheckPrint()' disabled='disabled'/></td>");
+                    }
                     html.Append("   <td><a href=\"/thong-tin-don-hang?id=" + item.ID + "\">" + item.ID + "</a></td>");
                     if (!string.IsNullOrEmpty(item.Nick))
                     {
@@ -329,7 +346,7 @@ namespace IM_PJ
 
                     // thông tin thêm
                     html.Append("<tr class='tr-more-info'>");
-                    html.Append("   <td colspan='1'>");
+                    html.Append("   <td colspan='2'>");
                     html.Append("   </td>");
                     html.Append("   <td colspan='13'>");
 
