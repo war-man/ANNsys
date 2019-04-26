@@ -290,8 +290,8 @@ namespace IM_PJ
                     html.Append(TrTag.ToString());
                     // Hoán đơn giao hàng không được trể quá 2 ngày
                     // và hình thức giáo hàng là chuyễn xe
-                    // và gói hàng chưa được giao
-                    if (item.CreatedDate.Date >= DateTime.Now.Date.AddDays(-2) && item.ShippingType == 4 && item.DeliveryStatus == 2)
+                    // và gói hàng chưa được giao hoặc đang giao
+                    if (item.CreatedDate.Date >= DateTime.Now.Date.AddDays(-2) && item.ShippingType == 4 && (item.DeliveryStatus == 2 || item.DeliveryStatus == 3))
                     {
                         html.Append("   <td><input type='checkbox' onchange='changeCheckPrint()'/></td>");
                     }
@@ -349,8 +349,7 @@ namespace IM_PJ
 
                     // thông tin thêm
                     html.Append("<tr class='tr-more-info'>");
-                    html.Append("   <td colspan='2' data-title='Thông tin thêm'>");
-                    html.Append("   </td>");
+                    html.Append("   <td colspan='2' data-title='Thông tin thêm'></td>");
                     html.Append("   <td colspan='13'>");
 
                     if (item.TotalRefund != 0)

@@ -73,7 +73,7 @@ namespace IM_PJ
                     var data = DeliveryController.getDeliveryReport(orderIDList);
                     if (data.Count == 0)
                     {
-                        ltrPrintDelivery.Text = "Không tìm thấy dư liệu để xuất hóa đơn giao hàng";
+                        ltrPrintDelivery.Text = "Không tìm thấy dữ liệu để xuất hóa đơn giao hàng";
                     }
                     else
                     {

@@ -72,14 +72,14 @@ namespace IM_PJ
 
                 // Add Customer Bank drop down list
                 var cusBanks = BankController.getDropDownList();
-                cusBanks[0].Text = "Ngân hàng chuyển khoản";
+                cusBanks[0].Text = "Ngân hàng chuyển";
                 ddlCustomerBank.Items.Clear();
                 ddlCustomerBank.Items.AddRange(cusBanks.ToArray());
                 ddlCustomerBank.DataBind();
 
                 // Add Account Bank drop down list
                 var accBanks = BankAccountController.getDropDownList();
-                accBanks[0].Text = "Ngân hàng thụ hưởng";
+                accBanks[0].Text = "Ngân hàng nhận";
                 ddlBankReceive.Items.Clear();
                 ddlBankReceive.Items.AddRange(accBanks.ToArray());
                 ddlBankReceive.DataBind();

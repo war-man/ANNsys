@@ -43,7 +43,7 @@ namespace IM_PJ.Controllers
             {
                 // Get order id list which didn't shipped to transport
                 var delivered = con.Deliveries
-                    .Where(x => x.Status != 2)
+                    .Where(x => x.Status == 1) // loại bỏ đơn đã giao
                     .Where(x => orders.Contains(x.OrderID))
                     .Select(x => x.OrderID)
                     .OrderBy(o => o)
@@ -55,21 +55,6 @@ namespace IM_PJ.Controllers
                     .Where(x => x.ShippingType == 4)
                     .Where(x => orders.Contains(x.ID))
                     .OrderBy(o => o.ID);
-
-                var detail = con.tbl_OrderDetail
-                    .Join(
-                        header,
-                        d => d.OrderID,
-                        h => h.ID,
-                        (d, h) => d
-                    )
-                    .GroupBy(x => x.OrderID)
-                    .Select(g => new
-                    {
-                        OrderID = g.Key.Value,
-                        Quantity = g.Sum(x => x.Quantity.HasValue ? x.Quantity.Value : 0)
-                    })
-                    .OrderBy(o => o.OrderID);
 
                 var transport = con.tbl_TransportCompany
                     .Join(
@@ -88,26 +73,15 @@ namespace IM_PJ.Controllers
 
                 var report = header
                     .Join(
-                        detail,
-                        h => h.ID,
-                        d => d.OrderID,
-                        (h, d) => new
-                        {
-                            OrderID = h.ID,
-                            Quantity = d.Quantity,
-                            Collection = h.PaymentType == 3 ? d.Quantity : 0 // Thu hộ
-                        }
-                    )
-                    .Join(
                         transport,
-                        h => h.OrderID,
+                        h => h.ID,
                         t => t.OrderID,
                         (h, t) => new
                         {
                             TransportID = t.TransportID,
                             TransportName = t.TransportName,
-                            Quantity = h.Quantity,
-                            Collection = h.Collection
+                            Quantity = 1,
+                            Collection = h.PaymentType == 3 ? 1 : 0
                         }
                     )
                     .GroupBy(x => x.TransportID)

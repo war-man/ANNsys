@@ -472,7 +472,7 @@ namespace IM_PJ
                     {
                         if (item.TransferStatus.HasValue && item.TransferStatus.Value == 1)
                         {
-                            html.Append("       <br/><span class='new-status-btn bg-green'>Đã nhận tiền</span>");
+                            html.Append("       <br/><div class='new-status-btn'><span class='bg-green'>Đã nhận tiền</span></div>");
                         }
                         else
                         {
@@ -489,7 +489,7 @@ namespace IM_PJ
                     html.Append(PJUtils.ShippingType(Convert.ToInt32(item.ShippingType)));
                     // Đã giao hàng
                     if (item.DeliveryStatus.HasValue && item.DeliveryStatus.Value == 1)
-                        html.Append("       <br/><span class='new-status-btn bg-green'>Đã giao</span>");
+                        html.Append("       <br/><div class='new-status-btn'><span class='bg-green'>Đã giao</span></div>");
                     html.Append("   </td>");
                     #endregion
 

@@ -95,9 +95,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
-                    <h3 class="page-title left">Danh sách chuyển khoản ngân hàng 
-                        <span>(<asp:Literal ID="ltrNumberOfOrder" runat="server" EnableViewState="false"></asp:Literal> đơn)
-                        </span>
+                    <h3 class="page-title left">Danh sách chuyển khoản <span>(<asp:Literal ID="ltrNumberOfOrder" runat="server" EnableViewState="false"></asp:Literal> đơn)</span>
                     </h3>
                 </div>
             </div>
@@ -248,7 +246,7 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal">&times;</button>
-                        <h4 class="modal-title">Cập nhật thông tin chuyển khoản</h4>
+                        <h4 class="modal-title">Cập nhật chuyển khoản</h4>
                     </div>
                     <div class="modal-body">
                         <asp:HiddenField ID="hdOrderID" runat="server" />
@@ -289,7 +287,7 @@
                                 <p>Đã nhận</p>
                             </div>
                             <div class="col-md-9 col-xs-8">
-                                <asp:TextBox ID="txtMoneyReceived" runat="server" CssClass="form-control text-right" placeholder="Số tiền khách đã chuyển" data-type="currency" onkeypress='return event.charCode >= 48 && event.charCode <= 57'></asp:TextBox>
+                                <asp:TextBox ID="txtMoneyReceived" runat="server" CssClass="form-control text-right" placeholder="Số tiền đã nhận" data-type="currency" onkeypress='return event.charCode >= 48 && event.charCode <= 57'></asp:TextBox>
                             </div>
                         </div>
                         <div class="row form-group">
@@ -361,13 +359,19 @@
                         moneyReceivedDOM.attr("disabled", true);
                     }
 
-                    statusDOM.val(status)
+                    
                     priceDOM.val(formatThousands(row.dataset["price"]))
 
-                    if (row.dataset["doneat"])
+                    if (row.dataset["doneat"]){
                         pickerDOM.data("DateTimePicker").date(row.dataset["doneat"]);
-                    else
+                        statusDOM.val(status);
+                    }
+                    else {
+                        statusDOM.val(1);
+                        moneyReceivedDOM.val(priceDOM.val());
+                        moneyReceivedDOM.attr("disabled", false);
                         pickerDOM.data("DateTimePicker").date(moment(new Date).format('DD/MM/YYYY HH:mm'));
+                    }
 
                     // Note
                     noteDOM.val(row.dataset["transfernote"]);
@@ -456,6 +460,9 @@
                             data: JSON.stringify({'transfer': data}),
                             contentType: "application/json; charset=utf-8",
                             dataType: "json",
+                            beforeSend: function () {
+                                HoldOn.open();
+                            },
                             success: function (msg) {
                                 let row = $("tr[data-orderid='" + orderID + "']");
                                 let statusNameDOM = row.find('#statusName');
@@ -506,6 +513,7 @@
                                 }
 
                                 $("#closeTransfer").click();
+                                HoldOn.close();
                             },
                             error: function (xmlhttprequest, textstatus, errorthrow) {
                                 swal("Thông báo", "Đã có vấn đề trong việc cập nhật thông tin chuyển khoản", "error");
