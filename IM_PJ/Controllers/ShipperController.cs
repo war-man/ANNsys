@@ -23,5 +23,19 @@ namespace IM_PJ.Controllers
 
             return data;
         }
+        public static string getShipperNameByID(int shipperID)
+        {
+            using (var dbe = new inventorymanagementEntities())
+            {
+                Shipper shipper = dbe.Shippers.Where(a => a.ID == shipperID).FirstOrDefault();
+                if (shipper != null)
+                {
+                    return shipper.Name;
+                }
+                else return null;
+
+            }
+        }
     }
+
 }

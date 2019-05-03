@@ -79,6 +79,12 @@ namespace IM_PJ
                 }
                 else
                 {
+                    // chuyển sang giao diện xem đơn chuyển hoàn nếu trạng thái xử lý đã chuyển hoàn
+                    if (order.ExcuteStatus == 4)
+                    {
+                        Response.Redirect("/thong-tin-don-hang-chuyen-hoan?id=" + ID);
+                    }
+
                     // Init drop down list ddlFeeType
                     var feeTypes = FeeTypeController.getDropDownList();
                     feeTypes[0].Text = "Loại Phí";
@@ -87,15 +93,24 @@ namespace IM_PJ
                     ddlFeeType.DataBind();
                     ddlFeeType.SelectedIndex = 0;
 
+                    // Init drop down list Bank
+                    var banks = BankController.getDropDownList();
+                    banks[0].Text = "Chọn ngân hàng";
+
+                    ddlBank.Items.Clear();
+                    ddlBank.Items.AddRange(banks.ToArray());
+                    ddlBank.DataBind();
+                    int bankOfOrder = BankTransferController.getBankOfOrder(ID);
+                    if(bankOfOrder != 0)
+                    {
+                        ddlBank.SelectedValue = bankOfOrder.ToString();
+                    }
+
                     // Init Price Type List
                     hdfFeeType.Value = FeeTypeController.getFeeTypeJSON();
 
-                    // chuyển sang giao diện xem đơn chuyển hoàn nếu trạng thái xử lý đã chuyển hoàn
-                    if (order.ExcuteStatus == 4)
-                    {
-                        Response.Redirect("/thong-tin-don-hang-chuyen-hoan?id="+ID);
-                    }
-
+                    // hidden TransportCompanySubID
+                    hdfTransportCompanySubID.Value = order.TransportCompanySubID.ToString();
 
                     string username = HttpContext.Current.Request.Cookies["userLoginSystem"].Value;
                     var acc = AccountController.GetByUsername(username);
@@ -107,6 +122,7 @@ namespace IM_PJ
                         }
                     }
 
+                    // get default discount list
                     var dc = DiscountController.GetAll();
                     if (dc != null)
                     {
@@ -117,6 +133,8 @@ namespace IM_PJ
                         }
                         hdfChietKhau.Value = list;
                     }
+
+                    // hidden OrderID
                     hdOrderInfoID.Value = ID.ToString();
 
                     int AgentID = Convert.ToInt32(order.AgentID);
@@ -714,7 +732,7 @@ namespace IM_PJ
                             int PaymentType = ddlPaymentType.SelectedValue.ToInt(0);
                             int ShippingType = ddlShippingType.SelectedValue.ToInt(0);
                             int TransportCompanyID = ddlTransportCompanyID.SelectedValue.ToInt(0);
-                            int TransportCompanySubID = ddlTransportCompanySubID.SelectedValue.ToInt(0);
+                            int TransportCompanySubID = hdfTransportCompanySubID.Value.ToInt(0);
                             int PostalDeliveryType = ddlPostalDeliveryType.SelectedValue.ToInt();
 
                             var Customer = CustomerController.GetByPhone(CustomerPhone);
@@ -812,6 +830,21 @@ namespace IM_PJ
                             {
                                 // Remove all fee
                                 FeeController.deleteAll(OrderID);
+                            }
+
+                            // Insert Or Update Transfer Bank
+                            var bankID = ddlBank.SelectedValue.ToInt(0);
+                            if (bankID != 0)
+                            {
+                                int bankOfOrder = BankTransferController.getBankOfOrder(order.ID);
+                                if (bankOfOrder != 0)
+                                {
+                                    BankTransferController.updateBankOfOrder(order.ID, bankID);
+                                }
+                                else
+                                {
+                                    BankTransferController.Create(order, bankID, acc);
+                                }
                             }
 
                             // Xử lý hủy đơn hàng

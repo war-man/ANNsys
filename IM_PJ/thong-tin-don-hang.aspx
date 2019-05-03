@@ -479,11 +479,20 @@
                                         Phương thức thanh toán
                                     </div>
                                     <div class="row-right">
-                                        <asp:DropDownList ID="ddlPaymentType" runat="server" CssClass="form-control">
+                                        <asp:DropDownList ID="ddlPaymentType" runat="server" CssClass="form-control" onchange="onchangePaymentType($(this))">
                                             <asp:ListItem Value="1" Text="Tiền mặt"></asp:ListItem>
                                             <asp:ListItem Value="2" Text="Chuyển khoản"></asp:ListItem>
                                             <asp:ListItem Value="3" Text="Thu hộ"></asp:ListItem>
                                             <asp:ListItem Value="4" Text="Công nợ"></asp:ListItem>
+                                        </asp:DropDownList>
+                                    </div>
+                                </div>
+                                <div id="row-bank" class="form-row">
+                                    <div class="row-left">
+                                        Ngân hàng nhận tiền
+                                    </div>
+                                    <div class="row-right">
+                                        <asp:DropDownList ID="ddlBank" runat="server" CssClass="form-control">
                                         </asp:DropDownList>
                                     </div>
                                 </div>
@@ -601,12 +610,13 @@
             <asp:HiddenField ID="hdfChietKhau" runat="server" />
             <asp:HiddenField ID="hdfTongTienConLai" runat="server" />
             <asp:HiddenField ID="hdfSoLuong" runat="server" />
-            <asp:HiddenField runat="server" ID="hdfcheckR" />
+            <asp:HiddenField ID="hdfcheckR" runat="server" />
             <asp:HiddenField ID="hdOrderInfoID" runat="server" />
             <asp:HiddenField ID="hdSession" runat="server" />
             <asp:HiddenField ID="hdfFeeType" runat="server" />
             <asp:HiddenField ID="hdfOtherFees" runat="server" />
             <asp:HiddenField ID="hdfCustomerID" runat="server" />
+            <asp:HiddenField ID="hdfTransportCompanySubID" runat="server" />
 
             <!-- Modal -->
             <div class="modal fade" id="feeModal" role="dialog">
@@ -1096,6 +1106,20 @@
                     }
                 });
 
+                if ($("#<%=ddlPaymentType.ClientID%>").find(":selected").val() != 2) {
+                    $("#row-bank").addClass("hide");
+                }
+
+                $("#<%=ddlPaymentType.ClientID%>").change(function () {
+                    var selected = $(this).find(":selected").val();
+                    if (selected == 2) {
+                        $("#row-bank").removeClass("hide");
+                    }
+                    else {
+                        $("#row-bank").addClass("hide");
+                    }
+                });
+
                 // hide shipping code
 
                 if ($("#<%=ddlShippingType.ClientID%>").find(":selected").val() == 1) {
@@ -1161,6 +1185,7 @@
                             $("#<%=ddlTransportCompanySubID.ClientID%>").val(0);
                             break;
                     }
+
                 });
 
                 // add class full width for txtFacebook if it's null
@@ -1667,99 +1692,101 @@
 
             // insert order
             function insertOrder() {
+                let transSub = $("#<%=ddlTransportCompanySubID.ClientID%>").val();
+                $("#<%=hdfTransportCompanySubID.ClientID%>").val(transSub);
+
                 var shippingtype = $(".shipping-type").val();
                 var checkAllValue = true;
                 var fs = $("#<%=pFeeShip.ClientID%>").val();
                 var feeship = parseFloat(fs.replace(/\,/g, ''));
 
-                        if (shippingtype == 2 || shippingtype == 3)
+                if (shippingtype == 2 || shippingtype == 3)
+                {
+                    if (feeship == 0 && $("#<%=pFeeShip.ClientID%>").is(":disabled") == false)
+                    {
+                        $("#<%=pFeeShip.ClientID%>").focus();
+                        swal({
+                            title: "Có vấn đề:",
+                            text: "Chưa nhập phí vận chuyển!<br><br>Hỏng lẻ miễn phí vận chuyển luôn hở?",
+                            type: "warning",
+                            showCancelButton: true,
+                            confirmButtonColor: "#DD6B55",
+                            confirmButtonText: "Để em tính phí!!",
+                            closeOnConfirm: false,
+                            cancelButtonText: "Để em bấm nút miễn phí",
+                            html: true
+                        });
+                        checkAllValue = false;
+                    }
+                }
+                else if (shippingtype == 4)
+                {
+                    if (feeship == 0 && $("#<%=pFeeShip.ClientID%>").is(":disabled") == false)
+                    {
+                        var ID = $("#<%=ddlTransportCompanyID.ClientID%>").val();
+                        var SubID = $("#<%=ddlTransportCompanySubID.ClientID%>").val();
+
+                        if (ID != 0 && SubID != 0)
                         {
-                            if (feeship == 0 && $("#<%=pFeeShip.ClientID%>").is(":disabled") == false)
+                            var checkPrepay = checkPrepayTransport(ID, SubID);
+                            if (checkPrepay == 1)
                             {
                                 $("#<%=pFeeShip.ClientID%>").focus();
                                 swal({
-                                    title: "Có vấn đề:",
-                                    text: "Chưa nhập phí vận chuyển!<br><br>Hỏng lẻ miễn phí vận chuyển luôn hở?",
+                                    title: "Coi nè:",
+                                    text: "Chưa nhập phí vận chuyển do nhà xe này <strong>trả cước trước</strong> nè!<br><br>Hay là miễn phí vận chuyển luôn hở?",
                                     type: "warning",
                                     showCancelButton: true,
                                     confirmButtonColor: "#DD6B55",
-                                    confirmButtonText: "Để em tính phí!!",
+                                    confirmButtonText: "Để em nhập phí!!",
                                     closeOnConfirm: false,
-                                    cancelButtonText: "Để em bấm nút miễn phí",
+                                    cancelButtonText: "Để em coi lại..",
                                     html: true
                                 });
                                 checkAllValue = false;
                             }
                         }
-                        else if (shippingtype == 4)
-                        {
-                            if (feeship == 0 && $("#<%=pFeeShip.ClientID%>").is(":disabled") == false)
-                            {
-                                var ID = $("#<%=ddlTransportCompanyID.ClientID%>").val();
-                                var SubID = $("#<%=ddlTransportCompanySubID.ClientID%>").val();
-
-                                if (ID != 0 && SubID != 0)
-                                {
-                                    var checkPrepay = checkPrepayTransport(ID, SubID);
-                                    if (checkPrepay == 1)
-                                    {
-                                        $("#<%=pFeeShip.ClientID%>").focus();
-                                        swal({
-                                            title: "Coi nè:",
-                                            text: "Chưa nhập phí vận chuyển do nhà xe này <strong>trả cước trước</strong> nè!<br><br>Hay là miễn phí vận chuyển luôn hở?",
-                                            type: "warning",
-                                            showCancelButton: true,
-                                            confirmButtonColor: "#DD6B55",
-                                            confirmButtonText: "Để em nhập phí!!",
-                                            closeOnConfirm: false,
-                                            cancelButtonText: "Để em coi lại..",
-                                            html: true
-                                        });
-                                        checkAllValue = false;
-                                    }
-                                }
-                            }
-                        }
+                    }
+                }
                         
+                if (feeship > 0 && feeship < 10000)
+                {
+                    checkAllValue = false;
+                    $("#<%=pFeeShip.ClientID%>").focus();
+                    swal({
+                        title: "Lạ vậy:",
+                        text: "Sao phí vận chuyển lại nhỏ hơn <strong>10.000đ</strong> nè?<br><br>Xem lại nha!",
+                        type: "warning",
+                        showCancelButton: false,
+                        confirmButtonColor: "#DD6B55",
+                        confirmButtonText: "Để em xem lại!!",
+                        html: true
+                    });
+                }
 
-                    if (feeship > 0 && feeship < 10000)
-                    {
-                        checkAllValue = false;
-                        $("#<%=pFeeShip.ClientID%>").focus();
-                        swal({
-                            title: "Lạ vậy:",
-                            text: "Sao phí vận chuyển lại nhỏ hơn <strong>10.000đ</strong> nè?<br><br>Xem lại nha!",
-                            type: "warning",
-                            showCancelButton: false,
-                            confirmButtonColor: "#DD6B55",
-                            confirmButtonText: "Để em xem lại!!",
-                            html: true
-                        });
-                    }
+                var ds = $("#<%=pDiscount.ClientID%>").val();
+                var discount = parseFloat(ds.replace(/\,/g, ''));
 
-                    var ds = $("#<%=pDiscount.ClientID%>").val();
-                    var discount = parseFloat(ds.replace(/\,/g, ''));
+                if (discount > 11000 && $("#<%=hdfRoleID.ClientID%>").val() != 0)
+                {
+                    checkAllValue = false;
+                    $("#<%=pDiscount.ClientID%>").focus();
+                    swal({
+                        title: "Lạ vậy:",
+                        text: "Sao chiết khấu lại lớn hơn <strong>11.000đ</strong> nè?<br><br>Nếu có lý do thì báo chị Ngọc nha!",
+                        type: "warning",
+                        showCancelButton: false,
+                        confirmButtonColor: "#DD6B55",
+                        confirmButtonText: "Để em xem lại!!",
+                        html: true
+                    });
+                }
 
-                    if (discount > 11000 && $("#<%=hdfRoleID.ClientID%>").val() != 0)
-                    {
-                        checkAllValue = false;
-                        $("#<%=pDiscount.ClientID%>").focus();
-                        swal({
-                            title: "Lạ vậy:",
-                            text: "Sao chiết khấu lại lớn hơn <strong>11.000đ</strong> nè?<br><br>Nếu có lý do thì báo chị Ngọc nha!",
-                            type: "warning",
-                            showCancelButton: false,
-                            confirmButtonColor: "#DD6B55",
-                            confirmButtonText: "Để em xem lại!!",
-                            html: true
-                        });
-                    }
-
-                    if (checkAllValue == true)
-                    {
-                        HoldOn.open();
-                        $("#<%=btnOrder.ClientID%>").click();
-                    }
+                if (checkAllValue == true)
+                {
+                    HoldOn.open();
+                    $("#<%=btnOrder.ClientID%>").click();
+                }
             }
 
             // search product by SKU
@@ -2165,7 +2192,7 @@
                             let tranSubContainerDOM = $("[id$=ddlTransportCompanySubID-container]");
                             tranSubContainerDOM.attr("title", "Chọn nơi nhận");
                             tranSubContainerDOM.html("Chọn nơi nhận");
-                            
+
                             setTimeout(function() {
                                 $("#<%=ddlTransportCompanySubID.ClientID%>").select2("open");
                             }, 200);  

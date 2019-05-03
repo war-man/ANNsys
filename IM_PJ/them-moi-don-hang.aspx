@@ -215,7 +215,7 @@
             <asp:HiddenField ID="hdfFeeType" runat="server" />
             <asp:HiddenField ID="hdfOtherFees" runat="server" />
             <asp:HiddenField ID="hdfCustomerID" runat="server" />
-            <asp:HiddenField ID="hdfTransSub" runat="server" />
+            <asp:HiddenField ID="hdfTransportCompanySubID" runat="server" />
 
             <!-- Fee Modal -->
             <div class="modal fade" id="feeModal" role="dialog">
@@ -286,12 +286,12 @@
                     <div class="modal-content">
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal">&times;</button>
-                            <h4 class="modal-title">Hoàn tất đơn hàng</h4>
+                            <h4 class="modal-title">Thông tin đơn hàng</h4>
                         </div>
                         <div class="modal-body">
                             <div class="row form-group">
                                 <div class="col-md-4 text-align-left">
-                                    Trạng thái xử lý:
+                                    Trạng thái xử lý
                                 </div>
                                 <div class="col-md-8">
                                     <asp:DropDownList ID="ddlExcuteStatus" runat="server" CssClass="form-control"></asp:DropDownList>
@@ -299,7 +299,7 @@
                             </div>
                             <div class="row form-group">
                                 <div class="col-md-4 text-align-left">
-                                    Trạng thái thanh toán:
+                                    Trạng thái thanh toán
                                 </div>
                                 <div class="col-md-8">
                                     <asp:DropDownList ID="ddlPaymentStatus" runat="server" CssClass="form-control"></asp:DropDownList>
@@ -307,7 +307,7 @@
                             </div>
                             <div class="row form-group">
                                 <div class="col-md-4 text-align-left">
-                                    Phương thức thanh toán:
+                                    Phương thức thanh toán
                                 </div>
                                 <div class="col-md-8">
                                     <asp:DropDownList ID="ddlPaymentType" runat="server" CssClass="form-control" onchange="onchangePaymentType($(this))"></asp:DropDownList>
@@ -315,7 +315,7 @@
                             </div>
                             <div id="bankModal" class="row form-group">
                                 <div class="col-md-4 text-align-left">
-                                    Ngân hàng:
+                                    Ngân hàng nhận tiền
                                 </div>
                                 <div class="col-md-8">
                                     <asp:DropDownList ID="ddlBank" runat="server" CssClass="form-control"></asp:DropDownList>
@@ -323,7 +323,7 @@
                             </div>
                             <div class="row form-group">
                                 <div class="col-md-4 text-align-left">
-                                    Phương thức giao hàng:
+                                    Phương thức giao hàng
                                 </div>
                                 <div class="col-md-8">
                                     <asp:DropDownList ID="ddlShippingType" runat="server" CssClass="form-control" onchange="onchangeShippingType($(this))"></asp:DropDownList>
@@ -331,7 +331,7 @@
                             </div>
                             <div id="transportModal" class="row form-group">
                                 <div class="col-md-4 text-align-left">
-                                    Chành xe:
+                                    Chành xe
                                 </div>
                                 <div class="col-md-8" >
                                     <asp:DropDownList ID="ddlTransportCompanyID" runat="server" CssClass="form-control customerlist select2" Height="40px" Width="100%" onchange="onChangeTransportCompany($(this))"></asp:DropDownList>
@@ -339,7 +339,7 @@
                             </div>
                             <div id="transportSubModal" class="row form-group">
                                 <div class="col-md-4 text-align-left">
-                                    Nơi nhận:
+                                    Nơi nhận
                                 </div>
                                 <div class="col-md-8">
                                     <asp:DropDownList ID="ddlTransportCompanySubID" runat="server" CssClass="form-control customerlist select2" Height="40px" Width="100%"></asp:DropDownList>
@@ -1049,19 +1049,19 @@
 
 
                 $("#payall").addClass("payall-clicked");
-                $("#<%=hdfTransSub.ClientID%>").val(transSub);
+                $("#<%=hdfTransportCompanySubID.ClientID%>").val(transSub);
 
-                if (payType == 2 && bank == "0") {
-                    swal("Thông báo", "Ngân hàng chưa được chọn", "error");
-                    return false;
-                }
+                //if (payType == 2 && bank == "0") {
+                //    swal("Thông báo", "Ngân hàng chưa được chọn", "error");
+                //    return false;
+                //}
 
-                if (shippingtype == 4 && (trans == "0" || (trans != "0" && transSub == "0"))) {
-                    swal("Thông báo", "Thông tin về nhà xe chưa đủ.\nVui lòng nhập đủ thông tin", "error");
-                    return false;
-                }
+                //if (shippingtype == 4 && (trans == "0" || (trans != "0" && transSub == "0"))) {
+                //    swal("Thông báo", "Thông tin về nhà xe chưa đủ.\nVui lòng nhập đủ thông tin", "error");
+                //    return false;
+                //}
 
-                if (shippingtype == 2 || shippingtype == 3)
+                <%--if (shippingtype == 2 || shippingtype == 3)
                 {
                     if ($("#<%=pFeeShip.ClientID%>").val() == 0 && $("#<%=pFeeShip.ClientID%>").is(":disabled") == false)
                     {
@@ -1091,7 +1091,11 @@
                     $("#closeOrderInfo").click();
                     HoldOn.open();
                     $("#<%=btnOrder.ClientID%>").click();
-                }
+                }--%>
+
+                $("#closeOrderInfo").click();
+                HoldOn.open();
+                $("#<%=btnOrder.ClientID%>").click();
             }
 
             // search product by SKU

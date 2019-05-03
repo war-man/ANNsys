@@ -224,7 +224,7 @@ namespace IM_PJ
             string username = Request.Cookies["userLoginSystem"].Value;
             var acc = AccountController.GetByUsername(username);
 
-            int PageSize = 30;
+            int PageSize = 60;
 
             StringBuilder html = new StringBuilder();
             html.Append("<thead>");
@@ -235,7 +235,7 @@ namespace IM_PJ
             html.Append("    <th>Mua</th>");
             html.Append("    <th>Giao hàng</th>");
             html.Append("    <th>Thanh toán</th>");
-            html.Append("    <th>Shipper</th>");
+            html.Append("    <th>Người giao</th>");
             html.Append("    <th>Trạng thái</th>");
             html.Append("    <th>Tổng tiền</th>");
             html.Append("    <th>Đã thu</th>");

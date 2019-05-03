@@ -111,7 +111,7 @@ namespace IM_PJ.Controllers
                     if (old != null)
                     {
                         // Tránh trường hợp recorde đã được cập nhật trường hợp khác
-                        if (old.Status == 2)
+                        if (old.Status == 2 || old.Status == 3)
                         {
                             old.ShipperID = shiperID;
                             old.Status = 3;

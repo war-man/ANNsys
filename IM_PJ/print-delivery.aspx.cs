@@ -77,7 +77,7 @@ namespace IM_PJ
                     }
                     else
                     {
-                        ltrPrintDelivery.Text = getReportHTML(data);
+                        ltrPrintDelivery.Text = getReportHTML(data, shepperID);
                         ltrPrintEnable.Text = "<div class='print-enable true'></div>";
 
                         // Update Delivery
@@ -97,28 +97,33 @@ namespace IM_PJ
             }
         }
 
-        public string getReportHTML(List<DeliveryReport> data)
+        public string getReportHTML(List<DeliveryReport> data, int shipperID)
         {
             var html = new StringBuilder();
             int index = 0;
             double totalQuantity = 0;
             double totalCollection = 0;
+            string shipperName = ShipperController.getShipperNameByID(shipperID);
 
-            html.AppendLine("<div class='hoadon'>");
+            html.AppendLine("<h1>PHIẾU GỬI HÀNG</h1>");
+            
+            html.AppendLine("<div class='delivery'>");
             html.AppendLine("    <div class='all'>");
             html.AppendLine("        <div class='body'>");
             html.AppendLine("            <div class='table-2'>");
+            html.AppendLine("               <div class='info'>");
+            html.AppendLine(String.Format(" <p>Ngày giao: {0}</p>", string.Format("{0:dd/MM HH:mm}", DateTime.Now)));
+            html.AppendLine(String.Format(" <p>Người giao: {0}</p>", shipperName));
+            html.AppendLine("               </div>");
             html.AppendLine("                <table>");
             html.AppendLine("                    <colgroup>");
             html.AppendLine("                        <col />");
             html.AppendLine("                        <col />");
             html.AppendLine("                        <col />");
-            html.AppendLine("                        <col />");
             html.AppendLine("                    </colgroup>");
             html.AppendLine("                    <thead>");
-            html.AppendLine("                        <th>#</th>");
             html.AppendLine("                        <th>Nhà xe</th>");
-            html.AppendLine("                        <th>Số lượng</th>");
+            html.AppendLine("                        <th>SL</th>");
             html.AppendLine("                        <th>Thu hộ</th>");
             html.AppendLine("                    </thead>");
             html.AppendLine("                    <tbody>");
@@ -129,20 +134,22 @@ namespace IM_PJ
                 totalCollection += item.Collection;
 
                 html.AppendLine("                        <tr>");
-                html.AppendLine(String.Format("                            <td>{0:#,###}</td>", index));
                 html.AppendLine(String.Format("                            <td><strong>{0}</strong></td>", item.TransportName));
                 html.AppendLine(String.Format("                            <td>{0:#,###}</td>", item.Quantity));
                 html.AppendLine(String.Format("                            <td>{0:#,###}</td>", item.Collection));
                 html.AppendLine("                        </tr>");
             }
             html.AppendLine("                        <tr>");
-            html.AppendLine("                            <td colspan='2' style='text-align: right'>Tổng</td>");
+            html.AppendLine("                            <td colspan='1' style='text-align: right'>Tổng số đơn</td>");
             html.AppendLine(String.Format("                            <td colspan='2'>{0:#,###}</td>", totalQuantity));
             html.AppendLine("                        </tr>");
-            html.AppendLine("                        <tr>");
-            html.AppendLine("                            <td colspan='2'  style='text-align: right'>Thu hộ</td>");
-            html.AppendLine(String.Format("                            <td colspan='2'>{0:#,###}</td>", totalCollection));
-            html.AppendLine("                        </tr>");
+            if(totalCollection > 0)
+            {
+                html.AppendLine("                        <tr>");
+                html.AppendLine("                            <td colspan='1'  style='text-align: right'>Thu hộ</td>");
+                html.AppendLine(String.Format("                            <td colspan='2'>{0:#,###}</td>", totalCollection));
+                html.AppendLine("                        </tr>");
+            }
             html.AppendLine("                    </tbody>");
             html.AppendLine("                </table>");
             html.AppendLine("            </div>");

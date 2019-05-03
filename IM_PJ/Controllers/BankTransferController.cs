@@ -60,6 +60,19 @@ namespace IM_PJ.Controllers
                 return last;
             }
         }
+        public static int getBankOfOrder(int orderID)
+        {
+            using (var con = new inventorymanagementEntities())
+            {
+                var bank = con.BankTransfers
+                    .Where(x => x.OrderID == orderID)
+                    .FirstOrDefault();
+                if (bank != null)
+                    return bank.AccBankID;
+                else
+                    return 0;
+            }
+        }
 
         public static bool Create(tbl_Order order, int bankID, tbl_Account user)
         {
@@ -120,7 +133,20 @@ namespace IM_PJ.Controllers
 
             return true;
         }
+        public static bool updateBankOfOrder(int OrderID, int AccBankID)
+        {
+            using (var con = new inventorymanagementEntities())
+            {
+                var old = con.BankTransfers.Where(x => x.OrderID == OrderID).SingleOrDefault();
+                if (old != null)
+                {
+                    old.AccBankID = AccBankID;
+                    con.SaveChanges();
+                }
+            }
 
+            return true;
+        }
         public static string getTransferLastJSON(int customerID)
         {
             using (var con = new inventorymanagementEntities())
@@ -146,16 +172,16 @@ namespace IM_PJ.Controllers
                      })
                      .FirstOrDefault();
 
-                if (last == null)
-                {
-                    last = con.Banks
-                        .Select(x => new
-                        {
-                            value = x.ID,
-                            text = x.BankName
-                        })
-                        .FirstOrDefault();
-                }
+                //if (last == null)
+                //{
+                //    last = con.Banks
+                //        .Select(x => new
+                //        {
+                //            value = x.ID,
+                //            text = x.BankName
+                //        })
+                //        .FirstOrDefault();
+                //}
 
                 var serializer = new JavaScriptSerializer();
                 return serializer.Serialize(last);
