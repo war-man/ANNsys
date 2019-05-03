@@ -9,6 +9,9 @@
         #invoice-image li {
             list-style: none;
         }
+        #invoice-image img {
+            width: 60%;
+        }
         @media (max-width: 768px) {
             table.shop_table_responsive thead {
 	            display: none;
@@ -90,7 +93,7 @@
                 display: none;
             }
             #invoice-image img {
-                width: 50%;
+                width: 40%;
             }
         }
     </style>
@@ -293,6 +296,14 @@
                         </div>
                         <div class="row form-group">
                             <div class="col-md-3 col-xs-4">
+                                <p>Chành xe</p>
+                            </div>
+                            <div class="col-md-9 col-xs-8">
+                                <asp:DropDownList ID="ddlTransferCompanyModal" runat="server" CssClass="form-control"></asp:DropDownList>
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <div class="col-md-3 col-xs-4">
                                 <p>Thu hộ</p>
                             </div>
                             <div class="col-md-9 col-xs-8">
@@ -384,6 +395,7 @@
                     let modal = $("#TransferBankModal");
                     let orderIDDOM = modal.find("#<%=hdOrderID.ClientID%>");
                     let deliveryDOM = modal.find("#<%=ddlDeliveryStatusModal.ClientID%>");
+                    let transferCompanyDOM = modal.find("#<%=ddlTransferCompanyModal.ClientID%>");
                     let colOfOrdDOM = modal.find("#<%=txtColOfOrd.ClientID%>");
                     let shipperDOM = modal.find("#<%=ddlShipperModal.ClientID%>");
                     let cosOfDelDOM = modal.find("#<%=txtCosOfDel.ClientID%>");
@@ -395,6 +407,17 @@
                         format: 'DD/MM/YYYY HH:mm',
                         date: new Date()
                     });
+
+                    // Không phải gửi xe
+                    if (shippingtype != 4) {
+                        transferCompanyDOM.parent().parent().attr("hidden", true);
+                        transferCompanyDOM.val("");
+                    }
+                    else {
+                        transferCompanyDOM.parent().parent().removeAttr("hidden");
+                        transferCompanyDOM.val(row.dataset["transfercompany"]);
+                        transferCompanyDOM.attr("disabled", true);
+                    }
 
                     // Không phải là thu hộ
                     if (paymenttype != 3) {

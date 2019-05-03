@@ -56,15 +56,23 @@ namespace IM_PJ
             var TransportCompany = TransportCompanyController.GetTransportCompany();
             ddlTransportCompany.Items.Clear();
             ddlTransportCompany.Items.Insert(0, new ListItem("Chành xe", "0"));
+            // drop down list at update delivery modal
+            ddlTransferCompanyModal.Items.Clear();
+            ddlTransferCompanyModal.Items.Insert(0, new ListItem("Chành xe", "0"));
+
             if (TransportCompany.Count > 0)
             {
                 foreach (var p in TransportCompany)
                 {
                     ListItem listitem = new ListItem(p.CompanyName.ToTitleCase(), p.ID.ToString());
                     ddlTransportCompany.Items.Add(listitem);
+                    ddlTransferCompanyModal.Items.Add(listitem);
                 }
                 ddlTransportCompany.DataBind();
+                ddlTransferCompanyModal.DataBind();
             }
+            
+
         }
         public void LoadCreatedBy(int AgentID, tbl_Account acc = null)
         {
@@ -285,19 +293,19 @@ namespace IM_PJ
                     TrTag.AppendLine(String.Format("data-cosofdev='{0:#}' ", item.CostOfDelivery != null ? item.CostOfDelivery :  Convert.ToDecimal(item.FeeShipping) ));
                     TrTag.AppendLine(String.Format("data-deliverydate='{0:dd/MM/yyyy HH:mm}' ", item.DeliveryDate));
                     TrTag.AppendLine(String.Format("data-shippernote='{0}' ", item.ShipNote));
+                    TrTag.AppendLine(String.Format("data-transfercompany='{0}' ", item.TransportCompanyID));
                     TrTag.AppendLine("/>");
 
                     html.Append(TrTag.ToString());
-                    // Hoán đơn giao hàng không được trể quá 2 ngày
-                    // và hình thức giáo hàng là chuyễn xe
+                    // Hình thức giáo hàng là chuyển xe
                     // và gói hàng chưa được giao hoặc đang giao
-                    if (item.CreatedDate.Date >= DateTime.Now.Date.AddDays(-2) && item.ShippingType == 4 && (item.DeliveryStatus == 2 || item.DeliveryStatus == 3))
+                    if (item.ShippingType == 4 && (item.DeliveryStatus == 2 || item.DeliveryStatus == 3))
                     {
                         html.Append("   <td><input type='checkbox' onchange='changeCheckPrint()'/></td>");
                     }
                     else
                     {
-                        html.Append("   <td><input type='checkbox'  onchange='changeCheckPrint()' disabled='disabled'/></td>");
+                        html.Append("   <td><input type='checkbox' onchange='changeCheckPrint()' disabled='disabled'/></td>");
                     }
                     html.Append("   <td><a href=\"/thong-tin-don-hang?id=" + item.ID + "\">" + item.ID + "</a></td>");
                     if (!string.IsNullOrEmpty(item.Nick))
@@ -342,7 +350,7 @@ namespace IM_PJ
                     html.Append("       <button type='button' class='btn primary-btn h45-btn' data-toggle='modal' data-target='#TransferBankModal' data-backdrop='static' data-keyboard='false' title='Cập nhật thông tin chuyển khoản'><span class='glyphicon glyphicon-edit'></span></button>");
                     if (item.DeliveryStatus == 1 && !string.IsNullOrEmpty(item.InvoiceImage))
                     {
-                        html.Append("       <a id='downloadInvoiceImage' href='" + item.InvoiceImage + "' title='Biên nhận gửi hàng' target='_blank' class='btn primary-btn btn-blue h45-btn'><i class=\"fa fa-file-text-o\" aria-hidden=\"true\"></i></a>");
+                        html.Append("       <a id='downloadInvoiceImage' href='javascript:;' onclick='openImageInvoice($(this))' data-link='" + item.InvoiceImage + "' title='Biên nhận gửi hàng' class='btn primary-btn btn-blue h45-btn'><i class='fa fa-file-text-o' aria-hidden='true'></i></a>");
                     }
                     html.Append("   </td>");
                     html.Append("</tr>");
@@ -352,6 +360,15 @@ namespace IM_PJ
                     html.Append("   <td colspan='2' data-title='Thông tin thêm'></td>");
                     html.Append("   <td colspan='13'>");
 
+                    if (item.ShippingType == 4)
+                    {
+                        if (item.TransportCompanyID != 0)
+                        {
+                            var transport = TransportCompanyController.GetTransportCompanyByID(Convert.ToInt32(item.TransportCompanyID));
+                            var transportsub = TransportCompanyController.GetReceivePlaceByID(Convert.ToInt32(item.TransportCompanyID), Convert.ToInt32(item.TransportCompanySubID));
+                            html.Append("<span class='order-info'><strong>Gửi xe: </strong> " + transport.CompanyName.ToTitleCase() + " (" + transportsub.ShipTo.ToTitleCase() + ")</span>");
+                        }
+                    }
                     if (item.TotalRefund != 0)
                     {
                         html.Append("<span class='order-info'><strong>Trừ hàng trả:</strong> " + string.Format("{0:N0}", item.TotalRefund) + " (<a href='xem-don-hang-doi-tra?id=" + item.RefundsGoodsID + "' target='_blank'>Xem đơn " + item.RefundsGoodsID + "</a>)</span>");
@@ -367,15 +384,6 @@ namespace IM_PJ
                     if (item.FeeShipping > 0)
                     {
                         html.Append("<span class='order-info'><strong>Phí vận chuyển:</strong> " + string.Format("{0:N0}", Convert.ToDouble(item.FeeShipping)) + "</span>");
-                    }
-                    if (item.ShippingType == 4)
-                    {
-                        if (item.TransportCompanyID != 0)
-                        {
-                            var transport = TransportCompanyController.GetTransportCompanyByID(Convert.ToInt32(item.TransportCompanyID));
-                            var transportsub = TransportCompanyController.GetReceivePlaceByID(Convert.ToInt32(item.TransportCompanyID), Convert.ToInt32(item.TransportCompanySubID));
-                            html.Append("<span class='order-info'><strong>Gửi xe: </strong> " + transport.CompanyName.ToTitleCase() + " (" + transportsub.ShipTo.ToTitleCase() + ")</span>");
-                        }
                     }
                     if (!string.IsNullOrEmpty(item.OrderNote))
                     {

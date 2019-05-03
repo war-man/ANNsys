@@ -157,6 +157,15 @@ namespace IM_PJ {
         protected global::System.Web.UI.WebControls.DropDownList ddlShipperModal;
         
         /// <summary>
+        /// ddlTransferCompanyModal control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList ddlTransferCompanyModal;
+        
+        /// <summary>
         /// txtColOfOrd control.
         /// </summary>
         /// <remarks>

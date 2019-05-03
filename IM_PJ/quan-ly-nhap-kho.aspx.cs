@@ -127,7 +127,7 @@ namespace IM_PJ
 
                                 if (!string.IsNullOrEmpty(pv.Image))
                                 {
-                                    p.ProductImage = "<img src=\"" + pv.Image + "\" />";
+                                    p.ProductImage = "<img onclick='openImage($(this))' src=\"" + pv.Image + "\" />";
                                     p.ProductImageOrigin = pv.Image;
                                 }
                                 else
@@ -171,7 +171,7 @@ namespace IM_PJ
 
                         if (!string.IsNullOrEmpty(products.ProductImage))
                         {
-                            p.ProductImage = "<img src=\"" + products.ProductImage + "\" />";
+                            p.ProductImage = "<img onclick='openImage($(this))' src=\"" + products.ProductImage + "\" />";
                             p.ProductImageOrigin = products.ProductImage;
                         }
                         else
@@ -234,7 +234,7 @@ namespace IM_PJ
 
                                 if (!string.IsNullOrEmpty(value.Image))
                                 {
-                                    p.ProductImage = "<img src=\"" + value.Image + "\" />";
+                                    p.ProductImage = "<img onclick='openImage($(this))' src=\"" + value.Image + "\" />";
                                     p.ProductImageOrigin = value.Image;
                                 }
                                 else

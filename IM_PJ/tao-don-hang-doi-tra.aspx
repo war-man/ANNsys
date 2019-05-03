@@ -550,15 +550,15 @@
                                 + "data-price='" + item.Price + "' "
                                 + "data-sold-price='" + item.ReducedPrice + "' "
                                 + "data-feeRefund='" + item.FeeRefund + "' >\n";
-                html += "    <td><img src='" + item.ProductImage + "''></td>\n";
-                html += "    <td>" + item.ProductTitle + variable + "</td>\n";
+                html += "    <td class='image-item'><img onclick='openImage($(this))' src='" + item.ProductImage + "''></td>\n";
+                html += "    <td class='name-item'><a href='/xem-san-pham?id=" + item.ProductID + "&variableid=" + item.ProductVariableID + "' target='_blank'>" + item.ProductTitle + "</a>"  + variable + "</td>\n";
                 if (item.ProductStyle == 1) {
-                    html += "    <td>" + item.ParentSKU + "</td>\n";
+                    html += "    <td class='sku-item'>" + item.ParentSKU + "</td>\n";
                 }
                 else if (item.ProductStyle == 2) {
-                    html += "    <td>" + item.ChildSKU + "</td>\n";
+                    html += "    <td class='sku-item'>" + item.ChildSKU + "</td>\n";
                 }
-                html += "    <td class='Price'>" + formatThousands(item.Price, ",") + "</td>\n";
+                html += "    <td class='price-item Price'>" + formatThousands(item.Price, ",") + "</td>\n";
                 html += "    <td>\n";
                 html += "           <input type='text' class='form-control reducedPrice' min='1' value='" + formatThousands(item.ReducedPrice, ",") + "' onblur='changeRow($(this))' onkeypress='return event.charCode >= 48 && event.charCode <= 57'/>\n";
                 html += "    </td>\n";

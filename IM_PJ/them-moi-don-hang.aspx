@@ -3,7 +3,7 @@
 <%@ Register Assembly="Telerik.Web.UI" Namespace="Telerik.Web.UI" TagPrefix="telerik" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
     <script src="/App_Themes/Ann/js/search-customer.js?v=2117"></script>
-    <script src="/App_Themes/Ann/js/search-product.js?v=07122018"></script>
+    <script src="/App_Themes/Ann/js/search-product.js?v=04052019"></script>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <asp:Panel ID="parent" runat="server">
@@ -1044,48 +1044,6 @@
 
                 $("#payall").addClass("payall-clicked");
                 $("#<%=hdfTransportCompanySubID.ClientID%>").val(transSub);
-
-                //if (payType == 2 && bank == "0") {
-                //    swal("Thông báo", "Ngân hàng chưa được chọn", "error");
-                //    return false;
-                //}
-
-                //if (shippingtype == 4 && (trans == "0" || (trans != "0" && transSub == "0"))) {
-                //    swal("Thông báo", "Thông tin về nhà xe chưa đủ.\nVui lòng nhập đủ thông tin", "error");
-                //    return false;
-                //}
-
-                <%--if (shippingtype == 2 || shippingtype == 3)
-                {
-                    if ($("#<%=pFeeShip.ClientID%>").val() == 0 && $("#<%=pFeeShip.ClientID%>").is(":disabled") == false)
-                    {
-                        closePopup();
-                        $("#<%=pFeeShip.ClientID%>").focus();
-                        swal({
-                            title: "Ủa ủa:",
-                            text: "Sao không nhập phí vận chuyển?<br><br>Hỏng lẻ miễn phí vận chuyển?",
-                            type: "warning",
-                            showCancelButton: true,
-                            confirmButtonColor: "#DD6B55",
-                            confirmButtonText: "Khoan.. để em nhập phí!!",
-                            closeOnConfirm: false,
-                            cancelButtonText: "Để em tạm thời cho miễn phí",
-                            html: true
-                        });
-                    }
-                    else
-                    {
-                        $("#closeOrderInfo").click();
-                        HoldOn.open();
-                        $("#<%=btnOrder.ClientID%>").click();
-                    }
-                }
-                else
-                {
-                    $("#closeOrderInfo").click();
-                    HoldOn.open();
-                    $("#<%=btnOrder.ClientID%>").click();
-                }--%>
 
                 $("#closeOrderInfo").click();
                 HoldOn.open();

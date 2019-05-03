@@ -207,10 +207,10 @@
                                         if (check == false) {
                                             html += "<tr ondblclick=\"clickrow($(this))\" class=\"product-result\" data-productimageorigin=\"" + item.ProductImageOrigin + "\" data-productvariable=\"" + item.ProductVariable + "\" data-productname=\"" + item.ProductName + "\" data-sku=\"" + item.SKU + "\" data-producttype=\"" + item.ProductType + "\" data-id=\"" + item.ID + "\" data-productnariablename=\"" + item.ProductVariableName + "\" data-productvariablevalue =\"" + item.ProductVariableValue + "\">";
                                             html += " <td><input type=\"checkbox\" class=\"check-popup\" onchange=\"check()\"  /></td>";
-                                            html += "   <td>" + item.ProductImage + "";
-                                            html += "   <td>" + item.ProductName + "</td>";
-                                            html += "   <td>" + item.SKU + "</td>";
-                                            html += "   <td>" + item.ProductVariable.replace(/\|/g, "<br>") + "</td>";
+                                            html += "   <td class='image-item'>" + item.ProductImage + "";
+                                            html += "   <td class='name-item'><a href='/xem-san-pham?sku=" + item.SKU + "' target='_blank'>" + item.ProductName + "</a></td>";
+                                            html += "   <td class='sku-item'>" + item.SKU + "</td>";
+                                            html += "   <td class='price-item'>" + item.ProductVariable.replace(/\|/g, "<br>") + "</td>";
                                             html += "   <td>" + item.SupplierName + "</td>";
                                             html += "   <td>" + item.WarehouseQuantity + "</td>";
                                             html += "   <td><input type=\"text\" class=\"form-control in-quantity\" pattern=\"[0-9]{1,3}\" onkeyup=\"pressKeyQuantity($(this))\" onkeypress=\"return event.charCode >= 48 && event.charCode <= 57\" value=\"1\" /></td>";
@@ -237,10 +237,10 @@
                                     if (check == false) {
                                         html += "<tr ondblclick=\"clickrow($(this))\" class=\"product-result\" data-productimageorigin=\"" + item.ProductImageOrigin + "\" data-productvariable=\"" + item.ProductVariable + "\" data-productname=\"" + item.ProductName + "\" data-sku=\"" + item.SKU + "\" data-producttype=\"" + item.ProductType + "\" data-id=\"" + item.ID + "\" data-productnariablename=\"" + item.ProductVariableName + "\" data-productvariablevalue =\"" + item.ProductVariableValue + "\">";
                                         html += " <td><input type=\"checkbox\" class=\"check-popup\" onchange=\"check()\" /></td>";
-                                        html += "   <td>" + item.ProductImage + "";
-                                        html += "   <td>" + item.ProductName + "</td>";
-                                        html += "   <td>" + item.SKU + "</td>";
-                                        html += "   <td>" + item.ProductVariable.replace(/\|/g, "<br>") + "</td>";
+                                        html += "   <td class='image-item'>" + item.ProductImage + "";
+                                        html += "   <td class='name-item'><a href='/xem-san-pham?sku=" + item.SKU + "' target='_blank'>" + item.ProductName + "</a></td>";
+                                        html += "   <td class='sku-item'>" + item.SKU + "</td>";
+                                        html += "   <td class='price-item'>" + item.ProductVariable.replace(/\|/g, "<br>") + "</td>";
                                         html += "   <td>" + item.SupplierName + "</td>";
                                         html += "   <td>" + item.WarehouseQuantity + "</td>";
                                         html += "   <td><input type=\"text\" class=\"form-control in-quantity\" pattern=\"[0-9]{1,3}\" onkeyup=\"pressKeyQuantity($(this))\" onkeypress=\"return event.charCode >= 48 && event.charCode <= 57\" value=\"1\" /></td>";

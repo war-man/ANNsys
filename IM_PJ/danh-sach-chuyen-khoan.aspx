@@ -250,7 +250,7 @@
                     </div>
                     <div class="modal-body">
                         <asp:HiddenField ID="hdOrderID" runat="server" />
-                        <div class="row form-group">
+                        <div class="row form-group hide">
                             <div class="col-md-3 col-xs-4">
                                 <p>Chuyển từ</p>
                             </div>
@@ -260,7 +260,7 @@
                         </div>
                         <div class="row form-group">
                             <div class="col-md-3 col-xs-4">
-                                <p>TK nhận</p>
+                                <p>Ngân hàng</p>
                             </div>
                             <div class="col-md-9 col-xs-8">
                                 <asp:DropDownList ID="ddlAccoutBank" runat="server" CssClass="form-control"></asp:DropDownList>
@@ -430,8 +430,8 @@
 
                 $("#updateTransfer").click(e => {
                     let orderID = $("#<%=hdOrderID.ClientID%>").val();
-                    let cusBankID = $("#<%=ddlCustomerBank.ClientID%>").val();
                     let accBankID = $("#<%=ddlAccoutBank.ClientID%>").val();
+                    let cusBankID = accBankID;
                     let status = $("#<%=ddlStatus.ClientID%>").val();
                     let money = $("#<%=txtMoneyReceived.ClientID%>").val().replace(/\,/g, '');
                     if (money == "") {

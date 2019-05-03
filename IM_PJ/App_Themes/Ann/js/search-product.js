@@ -193,7 +193,7 @@ function addHtmlProductResult(item) {
         html += "   <td class='order-item'>" + orderItem + "</td>";
     }
 
-    html += "   <td class='image-item'><a href='/xem-san-pham?id=" + item.ProductID + "&variableid=" + item.ProductVariableID + "' target='_blank'><img src='" + item.ProductImage + "'></a></td>";
+    html += "   <td class='image-item'><img onclick='openImage($(this))' src='" + item.ProductImage + "'></td>";
     html += "   <td class='name-item'><a href='/xem-san-pham?id=" + item.ProductID + "&variableid=" + item.ProductVariableID + "' target='_blank'>" + item.ProductTitle + "</a></td>";
     html += "   <td class='sku-item'>" + SKU + "</td>";
     html += "   <td class='variable-item'>" + item.VariableValue + "</td>";

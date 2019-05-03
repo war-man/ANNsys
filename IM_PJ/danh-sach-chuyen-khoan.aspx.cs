@@ -259,8 +259,7 @@ namespace IM_PJ
             html.Append("    <th class='col-customer'>Khách hàng</th>");
             html.Append("    <th>Mua</th>");
             html.Append("    <th>Xử lý đơn</th>");
-            html.Append("    <th>Chuyển từ</th>");
-            html.Append("    <th>Tài khoản nhận</th>");
+            html.Append("    <th>Ngân hàng</th>");
             html.Append("    <th>Trạng thái</th>");
             html.Append("    <th>Tổng đơn</th>");
             html.Append("    <th>Đã nhận</th>");
@@ -324,8 +323,7 @@ namespace IM_PJ
                     }
                     html.Append("   <td data-title='Đã mua'>" + item.Quantity + "</td>");
                     html.Append("   <td data-title='Xử lý đơn'>" + PJUtils.OrderExcuteStatus(Convert.ToInt32(item.ExcuteStatus)) + "</td>");
-                    html.Append("   <td data-title='Chuyển từ' id='cusBankName'>" + item.CusBankName + "</td>");
-                    html.Append("   <td data-title='Tài khoản nhận' id='accBankName'>" + item.AccBankName + "</td>");
+                    html.Append("   <td data-title='Ngân hàng' id='accBankName'>" + item.AccBankName + "</td>");
                     if (item.TransferStatus == 1)
                     {
                         html.Append("   <td id='statusName' data-title='Trạng thái'><span class='bg-green'>" + item.StatusName + "</span></td>");

@@ -304,12 +304,12 @@ namespace IM_PJ
 
                                     if (!string.IsNullOrEmpty(product.ProductImage))
                                     {
-                                        ProductImage = "<img src=\"" + product.ProductImage + "\" />";
+                                        ProductImage = "<img onclick='openImage($(this))' src='" + product.ProductImage + "' />";
                                         ProductImageOrigin = product.ProductImage;
                                     }
                                     else
                                     {
-                                        ProductImage = "<img src=\"/App_Themes/Ann/image/placeholder.png\" />";
+                                        ProductImage = "<img src='/App_Themes/Ann/image/placeholder.png' />";
                                         ProductImageOrigin = "";
                                     }
                                     ProductVariable = variable;
@@ -374,17 +374,17 @@ namespace IM_PJ
 
                                     if (!string.IsNullOrEmpty(productvariable.Image))
                                     {
-                                        ProductImage = "<img src=\"" + productvariable.Image + "\" />";
+                                        ProductImage = "<img onclick='openImage($(this))' src='" + productvariable.Image + "' />";
                                         ProductImageOrigin = productvariable.Image;
                                     }
                                     else if (_product != null && !string.IsNullOrEmpty(_product.ProductImage))
                                     {
-                                        ProductImage = "<img src=\"" + _product.ProductImage + "\" />";
+                                        ProductImage = "<img onclick='openImage($(this))' src='" + _product.ProductImage + "' />";
                                         ProductImageOrigin = _product.ProductImage;
                                     }
                                     else
                                     {
-                                        ProductImage = "<img src=\"/App_Themes/Ann/image/placeholder.png\" />";
+                                        ProductImage = "<img src='/App_Themes/Ann/image/placeholder.png' />";
                                         ProductImageOrigin = "";
                                     }
 
@@ -419,7 +419,7 @@ namespace IM_PJ
                             html.AppendLine(String.Format("        data-productvariablesave ='{0}'", ProductVariableSave));
                             html.AppendLine(String.Format("        data-quantitymaininstock='{0}'>", QuantityMainInstock));
                             html.AppendLine(String.Format("    <td class='order-item'>{0}</td>", orderitem));
-                            html.AppendLine(String.Format("    <td class='image-item'>{0}</td>", "<a href='/xem-san-pham?id=" + item.ProductID + "&variableid=" + item.ProductVariableID + "' target='_blank'>" + ProductImage + "</a>"));
+                            html.AppendLine(String.Format("    <td class='image-item'>{0}</td>", ProductImage));
                             html.AppendLine(String.Format("    <td class='name-item'>{0}</td>", "<a href='/xem-san-pham?id=" + item.ProductID + "&variableid=" + item.ProductVariableID + "' target='_blank'>" + ProductName + "</a>"));
                             html.AppendLine(String.Format("    <td class='sku-item'>{0}</td>", SKU));
                             html.AppendLine(String.Format("    <td class='variable-item'>{0}</td>", ProductVariable));

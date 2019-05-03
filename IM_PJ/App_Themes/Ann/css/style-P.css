@@ -648,7 +648,9 @@ ul.image-gallery li {
     width: 6%;
     text-align: center;
 }
-
+.import-stock .trash-column a{
+    font-size: 24px;
+}
 .select-column {
     width: 6%;
     text-align: right!important;

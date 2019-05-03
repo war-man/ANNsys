@@ -241,12 +241,12 @@ namespace IM_PJ
                                                     + "\" data-TienGiam=\"" + item.DiscountPricePerProduct
                                                     + "\" data-Soluongtoida=\"" + item.QuantityMax + "\" data-RefundFee=\"" + item.RefundFeePerProduct + "\"  >";
                                 html += "   <td>" + t + "</td>";
-                                html += "   <td><img src='" + item.ProductImage + "'></td>";
-                                html += "   <td>" + item.ProductName + variable + "</td>";
-                                html += "   <td>" + item.SKU + "</td>";
-                                html += "   <td class=\"giagoc\" data-giagoc=\"" + item.GiavonPerProduct + "\">" + string.Format("{0:N0}", Convert.ToDouble(item.GiavonPerProduct)) + "</td>";
-                                html += "   <td class=\"giadaban\" data-giadaban=\"" + item.SoldPricePerProduct + "\"><strong>" + string.Format("{0:N0}", Convert.ToDouble(item.SoldPricePerProduct)) + "</strong><br>(CK: " + string.Format("{0:N0}", Convert.ToDouble(item.DiscountPricePerProduct)) + ")</td>";
-                                html += "   <td class=\"slcandoi\">" + item.Quantity + "</td>";
+                                html += "   <td class='image-item'><img src='" + item.ProductImage + "'></td>";
+                                html += "   <td class='name-item'><a href='/xem-san-pham?sku=" + item.SKU + "' target='_blank'>" + item.ProductName + "</a>" + variable + "</td>";
+                                html += "   <td class='sku-item'>" + item.SKU + "</td>";
+                                html += "   <td class='price-item giagoc' data-giagoc=\"" + item.GiavonPerProduct + "\">" + string.Format("{0:N0}", Convert.ToDouble(item.GiavonPerProduct)) + "</td>";
+                                html += "   <td class='giadaban' data-giadaban=\"" + item.SoldPricePerProduct + "\"><strong>" + string.Format("{0:N0}", Convert.ToDouble(item.SoldPricePerProduct)) + "</strong><br>(CK: " + string.Format("{0:N0}", Convert.ToDouble(item.DiscountPricePerProduct)) + ")</td>";
+                                html += "   <td class='slcandoi'>" + item.Quantity + "</td>";
                                 html += "   <td>";
                                 int refundType = Convert.ToInt32(item.RefundType);
                                 string refuntTypeName = "";

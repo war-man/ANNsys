@@ -83,7 +83,8 @@ namespace IM_PJ
         public void LoadData(int userRole)
         {
             int id = Request.QueryString["id"].ToInt(0);
-            
+            string sku = Request.QueryString["sku"];
+
             var p = new tbl_Product();
 
             if (id > 0)
@@ -93,7 +94,21 @@ namespace IM_PJ
             else if (id == 0)
             {
                 int variableid = Request.QueryString["variableid"].ToInt(0);
-                p = ProductController.GetByVariableID(variableid);
+                if(variableid != 0)
+                {
+                    p = ProductController.GetByVariableID(variableid);
+                }
+                else
+                {
+                    if(sku != "")
+                    {
+                        p = ProductController.GetBySKU(sku);
+                        if(p == null)
+                        {
+                            p = ProductController.GetByVariableSKU(sku);
+                        }
+                    }
+                }
             }
 
             if (p == null)
@@ -179,7 +194,10 @@ namespace IM_PJ
             List<tbl_ProductVariable> b = new List<tbl_ProductVariable>();
 
             b = ProductVariableController.SearchProductID(p.ID, "");
-            pagingall(b, userRole);
+            if(b != null)
+            {
+                pagingall(b, userRole);
+            }
         }
         #region Paging
         public void pagingall(List<tbl_ProductVariable> acs, int userRole)
