@@ -2159,10 +2159,7 @@
                             tranSubContainerDOM.attr("title", "Chọn nơi nhận");
                             tranSubContainerDOM.html("Chọn nơi nhận");
 
-                            setTimeout(function () {
-                                $("#<%=ddlTransportCompanySubID.ClientID%>").select2("open");
-                            }, 200);
-
+                            $("#<%=ddlTransportCompanySubID.ClientID%>").select2("open");
                         }
                     },
                     error: function (err) {

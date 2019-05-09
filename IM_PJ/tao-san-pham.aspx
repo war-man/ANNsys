@@ -3,7 +3,13 @@
 <%@ Register Assembly="Telerik.Web.UI" Namespace="Telerik.Web.UI" TagPrefix="telerik" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
+     <script type="text/javascript">
+        
+                </script>
     <style>
+        .select2-container {
+            width: 100%!important;
+        }
         .variableselect {
             float: left;
             width: 100%;
@@ -311,12 +317,10 @@
                                     <asp:UpdatePanel ID="up" runat="server">
                                         <ContentTemplate>
                                             <div class="variable-name-select">
-                                                <asp:DropDownList runat="server" ID="ddlVariablename" CssClass="form-control" DataTextField="VariableName"
-                                                    DataValueField="ID" AppendDataBoundItems="True" AutoPostBack="True" OnSelectedIndexChanged="ddlVariablename_SelectedIndexChanged" />
+                                                <asp:DropDownList runat="server" ID="ddlVariablename" CssClass="form-control" DataTextField="VariableName" DataValueField="ID" AppendDataBoundItems="True" AutoPostBack="True" OnSelectedIndexChanged="ddlVariablename_SelectedIndexChanged" />
                                             </div>
                                             <div class="variable-value-select">
-                                                <asp:DropDownList runat="server" ID="ddlVariableValue" CssClass="form-control" DataTextField="VariableValue"
-                                                    DataValueField="ID" AppendDataBoundItems="True" AutoPostBack="True" />
+                                                <asp:DropDownList runat="server" ID="ddlVariableValue" CssClass="form-control select2" DataTextField="VariableValue" DataValueField="ID" AppendDataBoundItems="True" AutoPostBack="True" />
                                             </div>
                                         </ContentTemplate>
                                     </asp:UpdatePanel>
@@ -367,6 +371,27 @@
 
     <telerik:RadCodeBlock runat="server">
         <script type="text/javascript">
+            $(function () {
+                initdropdown();
+            });
+
+            function initdropdown() {
+                $("#<%=ddlVariableValue.ClientID%>").select2();
+
+                if($("#<%=ddlVariablename.ClientID%>").val() != "0") {
+                    if ($("#<%=ddlVariableValue.ClientID%>").val() != "0") {
+                        chooseVariable();
+                    }
+                    $("#<%=ddlVariableValue.ClientID%>").select2("open");
+                }
+                else {
+                    $("#<%=ddlVariableValue.ClientID%>").val("0");
+                }
+            }
+
+            function pageLoad(sender, args) {
+                initdropdown();
+            }
 
             $(document).ready(function () {
                 var userRole = $("#<%=hdfUserRole.ClientID%>").val();
@@ -393,6 +418,12 @@
             function redirectTo(ID) {
                 window.location.href = "/xem-san-pham?id=" +ID;
             }
+
+            function selectVariableValue() {
+                setTimeout(function () {
+                    $("#<%=ddlVariableValue.ClientID%>").select2("open");
+                }, 200);
+            };
 
             function chooseVariable() {
                 var vName = $("#<%=ddlVariablename.ClientID%> option:selected").val();

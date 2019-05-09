@@ -12,6 +12,15 @@
         #invoice-image img {
             width: 60%;
         }
+        .select2-container .select2-selection--single {
+            height: 45px;
+        }
+        .select2-container--default .select2-selection--single .select2-selection__rendered {
+            line-height: 45px;
+        }
+        .select2-container--default .select2-selection--single .select2-selection__arrow {
+            height: 43px;
+        }
         @media (max-width: 768px) {
             table.shop_table_responsive thead {
 	            display: none;
@@ -160,7 +169,7 @@
                         <div class="filter-control">
                             <div class="row">
                                 <div class="col-md-3">
-                                    <asp:DropDownList ID="ddlTransportCompany" runat="server" CssClass="form-control customerlist select2" Height="45px" Width="100%"></asp:DropDownList>
+                                    <asp:DropDownList ID="ddlTransportCompany" runat="server" CssClass="form-control select2" Height="45px" Width="100%"></asp:DropDownList>
                                 </div>
                                 <div class="col-md-2">
                                     <asp:DropDownList ID="ddlShipperFilter" runat="server" CssClass="form-control"></asp:DropDownList>
@@ -203,19 +212,19 @@
                     <div class="filter-above-wrap clear">
                         <div class="filter-control">
                             <div class="row">
-                                <div class="col-xs-3">
+                                <div class="col-xs-2">
                                     <a id="filterOrderChoose" href="javascript:;" class="btn primary-btn fw-btn width-100" onclick="getDeliverySession()">
-                                        <i class="fa fa-inbox" aria-hidden="true"></i> Lấy đơn hàng đã chọn
+                                        <i class="fa fa-inbox" aria-hidden="true"></i> Đã chọn
                                     </a>
                                 </div>
-                                <div class="col-xs-3">
+                                <div class="col-xs-2">
                                     <a href="javascript:;" class="btn primary-btn fw-btn width-100" onclick="deleteAllDeliverySession()">
-                                        <i class="fa fa-remove" aria-hidden="true"></i> Xóa tất cả đơn hàng
+                                        <i class="fa fa-remove" aria-hidden="true"></i> Bỏ chọn
                                     </a>
                                 </div>
-                                <div class="col-xs-3">
+                                <div class="col-xs-2">
                                     <a id="printOrderChoose" href="javascript:;" class="btn primary-btn fw-btn width-100" onclick="openPrintModal()">
-                                        <i class="fa fa-print" aria-hidden="true"></i> In phiếu giao hàng
+                                        <i class="fa fa-print" aria-hidden="true"></i> In phiếu
                                     </a>
                                 </div>
                             </div>
@@ -580,17 +589,6 @@
                                 row.attr("data-cosofdev", cosOfDel);
                                 row.attr("data-deliverydate", startAt);
                                 row.attr("data-shippernote", note);
-
-                                // Checkbox Print disable when status delivery != "Chưa giao hàng"
-                                if (status != "2")
-                                {
-                                    checkPrint.prop('checked', false);
-                                    checkPrint.attr('disabled', true);
-                                }
-                                else
-                                {
-                                    checkPrint.removeAttr('disabled');
-                                }
 
                                 if (shipperID == "0")
                                 {
@@ -1167,10 +1165,10 @@
                 }
 
                 $("#filterOrderChoose").html(
-                        "<i class='fa fa-inbox' aria-hidden='true'></i> Lấy đơn hàng đã chọn " + text
+                        "<i class='fa fa-inbox' aria-hidden='true'></i> Đã chọn " + text
                     );
                 $("#printOrderChoose").html(
-                    "<i class='fa fa-print' aria-hidden='true'></i> In phiếu giao hàng " + text
+                    "<i class='fa fa-print' aria-hidden='true'></i> In phiếu " + text
                 );
             }
         </script>

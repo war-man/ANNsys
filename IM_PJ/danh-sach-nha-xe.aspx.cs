@@ -125,7 +125,7 @@ namespace IM_PJ
                 rs = rs.Where(x => x.CreatedDate >= fromdate && x.CreatedDate <= todate).ToList();
             }
 
-            pagingall(rs);
+            pagingall(rs.Distinct().ToList());
 
             ltrNumberOfTransport.Text = rs.Count().ToString();
         }
