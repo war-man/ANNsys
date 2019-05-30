@@ -2,8 +2,8 @@
 
 <%@ Register Assembly="Telerik.Web.UI" Namespace="Telerik.Web.UI" TagPrefix="telerik" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
-    <script src="/App_Themes/Ann/js/search-customer.js?v=2119"></script>
-    <script src="/App_Themes/Ann/js/search-product.js?v=04052019"></script>
+    <script src="/App_Themes/Ann/js/search-customer.js?v=23052019"></script>
+    <script src="/App_Themes/Ann/js/search-product.js?v=15052019"></script>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <asp:Panel ID="parent" runat="server">
@@ -28,10 +28,6 @@
                                     <label>Điện thoại</label>
                                     <asp:RequiredFieldValidator ID="re" runat="server" ControlToValidate="txtPhone" ErrorMessage="(*)" ForeColor="Red" Display="Dynamic"></asp:RequiredFieldValidator>
                                     <asp:TextBox ID="txtPhone" CssClass="form-control" onblur="ajaxCheckCustomer()" runat="server" autocomplete="off"></asp:TextBox>
-                                </div>
-                                <div class="form-group">
-                                    <label>Nick đặt hàng</label>
-                                    <asp:TextBox ID="txtNick" CssClass="form-control capitalize" runat="server" autocomplete="off"></asp:TextBox>
                                 </div>
                                 <div class="form-group">
                                     <label>Địa chỉ</label>
@@ -127,12 +123,8 @@
                                 <option value="1">Khách mua lẻ</option>
                             </select>
                             <div class="post-above clear">
-                                <div class="search-box left" style="width: 80%;">
+                                <div class="search-box left">
                                     <input type="text" id="txtSearch" class="form-control sku-input" placeholder="NHẬP MÃ SẢN PHẨM (F3)" autocomplete="off">
-                                </div>
-                                <div class="right">
-                                    <a href="javascript:;" class="link-btn" onclick="searchProduct()" title="Tìm sản phẩm"><i class="fa fa-search"></i></a>
-                                    <a href="/quan-ly-nhap-kho" class="link-btn" target="_blank" title="Nhập kho"><i class="fa fa-cube"></i></a>
                                 </div>
                             </div>
                             <div class="post-body clear">
@@ -161,6 +153,7 @@
                     </div>
                 </div>
             </div>
+            <asp:HiddenField ID="hdfRoleID" runat="server" />
             <asp:HiddenField ID="hdfUsername" runat="server" />
             <asp:HiddenField ID="hdfUsernameCurrent" runat="server" />
             <asp:HiddenField ID="hdfOrderType" runat="server" />
@@ -241,6 +234,28 @@
                         <div class="modal-footer">
                             <button id="closeOrderReturn" type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
                             <button id="createReturnOrder" type="button" class="btn btn-primary" data-dismiss="modal">Tạo đơn hàng đổi trả</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Check Order Old Modal -->
+            <div class="modal fade" id="orderOldModal" role="dialog" data-backdrop="false">
+                <div class="modal-dialog">
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h4 class="modal-title">Thông báo</h4>
+                        </div>
+                        <div class="modal-body">
+                            <h4 id="warningTextOrder" class="hide">Khách hàng này đang có đơn hàng đang xử lý!</h4>
+                            <h4 id="warningTextOrderReturn" class="hide">Khách hàng này đang có đơn hàng đổi trả chưa trừ tiền!</h4>
+                        </div>
+                        <div class="modal-footer">
+                            <button id="closeOrderOld" type="button" class="btn btn-default" data-dismiss="modal">Vẫn tiếp tục</button>
+                            <button id="openOrder" type="button" class="btn btn-primary">Xem đơn đang xử lý</button>
+                            <button id="openOrderReturn" type="button" class="btn btn-primary">Xem đơn đổi trả</button>
                         </div>
                     </div>
                 </div>
@@ -701,34 +716,71 @@
             });
 
             function changeUser() {
-                var listUser = $("#<%=hdfListUser.ClientID%>").val();
+                var username = $("#<%=hdfUsername.ClientID%>").val();
+                var usernamecurrent = $("#<%=hdfUsernameCurrent.ClientID%>").val();
 
-                var list = listUser.split('|');
-                var item = "<select id=\"listUser\" class=\"form-control fjx\">";
-                for (var i = 0; i < list.length - 1; i++) {
-                    item += "<option value=\"" + list[i] + "\">" + list[i] + "</option>";
+                if (usernamecurrent != username) {
+                    swal({
+                        title: 'Lưu ý',
+                        text: 'Em đang tính tiền giúp nhân viên <strong>' + usernamecurrent + '</strong>.<br><br>Em không muốn tính nữa???',
+                        type: 'warning',
+                        showCancelButton: true,
+                        closeOnConfirm: false,
+                        cancelButtonText: "Vẫn tính tiền giúp!",
+                        confirmButtonText: "OK không tính tiền giúp nữa..",
+                        html: true,
+                    }, function (confirm) {
+                        if (confirm) {
+                            swal.close();
+                            $("#<%=hdfUsernameCurrent.ClientID%>").val(username);
+                            $("#<%=hdfUsername.ClientID%>").val(username);
+                            $("#<%=txtPhone.ClientID%>").val("").prop('readonly', false).prop('disabled', false);
+                            $("#<%=txtFullname.ClientID%>").val("").prop('readonly', false).prop('disabled', false).focus();
+                            $("#<%=txtAddress.ClientID%>").val("").prop('readonly', false).prop('disabled', false);
+                            $(".view-detail").html("").hide();
+                            $(".discount-info").html("").hide();
+                            $(".refund-info").html("").hide();
+                            $(".link-facebook").html("").hide();
+                            getAllPrice();
+                        }
+                        else {
+                            swal.close();
+                        }
+                    });
                 }
-                item += "</select>";
+                else {
+                    var listUser = $("#<%=hdfListUser.ClientID%>").val();
 
-                var html = "";
-                html += "<div class=\"form-group\">";
-                html += "<label>Chọn nhân viên khác: </label>";
-                html += item;
-                html += "<a href=\"javascript: ;\" class=\"btn link-btn\" style=\"background-color:#f87703;float:right;color:#fff;\" onclick=\"setNewUser()\">Chọn</a>";
-                html += "</div>";
-                showPopup(html);
+                    var list = listUser.split('|');
+                    var item = "<select id=\"listUser\" class=\"form-control fjx\">";
+                    for (var i = 0; i < list.length - 1; i++) {
+                        item += "<option value=\"" + list[i] + "\">" + list[i] + "</option>";
+                    }
+                    item += "</select>";
+
+                    var html = "";
+                    html += "<div class=\"form-group\">";
+                    html += "<label>Chọn nhân viên khác: </label>";
+                    html += item;
+                    html += "<a href=\"javascript: ;\" class=\"btn link-btn\" style=\"background-color:#f87703;float:right;color:#fff;\" onclick=\"setNewUser()\">Chọn</a>";
+                    html += "</div>";
+                    showPopup(html);
+                }
             }
 
             function setNewUser() {
                 var selectedUser = $("#listUser").val();
                 $("#<%=hdfUsernameCurrent.ClientID%>").val(selectedUser);
-                $("#<%=hdfUsername.ClientID%>").val(selectedUser);
-                $("#<%=txtPhone.ClientID%>").val("");
-                $("#<%=txtFullname.ClientID%>").val("");
-                $("#<%=txtAddress.ClientID%>").val("");
-                $("#<%=txtNick.ClientID%>").val("");
+                $("#<%=txtPhone.ClientID%>").val("").prop('readonly', false).prop('disabled', false);
+                $("#<%=txtFullname.ClientID%>").val("").prop('readonly', false).prop('disabled', false).focus();
+                $("#<%=txtAddress.ClientID%>").val("").prop('readonly', false).prop('disabled', false);
+                $(".view-detail").html("").hide();
+                $(".discount-info").html("").hide();
+                $(".refund-info").html("").hide();
+                $(".link-facebook").html("").hide();
+                getAllPrice();
                 closePopup();
-                swal("Thông báo", "Bạn đã chọn tính tiền giúp nhân viên " + selectedUser + "", "info");
+                swal("Thông báo", "Em đã chọn tính tiền giúp nhân viên " + selectedUser + "", "info");
             }
 
             // search return order
@@ -1022,6 +1074,53 @@
                 }
             }
 
+            // insert order
+            function insertOrder() {
+
+                var checkAllValue = true;
+
+                // check shipping fee
+
+                var fs = $("#<%=pFeeShip.ClientID%>").val();
+                var feeship = parseFloat(fs.replace(/\,/g, ''));
+                
+                if (feeship > 0 && feeship < 10000) {
+                    checkAllValue = false;
+                    $("#<%=pFeeShip.ClientID%>").focus();
+                    swal({
+                        title: "Lạ vậy:",
+                        text: "Sao phí vận chuyển lại nhỏ hơn <strong>10.000đ</strong> nè?<br><br>Xem lại nha!",
+                        type: "warning",
+                        showCancelButton: false,
+                        confirmButtonColor: "#DD6B55",
+                        confirmButtonText: "Để em xem lại!!",
+                        html: true
+                    });
+                }
+
+                // check discount
+
+                var ds = $("#<%=pDiscount.ClientID%>").val();
+                var discount = parseFloat(ds.replace(/\,/g, ''));
+
+                if (discount > 11000 && $("#<%=hdfRoleID.ClientID%>").val() != 0) {
+                    checkAllValue = false;
+                    $("#<%=pDiscount.ClientID%>").focus();
+                    swal({
+                        title: "Lạ vậy:",
+                        text: "Sao chiết khấu lại lớn hơn <strong>11.000đ</strong> nè?<br><br>Nếu có lý do thì báo chị Ngọc nha!",
+                        type: "warning",
+                        showCancelButton: false,
+                        confirmButtonColor: "#DD6B55",
+                        confirmButtonText: "Để em xem lại!!",
+                        html: true
+                    });
+                }
+
+                return checkAllValue;
+
+            }
+
             // pay order on click button
             function payAll() {
                 var phone = $("#<%=txtPhone.ClientID%>").val();
@@ -1072,7 +1171,11 @@
                         $("#<%=hdfOrderType.ClientID %>").val(ordertype);
                         $("#<%=hdfListProduct.ClientID%>").val(orderDetails);
                         $(".totalquantity").addClass("hide");
-                        showConfirmOrder();
+
+                        if (insertOrder() == true) {
+                            showConfirmOrder();
+                        }
+                        
                     } else {
                         $("#txtSearch").focus();
                         swal("Thông báo", "Hãy nhập sản phẩm!", "error");

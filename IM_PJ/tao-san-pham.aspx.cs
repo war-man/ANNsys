@@ -434,7 +434,7 @@ namespace IM_PJ
                                         string costofgood = itemElement[6];
                                         string retailprice = itemElement[7];
                                         string[] datanamevalue = itemElement[8].Split('|');
-                                        string imageUpload = itemElement[8];
+                                        string imageUpload = itemElement[4];
                                         int _MaximumInventoryLevel = itemElement[9].ToInt(0);
                                         int _MinimumInventoryLevel = itemElement[10].ToInt(0);
 

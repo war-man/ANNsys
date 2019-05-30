@@ -2,7 +2,7 @@
 
 <%@ Register Assembly="Telerik.Web.UI" Namespace="Telerik.Web.UI" TagPrefix="telerik" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
-    <script src="/App_Themes/Ann/js/search-customer.js?v=2119"></script>
+    <script src="/App_Themes/Ann/js/search-customer.js?v=23052019"></script>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <asp:Panel ID="parent" runat="server">
@@ -629,7 +629,7 @@
                 //checkCustomer();
             }
 
-            function checkCustomer() {
+            <%--function checkCustomer() {
                 
                     var phone = $("#<%=txtPhone.ClientID%>").val();
 
@@ -661,7 +661,7 @@
                     });
                 
                 
-            }
+            }--%>
 
             var formatThousands = function (n, dp) {
                 var s = '' + (Math.floor(n)), d = n % 1, i = s.length, r = '';

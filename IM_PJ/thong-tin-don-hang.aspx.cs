@@ -173,11 +173,11 @@ namespace IM_PJ
                     ltrHeading.Text = "Đơn hàng #" + ID.ToString() + " - " + (cus.Nick != "" ? cus.Nick.ToTitleCase() : cus.CustomerName.ToTitleCase());
 
                     int customerID = Convert.ToInt32(order.CustomerID);
-                    ltrViewDetail.Text = "<a href=\"javascript:;\" class=\"btn primary-btn fw-btn not-fullwidth\" onclick=\"viewCustomerDetail('" + customerID + "')\"><i class=\"fa fa-address-card-o\" aria-hidden=\"true\"></i> Chi tiết</a>";
+                    ltrViewDetail.Text = "<a href=\"javascript:;\" class=\"btn primary-btn fw-btn not-fullwidth\" onclick=\"viewCustomerDetail('" + customerID + "')\"><i class=\"fa fa-address-card-o\" aria-hidden=\"true\"></i> Xem</a>";
                     ltrViewDetail.Text += "<a href=\"javascript:;\" class=\"btn primary-btn fw-btn not-fullwidth edit-customer-btn\" onclick=\"refreshCustomerInfo('" + customerID + "')\"><i class=\"fa fa-refresh\" aria-hidden=\"true\"></i> Làm mới</a>";
-                    ltrViewDetail.Text += "<a href=\"chi-tiet-khach-hang?id=" + customerID + "\" class=\"btn primary-btn fw-btn not-fullwidth edit-customer-btn\" target=\"_blank\"><i class=\"fa fa-pencil-square-o\" aria-hidden=\"true\"></i> Chỉnh sửa</a>";
+                    ltrViewDetail.Text += "<a href=\"chi-tiet-khach-hang?id=" + customerID + "\" class=\"btn primary-btn fw-btn not-fullwidth edit-customer-btn\" target=\"_blank\"><i class=\"fa fa-pencil-square-o\" aria-hidden=\"true\"></i> Sửa</a>";
                     ltrViewDetail.Text += "<a href=\"danh-sach-don-hang?textsearch=" + order.CustomerPhone + "\" class=\"btn primary-btn fw-btn not-fullwidth edit-customer-btn\" target=\"_blank\"><i class=\"fa fa-history\" aria-hidden=\"true\"></i> Lịch sử</a>";
-                    ltrViewDetail.Text += "<a href=\"javascript:;\" class=\"btn primary-btn fw-btn not-fullwidth clear-btn\" onclick=\"clearCustomerDetail()\"><i class=\"fa fa-times\" aria-hidden=\"true\"></i> Bỏ qua</a>";
+                    ltrViewDetail.Text += "<a href=\"javascript:;\" class=\"btn primary-btn fw-btn not-fullwidth clear-btn\" onclick=\"clearCustomerDetail()\"><i class=\"fa fa-times\" aria-hidden=\"true\"></i> Bỏ</a>";
                     var d = DiscountCustomerController.getbyCustID(customerID);
                     if (d.Count > 0)
                     {
@@ -722,7 +722,7 @@ namespace IM_PJ
                             string DisCount = "0";
                             int CustomerID = 0;
 
-                            string CustomerPhone = txtPhone.Text.Trim().Replace(" ", "");
+                            string CustomerPhone = Regex.Replace(txtPhone.Text.Trim(), @"[^\d]", "");
                             string CustomerName = txtFullname.Text.Trim();
                             string Nick = txtNick.Text.Trim();
                             string CustomerAddress = txtAddress.Text.Trim();

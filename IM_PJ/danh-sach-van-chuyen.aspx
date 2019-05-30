@@ -122,17 +122,17 @@
                     <div class="filter-above-wrap clear">
                         <div class="filter-control">
                             <div class="row">
-                                <div class="col-md-3">
+                                <div class="col-md-3 col-xs-6">
                                     <asp:TextBox ID="txtSearchOrder" runat="server" CssClass="form-control" placeholder="Tìm đơn hàng" autocomplete="off"></asp:TextBox>
                                 </div>
-                                <div class="col-md-2">
+                                <div class="col-md-2 col-xs-6">
                                     <asp:DropDownList ID="ddlShippingType" runat="server" CssClass="form-control">
                                         <asp:ListItem Value="0" Text="Kiểu giao hàng"></asp:ListItem>
                                         <asp:ListItem Value="4" Text="Chuyển xe"></asp:ListItem>
                                         <asp:ListItem Value="5" Text="Nhân viên giao"></asp:ListItem>
                                     </asp:DropDownList>
                                 </div>
-                                <div class="col-md-2">
+                                <div class="col-md-2 col-xs-6">
                                     <asp:DropDownList ID="ddlPaymentType" runat="server" CssClass="form-control">
                                         <asp:ListItem Value="0" Text="Kiểu thanh toán"></asp:ListItem>
                                         <asp:ListItem Value="1" Text="Tiền mặt"></asp:ListItem>
@@ -141,12 +141,12 @@
                                         <asp:ListItem Value="4" Text="Công nợ"></asp:ListItem>
                                     </asp:DropDownList>
                                 </div>
-                                <div class="col-md-2">
+                                <div class="col-md-2 col-xs-6">
                                     <asp:DropDownList ID="ddlCreatedBy" runat="server" CssClass="form-control"></asp:DropDownList>
                                 </div>
-                                <div class="col-md-2">
+                                <div class="col-md-2 col-xs-6">
                                     <asp:DropDownList ID="ddlCreatedDate" runat="server" CssClass="form-control">
-                                        <asp:ListItem Value="" Text="Thời gian đơn hàng"></asp:ListItem>
+                                        <asp:ListItem Value="" Text="Ngày hoàn tất"></asp:ListItem>
                                         <asp:ListItem Value="today" Text="Hôm nay"></asp:ListItem>
                                         <asp:ListItem Value="yesterday" Text="Hôm qua"></asp:ListItem>
                                         <asp:ListItem Value="beforeyesterday" Text="Hôm kia"></asp:ListItem>
@@ -158,7 +158,7 @@
                                         <asp:ListItem Value="30days" Text="30 ngày"></asp:ListItem>
                                     </asp:DropDownList>
                                 </div>
-                                <div class="col-md-1">
+                                <div class="col-md-1 col-xs-6">
                                     <a href="javascript:;" onclick="searchOrder()" class="btn primary-btn h45-btn"><i class="fa fa-search"></i></a>
                                     <asp:Button ID="btnSearch" runat="server" CssClass="btn primary-btn h45-btn" OnClick="btnSearch_Click" Style="display: none" />
                                 </div>
@@ -168,20 +168,20 @@
                     <div class="filter-above-wrap clear">
                         <div class="filter-control">
                             <div class="row">
-                                <div class="col-md-3">
+                                <div class="col-md-3 col-xs-6">
                                     <asp:DropDownList ID="ddlTransportCompany" runat="server" CssClass="form-control select2" Height="45px" Width="100%"></asp:DropDownList>
                                 </div>
-                                <div class="col-md-2">
+                                <div class="col-md-2 col-xs-6">
                                     <asp:DropDownList ID="ddlShipperFilter" runat="server" CssClass="form-control"></asp:DropDownList>
                                 </div>
-                                <div class="col-md-2">
+                                <div class="col-md-2 col-xs-6">
                                     <asp:DropDownList ID="ddlInvoiceStatus" runat="server" CssClass="form-control">
-                                        <asp:ListItem Value="0" Text="Biên nhận gửi hàng"></asp:ListItem>
+                                        <asp:ListItem Value="0" Text="Biên nhận"></asp:ListItem>
                                         <asp:ListItem Value="1" Text="Có"></asp:ListItem>
                                         <asp:ListItem Value="2" Text="Không"></asp:ListItem>
                                     </asp:DropDownList>
                                 </div>
-                                <div class="col-md-2">
+                                <div class="col-md-2 col-xs-6">
                                     <asp:DropDownList ID="ddlDeliveryStatusFilter" runat="server" CssClass="form-control">
                                         <asp:ListItem Value="0" Text="Trạng thái giao hàng"></asp:ListItem>
                                         <asp:ListItem Value="1" Text="Đã giao"></asp:ListItem>
@@ -189,9 +189,9 @@
                                         <asp:ListItem Value="3" Text="Đang giao"></asp:ListItem>
                                     </asp:DropDownList>
                                 </div>
-                                <div class="col-md-2">
+                                <div class="col-md-2 col-xs-6">
                                     <asp:DropDownList ID="ddlDeliveryStartAt" runat="server" CssClass="form-control">
-                                        <asp:ListItem Value="" Text="Thời gian giao hàng"></asp:ListItem>
+                                        <asp:ListItem Value="" Text="Ngày giao hàng"></asp:ListItem>
                                         <asp:ListItem Value="today" Text="Hôm nay"></asp:ListItem>
                                         <asp:ListItem Value="yesterday" Text="Hôm qua"></asp:ListItem>
                                         <asp:ListItem Value="beforeyesterday" Text="Hôm kia"></asp:ListItem>
@@ -203,7 +203,7 @@
                                         <asp:ListItem Value="30days" Text="30 ngày"></asp:ListItem>
                                     </asp:DropDownList>
                                 </div>
-                                <div class="col-md-1">
+                                <div class="col-md-1 col-xs-6">
                                     <a href="/danh-sach-van-chuyen" class="btn primary-btn h45-btn"><i class="fa fa-times" aria-hidden="true"></i></a>
                                 </div>
                             </div>
@@ -212,17 +212,17 @@
                     <div class="filter-above-wrap clear">
                         <div class="filter-control">
                             <div class="row">
-                                <div class="col-xs-2">
+                                <div class="col-md-2 col-xs-4">
                                     <a id="filterOrderChoose" href="javascript:;" class="btn primary-btn fw-btn width-100" onclick="getDeliverySession()">
                                         <i class="fa fa-inbox" aria-hidden="true"></i> Đã chọn
                                     </a>
                                 </div>
-                                <div class="col-xs-2">
+                                <div class="col-md-2 col-xs-4">
                                     <a href="javascript:;" class="btn primary-btn fw-btn width-100" onclick="deleteAllDeliverySession()">
                                         <i class="fa fa-remove" aria-hidden="true"></i> Bỏ chọn
                                     </a>
                                 </div>
-                                <div class="col-xs-2">
+                                <div class="col-md-2 col-xs-4">
                                     <a id="printOrderChoose" href="javascript:;" class="btn primary-btn fw-btn width-100" onclick="openPrintModal()">
                                         <i class="fa fa-print" aria-hidden="true"></i> In phiếu
                                     </a>

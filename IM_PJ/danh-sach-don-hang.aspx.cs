@@ -208,24 +208,26 @@ namespace IM_PJ
                 List<OrderList> rs = new List<OrderList>();
                 rs = OrderController.Filter(TextSearch, OrderType, ExcuteStatus, PaymentStatus, 0, PaymentType, ShippingType, Discount, OtherFee, CreatedBy, CreatedDate, TransferDoneAt, TransportCompany, "");
 
+                rs = rs.Where(x => x.ExcuteStatus != 4).ToList();
+
                 if (acc.RoleID == 0)
                 {
                     hdfcreate.Value = "1";
                     if (CreatedBy != "")
                     {
-                        rs = rs.Where(x => x.CreatedBy == CreatedBy && x.ExcuteStatus != 4).ToList();
-                    }
-                    else
-                    {
-                        rs = rs.Where(x => x.ExcuteStatus != 4).ToList();
+                        rs = rs.Where(x => x.CreatedBy == CreatedBy).ToList();
                     }
                 }
                 else
                 {
-                    rs = rs.Where(x => x.CreatedBy == acc.Username && x.ExcuteStatus != 4).ToList();
+                    rs = rs.Where(x => x.CreatedBy == acc.Username).ToList();
                 }
+
                 if (ShipperID != 0)
+                {
                     rs = rs.Where(x => x.ShipperID == ShipperID).ToList();
+                }
+
                 if (QuantityFilter != "")
                 {
                     if (QuantityFilter == "greaterthan")

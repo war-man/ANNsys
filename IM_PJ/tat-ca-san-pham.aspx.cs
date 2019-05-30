@@ -445,7 +445,7 @@ namespace IM_PJ
 
                     if (acc.RoleID == 0 || acc.RoleID == 1)
                     {
-                        html.Append("       <a href=\"javascript:;\" title=\"Đồng bộ sản phẩm\" class=\"up-product-" + item.ID + " btn primary-btn h45-btn " + (item.ShowHomePage == 1 ? "" : "hide") + "\" onclick=\"ShowUpProductToWeb('" + item.ProductSKU + "', '" + item.ID + "', 'false', 'false', 'null');\"><i class=\"fa fa-upload\" aria-hidden=\"true\"></i></a>");
+                        html.Append("       <a href=\"javascript:;\" title=\"Đồng bộ sản phẩm\" class=\"up-product-" + item.ID + " btn primary-btn h45-btn " + (item.ShowHomePage == 1 ? "" : "hide") + "\" onclick=\"ShowUpProductToWeb('" + item.ProductSKU + "', '" + item.ID + "', '" + item.CategoryID + "', 'false', 'false', 'null');\"><i class=\"fa fa-upload\" aria-hidden=\"true\"></i></a>");
                     }
 
                     html.Append("  </td>");

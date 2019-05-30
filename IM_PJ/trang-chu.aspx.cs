@@ -11,6 +11,8 @@ using NHST.Bussiness;
 using System.Web.Services;
 using System.Configuration;
 using System.IO;
+using static IM_PJ.Controllers.OrderController;
+using IM_PJ.Models;
 
 namespace IM_PJ
 {
@@ -45,116 +47,31 @@ namespace IM_PJ
         }
         public void LoadData()
         {
-            DateTime today = DateTime.Now.Date;
-            DateTime now = DateTime.Now;
-            List<OrderTop> opdertop = new List<OrderTop>();
-            var or = OrderController.Report(today.ToString(), now.ToString());
-            if (or != null)
+            DateTime fromdate = DateTime.Today;
+            DateTime todate = DateTime.Now;
+            List<OrderReportHomePage> order = new List<OrderReportHomePage>();
+            order = OrderController.ReportHomePage(fromdate, todate);
+            if (order != null)
             {
-                foreach (var item in or)
-                {
-                    List<OrderTop> tam = new List<OrderTop>();
-                    OrderTop order = new OrderTop();
-                    bool check = opdertop.Any(x => x.CusID == item.CustomerID);
-                    if (check == true)
-                    {
-                        for (int i = 0; i < opdertop.Count(); i++)
-                        {
-                            if (opdertop[i].CusID == item.CustomerID)
-                            {
-                                var ordetail = OrderDetailController.GetByOrderID(item.ID);
-                                if (ordetail != null)
-                                {
-                                    int quantityp = 0;
-                                    foreach (var temp in ordetail)
-                                    {
-                                        quantityp += Convert.ToInt32(temp.Quantity);
-                                    }
-                                    opdertop[i].Quantity += quantityp;
-                                }
-                                tam.Add(opdertop[i]);
-                            }
-                            else
-                            {
-                                tam.Add(opdertop[i]);
-                            }
-                        }
-                        opdertop = tam;
-                        tam = null;
-                    }
-                    else
-                    {
-                        var cus = CustomerController.GetByID(item.CustomerID.Value);
-                        if (cus != null)
-                        {
-                            order.CusID = cus.ID;
-                            order.CusName = cus.CustomerName;
-                            order.CreateBy = cus.CreatedBy;
-                            order.CusZalo = cus.Zalo;
-                            order.CusFB = cus.Facebook;
-                            order.CusNick = cus.Nick;
-                            order.CusAddress = cus.CustomerAddress;
-                        }
-                        var ordetail = OrderDetailController.GetByOrderID(item.ID);
-                        if (ordetail != null)
-                        {
-                            int quantityp = 0;
-                            foreach (var temp in ordetail)
-                            {
-                                quantityp += Convert.ToInt32(temp.Quantity);
-                            }
-                            order.Quantity = quantityp;
-                        }
-                        opdertop.Add(order);
-                    }
-
-                }
-            }
-
-            if (opdertop.Count() > 0)
-            {
-                pagingall(opdertop.OrderByDescending(x => x.Quantity).Take(10).ToList());
+                pagingall(order);
             }
         }
         #region Paging
-        public void pagingall(List<OrderTop> acs)
+        public void pagingall(List<OrderReportHomePage> acs)
         {
-            int PageSize = 10;
+            int PageSize = acs.Count();
             StringBuilder html = new StringBuilder();
             if (acs.Count > 0)
             {
-                int TotalItems = acs.Count;
-                if (TotalItems % PageSize == 0)
-                    PageCount = TotalItems / PageSize;
-                else
-                    PageCount = TotalItems / PageSize + 1;
-
-                Int32 Page = GetIntFromQueryString("Page");
-
-                if (Page == -1) Page = 1;
-                int FromRow = (Page - 1) * PageSize;
-                int ToRow = Page * PageSize - 1;
-                if (ToRow >= TotalItems)
-                    ToRow = TotalItems - 1;
-                for (int i = FromRow; i < ToRow + 1; i++)
+                for (int i = 0; i < PageSize; i++)
                 {
                     var item = acs[i];
                     html.Append("<tr>");
                     html.Append("   <td>" + Convert.ToInt32(i + 1) + "</td>");
-                    html.Append("   <td class=\"capitalize\">" + item.CusName + "</td>");
-                    html.Append("   <td class=\"capitalize\">" + item.CusNick + "</td>");
+                    html.Append("   <td class=\"capitalize\">" + item.CustomerName + "</td>");
+                    html.Append("   <td class=\"capitalize\">" + item.Nick + "</td>");
                     html.Append("   <td>" + item.Quantity + " cái" + "</td>");
-                    html.Append("   <td>" + item.CusZalo + "</td>");
-                    if (!string.IsNullOrEmpty(item.CusFB))
-                    {
-                        html.Append("   <td><a href=\"" + item.CusFB + "\" target=\"_blank\">Xem</a></td>");
-                    }
-                    else
-                    {
-                        html.Append("   <td></td>");
-                    }
-                    html.Append("   <td>" + item.CusAddress + "</td>");
-                    html.Append("   <td>" + item.CreateBy + "</td>");
+                    html.Append("   <td>" + item.CreatedBy + "</td>");
                     html.Append("</tr>");
                 }
             }

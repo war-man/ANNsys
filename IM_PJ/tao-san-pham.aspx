@@ -3,9 +3,6 @@
 <%@ Register Assembly="Telerik.Web.UI" Namespace="Telerik.Web.UI" TagPrefix="telerik" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
-     <script type="text/javascript">
-        
-                </script>
     <style>
         .select2-container {
             width: 100%!important;
@@ -371,9 +368,6 @@
 
     <telerik:RadCodeBlock runat="server">
         <script type="text/javascript">
-            $(function () {
-                initdropdown();
-            });
 
             function initdropdown() {
                 $("#<%=ddlVariableValue.ClientID%>").select2();
@@ -455,9 +449,9 @@
                                             });
                                             if (checkIsExist == false) {
                                                 var html = "";
-                                                html += "<div class=\"variablevalue-item\" data-valueid=\"" + vValue + "\" data-valuename=\"" + vValue_text + "\">";
-                                                html += "<span class=\"v-value\">" + vValue_text + "</span>";
-                                                html += "<a href=\"javascript:;\" class=\"btn primary-btn fw-btn not-fullwidth v-delete\" onclick=\"deleteValueInGroup($(this))\">Xóa</a>";
+                                                html += "<div class='variablevalue-item' data-valueid='" + vValue + "' data-valuename='" + vValue_text + "'>";
+                                                html += "<span class='v-value'>" + vValue_text + "</span>";
+                                                html += "<a href='javascript:;' class='btn primary-btn fw-btn not-fullwidth v-delete' onclick='deleteValueInGroup($(this))'>Xóa</a>";
                                                 html += "</div>";
                                                 vValueContentChild.append(html);
                                             }
@@ -471,12 +465,12 @@
                             }
                             else {
                                 var html = "";
-                                html += "<div class=\"variable-select\" data-name=\"" + vName_text + "\" data-id=\"" + vName + "\">";
-                                html += "   <div class=\"variablename\" data-name=\"" + vName_text + "\" data-id=\"" + vName + "\"><strong>" + vName_text + "</strong><a href=\"javascript:;\" style=\"float:right;margin-right:13px;\" class=\"btn primary-btn fw-btn not-fullwidth v-delete\" onclick=\"deleteGroup($(this))\">Xóa</a></div>";
-                                html += "   <div class=\"variablevalue\">";
-                                html += "       <div class=\"variablevalue-item\" data-valueid=\"" + vValue + "\" data-valuename=\"" + vValue_text + "\">";
-                                html += "           <span class=\"v-value\">" + vValue_text + "</span>";
-                                html += "           <a href=\"javascript:;\" class=\"btn primary-btn fw-btn not-fullwidth v-delete\" onclick=\"deleteValueInGroup($(this))\">Xóa</a>";
+                                html += "<div class='variable-select' data-name='" + vName_text + "' data-id='" + vName + "'>";
+                                html += "   <div class='variablename' data-name='" + vName_text + "' data-id='" + vName + "'><strong>" + vName_text + "</strong><a href='javascript:;' style='float:right;margin-right:13px;' class='btn primary-btn fw-btn not-fullwidth v-delete' onclick='deleteGroup($(this))'>Xóa</a></div>";
+                                html += "   <div class='variablevalue'>";
+                                html += "       <div class='variablevalue-item' data-valueid='" + vValue + "' data-valuename='" + vValue_text + "'>";
+                                html += "           <span class='v-value'>" + vValue_text + "</span>";
+                                html += "           <a href='javascript:;' class='btn primary-btn fw-btn not-fullwidth v-delete' onclick='deleteValueInGroup($(this))'>Xóa</a>";
                                 html += "       </div>";
                                 html += "   </div>";
                                 html += "</div>";
@@ -485,12 +479,12 @@
                         }
                         else {
                             var html = "";
-                            html += "<div class=\"variable-select\" data-name=\"" + vName_text + "\" data-id=\"" + vName + "\">";
-                            html += "   <div class=\"variablename\" data-name=\"" + vName_text + "\" data-id=\"" + vName + "\"><strong>" + vName_text + "</strong><a href=\"javascript:;\" style=\"float:right;margin-right:13px;\" class=\"btn primary-btn fw-btn not-fullwidth v-delete\" onclick=\"deleteGroup($(this))\">Xóa</a></div>";
-                            html += "   <div class=\"variablevalue\">";
-                            html += "       <div class=\"variablevalue-item\" data-valueid=\"" + vValue + "\" data-valuename=\"" + vValue_text + "\">";
-                            html += "           <span class=\"v-value\">" + vValue_text + "</span>";
-                            html += "           <a href=\"javascript:;\" class=\"btn primary-btn fw-btn not-fullwidth v-delete\" onclick=\"deleteValueInGroup($(this))\">Xóa</a>";
+                            html += "<div class='variable-select' data-name='" + vName_text + "' data-id='" + vName + "'>";
+                            html += "   <div class='variablename' data-name='" + vName_text + "' data-id='" + vName + "'><strong>" + vName_text + "</strong><a href='javascript:;' style='float:right;margin-right:13px;' class='btn primary-btn fw-btn not-fullwidth v-delete' onclick='deleteGroup($(this))'>Xóa</a></div>";
+                            html += "   <div class='variablevalue'>";
+                            html += "       <div class='variablevalue-item' data-valueid='" + vValue + "' data-valuename='" + vValue_text + "'>";
+                            html += "           <span class='v-value'>" + vValue_text + "</span>";
+                            html += "           <a href='javascript:;' class='btn primary-btn fw-btn not-fullwidth v-delete' onclick='deleteValueInGroup($(this))'>Xóa</a>";
                             html += "       </div>";
                             html += "   </div>";
                             html += "</div>";
@@ -559,10 +553,10 @@
                         var html = "";
                         //var sl = "";
                         if (data.length > 0) {
-                            html += "<select class=\"form-control slparent\" style=\"margin-top:15px;\" data-level=" + level + " onchange=\"selectCategory($(this))\">";
-                            html += "<option  value=\"0\">Chọn danh mục</option>";
+                            html += "<select class='form-control slparent' style='margin-top:15px;' data-level=" + level + " onchange='selectCategory($(this))'>";
+                            html += "<option  value='0'>Chọn danh mục</option>";
                             for (var i = 0; i < data.length; i++) {
-                                html += "<option value=\"" + data[i].ID + "\">" + data[i].CategoryName + "</option>";
+                                html += "<option value='" + data[i].ID + "'>" + data[i].CategoryName + "</option>";
                             }
                             html += "</select>";
                         }
@@ -583,8 +577,6 @@
             }
 
             function generateVariable() {
-                var MinimumInventoryLevel = $("#<%=pMinimumInventoryLevel.ClientID%>").val();
-                var MaximumInventoryLevel = $("#<%=pMaximumInventoryLevel.ClientID%>").val();
                 var giasi = $("#<%=pRegular_Price.ClientID%>").val();
                 var giavon = $("#<%=pCostOfGood.ClientID%>").val();
                 var giale = $("#<%=pRetailPrice.ClientID%>").val();
@@ -689,7 +681,7 @@
                                             html += "    <div class='col-md-12 variable-content show'>";
                                             html += "    	<div class='row'>";
                                             html += "		    <div class='col-md-2'>";
-                                            html += "		    	<input type='file' class='productVariableImage upload-btn' onchange='imagepreview(this,$(this));' name='" + item.ProductVariable + "'/>";
+                                            html += "		    	<input type='file' class='productVariableImage upload-btn' onchange='imagepreview(this,$(this))' name='" + SKU + item.VariableSKUText + "'/>";
                                             html += "				<img class='imgpreview' onclick='openUploadImage($(this))' src='/App_Themes/Ann/image/placeholder.png' />";
                                             html += "				<a href='javascript:;' onclick='deleteImageVariable($(this))' class='btn-delete hide'><i class='fa fa-times' aria-hidden='true'></i> Xóa hình</a>";
                                             html += "			</div>";
@@ -711,14 +703,6 @@
                                             html += "		    	<div class='row margin-bottom-15'>";
                                             html += "		    	    <div class='col-md-5'>Giá bán lẻ</div>";
                                             html += "		    	    <div class='col-md-7'><input class='form-control retailprice' type='text' value='" + giale + "'></div>";
-                                            html += "		    	</div>";
-                                            html += "		    	<div class='row margin-bottom-15'>";
-                                            html += "		    	    <div class='col-md-5'>Tồn kho ít nhất</div>";
-                                            html += "		    	    <div class='col-md-7'><input class='form-control minimum' type='text' value='" + MinimumInventoryLevel + "'></div>";
-                                            html += "		    	</div>";
-                                            html += "		    	<div class='row margin-bottom-15'>";
-                                            html += "		    	    <div class='col-md-5'>Tồn kho nhiều nhất</div>";
-                                            html += "		    	    <div class='col-md-7'><input class='form-control maximum' type='text' value='" + MaximumInventoryLevel + "'></div>";
                                             html += "		    	</div>";
                                             html += "		    	<div class='row margin-bottom-15'>";
                                             html += "		    	    <div class='col-md-5'></div>";
@@ -819,6 +803,7 @@
             }
 
             function addNewProduct() {
+                
                 var listv = "";
                 var a = $("#<%= hdfsetStyle.ClientID%>").val();
                 var parent = $("#<%=hdfParentID.ClientID%>").val();
@@ -869,54 +854,63 @@
                         swal("Thông báo", "Giá lẻ không được thấp hơn giá sỉ", "error");
                     }
                     else {
+                        HoldOn.open();
                         if ($(".item-var-gen").length > 0) {
                             var checkError = false;
-                            $(".item-var-gen").each(function () {
+                            var indexError = 0;
+                            var inputError = "";
+                            $(".item-var-gen").each(function (index) {
                                 var productvariablesku = $(this).find(".productvariablesku").val();
                                 var regularprice = $(this).find(".regularprice").val();
                                 var costofgood = $(this).find(".costofgood").val();
                                 var retailprice = $(this).find(".retailprice").val();
-                                var image = $(this).find(".productVariableImage").attr("name");
+
                                 if (isBlank(productvariablesku) || isBlank(regularprice) || isBlank(costofgood) || isBlank(retailprice)) {
                                     checkError = true;
+                                    indexError = index;
+                                    if (isBlank(regularprice)) {
+                                        inputError = ".regularprice";
+                                    }
+                                    else if (isBlank(costofgood)) {
+                                        inputError = ".costofgood";
+                                    }
+                                    else if (isBlank(retailprice)) {
+                                        inputError = ".retailprice";
+                                    }
                                 }
-                            });
-                            if (checkError == true) {
-                                alert('Hãy nhập đầy đủ thông tin.');
-                            }
-                            else {
-
-                                $(".item-var-gen").each(function () {
+                                else {
                                     var datanameid = $(this).attr("data-name-id");
                                     var datavalueid = $(this).attr("data-value-id");
                                     var datanametext = $(this).attr("data-name-text");
                                     var datavaluetext = $(this).attr("data-value-text");
-                                    var productvariablesku = $(this).find(".productvariablesku").val();
-                                    var regularprice = $(this).find(".regularprice").val();
-                                    var costofgood = $(this).find(".costofgood").val();
-                                    var retailprice = $(this).find(".retailprice").val();
                                     var datanamevalue = $(this).attr("data-name-value");
                                     var image = $(this).find(".productVariableImage").attr("name");
-                                    var max = $(this).find(".maximum").val();
-                                    var min = $(this).find(".minimum").val();
                                     var StockStatus = 3;
                                     var checked = true;
 
-                                    if (!isBlank(productvariablesku) && !isBlank(regularprice) && !isBlank(costofgood) && !isBlank(retailprice) && !isBlank(StockStatus)) {
+                                    // nối chuỗi dữ liệu biến thể sản phẩm
+                                    listv += datanameid + ";" + datavalueid + ";" + datanametext + ";" + datavaluetext + ";" + productvariablesku + ";" + regularprice.replace(",", "") + ";" + costofgood.replace(",", "") + ";" + retailprice.replace(",", "") + ";" + datanamevalue + ";" + maximum + ";" + minimum + ";" + StockStatus + ";" + checked + ",";
+                                }
+                            });
 
-                                        listv += datanameid + ";" + datavalueid + ";" + datanametext + ";" + datavaluetext + ";" + productvariablesku + ";" + regularprice.replace(",", "") + ";" + costofgood.replace(",", "") + ";" + retailprice.replace(",", "") + ";" + datanamevalue + ";" + max + ";" + min + ";" + StockStatus + ";" + checked + ",";
-                                        $("#<%=hdfVariableListInsert.ClientID%>").val(listv);
+                            if (checkError == true) {
+                                // focus đến input chưa nhập dữ liệu
+                                $(".item-var-gen").eq(indexError).css("background-color", "#fff0c5");
+                                $('html, body').animate({
+                                    scrollTop: $(".item-var-gen").eq(indexError).offset().top - 150
+                                }, 500);
+                                $(".item-var-gen").eq(indexError).find(inputError).focus();
+                                HoldOn.close();
+                                swal("Thông báo", "Hãy nhập đầy đủ thông tin biến thể.", "error");
+                            }
+                            else {
+                                $("#<%=hdfVariableListInsert.ClientID%>").val(listv);
 
-                                        HoldOn.open();
-                                        $("#<%=btnSubmit.ClientID%>").click();
-                                    }
-                                    else {
-                                        swal("Lỗi", "Hãy kiểm tra thông tin các biến thể", "error");
-                                    }
-                                });
+                                $("#<%=btnSubmit.ClientID%>").click();
                             }
                         }
                         else {
+                            HoldOn.close();
                             swal("Lỗi", "Chưa thiếp lập biến thể sản phẩm", "error");
                         }
                     }
@@ -925,12 +919,9 @@
                     var title = $("#<%=txtProductTitle.ClientID%>").val();
                     var SKU = $("#<%=txtProductSKU.ClientID%>").val();
                     var materials = $("#<%=txtMaterials.ClientID%>").val();
-                    var maximum = $("#<%=pMaximumInventoryLevel.ClientID%>").val();
-                    var minimum = $("#<%=pMinimumInventoryLevel.ClientID%>").val();
                     var giasi = $("#<%=pRegular_Price.ClientID%>").val();
                     var giavon = $("#<%=pCostOfGood.ClientID%>").val();
                     var giale = $("#<%=pRetailPrice.ClientID%>").val();
-
 
                     if (parent == "") {
                         $("#<%=ddlCategory.ClientID%>").focus();
@@ -969,14 +960,14 @@
                         swal("Thông báo", "Giá lẻ không được thấp hơn giá sỉ", "error");
                     }
                     else {
+                        HoldOn.open();
                         if (!isBlank(title) && !isBlank(SKU) && !isBlank(materials) && !isBlank(giasi) && !isBlank(giavon) && !isBlank(giale)) {
-                            listv = "";
-                            $("#<%=hdfVariableListInsert.ClientID%>").val(listv);
+                            $("#<%=hdfVariableListInsert.ClientID%>").val("");
                             $("#<%=btnSubmit.ClientID%>").click();
-                            HoldOn.open();
                         }
                         else {
-                            alert("Hãy nhập đầy đủ thông tin.")
+                            HoldOn.close();
+                            swal("Thông báo", "Hãy nhập đầy đủ thông tin sản phẩm.", "error");
                         }
                     }
                 }

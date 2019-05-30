@@ -217,21 +217,22 @@ namespace IM_PJ
 
                             string warning = "Cập nhật khách hàng thành công";
                             string CustomerPhone = d.CustomerPhone;
+                            string NewCustomerPhone = Regex.Replace(txtCustomerPhone.Text.Trim(), @"[^\d]", "");
                             // kiểm tra số điện thoại mới
-                            if (txtCustomerPhone.Text != d.CustomerPhone)
+                            if (NewCustomerPhone != d.CustomerPhone)
                             {
                                 // kiểm tra số điện thoại mới có khả dụng ko?
-                                var c = CustomerController.GetByPhone(txtCustomerPhone.Text.Trim().Replace(" ", ""));
+                                var c = CustomerController.GetByPhone(NewCustomerPhone);
                                 if(c!= null && c.ID != d.ID)
                                 {
-                                    warning = "Số điện thoại này đã tồn tại!";
+                                    warning = "Số điện thoại này đã tồn tại của khách khác!";
                                 }
                                 else
                                 {
                                     warning = "Cập nhật khách hàng thành công! Số điện thoại khách hàng đã được đổi.<br>Lưu ý: Các đơn hàng cũ của khách này cũng đã được đổi số điện thoại.";
                                     note = "Số điện thoại cũ: " + d.CustomerPhone + ". " + note;
 
-                                    CustomerPhone = txtCustomerPhone.Text.Trim().Replace(" ", "");
+                                    CustomerPhone = NewCustomerPhone;
 
                                     // đổi số mới cho đơn hàng cũ
                                     var orders = OrderController.GetByCustomerID(d.ID);
@@ -250,18 +251,22 @@ namespace IM_PJ
                             }
 
                             string CustomerPhone2 = "";
-                            // kiểm tra số điện thoại 2
-                            var b = CustomerController.GetByPhone(txtCustomerPhone2.Text.Trim().Replace(" ", ""));
-                            if(b == null)
+                            string NewCustomerPhone2 = Regex.Replace(txtCustomerPhone2.Text.Trim(), @"[^\d]", "");
+                            if (NewCustomerPhone2 != "")
                             {
-                                CustomerPhone2 = txtCustomerPhone2.Text.Trim().Replace(" ", "");
-                            }
-                            else
-                            {
-                                warning = "Số điện thoại 2 đã tồn tại!";
+                                // kiểm tra số điện thoại 2 mới
+                                var b = CustomerController.GetByPhone(NewCustomerPhone2);
+                                if (b == null)
+                                {
+                                    CustomerPhone2 = NewCustomerPhone2;
+                                }
+                                else
+                                {
+                                    warning = "Số điện thoại 2 đã tồn tại của khách khác!";
+                                }
                             }
 
-                            CustomerController.Update(id, txtCustomerName.Text, CustomerPhone, txtSupplierAddress.Text, "", 0, 1, ddlUser.SelectedItem.ToString(), DateTime.Now, username, chkIsHidden.Checked, txtZalo.Text, txtFacebook.Text, note, ddlProvince.SelectedValue, txtNick.Text, Avatar, ShippingType, PaymentType, TransportCompanyID, TransportCompanySubID, CustomerPhone2);
+                            CustomerController.Update(id, txtCustomerName.Text, CustomerPhone, txtSupplierAddress.Text, "", 0, 1, ddlUser.SelectedItem.ToString(), DateTime.Now, username, chkIsHidden.Checked, Regex.Replace(txtZalo.Text.Trim(), @"[^\d]", ""), txtFacebook.Text, note, ddlProvince.SelectedValue, txtNick.Text, Avatar, ShippingType, PaymentType, TransportCompanyID, TransportCompanySubID, CustomerPhone2);
                             PJUtils.ShowMessageBoxSwAlert(warning, "s", true, Page);
                         }
                     }

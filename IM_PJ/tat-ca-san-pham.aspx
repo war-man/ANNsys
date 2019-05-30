@@ -124,13 +124,13 @@
                     <div class="filter-above-wrap clear">
                         <div class="filter-control">
                             <div class="row">
-                                <div class="col-md-3">
+                                <div class="col-md-3 col-xs-6">
                                     <asp:TextBox ID="txtSearchProduct" runat="server" CssClass="form-control sku-input" placeholder="Tìm sản phẩm" autocomplete="off"></asp:TextBox>
                                 </div>
-                                <div class="col-md-2">
+                                <div class="col-md-2 col-xs-6">
                                     <asp:DropDownList ID="ddlCategory" runat="server" CssClass="form-control"></asp:DropDownList>
                                 </div>
-                                <div class="col-md-2">
+                                <div class="col-md-2 col-xs-6">
                                     <asp:DropDownList ID="ddlStockStatus" runat="server" CssClass="form-control">
                                         <asp:ListItem Value="" Text="Trạng thái"></asp:ListItem>
                                         <asp:ListItem Value="1" Text="Còn hàng"></asp:ListItem>
@@ -138,14 +138,14 @@
                                         <asp:ListItem Value="3" Text="Nhập hàng"></asp:ListItem>
                                     </asp:DropDownList>
                                 </div>
-                                <div class="col-md-2">
+                                <div class="col-md-2 col-xs-6">
                                     <asp:DropDownList ID="ddlShowHomePage" runat="server" CssClass="form-control">
                                         <asp:ListItem Value="" Text="Trang chủ"></asp:ListItem>
                                         <asp:ListItem Value="0" Text="Đang ẩn"></asp:ListItem>
                                         <asp:ListItem Value="1" Text="Đang hiện"></asp:ListItem>
                                     </asp:DropDownList>
                                 </div>
-                                <div class="col-md-2">
+                                <div class="col-md-2 col-xs-6">
                                     <asp:DropDownList ID="ddlCreatedDate" runat="server" CssClass="form-control">
                                         <asp:ListItem Value="" Text="Tất cả thời gian"></asp:ListItem>
                                         <asp:ListItem Value="today" Text="Hôm nay"></asp:ListItem>
@@ -157,7 +157,7 @@
                                         <asp:ListItem Value="30days" Text="30 ngày"></asp:ListItem>
                                     </asp:DropDownList>
                                 </div>
-                                <div class="col-md-1">
+                                <div class="col-md-1 col-xs-6">
                                     <a href="javascript:;" onclick="searchProduct()" class="btn primary-btn h45-btn"><i class="fa fa-search"></i></a>
                                     <asp:Button ID="btnSearch" runat="server" CssClass="btn primary-btn h45-btn" OnClick="btnSearch_Click" Style="display: none" />
                                 </div>
@@ -169,7 +169,7 @@
                             <div class="row">
                                 <div class="col-md-7">
                                 </div>
-                                <div class="col-md-2">
+                                <div class="col-md-2 col-xs-6">
                                     <asp:DropDownList ID="ddlQuantityFilter" runat="server" CssClass="form-control" onchange="changeQuantityFilter($(this))">
                                         <asp:ListItem Value="" Text="Số lượng"></asp:ListItem>
                                         <asp:ListItem Value="greaterthan" Text="Lớn hơn"></asp:ListItem>
@@ -177,10 +177,10 @@
                                         <asp:ListItem Value="between" Text="Trong khoảng"></asp:ListItem>
                                     </asp:DropDownList>
                                 </div>
-                                <div class="col-md-2 greaterthan lessthan">
+                                <div class="col-md-2 col-xs-6 greaterthan lessthan">
                                     <asp:TextBox ID="txtQuantity" runat="server" CssClass="form-control" placeholder="Số lượng" autocomplete="off"></asp:TextBox>
                                 </div>
-                                <div class="col-md-2 between hide">
+                                <div class="col-md-2 col-xs-6 between hide">
                                     <div class="row">
                                         <div class="col-md-6">
                                             <asp:TextBox ID="txtQuantityMin" runat="server" CssClass="form-control" placeholder="Min" autocomplete="off"></asp:TextBox>
@@ -190,7 +190,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-1">
+                                <div class="col-md-1 col-xs-6">
                                     <a href="/tat-ca-san-pham" class="btn primary-btn h45-btn"><i class="fa fa-times" aria-hidden="true"></i></a>
                                 </div>
                             </div>
@@ -222,7 +222,7 @@
         </div>
 
         <script src="/App_Themes/Ann/js/copy-product-info.js?v=2011"></script>
-        <script src="/App_Themes/Ann/js/sync-product.js?v=06032019"></script>
+        <script src="/App_Themes/Ann/js/sync-product.js?v=29052019"></script>
         <script src="/App_Themes/Ann/js/download-product-image.js?v=2011"></script>
         
         <script type="text/javascript">

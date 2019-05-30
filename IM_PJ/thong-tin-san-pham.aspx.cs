@@ -230,7 +230,7 @@ namespace IM_PJ
                             html.AppendLine(String.Format("    <div class='col-md-12 variable-content'>"));
                             html.AppendLine(String.Format("    	<div class='row'>"));
                             html.AppendLine(String.Format("		    <div class='col-md-2'>"));
-                            html.AppendLine(String.Format("		    	<input type='file' class='productVariableImage upload-btn' onchange='imagepreview(this,$(this));' name='{0}'><img class='imgpreview' onclick='openUploadImage($(this))' data-file-name='{1}' src='{1}'>{2}", dataVariableValue, VariableImage, deleteVariableImage));
+                            html.AppendLine(String.Format("		    	<input type='file' class='productVariableImage upload-btn' onchange='imagepreview(this,$(this));' name='{0}'><img class='imgpreview' onclick='openUploadImage($(this))' data-file-name='{1}' src='{1}'>{2}", VariableSKU, VariableImage, deleteVariableImage));
                             html.AppendLine(String.Format("		    	</div>"));
                             html.AppendLine(String.Format("		    <div class='col-md-5'>"));
                             html.AppendLine(String.Format("		    	{0}", selectVariable));
@@ -251,14 +251,6 @@ namespace IM_PJ
                             html.AppendLine(String.Format("		    	<div class='row margin-bottom-15'>"));
                             html.AppendLine(String.Format("		    	    <div class='col-md-5'>Giá bán lẻ</div>"));
                             html.AppendLine(String.Format("		    	    <div class='col-md-7'><input class='form-control retailprice' type='text' value='{0}'></div>", RetailPrice));
-                            html.AppendLine(String.Format("		    	</div>"));
-                            html.AppendLine(String.Format("		    	<div class='row margin-bottom-15'>"));
-                            html.AppendLine(String.Format("		    	    <div class='col-md-5'>Tồn kho ít nhất</div>"));
-                            html.AppendLine(String.Format("		    	    <div class='col-md-7'><input class='form-control minimum' type='text' value='{0}'></div>", MinimumInventoryLevel));
-                            html.AppendLine(String.Format("		    	</div>"));
-                            html.AppendLine(String.Format("		    	<div class='row margin-bottom-15'>"));
-                            html.AppendLine(String.Format("		    	    <div class='col-md-5'>Tồn kho nhiều nhất</div>"));
-                            html.AppendLine(String.Format("		    	    <div class='col-md-7'><input class='form-control maximum' type='text' value='{0}'></div>", MaximumInventoryLevel));
                             html.AppendLine(String.Format("		    	</div>"));
                             html.AppendLine(String.Format("			</div>"));
                             html.AppendLine(String.Format("		</div>"));
@@ -426,7 +418,7 @@ namespace IM_PJ
                                 string costofgood = itemElement[6];
                                 string retailprice = itemElement[7];
                                 string[] datanamevalue = itemElement[8].Split('|');
-                                string imageUpload = itemElement[8];
+                                string imageUpload = itemElement[4];
                                 int _MaximumInventoryLevel = itemElement[9].ToInt(0);
                                 int _MinimumInventoryLevel = itemElement[10].ToInt(0);
                                 int stockstatus = itemElement[11].ToInt();

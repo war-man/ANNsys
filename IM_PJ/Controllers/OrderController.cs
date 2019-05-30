@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Script.Serialization;
 using WebUI.Business;
@@ -382,8 +383,9 @@ namespace IM_PJ.Controllers
             // Filter Customer name
             if (TextSearch != "")
             {
-                string TextSearchName = '"' + TextSearch + '"';
-                sqlSub.AppendLine(String.Format("    AND ( (convert(nvarchar, Ord.ID) LIKE '{0}') OR CONTAINS(Ord.CustomerName, '{1}') OR CONTAINS(Customer.Nick, '{1}') OR (Ord.CustomerPhone = '{0}') OR (Ord.CustomerNewPhone = '{0}') OR (Ord.ShippingCode = '{0}') OR (OrdDetail.SKU LIKE '{0}%') OR (Ord.OrderNote LIKE '%{0}%'))", TextSearch, TextSearchName));
+                string search = Regex.Replace(TextSearch.Trim(), @"[^0-9a-zA-Z\s_ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ]+", "");
+                string TextSearchName = '"' + search + '"';
+                sqlSub.AppendLine(String.Format("    AND ( (convert(nvarchar, Ord.ID) LIKE '{0}') OR CONTAINS(Ord.CustomerName, '{1}') OR CONTAINS(Customer.Nick, '{1}') OR (Ord.CustomerPhone = '{0}') OR (Ord.CustomerNewPhone = '{0}') OR (Ord.ShippingCode = '{0}') OR (OrdDetail.SKU LIKE '{0}%') OR (Ord.OrderNote LIKE '%{0}%'))", search, TextSearchName));
             }
             // Filter Order Type
             if (OrderType > 0)
@@ -1485,7 +1487,93 @@ namespace IM_PJ.Controllers
                 return las;
             }
         }
+        public static List<OrderReportHomePage> ReportHomePage(DateTime fromDate, DateTime toDate)
+        {
+            var result = new List<OrderReportHomePage>();
 
+            using (var con = new inventorymanagementEntities())
+            {
+
+                var customers = con.tbl_Customer.OrderBy(x => x.ID);
+
+                result = customers
+                    .Select(
+                        x => new OrderReportHomePage()
+                        {
+                            ID = x.ID,
+                            CustomerName = x.CustomerName,
+                            Nick = x.Nick,
+                            CreatedBy = x.CreatedBy,
+                        }
+                    )
+                    .OrderBy(x => x.ID)
+                    .ToList();
+
+                // Get info order
+                var orderInfo = con.tbl_Order
+                    .Where(x => (x.DateDone >= fromDate && x.DateDone <= toDate)
+                                && x.ExcuteStatus == 2
+                                && x.PaymentStatus == 3)
+                    .Join(
+                        customers,
+                        order => order.CustomerID,
+                        customer => customer.ID,
+                        (order, customer) => order
+                    )
+                    .Join(
+                        con.tbl_OrderDetail,
+                        order => order.ID,
+                        detail => detail.OrderID,
+                        (order, detail) => new
+                        {
+                            CustomerID = order.CustomerID,
+                            Order = order.ID,
+                            Quantity = detail.Quantity.Value
+                        }
+                    )
+                    .GroupBy(x => x.CustomerID)
+                    .Select(g => new
+                    {
+                        CustomerID = g.Key.Value,
+                        Quantity = g.Sum(x => x.Quantity)
+                    }
+                    )
+                    .OrderBy(x => x.CustomerID)
+                    .ToList();
+
+                result.GroupJoin(
+                        orderInfo,
+                        customer => customer.ID,
+                        order => order.CustomerID,
+                        (customer, order) => new { customer, order }
+                    )
+                    .SelectMany(
+                        x => x.order.DefaultIfEmpty(),
+                        (parent, child) =>
+                        {
+                            parent.customer.Quantity = child != null ? child.Quantity : 0;
+
+                            return parent.customer;
+                        }
+                    )
+                    .OrderBy(x => x.ID)
+                    .ToList();
+            }
+
+            result = result.Where(x => x.Quantity > 0).OrderByDescending(x => x.Quantity).Take(10).ToList();
+
+            return result;
+        }
+
+        public class OrderReportHomePage
+        {
+            public int ID { get; set; }
+            public string CustomerName { get; set; }
+            public string Nick { get; set; }
+            public double Quantity { get; set; }
+            public string CreatedBy { get; set; }
+
+        }
         public static List<tbl_Order> Report(string fromdate, string todate)
         {
             using (var db = new inventorymanagementEntities())

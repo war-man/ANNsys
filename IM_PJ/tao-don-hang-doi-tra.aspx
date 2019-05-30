@@ -2,7 +2,7 @@
 
 <%@ Register Assembly="Telerik.Web.UI" Namespace="Telerik.Web.UI" TagPrefix="telerik" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
-    <script src="/App_Themes/Ann/js/search-customer.js?v=2119"></script>
+    <script src="/App_Themes/Ann/js/search-customer.js?v=23052019"></script>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <asp:Panel ID="parent" runat="server">
@@ -26,7 +26,7 @@
                                         <div class="form-group">
                                             <label>Họ tên</label>
                                             <asp:RequiredFieldValidator ID="RequiredFieldValidator1" runat="server" ControlToValidate="txtFullname" ErrorMessage="(*)" ForeColor="Red" Display="Dynamic"></asp:RequiredFieldValidator>
-                                            <asp:TextBox ID="txtFullname" CssClass="form-control" runat="server" autocomplete="off" placeholder="Họ tên thật của khách"></asp:TextBox>
+                                            <asp:TextBox ID="txtFullname" CssClass="form-control capitalize" runat="server" autocomplete="off" placeholder="Họ tên thật của khách"></asp:TextBox>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
@@ -42,14 +42,14 @@
                                         <div class="form-group">
                                             <label>Nick đặt hàng</label>
                                             <asp:RequiredFieldValidator ID="RequiredFieldValidator2" runat="server" ControlToValidate="txtNick" ErrorMessage="(*)" ForeColor="Red" Display="Dynamic"></asp:RequiredFieldValidator>
-                                            <asp:TextBox ID="txtNick" CssClass="form-control" runat="server" autocomplete="off" placeholder="Tên nick đặt hàng"></asp:TextBox>
+                                            <asp:TextBox ID="txtNick" CssClass="form-control capitalize" runat="server" autocomplete="off" placeholder="Tên nick đặt hàng"></asp:TextBox>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label>Địa chỉ</label>
                                             <asp:RequiredFieldValidator ID="RequiredFieldValidator3" runat="server" ControlToValidate="txtAddress" ErrorMessage="(*)" ForeColor="Red" Display="Dynamic"></asp:RequiredFieldValidator>
-                                            <asp:TextBox ID="txtAddress" CssClass="form-control" runat="server" autocomplete="off" placeholder="Địa chỉ khách hàng"></asp:TextBox>
+                                            <asp:TextBox ID="txtAddress" CssClass="form-control capitalize" runat="server" autocomplete="off" placeholder="Địa chỉ khách hàng"></asp:TextBox>
                                         </div>
                                     </div>
                                 </div> 
@@ -92,11 +92,8 @@
                     <div class="col-md-12">
                         <div class="panel-post">
                             <div class="post-above clear">
-                                <div class="search-box left" style="width: 96%;">
+                                <div class="search-box left">
                                     <input type="text" id="txtSearch" class="form-control sku-input" placeholder="NHẬP MÃ SẢN PHẨM (F3)" autocomplete="off">
-                                </div>
-                                <div class="right">
-                                    <a href="javascript:;" class="link-btn" onclick="searchProduct()"><i class="fa fa-search"></i></a>
                                 </div>
                             </div>
                             <div class="post-body search-product-content clear">
@@ -216,7 +213,7 @@
     </style>
     <telerik:RadAjaxManager ID="rAjax" runat="server">
         <AjaxSettings>
-            <telerik:AjaxSetting AjaxControlID="btnOrder">
+            <telerik:AjaxSetting AjaxControlID="btnSave">
                 <UpdatedControls>
                     <telerik:AjaxUpdatedControl ControlID="parent" LoadingPanelID="rxLoading"></telerik:AjaxUpdatedControl>
                 </UpdatedControls>

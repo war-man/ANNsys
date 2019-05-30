@@ -174,6 +174,6 @@
     </main>
 
     <script src="/App_Themes/Ann/js/copy-product-info.js?v=2011"></script>
-    <script src="/App_Themes/Ann/js/sync-product.js?v=2211"></script>
+    <script src="/App_Themes/Ann/js/sync-product.js?v=29052019"></script>
     <script src="/App_Themes/Ann/js/download-product-image.js?v=2011"></script>
 </asp:Content>

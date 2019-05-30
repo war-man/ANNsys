@@ -109,24 +109,24 @@
                     <div class="filter-above-wrap clear">
                         <div class="filter-control">
                             <div class="row">
-                                <div class="col-md-3">
+                                <div class="col-md-3 col-xs-6">
                                     <asp:TextBox ID="txtSearchOrder" runat="server" CssClass="form-control" placeholder="Tìm đơn hàng" autocomplete="off"></asp:TextBox>
                                 </div>
-                                <div class="col-md-2">
+                                <div class="col-md-2 col-xs-6">
                                     <asp:DropDownList ID="ddlStatus" runat="server" CssClass="form-control">
                                         <asp:ListItem Value="0">Trạng thái</asp:ListItem>
                                         <asp:ListItem Value="1">Chưa trừ tiền</asp:ListItem>
                                         <asp:ListItem Value="2">Đã trừ tiền</asp:ListItem>
                                     </asp:DropDownList>
                                 </div>
-                                <div class="col-md-2">
+                                <div class="col-md-2 col-xs-6">
                                     <asp:DropDownList ID="ddlRefundFee" runat="server" CssClass="form-control">
                                         <asp:ListItem Value="">Phí đổi hàng</asp:ListItem>
                                         <asp:ListItem Value="yes">Có phí</asp:ListItem>
                                         <asp:ListItem Value="no">Miễn phí</asp:ListItem>
                                     </asp:DropDownList>
                                 </div>
-                                <div class="col-md-2">
+                                <div class="col-md-2 col-xs-6">
                                     <asp:DropDownList ID="ddlCreatedDate" runat="server" CssClass="form-control">
                                         <asp:ListItem Value="" Text="Tất cả thời gian"></asp:ListItem>
                                         <asp:ListItem Value="today" Text="Hôm nay"></asp:ListItem>
@@ -139,10 +139,10 @@
                                         <asp:ListItem Value="30days" Text="30 ngày"></asp:ListItem>
                                     </asp:DropDownList>
                                 </div>
-                                <div class="col-md-2">
+                                <div class="col-md-2 col-xs-6">
                                     <asp:DropDownList ID="ddlCreatedBy" runat="server" CssClass="form-control create"></asp:DropDownList>
                                 </div>
-                                <div class="col-md-1">
+                                <div class="col-md-1 col-xs-6">
                                     <a href="javascript:;" onclick="searchAgent()" class="btn primary-btn h45-btn"><i class="fa fa-search"></i></a>
                                     <asp:Button ID="btnSearch" runat="server" CssClass="btn primary-btn h45-btn" OnClick="btnSearch_Click" Style="display: none" />
                                 </div>

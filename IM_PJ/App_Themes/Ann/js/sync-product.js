@@ -1,5 +1,14 @@
-﻿function ShowUpProductToWeb(sku, id, up, renew, visibility) {
-    var web = ["ann.com.vn", "khohangsiann.com", "bosiquanao.net", "quanaogiaxuong.com", "bansithoitrang.net", "quanaoxuongmay.com", "annshop.vn"];
+﻿function ShowUpProductToWeb(sku, id, category, up, renew, visibility) {
+    var web = ["ann.com.vn", "khohangsiann.com", "bosiquanao.net", "quanaogiaxuong.com", "bansithoitrang.net", "quanaoxuongmay.com", "annshop.vn", "panpan.vn"];
+    var web_dobo = ["chuyensidobo.com"];
+    var web_vaydam = ["damgiasi.vn"];
+
+    if (category == 18) {
+        web = web.concat(web_dobo);
+    }
+    if (category == 17) {
+        web = web.concat(web_vaydam);
+    }
 
     closePopup();
     
@@ -7,7 +16,7 @@
     if (renew == "true") {
         html = "<div class='row'><div class='col-md-12'><h2>Đồng bộ sản phẩm " + sku + " (đang đồng bộ...) </h2><br></div></div>";
     }
-    html += "<div class='web-list'></div><div class='row'><div class='col-md-12'><p><span><a href=\"javascript:;\" class=\"btn primary-btn h45-btn\" onclick=\"ShowUpProductToWeb('" + sku + "', '" + id + "', 'true', 'false', 'null')\"><i class=\"fa fa-upload\" aria-hidden=\"true\"></i> Up tất cả</a><a href=\"javascript:;\" class=\"btn primary-btn h45-btn btn-black print-invoice-merged\" onclick=\"ShowUpProductToWeb('" + sku + "', '" + id + "', 'false', 'true', 'null')\"><i class=\"fa fa-cloud-upload\" aria-hidden=\"true\"></i> Đăng lên tất cả web</a><a href=\"javascript:;\" class=\"btn primary-btn h45-btn btn-black print-invoice-merged\" onclick=\"ShowUpProductToWeb('" + sku + "', '" + id + "', 'false', 'true', 'null')\"><i class=\"fa fa-refresh\" aria-hidden=\"true\"></i> Làm mới hình tất cả web</a><a href=\"javascript:;\" class=\"btn primary-btn h45-btn btn-black print-invoice-merged\" onclick=\"ShowUpProductToWeb('" + sku + "', '" + id + "', 'false', 'false', 'hidden')\"><i class=\"fa fa-refresh\" aria-hidden=\"true\"></i> Ẩn tất cả</a><a href=\"javascript:;\" class=\"btn primary-btn h45-btn btn-black print-invoice-merged\" onclick=\"ShowUpProductToWeb('" + sku + "', '" + id + "', 'false', 'false', 'visible')\"><i class=\"fa fa-refresh\" aria-hidden=\"true\"></i> Hiện tất cả</a></span></p></div></div>";
+    html += "<div class='row'><div class='col-md-12'><p><span><a href=\"javascript:;\" class=\"btn primary-btn h45-btn\" onclick=\"ShowUpProductToWeb('" + sku + "', '" + id + "', '" + category + "', 'true', 'false', 'null')\"><i class=\"fa fa-upload\" aria-hidden=\"true\"></i> Up tất cả</a><a href=\"javascript:;\" class=\"btn primary-btn h45-btn btn-black print-invoice-merged\" onclick=\"ShowUpProductToWeb('" + sku + "', '" + id + "', '" + category + "', 'false', 'true', 'null')\"><i class=\"fa fa-cloud-upload\" aria-hidden=\"true\"></i> Đăng lên tất cả web</a><a href=\"javascript:;\" class=\"btn primary-btn h45-btn btn-black print-invoice-merged\" onclick=\"ShowUpProductToWeb('" + sku + "', '" + id + "', '" + category + "', 'false', 'true', 'null')\"><i class=\"fa fa-refresh\" aria-hidden=\"true\"></i> Làm mới hình tất cả web</a><a href=\"javascript:;\" class=\"btn primary-btn h45-btn btn-black print-invoice-merged\" onclick=\"ShowUpProductToWeb('" + sku + "', '" + id + "', '" + category + "', 'false', 'false', 'hidden')\"><i class=\"fa fa-refresh\" aria-hidden=\"true\"></i> Ẩn tất cả</a><a href=\"javascript:;\" class=\"btn primary-btn h45-btn btn-black print-invoice-merged\" onclick=\"ShowUpProductToWeb('" + sku + "', '" + id + "', '" + category + "', 'false', 'false', 'visible')\"><i class=\"fa fa-refresh\" aria-hidden=\"true\"></i> Hiện tất cả</a></span></p></div></div><div class='web-list'></div>";
     showPopup(html, 10);
 
     HoldOn.open();
@@ -20,9 +29,13 @@
 }
 
 function upProductToWeb(web, sku, id, up, renew, i, visibility) {
+    var url_web = "https://" + web + "/up-product";
+    if (web == "panpan.vn") {
+        url_web = url_web + ".html";
+    }
     $.ajax({
         type: "POST",
-        url: "https://" + web + "/up-product",
+        url: url_web,
         data: {
             sku: sku,
             systemid: id,

@@ -31,10 +31,12 @@ namespace IM_PJ
                     {
                         if (acc.RoleID == 0)
                         {
+                            hdfRoleID.Value = acc.RoleID.ToString();
                             hdfUsernameCurrent.Value = acc.Username;
                         }
                         else if (acc.RoleID == 2)
                         {
+                            hdfRoleID.Value = acc.RoleID.ToString();
                             hdfUsername.Value = acc.Username;
                             hdfUsernameCurrent.Value = acc.Username;
                         }
@@ -77,6 +79,7 @@ namespace IM_PJ
 
         public void LoadData()
         {
+            
             // Fix bug, case setting value for pDiscount on HTML but don't change value
             pDiscount.Value = 1;
             pFeeShip.Value = 1;
@@ -222,7 +225,7 @@ namespace IM_PJ
                     string DisCount = "0";
                     int CustomerID = 0;
 
-                    string CustomerPhone = txtPhone.Text.Trim().Replace(" ","");
+                    string CustomerPhone = Regex.Replace(txtPhone.Text.Trim(), @"[^\d]", "");
                     string CustomerName = txtFullname.Text.Trim();
                     string Nick = txtNick.Text.Trim();
                     string CustomerAddress = txtAddress.Text.Trim();
@@ -437,7 +440,7 @@ namespace IM_PJ
         {
             var customer = CustomerController.GetByID(customerID);
             var order = OrderController.GetByCustomerID(customerID, status);
-            var orderReturn = RefundGoodController.GetByCustomerID(customerID, status);
+            int orderReturn = RefundGoodController.GetByCustomerID(customerID, status);
             var serializer = new JavaScriptSerializer();
 
             if (customer != null)
@@ -446,7 +449,7 @@ namespace IM_PJ
                 {
                     phone = customer.CustomerPhone,
                     numberOrder = order.Count,
-                    numberOrderReturn = orderReturn.Count
+                    numberOrderReturn = orderReturn
                 });
             }
             else

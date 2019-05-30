@@ -34,12 +34,14 @@ namespace IM_PJ
                     if (acc != null)
                     {
                         hdfUsernameCurrent.Value = acc.Username;
+
                         if (acc.RoleID == 0)
                         {
-
+                            hdfRoleID.Value = acc.RoleID.ToString();
                         }
                         else if(acc.RoleID == 2)
                         {
+                            hdfRoleID.Value = acc.RoleID.ToString();
                             hdfUsername.Value = acc.Username;
                         }
                         else
@@ -119,7 +121,8 @@ namespace IM_PJ
         [WebMethod]
         public static string searchCustomerByText(string textsearch, string createdby = "")
         {
-            var customer = CustomerController.Find(textsearch, createdby);
+            string search = Regex.Replace(textsearch.Trim(), @"[^0-9a-zA-Z\s_ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ]+", "");
+            var customer = CustomerController.Find(search, createdby);
             if (customer.Count > 0)
             {
                 JavaScriptSerializer serializer = new JavaScriptSerializer();
@@ -127,7 +130,7 @@ namespace IM_PJ
             }
             else
             {
-                var customer_other = CustomerController.Find(textsearch);
+                var customer_other = CustomerController.Find(search);
                 if(customer_other.Count > 0)
                 {
                     JavaScriptSerializer serializer = new JavaScriptSerializer();
@@ -254,9 +257,8 @@ namespace IM_PJ
                     string DisCount = "0";
                     int CustomerID = 0;
 
-                    string CustomerPhone = txtPhone.Text.Trim().Replace(" ", "");
+                    string CustomerPhone = Regex.Replace(txtPhone.Text.Trim(), @"[^\d]", "");
                     string CustomerName = txtFullname.Text.Trim();
-                    string Nick = txtNick.Text.Trim();
                     string CustomerEmail = "";
                     string CustomerAddress = txtAddress.Text.Trim();
 
@@ -265,11 +267,11 @@ namespace IM_PJ
                     if (checkCustomer != null)
                     {
                         CustomerID = checkCustomer.ID;
-                        string kq = CustomerController.Update(CustomerID, CustomerName, checkCustomer.CustomerPhone, CustomerAddress, "", Convert.ToInt32(checkCustomer.CustomerLevelID), Convert.ToInt32(checkCustomer.Status), checkCustomer.CreatedBy, currentDate, username, false, checkCustomer.Zalo, checkCustomer.Facebook, checkCustomer.Note, checkCustomer.ProvinceID.ToString(), Nick, checkCustomer.Avatar, Convert.ToInt32(checkCustomer.ShippingType), Convert.ToInt32(checkCustomer.PaymentType), Convert.ToInt32(checkCustomer.TransportCompanyID), Convert.ToInt32(checkCustomer.TransportCompanySubID), checkCustomer.CustomerPhone2);
+                        string kq = CustomerController.Update(CustomerID, CustomerName, checkCustomer.CustomerPhone, CustomerAddress, "", Convert.ToInt32(checkCustomer.CustomerLevelID), Convert.ToInt32(checkCustomer.Status), checkCustomer.CreatedBy, currentDate, username, false, checkCustomer.Zalo, checkCustomer.Facebook, checkCustomer.Note, checkCustomer.ProvinceID.ToString(), checkCustomer.Nick, checkCustomer.Avatar, Convert.ToInt32(checkCustomer.ShippingType), Convert.ToInt32(checkCustomer.PaymentType), Convert.ToInt32(checkCustomer.TransportCompanyID), Convert.ToInt32(checkCustomer.TransportCompanySubID), checkCustomer.CustomerPhone2);
                     }
                     else
                     {
-                        string kq = CustomerController.Insert(CustomerName, CustomerPhone, CustomerAddress, CustomerEmail, 0, 0, currentDate, username, false, "", "", "", "", Nick);
+                        string kq = CustomerController.Insert(CustomerName, CustomerPhone, CustomerAddress, CustomerEmail, 0, 0, currentDate, username, false, "", "", "", "", "");
                         if (kq.ToInt(0) > 0)
                         {
                             CustomerID = kq.ToInt(0);

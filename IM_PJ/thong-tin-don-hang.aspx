@@ -2,15 +2,11 @@
 
 <%@ Register Assembly="Telerik.Web.UI" Namespace="Telerik.Web.UI" TagPrefix="telerik" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
-    <script src="/App_Themes/Ann/js/search-customer.js?v=2119"></script>
-    <script src="/App_Themes/Ann/js/search-product.js?v=04052019"></script>
+    <script src="/App_Themes/Ann/js/search-customer.js?v=23052019"></script>
+    <script src="/App_Themes/Ann/js/search-product.js?v=15052019"></script>
     <style>
         .search-product-content {
             background: #fff;
-        }
-
-        .search-box {
-            width: 90%;
         }
 
         #txtSearch {
@@ -351,9 +347,6 @@
                             <div class="post-above clear">
                                 <div class="search-box left">
                                     <input type="text" id="txtSearch" class="form-control sku-input" placeholder="NHẬP MÃ SẢN PHẨM (F3)" autocomplete="off">
-                                </div>
-                                <div class="right">
-                                    <a href="javascript:;" class="link-btn" onclick="searchProduct()"><i class="fa fa-search"></i></a>
                                 </div>
                             </div>
                             <div class="post-body search-product-content clear">
@@ -1040,19 +1033,7 @@
             }
 
             function warningGetOrderImage(ID, mergeprint) {
-                swal({
-                    title: "Lưu ý nè",
-                    text: "Nhớ lưu đơn hàng trước khi lấy ảnh nha!",
-                    type: "warning",
-                    showCancelButton: true,
-                    confirmButtonColor: "#DD6B55",
-                    confirmButtonText: "Đã lưu rồi sếp ơi!!",
-                    closeOnConfirm: true,
-                    cancelButtonText: "Chờ tí! Để em lưu..",
-                    html: true
-                }, function () {
-                    window.open("/print-order-image?id=" + ID + "&merge=" + mergeprint, "_blank");
-                });
+                window.open("/print-order-image?id=" + ID + "&merge=" + mergeprint, "_blank");
             }
 
             function init() {
@@ -1457,7 +1438,8 @@
                 var address = $("#<%= txtAddress.ClientID%>").val();
                 var facebooklink = $("#<%= txtFacebook.ClientID%>").val();
 
-                if (phone == "" || name == "" || nick == "" || address == "" || (facebooklink == "" && $("#<%= hdfUsernameCurrent.ClientID%>").val() == "nhom_facebook")) {
+                if (phone == "" || name == "" || nick == "" || address == "" || (facebooklink == "" && $("#<%= hdfUsernameCurrent.ClientID%>").val() == "nhom_facebook"))
+                {
                     if (name == "") {
                         $("#<%= txtFullname.ClientID%>").focus();
                         swal("Thông báo", "Hãy nhập tên khách hàng!", "error");
@@ -1482,7 +1464,8 @@
                     }
 
                 }
-                else {
+                else
+                {
                     // Nếu có sản phẩm trong đơn hàng
                     if ($(".product-result").length > 0) {
                         getAllPrice(true);

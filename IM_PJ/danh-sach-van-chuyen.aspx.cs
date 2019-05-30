@@ -33,7 +33,7 @@ namespace IM_PJ
                     if (acc != null)
                     {
                         
-                        if (acc.RoleID == 0)
+                        if (acc.RoleID == 0 || acc.Username == "nhom_zalo406")
                         {
                             LoadShipper();
                             LoadCreatedBy(agent);
@@ -186,7 +186,7 @@ namespace IM_PJ
                     DeliveryStartAt // DeliveryStartAt
                 );
 
-                if (acc.RoleID == 0)
+                if (acc.RoleID == 0 || acc.Username == "nhom_zalo406")
                 {
                     hdfcreate.Value = "1";
                     if (CreatedBy != "")
@@ -300,7 +300,7 @@ namespace IM_PJ
             html.Append("    <th>Ngày giao</th>");
             html.Append("    <th>Hoàn tất đơn</th>");
 
-            if (acc.RoleID == 0)
+            if (acc.RoleID == 0 || acc.Username == "nhom_zalo406")
             {
                 html.Append("    <th>Nhân viên</th>");
             }
@@ -359,7 +359,7 @@ namespace IM_PJ
                     html.Append("   <td><a href=\"/thong-tin-don-hang?id=" + item.ID + "\">" + item.ID + "</a></td>");
                     if (!string.IsNullOrEmpty(item.Nick))
                     {
-                        html.Append("   <td data-title='Khách hàng' class='customer-td'><a class=\"col-customer-name-link\" href=\"/thong-tin-don-hang?id=" + item.ID + "\">" + item.Nick.ToTitleCase() + "</a><br><span class=\"name-bottom-nick\">(" + item.CustomerName.ToTitleCase() + ")</span></td>");
+                        html.Append("   <td data-title='Khách hàng' class='customer-td'><a class=\"col-customer-name-link\" href=\"/thong-tin-don-hang?id=" + item.ID + "\">" + item.CustomerName.ToTitleCase() + "</a><br><span class=\"name-bottom-nick\">(" + item.Nick.ToTitleCase() + ")</span></td>");
                     }
                     else
                     {

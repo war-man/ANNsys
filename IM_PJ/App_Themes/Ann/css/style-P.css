@@ -1,4 +1,13 @@
-﻿.table > thead > tr > th {
+﻿.search-box {
+    width: 100%;
+}
+.search-box input.form-control {
+    width: 100%;
+}
+.search-box input:focus.form-control {
+    background-color: #e3fdd2;
+}
+.table > thead > tr > th {
     background-color: #78909c;
     color: #fff;
     height: 55px;
@@ -485,6 +494,10 @@ a.bg-button:hover {
 }
 .table-list-customer tbody tr {
     cursor: pointer;
+}
+.table-list-customer tbody tr:focus td{
+    background-color: #25a0da;
+    color: #fff;
 }
 .change-money label {
     font-size: 20px;
@@ -1381,7 +1394,7 @@ body {
 
 .content-popup {
     overflow-x: auto;
-    max-height: 550px;
+    max-height: 600px;
 }
 
 .fix {

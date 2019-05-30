@@ -166,7 +166,7 @@ namespace IM_PJ.Controllers
                 if (reader["ID"] != DBNull.Value)
                     entity.ID = reader["ID"].ToString().ToInt(0);
                 if (reader["CustomerName"] != DBNull.Value)
-                    entity.CustomerName = reader["CustomerName"].ToString();
+                    entity.CustomerName = reader["CustomerName"].ToString().ToTitleCase();
                 if (reader["CustomerPhone"] != DBNull.Value)
                     entity.CustomerPhone = reader["CustomerPhone"].ToString();
                 if (reader["CustomerPhone2"] != DBNull.Value)
@@ -174,13 +174,13 @@ namespace IM_PJ.Controllers
                 if (reader["CreatedBy"] != DBNull.Value)
                     entity.CreatedBy = reader["CreatedBy"].ToString();
                 if (reader["CustomerAddress"] != DBNull.Value)
-                    entity.CustomerAddress = reader["CustomerAddress"].ToString();
+                    entity.CustomerAddress = reader["CustomerAddress"].ToString().ToTitleCase();
                 if (reader["Zalo"] != DBNull.Value)
                     entity.Zalo = reader["Zalo"].ToString();
                 if (reader["Facebook"] != DBNull.Value)
                     entity.Facebook = reader["Facebook"].ToString();
                 if (reader["Nick"] != DBNull.Value)
-                    entity.Nick = reader["Nick"].ToString();
+                    entity.Nick = reader["Nick"].ToString().ToTitleCase();
                 if (reader["Province"] != DBNull.Value)
                 {
                     var provinceID = reader["Province"].ToString().ToInt();

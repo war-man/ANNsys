@@ -203,7 +203,7 @@ namespace IM_PJ
                     {
                         html.Append("          <div class='col-xs-4'>");
                         html.Append("               <div class='row'>");
-                        html.Append("                  <a href =\"javascript:;\" class=\"btn primary-btn h45-btn hidden-" + item.ID + " download-btn\" onclick=\"ShowUpProductToWeb('" + item.ProductSKU + "', '" + item.ID + "', 'false', 'false', 'hidden');\"><i class=\"fa fa-times\" aria-hidden=\"true\"></i> Ẩn</a>");
+                        html.Append("                  <a href =\"javascript:;\" class=\"btn primary-btn h45-btn hidden-" + item.ID + " download-btn\" onclick=\"ShowUpProductToWeb('" + item.ProductSKU + "', '" + item.ID + "', '" + item.CategoryID + "', 'false', 'false', 'hidden');\"><i class=\"fa fa-times\" aria-hidden=\"true\"></i> Ẩn</a>");
                         html.Append("               </div>");
                         html.Append("          </div>");
                     }

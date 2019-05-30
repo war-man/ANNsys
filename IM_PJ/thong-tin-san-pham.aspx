@@ -387,7 +387,7 @@
                 parentDiv.attr("data-name-text", datanametext);
                 parentDiv.attr("data-value-text", datavaluetext);
                 parentDiv.attr("data-name-value", datanamevalue);
-                parentDiv.find(".productVariableImage").attr("name", datanamevalue);
+                parentDiv.find(".productVariableImage").attr("name", variableSKU);
                 if (!parentDiv.find(".productvariablesku").prop('disabled')) {
                     parentDiv.find(".productvariablesku").val(variableSKU);
                 }
@@ -582,16 +582,13 @@
                                     var costofgood = $(this).find(".costofgood").val();
                                     var retailprice = $(this).find(".retailprice").val();
                                     var datanamevalue = $(this).attr("data-name-value");
-                                    var max = $(this).find(".maximum").val();
-                                    var min = $(this).find(".minimum").val();
                                     var StockStatus = 3;
                                     var checked = true;
                                     var image = $(this).find(".imgpreview").attr("data-file-name");
-                                    
 
                                     if (!isBlank(productvariablesku) && !isBlank(regularprice) && !isBlank(costofgood) && !isBlank(retailprice) && !isBlank(StockStatus)) {
 
-                                        listv += datanameid + ";" + datavalueid + ";" + datanametext + ";" + datavaluetext + ";" + productvariablesku + ";" + regularprice.replace(",", "") + ";" + costofgood.replace(",", "") + ";" + retailprice.replace(",", "") + ";" + datanamevalue + ";" + max + ";" + min + ";" + StockStatus + ";" + checked + ";" + image + ",";
+                                        listv += datanameid + ";" + datavalueid + ";" + datanametext + ";" + datavaluetext + ";" + productvariablesku + ";" + regularprice.replace(",", "") + ";" + costofgood.replace(",", "") + ";" + retailprice.replace(",", "") + ";" + datanamevalue + ";" + maximum + ";" + minimum + ";" + StockStatus + ";" + checked + ";" + image + ",";
 
                                         $("#<%=hdfVariableListInsert.ClientID%>").val(listv);
 
@@ -663,6 +660,15 @@
                 $(".item-var-gen:eq('0')").find(".variable-content").show();
                 $(".item-var-gen:eq('0')").css("background-color", "#fff");
                 $(".item-var-gen:eq('0')").find(".btn-delete").addClass("hide");
+                var deleteButton = '<div class="row margin-bottom-15"><div class="col-md-5"></div><div class="col-md-7"><a href="javascript:;" onclick="deleteVariableItem($(this))" class="btn primary-btn fw-btn not-fullwidth">Xóa</a></div></div>';
+                $(".item-var-gen:eq('0')").find(".retailprice").parent().parent().parent().append(deleteButton);
+            }
+
+            function deleteVariableItem(obj) {
+                var c = confirm("Bạn muốn xóa biến thể này?");
+                if (c == true) {
+                    obj.closest(".item-var-gen").remove();
+                }
             }
 
             function openUploadImage(obj) {

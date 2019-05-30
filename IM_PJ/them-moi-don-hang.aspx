@@ -2,8 +2,8 @@
 
 <%@ Register Assembly="Telerik.Web.UI" Namespace="Telerik.Web.UI" TagPrefix="telerik" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
-    <script src="/App_Themes/Ann/js/search-customer.js?v=2119"></script>
-    <script src="/App_Themes/Ann/js/search-product.js?v=04052019"></script>
+    <script src="/App_Themes/Ann/js/search-customer.js?v=23052019"></script>
+    <script src="/App_Themes/Ann/js/search-product.js?v=15052019"></script>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <asp:Panel ID="parent" runat="server">
@@ -14,7 +14,7 @@
                         <div class="panel panelborderheading">
                             <div class="panel-heading clear">
                                 <h3 class="page-title left not-margin-bot">Thông tin khách hàng</h3>
-                                <a href="javascript:;" class="search-customer" onclick="searchCustomer()"><i class="fa fa-search" aria-hidden="true"></i>Tìm khách hàng (F1)</a>
+                                <a href="javascript:;" class="search-customer" onclick="searchCustomer()"><i class="fa fa-search" aria-hidden="true"></i> Tìm khách hàng (F1)</a>
                             </div>
                             <div class="panel-body">
                                 <div class="row">
@@ -91,9 +91,6 @@
                                 <div class="search-box left">
                                     <input type="text" id="txtSearch" class="form-control sku-input" placeholder="NHẬP MÃ SẢN PHẨM (F3)" autocomplete="off">
                                 </div>
-                                <div class="right">
-                                    <a href="javascript:;" class="link-btn" onclick="searchProduct()"><i class="fa fa-search"></i></a>
-                                </div>
                             </div>
                             <div class="post-body search-product-content clear">
                                 <div class="search-product-content">
@@ -141,7 +138,7 @@
                             <div class="post-row clear">
                                 <div class="left">Phí vận chuyển</div>
                                 <div class="right totalDiscount">
-                                    <a class="btn btn-feeship link-btn" href="javascript:;" id="calfeeship" onclick="calFeeShip()"><i class="fa fa-check-square-o" aria-hidden="true"></i>Miễn phí</a>
+                                    <a class="btn btn-feeship link-btn" href="javascript:;" id="calfeeship" onclick="calFeeShip()"><i class="fa fa-check-square-o" aria-hidden="true"></i> Miễn phí</a>
                                     <telerik:RadNumericTextBox runat="server" CssClass="form-control width-notfull" Skin="MetroTouch"
                                         ID="pFeeShip" MinValue="0" NumberFormat-GroupSizes="3" Value="0" NumberFormat-DecimalDigits="0"
                                         oninput="countTotal()" IncrementSettings-InterceptMouseWheel="false" IncrementSettings-InterceptArrowKeys="false">
@@ -167,11 +164,11 @@
                                 <div class="right totalpricedetail"></div>
                             </div>
                             <div class="post-table-links clear">
-                                <a href="javascript:;" class="btn link-btn" id="payall" style="background-color: #f87703; float: right" title="Hoàn tất đơn hàng" onclick="payAll()"><i class="fa fa-floppy-o"></i>Xác nhận</a>
+                                <a href="javascript:;" class="btn link-btn" id="payall" style="background-color: #f87703; float: right" title="Hoàn tất đơn hàng" onclick="payAll()"><i class="fa fa-floppy-o"></i> Xác nhận</a>
                                 <asp:Button ID="btnOrder" runat="server" OnClick="btnOrder_Click" Style="display: none" />
-                                <a href="javascript:;" class="btn link-btn" style="background-color: #ffad00; float: right;" title="Nhập đơn hàng đổi trả" onclick="searchReturnOrder()"><i class="fa fa-refresh"></i>Đổi trả</a>
-                                <a id="feeNewStatic" href="#feeModal" class="btn link-btn" style="background-color: #607D8B; float: right;" title="Thêm phí khác vào đơn hàng" data-toggle="modal" data-backdrop='static'><i class="fa fa-plus"></i>Thêm phí khác</a>
-                                <a href="javascript:;" class="btn link-btn" style="background-color: #F44336; float: right;" title="Xóa tất cả sản phẩm" onclick="deleteProduct()"><i class="fa fa-times" aria-hidden="true"></i>Làm lại</a>
+                                <a href="javascript:;" class="btn link-btn" style="background-color: #ffad00; float: right;" title="Nhập đơn hàng đổi trả" onclick="searchReturnOrder()"><i class="fa fa-refresh"></i> Đổi trả</a>
+                                <a id="feeNewStatic" href="#feeModal" class="btn link-btn" style="background-color: #607D8B; float: right;" title="Thêm phí khác vào đơn hàng" data-toggle="modal" data-backdrop='static'><i class="fa fa-plus"></i> Thêm phí khác</a>
+                                <a href="javascript:;" class="btn link-btn" style="background-color: #F44336; float: right;" title="Xóa tất cả sản phẩm" onclick="deleteProduct()"><i class="fa fa-times" aria-hidden="true"></i> Làm lại</a>
                             </div>
                         </div>
                     </div>
@@ -183,10 +180,10 @@
                         <div class="panel-buttonbar">
                             <div class="panel-post">
                                 <div class="post-table-links clear row">
-                                    <a href="javascript:;" class="btn link-btn" style="background-color: #f87703; float: right" title="Hoàn tất đơn hàng" onclick="payAll()"><i class="fa fa-floppy-o"></i>Xác nhận</a>
-                                    <a href="javascript:;" class="btn link-btn" style="background-color: #ffad00; float: right;" title="Nhập đơn hàng đổi trả" onclick="searchReturnOrder()"><i class="fa fa-refresh"></i>Đổi trả</a>
-                                    <a id="feeNewDynamic" href="#feeModal" class="btn link-btn" style="background-color: #607D8B; float: right;" title="Thêm phí khác vào đơn hàng" data-toggle="modal" data-backdrop='static'><i class="fa fa-plus"></i>Thêm phí khác</a>
-                                    <a href="javascript:;" class="btn link-btn" style="background-color: #F44336; float: right;" title="Xóa tất cả sản phẩm" onclick="deleteProduct()"><i class="fa fa-times" aria-hidden="true"></i>Làm lại</a>
+                                    <a href="javascript:;" class="btn link-btn" style="background-color: #f87703; float: right" title="Hoàn tất đơn hàng" onclick="payAll()"><i class="fa fa-floppy-o"></i> Xác nhận</a>
+                                    <a href="javascript:;" class="btn link-btn" style="background-color: #ffad00; float: right;" title="Nhập đơn hàng đổi trả" onclick="searchReturnOrder()"><i class="fa fa-refresh"></i> Đổi trả</a>
+                                    <a id="feeNewDynamic" href="#feeModal" class="btn link-btn" style="background-color: #607D8B; float: right;" title="Thêm phí khác vào đơn hàng" data-toggle="modal" data-backdrop='static'><i class="fa fa-plus"></i> Thêm phí khác</a>
+                                    <a href="javascript:;" class="btn link-btn" style="background-color: #F44336; float: right;" title="Xóa tất cả sản phẩm" onclick="deleteProduct()"><i class="fa fa-times" aria-hidden="true"></i> Làm lại</a>
                                 </div>
                             </div>
                         </div>
@@ -194,6 +191,7 @@
                 </div>
             </div>
             <asp:HiddenField ID="notAcceptChangeUser" Value="1" runat="server" />
+            <asp:HiddenField ID="hdfRoleID" runat="server" />
             <asp:HiddenField ID="hdfUsername" runat="server" />
             <asp:HiddenField ID="hdfUsernameCurrent" runat="server" />
             <asp:HiddenField ID="hdfOrderType" runat="server" />
@@ -362,12 +360,16 @@
                     <div class="modal-content">
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal">&times;</button>
-                            <h4 class="modal-title">Thông báo khách hàng còn các đơn chưa xử lý</h4>
+                            <h4 class="modal-title">Thông báo</h4>
+                        </div>
+                        <div class="modal-body">
+                            <h4 id="warningTextOrder" class="hide">Khách hàng này đang có đơn hàng đang xử lý!</h4>
+                            <h4 id="warningTextOrderReturn" class="hide">Khách hàng này đang có đơn hàng đổi trả chưa trừ tiền!</h4>
                         </div>
                         <div class="modal-footer">
-                            <button id="closeOrderOld" type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
-                            <button id="openOrder" type="button" class="btn btn-primary">Xem đơn hàng cũ</button>
-                            <button id="openOrderReturn" type="button" class="btn btn-primary">Xem đơn hàng đổi trả</button>
+                            <button id="closeOrderOld" type="button" class="btn btn-default" data-dismiss="modal">Vẫn tiếp tục</button>
+                            <button id="openOrder" type="button" class="btn btn-primary">Xem đơn đang xử lý</button>
+                            <button id="openOrderReturn" type="button" class="btn btn-primary">Xem đơn đổi trả</button>
                         </div>
                     </div>
                 </div>
@@ -379,10 +381,6 @@
             height: initial !important;
             min-height: 200px;
             background: #fff;
-        }
-
-        .search-box {
-            width: 90%;
         }
 
         #txtSearch {
@@ -1075,20 +1073,131 @@
 
             // insert order
             function insertOrder() {
+
+                let excuteStatus = $("#<%=ddlExcuteStatus.ClientID%>").val();
                 let payType = $("#<%=ddlPaymentType.ClientID%>").val();
                 let bank = $("#<%=ddlBank.ClientID%>").val();
                 let shippingtype = $("#<%=ddlShippingType.ClientID%>").val();
                 let trans = $("#<%=ddlTransportCompanyID.ClientID%>").val();
                 let transSub = $("#<%=ddlTransportCompanySubID.ClientID%>").val();
 
+                var checkAllValue = true;
 
-                $("#payall").addClass("payall-clicked");
-                $("#<%=hdfTransportCompanySubID.ClientID%>").val(transSub);
+                // check shipping fee
 
-                $("#closeOrderInfo").click();
-                HoldOn.open();
-                $("#<%=btnOrder.ClientID%>").click();
+                var fs = $("#<%=pFeeShip.ClientID%>").val();
+                var feeship = parseFloat(fs.replace(/\,/g, ''));
+                if (excuteStatus == 2) {
+                    if (shippingtype == 2 || shippingtype == 3) {
+                        if (feeship == 0 && $("#<%=pFeeShip.ClientID%>").is(":disabled") == false) {
+                            $("#<%=pFeeShip.ClientID%>").focus();
+                            swal({
+                                title: "Có vấn đề:",
+                                text: "Chưa nhập phí vận chuyển!<br><br>Hỏng lẻ miễn phí vận chuyển luôn hở?",
+                                type: "warning",
+                                showCancelButton: true,
+                                confirmButtonColor: "#DD6B55",
+                                confirmButtonText: "Để em tính phí!!",
+                                closeOnConfirm: false,
+                                cancelButtonText: "Để em bấm nút miễn phí",
+                                html: true
+                            });
+                            checkAllValue = false;
+                        }
+                    }
+                    else if (shippingtype == 4) {
+                        if (feeship == 0 && $("#<%=pFeeShip.ClientID%>").is(":disabled") == false) {
+                            if (trans != 0 && transSub != 0) {
+                                var checkPrepay = checkPrepayTransport(trans, transSub);
+                                if (checkPrepay == 1) {
+                                    $("#<%=pFeeShip.ClientID%>").focus();
+                                    swal({
+                                        title: "Coi nè:",
+                                        text: "Chưa nhập phí vận chuyển do nhà xe này <strong>trả cước trước</strong> nè!<br><br>Hay là miễn phí vận chuyển luôn hở?",
+                                        type: "warning",
+                                        showCancelButton: true,
+                                        confirmButtonColor: "#DD6B55",
+                                        confirmButtonText: "Để em nhập phí!!",
+                                        closeOnConfirm: false,
+                                        cancelButtonText: "Để em coi lại..",
+                                        html: true
+                                    });
+                                    checkAllValue = false;
+                                }
+                            }
+                        }
+                    }
+                }
+                
+
+                if (feeship > 0 && feeship < 10000) {
+                    checkAllValue = false;
+                    $("#<%=pFeeShip.ClientID%>").focus();
+                    swal({
+                        title: "Lạ vậy:",
+                        text: "Sao phí vận chuyển lại nhỏ hơn <strong>10.000đ</strong> nè?<br><br>Xem lại nha!",
+                        type: "warning",
+                        showCancelButton: false,
+                        confirmButtonColor: "#DD6B55",
+                        confirmButtonText: "Để em xem lại!!",
+                        html: true
+                    });
+                }
+
+                // check discount
+
+                var ds = $("#<%=pDiscount.ClientID%>").val();
+                var discount = parseFloat(ds.replace(/\,/g, ''));
+
+                if (discount > 11000 && $("#<%=hdfRoleID.ClientID%>").val() != 0) {
+                    checkAllValue = false;
+                    $("#<%=pDiscount.ClientID%>").focus();
+                    swal({
+                        title: "Lạ vậy:",
+                        text: "Sao chiết khấu lại lớn hơn <strong>11.000đ</strong> nè?<br><br>Nếu có lý do thì báo chị Ngọc nha!",
+                        type: "warning",
+                        showCancelButton: false,
+                        confirmButtonColor: "#DD6B55",
+                        confirmButtonText: "Để em xem lại!!",
+                        html: true
+                    });
+                }
+
+                if (checkAllValue == true) {
+
+                    $("#payall").addClass("payall-clicked");
+                    $("#<%=hdfTransportCompanySubID.ClientID%>").val(transSub);
+
+                    $("#closeOrderInfo").click();
+
+                    HoldOn.open();
+                    $("#<%=btnOrder.ClientID%>").click();
+                }
+
             }
+
+            function checkPrepayTransport(ID, SubID) {
+                var t = 0;
+                $.ajax({
+                    type: "POST",
+                    async: false,
+                    url: "/them-moi-don-hang.aspx/checkPrepayTransport",
+                    data: "{ID:" + ID + ", SubID:" + SubID + "}",
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (msg) {
+                        if (msg.d == "yes") {
+                            t = 1;
+                        } else {
+                            t = 0;
+                        }
+                    },
+                    error: function (xmlhttprequest, textstatus, errorthrow) {
+                        alert('lỗi');
+                    }
+                });
+                return t;
+            };
 
             // search product by SKU
             function searchProduct() {
@@ -1580,51 +1689,7 @@
                     swal("Thông báo", "Vui lòng cho phép cửa sổ bật lên cho trang web này", "error");
                 }
             };
-
-            function checkOrderOld(customerID) {
-                $.ajax({
-                    url: "/them-moi-don-hang.aspx/checkOrderOld",
-                    type: "POST",
-                    data: JSON.stringify({ 'customerID': customerID, 'status': 1 }),
-                    contentType: "application/json; charset=utf-8",
-                    dataType: "json",
-                    success: function (response) {
-                        let data = JSON.parse(response.d);
-                        if (data) {
-                            let openOrderDOM = $("#openOrder");
-                            let openOrderReturnDOM = $("#openOrderReturn");
-
-                            // Thông tin đơn hàng cũ chưa xử lý
-                            if (data.numberOrder)
-                            {
-                                openOrderDOM.removeAttr('style');
-                                openOrderDOM.attr('onClick', "window.open('/danh-sach-don-hang?&textsearch=" + data.phone + "&excutestatus=1', '_blank')")
-                            }
-                            else
-                            {
-                                openOrderDOM.removeAttr('onClick');
-                                openOrderDOM.attr('style', 'display: none');
-                            }
-
-                            // Thông tin đơn hàng đổ trả chưa trừ tiền
-                            if (data.numberOrderReturn) {
-                                openOrderReturnDOM.removeAttr('style');
-                                openOrderReturnDOM.attr('onClick', "window.open('/danh-sach-don-tra-hang?&textsearch=" + data.phone + "&status=1', '_blank')")
-                            }
-                            else
-                            {
-                                openOrderReturnDOM.removeAttr('onClick');
-                                openOrderReturnDOM.attr('style', 'display: none');
-                            }
-
-                            $("#orderOldModal").modal({ show: 'true', backdrop: 'static', keyboard: 'false' })
-                        }
-                    },
-                    error: function (err) {
-                        swal("Thông báo", "Đã có vần đề trong việc check đơn hàng cũ", "error");
-                    }
-                });
-            };
+            
         </script>
     </telerik:RadScriptBlock>
 

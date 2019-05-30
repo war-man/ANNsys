@@ -8,23 +8,24 @@
             <h3 class="page-title">Xin chào!</h3>
             <div class="row">
                 <div class="col-md-12">
-                    <table data-toggle="table" id="table-student">
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Khách hàng</th>
-                                <th>Nick đặt hàng</th>
-                                <th>Đã mua</th>
-                                <th>Zalo</th>
-                                <th>Facebook</th>
-                                <th>Địa chỉ</th>
-                                <th>Nhân viên</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <asp:Literal ID="ltrList" runat="server" EnableViewState="false"></asp:Literal>
-                        </tbody>
-                    </table>
+                    <div class="panel-table clear">
+                        <div class="responsive-table">
+                            <table id="table-student" class="table table-checkable">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Khách hàng</th>
+                                        <th>Nick</th>
+                                        <th>Đã mua</th>
+                                        <th>Nhân viên</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <asp:Literal ID="ltrList" runat="server" EnableViewState="false"></asp:Literal>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

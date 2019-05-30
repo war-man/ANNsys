@@ -1,5 +1,15 @@
-﻿function ShowUpProductToWeb(sku, id, up, renew, visibility) {
-    var web = ["ann.com.vn", "khohangsiann.com", "bosiquanao.net", "quanaogiaxuong.com", "bansithoitrang.net", "quanaoxuongmay.com", "annshop.vn"];
+﻿function ShowUpProductToWeb(sku, id, category, up, renew, visibility) {
+    var web = ["ann.com.vn", "khohangsiann.com", "bosiquanao.net", "quanaogiaxuong.com", "bansithoitrang.net", "quanaoxuongmay.com", "annshop.vn", "panpan.vn"];
+    var web_dobo = ["chuyensidobo.com"];
+    var web_vaydam = ["damgiasi.vn"];
+
+    if (category == 18) {
+        web = web.concat(web_dobo);
+    }
+    if (category == 17) {
+        web = web.concat(web_vaydam);
+    }
+
     if ($(".hidden-" + id).hasClass("product-hidden")) {
         for (var i = 0; i < web.length; i++) {
             upProductToWeb(web[i], sku, id, up, renew, i, "visible");
