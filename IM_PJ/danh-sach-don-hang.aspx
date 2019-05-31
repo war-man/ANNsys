@@ -273,8 +273,6 @@
             </div>
         </div>
         
-        <asp:HiddenField ID="hdfcreate" runat="server" />
-
         <!-- Modal phí khác -->
         <div class="modal fade" id="feeInfoModal" role="dialog">
             <div class="modal-dialog">

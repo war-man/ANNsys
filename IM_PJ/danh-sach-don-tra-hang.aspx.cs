@@ -78,64 +78,52 @@ namespace IM_PJ
         }
         public void LoadData()
         {
-            string TextSearch = "";
-            string RefundFee = "";
-            int Status = 0;
-            string CreatedBy = "";
-            string CreatedDate = "";
-
-            if (Request.QueryString["textsearch"] != null)
-            {
-                TextSearch = Request.QueryString["textsearch"].Trim();
-            }
-            if (Request.QueryString["status"] != null)
-            {
-                Status = Request.QueryString["status"].ToInt();
-            }
-            if (Request.QueryString["refundfee"] != null)
-            {
-                RefundFee = Request.QueryString["refundfee"];
-            }
-            if (Request.QueryString["CreatedBy"] != null)
-            {
-                CreatedBy = Request.QueryString["createdby"];
-            }
-            if (Request.QueryString["createddate"] != null)
-            {
-                CreatedDate = Request.QueryString["createddate"];
-            }
-
-            txtSearchOrder.Text = TextSearch;
-            ddlStatus.SelectedValue = Status.ToString();
-            ddlRefundFee.SelectedValue = RefundFee.ToString();
-            ddlCreatedBy.Text = CreatedBy.ToString();
-            ddlCreatedDate.SelectedValue = CreatedDate.ToString();
-
-            List<RefundOrder> rs = new List<RefundOrder>();
-            rs = RefundGoodController.Filter(TextSearch, Status, RefundFee, CreatedBy, CreatedDate);
-
             string username = Request.Cookies["userLoginSystem"].Value;
             var acc = AccountController.GetByUsername(username);
             if (acc != null)
             {
-                if (acc.RoleID == 0)
+                string TextSearch = "";
+                string RefundFee = "";
+                int Status = 0;
+                string CreatedBy = "";
+                string CreatedDate = "";
+
+                if (Request.QueryString["textsearch"] != null)
                 {
-                    if (CreatedBy != "")
-                    {
-                        rs = rs.Where(x => x.CreatedBy == CreatedBy).ToList();
-                        pagingall(rs);
-                    }
-                    else
-                    {
-                        pagingall(rs);
-                    }
+                    TextSearch = Request.QueryString["textsearch"].Trim();
                 }
-                else
+                if (Request.QueryString["status"] != null)
+                {
+                    Status = Request.QueryString["status"].ToInt();
+                }
+                if (Request.QueryString["refundfee"] != null)
+                {
+                    RefundFee = Request.QueryString["refundfee"];
+                }
+                if (Request.QueryString["CreatedBy"] != null)
+                {
+                    CreatedBy = Request.QueryString["createdby"];
+                }
+                if (Request.QueryString["createddate"] != null)
+                {
+                    CreatedDate = Request.QueryString["createddate"];
+                }
+
+                txtSearchOrder.Text = TextSearch;
+                ddlStatus.SelectedValue = Status.ToString();
+                ddlRefundFee.SelectedValue = RefundFee.ToString();
+                ddlCreatedBy.Text = CreatedBy.ToString();
+                ddlCreatedDate.SelectedValue = CreatedDate.ToString();
+
+                List<RefundOrder> rs = new List<RefundOrder>();
+                rs = RefundGoodController.Filter(TextSearch, Status, RefundFee, CreatedBy, CreatedDate);
+            
+                if (acc.RoleID != 0)
                 {
                     rs = rs.Where(x => x.CreatedBy == acc.Username).ToList();
-                    pagingall(rs);
                 }
-                
+
+                pagingall(rs);
 
                 // THỐNG KÊ ĐƠN HÀNG
                 int TotalOrders = rs.Count;

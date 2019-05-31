@@ -165,21 +165,9 @@ namespace IM_PJ
                     ""
                 );
 
-                if (acc.RoleID == 0)
+                if (ExcuteStatus == 0)
                 {
-                    hdfcreate.Value = "1";
-                    if (CreatedBy != "")
-                    {
-                        rs = rs.Where(x => x.CreatedBy == CreatedBy && x.ExcuteStatus != 4).ToList();
-                    }
-                    else
-                    {
-                        rs = rs.Where(x => x.ExcuteStatus != 4).ToList();
-                    }
-                }
-                else
-                {
-                    rs = rs.Where(x => x.CreatedBy == acc.Username && x.ExcuteStatus != 4).ToList();
+                    rs = rs.Where(x => x.ExcuteStatus != 4).ToList();
                 }
 
                 if (BankReceive != 0)

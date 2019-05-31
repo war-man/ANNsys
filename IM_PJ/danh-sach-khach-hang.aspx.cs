@@ -92,58 +92,56 @@ namespace IM_PJ
         }
         public void LoadData()
         {
-            string TextSearch = "";
-            int Province = 0;
-            string CreatedBy = "";
-            string CreatedDate = "";
-            string Sort = "";
-
-            if (Request.QueryString["textsearch"] != null)
-            {
-                TextSearch = Request.QueryString["textsearch"].Trim();
-            }
-            if (Request.QueryString["createdby"] != null)
-            {
-                CreatedBy = Request.QueryString["createdby"];
-            }
-            if (Request.QueryString["province"] != null)
-            {
-                Province = Request.QueryString["province"].ToInt();
-            }
-            if (Request.QueryString["createddate"] != null)
-            {
-                CreatedDate = Request.QueryString["createddate"];
-            }
-            if (Request.QueryString["sort"] != null)
-            {
-                Sort = Request.QueryString["sort"];
-            }
-
-            txtTextSearch.Text = TextSearch;
-            ddlProvince.SelectedValue = Province.ToString();
-            ddlCreatedBy.SelectedValue = CreatedBy.ToString();
-            ddlCreatedDate.SelectedValue = CreatedDate.ToString();
-            ddlSort.SelectedValue = Sort.ToString();
-
-            List<CustomerOut> rs = new List<CustomerOut>();
-
-            var customers = CustomerController.Filter(TextSearch, CreatedBy, Province, CreatedDate, Sort);
-            rs = customers;
-
             string username = Request.Cookies["userLoginSystem"].Value;
             var acc = AccountController.GetByUsername(username);
-            if (acc.RoleID != 0)
+            if (acc != null)
             {
-                rs = rs.Where(x => x.CreatedBy == acc.Username).ToList();
-                pagingall(rs);
-            }
-            else
-            {
-                pagingall(rs);
-            }
+                string TextSearch = "";
+                int Province = 0;
+                string CreatedBy = "";
+                string CreatedDate = "";
+                string Sort = "";
 
-            ltrNumberOfCustomer.Text = rs.Count().ToString();
+                if (Request.QueryString["textsearch"] != null)
+                {
+                    TextSearch = Request.QueryString["textsearch"].Trim();
+                }
+                if (Request.QueryString["createdby"] != null)
+                {
+                    CreatedBy = Request.QueryString["createdby"];
+                }
+                if (Request.QueryString["province"] != null)
+                {
+                    Province = Request.QueryString["province"].ToInt();
+                }
+                if (Request.QueryString["createddate"] != null)
+                {
+                    CreatedDate = Request.QueryString["createddate"];
+                }
+                if (Request.QueryString["sort"] != null)
+                {
+                    Sort = Request.QueryString["sort"];
+                }
 
+                txtTextSearch.Text = TextSearch;
+                ddlProvince.SelectedValue = Province.ToString();
+                ddlCreatedBy.SelectedValue = CreatedBy.ToString();
+                ddlCreatedDate.SelectedValue = CreatedDate.ToString();
+                ddlSort.SelectedValue = Sort.ToString();
+
+                List<CustomerOut> rs = new List<CustomerOut>();
+
+                rs = CustomerController.Filter(TextSearch, CreatedBy, Province, CreatedDate, Sort);
+
+                if (acc.RoleID != 0)
+                {
+                    rs = rs.Where(x => x.CreatedBy == acc.Username).ToList();
+                }
+
+                pagingall(rs);
+
+                ltrNumberOfCustomer.Text = rs.Count().ToString();
+            }
         }
 
         #region Paging

@@ -75,125 +75,126 @@ namespace IM_PJ
                 {
                     ltrAddProduct.Text = "<a href=\"/tao-san-pham\" class=\"h45-btn btn primary-btn\">Thêm mới</a>";
                 }
-            }
-            
-            string TextSearch = "";
-            string CreatedDate = "";
-            int CategoryID = 0;
-            int StockStatus = 0;
-            string ShowHomePage = "";
-            string QuantityFilter = "";
-            int Quantity = 0;
-            int QuantityMin = 0;
-            int QuantityMax = 0;
 
-            if (Request.QueryString["textsearch"] != null)
-                TextSearch = Request.QueryString["textsearch"].Trim();
-            if (Request.QueryString["stockstatus"] != null)
-                StockStatus = Request.QueryString["stockstatus"].ToInt();
-            if (Request.QueryString["categoryid"] != null)
-                CategoryID = Request.QueryString["categoryid"].ToInt();
-            if (Request.QueryString["createddate"] != null)
-                CreatedDate = Request.QueryString["createddate"];
-            if (Request.QueryString["showhomepage"] != null)
-                ShowHomePage = Request.QueryString["showhomepage"];
+                string TextSearch = "";
+                string CreatedDate = "";
+                int CategoryID = 0;
+                int StockStatus = 0;
+                string ShowHomePage = "";
+                string QuantityFilter = "";
+                int Quantity = 0;
+                int QuantityMin = 0;
+                int QuantityMax = 0;
 
-            if (Request.QueryString["quantityfilter"] != null)
-            {
-                QuantityFilter = Request.QueryString["quantityfilter"];
+                if (Request.QueryString["textsearch"] != null)
+                    TextSearch = Request.QueryString["textsearch"].Trim();
+                if (Request.QueryString["stockstatus"] != null)
+                    StockStatus = Request.QueryString["stockstatus"].ToInt();
+                if (Request.QueryString["categoryid"] != null)
+                    CategoryID = Request.QueryString["categoryid"].ToInt();
+                if (Request.QueryString["createddate"] != null)
+                    CreatedDate = Request.QueryString["createddate"];
+                if (Request.QueryString["showhomepage"] != null)
+                    ShowHomePage = Request.QueryString["showhomepage"];
 
-                if (QuantityFilter == "greaterthan" || QuantityFilter == "lessthan")
+                if (Request.QueryString["quantityfilter"] != null)
                 {
-                    Quantity = Request.QueryString["quantity"].ToInt();
+                    QuantityFilter = Request.QueryString["quantityfilter"];
+
+                    if (QuantityFilter == "greaterthan" || QuantityFilter == "lessthan")
+                    {
+                        Quantity = Request.QueryString["quantity"].ToInt();
+                    }
+                    if(QuantityFilter == "between")
+                    {
+                        QuantityMin = Request.QueryString["quantitymin"].ToInt();
+                        QuantityMax = Request.QueryString["quantitymax"].ToInt();
+                    }
                 }
-                if(QuantityFilter == "between")
+
+                txtSearchProduct.Text = TextSearch;
+                ddlCategory.SelectedValue = CategoryID.ToString();
+                ddlCreatedDate.SelectedValue = CreatedDate.ToString();
+                ddlStockStatus.SelectedValue = StockStatus.ToString();
+                ddlShowHomePage.SelectedValue = ShowHomePage.ToString();
+
+                ddlQuantityFilter.SelectedValue = QuantityFilter.ToString();
+                txtQuantity.Text = Quantity.ToString();
+                txtQuantityMin.Text = QuantityMin.ToString();
+                txtQuantityMax.Text = QuantityMax.ToString();
+
+                List<ProductSQL> a = new List<ProductSQL>();
+                a = ProductController.GetAllSql(CategoryID, TextSearch);
+
+                if (StockStatus != 0)
                 {
-                    QuantityMin = Request.QueryString["quantitymin"].ToInt();
-                    QuantityMax = Request.QueryString["quantitymax"].ToInt();
+                    a = a.Where(p => p.StockStatus == StockStatus).ToList();
                 }
-            }
 
-
-            txtSearchProduct.Text = TextSearch;
-            ddlCategory.SelectedValue = CategoryID.ToString();
-            ddlCreatedDate.SelectedValue = CreatedDate.ToString();
-            ddlStockStatus.SelectedValue = StockStatus.ToString();
-            ddlShowHomePage.SelectedValue = ShowHomePage.ToString();
-
-            ddlQuantityFilter.SelectedValue = QuantityFilter.ToString();
-            txtQuantity.Text = Quantity.ToString();
-            txtQuantityMin.Text = QuantityMin.ToString();
-            txtQuantityMax.Text = QuantityMax.ToString();
-
-            List<ProductSQL> a = new List<ProductSQL>();
-            a = ProductController.GetAllSql(CategoryID, TextSearch);
-            if (StockStatus != 0)
-            {
-                a = a.Where(p => p.StockStatus == StockStatus).ToList();
-            }
-            if(ShowHomePage != "")
-            {
-                a = a.Where(p => p.ShowHomePage == ShowHomePage.ToInt()).ToList();
-            }
-            if (CreatedDate != "")
-            {
-                DateTime fromdate = DateTime.Today;
-                DateTime todate = DateTime.Now;
-                switch (CreatedDate)
+                if(ShowHomePage != "")
                 {
-                    case "today":
-                        fromdate = DateTime.Today;
-                        todate = DateTime.Now;
-                        break;
-                    case "yesterday":
-                        fromdate = fromdate.AddDays(-1);
-                        todate = DateTime.Today;
-                        break;
-                    case "beforeyesterday":
-                        fromdate = DateTime.Today.AddDays(-2);
-                        todate = DateTime.Today.AddDays(-1);
-                        break;
-                    case "week":
-                        int days = DateTime.Today.DayOfWeek == DayOfWeek.Sunday ? 7 : (int)DateTime.Today.DayOfWeek;
-                        fromdate = fromdate.AddDays(-days + 1);
-                        todate = DateTime.Now;
-                        break;
-                    case "month":
-                        fromdate = new DateTime(fromdate.Year, fromdate.Month, 1);
-                        todate = DateTime.Now;
-                        break;
-                    case "7days":
-                        fromdate = DateTime.Today.AddDays(-6);
-                        todate = DateTime.Now;
-                        break;
-                    case "30days":
-                        fromdate = DateTime.Today.AddDays(-29);
-                        todate = DateTime.Now;
-                        break;
+                    a = a.Where(p => p.ShowHomePage == ShowHomePage.ToInt()).ToList();
                 }
-                a = a.Where(p => p.CreatedDate >= fromdate && p.CreatedDate <= todate ).ToList();
+
+                if (CreatedDate != "")
+                {
+                    DateTime fromdate = DateTime.Today;
+                    DateTime todate = DateTime.Now;
+                    switch (CreatedDate)
+                    {
+                        case "today":
+                            fromdate = DateTime.Today;
+                            todate = DateTime.Now;
+                            break;
+                        case "yesterday":
+                            fromdate = fromdate.AddDays(-1);
+                            todate = DateTime.Today;
+                            break;
+                        case "beforeyesterday":
+                            fromdate = DateTime.Today.AddDays(-2);
+                            todate = DateTime.Today.AddDays(-1);
+                            break;
+                        case "week":
+                            int days = DateTime.Today.DayOfWeek == DayOfWeek.Sunday ? 7 : (int)DateTime.Today.DayOfWeek;
+                            fromdate = fromdate.AddDays(-days + 1);
+                            todate = DateTime.Now;
+                            break;
+                        case "month":
+                            fromdate = new DateTime(fromdate.Year, fromdate.Month, 1);
+                            todate = DateTime.Now;
+                            break;
+                        case "7days":
+                            fromdate = DateTime.Today.AddDays(-6);
+                            todate = DateTime.Now;
+                            break;
+                        case "30days":
+                            fromdate = DateTime.Today.AddDays(-29);
+                            todate = DateTime.Now;
+                            break;
+                    }
+                    a = a.Where(p => p.CreatedDate >= fromdate && p.CreatedDate <= todate ).ToList();
+                }
+
+                if(QuantityFilter != "")
+                {
+                    if (QuantityFilter == "greaterthan")
+                    {
+                        a = a.Where(p => p.TotalProductInstockQuantityLeft >= Quantity).ToList();
+                    }
+                    else if(QuantityFilter == "lessthan")
+                    {
+                        a = a.Where(p => p.TotalProductInstockQuantityLeft <= Quantity).ToList();
+                    }
+                    else if (QuantityFilter == "between")
+                    {
+                        a = a.Where(p => p.TotalProductInstockQuantityLeft >= QuantityMin && p.TotalProductInstockQuantityLeft <= QuantityMax).ToList();
+                    }
+                }
+
+                pagingall(a);
+
+                ltrNumberOfProduct.Text = a.Count().ToString();
             }
-
-            if(QuantityFilter != "")
-            {
-                if (QuantityFilter == "greaterthan")
-                {
-                    a = a.Where(p => p.TotalProductInstockQuantityLeft >= Quantity).ToList();
-                }
-                else if(QuantityFilter == "lessthan")
-                {
-                    a = a.Where(p => p.TotalProductInstockQuantityLeft <= Quantity).ToList();
-                }
-                else if (QuantityFilter == "between")
-                {
-                    a = a.Where(p => p.TotalProductInstockQuantityLeft >= QuantityMin && p.TotalProductInstockQuantityLeft <= QuantityMax).ToList();
-                }
-            }
-
-
-            pagingall(a);
-
-            ltrNumberOfProduct.Text = a.Count().ToString();
         }
         [WebMethod]
         public static string getAllProductImage(string sku)

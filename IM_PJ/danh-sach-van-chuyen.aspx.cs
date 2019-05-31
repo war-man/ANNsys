@@ -72,8 +72,6 @@ namespace IM_PJ
                 ddlTransportCompany.DataBind();
                 ddlTransferCompanyModal.DataBind();
             }
-            
-
         }
         public void LoadCreatedBy(int AgentID, tbl_Account acc = null)
         {
@@ -185,23 +183,6 @@ namespace IM_PJ
                     TransportCompany, // TransportCompany
                     DeliveryStartAt // DeliveryStartAt
                 );
-
-                if (acc.RoleID == 0 || acc.Username == "nhom_zalo406")
-                {
-                    hdfcreate.Value = "1";
-                    if (CreatedBy != "")
-                    {
-                        rs = rs.Where(x => x.CreatedBy == CreatedBy && x.ExcuteStatus != 4).ToList();
-                    }
-                    else
-                    {
-                        rs = rs.Where(x => x.ExcuteStatus != 4).ToList();
-                    }
-                }
-                else
-                {
-                    rs = rs.Where(x => x.CreatedBy == acc.Username && x.ExcuteStatus != 4).ToList();
-                }
 
                 if (ShippingType == 0)
                     rs = rs.Where(x => x.ShippingType == 4 || x.ShippingType == 5).ToList();

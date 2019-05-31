@@ -405,7 +405,6 @@
             </div>
         </div>
 
-        <asp:HiddenField ID="hdfcreate" runat="server" />
         <asp:HiddenField ID="hdfSession" runat="server" />
         <script type="text/javascript">
             class OrderChoosed {

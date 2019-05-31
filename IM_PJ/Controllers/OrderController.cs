@@ -575,7 +575,7 @@ namespace IM_PJ.Controllers
                         break;
                     case "thismonth":
                         fromdate = new DateTime(fromdate.Year, fromdate.Month, 1);
-                        todate = DateTime.Now;
+                        todate = fromdate.AddMonths(1);
                         break;
                     case "lastmonth":
                         var thismonth = new DateTime(fromdate.Year, fromdate.Month, 1);
@@ -596,7 +596,7 @@ namespace IM_PJ.Controllers
                         todate = DateTime.Now;
                         break;
                 }
-                sqlSub.AppendLine(String.Format("    AND    CONVERT(datetime, Ord." + column + ", 121) BETWEEN CONVERT(datetime, '{0}', 121) AND CONVERT(datetime, '{1}', 121)", fromdate.ToString(), todate.ToString()));
+                sqlSub.AppendLine(String.Format("    AND    CONVERT(datetime, Ord." + column + ", 103) BETWEEN CONVERT(datetime, '{0}', 103) AND CONVERT(datetime, '{1}', 103)", fromdate.ToString(), todate.ToString()));
             }
             #endregion
             #region GROUP BY

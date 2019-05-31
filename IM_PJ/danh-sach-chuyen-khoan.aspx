@@ -320,7 +320,6 @@
             </div>
         </div>
 
-        <asp:HiddenField ID="hdfcreate" runat="server" />
         <script type="text/javascript">
             $(document).ready(() => {
                 $("button[data-toggle='modal']").click(e => {
