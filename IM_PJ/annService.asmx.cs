@@ -1009,7 +1009,72 @@ namespace IM_PJ
                 }
             }
         }
+        [WebMethod]
+        [ScriptMethod(UseHttpGet = false, ResponseFormat = ResponseFormat.Json)]
+        public void insertRegister(string name, string phone, string address, int province, string productcategory, string note, string username, string password)
+        {
+            var rs = new ResponseClass();
+            if (username == "register" && password == "register@ann")
+            {
+                var checkRegister = RegisterController.GetByPhone(phone);
 
+                Register register = new Register();
+                int ID = 0;
+
+                if (checkRegister != null)
+                {
+                    register.ID = checkRegister.ID;
+                    register.Name = name;
+                    register.Phone = checkRegister.Phone;
+                    register.UserID = checkRegister.UserID;
+                    register.Status = checkRegister.Status;
+                    register.Note = note;
+                    register.Address = address;
+                    register.ProductCategory = productcategory;
+                    register.ProvinceID = province;
+                    register.CreatedDate = DateTime.Now;
+
+                    ID = RegisterController.Update(register);
+                }
+                else
+                {
+                    register.Name = name;
+                    register.Phone = phone;
+                    register.UserID = null;
+                    register.Status = 1;
+                    register.Note = note;
+                    register.Address = address;
+                    register.ProductCategory = productcategory;
+                    register.ProvinceID = province;
+
+                    ID = RegisterController.Insert(register);
+                }
+
+                if(ID != 0)
+                {
+                    rs.OrderID = ID;
+                    rs.Code = APIUtils.GetResponseCode(APIUtils.ResponseCode.SUCCESS);
+                    rs.Status = APIUtils.ResponseMessage.Success.ToString();
+                    rs.Message = "Tạo mới đăng ký mua sỉ thành công.";
+                }
+                else
+                {
+                    rs.Code = APIUtils.GetResponseCode(APIUtils.ResponseCode.NotFound);
+                    rs.Status = APIUtils.ResponseMessage.Error.ToString();
+                    rs.Message = "Có lỗi trong quá trình đăng ký mua sỉ.";
+                }
+            }
+            else
+            {
+                rs.Code = APIUtils.GetResponseCode(APIUtils.ResponseCode.FAILED);
+                rs.Status = APIUtils.ResponseMessage.Fail.ToString();
+            }
+
+            Context.Response.ContentType = "application/json";
+            Context.Response.Write(JsonConvert.SerializeObject(rs, Formatting.Indented));
+            Context.Response.Flush();
+            Context.Response.End();
+        }
         public class ResponseClass
         {
             [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]

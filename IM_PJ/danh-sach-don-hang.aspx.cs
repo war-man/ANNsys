@@ -93,8 +93,11 @@ namespace IM_PJ
                 {
                     foreach (var p in CreateBy)
                     {
-                        ListItem listitem = new ListItem(p.Username, p.Username);
-                        ddlCreatedBy.Items.Add(listitem);
+                        if(p.RoleID == 0 || p.RoleID == 2)
+                        {
+                            ListItem listitem = new ListItem(p.Username, p.Username);
+                            ddlCreatedBy.Items.Add(listitem);
+                        }
                     }
                     ddlCreatedBy.DataBind();
                 }

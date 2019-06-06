@@ -440,6 +440,7 @@
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="danh-sach-dang-ky.aspx" />
     <Content Include="danh-sach-van-chuyen.aspx" />
     <Content Include="danh-sach-chuyen-khoan.aspx" />
     <Content Include="FilesResources\ToolContentAccount.xml" />
@@ -825,6 +826,7 @@
     <Compile Include="bao-cao.aspx.designer.cs">
       <DependentUpon>bao-cao.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Controllers\RegisterController.cs" />
     <Compile Include="Controllers\BankAccountController.cs" />
     <Compile Include="Controllers\BankController.cs" />
     <Compile Include="Controllers\DeliveryController.cs" />
@@ -836,6 +838,13 @@
     <Compile Include="Controllers\PostImageController.cs" />
     <Compile Include="Controllers\SessionController.cs" />
     <Compile Include="Controllers\ShipperController.cs" />
+    <Compile Include="danh-sach-dang-ky.aspx.cs">
+      <DependentUpon>danh-sach-dang-ky.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="danh-sach-dang-ky.aspx.designer.cs">
+      <DependentUpon>danh-sach-dang-ky.aspx</DependentUpon>
+    </Compile>
     <Compile Include="danh-sach-van-chuyen.aspx.cs">
       <DependentUpon>danh-sach-van-chuyen.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -873,6 +882,9 @@
       <DependentUpon>IMModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\FeeType.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Register.cs">
       <DependentUpon>IMModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Session.cs">

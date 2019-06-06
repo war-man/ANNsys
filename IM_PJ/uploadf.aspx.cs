@@ -43,7 +43,7 @@ namespace IM_PJ
                         upload.SaveAs(Server.MapPath(filename));
                         savedfile += fileCollection[i].FileName;
                     }
-                    catch (Exception ex)
+                    catch
                     {
 
                     }

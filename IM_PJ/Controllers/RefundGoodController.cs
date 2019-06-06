@@ -570,7 +570,7 @@ namespace IM_PJ.Controllers
                 List<tbl_RefundGoods> or = new List<tbl_RefundGoods>();
                 or = db.tbl_RefundGoods
                             .Where(x => (fromdate <= x.CreatedDate && x.CreatedDate <= todate)
-                                        && x.CreatedBy.Trim().ToUpper() == accountName.Trim().ToUpper())
+                                        && x.CreatedBy == accountName)
                             .ToList();
                 int tongdoitra = 0;
                 if (or != null)

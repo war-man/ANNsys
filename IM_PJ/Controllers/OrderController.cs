@@ -2048,8 +2048,8 @@ namespace IM_PJ.Controllers
                 List<tbl_Order> or = new List<tbl_Order>();
                 or = con.tbl_Order
                     .Where(x => (fromdate <= x.DateDone && x.DateDone <= todate)
-                                && x.CreatedBy.Trim().ToUpper() == accountName.Trim().ToUpper()
-                                && (x.ExcuteStatus == 2 && x.PaymentStatus == 3)
+                                && x.CreatedBy == accountName
+                                && (x.ExcuteStatus == 2 && x.PaymentStatus != 1)
                            )
                      .ToList();
                 int tongbanra = 0;

@@ -100,6 +100,7 @@ namespace IM_PJ
             ltrAverageOutput.Text = averageOutput.ToString() + " cái/ngày";
             ltrTotalRefund.Text = totalRefund.ToString() + " cái";
             ltrAverageRefund.Text = averageRefund.ToString() + " cái/ngày";
+            ltrTotalRemain.Text = (totalOutput - totalRefund).ToString() + " cái";
         }
 
         /// <summary>

@@ -330,8 +330,8 @@ namespace IM_PJ.Controllers
                         (
                             !string.IsNullOrEmpty(text) &&
                             (
-                                x.CustomerName.Contains(text) ||
-                                x.Nick.Contains(text) ||
+                                x.UnSignedName.Contains(text) ||
+                                x.UnSignedNick.Contains(text) ||
                                 x.CustomerPhone.Contains(text) ||
                                 x.CustomerPhone2.Contains(text) ||
                                 x.CustomerPhoneBackup.Contains(text) ||
@@ -379,7 +379,7 @@ namespace IM_PJ.Controllers
                     .ToList();
 
                 // Get info order
-                var orderInfo = dbe.tbl_Order
+                var orderInfo = dbe.tbl_Order.Where(x => x.ExcuteStatus == 2)
                     .Join(
                         customers,
                         order => order.CustomerID,

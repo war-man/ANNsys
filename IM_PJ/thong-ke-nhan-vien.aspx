@@ -106,6 +106,18 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="row">
+                            <div class="col-md-2">
+                                <div class="report-column">
+                                    <div class="report-label">
+                                        Tổng sản lượng còn lại:
+                                    </div>
+                                    <div class="report-value">
+                                        <asp:Literal ID="ltrTotalRemain" runat="server" EnableViewState="false"></asp:Literal>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
