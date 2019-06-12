@@ -151,8 +151,22 @@ namespace IM_PJ.Controllers
                 tbl_Product ui = dbe.tbl_Product.Where(a => a.ID == id).SingleOrDefault();
                 if (ui != null)
                 {
-
                     ui.ShowHomePage = value;
+                    int kq = dbe.SaveChanges();
+                    return kq.ToString();
+                }
+                else
+                    return null;
+            }
+        }
+        public static string updateWebPublish(int id, bool value)
+        {
+            using (var dbe = new inventorymanagementEntities())
+            {
+                tbl_Product ui = dbe.tbl_Product.Where(a => a.ID == id).SingleOrDefault();
+                if (ui != null)
+                {
+                    ui.WebPublish = value;
                     int kq = dbe.SaveChanges();
                     return kq.ToString();
                 }
@@ -1105,6 +1119,10 @@ namespace IM_PJ.Controllers
                     entity.ShowHomePage = reader["ShowHomePage"].ToString().ToInt(0);
                 if (reader["Materials"] != DBNull.Value)
                     entity.Materials = reader["Materials"].ToString();
+                if (reader["WebPublish"] != DBNull.Value)
+                    entity.WebPublish = reader["WebPublish"].ToString().ToBool();
+                if (reader["WebUpdate"] != DBNull.Value)
+                    entity.WebUpdate = Convert.ToDateTime(reader["WebUpdate"]);
                 list.Add(entity);
             }
             reader.Close();
@@ -1359,6 +1377,8 @@ namespace IM_PJ.Controllers
             public int ShowHomePage { get; set; }
             public string Materials { get; set; }
             public string ProductImageClean { get; set; }
+            public bool WebPublish { get; set; }
+            public DateTime WebUpdate { get; set; }
         }
 
         public class ProductStockReport

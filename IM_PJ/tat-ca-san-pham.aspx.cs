@@ -249,6 +249,19 @@ namespace IM_PJ
             }
         }
         [WebMethod]
+        public static string updateWebPublish(int id, bool value)
+        {
+            string update = ProductController.updateWebPublish(id, value);
+            if (update != null)
+            {
+                return "true";
+            }
+            else
+            {
+                return "false";
+            }
+        }
+        [WebMethod]
         public static string copyProductInfo(int id)
         {
             var product = ProductController.GetByID(id);
@@ -376,13 +389,14 @@ namespace IM_PJ
                 html.Append("    <th class='cost-price-column'>Giá vốn</th> ");
             }
             html.Append("    <th class='retail-price-column'>Giá lẻ</th>");
-            html.Append("    <th class='stock-column'>Kho</th>");
-            html.Append("    <th class='stock-status-column'>Trạng thái</th>");
+            html.Append("    <th class='stock-column'>SL</th>");
+            html.Append("    <th class='stock-status-column'>Kho</th>");
             html.Append("    <th class='category-column'>Danh mục</th>");
             html.Append("    <th class='date-column'>Ngày tạo</th>");
             if (acc.RoleID == 0)
             {
                 html.Append("    <th class='show-homepage-column'>Trang chủ</th>");
+                html.Append("    <th class='show-webpublish-column'>Xem hàng</th>");
             }
             html.Append("    <th class='action-column'></th>");
             html.Append("</tr>");
@@ -423,8 +437,8 @@ namespace IM_PJ
                         html.Append("   <td data-title='Giá vốn'>" + string.Format("{0:N0}", item.CostOfGood) + "</td>");
                     }
                     html.Append("   <td data-title='Giá lẻ'>" + string.Format("{0:N0}", item.RetailPrice) + "</td>");
-                    html.Append("   <td data-title='Kho'><a target=\"_blank\" href=\"/thong-ke-san-pham?SKU=" + item.ProductSKU + "\">" + string.Format("{0:N0}", item.TotalProductInstockQuantityLeft) + "</a></td>");
-                    html.Append("   <td data-title='Trạng thái'>" + item.ProductInstockStatus + "</td>");
+                    html.Append("   <td data-title='Số lượng'><a target=\"_blank\" href=\"/thong-ke-san-pham?SKU=" + item.ProductSKU + "\">" + string.Format("{0:N0}", item.TotalProductInstockQuantityLeft) + "</a></td>");
+                    html.Append("   <td data-title='Kho'>" + item.ProductInstockStatus + "</td>");
                     html.Append("   <td data-title='Danh mục'>" + item.CategoryName + "</td>");
                     string date = string.Format("{0:dd/MM/yyyy}", item.CreatedDate);
                     html.Append("   <td data-title='Ngày tạo'>" + date + "</td>");
@@ -433,11 +447,19 @@ namespace IM_PJ
                     {
                         if (item.ShowHomePage == 0)
                         {
-                            html.Append("   <td data-title='Trang chủ'><span id='showHomePage_" + item.ID + "'><a href='javascript:;' data-product-id='" + item.ID + "' data-value='0' class='bg-black bg-button' onclick='changeShowHomePage($(this))'>Đang ẩn</a></span></td>");
+                            html.Append("   <td data-title='Trang chủ'><span id='showHomePage_" + item.ID + "'><a href='javascript:;' data-product-id='" + item.ID + "' data-update='1' class='bg-black bg-button' onclick='updateShowHomePage($(this))'>Đang ẩn</a></span></td>");
                         }
                         else
                         {
-                            html.Append("   <td data-title='Trang chủ'><span id='showHomePage_" + item.ID + "'><a href='javascript:;' data-product-id='" + item.ID + "' data-value='1' class='bg-green bg-button' onclick='changeShowHomePage($(this))'>Đang hiện</a></span></td>");
+                            html.Append("   <td data-title='Trang chủ'><span id='showHomePage_" + item.ID + "'><a href='javascript:;' data-product-id='" + item.ID + "' data-update='0' class='bg-green bg-button' onclick='updateShowHomePage($(this))'>Đang hiện</a></span></td>");
+                        }
+                        if(item.WebPublish == false)
+                        {
+                            html.Append("   <td data-title='Trang xem hàng'><span id='showWebPublish_" + item.ID + "'><a href='javascript:;' data-product-id='" + item.ID + "' data-update='true' class='bg-black bg-button' onclick='updateWebPublish($(this))'>Đang ẩn</a></span></td>");
+                        }
+                        else
+                        {
+                            html.Append("   <td data-title='Trang xem hàng'><span id='showWebPublish_" + item.ID + "'><a href='javascript:;' data-product-id='" + item.ID + "' data-update='false' class='bg-green bg-button' onclick='updateWebPublish($(this))'>Đang hiện</a></span></td>");
                         }
                     }
 

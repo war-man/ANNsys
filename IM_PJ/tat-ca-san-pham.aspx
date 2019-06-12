@@ -270,13 +270,9 @@
                 $("#<%= btnSearch.ClientID%>").click();
             }
             
-            function changeShowHomePage(obj) {
+            function updateShowHomePage(obj) {
                 var productID = obj.attr("data-product-id");
-                var value = obj.attr("data-value");
-                var update = 1;
-                if (value == 1) {
-                    update = 0;
-                }
+                var update = obj.attr("data-update");
                 $.ajax({
                     type: "POST",
                     url: "/tat-ca-san-pham.aspx/updateShowHomePage",
@@ -285,13 +281,38 @@
                     dataType: "json",
                     success: function (msg) {
                         if (msg.d == "true") {
-                            if (value == 1) {
-                                $('#showHomePage_' + productID).html("<a href='javascript:;' data-product-id='" + productID + "' data-value='0' class='bg-black bg-button' onclick='changeShowHomePage($(this))'>Đang ẩn</a>");
-                                $(".up-product-" + productID).addClass("hide");
+                            if (update == 1) {
+                                $('#showHomePage_' + productID).html("<a href='javascript:;' data-product-id='" + productID + "' data-update='0' class='bg-green bg-button' onclick='updateShowHomePage($(this))'>Đang hiện</a>");
+                                $(".up-product-" + productID).removeClass("hide");
                             }
                             else {
-                                $('#showHomePage_' + productID).html("<a href='javascript:;' data-product-id='" + productID + "' data-value='1' class='bg-green bg-button' onclick='changeShowHomePage($(this))'>Đang hiện</a>");
-                                $(".up-product-" + productID).removeClass("hide");
+                                $('#showHomePage_' + productID).html("<a href='javascript:;' data-product-id='" + productID + "' data-update='1' class='bg-black bg-button' onclick='updateShowHomePage($(this))'>Đang ẩn</a>");
+                                $(".up-product-" + productID).addClass("hide");
+                            }
+                        }
+                        else {
+                            alert("Lỗi");
+                        }
+                    }
+                });
+            }
+
+            function updateWebPublish(obj) {
+                var productID = obj.attr("data-product-id");
+                var update = obj.attr("data-update");
+                $.ajax({
+                    type: "POST",
+                    url: "/tat-ca-san-pham.aspx/updateWebPublish",
+                    data: "{id: '" + productID + "', value: " + update + "}",
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (msg) {
+                        if (msg.d == "true") {
+                            if (update == "true") {
+                                $('#showWebPublish_' + productID).html("<a href='javascript:;' data-product-id='" + productID + "' data-update='false' class='bg-green bg-button' onclick='updateWebPublish($(this))'>Đang hiện</a>");
+                            }
+                            else {
+                                $('#showWebPublish_' + productID).html("<a href='javascript:;' data-product-id='" + productID + "' data-update='true' class='bg-black bg-button' onclick='updateWebPublish($(this))'>Đang ẩn</a>");
                             }
                         }
                         else {

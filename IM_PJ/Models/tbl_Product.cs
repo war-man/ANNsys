@@ -41,5 +41,7 @@ namespace IM_PJ.Models
         public Nullable<int> ProductStyle { get; set; }
         public Nullable<int> ShowHomePage { get; set; }
         public string ProductImageClean { get; set; }
+        public Nullable<bool> WebPublish { get; set; }
+        public Nullable<System.DateTime> WebUpdate { get; set; }
     }
 }
