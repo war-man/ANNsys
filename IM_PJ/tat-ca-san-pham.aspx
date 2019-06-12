@@ -297,7 +297,7 @@
                 });
             }
 
-            function updateWebPublish(obj) {
+            function updateShowWebPublish(obj) {
                 var productID = obj.attr("data-product-id");
                 var update = obj.attr("data-update");
                 $.ajax({
@@ -309,11 +309,31 @@
                     success: function (msg) {
                         if (msg.d == "true") {
                             if (update == "true") {
-                                $('#showWebPublish_' + productID).html("<a href='javascript:;' data-product-id='" + productID + "' data-update='false' class='bg-green bg-button' onclick='updateWebPublish($(this))'>Đang hiện</a>");
+                                $('#showWebPublish_' + productID).html("<a href='javascript:;' data-product-id='" + productID + "' data-update='false' class='bg-green bg-button' onclick='updateShowWebPublish($(this))'>Đang hiện</a>");
+                                $(".webupdate-product-" + productID).removeClass("hide");
                             }
                             else {
-                                $('#showWebPublish_' + productID).html("<a href='javascript:;' data-product-id='" + productID + "' data-update='true' class='bg-black bg-button' onclick='updateWebPublish($(this))'>Đang ẩn</a>");
+                                $('#showWebPublish_' + productID).html("<a href='javascript:;' data-product-id='" + productID + "' data-update='true' class='bg-black bg-button' onclick='updateShowWebPublish($(this))'>Đang ẩn</a>");
+                                $(".webupdate-product-" + productID).addClass("hide");
                             }
+                        }
+                        else {
+                            alert("Lỗi");
+                        }
+                    }
+                });
+            }
+
+            function updateWebUpdate(productID) {
+                $.ajax({
+                    type: "POST",
+                    url: "/tat-ca-san-pham.aspx/updateWebUpdate",
+                    data: "{id: '" + productID + "'}",
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (msg) {
+                        if (msg.d == "true") {
+                            alert("Up thành công");
                         }
                         else {
                             alert("Lỗi");

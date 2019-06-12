@@ -497,9 +497,11 @@
                                         <asp:DropDownList ID="ddlShippingType" runat="server" CssClass="form-control shipping-type">
                                             <asp:ListItem Value="1" Text="Lấy trực tiếp"></asp:ListItem>
                                             <asp:ListItem Value="2" Text="Chuyển bưu điện"></asp:ListItem>
-                                            <asp:ListItem Value="3" Text="Dịch vụ ship"></asp:ListItem>
+                                            <asp:ListItem Value="3" Text="Dịch vụ Proship"></asp:ListItem>
                                             <asp:ListItem Value="4" Text="Chuyển xe"></asp:ListItem>
                                             <asp:ListItem Value="5" Text="Nhân viên giao hàng"></asp:ListItem>
+                                            <asp:ListItem Value="6" Text="GHTK"></asp:ListItem>
+                                            <asp:ListItem Value="7" Text="Viettel"></asp:ListItem>
                                         </asp:DropDownList>
                                     </div>
                                 </div>
@@ -1121,6 +1123,22 @@
 
                 if ($("#<%=ddlShippingType.ClientID%>").find(":selected").val() == 4) {
                     $(".transport-company").removeClass("hide");
+                    $(".shipping-code").addClass("hide");
+                }
+
+                if ($("#<%=ddlShippingType.ClientID%>").find(":selected").val() == 5) {
+                    $(".transport-company").addClass("hide");
+                    $(".shipping-code").addClass("hide");
+                }
+
+                if ($("#<%=ddlShippingType.ClientID%>").find(":selected").val() == 6) {
+                    $(".shipping-code").removeClass("hide");
+                    $(".transport-company").addClass("hide");
+                }
+
+                if ($("#<%=ddlShippingType.ClientID%>").find(":selected").val() == 7) {
+                    $(".shipping-code").addClass("hide");
+                    $(".transport-company").addClass("hide");
                 }
 
                 $("#<%=ddlShippingType.ClientID%>").change(function () {
@@ -1162,6 +1180,22 @@
                             $(".postal-delivery-type").addClass("hide");
                             $(".transport-company").addClass("hide");
                             $("#<%=txtShippingCode.ClientID%>").val("");
+                            $("#<%=ddlPostalDeliveryType.ClientID%>").val(1);
+                            $("#<%=ddlTransportCompanyID.ClientID%>").val(0);
+                            $("#<%=ddlTransportCompanySubID.ClientID%>").val(0);
+                            break;
+                        case "6":
+                            $(".shipping-code").removeClass("hide");
+                            $(".postal-delivery-type").addClass("hide");
+                            $(".transport-company").addClass("hide");
+                            $("#<%=ddlPostalDeliveryType.ClientID%>").val(1);
+                            $("#<%=ddlTransportCompanyID.ClientID%>").val(0);
+                            $("#<%=ddlTransportCompanySubID.ClientID%>").val(0);
+                            break;
+                        case "7":
+                            $(".shipping-code").addClass("hide");
+                            $(".postal-delivery-type").addClass("hide");
+                            $(".transport-company").addClass("hide");
                             $("#<%=ddlPostalDeliveryType.ClientID%>").val(1);
                             $("#<%=ddlTransportCompanyID.ClientID%>").val(0);
                             $("#<%=ddlTransportCompanySubID.ClientID%>").val(0);

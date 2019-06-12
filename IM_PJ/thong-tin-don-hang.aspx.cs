@@ -511,7 +511,7 @@ namespace IM_PJ
                     ltrPrint.Text += "<a href=\"javascript:;\" onclick=\"warningShippingNote(" + ID + ")\" class=\"btn primary-btn fw-btn not-fullwidth print-invoice-merged\"><i class=\"fa fa-file-text-o\" aria-hidden=\"true\"></i> In phiếu gửi hàng</a>";
                     if(order.ShippingType == 3 && !string.IsNullOrEmpty(order.ShippingCode))
                     {
-                        ltrPrint.Text += "<a href=\"https://proship.vn/quan-ly-van-don/?isInvoiceFilter=1&generalInfo=" + order.ShippingCode + "\" target=\"_blank\" class=\"btn primary-btn fw-btn not-fullwidth print-invoice-merged\"><i class=\"fa fa-file-text-o\" aria-hidden=\"true\"></i> Xem đơn dịch vụ ship</a>";
+                        ltrPrint.Text += "<a href=\"https://proship.vn/quan-ly-van-don/?isInvoiceFilter=1&generalInfo=" + order.ShippingCode + "\" target=\"_blank\" class=\"btn primary-btn fw-btn not-fullwidth print-invoice-merged\"><i class=\"fa fa-file-text-o\" aria-hidden=\"true\"></i> Xem đơn dịch vụ Proship</a>";
                     }
                 }
             }

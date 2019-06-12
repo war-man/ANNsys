@@ -45,6 +45,9 @@ namespace IM_PJ.Controllers
                 ui.MaximumInventoryLevel = MaximumInventoryLevel;
                 ui.ProductStyle = ProductStyle;
                 ui.ShowHomePage = ShowHomePage;
+                ui.WebPublish = true;
+                ui.WebUpdate = CreatedDate;
+
                 dbe.tbl_Product.Add(ui);
                 dbe.SaveChanges();
                 int kq = ui.ID;
@@ -167,6 +170,21 @@ namespace IM_PJ.Controllers
                 if (ui != null)
                 {
                     ui.WebPublish = value;
+                    int kq = dbe.SaveChanges();
+                    return kq.ToString();
+                }
+                else
+                    return null;
+            }
+        }
+        public static string updateWebUpdate(int id)
+        {
+            using (var dbe = new inventorymanagementEntities())
+            {
+                tbl_Product ui = dbe.tbl_Product.Where(a => a.ID == id).SingleOrDefault();
+                if (ui != null)
+                {
+                    ui.WebUpdate = DateTime.Now;
                     int kq = dbe.SaveChanges();
                     return kq.ToString();
                 }

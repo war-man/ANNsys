@@ -262,6 +262,19 @@ namespace IM_PJ
             }
         }
         [WebMethod]
+        public static string updateWebUpdate(int id)
+        {
+            string update = ProductController.updateWebUpdate(id);
+            if (update != null)
+            {
+                return "true";
+            }
+            else
+            {
+                return "false";
+            }
+        }
+        [WebMethod]
         public static string copyProductInfo(int id)
         {
             var product = ProductController.GetByID(id);
@@ -455,11 +468,11 @@ namespace IM_PJ
                         }
                         if(item.WebPublish == false)
                         {
-                            html.Append("   <td data-title='Trang xem hàng'><span id='showWebPublish_" + item.ID + "'><a href='javascript:;' data-product-id='" + item.ID + "' data-update='true' class='bg-black bg-button' onclick='updateWebPublish($(this))'>Đang ẩn</a></span></td>");
+                            html.Append("   <td data-title='Trang xem hàng'><span id='showWebPublish_" + item.ID + "'><a href='javascript:;' data-product-id='" + item.ID + "' data-update='true' class='bg-black bg-button' onclick='updateShowWebPublish($(this))'>Đang ẩn</a></span></td>");
                         }
                         else
                         {
-                            html.Append("   <td data-title='Trang xem hàng'><span id='showWebPublish_" + item.ID + "'><a href='javascript:;' data-product-id='" + item.ID + "' data-update='false' class='bg-green bg-button' onclick='updateWebPublish($(this))'>Đang hiện</a></span></td>");
+                            html.Append("   <td data-title='Trang xem hàng'><span id='showWebPublish_" + item.ID + "'><a href='javascript:;' data-product-id='" + item.ID + "' data-update='false' class='bg-green bg-button' onclick='updateShowWebPublish($(this))'>Đang hiện</a></span></td>");
                         }
                     }
 
@@ -469,7 +482,8 @@ namespace IM_PJ
 
                     if (acc.RoleID == 0 || acc.RoleID == 1)
                     {
-                        html.Append("       <a href=\"javascript:;\" title=\"Đồng bộ sản phẩm\" class=\"up-product-" + item.ID + " btn primary-btn h45-btn " + (item.ShowHomePage == 1 ? "" : "hide") + "\" onclick=\"ShowUpProductToWeb('" + item.ProductSKU + "', '" + item.ID + "', '" + item.CategoryID + "', 'false', 'false', 'null');\"><i class=\"fa fa-upload\" aria-hidden=\"true\"></i></a>");
+                        html.Append("       <a href=\"javascript:;\" title=\"Đồng bộ sản phẩm\" class=\"up-product-" + item.ID + " btn primary-btn h45-btn " + (item.ShowHomePage == 1 ? "" : "hide") + "\" onclick=\"ShowUpProductToWeb('" + item.ProductSKU + "', '" + item.ID + "', '" + item.CategoryID + "', 'false', 'false', 'null');\"><i class=\"fa fa-refresh\" aria-hidden=\"true\"></i></a>");
+                        html.Append("       <a href=\"javascript:;\" title=\"Up sản phẩm lên đầu trang\" class=\"webupdate-product-" + item.ID + " btn primary-btn btn-blue h45-btn " + (item.WebPublish == true ? "" : "hide") + "\" onclick=\"updateWebUpdate('" + item.ID + "');\"><i class=\"fa fa-upload\" aria-hidden=\"true\"></i></a>");
                     }
 
                     html.Append("  </td>");

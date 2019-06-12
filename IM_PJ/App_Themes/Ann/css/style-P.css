@@ -591,31 +591,31 @@ ul.image-gallery li {
     width: inherit;
 }
 .all-product-table .image-column {
-    width: 11%;
+    width: 10%;
 }
 .all-product-table .name-column {
-    width: 19%;
+    width: 17%;
 }
 .all-product-table .sku-column {
     width: 6%;
 }
 .all-product-table .wholesale-price-column {
-    width: 6%;
+    width: 5%;
 }
 .all-product-table .retail-price-column {
-    width: 6%;
+    width: 5%;
 }
 .all-product-table .cost-price-column {
-    width: 6%;
+    width: 5%;
 }
 .all-product-table .stock-column {
-    width: 5%;
+    width: 4%;
 }
 .all-product-table .stock-status-column {
     width: 6%;
 }
 .all-product-table .category-column {
-    width: 10%;
+    width: 8%;
 }
 .all-product-table .date-column {
     width: 7%;
@@ -623,8 +623,11 @@ ul.image-gallery li {
 .all-product-table .show-homepage-column {
     width: 6%;
 }
+.all-product-table .show-webpublish-column {
+    width: 6%;
+}
 .all-product-table .action-column {
-    width: 12%;
+    width: 15%;
 }
 .all-product-table .variable-column {
     width: 20%;
@@ -855,6 +858,26 @@ img {
 
 .bg-blue {
     background: #2ea2cc;
+    color: #fff;
+    display: block;
+    padding: 5px 6px;
+    white-space: nowrap;
+    font-size: 12px;
+    border-radius: 6px;
+}
+
+.bg-orange {
+    background: orange;
+    color: #fff;
+    display: block;
+    padding: 5px 6px;
+    white-space: nowrap;
+    font-size: 12px;
+    border-radius: 6px;
+}
+
+.bg-blue-hoki {
+    background: #67809f;
     color: #fff;
     display: block;
     padding: 5px 6px;

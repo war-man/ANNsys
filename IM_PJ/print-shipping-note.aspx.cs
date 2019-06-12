@@ -187,14 +187,14 @@ namespace IM_PJ
                 }
                 else if (order.ShippingType == 3)
                 {
-                    rowHtml += Environment.NewLine + String.Format("        <p class=\"delivery\"><span>Dịch vụ ship</span></p>");
+                    rowHtml += Environment.NewLine + String.Format("        <p class=\"delivery\"><span>Dịch vụ Proship</span></p>");
                     if (!string.IsNullOrEmpty(order.ShippingCode))
                     {
                         rowHtml += Environment.NewLine + String.Format("        <p class=\"delivery\"><span>{0}</span></p>", order.ShippingCode);
                     }
                     else
                     {
-                        error += "<p>- Đơn hàng này <strong>gửi Dịch vụ ship</strong> nhưng <strong>chưa nhập</strong> MÃ VẬN ĐƠN!</p>";
+                        error += "<p>- Đơn hàng này <strong>gửi Dịch vụ Proship</strong> nhưng <strong>chưa nhập</strong> MÃ VẬN ĐƠN!</p>";
                     }
                 }
                 else if (order.ShippingType == 4)
@@ -214,6 +214,22 @@ namespace IM_PJ
                 else if (order.ShippingType == 5)
                 {
                     rowHtml += Environment.NewLine + String.Format("        <p class=\"delivery\"><span>Nhân viên giao hàng</span></p>");
+                }
+                else if (order.ShippingType == 6)
+                {
+                    rowHtml += Environment.NewLine + String.Format("        <p class=\"delivery\"><span>GHTK</span></p>");
+                    if (!string.IsNullOrEmpty(order.ShippingCode))
+                    {
+                        rowHtml += Environment.NewLine + String.Format("        <p class=\"delivery\"><span>{0}</span></p>", order.ShippingCode);
+                    }
+                    else
+                    {
+                        error += "<p>- Đơn hàng này <strong>gửi GHTK</strong> nhưng <strong>chưa nhập</strong> MÃ VẬN ĐƠN!</p>";
+                    }
+                }
+                else if (order.ShippingType == 7)
+                {
+                    rowHtml += Environment.NewLine + String.Format("        <p class=\"delivery\"><span>Viettel</span></p>");
                 }
 
                 if (order.PaymentType == 3)

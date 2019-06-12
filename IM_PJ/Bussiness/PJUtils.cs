@@ -546,7 +546,7 @@ namespace NHST.Bussiness
             }
             else if (ShippingType == 3)
             {
-                ret = "<span class=\"bg-yellow\">Dịch vụ ship</span>";
+                ret = "<span class=\"bg-yellow\">Dịch vụ Proship</span>";
             }
             else if (ShippingType == 4)
             {
@@ -555,6 +555,14 @@ namespace NHST.Bussiness
             else if (ShippingType == 5)
             {
                 ret = "<span class=\"bg-bronze\">Nhân viên giao</span>";
+            }
+            else if (ShippingType == 6)
+            {
+                ret = "<span class=\"bg-orange\">GHTK</span>";
+            }
+            else if (ShippingType == 7)
+            {
+                ret = "<span class=\"bg-blue-hoki\">Viettel</span>";
             }
             else
             {
