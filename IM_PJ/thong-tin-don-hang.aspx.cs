@@ -302,17 +302,8 @@ namespace IM_PJ
 
                                     QuantityInstock = mainstock;
                                     QuantityInstockString = string.Format("{0:N0}", mainstock);
-
-                                    if (!string.IsNullOrEmpty(product.ProductImage))
-                                    {
-                                        ProductImage = "<img onclick='openImage($(this))' src='" + Thumbnail.getURL(product.ProductImage, Thumbnail.Size.Small) + "' />";
-                                        ProductImageOrigin = Thumbnail.getURL(product.ProductImage, Thumbnail.Size.Small);
-                                    }
-                                    else
-                                    {
-                                        ProductImage = "<img src='/App_Themes/Ann/image/placeholder.png' />";
-                                        ProductImageOrigin = "";
-                                    }
+                                    ProductImage = "<img onclick='openImage($(this))' src='" + Thumbnail.getURL(product.ProductImage, Thumbnail.Size.Small) + "'>";
+                                    ProductImageOrigin = Thumbnail.getURL(product.ProductImage, Thumbnail.Size.Source);
                                     ProductVariable = variable;
                                     ProductName = product.ProductTitle;
                                     QuantityMainInstock = mainstock;
@@ -375,18 +366,13 @@ namespace IM_PJ
 
                                     if (!string.IsNullOrEmpty(productvariable.Image))
                                     {
-                                        ProductImage = "<img onclick='openImage($(this))' src='" + Thumbnail.getURL(productvariable.Image, Thumbnail.Size.Small) + "' />";
-                                        ProductImageOrigin = Thumbnail.getURL(productvariable.Image, Thumbnail.Size.Small);
+                                        ProductImage = "<img onclick='openImage($(this))' src='" + Thumbnail.getURL(productvariable.Image, Thumbnail.Size.Small) + "'>";
+                                        ProductImageOrigin = Thumbnail.getURL(productvariable.Image, Thumbnail.Size.Source);
                                     }
                                     else if (_product != null && !string.IsNullOrEmpty(_product.ProductImage))
                                     {
-                                        ProductImage = "<img onclick='openImage($(this))' src='" + Thumbnail.getURL(_product.ProductImage, Thumbnail.Size.Small) + "' />";
-                                        ProductImageOrigin = Thumbnail.getURL(_product.ProductImage, Thumbnail.Size.Small);
-                                    }
-                                    else
-                                    {
-                                        ProductImage = "<img src='/App_Themes/Ann/image/placeholder.png' />";
-                                        ProductImageOrigin = "";
+                                        ProductImage = "<img onclick='openImage($(this))' src='" + Thumbnail.getURL(_product.ProductImage, Thumbnail.Size.Small) + "'>";
+                                        ProductImageOrigin = Thumbnail.getURL(_product.ProductImage, Thumbnail.Size.Source);
                                     }
 
                                     ProductVariable = variable;

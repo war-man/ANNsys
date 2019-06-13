@@ -286,19 +286,15 @@ namespace IM_PJ
                                     var img = ProductImageController.GetFirstByProductID(product.ID);
                                     if (!string.IsNullOrEmpty(product.ProductImage))
                                     {
-                                        ProductImage = "<img src=\"" + Thumbnail.getURL(product.ProductImage, Thumbnail.Size.Small) + "\" />";
-                                        ProductImageOrigin = Thumbnail.getURL(product.ProductImage, Thumbnail.Size.Small);
+                                        ProductImage = "<img src='" + Thumbnail.getURL(product.ProductImage, Thumbnail.Size.Small) + "'>";
+                                        ProductImageOrigin = Thumbnail.getURL(product.ProductImage, Thumbnail.Size.Source);
                                     }
                                     else if (img != null)
                                     {
-                                        ProductImage = "<img src=\"" + Thumbnail.getURL(img.ProductImage, Thumbnail.Size.Small) + "\" />";
-                                        ProductImageOrigin = Thumbnail.getURL(img.ProductImage, Thumbnail.Size.Small);
+                                        ProductImage = "<img src='" + Thumbnail.getURL(img.ProductImage, Thumbnail.Size.Small) + "'>";
+                                        ProductImageOrigin = Thumbnail.getURL(img.ProductImage, Thumbnail.Size.Source);
                                     }
-                                    else
-                                    {
-                                        ProductImage = "<img src=\"/App_Themes/Ann/image/placeholder.png\" />";
-                                        ProductImageOrigin = "";
-                                    }
+
                                     ProductVariable = variable;
                                     ProductName = product.ProductTitle;
 
@@ -357,18 +353,13 @@ namespace IM_PJ
 
                                     if (!string.IsNullOrEmpty(productvariable.Image))
                                     {
-                                        ProductImage = "<img src=\"" + Thumbnail.getURL(productvariable.Image, Thumbnail.Size.Small) + "\" />";
-                                        ProductImageOrigin = Thumbnail.getURL(productvariable.Image, Thumbnail.Size.Small);
+                                        ProductImage = "<img src='" + Thumbnail.getURL(productvariable.Image, Thumbnail.Size.Small) + "'>";
+                                        ProductImageOrigin = Thumbnail.getURL(productvariable.Image, Thumbnail.Size.Source);
                                     }
                                     else if (_product != null && !string.IsNullOrEmpty(_product.ProductImage))
                                     {
-                                        ProductImage = "<img src=\"" + Thumbnail.getURL(_product.ProductImage, Thumbnail.Size.Small) + "\" />";
-                                        ProductImageOrigin = Thumbnail.getURL(_product.ProductImage, Thumbnail.Size.Small);
-                                    }
-                                    else
-                                    {
-                                        ProductImage = "<img src=\"/App_Themes/Ann/image/placeholder.png\" />";
-                                        ProductImageOrigin = "";
+                                        ProductImage = "<img src='" + Thumbnail.getURL(_product.ProductImage, Thumbnail.Size.Small) + "'>";
+                                        ProductImageOrigin = Thumbnail.getURL(_product.ProductImage, Thumbnail.Size.Source);
                                     }
 
                                     ProductVariable = variable;

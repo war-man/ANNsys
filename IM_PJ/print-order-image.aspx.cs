@@ -1,5 +1,6 @@
 ﻿using IM_PJ.Controllers;
 using IM_PJ.Models;
+using IM_PJ.Utils;
 using MB.Extensions;
 using NHST.Bussiness;
 using System;
@@ -90,7 +91,7 @@ namespace IM_PJ
                         double ItemPrice = Convert.ToDouble(item.Price);
                         string SKU = item.SKU;
                         string ProductName = "";
-                        string ProductImage = "/App_Themes/Ann/image/placeholder.png";
+                        string ProductImage = "";
                         int SubTotal = Convert.ToInt32(ItemPrice) * Convert.ToInt32(item.Quantity);
 
                         t++;
@@ -107,7 +108,7 @@ namespace IM_PJ
                                 {
                                     ProductImage = product.ProductImage;
                                 }
-                                Print += "<td><image src=\"" + ProductImage + "\" /></td> ";
+                                Print += "<td><image src='" + Thumbnail.getURL(ProductImage, Thumbnail.Size.Large) + "' /></td> ";
                                 Print += "<td><strong>" + SKU + "</strong> - " + PJUtils.Truncate(ProductName, 30) + "</td> ";
                             }
                         }
@@ -131,7 +132,7 @@ namespace IM_PJ
                                     }
                                 }
 
-                                Print += "<td><image src=\"" + ProductImage + "\" /></td>";
+                                Print += "<td><image src='" + Thumbnail.getURL(ProductImage, Thumbnail.Size.Large) + "' /></td>";
                                 Print += "<td><p><strong>" + SKU + "</strong> - " + PJUtils.Truncate(ProductName, 30) + "</p><p class=\"variable\">" + item.ProductVariableDescrition.Replace("|", ". ") + "</p></td> ";
                             }
                         }

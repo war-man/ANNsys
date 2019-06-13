@@ -1074,14 +1074,7 @@ namespace IM_PJ.Controllers
 
                 entity.ID = Convert.ToInt32(reader["ID"]);
 
-                if (!string.IsNullOrEmpty(reader["ProductImage"].ToString()))
-                {
-                    entity.ProductImage = reader["ProductImage"].ToString();
-                }
-                else
-                {
-                    entity.ProductImage = "/App_Themes/Ann/image/placeholder.png";
-                }
+                entity.ProductImage = reader["ProductImage"].ToString();
 
                 if (!string.IsNullOrEmpty(reader["ProductImageClean"].ToString()))
                 {

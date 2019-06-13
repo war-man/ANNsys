@@ -179,7 +179,11 @@
             <script type="text/javascript">
                 $(".image-item img").click(function (e) {
                     $("#modalImage").removeClass("hide");
-                    $("#img01").attr("src", $(this).attr("src"));
+
+                    var fullPath = $(this).attr("src");
+                    var filename = fullPath.replace(/^.*[\\\/]/, '');
+                    $("#img01").attr("src", "/uploads/images/" + filename);
+
                     let productName = $(this).parent().parent().find(".name-item").text();
                     let productSKU = " - " + $(this).parent().parent().find(".sku-item").text();
                     let productPrice = " - " + $(this).parent().parent().find(".price-item").text();
@@ -196,7 +200,11 @@
 
                 function openImage(obj) {
                     $("#modalImage").removeClass("hide");
-                    $("#img01").attr("src", $(obj).attr("src"));
+
+                    var fullPath = $(obj).attr("src");
+                    var filename = fullPath.replace(/^.*[\\\/]/, '');
+                    $("#img01").attr("src", "/uploads/images/" + filename);
+
                     let productName = $(obj).parent().parent().find(".name-item").text();
                     let productSKU = " - " + $(obj).parent().parent().find(".sku-item").text();
                     let productPrice = " - " + $(obj).parent().parent().find(".price-item").text();

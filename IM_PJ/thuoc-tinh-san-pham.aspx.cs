@@ -101,15 +101,8 @@ namespace IM_PJ
                 {
                     var item = acs[i];
                     html.Append("<tr>");
-                    if (!string.IsNullOrEmpty(item.Image))
-                    {
-                        html.Append("   <td><img src=\"" + Thumbnail.getURL(item.Image, Thumbnail.Size.Small) + "\"/></td>");
-                    }
-                    else
-                    {
-                        html.Append("   <td><img src=\"/App_Themes/Ann/image/placeholder.png\"/></td>");
-                    }
-                    
+                    html.Append("   <td><img src=\"" + Thumbnail.getURL(item.Image, Thumbnail.Size.Small) + "\"/></td>");
+
                     string date = string.Format("{0:dd/MM/yyyy}", item.CreatedDate);
                     string ishidden = "";
                     if (item.IsHidden != null)

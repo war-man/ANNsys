@@ -373,8 +373,10 @@ namespace IM_PJ
                                         f.SaveAs(Server.MapPath(o));
                                         ProductImage = Path.GetFileName(Server.MapPath(o));
                                         // Thumbnail
-                                        Thumbnail.create(Server.MapPath(o), 85, 85);
-                                        Thumbnail.create(Server.MapPath(o), 160, 160);
+                                        Thumbnail.create(Server.MapPath(o), 85, 113);
+                                        Thumbnail.create(Server.MapPath(o), 159, 212);
+                                        Thumbnail.create(Server.MapPath(o), 240, 320);
+                                        Thumbnail.create(Server.MapPath(o), 350, 467);
                                     }
                                     catch { }
                                 }
@@ -393,8 +395,10 @@ namespace IM_PJ
                                         f.SaveAs(Server.MapPath(o));
                                         ProductImageClean = Path.GetFileName(Server.MapPath(o));
                                         // Thumbnail
-                                        Thumbnail.create(Server.MapPath(o), 85, 85);
-                                        Thumbnail.create(Server.MapPath(o), 160, 160);
+                                        Thumbnail.create(Server.MapPath(o), 85, 113);
+                                        Thumbnail.create(Server.MapPath(o), 159, 212);
+                                        Thumbnail.create(Server.MapPath(o), 240, 320);
+                                        Thumbnail.create(Server.MapPath(o), 350, 467);
                                     }
                                     catch { }
                                 }
@@ -413,8 +417,10 @@ namespace IM_PJ
                                         f.SaveAs(Server.MapPath(o));
                                         IMG = Path.GetFileName(Server.MapPath(o));
                                         // Thumbnail
-                                        Thumbnail.create(Server.MapPath(o), 85, 85);
-                                        Thumbnail.create(Server.MapPath(o), 160, 160);
+                                        Thumbnail.create(Server.MapPath(o), 85, 113);
+                                        Thumbnail.create(Server.MapPath(o), 159, 212);
+                                        Thumbnail.create(Server.MapPath(o), 240, 320);
+                                        Thumbnail.create(Server.MapPath(o), 350, 467);
                                         ProductImageController.Insert(kq.ToInt(), IMG, false, currentDate, username);
                                     }
                                     catch { }
@@ -458,8 +464,10 @@ namespace IM_PJ
                                             postedFile.SaveAs(Server.MapPath(o));
                                             image = Path.GetFileName(Server.MapPath(o));
                                             // Thumbnail
-                                            Thumbnail.create(Server.MapPath(o), 85, 85);
-                                            Thumbnail.create(Server.MapPath(o), 160, 160);
+                                            Thumbnail.create(Server.MapPath(o), 85, 113);
+                                            Thumbnail.create(Server.MapPath(o), 159, 212);
+                                            Thumbnail.create(Server.MapPath(o), 240, 320);
+                                            Thumbnail.create(Server.MapPath(o), 350, 467);
                                         }
 
                                         string kq1 = ProductVariableController.Insert(ProductID, ProductSKU, productvariablesku, 0, stockstatus, Convert.ToDouble(regularprice),

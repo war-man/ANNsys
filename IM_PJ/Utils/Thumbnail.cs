@@ -22,23 +22,23 @@ namespace IM_PJ.Utils
         {
             if (String.IsNullOrEmpty(image))
             {
-                return String.Empty;
+                return "/App_Themes/Ann/image/placeholder.png";
             }
 
             var directory = String.Empty;
             switch (size)
             {
                 case Size.Micro:
-                    directory = "/85x85";
+                    directory = "/85x113";
                     break;
                 case Size.Small:
-                    directory = "/160x160";
+                    directory = "/159x212";
                     break;
                 case Size.Normal:
-                    directory = "/230x230";
+                    directory = "/240x320";
                     break;
                 case Size.Large:
-                    directory = "/350x350";
+                    directory = "/350x367";
                     break;
                 default:
                     directory = String.Empty;

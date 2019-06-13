@@ -148,13 +148,11 @@ namespace IM_PJ
                 {
                     var item = acs[i];
                     html.Append("<div class='col-md-3 product-item'>");
+
+                    html.Append("   <p><img src=\"" + Thumbnail.getURL(item.Image, Thumbnail.Size.Small) + "\"/></p>");
                     if (!string.IsNullOrEmpty(item.Image))
                     {
-                        html.Append("   <p><img src=\"" + Thumbnail.getURL(item.Image, Thumbnail.Size.Small) + "\"/><a href='" + Thumbnail.getURL(item.Image, Thumbnail.Size.Small) + "' download class='btn download-btn h45-btn'><i class='fa fa-cloud-download'></i> Tải hình này</a></p></p>");
-                    }
-                    else
-                    {
-                        html.Append("   <p><img src=\"/App_Themes/Ann/image/placeholder.png\"/></p>");
+                        html.Append("   <p><a href='" + Thumbnail.getURL(item.Image, Thumbnail.Size.Source) + "' download class='btn download-btn h45-btn'><i class='fa fa-cloud-download'></i> Tải hình này</a></p>");
                     }
 
                     var value = ProductVariableValueController.GetByProductVariableID(item.ID);

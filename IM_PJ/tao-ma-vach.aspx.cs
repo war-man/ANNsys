@@ -101,18 +101,13 @@ namespace IM_PJ
 
                                 if (!string.IsNullOrEmpty(pv.Image))
                                 {
-                                    p.ProductImage = "<img src=\"" + Thumbnail.getURL(pv.Image, Thumbnail.Size.Small) + "\" />";
-                                    p.ProductImageOrigin = Thumbnail.getURL(pv.Image, Thumbnail.Size.Small);
+                                    p.ProductImage = "<img src='" + Thumbnail.getURL(pv.Image, Thumbnail.Size.Normal) + "'>";
+                                    p.ProductImageOrigin = Thumbnail.getURL(pv.Image, Thumbnail.Size.Source);
                                 }
                                 else if (!string.IsNullOrEmpty(product.ProductImage))
                                 {
-                                    p.ProductImage = "<img src=\"" + Thumbnail.getURL(product.ProductImage, Thumbnail.Size.Small) + "\" />";
-                                    p.ProductImageOrigin = Thumbnail.getURL(product.ProductImage, Thumbnail.Size.Small);
-                                }
-                                else
-                                {
-                                    p.ProductImage = "<img src=\"/App_Themes/Ann/image/placeholder.png\" />";
-                                    p.ProductImageOrigin = "";
+                                    p.ProductImage = "<img src='" + Thumbnail.getURL(product.ProductImage, Thumbnail.Size.Normal) + "'>";
+                                    p.ProductImageOrigin = Thumbnail.getURL(product.ProductImage, Thumbnail.Size.Source);
                                 }
 
                                 if (gettotal == 1)
@@ -147,18 +142,8 @@ namespace IM_PJ
                         p.ProductVariableName = "";
                         p.ProductVariableValue = "";
                         p.ProductType = 1;
-
-                        if (!string.IsNullOrEmpty(product.ProductImage))
-                        {
-                            p.ProductImage = "<img src=\"" + Thumbnail.getURL(product.ProductImage, Thumbnail.Size.Small) + "\" />";
-                            p.ProductImageOrigin = Thumbnail.getURL(product.ProductImage, Thumbnail.Size.Small);
-                        }
-                        else
-                        {
-                            p.ProductImage = "<img src=\"/App_Themes/Ann/image/placeholder.png\" />";
-                            p.ProductImageOrigin = "";
-                        }
-
+                        p.ProductImage = "<img src='" + Thumbnail.getURL(product.ProductImage, Thumbnail.Size.Normal) + "'>";
+                        p.ProductImageOrigin = Thumbnail.getURL(product.ProductImage, Thumbnail.Size.Source);
                         p.SKU = SKU;
                         p.QuantityMainInstock = mainstock;
                         p.QuantityMainInstockString = string.Format("{0:N0}", mainstock);
@@ -214,18 +199,13 @@ namespace IM_PJ
 
                             if (!string.IsNullOrEmpty(productvariable.Image))
                             {
-                                p.ProductImage = "<img src=\"" + Thumbnail.getURL(productvariable.Image, Thumbnail.Size.Small) + "\" />";
-                                p.ProductImageOrigin = productvariable.Image;
+                                p.ProductImage = "<img src='" + Thumbnail.getURL(productvariable.Image, Thumbnail.Size.Normal) + "'>";
+                                p.ProductImageOrigin = Thumbnail.getURL(productvariable.Image, Thumbnail.Size.Source);
                             }
                             else if (_product != null && !string.IsNullOrEmpty(_product.ProductImage))
                             {
-                                p.ProductImage = "<img src=\"" + Thumbnail.getURL(_product.ProductImage, Thumbnail.Size.Small) + "\" />";
-                                p.ProductImageOrigin = Thumbnail.getURL(_product.ProductImage, Thumbnail.Size.Small);
-                            }
-                            else
-                            {
-                                p.ProductImage = "<img src=\"/App_Themes/Ann/image/placeholder.png\" />";
-                                p.ProductImageOrigin = "";
+                                p.ProductImage = "<img src='" + Thumbnail.getURL(_product.ProductImage, Thumbnail.Size.Normal) + "'>";
+                                p.ProductImageOrigin = Thumbnail.getURL(_product.ProductImage, Thumbnail.Size.Source);
                             }
 
                             p.SKU = SKU;
@@ -277,7 +257,7 @@ namespace IM_PJ
             if (list.Count() > 0)
             {
                 var temps = new List<String>();
-                productPrint += "<div class=\"qcode\">";
+                productPrint += "<div class='qcode'>";
                 for (int i = 0; i < list.Length - 1; i++)
                 {
                   
@@ -293,8 +273,8 @@ namespace IM_PJ
 
                         barCode.Save(HttpContext.Current.Server.MapPath("" + barcodeImage + ""), ImageFormat.Png);
 
-                        productPrint += "<div class=\"item\">";
-                        productPrint += "<div class=\"img\"><img src=\"data:image/png;base64, " + Convert.ToBase64String(File.ReadAllBytes(Server.MapPath("" + barcodeImage + ""))) + "\"></div>";
+                        productPrint += "<div class='item'>";
+                        productPrint += "<div class='img'><img src='data:image/png;base64, " + Convert.ToBase64String(File.ReadAllBytes(Server.MapPath("" + barcodeImage + ""))) + "'></div>";
                         productPrint += "<div><h1>" + barcodeValue + "</h1></div>";
                         productPrint += "</div>";
 

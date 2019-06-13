@@ -63,13 +63,13 @@ namespace IM_PJ
             var supplier = SupplierController.GetAllWithIsHidden(false);
             StringBuilder html = new StringBuilder();
 
-            html.Append("<select id=\"supplierList\" class=\"form-control\" style=\"width: 20%; float: left; margin-right: 10px\">");
-            html.Append("<option value=\"0\">Tất cả nhà cung cấp</option>");
+            html.Append("<select id='supplierList' class='form-control' style='width: 20%; float: left; margin-right: 10px'>");
+            html.Append("<option value='0'>Tất cả nhà cung cấp</option>");
             if (supplier.Count > 0)
             {
                 foreach (var s in supplier)
                 {
-                    html.Append("<option value=\"" + s.ID + "\">" + s.SupplierName + "</option>");
+                    html.Append("<option value='" + s.ID + "'>" + s.SupplierName + "</option>");
                 }
             }
             html.Append("</select>");
@@ -126,16 +126,8 @@ namespace IM_PJ
                                 p.ProductVariableValue = variablevalue;
                                 p.ProductType = 2;
 
-                                if (!string.IsNullOrEmpty(pv.Image))
-                                {
-                                    p.ProductImage = "<img onclick='openImage($(this))' src=\"" + Thumbnail.getURL(pv.Image, Thumbnail.Size.Small) + "\" />";
-                                    p.ProductImageOrigin = pv.Image;
-                                }
-                                else
-                                {
-                                    p.ProductImage = "<img src=\"/App_Themes/Ann/image/placeholder.png\" />";
-                                    p.ProductImageOrigin = "";
-                                }
+                                p.ProductImage = "<img onclick='openImage($(this))' src='" + Thumbnail.getURL(pv.Image, Thumbnail.Size.Normal) + "'>";
+                                p.ProductImageOrigin = Thumbnail.getURL(pv.Image, Thumbnail.Size.Source);
 
                                 p.SKU = pv.SKU.Trim().ToUpper();
 
@@ -170,16 +162,8 @@ namespace IM_PJ
                         p.ProductVariableValue = variablevalue;
                         p.ProductType = 1;
 
-                        if (!string.IsNullOrEmpty(products.ProductImage))
-                        {
-                            p.ProductImage = "<img onclick='openImage($(this))' src=\"" + Thumbnail.getURL(products.ProductImage, Thumbnail.Size.Small) + "\" />";
-                            p.ProductImageOrigin = Thumbnail.getURL(products.ProductImage, Thumbnail.Size.Small);
-                        }
-                        else
-                        {
-                            p.ProductImage = "<img src=\"/App_Themes/Ann/image/placeholder.png\" />";
-                            p.ProductImageOrigin = "";
-                        }
+                        p.ProductImage = "<img onclick='openImage($(this))' src='" + Thumbnail.getURL(products.ProductImage, Thumbnail.Size.Normal) + "'>";
+                        p.ProductImageOrigin = Thumbnail.getURL(products.ProductImage, Thumbnail.Size.Source);
 
                         p.SKU = products.ProductSKU.Trim().ToUpper();
                         int supplierID = 0;
@@ -233,16 +217,8 @@ namespace IM_PJ
                                 p.ProductVariableValue = variablevalue;
                                 p.ProductType = 2;
 
-                                if (!string.IsNullOrEmpty(value.Image))
-                                {
-                                    p.ProductImage = "<img onclick='openImage($(this))' src=\"" + Thumbnail.getURL(value.Image, Thumbnail.Size.Small) + "\" />";
-                                    p.ProductImageOrigin = Thumbnail.getURL(value.Image, Thumbnail.Size.Small);
-                                }
-                                else
-                                {
-                                    p.ProductImage = "<img src=\"/App_Themes/Ann/image/placeholder.png\" />";
-                                    p.ProductImageOrigin = "";
-                                }
+                                p.ProductImage = "<img onclick='openImage($(this))' src='" + Thumbnail.getURL(value.Image, Thumbnail.Size.Normal) + "'>";
+                                p.ProductImageOrigin = Thumbnail.getURL(value.Image, Thumbnail.Size.Source);
 
                                 p.SKU = value.SKU.Trim().ToUpper();
                                 int supplierID = 0;
@@ -386,7 +362,7 @@ namespace IM_PJ
                     if (value.Count() > 1)
                     {
                         var temps = new List<String>();
-                        productPrint += "<div class=\"qcode\">";
+                        productPrint += "<div class='qcode'>";
                         for (int i = 0; i < value.Length - 1; i++)
                         {
 
@@ -402,8 +378,8 @@ namespace IM_PJ
 
                                 barCode.Save(HttpContext.Current.Server.MapPath("" + barcodeImage + ""), ImageFormat.Png);
 
-                                productPrint += "<div class=\"item\">";
-                                productPrint += "<div class=\"img\"><img src=\"data:image/png;base64, " + Convert.ToBase64String(File.ReadAllBytes(Server.MapPath("" + barcodeImage + ""))) + "\"></div>";
+                                productPrint += "<div class='item'>";
+                                productPrint += "<div class='img'><img src='data:image/png;base64, " + Convert.ToBase64String(File.ReadAllBytes(Server.MapPath("" + barcodeImage + ""))) + "'></div>";
                                 productPrint += "<div><h1>" + barcodeValue + "</h1></div>";
                                 productPrint += "</div>";
 
