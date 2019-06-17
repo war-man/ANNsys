@@ -139,7 +139,7 @@ namespace IM_PJ
                     ViewState["SKU"] = p.ProductSKU;
                     hdfParentID.Value = p.CategoryID.ToString();
                     hdfsetStyle.Value = p.ProductStyle.ToString();
-                    ltrBack.Text = "<a href=\"/xem-san-pham?id=" + p.ID + "\" class=\"btn primary-btn fw-btn not-fullwidth\">Trở về</a>";
+                    ltrBack.Text = "<a href='/xem-san-pham?id=" + p.ID + "' class='btn primary-btn fw-btn not-fullwidth'>Trở về</a>";
                     txtProductTitle.Text = p.ProductTitle;
                     pContent.Content = p.ProductContent;
                     txtProductSKU.Text = p.ProductSKU;
@@ -157,22 +157,22 @@ namespace IM_PJ
                     if(p.ProductImage != null)
                     {
                         ListProductThumbnail.Value = p.ProductImage;
-                        ProductThumbnail.ImageUrl = p.ProductImage;
+                        ProductThumbnail.ImageUrl = Thumbnail.getURL(p.ProductImage, Thumbnail.Size.Normal);
                     }
 
                     if (p.ProductImageClean != null)
                     {
                         ListProductThumbnailClean.Value = p.ProductImageClean;
-                        ProductThumbnailClean.ImageUrl = p.ProductImageClean;
+                        ProductThumbnailClean.ImageUrl = Thumbnail.getURL(p.ProductImageClean, Thumbnail.Size.Normal);
                     }
 
                     var image = ProductImageController.GetByProductID(id);
-                    imageGallery.Text = "<ul class=\"image-gallery\">";
+                    imageGallery.Text = "<ul class='image-gallery'>";
                     if (image != null)
                     {
                         foreach (var img in image)
                         {
-                            imageGallery.Text += "<li><img src='" + Thumbnail.getURL(img.ProductImage, Thumbnail.Size.Small) + "' /><a href='javascript:;' data-image-id='" + img.ID + "' onclick='deleteImageGallery($(this))' class='btn-delete'><i class=\"fa fa-times\" aria-hidden=\"true\"></i> Xóa hình</a></li>";
+                            imageGallery.Text += "<li><img src='" + Thumbnail.getURL(img.ProductImage, Thumbnail.Size.Normal) + "' /><a href='javascript:;' data-image-id='" + img.ID + "' onclick='deleteImageGallery($(this))' class='btn-delete'><i class=\"fa fa-times\" aria-hidden=\"true\"></i> Xóa hình</a></li>";
                         }
                     }
                     imageGallery.Text += "</ul>";
@@ -194,12 +194,11 @@ namespace IM_PJ
                             double CostOfGood = Convert.ToDouble(item.CostOfGood);
                             int MinimumInventoryLevel = Convert.ToInt32(item.MinimumInventoryLevel);
                             int MaximumInventoryLevel = Convert.ToInt32(item.MaximumInventoryLevel);
-                            string VariableImage = "/App_Themes/Ann/image/placeholder.png";
-                            string deleteVariableImage = "<a href='javascript:;' onclick='deleteImageVariable($(this))' class='btn-delete hide'><i class=\"fa fa-times\" aria-hidden=\"true\"></i> Xóa hình</a>";
+                            string VariableImage = Thumbnail.getURL(item.Image, Thumbnail.Size.Source);
+                            string deleteVariableImage = "<a href='javascript:;' onclick='deleteImageVariable($(this))' class='btn-delete hide'><i class='fa fa-times' aria-hidden='true'></i> Xóa hình</a>";
                             if (!string.IsNullOrEmpty(item.Image))
                             {
-                                VariableImage = Thumbnail.getURL(item.Image, Thumbnail.Size.Small);
-                                deleteVariableImage = "<a href='javascript:;' onclick='deleteImageVariable($(this))' class='btn-delete'><i class=\"fa fa-times\" aria-hidden=\"true\"></i> Xóa hình</a>";
+                                deleteVariableImage = "<a href='javascript:;' onclick='deleteImageVariable($(this))' class='btn-delete'><i class='fa fa-times' aria-hidden='true'></i> Xóa hình</a>";
                             }
 
                             var value = ProductVariableValueController.GetByProductVariableID(item.ID);
@@ -300,7 +299,7 @@ namespace IM_PJ
                     MaximumInventoryLevel = Convert.ToDouble(pMaximumInventoryLevel.Text);
                 }
 
-                //Phần thêm ảnh đại diện sản phẩm
+                //Phần cap nhat ảnh đại diện sản phẩm
                 string path = "/uploads/images/";
                 string ProductImage = ListProductThumbnail.Value;
                 if (ProductThumbnailImage.UploadedFiles.Count > 0)
@@ -310,20 +309,26 @@ namespace IM_PJ
                         var o = path + ProductID + '-' + Slug.ConvertToSlug(Path.GetFileName(f.FileName));
                         try
                         {
+                            if (File.Exists(Server.MapPath(o)))
+                            {
+                                o = path + ProductID + '-' + DateTime.UtcNow.ToString("HHmmssffff") + '-' + Slug.ConvertToSlug(Path.GetFileName(f.FileName));
+                            }
+
                             f.SaveAs(Server.MapPath(o));
-                            ProductImage = o;
+
+                            // Thumbnail
+                            Thumbnail.create(Server.MapPath(o), 85, 113);
+                            Thumbnail.create(Server.MapPath(o), 159, 212);
+                            Thumbnail.create(Server.MapPath(o), 240, 320);
+                            Thumbnail.create(Server.MapPath(o), 350, 467);
+
+                            ProductImage = Path.GetFileName(Server.MapPath(o));
                         }
                         catch { }
                     }
                 }
 
-                if (ProductImage != ListProductThumbnail.Value)
-                {
-                    if (File.Exists(Server.MapPath(ListProductThumbnail.Value)))
-                    {
-                        File.Delete(Server.MapPath(ListProductThumbnail.Value));
-                    }
-                }
+                
 
                 //Phần thêm ảnh đại diện sản phẩm sạch không đóng dấu
                 string ProductImageClean = ListProductThumbnailClean.Value;
@@ -331,21 +336,25 @@ namespace IM_PJ
                 {
                     foreach (UploadedFile f in ProductThumbnailImageClean.UploadedFiles)
                     {
-                        var o = path + ProductID + '-' + Slug.ConvertToSlug(Path.GetFileName(f.FileName));
+                        var o = path + ProductID + "-clean-" + Slug.ConvertToSlug(Path.GetFileName(f.FileName));
                         try
                         {
+                            if (File.Exists(Server.MapPath(o)))
+                            {
+                                o = path + ProductID + "-clean-" + DateTime.UtcNow.ToString("HHmmssffff") + '-' + Slug.ConvertToSlug(Path.GetFileName(f.FileName));
+                            }
+
                             f.SaveAs(Server.MapPath(o));
-                            ProductImageClean = o;
+
+                            // Thumbnail
+                            Thumbnail.create(Server.MapPath(o), 85, 113);
+                            Thumbnail.create(Server.MapPath(o), 159, 212);
+                            Thumbnail.create(Server.MapPath(o), 240, 320);
+                            Thumbnail.create(Server.MapPath(o), 350, 467);
+
+                            ProductImageClean = Path.GetFileName(Server.MapPath(o));
                         }
                         catch { }
-                    }
-                }
-
-                if (ProductImageClean != ListProductThumbnailClean.Value)
-                {
-                    if (File.Exists(Server.MapPath(ListProductThumbnailClean.Value)))
-                    {
-                        File.Delete(Server.MapPath(ListProductThumbnailClean.Value));
                     }
                 }
 
@@ -353,23 +362,15 @@ namespace IM_PJ
 
                 string deleteImageGallery = hdfDeleteImageGallery.Value;
 
-                if(deleteImageGallery != "")
+                if (deleteImageGallery != "")
                 {
                     string[] deletelist = deleteImageGallery.Split(',');
 
                     for(int i = 0; i < deletelist.Length - 1; i++)
                     {
                         var img = ProductImageController.GetByID(Convert.ToInt32(deletelist[i]));
-                        if(img != null)
+                        if (img != null)
                         {
-                            var product = ProductController.GetByID(ProductID);
-
-                            // Delete image
-                            if (!string.IsNullOrEmpty(img.ProductImage) && img.ProductImage != product.ProductImage)
-                            {
-                                string fileImage = Server.MapPath(img.ProductImage);
-                                File.Delete(fileImage);
-                            }
                             string delete = ProductImageController.Delete(img.ID);
                         }
                     }
@@ -384,16 +385,30 @@ namespace IM_PJ
 
                 // Upload image gallery
 
+                string itemGallery = "";
                 if (UploadImages.HasFiles)
                 {
                     foreach (HttpPostedFile uploadedFile in UploadImages.PostedFiles)
                     {
                         var o = path + ProductID + '-' + Slug.ConvertToSlug(Path.GetFileName(uploadedFile.FileName));
+
+                        if (File.Exists(Server.MapPath(o)))
+                        {
+                            o = path + ProductID + '-' + DateTime.UtcNow.ToString("HHmmssffff") + '-' + Slug.ConvertToSlug(Path.GetFileName(uploadedFile.FileName));
+                        }
+
                         uploadedFile.SaveAs(Server.MapPath(o));
-                        ProductImageController.Insert(ProductID, o, false, DateTime.Now, username);
+
+                        // Thumbnail
+                        Thumbnail.create(Server.MapPath(o), 85, 113);
+                        Thumbnail.create(Server.MapPath(o), 159, 212);
+                        Thumbnail.create(Server.MapPath(o), 240, 320);
+                        Thumbnail.create(Server.MapPath(o), 350, 467);
+
+                        itemGallery = Path.GetFileName(Server.MapPath(o));
+                        ProductImageController.Insert(ProductID, itemGallery, false, DateTime.Now, username);
                     }
                 }
-
 
 
                 if (kq.ToInt(0) > 0)
@@ -436,42 +451,36 @@ namespace IM_PJ
                                     string image = Variable.Image;
                                     if (imageSrc == "/App_Themes/Ann/image/placeholder.png")
                                     {
-                                        // Delete old image
-                                        if (!string.IsNullOrEmpty(Variable.Image))
-                                        {
-                                            string fileImage = Server.MapPath(Variable.Image);
-                                            File.Delete(fileImage);
-                                            image = "";
-                                        }
+                                        image = "";
                                     }
                                     else
                                     {
-                                        if (imageSrc != Variable.Image)
+                                        if (imageSrc != path + Variable.Image)
                                         {
                                             HttpPostedFile postedFile = Request.Files["" + imageUpload + ""];
                                             if (postedFile != null && postedFile.ContentLength > 0)
                                             {
                                                 // Upload image
                                                 var o = path + ProductID + '-' + Slug.ConvertToSlug(Path.GetFileName(postedFile.FileName));
-                                                postedFile.SaveAs(Server.MapPath(o));
-                                                image = o;
 
-                                                // Delete old image
-                                                if (!string.IsNullOrEmpty(Variable.Image))
+                                                if (File.Exists(Server.MapPath(o)))
                                                 {
-                                                    string fileImage = Server.MapPath(Variable.Image);
-                                                    File.Delete(fileImage);
+                                                    o = path + ProductID + '-' + DateTime.UtcNow.ToString("HHmmssffff") + '-' + Slug.ConvertToSlug(Path.GetFileName(postedFile.FileName));
                                                 }
+
+                                                postedFile.SaveAs(Server.MapPath(o));
+
+                                                // Thumbnail
+                                                Thumbnail.create(Server.MapPath(o), 85, 113);
+                                                Thumbnail.create(Server.MapPath(o), 159, 212);
+                                                Thumbnail.create(Server.MapPath(o), 240, 320);
+                                                Thumbnail.create(Server.MapPath(o), 350, 467);
+
+                                                image = Path.GetFileName(Server.MapPath(o));
                                             }
                                             else
                                             {
-                                                // Delete old image
-                                                if (!string.IsNullOrEmpty(Variable.Image))
-                                                {
-                                                    string fileImage = Server.MapPath(Variable.Image);
-                                                    File.Delete(fileImage);
-                                                    image = "";
-                                                }
+                                                image = "";
                                             }
                                         }
                                     }
@@ -493,8 +502,21 @@ namespace IM_PJ
                                     {
                                         // Upload image
                                         var o = path + ProductID + '-' + Slug.ConvertToSlug(Path.GetFileName(postedFile.FileName));
+
+                                        if (File.Exists(Server.MapPath(o)))
+                                        {
+                                            o = path + ProductID + '-' + DateTime.UtcNow.ToString("HHmmssffff") + '-' + Slug.ConvertToSlug(Path.GetFileName(postedFile.FileName));
+                                        }
+
                                         postedFile.SaveAs(Server.MapPath(o));
-                                        image = o;
+
+                                        // Thumbnail
+                                        Thumbnail.create(Server.MapPath(o), 85, 113);
+                                        Thumbnail.create(Server.MapPath(o), 159, 212);
+                                        Thumbnail.create(Server.MapPath(o), 240, 320);
+                                        Thumbnail.create(Server.MapPath(o), 350, 467);
+
+                                        image = Path.GetFileName(Server.MapPath(o));
                                     }
 
                                     // Insert new variable

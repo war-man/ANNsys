@@ -132,7 +132,7 @@
                                 </div>
                                 <div class="col-md-2 col-xs-6">
                                     <asp:DropDownList ID="ddlStockStatus" runat="server" CssClass="form-control">
-                                        <asp:ListItem Value="" Text="Trạng thái"></asp:ListItem>
+                                        <asp:ListItem Value="" Text="Trạng thái kho"></asp:ListItem>
                                         <asp:ListItem Value="1" Text="Còn hàng"></asp:ListItem>
                                         <asp:ListItem Value="2" Text="Hết hàng"></asp:ListItem>
                                         <asp:ListItem Value="3" Text="Nhập hàng"></asp:ListItem>
@@ -167,7 +167,14 @@
                     <div class="filter-above-wrap clear">
                         <div class="filter-control">
                             <div class="row">
-                                <div class="col-md-7">
+                                <div class="col-md-5">
+                                </div>
+                                <div class="col-md-2 col-xs-6">
+                                    <asp:DropDownList ID="ddlWebPublish" runat="server" CssClass="form-control">
+                                        <asp:ListItem Value="" Text="Trang xem hàng"></asp:ListItem>
+                                        <asp:ListItem Value="false" Text="Đang ẩn"></asp:ListItem>
+                                        <asp:ListItem Value="true" Text="Đang hiện"></asp:ListItem>
+                                    </asp:DropDownList>
                                 </div>
                                 <div class="col-md-2 col-xs-6">
                                     <asp:DropDownList ID="ddlQuantityFilter" runat="server" CssClass="form-control" onchange="changeQuantityFilter($(this))">
@@ -279,8 +286,18 @@
                     data: "{id: '" + productID + "', value: '" + update + "'}",
                     contentType: "application/json; charset=utf-8",
                     dataType: "json",
+                    beforeSend: function () {
+                        HoldOn.open();
+                    },
                     success: function (msg) {
-                        if (msg.d == "true") {
+                        HoldOn.close();
+                        if (msg.d == "nocleanimage") {
+                            swal("Thông báo", "Sản phẩm này chưa có hình đại diện sạch!", "warning");
+                        }
+                        else if (msg.d == "sameimage") {
+                            swal("Thông báo", "Có thể hình đại diện sạch giống với hình có mã.<br> Hãy kiểm tra lại!", "warning");
+                        }
+                        else if (msg.d == "true") {
                             if (update == 1) {
                                 $('#showHomePage_' + productID).html("<a href='javascript:;' data-product-id='" + productID + "' data-update='0' class='bg-green bg-button' onclick='updateShowHomePage($(this))'>Đang hiện</a>");
                                 $(".up-product-" + productID).removeClass("hide");
@@ -293,6 +310,9 @@
                         else {
                             alert("Lỗi");
                         }
+                    },
+                    complete: function () {
+                        HoldOn.close();
                     }
                 });
             }
@@ -306,6 +326,9 @@
                     data: "{id: '" + productID + "', value: " + update + "}",
                     contentType: "application/json; charset=utf-8",
                     dataType: "json",
+                    beforeSend: function () {
+                        HoldOn.open();
+                    },
                     success: function (msg) {
                         if (msg.d == "true") {
                             if (update == "true") {
@@ -320,6 +343,9 @@
                         else {
                             alert("Lỗi");
                         }
+                    },
+                    complete: function () {
+                        HoldOn.close();
                     }
                 });
             }
@@ -331,13 +357,19 @@
                     data: "{id: '" + productID + "'}",
                     contentType: "application/json; charset=utf-8",
                     dataType: "json",
+                    beforeSend: function () {
+                        HoldOn.open();
+                    },
                     success: function (msg) {
                         if (msg.d == "true") {
-                            alert("Up thành công");
+                            swal("Thông báo", "Up thành công!", "success");
                         }
                         else {
                             alert("Lỗi");
                         }
+                    },
+                    complete: function () {
+                        HoldOn.close();
                     }
                 });
             }

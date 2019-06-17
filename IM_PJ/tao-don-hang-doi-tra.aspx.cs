@@ -74,6 +74,16 @@ namespace IM_PJ
                     ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "script", script, true);
                 }
             }
+
+            var username = HttpContext.Current.Request["username"];
+            if (!String.IsNullOrEmpty(username))
+            {
+                var user = AccountController.GetByUsername(username);
+                if(user != null)
+                {
+                    hdfUsernameCurrent.Value = username;
+                }
+            }
         }
 
         [WebMethod]
@@ -221,10 +231,12 @@ namespace IM_PJ
                 {
                     // Change user
                     string RefundNote = "";
+                    string redirectToUsername = "";
                     if (username != hdfUsernameCurrent.Value)
                     {
                         RefundNote = "Được tạo giúp bởi " + username;
                         username = hdfUsernameCurrent.Value;
+                        redirectToUsername = hdfUsernameCurrent.Value;
                     }
 
                     agentID = Convert.ToInt32(a.AgentID);
@@ -368,7 +380,7 @@ namespace IM_PJ
                                             }
                                         }
                                     }
-                                    PJUtils.ShowMessageBoxSwAlertCallFunction("Tạo đơn hàng đổi trả thành công", "s", true, "redirectTo(" + rID + ")", Page);
+                                    PJUtils.ShowMessageBoxSwAlertCallFunction("Tạo đơn hàng đổi trả thành công", "s", true, "redirectTo(" + rID + ",'" + redirectToUsername + "')", Page);
                                 }
                             }
                         }

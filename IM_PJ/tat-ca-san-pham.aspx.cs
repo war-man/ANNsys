@@ -14,6 +14,8 @@ using System.Web.Script.Serialization;
 using System.Web.Services;
 using static IM_PJ.Controllers.ProductController;
 using IM_PJ.Utils;
+using System.Drawing;
+using System.Web.Hosting;
 
 namespace IM_PJ
 {
@@ -82,6 +84,7 @@ namespace IM_PJ
                 int CategoryID = 0;
                 int StockStatus = 0;
                 string ShowHomePage = "";
+                string WebPublish = "";
                 string QuantityFilter = "";
                 int Quantity = 0;
                 int QuantityMin = 0;
@@ -97,6 +100,8 @@ namespace IM_PJ
                     CreatedDate = Request.QueryString["createddate"];
                 if (Request.QueryString["showhomepage"] != null)
                     ShowHomePage = Request.QueryString["showhomepage"];
+                if (Request.QueryString["webpublish"] != null)
+                    WebPublish = Request.QueryString["webpublish"];
 
                 if (Request.QueryString["quantityfilter"] != null)
                 {
@@ -118,7 +123,7 @@ namespace IM_PJ
                 ddlCreatedDate.SelectedValue = CreatedDate.ToString();
                 ddlStockStatus.SelectedValue = StockStatus.ToString();
                 ddlShowHomePage.SelectedValue = ShowHomePage.ToString();
-
+                ddlWebPublish.SelectedValue = WebPublish.ToString();
                 ddlQuantityFilter.SelectedValue = QuantityFilter.ToString();
                 txtQuantity.Text = Quantity.ToString();
                 txtQuantityMin.Text = QuantityMin.ToString();
@@ -135,6 +140,11 @@ namespace IM_PJ
                 if(ShowHomePage != "")
                 {
                     a = a.Where(p => p.ShowHomePage == ShowHomePage.ToInt()).ToList();
+                }
+
+                if (WebPublish != "")
+                {
+                    a = a.Where(p => p.WebPublish == WebPublish.ToBool()).ToList();
                 }
 
                 if (CreatedDate != "")
@@ -204,7 +214,7 @@ namespace IM_PJ
             List<string> images = new List<string>();
             if (product != null)
             {
-                images.Add(product.ProductImage);
+                images.Add(Thumbnail.getURL(product.ProductImage, Thumbnail.Size.Source));
 
                 // lấy ảnh sản phẩm từ thư viện
 
@@ -214,10 +224,9 @@ namespace IM_PJ
                 {
                     foreach (var img in imageProduct)
                     {
-                        images.Add(img.ProductImage);
+                        images.Add(Thumbnail.getURL(img.ProductImage, Thumbnail.Size.Source));
                     }
                 }
-                
 
                 // lấy ảnh sản phẩm từ biến thể
 
@@ -227,7 +236,7 @@ namespace IM_PJ
                 {
                     foreach (var v in variable)
                     {
-                        images.Add(v.Image);
+                        images.Add(Thumbnail.getURL(v.Image, Thumbnail.Size.Source));
                     }
                 }
 
@@ -235,18 +244,84 @@ namespace IM_PJ
             JavaScriptSerializer serializer = new JavaScriptSerializer();
             return serializer.Serialize(images.Distinct().ToList());
         }
+        public static bool CompareBitmapsLazy(Bitmap bmp1, Bitmap bmp2)
+        {
+            if (bmp1 == null || bmp2 == null)
+                return false;
+            if (object.Equals(bmp1, bmp2))
+                return true;
+            if (!bmp1.Size.Equals(bmp2.Size) || !bmp1.PixelFormat.Equals(bmp2.PixelFormat))
+                return false;
+
+            //Compare bitmaps using GetPixel method
+            for (int column = 0; column < bmp1.Width; column++)
+            {
+                for (int row = 0; row < bmp1.Height; row++)
+                {
+                    if (!bmp1.GetPixel(column, row).Equals(bmp2.GetPixel(column, row)))
+                        return false;
+                }
+            }
+
+            return true;
+        }
         [WebMethod]
         public static string updateShowHomePage(int id, int value)
         {
-            string update = ProductController.updateShowHomePage(id, value);
-            if(update != null)
+            // Kiểm tra hành động đang cho ẩn hay hiện
+            if(value == 0)
             {
-                return "true";
+                // Đang cho ẩn thì thực hiện luôn (không cần kiểm tra sản phẩm)
+                string update = ProductController.updateShowHomePage(id, value);
+
+                if (update != null)
+                {
+                    return "true";
+                }
+                else
+                {
+                    return "false";
+                }
             }
             else
             {
-                return "false";
+                // Đang cho hiện thì kiểm tra sản phẩm
+                var product = ProductController.GetByID(id);
+
+                if (String.IsNullOrEmpty(product.ProductImage) || String.IsNullOrEmpty(product.ProductImageClean))
+                {
+                    return "nocleanimage";
+                }
+                else
+                {
+                    // so sánh 2 hình ảnh đại diện
+                    var rootPath = HostingEnvironment.ApplicationPhysicalPath;
+
+                    Bitmap bmp1 = (Bitmap)Bitmap.FromFile(rootPath + Thumbnail.getURL(product.ProductImage, Thumbnail.Size.Source));
+                    Bitmap bmp2 = (Bitmap)Bitmap.FromFile(rootPath + Thumbnail.getURL(product.ProductImageClean, Thumbnail.Size.Source));
+
+                    if (CompareBitmapsLazy(bmp1, bmp2))
+                    {
+                        // Nếu giống nhau
+                        return "sameimage";
+                    }
+                    else
+                    {
+                        // Nếu khác nhau thì tiến hành update
+                        string update = ProductController.updateShowHomePage(id, value);
+
+                        if (update != null)
+                        {
+                            return "true";
+                        }
+                        else
+                        {
+                            return "false";
+                        }
+                    }
+                }
             }
+            
         }
         [WebMethod]
         public static string updateWebPublish(int id, bool value)
@@ -273,6 +348,151 @@ namespace IM_PJ
             {
                 return "false";
             }
+        }
+        [WebMethod]
+        public static string deleteProduct(int id)
+        {
+            var product = ProductController.GetByID(id);
+
+            if(product != null)
+            {
+                // Kiểm tra sản phẩm này đã bán chưa?
+                if(product.ProductStyle == 1)
+                {
+                    var order = OrderDetailController.GetByProductID(product.ID);
+                    if (order != null)
+                    {
+                        return "orderfound";
+                    }
+                }
+                else
+                {
+                    // Kiểm tra biến thể của sản phẩm này đã bán chưa?
+                    var variables = ProductVariableController.GetAllByParentID(product.ID);
+
+                    foreach (var item in variables)
+                    {
+                        var order = OrderDetailController.GetByProductVariableID(item.ID);
+                        if (order.Count() > 0)
+                        {
+                            return "orderfound";
+                        }
+                    }
+                }
+
+                // Xóa biến thể
+                if (product.ProductStyle == 2)
+                {
+                    // Xóa giá trị biến thể
+                    var variables = ProductVariableController.GetAllByParentID(product.ID);
+                    foreach(var item in variables)
+                    {
+                        var removeVariableValue = ProductVariableValueController.DeleteByProductVariableID(item.ID);
+                    }
+
+                    // Xóa biến thể
+                    var removeVariable = ProductVariableController.deleteVariable(product.ID);
+                }
+
+                // Xóa hình sản phẩm trong database
+                var removeProductImage = ProductImageController.deleteAll(product.ID);
+
+                // Xóa nhập kho
+                var removeStock = StockManagerController.deleteAll(product.ID);
+
+                // Xóa sản phẩm cha
+                string delete = ProductController.deleteProduct(product.ID);
+                if (delete != null)
+                {
+                    return "true";
+                }
+                else
+                {
+                    return "false";
+                }
+            }
+
+            return "false";
+        }
+        [WebMethod]
+        public static string updateProductSKU(string oldSKU, string newSKU)
+        {
+            oldSKU = oldSKU.Trim().ToUpper();
+            newSKU = newSKU.Trim().ToUpper();
+
+            var product = ProductController.GetBySKU(oldSKU);
+
+            if (product != null)
+            {
+                // Kiểm tra sản phẩm này đã bán chưa?
+                if (product.ProductStyle == 1)
+                {
+                    var order = OrderDetailController.GetByProductID(product.ID);
+                    if (order != null)
+                    {
+                        return "orderfound";
+                    }
+                }
+                else
+                {
+                    // Kiểm tra biến thể của sản phẩm này đã bán hoặc nhập kho chưa?
+                    var variables = ProductVariableController.GetAllByParentID(product.ID);
+
+                    foreach (var item in variables)
+                    {
+                        var order = OrderDetailController.GetByProductVariableID(item.ID);
+                        if (order.Count() > 0)
+                        {
+                            return "orderfound";
+                        }
+                    }
+                }
+
+                // Kiểm tra sản phẩm đã nhập kho chưa?
+
+                var stock = StockManagerController.GetByParentID(product.ID);
+
+                if (stock.Count() > 0)
+                {
+                    return "stockfound";
+                }
+
+                // Kiểm tra SKU mới có tồn tại chưa?
+                var checkNewSKU = ProductController.GetBySKU(newSKU);
+
+                if(checkNewSKU != null)
+                {
+                    return "newskuexist";
+                }
+
+                // cập nhật SKU biến thể
+                if (product.ProductStyle == 2)
+                {
+                    // Cập nhật sku trong giá trị biến thể
+                    var variables = ProductVariableController.GetAllByParentID(product.ID);
+                    foreach (var item in variables)
+                    {
+                        ProductVariableValueController.updateSKU(item.ID, product.ProductSKU, newSKU);
+                    }
+
+                    // cập nhật SKU biến thể gốc
+                    ProductVariableController.updateSKU(product.ID, newSKU);
+                }
+
+                // Cập nhật SKU sản phẩm cha
+                string update = ProductController.updateSKU(product.ID, newSKU);
+
+                if (update != null)
+                {
+                    return "true";
+                }
+                else
+                {
+                    return "false";
+                }
+            }
+
+            return "false";
         }
         [WebMethod]
         public static string copyProductInfo(int id)
@@ -667,6 +887,11 @@ namespace IM_PJ
             if (ddlShowHomePage.SelectedValue != "")
             {
                 request += "&showhomepage=" + ddlShowHomePage.SelectedValue;
+            }
+
+            if (ddlWebPublish.SelectedValue != "")
+            {
+                request += "&webpublish=" + ddlWebPublish.SelectedValue;
             }
 
             if (ddlQuantityFilter.SelectedValue != "")

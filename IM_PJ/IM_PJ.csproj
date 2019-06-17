@@ -651,7 +651,6 @@
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Site.Master" />
-    <Content Include="tao-lenh-chuyen-hang.aspx" />
     <Content Include="tao-ma-vach.aspx" />
     <Content Include="tao-san-pham.aspx" />
     <Content Include="tat-ca-nhan-vien.aspx" />
@@ -1432,13 +1431,6 @@
       <DependentUpon>Site.Mobile.Master</DependentUpon>
     </Compile>
     <Compile Include="Startup.cs" />
-    <Compile Include="tao-lenh-chuyen-hang.aspx.cs">
-      <DependentUpon>tao-lenh-chuyen-hang.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="tao-lenh-chuyen-hang.aspx.designer.cs">
-      <DependentUpon>tao-lenh-chuyen-hang.aspx</DependentUpon>
-    </Compile>
     <Compile Include="tao-ma-vach.aspx.cs">
       <DependentUpon>tao-ma-vach.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>

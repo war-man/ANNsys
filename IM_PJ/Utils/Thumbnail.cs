@@ -70,14 +70,14 @@ namespace IM_PJ.Utils
                 // Then crop the left and right edges:
                 var new_width = Convert.ToInt32(ideal_aspect * height);
                 offset = (width - new_width) / 2;
-                resize = new Rectangle(offset, 0, width - offset, height);
+                resize = new Rectangle(offset, 0, new_width, height);
             }
             else
             {
                 // ... crop the top and bottom:
                 var new_height = Convert.ToInt32(width / ideal_aspect);
                 offset = (height - new_height) / 2;
-                resize = new Rectangle(0, offset, width, height - offset);
+                resize = new Rectangle(0, offset, width, new_height);
             }
 
             var dir_thumb_1 = String.Format("{0}/{1}x{2}", directory, ideal_width, ideal_height);

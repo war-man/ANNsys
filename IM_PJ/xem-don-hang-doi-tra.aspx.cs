@@ -69,9 +69,41 @@ namespace IM_PJ
 
                         if (acc.RoleID != 0)
                         {
+                            // Kiểm tra nếu đơn hàng này không "chính chủ"
                             if (r.CreatedBy != acc.Username)
                             {
-                                PJUtils.ShowMessageBoxSwAlertError("Đơn hàng này không phải của bạn", "e", true, "/danh-sach-don-tra-hang", Page);
+                                // Kiểm tra đơn hàng này có đang được tạo giúp bởi nhân viên khác không?
+                                var usernameRequest = HttpContext.Current.Request["username"];
+                                if (!String.IsNullOrEmpty(usernameRequest))
+                                {
+                                    var userRequest = AccountController.GetByUsername(usernameRequest);
+                                    if (userRequest == null)
+                                    {
+                                        PJUtils.ShowMessageBoxSwAlertError("Không tìm thấy nhân viên " + usernameRequest, "e", true, "/danh-sach-don-tra-hang", Page);
+                                    }
+                                    else
+                                    {
+                                        if (usernameRequest != r.CreatedBy)
+                                        {
+                                            PJUtils.ShowMessageBoxSwAlertError("Đơn hàng này không phải của " + usernameRequest, "e", true, "/danh-sach-don-tra-hang", Page);
+                                        }
+                                        else
+                                        {
+                                            if (r.RefundNote.Trim() != "Được tạo giúp bởi " + acc.Username + ".")
+                                            {
+                                                PJUtils.ShowMessageBoxSwAlertError("Đơn hàng này không phải do bạn tạo giúp", "e", true, "/danh-sach-don-tra-hang", Page);
+                                            }
+                                            else
+                                            {
+                                                PJUtils.ShowMessageBoxSwAlertError("Đơn hàng này do bạn tạo giúp. Nhấn OK để tiếp tục xử lý!", "i", false, "", Page);
+                                            }
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    PJUtils.ShowMessageBoxSwAlertError("Đơn hàng này không phải của bạn", "e", true, "/danh-sach-don-tra-hang", Page);
+                                }
                             }
                         }
                         

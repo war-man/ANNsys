@@ -167,7 +167,7 @@ namespace IM_PJ
                     html.Append("<div class='col-md-3 item-" + i + " product-item'>");
                     html.Append("<div class='row'>");
                     html.Append("     <div class='col-xs-12'>");
-                    html.Append("   <p><a href='/xem-sp?id=" + Thumbnail.getURL(item.ProductImage, Thumbnail.Size.Small) + "'><img src='" + Thumbnail.getURL(item.ProductImage, Thumbnail.Size.Small) + "'></a></p>");
+                    html.Append("   <p><a href='/xem-sp?id=" + item.ID + "'><img src='" + Thumbnail.getURL(item.ProductImage, Thumbnail.Size.Large) + "'></a></p>");
                     html.Append("   <h3 class='product-name'><a href='/xem-sp?id=" + item.ID + "'>" + item.ProductSKU + " - " + item.ProductTitle + "</a></h3>");
                     html.Append("   <h3 class='product-price'>📌 " + string.Format("{0:N0}", item.RegularPrice) + "</h3>");
 
@@ -191,12 +191,12 @@ namespace IM_PJ
                     html.Append("     <div class='col-xs-12'>");
                     html.Append("          <div class='" + cssClass + "'>");
                     html.Append("               <div class='row'>");
-                    html.Append("                  <a href=\"javascript:;\" class=\"btn primary-btn copy-btn h45-btn\" onclick=\"copyProductInfo(" + item.ID + ")\"><i class=\"fa fa-files-o\" aria-hidden=\"true\"></i> Copy</a>");
+                    html.Append("                  <a href='javascript:;' class='btn primary-btn copy-btn h45-btn' onclick='copyProductInfo(" + item.ID + ");'><i class='fa fa-files-o' aria-hidden='true'></i> Copy</a>");
                     html.Append("               </div>");
                     html.Append("          </div>");
                     html.Append("          <div class='" + cssClass + "'>");
                     html.Append("               <div class='row'>");
-                    html.Append("                  <a href =\"javascript:;\" class=\"btn primary-btn h45-btn\" onclick=\"getAllProductImage('" + item.ProductSKU + "');\"><i class=\"fa fa-cloud-download\" aria-hidden=\"true\"></i> Tải hình</a>");
+                    html.Append("                  <a href ='javascript:;' class='btn primary-btn h45-btn' onclick='getAllProductImage(\"" + item.ProductSKU + "\");'><i class='fa fa-cloud-download' aria-hidden='true'></i> Tải hình</a>");
                     html.Append("               </div>");
                     html.Append("          </div>");
 
@@ -204,7 +204,7 @@ namespace IM_PJ
                     {
                         html.Append("          <div class='col-xs-4'>");
                         html.Append("               <div class='row'>");
-                        html.Append("                  <a href =\"javascript:;\" class=\"btn primary-btn h45-btn hidden-" + item.ID + " download-btn\" onclick=\"ShowUpProductToWeb('" + item.ProductSKU + "', '" + item.ID + "', '" + item.CategoryID + "', 'false', 'false', 'hidden');\"><i class=\"fa fa-times\" aria-hidden=\"true\"></i> Ẩn</a>");
+                        html.Append("                  <a href ='javascript:;' class='btn primary-btn h45-btn hidden-" + item.ID + " download-btn' onclick='ShowUpProductToWeb('" + item.ProductSKU + "', '" + item.ID + "', '" + item.CategoryID + "', 'false', 'false', 'hidden');'><i class='fa fa-times' aria-hidden='true'></i> Ẩn</a>");
                         html.Append("               </div>");
                         html.Append("          </div>");
                     }

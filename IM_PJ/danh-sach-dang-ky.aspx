@@ -199,7 +199,7 @@
             </div>
         </div>
 
-        <!-- Modal Create Register Delivery -->
+        <!-- Modal Create Register -->
         <div class="modal fade" id="CreateRegisterModal" role="dialog">
             <div class="modal-dialog">
                 <!-- Modal content-->
@@ -242,7 +242,7 @@
             </div>
         </div>
 
-        <!-- Modal Create Register Delivery -->
+        <!-- Modal View Register -->
         <div class="modal fade" id="ViewMessageModal" role="dialog">
             <div class="modal-dialog">
                 <!-- Modal content-->
@@ -331,6 +331,9 @@
                             },
                             error: function (xmlhttprequest, textstatus, errorthrow) {
                                 swal("Thông báo", "Đã có vấn đề trong việc tạo đăng ký mua sỉ", "error");
+                            },
+                            complete: function() {
+                                HoldOn.close();
                             }
                         });
                     }

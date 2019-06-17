@@ -130,6 +130,35 @@ namespace IM_PJ.Controllers
                     return null;
             }
         }
+        public static void updateSKU(int ID, string newSKU)
+        {
+            using (var dbe = new inventorymanagementEntities())
+            {
+                var ui = dbe.tbl_ProductVariable.Where(a => a.ProductID == ID).ToList();
+                ui.ForEach(a =>
+                {
+                    a.SKU = a.SKU.Replace(a.ParentSKU, newSKU);
+                    a.ParentSKU = newSKU;
+                });
+
+                dbe.SaveChanges();
+            }
+        }
+        public static string deleteVariable(int ParentID)
+        {
+            using (var dbe = new inventorymanagementEntities())
+            {
+                List<tbl_ProductVariable> ui = dbe.tbl_ProductVariable.Where(a => a.ProductID == ParentID).ToList();
+                if (ui.Count() > 0)
+                {
+                    dbe.tbl_ProductVariable.RemoveRange(ui);
+                    int kq = dbe.SaveChanges();
+                    return kq.ToString();
+                }
+                else
+                    return null;
+            }
+        }
         #endregion
         #region Select
         public static tbl_ProductVariable GetByID(int ID)
@@ -169,7 +198,19 @@ namespace IM_PJ.Controllers
                 return null;
             }
         }
+        public static List<tbl_ProductVariable> GetAllByParentID(int ParentID)
+        {
+            using (var dbe = new inventorymanagementEntities())
+            {
+                List<tbl_ProductVariable> ai = dbe.tbl_ProductVariable.Where(a => a.ProductID == ParentID).ToList();
+                if (ai != null)
+                {
+                    return ai;
+                }
+                else return null;
 
+            }
+        }
         public static List<tbl_ProductVariable> GetByParentSKU(string ParentSKU)
         {
             using (var dbe = new inventorymanagementEntities())

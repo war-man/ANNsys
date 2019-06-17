@@ -537,6 +537,20 @@ namespace IM_PJ.Controllers
                     return null;
             }
         }
+        public static string deleteAll(int ProductID)
+        {
+            using (var dbe = new inventorymanagementEntities())
+            {
+                List<tbl_StockManager> ui = dbe.tbl_StockManager.Where(o => o.ParentID == ProductID).ToList();
+                if (ui != null)
+                {
+                    dbe.tbl_StockManager.RemoveRange(ui);
+                    int kq = dbe.SaveChanges();
+                    return kq.ToString();
+                }
+                return "0";
+            }
+        }
         #endregion
         #region Select
         public static tbl_StockManager GetByID(int ID)
@@ -586,6 +600,36 @@ namespace IM_PJ.Controllers
             {
                 List<tbl_StockManager> ags = new List<tbl_StockManager>();
                 ags = dbe.tbl_StockManager.Where(i => i.SKU == SKU).ToList();
+                return ags;
+            }
+        }
+
+        public static List<tbl_StockManager> GetByProductID(int ID)
+        {
+            using (var dbe = new inventorymanagementEntities())
+            {
+                List<tbl_StockManager> ags = new List<tbl_StockManager>();
+                ags = dbe.tbl_StockManager.Where(i => i.ProductID == ID).ToList();
+                return ags;
+            }
+        }
+
+        public static List<tbl_StockManager> GetByParentID(int ID)
+        {
+            using (var dbe = new inventorymanagementEntities())
+            {
+                List<tbl_StockManager> ags = new List<tbl_StockManager>();
+                ags = dbe.tbl_StockManager.Where(i => i.ParentID == ID).ToList();
+                return ags;
+            }
+        }
+
+        public static List<tbl_StockManager> GetByProductVariableID(int ID)
+        {
+            using (var dbe = new inventorymanagementEntities())
+            {
+                List<tbl_StockManager> ags = new List<tbl_StockManager>();
+                ags = dbe.tbl_StockManager.Where(i => i.ProductVariableID == ID).ToList();
                 return ags;
             }
         }

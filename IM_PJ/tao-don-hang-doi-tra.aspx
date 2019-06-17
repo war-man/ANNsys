@@ -223,10 +223,15 @@
     <telerik:RadScriptBlock ID="sc" runat="server">
         <script type="text/javascript">
 
-            function redirectTo(ID) {
+            function redirectTo(ID, username) {
                 HoldOn.open();
                 $("#payall").addClass("payall-clicked");
-                window.location.href = "/xem-don-hang-doi-tra?id=" + ID;
+                let usernameString = "";
+                if (username != "")
+                {
+                    usernameString = "&username=" + username;
+                }
+                window.location.href = "/xem-don-hang-doi-tra?id=" + ID + usernameString;
             }
 
             // check data before close page or refresh page

@@ -125,19 +125,27 @@ namespace IM_PJ
                 ViewState["SKU"] = p.ProductSKU;
 
                 ltrEdit1.Text = "";
-                if (Convert.ToInt32(ViewState["role"]) == 0 || Convert.ToInt32(ViewState["role"]) == 1)
+                if (userRole == 0 || userRole == 1)
                 {
-                    ltrEdit1.Text += "<a href=\"/thong-tin-san-pham?id=" + p.ID + "\" class=\"btn primary-btn fw-btn not-fullwidth\"><i class=\"fa fa-pencil-square-o\" aria-hidden=\"true\"></i> Chỉnh sửa</a>";
-                    ltrEdit1.Text += "<a href=\"/tao-san-pham\" class=\"btn primary-btn fw-btn not-fullwidth print-invoice-merged\"><i class=\"fa fa-file-text-o\" aria-hidden=\"true\"></i> Thêm mới</a>";
-                    ltrEdit1.Text += "<a href=\"javascript:;\" onclick=\"ShowUpProductToWeb('" + p.ProductSKU + "', '" + p.ID + "', '" + p.CategoryID + "', 'false', 'false');\" class=\"up-product-" + p.ID + " btn primary-btn not-fullwidth print-invoice-merged " + (p.ShowHomePage == 1 ? "" : "hide") + "\"><i class=\"fa fa-upload\" aria-hidden=\"true\"></i> Đồng bộ</a>";
+                    ltrEdit1.Text += "<a href='/thong-tin-san-pham?id=" + p.ID + "' class='btn primary-btn fw-btn not-fullwidth'><i class='fa fa-pencil-square-o' aria-hidden='true'></i> Chỉnh sửa</a>";
+                    ltrEdit1.Text += "<a href='/tao-san-pham' class='btn primary-btn fw-btn not-fullwidth print-invoice-merged'><i class='fa fa-file-text-o' aria-hidden='true'></i> Thêm mới</a>";
+                    ltrEdit1.Text += "<a href=\"javascript:;\" onclick=\"ShowUpProductToWeb('" + p.ProductSKU + "', '" + p.ID + "', '" + p.CategoryID + "', 'false', 'false')\" class=\"up-product-" + p.ID + " btn primary-btn not-fullwidth print-invoice-merged " + (p.ShowHomePage == 1 ? "" : "hide") + "\"><i class=\"fa fa-upload\" aria-hidden=\"true\"></i> Đồng bộ</a>";
                 }
                 ltrEdit1.Text += "<a href=\"javascript:;\" onclick=\"copyProductInfo(" + p.ID + ")\" class=\"btn primary-btn not-fullwidth print-invoice-merged\"><i class=\"fa fa-files-o\"></i> Copy thông tin</a>";
                 ltrEdit1.Text += "<a href=\"javascript:;\" onclick=\"getAllProductImage('" + p.ProductSKU + "');\" class=\"btn primary-btn not-fullwidth print-invoice-merged\"><i class=\"fa fa-cloud-download\"></i> Tải tất cả hình ảnh</a>";
+                if (userRole == 0)
+                {
+                    ltrEdit1.Text += "<a href=\"javascript:;\" onclick=\"deleteProduct(" + p.ID + ");\" class=\"btn primary-btn not-fullwidth print-invoice-merged btn-red\"><i class=\"fa fa-times\"></i> Xóa sản phẩm</a>";
+                    ltrEdit1.Text += "<a href=\"javascript:;\" data-toggle=\"modal\" data-target=\"#modalUpdateProductSKU\" data-backdrop=\"static\" data-keyboard=\"false\" class=\"btn primary-btn not-fullwidth print-invoice-merged btn-blue\"><i class=\"fa fa-times\"></i> Sửa mã sản phẩm</a>";
+                }
+
                 ltrEdit2.Text = ltrEdit1.Text;
 
                 lbProductTitle.Text = p.ProductTitle;
                 pContent.Text = p.ProductContent;
                 lblSKU.Text = p.ProductSKU;
+                txtOldSKU.Text = p.ProductSKU;
+
                 var a = ProductController.GetAllSql(0, p.ProductSKU);
                 if (a.Count() > 0)
                 {
@@ -174,15 +182,15 @@ namespace IM_PJ
 
                 // thư viện ảnh
                 var image = ProductImageController.GetByProductID(id);
-                imageGallery.Text = "<ul class=\"image-gallery\">";
-                imageGallery.Text += "<li><img src=\"" + Thumbnail.getURL(p.ProductImage, Thumbnail.Size.Small) + "\" /><a href='" + Thumbnail.getURL(p.ProductImage, Thumbnail.Size.Small) + "' download class='btn download-btn download-image h45-btn'><i class='fa fa-cloud-download'></i> Tải hình này</a></li>";
+                imageGallery.Text = "<ul class='image-gallery'>";
+                imageGallery.Text += "<li><img src='" + Thumbnail.getURL(p.ProductImage, Thumbnail.Size.Normal) + "'><a href='" + Thumbnail.getURL(p.ProductImage, Thumbnail.Size.Source) + "' download class='btn download-btn download-image h45-btn'><i class='fa fa-cloud-download'></i> Tải hình này</a></li>";
                 if (image != null)
                 {
                     foreach (var img in image)
                     {
                         if (img.ProductImage != p.ProductImage)
                         {
-                            imageGallery.Text += "<li><img src=\"" + Thumbnail.getURL(img.ProductImage, Thumbnail.Size.Small) + "\" /><a href='" + Thumbnail.getURL(img.ProductImage, Thumbnail.Size.Small) + "' download class='btn download-btn download-image h45-btn'><i class='fa fa-cloud-download'></i> Tải hình này</a></li>";
+                            imageGallery.Text += "<li><img src='" + Thumbnail.getURL(img.ProductImage, Thumbnail.Size.Normal) + "'><a href='" + Thumbnail.getURL(img.ProductImage, Thumbnail.Size.Source) + "' download class='btn download-btn download-image h45-btn'><i class='fa fa-cloud-download'></i> Tải hình này</a></li>";
                         }
                     }
                 }
@@ -190,14 +198,14 @@ namespace IM_PJ
 
 
                 hdfTable.Value = p.ProductStyle.ToString();
-            }
 
-            List<tbl_ProductVariable> b = new List<tbl_ProductVariable>();
+                List<tbl_ProductVariable> b = new List<tbl_ProductVariable>();
 
-            b = ProductVariableController.SearchProductID(p.ID, "");
-            if(b != null)
-            {
-                pagingall(b, userRole);
+                b = ProductVariableController.SearchProductID(p.ID, "");
+                if (b != null)
+                {
+                    pagingall(b, userRole);
+                }
             }
         }
         #region Paging
@@ -240,7 +248,7 @@ namespace IM_PJ
                 {
                     var item = acs[i];
                     html.Append("<tr>");
-                    html.Append("   <td><img src=\"" + Thumbnail.getURL(item.Image, Thumbnail.Size.Small) + "\"/></td>");
+                    html.Append("   <td><img src='" + Thumbnail.getURL(item.Image, Thumbnail.Size.Small) + "'></td>");
 
                     string date = string.Format("{0:dd/MM/yyyy}", item.CreatedDate);
                     string ishidden = "";

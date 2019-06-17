@@ -186,6 +186,24 @@ namespace IM_PJ.Controllers
                 return ags;
             }
         }
+        public static List<tbl_OrderDetail> GetByProductID(int ProductID)
+        {
+            using (var dbe = new inventorymanagementEntities())
+            {
+                List<tbl_OrderDetail> ags = new List<tbl_OrderDetail>();
+                ags = dbe.tbl_OrderDetail.Where(o => o.ProductID == ProductID).ToList();
+                return ags;
+            }
+        }
+        public static List<tbl_OrderDetail> GetByProductVariableID(int ProductVariableID)
+        {
+            using (var dbe = new inventorymanagementEntities())
+            {
+                List<tbl_OrderDetail> ags = new List<tbl_OrderDetail>();
+                ags = dbe.tbl_OrderDetail.Where(o => o.ProductVariableID == ProductVariableID && o.ProductID == 0).ToList();
+                return ags;
+            }
+        }
         public static List<tbl_Order> GetByPaymentStatus(int PaymentStatus)
         {
             using (var dbe = new inventorymanagementEntities())

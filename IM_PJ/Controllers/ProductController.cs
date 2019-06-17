@@ -95,7 +95,21 @@ namespace IM_PJ.Controllers
                     return null;
             }
         }
-
+        public static string updateSKU(int ID, string newSKU)
+        {
+            using (var dbe = new inventorymanagementEntities())
+            {
+                tbl_Product ui = dbe.tbl_Product.Where(a => a.ID == ID).SingleOrDefault();
+                if (ui != null)
+                {
+                    ui.ProductSKU = newSKU;
+                    int kq = dbe.SaveChanges();
+                    return kq.ToString();
+                }
+                else
+                    return null;
+            }
+        }
         public static string UpdateImage(int ID, string ProductImage)
         {
             using (var dbe = new inventorymanagementEntities())
@@ -185,6 +199,21 @@ namespace IM_PJ.Controllers
                 if (ui != null)
                 {
                     ui.WebUpdate = DateTime.Now;
+                    int kq = dbe.SaveChanges();
+                    return kq.ToString();
+                }
+                else
+                    return null;
+            }
+        }
+        public static string deleteProduct(int id)
+        {
+            using (var dbe = new inventorymanagementEntities())
+            {
+                tbl_Product ui = dbe.tbl_Product.Where(a => a.ID == id).SingleOrDefault();
+                if (ui != null)
+                {
+                    dbe.tbl_Product.Remove(ui);
                     int kq = dbe.SaveChanges();
                     return kq.ToString();
                 }

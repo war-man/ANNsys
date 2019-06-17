@@ -358,7 +358,7 @@ namespace IM_PJ
                             int ShowHomePage = ddlShowHomePage.SelectedValue.ToInt(0);
 
 
-                            string kq = ProductController.Insert(cateID, 0, ProductTitle, ProductContent, ProductSKU, ProductStock, StockStatus, true, Regular_Price, CostOfGood, Retail_Price, "", 0, false, currentDate, username, supplierID, supplierName, txtMaterials.Text, MinimumInventoryLevel, MaximumInventoryLevel, a, ShowHomePage);
+                            string kq = ProductController.Insert(cateID, 0, ProductTitle, ProductContent, ProductSKU, ProductStock, StockStatus, true, Regular_Price, CostOfGood, Retail_Price, "", a, false, currentDate, username, supplierID, supplierName, txtMaterials.Text, MinimumInventoryLevel, MaximumInventoryLevel, a, ShowHomePage);
 
                             //Phần thêm ảnh đại diện sản phẩm
                             string path = "/uploads/images/";
@@ -370,13 +370,17 @@ namespace IM_PJ
                                     var o = path + kq + '-' + Slug.ConvertToSlug(Path.GetFileName(f.FileName));
                                     try
                                     {
-                                        f.SaveAs(Server.MapPath(o));
+                                        if (!File.Exists(Server.MapPath(o)))
+                                        {
+                                            f.SaveAs(Server.MapPath(o));
+                                            // Thumbnail
+                                            Thumbnail.create(Server.MapPath(o), 85, 113);
+                                            Thumbnail.create(Server.MapPath(o), 159, 212);
+                                            Thumbnail.create(Server.MapPath(o), 240, 320);
+                                            Thumbnail.create(Server.MapPath(o), 350, 467);
+                                        }
+                                        
                                         ProductImage = Path.GetFileName(Server.MapPath(o));
-                                        // Thumbnail
-                                        Thumbnail.create(Server.MapPath(o), 85, 113);
-                                        Thumbnail.create(Server.MapPath(o), 159, 212);
-                                        Thumbnail.create(Server.MapPath(o), 240, 320);
-                                        Thumbnail.create(Server.MapPath(o), 350, 467);
                                     }
                                     catch { }
                                 }
@@ -389,16 +393,20 @@ namespace IM_PJ
                             {
                                 foreach (UploadedFile f in ProductThumbnailImageClean.UploadedFiles)
                                 {
-                                    var o = path + kq + '-' + Slug.ConvertToSlug(Path.GetFileName(f.FileName));
+                                    var o = path + kq + "-clean-" + Slug.ConvertToSlug(Path.GetFileName(f.FileName));
                                     try
                                     {
-                                        f.SaveAs(Server.MapPath(o));
+                                        if (!File.Exists(Server.MapPath(o)))
+                                        {
+                                            f.SaveAs(Server.MapPath(o));
+                                            // Thumbnail
+                                            Thumbnail.create(Server.MapPath(o), 85, 113);
+                                            Thumbnail.create(Server.MapPath(o), 159, 212);
+                                            Thumbnail.create(Server.MapPath(o), 240, 320);
+                                            Thumbnail.create(Server.MapPath(o), 350, 467);
+                                        }
+                                        
                                         ProductImageClean = Path.GetFileName(Server.MapPath(o));
-                                        // Thumbnail
-                                        Thumbnail.create(Server.MapPath(o), 85, 113);
-                                        Thumbnail.create(Server.MapPath(o), 159, 212);
-                                        Thumbnail.create(Server.MapPath(o), 240, 320);
-                                        Thumbnail.create(Server.MapPath(o), 350, 467);
                                     }
                                     catch { }
                                 }
@@ -414,13 +422,17 @@ namespace IM_PJ
                                     var o = path + kq + '-' + Slug.ConvertToSlug(Path.GetFileName(f.FileName));
                                     try
                                     {
-                                        f.SaveAs(Server.MapPath(o));
+                                        if (!File.Exists(Server.MapPath(o)))
+                                        {
+                                            f.SaveAs(Server.MapPath(o));
+                                            // Thumbnail
+                                            Thumbnail.create(Server.MapPath(o), 85, 113);
+                                            Thumbnail.create(Server.MapPath(o), 159, 212);
+                                            Thumbnail.create(Server.MapPath(o), 240, 320);
+                                            Thumbnail.create(Server.MapPath(o), 350, 467);
+                                        }
+                                        
                                         IMG = Path.GetFileName(Server.MapPath(o));
-                                        // Thumbnail
-                                        Thumbnail.create(Server.MapPath(o), 85, 113);
-                                        Thumbnail.create(Server.MapPath(o), 159, 212);
-                                        Thumbnail.create(Server.MapPath(o), 240, 320);
-                                        Thumbnail.create(Server.MapPath(o), 350, 467);
                                         ProductImageController.Insert(kq.ToInt(), IMG, false, currentDate, username);
                                     }
                                     catch { }
@@ -461,13 +473,17 @@ namespace IM_PJ
                                         if (postedFile != null && postedFile.ContentLength > 0)
                                         {
                                             var o = path + kq + '-' + Slug.ConvertToSlug(Path.GetFileName(postedFile.FileName));
-                                            postedFile.SaveAs(Server.MapPath(o));
+                                            if (!File.Exists(Server.MapPath(o)))
+                                            {
+                                                postedFile.SaveAs(Server.MapPath(o));
+                                                // Thumbnail
+                                                Thumbnail.create(Server.MapPath(o), 85, 113);
+                                                Thumbnail.create(Server.MapPath(o), 159, 212);
+                                                Thumbnail.create(Server.MapPath(o), 240, 320);
+                                                Thumbnail.create(Server.MapPath(o), 350, 467);
+                                            }
+                                            
                                             image = Path.GetFileName(Server.MapPath(o));
-                                            // Thumbnail
-                                            Thumbnail.create(Server.MapPath(o), 85, 113);
-                                            Thumbnail.create(Server.MapPath(o), 159, 212);
-                                            Thumbnail.create(Server.MapPath(o), 240, 320);
-                                            Thumbnail.create(Server.MapPath(o), 350, 467);
                                         }
 
                                         string kq1 = ProductVariableController.Insert(ProductID, ProductSKU, productvariablesku, 0, stockstatus, Convert.ToDouble(regularprice),

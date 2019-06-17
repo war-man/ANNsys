@@ -171,9 +171,135 @@
         <asp:HiddenField ID="hdfTempVariable" runat="server" />
         <asp:HiddenField ID="hdfVariableFull" runat="server" />
         <asp:HiddenField ID="hdfTable" runat="server" />
+
+        <!-- Modal Create Register -->
+        <div class="modal fade" id="modalUpdateProductSKU" role="dialog">
+            <div class="modal-dialog">
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Sửa mã sản phẩm</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row form-group">
+                            <div class="col-md-3 col-xs-4">
+                                <p>Mã cũ</p>
+                            </div>
+                            <div class="col-md-9 col-xs-8">
+                                <asp:TextBox ID="txtOldSKU" runat="server" CssClass="form-control text-right" ReadOnly="True"></asp:TextBox>
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <div class="col-md-3 col-xs-4">
+                                <p>Mã mới</p>
+                            </div>
+                            <div class="col-md-9 col-xs-8">
+                                <asp:TextBox ID="txtNewSKU" runat="server" CssClass="form-control text-right"></asp:TextBox>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button id="closeUpdateProductSKU" type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
+                        <button id="updateProductSKU" type="button" class="btn btn-primary">Xác nhận</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </main>
 
     <script src="/App_Themes/Ann/js/copy-product-info.js?v=2011"></script>
     <script src="/App_Themes/Ann/js/sync-product.js?v=29052019"></script>
     <script src="/App_Themes/Ann/js/download-product-image.js?v=2011"></script>
+    <script>
+        $(document).ready(() => {
+            $("a[data-target='#modalUpdateProductSKU']").click(e => {
+                $("#<%=txtNewSKU.ClientID%>").focus();
+            });
+
+            $("#updateProductSKU").click(e => {
+                let oldSKU = $("#<%=txtOldSKU.ClientID%>").val();
+                let newSKU = $("#<%=txtNewSKU.ClientID%>").val();
+
+                $.ajax({
+                    type: "POST",
+                    url: "/tat-ca-san-pham.aspx/updateProductSKU",
+                    data: "{oldSKU: '" + oldSKU.toUpperCase() + "', newSKU: '" + newSKU.toUpperCase() + "'}",
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    beforeSend: function () {
+                        HoldOn.open();
+                    },
+                    success: function (msg) {
+                        if (msg.d == "orderfound") {
+                            $("#closeUpdateProductSKU").click();
+                            swal("Thông báo", "Sản phẩm đã được bán vì vậy không được sửa!", "error");
+                        }
+                        else if (msg.d == "stockfound") {
+                            $("#closeUpdateProductSKU").click();
+                            swal("Thông báo", "Sản phẩm đã được nhập kho vì vậy không được sửa!", "error");
+                        }
+                        else if (msg.d == "newskuexist") {
+                            $("#<%=txtNewSKU.ClientID%>").focus();
+                            swal("Thông báo", "Mã sản phẩm mới đã được tạo cho sản phẩm khác!", "error");
+                        }
+                        else if (msg.d == "true") {
+                            swal({
+                                title: 'Thông báo',
+                                text: 'Đã cập nhật mã sản phẩm thành công!',
+                                type: 'success',
+                                showCancelButton: false,
+                                closeOnConfirm: true,
+                                confirmButtonText: "OK",
+                            }, function (confirm) {
+                                if (confirm) location.reload();
+                            });
+                        }
+                        else {
+                            alert("Lỗi");
+                        }
+                    },
+                    complete: function () {
+                        HoldOn.close();
+                    }
+                });
+            });
+        });
+
+        function deleteProduct(id) {
+            $.ajax({
+                type: "POST",
+                url: "/tat-ca-san-pham.aspx/deleteProduct",
+                data: "{id: " + id + "}",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                beforeSend: function () {
+                    HoldOn.open();
+                },
+                success: function (msg) {
+                    if (msg.d == "orderfound") {
+                        swal("Thông báo", "Sản phẩm đã được bán vì vậy không được xóa!", "error");
+                    }
+                    else if (msg.d == "true") {
+                        swal({
+                            title: 'Thông báo',
+                            text: 'Đã xóa sản phẩm thành công!',
+                            type: 'success',
+                            showCancelButton: false,
+                            closeOnConfirm: true,
+                            confirmButtonText: "OK",
+                        }, function (confirm) {
+                            if (confirm) window.location.replace("/tat-ca-san-pham");
+                        });
+                    }
+                    else {
+                        alert("Lỗi");
+                    }
+                },
+                complete: function () {
+                    HoldOn.close();
+                }
+            });
+        }
+    </script>
 </asp:Content>

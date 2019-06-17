@@ -86,7 +86,7 @@ namespace IM_PJ
 
                     if (p.ProductImage != null)
                     {
-                        ProductThumbnail.Text = "<p><img src=\"" + Thumbnail.getURL(p.ProductImage, Thumbnail.Size.Small) + "\" /><a href='" + Thumbnail.getURL(p.ProductImage, Thumbnail.Size.Small) + "' download class='btn download-btn download-image h45-btn'><i class='fa fa-cloud-download'></i> Tải hình này</a></p>";
+                        ProductThumbnail.Text = "<p><img src='" + Thumbnail.getURL(p.ProductImage, Thumbnail.Size.Large) + "'><a href='" + Thumbnail.getURL(p.ProductImage, Thumbnail.Size.Source) + "' download class='btn download-btn download-image h45-btn'><i class='fa fa-cloud-download'></i> Tải hình này</a></p>";
                     }
 
                     var image = ProductImageController.GetByProductID(id);
@@ -97,13 +97,13 @@ namespace IM_PJ
                         {
                             if(img.ProductImage != p.ProductImage)
                             {
-                                imageGallery.Text += "<p><img src=\"" + Thumbnail.getURL(img.ProductImage, Thumbnail.Size.Small) + "\" /><a href='" + Thumbnail.getURL(img.ProductImage, Thumbnail.Size.Small) + "' download class='btn download-btn download-image h45-btn'><i class='fa fa-cloud-download'></i> Tải hình này</a></p>";
+                                imageGallery.Text += "<p><img src='" + Thumbnail.getURL(img.ProductImage, Thumbnail.Size.Large) + "'><a href='" + Thumbnail.getURL(img.ProductImage, Thumbnail.Size.Source) + "' download class='btn download-btn download-image h45-btn'><i class='fa fa-cloud-download'></i> Tải hình này</a></p>";
                             }
                         }
                     }
 
-                    ltrCopyProductInfoButton.Text = "<p><a href=\"javascript:;\" class=\"btn primary-btn copy-btn h45-btn\" onclick=\"copyProduct(" + p.ID + ")\"><i class=\"fa fa-files-o\" aria-hidden=\"true\"></i> Copy</a></p>";
-                    ltrDownloadProductImageButton.Text = "<a href =\"javascript:;\" class=\"btn primary-btn h45-btn\" onclick=\"getAllProductImage('" + p.ProductSKU + "');\"><i class=\"fa fa-cloud-download\" aria-hidden=\"true\"></i> Tải hình</a>";
+                    ltrCopyProductInfoButton.Text = "<p><a href='javascript:;' class='btn primary-btn copy-btn h45-btn' onclick='copyProduct(" + p.ID + ");'><i class='fa fa-files-o' aria-hidden='true'></i> Copy</a></p>";
+                    ltrDownloadProductImageButton.Text = "<a href='javascript:;' class='btn primary-btn h45-btn' onclick='getAllProductImage(\"" + p.ProductSKU + "\");'><i class='fa fa-cloud-download' aria-hidden='true'></i> Tải hình</a>";
 
                     var v = ProductVariableController.SearchProductID(id, "");
 
@@ -149,7 +149,7 @@ namespace IM_PJ
                     var item = acs[i];
                     html.Append("<div class='col-md-3 product-item'>");
 
-                    html.Append("   <p><img src=\"" + Thumbnail.getURL(item.Image, Thumbnail.Size.Small) + "\"/></p>");
+                    html.Append("   <p><img src='" + Thumbnail.getURL(item.Image, Thumbnail.Size.Large) + "'></p>");
                     if (!string.IsNullOrEmpty(item.Image))
                     {
                         html.Append("   <p><a href='" + Thumbnail.getURL(item.Image, Thumbnail.Size.Source) + "' download class='btn download-btn h45-btn'><i class='fa fa-cloud-download'></i> Tải hình này</a></p>");

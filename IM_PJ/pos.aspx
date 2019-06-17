@@ -655,7 +655,14 @@
                         swal("Thông báo", "Không tìm thấy ID của khách hàng này", "error");
                     }
                     else {
-                        createReturnOrder(customerID);
+                        let currentUser = $("#<%=hdfUsernameCurrent.ClientID%>").val();
+                        let mainUser = $("#<%=hdfUsername.ClientID%>").val();
+                        if(currentUser != mainUser){
+                            createReturnOrder(customerID, currentUser);
+                        }
+                        else {
+                            createReturnOrder(customerID, "");
+                        }
                     }
                 });
             });
@@ -841,7 +848,18 @@
                                         cancelButtonText: "Để em xem lại...",
                                         confirmButtonText: "Tạo đơn hàng đổi trả",
                                     }, function (confirm) {
-                                        if (confirm) createReturnOrder(customerID);
+                                        
+                                        if (confirm)
+                                        {
+                                            let currentUser = $("#<%=hdfUsernameCurrent.ClientID%>").val();
+                                            let mainUser = $("#<%=hdfUsername.ClientID%>").val();
+                                            if(currentUser != mainUser){
+                                                createReturnOrder(customerID, currentUser);
+                                            }
+                                            else {
+                                                createReturnOrder(customerID, "");
+                                            }
+                                        }
                                     });
                                 }
                                 else
@@ -1441,8 +1459,12 @@
                     (d ? '.' + Math.round(d * Math.pow(10, dp || 2)) : '');
             };
 
-            function createReturnOrder(customerID) {
-                var win = window.open('/tao-don-hang-doi-tra?customerID=' + customerID, '_blank');
+            function createReturnOrder(customerID, username) {
+                let userString = "";
+                if (username != "") {
+                    userString = "&username=" + username;
+                }
+                var win = window.open('/tao-don-hang-doi-tra?customerID=' + customerID + userString, '_blank');
                 if (win) {
                     //Browser has allowed it to be opened
                     win.focus();
