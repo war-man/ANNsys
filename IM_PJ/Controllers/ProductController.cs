@@ -901,7 +901,7 @@ namespace IM_PJ.Controllers
             return list.OrderByDescending(x => x.ID).Take(limit).ToList();
         }
 
-        public static List<ProductSQL> GetAllSql(int categoryID, string textsearch)
+        public static List<ProductSQL> GetAllSql(int categoryID, string textsearch, string strColor = "", string strSize = "")
         {
             var list = new List<ProductSQL>();
             StringBuilder sql = new StringBuilder();
@@ -938,7 +938,67 @@ namespace IM_PJ.Controllers
                 sql.AppendLine(",       CategoryName");
                 sql.AppendLine(",       ParentID");
                 sql.AppendLine("INTO #category");
-                sql.AppendLine("FROM category");
+                sql.AppendLine("FROM category;");
+            }
+
+            // Filter by color product
+            if (!String.IsNullOrEmpty(strColor))
+            {
+                sql.AppendLine(String.Empty);
+                sql.AppendLine("    With VariableValue AS (");
+                sql.AppendLine("        SELECT");
+                sql.AppendLine("            *");
+                sql.AppendLine("        FROM");
+                sql.AppendLine("            tbl_VariableValue");
+                sql.AppendLine("        WHERE");
+                sql.AppendLine(String.Format("        VariableID = 1 AND  LOWER(VariableValue) LIKE N'%{0}%'", strColor.ToLower()));
+                sql.AppendLine("    )");
+                sql.AppendLine("    SELECT");
+                sql.AppendLine("        PVA.ProductID AS ID");
+                sql.AppendLine("    INTO #ProductColor");
+                sql.AppendLine("    FROM ");
+                sql.AppendLine("    (");
+                sql.AppendLine("        SELECT");
+                sql.AppendLine("            PVV.ProductVariableID");
+                sql.AppendLine("        FROM");
+                sql.AppendLine("            VariableValue AS VAV");
+                sql.AppendLine("        INNER JOIN tbl_ProductVariableValue AS PVV");
+                sql.AppendLine("        ON  VAV.ID = PVV.VariableValueID");
+                sql.AppendLine("        GROUP BY PVV.ProductVariableID");
+                sql.AppendLine("    ) AS PVF");
+                sql.AppendLine("    INNER JOIN tbl_ProductVariable AS PVA");
+                sql.AppendLine("    ON  PVF.ProductVariableID = PVA.ID");
+                sql.AppendLine("    GROUP BY PVA.ProductID;");
+            }
+
+            // Filter by size product
+            if (!String.IsNullOrEmpty(strSize))
+            {
+                sql.AppendLine(String.Empty);
+                sql.AppendLine("    With VariableValue AS (");
+                sql.AppendLine("        SELECT");
+                sql.AppendLine("            *");
+                sql.AppendLine("        FROM");
+                sql.AppendLine("            tbl_VariableValue");
+                sql.AppendLine("        WHERE");
+                sql.AppendLine(String.Format("        VariableID = 2 AND  LOWER(VariableValue) LIKE N'%{0}%'", strSize.ToLower()));
+                sql.AppendLine("    )");
+                sql.AppendLine("    SELECT");
+                sql.AppendLine("        PVA.ProductID AS ID");
+                sql.AppendLine("    INTO #ProductSize");
+                sql.AppendLine("    FROM ");
+                sql.AppendLine("    (");
+                sql.AppendLine("        SELECT");
+                sql.AppendLine("            PVV.ProductVariableID");
+                sql.AppendLine("        FROM");
+                sql.AppendLine("            VariableValue AS VAV");
+                sql.AppendLine("        INNER JOIN tbl_ProductVariableValue AS PVV");
+                sql.AppendLine("        ON  VAV.ID = PVV.VariableValueID");
+                sql.AppendLine("        GROUP BY PVV.ProductVariableID");
+                sql.AppendLine("    ) AS PVF");
+                sql.AppendLine("    INNER JOIN tbl_ProductVariable AS PVA");
+                sql.AppendLine("    ON  PVF.ProductVariableID = PVA.ID");
+                sql.AppendLine("    GROUP BY PVA.ProductID;");
             }
 
             sql.AppendLine(String.Empty);
@@ -952,7 +1012,38 @@ namespace IM_PJ.Controllers
 
             if (!string.IsNullOrEmpty(textsearch))
             {
-                sql.AppendLine("    AND (PRD.ProductSKU like N'%" + textsearch + "%' OR PRD.ProductTitle like N'%" + textsearch + "%' OR PRD.UnSignedTitle like N'%" + textsearch + "%')");
+                sql.AppendLine("    AND (");
+                sql.AppendLine(String.Format("        PRD.ProductSKU like N'%{0}%'", textsearch));
+                sql.AppendLine(String.Format("        OR PRD.ProductTitle like N'%{0}%'", textsearch));
+                sql.AppendLine(String.Format("        OR PRD.UnSignedTitle like N'%{0}%'", textsearch));
+                sql.AppendLine("    )");
+            }
+
+            if (!String.IsNullOrEmpty(strColor))
+            {
+                sql.AppendLine("    AND (");
+                sql.AppendLine(String.Format("        LOWER(PRD.ProductTitle) like N'%{0}%'", strColor.ToLower()));
+                sql.AppendLine("        OR EXISTS (");
+                sql.AppendLine("            SELECT");
+                sql.AppendLine("                NULL AS DUMMY");
+                sql.AppendLine("            FROM");
+                sql.AppendLine("                #ProductColor AS PRC");
+                sql.AppendLine("            WHERE");
+                sql.AppendLine("                PRD.ID = PRC.ID");
+                sql.AppendLine("        )");
+                sql.AppendLine("    )");
+            }
+
+            if (!String.IsNullOrEmpty(strSize))
+            {
+                sql.AppendLine("    AND EXISTS (");
+                sql.AppendLine("        SELECT");
+                sql.AppendLine("            NULL AS DUMMY");
+                sql.AppendLine("        FROM");
+                sql.AppendLine("            #ProductSize AS PRS");
+                sql.AppendLine("        WHERE");
+                sql.AppendLine("            PRD.ID = PRS.ID");
+                sql.AppendLine("    )");
             }
 
             if (categoryID > 0)
