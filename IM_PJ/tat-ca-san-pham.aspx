@@ -113,7 +113,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
-                    <h3 class="page-title left">Danh sách sản phẩm <span>(<asp:Literal ID="ltrNumberOfProduct" runat="server" EnableViewState="false"></asp:Literal> sản phẩm) <a href="/sp" target="_blank" class="btn primary-btn h45-btn">Xem mở rộng</a></span></h3>
+                    <h3 class="page-title left">Sản phẩm <span>(<asp:Literal ID="ltrNumberOfProduct" runat="server" EnableViewState="false"></asp:Literal>) <a href="/sp" target="_blank" class="btn primary-btn h45-btn">Xem mở rộng</a></span></h3>
                     <div class="right above-list-btn">
                         <asp:Literal ID="ltrAddProduct" runat="server"></asp:Literal>
                     </div>
@@ -125,7 +125,7 @@
                         <div class="filter-control">
                             <div class="row">
                                 <div class="col-md-3 col-xs-6">
-                                    <asp:TextBox ID="txtSearchProduct" runat="server" CssClass="form-control sku-input" placeholder="Tìm sản phẩm" autocomplete="off"></asp:TextBox>
+                                    <asp:TextBox ID="txtSearchProduct" runat="server" CssClass="form-control" placeholder="Tìm sản phẩm" autocomplete="off"></asp:TextBox>
                                 </div>
                                 <div class="col-md-2 col-xs-6">
                                     <asp:DropDownList ID="ddlCategory" runat="server" CssClass="form-control"></asp:DropDownList>
@@ -160,6 +160,7 @@
                                 <div class="col-md-1 col-xs-6">
                                     <a href="javascript:;" onclick="searchProduct()" class="btn primary-btn h45-btn"><i class="fa fa-search"></i></a>
                                     <asp:Button ID="btnSearch" runat="server" CssClass="btn primary-btn h45-btn" OnClick="btnSearch_Click" Style="display: none" />
+                                    <a href="/tat-ca-san-pham" class="btn primary-btn h45-btn"><i class="fa fa-times" aria-hidden="true"></i></a>
                                 </div>
                             </div>
                         </div>
@@ -197,9 +198,6 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-1 col-xs-6">
-                                    <a href="/tat-ca-san-pham" class="btn primary-btn h45-btn"><i class="fa fa-times" aria-hidden="true"></i></a>
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -235,55 +233,66 @@
         <script type="text/javascript">
 
             // Parse URL Queries
-            function url_query(query) {
+            function url_query(query)
+            {
                 query = query.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
                 var expr = "[\\?&]" + query + "=([^&#]*)";
                 var regex = new RegExp(expr);
                 var results = regex.exec(window.location.href);
-                if (results !== null) {
+                if (results !== null)
+                {
                     return results[1];
-                } else {
+                }
+                else
+                {
                     return false;
                 }
             }
 
             var url_param = url_query('quantityfilter');
             if (url_param) {
-                if (url_param == "greaterthan" || url_param == "lessthan") {
+                if (url_param == "greaterthan" || url_param == "lessthan")
+                {
                     $(".greaterthan").removeClass("hide");
                     $(".between").addClass("hide");
                 }
-                else if (url_param == "between") {
+                else if (url_param == "between")
+                {
                     $(".between").removeClass("hide");
                     $(".greaterthan").addClass("hide");
                 }
             }
 
-            function changeQuantityFilter(obj) {
+            function changeQuantityFilter(obj)
+            {
                 var value = obj.val();
-                if (value == "greaterthan" || value == "lessthan") {
+                if (value == "greaterthan" || value == "lessthan")
+                {
                     $(".greaterthan").removeClass("hide");
                     $(".between").addClass("hide");
                     $("#<%=txtQuantity.ClientID%>").focus().select();
                 }
-                else if (value == "between") {
+                else if (value == "between")
+                {
                     $(".between").removeClass("hide");
                     $(".greaterthan").addClass("hide");
                     $("#<%=txtQuantityMin.ClientID%>").focus().select();
                 }
             }
 
-            function searchProduct() {
+            function searchProduct()
+            {
                 $("#<%= btnSearch.ClientID%>").click();
             }
             
-            function updateShowHomePage(obj) {
-                var productID = obj.attr("data-product-id");
+            function updateShowHomePage(obj)
+            {
+                var ID = obj.attr("data-product-id");
                 var update = obj.attr("data-update");
                 $.ajax({
                     type: "POST",
                     url: "/tat-ca-san-pham.aspx/updateShowHomePage",
-                    data: "{id: '" + productID + "', value: '" + update + "'}",
+                    data: "{id: '" + ID + "', value: '" + update + "'}",
                     contentType: "application/json; charset=utf-8",
                     dataType: "json",
                     beforeSend: function () {
@@ -291,23 +300,29 @@
                     },
                     success: function (msg) {
                         HoldOn.close();
-                        if (msg.d == "nocleanimage") {
+                        if (msg.d == "nocleanimage")
+                        {
                             swal("Thông báo", "Sản phẩm này chưa có hình đại diện sạch!", "warning");
                         }
-                        else if (msg.d == "sameimage") {
+                        else if (msg.d == "sameimage")
+                        {
                             swal("Thông báo", "Có thể hình đại diện sạch giống với hình có mã.<br> Hãy kiểm tra lại!", "warning");
                         }
-                        else if (msg.d == "true") {
-                            if (update == 1) {
-                                $('#showHomePage_' + productID).html("<a href='javascript:;' data-product-id='" + productID + "' data-update='0' class='bg-green bg-button' onclick='updateShowHomePage($(this))'>Đang hiện</a>");
-                                $(".up-product-" + productID).removeClass("hide");
+                        else if (msg.d == "true")
+                        {
+                            if (update == 1)
+                            {
+                                $('#showHomePage_' + ID).html("<a href='javascript:;' data-product-id='" + ID + "' data-update='0' class='bg-green bg-button' onclick='updateShowHomePage($(this))'>Đang hiện</a>");
+                                $(".up-product-" + ID).removeClass("hide");
                             }
-                            else {
-                                $('#showHomePage_' + productID).html("<a href='javascript:;' data-product-id='" + productID + "' data-update='1' class='bg-black bg-button' onclick='updateShowHomePage($(this))'>Đang ẩn</a>");
-                                $(".up-product-" + productID).addClass("hide");
+                            else
+                            {
+                                $('#showHomePage_' + ID).html("<a href='javascript:;' data-product-id='" + ID + "' data-update='1' class='bg-black bg-button' onclick='updateShowHomePage($(this))'>Đang ẩn</a>");
+                                $(".up-product-" + ID).addClass("hide");
                             }
                         }
-                        else {
+                        else
+                        {
                             alert("Lỗi");
                         }
                     },
@@ -317,30 +332,35 @@
                 });
             }
 
-            function updateShowWebPublish(obj) {
-                var productID = obj.attr("data-product-id");
+            function updateShowWebPublish(obj)
+            {
+                var ID = obj.attr("data-product-id");
                 var update = obj.attr("data-update");
                 $.ajax({
                     type: "POST",
                     url: "/tat-ca-san-pham.aspx/updateWebPublish",
-                    data: "{id: '" + productID + "', value: " + update + "}",
+                    data: "{id: '" + ID + "', value: " + update + "}",
                     contentType: "application/json; charset=utf-8",
                     dataType: "json",
                     beforeSend: function () {
                         HoldOn.open();
                     },
                     success: function (msg) {
-                        if (msg.d == "true") {
-                            if (update == "true") {
-                                $('#showWebPublish_' + productID).html("<a href='javascript:;' data-product-id='" + productID + "' data-update='false' class='bg-green bg-button' onclick='updateShowWebPublish($(this))'>Đang hiện</a>");
-                                $(".webupdate-product-" + productID).removeClass("hide");
+                        if (msg.d == "true")
+                        {
+                            if (update == "true")
+                            {
+                                $('#showWebPublish_' + ID).html("<a href='javascript:;' data-product-id='" + ID + "' data-update='false' class='bg-green bg-button' onclick='updateShowWebPublish($(this))'>Đang hiện</a>");
+                                $(".webupdate-product-" + ID).removeClass("hide");
                             }
-                            else {
-                                $('#showWebPublish_' + productID).html("<a href='javascript:;' data-product-id='" + productID + "' data-update='true' class='bg-black bg-button' onclick='updateShowWebPublish($(this))'>Đang ẩn</a>");
-                                $(".webupdate-product-" + productID).addClass("hide");
+                            else
+                            {
+                                $('#showWebPublish_' + ID).html("<a href='javascript:;' data-product-id='" + ID + "' data-update='true' class='bg-black bg-button' onclick='updateShowWebPublish($(this))'>Đang ẩn</a>");
+                                $(".webupdate-product-" + ID).addClass("hide");
                             }
                         }
-                        else {
+                        else
+                        {
                             alert("Lỗi");
                         }
                     },
@@ -350,21 +370,24 @@
                 });
             }
 
-            function updateWebUpdate(productID) {
+            function updateWebUpdate(ID)
+            {
                 $.ajax({
                     type: "POST",
                     url: "/tat-ca-san-pham.aspx/updateWebUpdate",
-                    data: "{id: '" + productID + "'}",
+                    data: "{id: '" + ID + "'}",
                     contentType: "application/json; charset=utf-8",
                     dataType: "json",
                     beforeSend: function () {
                         HoldOn.open();
                     },
                     success: function (msg) {
-                        if (msg.d == "true") {
+                        if (msg.d == "true")
+                        {
                             swal("Thông báo", "Up thành công!", "success");
                         }
-                        else {
+                        else
+                        {
                             alert("Lỗi");
                         }
                     },

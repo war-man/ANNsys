@@ -240,6 +240,7 @@ namespace IM_PJ.Controllers
                         las.RefundNote = "";
                     }
                     las.OrderSaleID = orderSale;
+                    las.CreatedBy = createdby;
                     las.ModifiedBy = createdby;
                     las.ModifiedDate = DateTime.Now;
                     int i = dbe.SaveChanges();

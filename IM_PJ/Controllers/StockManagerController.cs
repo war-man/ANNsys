@@ -528,6 +528,7 @@ namespace IM_PJ.Controllers
                     ui.OrderID = stock.OrderID;
                     ui.Status = stock.Status;
                     ui.SKU = stock.SKU;
+                    ui.CreatedBy = stock.CreatedBy;
                     ui.ModifiedBy = stock.ModifiedBy;
                     ui.ModifiedDate = stock.ModifiedDate;
                     int kq = dbe.SaveChanges();
@@ -535,6 +536,21 @@ namespace IM_PJ.Controllers
                 }
                 else
                     return null;
+            }
+        }
+        public static void updateCreatedByOrderID(int OrderID, string createdBy)
+        {
+            using (var dbe = new inventorymanagementEntities())
+            {
+                var ui = dbe.tbl_StockManager.Where(a => a.OrderID == OrderID).ToList();
+                ui.ForEach(a =>
+                {
+                    a.CreatedBy = createdBy;
+                    a.ModifiedDate = DateTime.Now;
+                });
+
+                dbe.SaveChanges();
+
             }
         }
         public static string deleteAll(int ProductID)

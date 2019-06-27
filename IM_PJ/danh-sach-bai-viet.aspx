@@ -32,20 +32,27 @@
                     <div class="filter-above-wrap clear">
                         <div class="filter-control">
                             <div class="row">
-                                <div class="col-md-5">
+                                <div class="col-md-3 col-xs-6">
                                     <asp:TextBox ID="txtSearchPost" runat="server" CssClass="form-control" placeholder="Tìm bài viết" autocomplete="off"></asp:TextBox>
                                 </div>
-                                <div class="col-md-2">
+                                <div class="col-md-2 col-xs-6">
                                     <asp:DropDownList ID="ddlCategory" runat="server" CssClass="form-control"></asp:DropDownList>
                                 </div>
-                                <div class="col-md-2">
+                                <div class="col-md-2 col-xs-6">
                                     <asp:DropDownList ID="ddlStatus" runat="server" CssClass="form-control">
                                         <asp:ListItem Value="" Text="Trạng thái"></asp:ListItem>
                                         <asp:ListItem Value="1" Text="Xuất bản"></asp:ListItem>
                                         <asp:ListItem Value="0" Text="Đang ẩn"></asp:ListItem>
                                     </asp:DropDownList>
                                 </div>
-                                <div class="col-md-2">
+                                <div class="col-md-2 col-xs-6">
+                                    <asp:DropDownList ID="ddlWebPublish" runat="server" CssClass="form-control">
+                                        <asp:ListItem Value="" Text="Trang xem hàng"></asp:ListItem>
+                                        <asp:ListItem Value="false" Text="Đang ẩn"></asp:ListItem>
+                                        <asp:ListItem Value="true" Text="Đang hiện"></asp:ListItem>
+                                    </asp:DropDownList>
+                                </div>
+                                <div class="col-md-2 col-xs-6">
                                     <asp:DropDownList ID="ddlCreatedDate" runat="server" CssClass="form-control">
                                         <asp:ListItem Value="" Text="Tất cả thời gian"></asp:ListItem>
                                         <asp:ListItem Value="today" Text="Hôm nay"></asp:ListItem>
@@ -57,7 +64,7 @@
                                         <asp:ListItem Value="30days" Text="30 ngày"></asp:ListItem>
                                     </asp:DropDownList>
                                 </div>
-                                <div class="col-md-1">
+                                <div class="col-md-1 col-xs-6">
                                     <a href="javascript:;" onclick="searchPost()" class="btn primary-btn h45-btn"><i class="fa fa-search"></i></a>
                                     <asp:Button ID="btnSearch" runat="server" CssClass="btn primary-btn h45-btn" OnClick="btnSearch_Click" Style="display: none" />
                                     <a href="/danh-sach-bai-viet" class="btn primary-btn h45-btn"><i class="fa fa-times" aria-hidden="true"></i></a>
@@ -98,35 +105,29 @@
         <script type="text/javascript">
 
             // Parse URL Queries
-            function url_query(query) {
+            function url_query(query)
+            {
                 query = query.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
                 var expr = "[\\?&]" + query + "=([^&#]*)";
                 var regex = new RegExp(expr);
                 var results = regex.exec(window.location.href);
-                if (results !== null) {
+                if (results !== null)
+                {
                     return results[1];
-                } else {
+                }
+                else
+                {
                     return false;
                 }
             }
 
-            var url_param = url_query('quantityfilter');
-            if (url_param) {
-                if (url_param == "greaterthan" || url_param == "lessthan") {
-                    $(".greaterthan").removeClass("hide");
-                    $(".between").addClass("hide");
-                }
-                else if (url_param == "between") {
-                    $(".between").removeClass("hide");
-                    $(".greaterthan").addClass("hide");
-                }
-            }
-
-            function searchPost() {
+            function searchPost()
+            {
                 $("#<%= btnSearch.ClientID%>").click();
             }
 
-            function deletePost(id) {
+            function deletePost(id)
+            {
                 swal({
                     title: "Xác nhận",
                     text: "Bạn muốn xóa bài viết này?",
@@ -136,24 +137,28 @@
                     cancelButtonText: "Để em xem lại...",
                     confirmButtonText: "Đúng rồi sếp!",
                 }, function (confirm) {
-                    if (confirm) {
+                    if (confirm)
+                    {
                         ajaxDeletePost(id, function (d) {
-                            if (d === "success") {
+                            if (d === "success")
+                            {
                                 $("tr.item-" + id).remove();
                             }
-                            else if (d === "failed") {
+                            else if (d === "failed")
+                            {
                                 alert("Lỗi");
                             }
-                            else if (d === "notfound") {
+                            else if (d === "notfound")
+                            {
                                 alert("Không tìm thấy bài viết");
                             }
                         });
                     }
                 });
-                
             }
 
-            function ajaxDeletePost(id, callback) {
+            function ajaxDeletePost(id, callback)
+            {
                 var msg;
                 $.ajax({
                     type: "POST",
@@ -167,10 +172,47 @@
                         callback(msg);
                     },
                     error: function () {
-
+                        alert("Lỗi");
                     }
                 });
+            }
 
+            function updateShowWebPublish(obj)
+            {
+                var ID = obj.attr("data-post-id");
+                var update = obj.attr("data-update");
+                $.ajax({
+                    type: "POST",
+                    url: "/danh-sach-bai-viet.aspx/updateWebPublish",
+                    data: "{id: '" + ID + "', value: " + update + "}",
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    beforeSend: function () {
+                        HoldOn.open();
+                    },
+                    success: function (msg) {
+                        if (msg.d == "true")
+                        {
+                            if (update == "true")
+                            {
+                                $('#showWebPublish_' + ID).html("<a href='javascript:;' data-post-id='" + ID + "' data-update='false' class='bg-green bg-button' onclick='updateShowWebPublish($(this))'>Đang hiện</a>");
+                                $(".webupdate-product-" + ID).removeClass("hide");
+                            }
+                            else
+                            {
+                                $('#showWebPublish_' + ID).html("<a href='javascript:;' data-post-id='" + ID + "' data-update='true' class='bg-black bg-button' onclick='updateShowWebPublish($(this))'>Đang ẩn</a>");
+                                $(".webupdate-product-" + ID).addClass("hide");
+                            }
+                        }
+                        else
+                        {
+                            alert("Lỗi");
+                        }
+                    },
+                    complete: function () {
+                        HoldOn.close();
+                    }
+                });
             }
             
         </script>

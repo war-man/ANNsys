@@ -221,20 +221,6 @@
                             </div>
                             <div class="form-row">
                                 <div class="row-left">
-                                    Ảnh đại diện sạch
-                                </div>
-                                <div class="row-right">
-                                    <telerik:RadAsyncUpload Skin="Metro" runat="server" ID="ProductThumbnailImageClean" ChunkSize="0"
-                                        Localization-Select="Chọn ảnh" AllowedFileExtensions=".jpeg,.jpg,.png"
-                                        MultipleFileSelection="Disabled" OnClientFileSelected="OnClientFileSelected2" MaxFileInputsCount="1"  OnClientFileUploadRemoved="OnClientFileUploadRemoved2">
-                                    </telerik:RadAsyncUpload>
-                                    <asp:Image runat="server" ID="ProductThumbnailClean" Width="200" />
-                                    <asp:HiddenField runat="server" ID="ListProductThumbnailClean" ClientIDMode="Static" />
-                                    <div class="hidProductThumbnailClean"></div>
-                                </div>
-                            </div>
-                            <div class="form-row">
-                                <div class="row-left">
                                     Nội dung
                                 </div>
                                 <div class="row-right">
@@ -255,10 +241,16 @@
                             </div>
                             <div class="form-row">
                                 <div class="row-left">
-                                    Ẩn                   
+                                    Ảnh đại diện sạch
                                 </div>
                                 <div class="row-right">
-                                    <asp:CheckBox ID="chkIsHidden" runat="server" />
+                                    <telerik:RadAsyncUpload Skin="Metro" runat="server" ID="ProductThumbnailImageClean" ChunkSize="0"
+                                        Localization-Select="Chọn ảnh" AllowedFileExtensions=".jpeg,.jpg,.png"
+                                        MultipleFileSelection="Disabled" OnClientFileSelected="OnClientFileSelected2" MaxFileInputsCount="1"  OnClientFileUploadRemoved="OnClientFileUploadRemoved2">
+                                    </telerik:RadAsyncUpload>
+                                    <asp:Image runat="server" ID="ProductThumbnailClean" Width="200" />
+                                    <asp:HiddenField runat="server" ID="ListProductThumbnailClean" ClientIDMode="Static" />
+                                    <div class="hidProductThumbnailClean"></div>
                                 </div>
                             </div>
                             <div class="form-row variable">

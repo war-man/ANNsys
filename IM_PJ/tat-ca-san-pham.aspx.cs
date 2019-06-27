@@ -360,7 +360,7 @@ namespace IM_PJ
                 if(product.ProductStyle == 1)
                 {
                     var order = OrderDetailController.GetByProductID(product.ID);
-                    if (order != null)
+                    if (order.Count() > 0)
                     {
                         return "orderfound";
                     }
@@ -428,7 +428,7 @@ namespace IM_PJ
                 if (product.ProductStyle == 1)
                 {
                     var order = OrderDetailController.GetByProductID(product.ID);
-                    if (order != null)
+                    if (order.Count() > 0)
                     {
                         return "orderfound";
                     }
@@ -516,7 +516,7 @@ namespace IM_PJ
 
                 if (!string.IsNullOrEmpty(product.ProductContent))
                 {
-                    html.Append("<p>🔖 Mô tả: " + product.ProductContent + "</p>\r\n");
+                    html.Append("<p>🔖 " + product.ProductContent + "</p>\r\n");
                     html.Append("<p></p>\r\n");
                 }
 
@@ -550,28 +550,46 @@ namespace IM_PJ
 
                     Variable = "<p><strong>📚 " + vari[0].VariableName + "</strong>: ";
 
+                    int count = 0;
+
                     for (int y = 0; y < vari.Count; y++)
                     {
                         if (stringVariable == vari[y].VariableName)
                         {
-                            Variable += vari[y].VariableValue + "; ";
+                            if (vari[y].VariableValue.IndexOf("Mẫu") >= 0)
+                            {
+                                count = count + 1;
+
+                                if (y == (vari.Count - 1))
+                                {
+                                    Variable += count.ToString() + " mẫu khác nhau";
+                                }
+                            }
+                            else
+                            {
+                                Variable += vari[y].VariableValue + "; ";
+                            }
                         }
                         else
                         {
+                            if (count > 0)
+                            {
+                                Variable += count.ToString() + " mẫu khác nhau";
+                            }
                             Variable += "</p>\r\n";
                             Variable += "<p></p>\r\n";
                             Variable += "<p><strong>📐 " + vari[y].VariableName + "</strong>: " + vari[y].VariableValue + "; ";
                             stringVariable = vari[y].VariableName;
                         }
                     }
-
+                    
                     html.Append(Variable);
                 }
 
                 html.Append("<p></p>\r\n");
                 html.Append("<p></p>\r\n");
 
-                if (product.ID%3 == 0)
+                if (product.ID%4 == 0)
                 {
                     // thông tin liên hệ
                     
@@ -713,7 +731,7 @@ namespace IM_PJ
             }
             else
             {
-                html.Append("<tr><td colspan=\"11\">Không tìm thấy sản phẩm...</td></tr>");
+                html.Append("<tr><td colspan='11'>Không tìm thấy sản phẩm...</td></tr>");
             }
             html.Append("</tbody>");
 

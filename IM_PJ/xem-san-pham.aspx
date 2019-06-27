@@ -231,19 +231,23 @@
                         HoldOn.open();
                     },
                     success: function (msg) {
-                        if (msg.d == "orderfound") {
+                        if (msg.d == "orderfound")
+                        {
                             $("#closeUpdateProductSKU").click();
                             swal("Thông báo", "Sản phẩm đã được bán vì vậy không được sửa!", "error");
                         }
-                        else if (msg.d == "stockfound") {
+                        else if (msg.d == "stockfound")
+                        {
                             $("#closeUpdateProductSKU").click();
                             swal("Thông báo", "Sản phẩm đã được nhập kho vì vậy không được sửa!", "error");
                         }
-                        else if (msg.d == "newskuexist") {
+                        else if (msg.d == "newskuexist")
+                        {
                             $("#<%=txtNewSKU.ClientID%>").focus();
                             swal("Thông báo", "Mã sản phẩm mới đã được tạo cho sản phẩm khác!", "error");
                         }
-                        else if (msg.d == "true") {
+                        else if (msg.d == "true")
+                        {
                             swal({
                                 title: 'Thông báo',
                                 text: 'Đã cập nhật mã sản phẩm thành công!',
@@ -255,7 +259,8 @@
                                 if (confirm) location.reload();
                             });
                         }
-                        else {
+                        else
+                        {
                             alert("Lỗi");
                         }
                     },
@@ -266,7 +271,28 @@
             });
         });
 
-        function deleteProduct(id) {
+        function deleteProduct(id)
+        {
+            swal({
+                title: 'Thông báo',
+                text: 'Bạn có muốn xóa sản phẩm này?',
+                type: 'info',
+                showCancelButton: true,
+                closeOnConfirm: false,
+                closeOnCancel: true,
+                cancelButtonText: "Để em kiểm tra lại..",
+                confirmButtonText: "Xóa luôn..",
+                html: true,
+            }, function (isconfirm) {
+                if (isconfirm)
+                {
+                    ajaxDeleteProduct(id);
+                }
+            });
+        }
+
+        function ajaxDeleteProduct(id)
+        {
             $.ajax({
                 type: "POST",
                 url: "/tat-ca-san-pham.aspx/deleteProduct",
@@ -277,22 +303,25 @@
                     HoldOn.open();
                 },
                 success: function (msg) {
-                    if (msg.d == "orderfound") {
+                    if (msg.d === "orderfound")
+                    {
                         swal("Thông báo", "Sản phẩm đã được bán vì vậy không được xóa!", "error");
                     }
-                    else if (msg.d == "true") {
+                    else if (msg.d === "true")
+                    {
                         swal({
                             title: 'Thông báo',
                             text: 'Đã xóa sản phẩm thành công!',
-                            type: 'success',
+                            type: "success",
                             showCancelButton: false,
-                            closeOnConfirm: true,
+                            closeOnConfirm: false,
                             confirmButtonText: "OK",
-                        }, function (confirm) {
-                            if (confirm) window.location.replace("/tat-ca-san-pham");
+                        }, function (isconfirm) {
+                            if (isconfirm) window.location.replace("/tat-ca-san-pham");
                         });
                     }
-                    else {
+                    else
+                    {
                         alert("Lỗi");
                     }
                 },

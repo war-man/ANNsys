@@ -48,11 +48,13 @@ namespace IM_PJ
                         if (acc.RoleID == 0)
                         {
                             hdfUsernameCurrent.Value = acc.Username;
+                            LoadCreatedBy();
                         }
                         else if (acc.RoleID == 2)
                         {
                             hdfUsername.Value = acc.Username;
                             hdfUsernameCurrent.Value = acc.Username;
+                            LoadCreatedBy(acc);
                         }
                         else
                         {
@@ -66,6 +68,31 @@ namespace IM_PJ
                 }
                 LoadTransportCompany();
                 LoadData();
+            }
+        }
+        public void LoadCreatedBy(tbl_Account acc = null)
+        {
+            if (acc != null)
+            {
+                ddlCreatedBy.Items.Clear();
+                ddlCreatedBy.Items.Insert(0, new ListItem(acc.Username, acc.Username));
+            }
+            else
+            {
+                var CreateBy = AccountController.GetAllNotSearch();
+                ddlCreatedBy.Items.Clear();
+                if (CreateBy.Count > 0)
+                {
+                    foreach (var p in CreateBy)
+                    {
+                        if (p.RoleID == 2)
+                        {
+                            ListItem listitem = new ListItem(p.Username, p.Username);
+                            ddlCreatedBy.Items.Add(listitem);
+                        }
+                    }
+                    ddlCreatedBy.DataBind();
+                }
             }
         }
         public void LoadData()
@@ -85,6 +112,8 @@ namespace IM_PJ
                     {
                         Response.Redirect("/thong-tin-don-hang-chuyen-hoan?id=" + ID);
                     }
+                    hdfUsername.Value = order.CreatedBy;
+                    ddlCreatedBy.SelectedValue = order.CreatedBy.ToString();
 
                     // Init drop down list ddlFeeType
                     var feeTypes = FeeTypeController.getDropDownList();
@@ -703,6 +732,14 @@ namespace IM_PJ
                         var order = OrderController.GetByID(OrderID);
                         if (order != null)
                         {
+                            username = order.CreatedBy;
+                            int userID = AccountController.GetByUsername(username).ID;
+
+                            if (ddlCreatedBy.SelectedValue != order.CreatedBy)
+                            {
+                                username = ddlCreatedBy.SelectedValue;
+                            }
+
                             int AgentID = Convert.ToInt32(acc.AgentID);
                             int OrderType = hdfOrderType.Value.ToInt();
                             string AdditionFee = "0";
@@ -726,7 +763,7 @@ namespace IM_PJ
                             if (Customer != null)
                             {
                                 CustomerID = Customer.ID;
-                                string kq = CustomerController.Update(CustomerID, CustomerName, Customer.CustomerPhone, CustomerAddress, "", Convert.ToInt32(Customer.CustomerLevelID), Convert.ToInt32(Customer.Status), Customer.CreatedBy, currentDate, username, false, Zalo, Facebook, Customer.Note, Customer.ProvinceID.ToString(), Nick, Customer.Avatar, ShippingType, PaymentType, TransportCompanyID, TransportCompanySubID, Customer.CustomerPhone2);
+                                string kq = CustomerController.Update(CustomerID, CustomerName, Customer.CustomerPhone, CustomerAddress, "", Convert.ToInt32(Customer.CustomerLevelID), Convert.ToInt32(Customer.Status), username, currentDate, acc.Username, false, Zalo, Facebook, Customer.Note, Customer.ProvinceID.ToString(), Nick, Customer.Avatar, ShippingType, PaymentType, TransportCompanyID, TransportCompanySubID, Customer.CustomerPhone2);
                             }
                             else
                             {
@@ -791,7 +828,7 @@ namespace IM_PJ
                             }
 
                             string ret = OrderController.UpdateOnSystem(OrderID, OrderType, AdditionFee, DisCount, CustomerID, CustomerName, CustomerPhone,
-                                CustomerAddress, "", totalPrice, totalPriceNotDiscount, PaymentStatus, ExcuteStatus, currentDate, username,
+                                CustomerAddress, "", totalPrice, totalPriceNotDiscount, PaymentStatus, ExcuteStatus, currentDate, username, acc.Username,
                                 Convert.ToDouble(pDiscount.Value), TotalDiscount, FeeShipping, Convert.ToDouble(order.GuestPaid), Convert.ToDouble(order.GuestChange), PaymentType, ShippingType, OrderNote, datedone, 0, ShippingCode, TransportCompanyID, TransportCompanySubID, String.Empty, 0, PostalDeliveryType);
 
                             // Insert Other Fee
@@ -804,7 +841,7 @@ namespace IM_PJ
                                     foreach (var fee in fees)
                                     {
                                         fee.OrderID = OrderID;
-                                        fee.CreatedBy = acc.ID;
+                                        fee.CreatedBy = userID;
                                         fee.CreatedDate = DateTime.Now;
                                         fee.ModifiedBy = acc.ID;
                                         fee.ModifiedDate = DateTime.Now;
@@ -1073,6 +1110,12 @@ namespace IM_PJ
                                     }
                                 }
 
+                                // update stockmanager createdby nếu đổi nhân viên phụ trách
+                                if(ddlCreatedBy.SelectedValue != order.CreatedBy)
+                                {
+                                    StockManagerController.updateCreatedByOrderID(OrderID, username);
+                                }
+
                                 // thêm đơn hàng đổi trả
                                 string refund = hdSession.Value;
                                 // case click "bo qua"
@@ -1081,14 +1124,14 @@ namespace IM_PJ
                                     if (hdfcheckR.Value != "")
                                     {
                                         string[] b = hdfcheckR.Value.Split(',');
-                                        var update_returnorder = RefundGoodController.UpdateStatus(b[0].ToInt(), acc.Username, 1, 0);
+                                        var update_returnorder = RefundGoodController.UpdateStatus(b[0].ToInt(), username, 1, 0);
                                         var update_order = OrderController.UpdateRefund(OrderID, null, acc.Username);
                                     }
                                 }
                                 else if (refund != "1")
                                 {
                                     string[] RefundID = refund.Split('|');
-                                    var update_returnorder = RefundGoodController.UpdateStatus(RefundID[0].ToInt(), acc.Username, 2, OrderID);
+                                    var update_returnorder = RefundGoodController.UpdateStatus(RefundID[0].ToInt(), username, 2, OrderID);
                                     var update_order = OrderController.UpdateRefund(OrderID, RefundID[0].ToInt(), acc.Username);
 
                                     if(hdfcheckR.Value != "")
@@ -1096,7 +1139,7 @@ namespace IM_PJ
                                         string[] k = hdfcheckR.Value.Split(',');
                                         if (k[0] != RefundID[0])
                                         {
-                                            var update_oldreturnorder = RefundGoodController.UpdateStatus(k[0].ToInt(), acc.Username, 1, 0);
+                                            var update_oldreturnorder = RefundGoodController.UpdateStatus(k[0].ToInt(), username, 1, 0);
                                         }
                                     }
                                 }

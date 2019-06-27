@@ -147,7 +147,6 @@ namespace IM_PJ
                     pRegular_Price.Text = p.Regular_Price.ToString();
                     pCostOfGood.Text = p.CostOfGood.ToString();
                     pRetailPrice.Text = p.Retail_Price.ToString();
-                    chkIsHidden.Checked = Convert.ToBoolean(p.IsHidden);
                     ddlSupplier.SelectedValue = p.SupplierID.ToString();
                     ddlCategory.SelectedValue = p.CategoryID.ToString();
                     txtMaterials.Text = p.Materials;
@@ -157,13 +156,13 @@ namespace IM_PJ
                     if(p.ProductImage != null)
                     {
                         ListProductThumbnail.Value = p.ProductImage;
-                        ProductThumbnail.ImageUrl = Thumbnail.getURL(p.ProductImage, Thumbnail.Size.Normal);
+                        ProductThumbnail.ImageUrl = Thumbnail.getURL(p.ProductImage, Thumbnail.Size.Source);
                     }
 
                     if (p.ProductImageClean != null)
                     {
                         ListProductThumbnailClean.Value = p.ProductImageClean;
-                        ProductThumbnailClean.ImageUrl = Thumbnail.getURL(p.ProductImageClean, Thumbnail.Size.Normal);
+                        ProductThumbnailClean.ImageUrl = Thumbnail.getURL(p.ProductImageClean, Thumbnail.Size.Source);
                     }
 
                     var image = ProductImageController.GetByProductID(id);
@@ -172,7 +171,7 @@ namespace IM_PJ
                     {
                         foreach (var img in image)
                         {
-                            imageGallery.Text += "<li><img src='" + Thumbnail.getURL(img.ProductImage, Thumbnail.Size.Normal) + "' /><a href='javascript:;' data-image-id='" + img.ID + "' onclick='deleteImageGallery($(this))' class='btn-delete'><i class=\"fa fa-times\" aria-hidden=\"true\"></i> Xóa hình</a></li>";
+                            imageGallery.Text += "<li><img src='" + Thumbnail.getURL(img.ProductImage, Thumbnail.Size.Source) + "'><a href='javascript:;' data-image-id='" + img.ID + "' onclick='deleteImageGallery($(this))' class='btn-delete'><i class='fa fa-times' aria-hidden='true'></i> Xóa hình</a></li>";
                         }
                     }
                     imageGallery.Text += "</ul>";
@@ -284,7 +283,6 @@ namespace IM_PJ
                 double Regular_Price = Convert.ToDouble(pRegular_Price.Text);
                 double CostOfGood = Convert.ToDouble(pCostOfGood.Text);
                 double Retail_Price = Convert.ToDouble(pRetailPrice.Text);
-                bool IsHidden = chkIsHidden.Checked;
                 int CategoryID = hdfParentID.Value.ToInt();
 
                 double MinimumInventoryLevel = 0;
@@ -380,7 +378,7 @@ namespace IM_PJ
 
                 string kq = ProductController.Update(ProductID, CategoryID, 0, ProductTitle, ProductContent, ProductSKU, ProductStock,
                     StockStatus, ManageStock, Regular_Price, CostOfGood, Retail_Price, ProductImage, 0,
-                    IsHidden, DateTime.Now, username, ddlSupplier.SelectedValue.ToInt(0), ddlSupplier.SelectedItem.ToString(),
+                    false, DateTime.Now, username, ddlSupplier.SelectedValue.ToInt(0), ddlSupplier.SelectedItem.ToString(),
                     txtMaterials.Text, MinimumInventoryLevel, MaximumInventoryLevel, ProductImageClean);
 
                 // Upload image gallery

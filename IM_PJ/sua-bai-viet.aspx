@@ -24,10 +24,17 @@
                             <div class="form-row">
                                 <div class="row-left">
                                     Tiêu đề
-                                    <asp:RequiredFieldValidator ID="rq" runat="server" ControlToValidate="txtPostTitle" ForeColor="Red" SetFocusOnError="true" ErrorMessage="(*)" Display="Dynamic"></asp:RequiredFieldValidator>
                                 </div>
                                 <div class="row-right">
-                                    <asp:TextBox ID="txtPostTitle" runat="server" CssClass="form-control" placeholder="Tiêu đề bài viết"></asp:TextBox>
+                                    <asp:TextBox ID="txtTitle" runat="server" CssClass="form-control" placeholder="Tiêu đề bài viết" autocomplete="off"></asp:TextBox>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="row-left">
+                                    Slug
+                                </div>
+                                <div class="row-right">
+                                    <asp:TextBox ID="txtSlug" runat="server" CssClass="form-control" placeholder="Slug" autocomplete="off"></asp:TextBox>
                                 </div>
                             </div>
                             <div class="form-row">
@@ -118,7 +125,8 @@
                     if (lv < lev) {
                         $(this).remove();
                     }
-                })
+                });
+
                 $.ajax({
                     type: "POST",
                     url: "/tao-bai-viet.aspx/getParent",
@@ -130,16 +138,16 @@
                         var html = "";
                         //var sl = "";
                         if (data.length > 0) {
-                            html += "<select class=\"form-control slparent\" style=\"margin-top:15px;\" data-level=" + level + " onchange=\"chooseParent($(this))\">";
-                            html += "<option  value=\"0\">Chọn danh mục</option>";
+                            html += "<select class='form-control slparent' style='margin-top:15px;' data-level='" + level + "' onchange='chooseParent($(this))'>";
+                            html += "<option  value='0'>Chọn danh mục</option>";
                             for (var i = 0; i < data.length; i++) {
-                                html += "<option value=\"" + data[i].ID + "\">" + data[i].CategoryName + "</option>";
+                                html += "<option value='" + data[i].ID + "'>" + data[i].CategoryName + "</option>";
                             }
                             html += "</select>";
                         }
                         $(".parent").append(html);
                     }
-                })
+                });
             }
 
             function showImageGallery(input, obj) {
@@ -159,7 +167,7 @@
 
                         var reader = new FileReader();
                         reader.onload = function (e) {
-                            $(".image-gallery").append("<li><img src='" + e.target.result + "' /><a href='javascript:;' data-image-id='' onclick='deleteImageGallery($(this))' class='btn-delete'><i class=\"fa fa-times\" aria-hidden=\"true\"></i> Xóa hình</a></li>'")
+                            $(".image-gallery").append("<li><img src='" + e.target.result + "' /><a href='javascript:;' data-image-id='' onclick='deleteImageGallery($(this))' class='btn-delete'><i class='fa fa-times' aria-hidden='true'></i> Xóa hình</a></li>")
                             base64 += e.target.result + "|";
                         }
                         reader.readAsDataURL(input.files[i]);
@@ -173,15 +181,20 @@
             function updatePost() {
 
                 var category = $("#<%=hdfParentID.ClientID%>").val();
-                var title = $("#<%=txtPostTitle.ClientID%>").val();
+                var title = $("#<%=txtTitle.ClientID%>").val();
+                var slug = $("#<%=txtSlug.ClientID%>").val();
 
                 if (category == "") {
                     $("#<%=ddlCategory.ClientID%>").focus();
                     swal("Thông báo", "Chưa chọn danh mục bài viết", "error");
                 }
                 if (title == "") {
-                    $("#<%=txtPostTitle.ClientID%>").focus();
+                    $("#<%=txtTitle.ClientID%>").focus();
                     swal("Thông báo", "Chưa nhập tiêu đề bài viết", "error");
+                }
+                else if (slug == "") {
+                    $("#<%=txtSlug.ClientID%>").focus();
+                    swal("Thông báo", "Chưa nhập slug", "error");
                 }
                 else {
                     $("#<%=btnSubmit.ClientID%>").click();

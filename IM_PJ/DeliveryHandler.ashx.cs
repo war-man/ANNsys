@@ -55,7 +55,7 @@ namespace IM_PJ
                 delivery.CreatedDate = DateTime.Now;
                 delivery.ModifiedBy = acc.ID;
                 delivery.ModifiedDate = DateTime.Now;
-
+                
                 DeliveryController.Update(delivery);
                 context.Response.Write(delivery.Image);
             }

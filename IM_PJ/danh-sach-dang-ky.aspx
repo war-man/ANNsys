@@ -100,7 +100,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
-                    <h3 class="page-title left">Danh sách đăng ký mua sỉ <span>(<asp:Literal ID="ltrNumberOfOrder" runat="server" EnableViewState="false"></asp:Literal> đơn)</span></h3>
+                    <h3 class="page-title left">Đăng ký mua sỉ <span>(<asp:Literal ID="ltrNumberOfOrder" runat="server" EnableViewState="false"></asp:Literal> đơn)</span></h3>
                     <div class="right above-list-btn">
                         <asp:Literal ID="ltrCreateButton" runat="server" EnableViewState="false"></asp:Literal>
                     </div>
@@ -146,6 +146,24 @@
                                 <div class="col-md-1 col-xs-6">
                                     <a href="javascript:;" onclick="searchRegister()" class="btn primary-btn h45-btn"><i class="fa fa-search"></i></a>
                                     <asp:Button ID="btnSearch" runat="server" CssClass="btn primary-btn h45-btn" OnClick="btnSearch_Click" Style="display: none" />
+                                    <a href="/danh-sach-dang-ky" class="btn primary-btn h45-btn"><i class="fa fa-times" aria-hidden="true"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="filter-above-wrap clear">
+                        <div class="filter-control">
+                            <div class="row">
+                                <div class="col-md-9">
+                                </div>
+                                <div class="col-md-2 col-xs-6">
+                                    <asp:DropDownList ID="ddlReferer" runat="server" CssClass="form-control">
+                                        <asp:ListItem Value="" Text="Nguồn từ"></asp:ListItem>
+                                        <asp:ListItem Value="user" Text="Nhân viên thu thập"></asp:ListItem>
+                                        <asp:ListItem Value="khohangsiann.com" Text="khohangsiann.com"></asp:ListItem>
+                                        <asp:ListItem Value="ann.com.vn" Text="ann.com.vn"></asp:ListItem>
+                                        <asp:ListItem Value="bosiquanao.net" Text="bosiquanao.net"></asp:ListItem>
+                                    </asp:DropDownList>
                                 </div>
                             </div>
                         </div>
@@ -265,6 +283,7 @@
             </div>
         </div>
 
+
         <script type="text/javascript">
             $(document).ready(() => {
 
@@ -285,7 +304,6 @@
                             swal("Thông báo", "Đã có vấn đề trong việc lấy tin nhắn của khách này", "error");
                         }
                     });
-                    
                 });
 
                 $("#createRegister").click(e => {
@@ -451,6 +469,46 @@
                         }
                     }
                 });
+            }
+
+            function deleteRegister(id) {
+                swal({
+                    title: "Thông báo",
+                    text: 'Bạn có muốn xóa thông tin đăng ký này?',
+                    type: 'warning',
+                    showCancelButton: true,
+                    closeOnConfirm: true,
+                    cancelButtonText: "Để xem lại",
+                    confirmButtonText: "OK xóa...",
+                    html: true,
+                }, function (confirm) {
+                    if (confirm) {
+                        $.ajax({
+                            type: "POST",
+                            url: "/danh-sach-dang-ky.aspx/deleteRegister",
+                            data: "{id: " + id + "}",
+                            contentType: "application/json; charset=utf-8",
+                            dataType: "json",
+                            beforeSend: function () {
+                                HoldOn.open();
+                            },
+                            success: function (msg) {
+                                if (msg.d == "true") {
+                                    let row = $("tr[data-registerid='" + id + "']");
+                                    row.remove();
+                                    HoldOn.close();
+                                }
+                                else {
+                                    alert("Lỗi");
+                                }
+                            },
+                            error: function (xmlhttprequest, textstatus, errorthrow) {
+                                swal("Thông báo", "Đã có vấn đề trong việc xóa thông tin đăng ký", "error");
+                            }
+                        });
+                    }
+                });
+                
             }
         </script>
     </main>

@@ -112,7 +112,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
-                    <h3 class="page-title left">Danh sách giao hàng  <span>(<asp:Literal ID="ltrNumberOfOrder" runat="server" EnableViewState="false"></asp:Literal> đơn)
+                    <h3 class="page-title left">Giao hàng  <span>(<asp:Literal ID="ltrNumberOfOrder" runat="server" EnableViewState="false"></asp:Literal> đơn)
                         </span>
                     </h3>
                 </div>
@@ -161,6 +161,7 @@
                                 <div class="col-md-1 col-xs-6">
                                     <a href="javascript:;" onclick="searchOrder()" class="btn primary-btn h45-btn"><i class="fa fa-search"></i></a>
                                     <asp:Button ID="btnSearch" runat="server" CssClass="btn primary-btn h45-btn" OnClick="btnSearch_Click" Style="display: none" />
+                                    <a href="/danh-sach-van-chuyen" class="btn primary-btn h45-btn"><i class="fa fa-times" aria-hidden="true"></i></a>
                                 </div>
                             </div>
                         </div>
@@ -203,8 +204,18 @@
                                         <asp:ListItem Value="30days" Text="30 ngày"></asp:ListItem>
                                     </asp:DropDownList>
                                 </div>
-                                <div class="col-md-1 col-xs-6">
-                                    <a href="/danh-sach-van-chuyen" class="btn primary-btn h45-btn"><i class="fa fa-times" aria-hidden="true"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="filter-above-wrap clear">
+                        <div class="filter-control">
+                            <div class="row">
+                                <div class="col-md-3 col-xs-6">
+                                    <asp:DropDownList ID="ddlDeliveryTimes" runat="server" CssClass="form-control">
+                                        <asp:ListItem Value="" Text="Đợt giao hàng"></asp:ListItem>
+                                        <asp:ListItem Value="1" Text="Đợt 1"></asp:ListItem>
+                                        <asp:ListItem Value="2" Text="Đợt 2"></asp:ListItem>
+                                    </asp:DropDownList>
                                 </div>
                             </div>
                         </div>
@@ -314,6 +325,18 @@
                             </div>
                         </div>
                         <div class="row form-group">
+                            <div class="col-xs-3">
+                                <p>Đợt giao</p>
+                            </div>
+                            <div class="col-xs-9">
+                                <asp:DropDownList ID="ddlDeliveryTimesUpdateModal" runat="server" CssClass="form-control">
+                                    <asp:ListItem Value="" Text="Chọn đợt giao hàng"></asp:ListItem>
+                                    <asp:ListItem Value="1" Text="Đợt 1"></asp:ListItem>
+                                    <asp:ListItem Value="2" Text="Đợt 2"></asp:ListItem>
+                                </asp:DropDownList>
+                            </div>
+                        </div>
+                        <div class="row form-group">
                             <div class="col-md-3 col-xs-4">
                                 <p>Chành xe</p>
                             </div>
@@ -395,6 +418,18 @@
                                 <asp:DropDownList ID="ddfShipperPrintModal" runat="server" CssClass="form-control"></asp:DropDownList>
                             </div>
                         </div>
+                        <div class="row form-group">
+                            <div class="col-xs-3">
+                                <p>Đợt giao</p>
+                            </div>
+                            <div class="col-xs-9">
+                                <asp:DropDownList ID="ddlDeliveryTimesModal" runat="server" CssClass="form-control">
+                                    <asp:ListItem Value="" Text="Chọn đợt giao hàng"></asp:ListItem>
+                                    <asp:ListItem Value="1" Text="Đợt 1"></asp:ListItem>
+                                    <asp:ListItem Value="2" Text="Đợt 2"></asp:ListItem>
+                                </asp:DropDownList>
+                            </div>
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button id="closePrint" type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
@@ -455,6 +490,7 @@
                     let modal = $("#TransferBankModal");
                     let orderIDDOM = modal.find("#<%=hdOrderID.ClientID%>");
                     let deliveryDOM = modal.find("#<%=ddlDeliveryStatusModal.ClientID%>");
+                    let deliveryTimesDOM = modal.find("#<%=ddlDeliveryTimesUpdateModal.ClientID%>");
                     let transferCompanyDOM = modal.find("#<%=ddlTransferCompanyModal.ClientID%>");
                     let colOfOrdDOM = modal.find("#<%=txtColOfOrd.ClientID%>");
                     let shipperDOM = modal.find("#<%=ddlShipperModal.ClientID%>");
@@ -511,6 +547,13 @@
 
                     deliveryDOM.val(row.dataset["deliverystatus"]);
 
+                    if (row.dataset["deliverytimes"] != "0") {
+                        deliveryTimesDOM.val(row.dataset["deliverytimes"]);
+                    }
+                    else {
+                        deliveryTimesDOM.val("");
+                    }
+
                     if (row.dataset["shipperid"])
                         shipperDOM.val(row.dataset["shipperid"]);
                     else
@@ -535,6 +578,7 @@
                 $("#updateDelivery").click(e => {
                     let orderID = $("#<%=hdOrderID.ClientID%>").val();
                     let status = $("#<%=ddlDeliveryStatusModal.ClientID%>").val();
+                    let deliveryTimes = $("#<%=ddlDeliveryTimesUpdateModal.ClientID%>").val();
                     let invoiceImages = $("#<%=uploadInvoiceImage.ClientID%>").get(0).files;
                     let imageOld = $("#<%=hdfImageOld.ClientID%>").val();
                     let colOfOrd = $("#<%=txtColOfOrd.ClientID%>").val();
@@ -551,7 +595,8 @@
                         'COD': cosOfDel ? cosOfDel : 0,
                         'COO': colOfOrd ? colOfOrd : 0,
                         'StartAt': formatDateToInsert(startAt),
-                        'ShipNote': note
+                        'ShipNote': note,
+                        'Times': deliveryTimes
                     };
 
 
@@ -559,10 +604,19 @@
                     fileData.append("ImageNew", invoiceImages.length > 0 ? invoiceImages[0] : null);
                     fileData.append("Delivery", JSON.stringify(data));
 
-                    if ((status == 1 || status == 3) && shipperID == 0) {
-                        swal("Thông báo", "Chưa chọn người giao hàng", "error");
+                    if ((status == 1 || status == 3) && shipperID == 0 || deliveryTimes == 0)
+                    {
+                        if (shipperID == 0)
+                        {
+                            swal("Thông báo", "Chưa chọn người giao hàng", "error");
+                        }
+                        if (deliveryTimes == 0)
+                        {
+                            swal("Thông báo", "Chưa chọn đợt giao hàng", "error");
+                        }
                     }
-                    else {
+                    else
+                    {
                         $.ajax({
                             url: "DeliveryHandler.ashx",
                             type: "POST",
@@ -579,6 +633,7 @@
                                 let checkPrint = row.find("td>input[type='checkbox']");
                                 let shiperName = $("#<%=ddlShipperModal.ClientID%> :selected").text();
                                 let deliveryStatusName = $("#<%=ddlDeliveryStatusModal.ClientID%> :selected").text();
+                                let deliveryTimesLabel = $("#<%=ddlDeliveryTimesUpdateModal.ClientID%> :selected").text();
 
                                 // Update screen
                                 row.attr("data-shipperid", shipperID);
@@ -588,6 +643,7 @@
                                 row.attr("data-cosofdev", cosOfDel);
                                 row.attr("data-deliverydate", startAt);
                                 row.attr("data-shippernote", note);
+                                row.attr("data-deliverytimes", deliveryTimes);
 
                                 if (shipperID == "0")
                                 {
@@ -599,11 +655,13 @@
                                 }
 
                                 deliveryStatusDom.removeClass();
+                                row.children("#deliveryTimes").html(deliveryTimesLabel);
 
                                 switch (status) {
                                     case "1":
                                         deliveryStatusDom.addClass("bg-green");
                                         row.children("#delDate").html(formatDate(startAt));
+                                        
                                         if (colOfOrd)
                                             row.children("#colOfOrd").html("<strong>" +
                                                  formatThousands(colOfOrd) + "</strong>");
@@ -1050,16 +1108,17 @@
 
             function startPrint(shippingType) {
                 let shipperID = $("#<%=ddfShipperPrintModal.ClientID%>").val();
+                let deliveryTimes = $("#<%=ddlDeliveryTimesModal.ClientID%>").val();
 
-                if (shipperID != "0") {
+                if (shipperID != "0" && deliveryTimes != "0") {
                     let childDOM = null;
 
                     switch (shippingType) {
                         case 5: // Nhân viên giao hàng
-                            childDOM = $("td[data-shippingtype='5']>input[type='checkbox']:checked");
+                            childDOM = $("tr[data-shippingtype='5']>td>input[type='checkbox']:checked");
                             break;
                         case 4: // Chuyển nhà xe
-                            childDOM = $("td[data-shippingtype='4']>input[type='checkbox']:checked");
+                            childDOM = $("tr[data-shippingtype='4']>td>input[type='checkbox']:checked");
                             break;
                         default:
                             break;
@@ -1074,10 +1133,12 @@
                             let deliveryStatus = row.attr("data-deliverystatus");
                             let deliveryStatusDom = row.children("#deliveryStatus").children("span");
                             let shiperName = $("#<%=ddfShipperPrintModal.ClientID%> :selected").text();
+                            let deliveryTimesLabel = $("#<%=ddlDeliveryTimesModal.ClientID%> :selected").text();
                             let now = new Date();
 
                             // Update screen
                             row.attr("data-shipperid", shipperID);
+                            row.attr("data-deliverytimes", deliveryTimes);
                             // Trường hợp khác đơn đã hoàn thành thì chuyển về trạng thái đang giao
                             if (deliveryStatus != "1")
                             {
@@ -1087,6 +1148,7 @@
 
                             // Update screen
                             row.children("#shiperName").html(shiperName);
+                            row.children("#deliveryTimes").html(deliveryTimesLabel);
                             // Trường hợp khác đơn đã hoàn thành thì chuyển về trạng thái đang giao
                             if (deliveryStatus != "1")
                             {
@@ -1100,12 +1162,19 @@
                     }
 
                     // Gửi thông tin về server để tao đơn in
-                    let url = "/print-delivery?shipperid=" + shipperID + "&shippingtype=" + shippingType;
+                    let url = "/print-delivery?shipperid=" + shipperID + "&shippingtype=" + shippingType + "&deliverytimes=" + deliveryTimes;
                     window.open(url);
                     $("#closePrint").click();
                 }
                 else {
-                    swal("Thông báo", "Chưa chọn người giao hàng", "error");
+                    if (shipperID == "0")
+                    {
+                        swal("Thông báo", "Chưa chọn người giao hàng", "error");
+                    }
+                    if (deliveryTimes == "0")
+                    {
+                        swal("Thông báo", "Chưa chọn đợt giao hàng", "error");
+                    }
                 }
             };
 

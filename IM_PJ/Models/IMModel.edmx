@@ -79,6 +79,7 @@ warning 6002: The table/view 'inventorymanagement.dbo.BankAccount' does not have
           <Property Name="CreatedDate" Type="datetime" Nullable="false" />
           <Property Name="ModifiedBy" Type="int" Nullable="false" />
           <Property Name="ModifiedDate" Type="datetime" Nullable="false" />
+          <Property Name="Times" Type="int" />
         </EntityType>
         <EntityType Name="Fee">
           <Key>
@@ -123,6 +124,7 @@ warning 6002: The table/view 'inventorymanagement.dbo.BankAccount' does not have
           <Property Name="UserID" Type="int" />
           <Property Name="CreatedDate" Type="datetime" />
           <Property Name="ModifiedDate" Type="datetime" />
+          <Property Name="Referer" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="Session">
           <Key>
@@ -248,6 +250,7 @@ warning 6002: The table/view 'inventorymanagement.dbo.BankAccount' does not have
           <Property Name="CreatedBy" Type="nvarchar(max)" />
           <Property Name="ModifiedDate" Type="datetime" />
           <Property Name="ModifiedBy" Type="nvarchar(max)" />
+          <Property Name="Slug" Type="nvarchar" MaxLength="100" />
         </EntityType>
         <EntityType Name="tbl_CheckWarehouse">
           <Key>
@@ -533,6 +536,9 @@ warning 6002: The table/view 'inventorymanagement.dbo.BankAccount' does not have
           <Property Name="CreatedDate" Type="datetime" />
           <Property Name="ModifiedBy" Type="nvarchar(max)" />
           <Property Name="ModifiedDate" Type="datetime" />
+          <Property Name="WebPublish" Type="bit" />
+          <Property Name="WebUpdate" Type="datetime" />
+          <Property Name="Slug" Type="varchar" MaxLength="255" />
         </EntityType>
         <EntityType Name="tbl_PostCategory">
           <Key>
@@ -587,6 +593,8 @@ warning 6002: The table/view 'inventorymanagement.dbo.BankAccount' does not have
           <Property Name="ProductImageClean" Type="nvarchar(max)" />
           <Property Name="WebPublish" Type="bit" />
           <Property Name="WebUpdate" Type="datetime" />
+          <Property Name="UnSignedTitle" Type="varchar" MaxLength="255" />
+          <Property Name="Slug" Type="varchar" MaxLength="255" />
         </EntityType>
         <EntityType Name="tbl_ProductImage">
           <Key>
@@ -1082,6 +1090,7 @@ warning 6002: The table/view 'inventorymanagement.dbo.View_ProductList' does not
           <Property Name="CreatedBy" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
           <Property Name="ModifiedBy" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Slug" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="tbl_CustomerLevel">
           <Key>
@@ -1638,6 +1647,9 @@ warning 6002: The table/view 'inventorymanagement.dbo.View_ProductList' does not
           <Property Name="CreatedDate" Type="DateTime" Precision="3" />
           <Property Name="ModifiedBy" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
+          <Property Name="WebPublish" Type="Boolean" />
+          <Property Name="WebUpdate" Type="DateTime" Precision="3" />
+          <Property Name="Slug" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="tbl_PostCategory">
           <Key>
@@ -1747,6 +1759,7 @@ warning 6002: The table/view 'inventorymanagement.dbo.View_ProductList' does not
           <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="ModifiedBy" Type="Int32" Nullable="false" />
           <Property Name="ModifiedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Times" Type="Int32" />
         </EntityType>
         <EntityType Name="Shipper">
           <Key>
@@ -1794,6 +1807,8 @@ warning 6002: The table/view 'inventorymanagement.dbo.View_ProductList' does not
           <Property Name="ProductImageClean" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="WebPublish" Type="Boolean" />
           <Property Name="WebUpdate" Type="DateTime" Precision="3" />
+          <Property Name="UnSignedTitle" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="Slug" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="Fee">
           <Key>
@@ -1851,6 +1866,7 @@ warning 6002: The table/view 'inventorymanagement.dbo.View_ProductList' does not
           <Property Name="UserID" Type="Int32" />
           <Property Name="CreatedDate" Type="DateTime" Precision="3" />
           <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
+          <Property Name="Referer" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
         </Schema>
     </edmx:ConceptualModels>
@@ -1933,6 +1949,7 @@ warning 6002: The table/view 'inventorymanagement.dbo.View_ProductList' does not
           <EntitySetMapping Name="tbl_Category">
             <EntityTypeMapping TypeName="inventorymanagementModel.tbl_Category">
               <MappingFragment StoreEntitySet="tbl_Category">
+                <ScalarProperty Name="Slug" ColumnName="Slug" />
                 <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
                 <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
                 <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
@@ -2518,6 +2535,9 @@ warning 6002: The table/view 'inventorymanagement.dbo.View_ProductList' does not
           <EntitySetMapping Name="tbl_Post">
             <EntityTypeMapping TypeName="inventorymanagementModel.tbl_Post">
               <MappingFragment StoreEntitySet="tbl_Post">
+                <ScalarProperty Name="Slug" ColumnName="Slug" />
+                <ScalarProperty Name="WebUpdate" ColumnName="WebUpdate" />
+                <ScalarProperty Name="WebPublish" ColumnName="WebPublish" />
                 <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
                 <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
                 <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
@@ -2622,6 +2642,7 @@ warning 6002: The table/view 'inventorymanagement.dbo.View_ProductList' does not
           <EntitySetMapping Name="Deliveries">
             <EntityTypeMapping TypeName="inventorymanagementModel.Delivery">
               <MappingFragment StoreEntitySet="Delivery">
+                <ScalarProperty Name="Times" ColumnName="Times" />
                 <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
                 <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
                 <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
@@ -2656,6 +2677,8 @@ warning 6002: The table/view 'inventorymanagement.dbo.View_ProductList' does not
           <EntitySetMapping Name="tbl_Product">
             <EntityTypeMapping TypeName="inventorymanagementModel.tbl_Product">
               <MappingFragment StoreEntitySet="tbl_Product">
+                <ScalarProperty Name="Slug" ColumnName="Slug" />
+                <ScalarProperty Name="UnSignedTitle" ColumnName="UnSignedTitle" />
                 <ScalarProperty Name="WebUpdate" ColumnName="WebUpdate" />
                 <ScalarProperty Name="WebPublish" ColumnName="WebPublish" />
                 <ScalarProperty Name="ProductImageClean" ColumnName="ProductImageClean" />
@@ -2734,6 +2757,7 @@ warning 6002: The table/view 'inventorymanagement.dbo.View_ProductList' does not
           <EntitySetMapping Name="Registers">
             <EntityTypeMapping TypeName="inventorymanagementModel.Register">
               <MappingFragment StoreEntitySet="Register">
+                <ScalarProperty Name="Referer" ColumnName="Referer" />
                 <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
                 <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
                 <ScalarProperty Name="UserID" ColumnName="UserID" />

@@ -43,5 +43,7 @@ namespace IM_PJ.Models
         public string ProductImageClean { get; set; }
         public Nullable<bool> WebPublish { get; set; }
         public Nullable<System.DateTime> WebUpdate { get; set; }
+        public string UnSignedTitle { get; set; }
+        public string Slug { get; set; }
     }
 }

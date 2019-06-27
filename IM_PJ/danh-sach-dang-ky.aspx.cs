@@ -115,6 +115,7 @@ namespace IM_PJ
                 string CreatedDate = "";
                 int UserID = 0;
                 int ProvinceID = 0;
+                string Referer = "";
 
                 if (Request.QueryString["textsearch"] != null)
                 {
@@ -132,9 +133,13 @@ namespace IM_PJ
                 {
                     UserID = Request.QueryString["userid"].ToInt(0);
                 }
-                if (Request.QueryString["provinceid"] != null)
+                if (Request.QueryString["provinceid"] != "0")
                 {
-                    ProvinceID = Request.QueryString["provinceid"].ToInt();
+                    ProvinceID = Request.QueryString["provinceid"].ToInt(0);
+                }
+                if (Request.QueryString["referer"] != null)
+                {
+                    Referer = Request.QueryString["referer"];
                 }
 
                 txtSearch.Text = TextSearch;
@@ -142,8 +147,9 @@ namespace IM_PJ
                 ddlUser.SelectedValue = UserID.ToString();
                 ddlCreatedDate.SelectedValue = CreatedDate.ToString();
                 ddlProvince.SelectedValue = ProvinceID.ToString();
+                ddlReferer.SelectedValue = Referer;
 
-                var rs = RegisterController.Filter(TextSearch, ProvinceID, UserID, Status, CreatedDate);
+                var rs = RegisterController.Filter(TextSearch, ProvinceID, UserID, Status, Referer, CreatedDate);
 
                 if(acc.RoleID != 0 && acc.Username != "hotline")
                 {
@@ -174,6 +180,7 @@ namespace IM_PJ
             html.Append("    <th>Địa chỉ</th>");
             html.Append("    <th>Tỉnh</th>");
             html.Append("    <th>Quan tâm</th>");
+            html.Append("    <th>Nguồn</th>");
             html.Append("    <th>Trạng thái</th>");
             html.Append("    <th>Phụ trách</th>");
             html.Append("    <th>Ngày đăng ký</th>");
@@ -231,6 +238,7 @@ namespace IM_PJ
                     html.Append("   <td data-title='Địa chỉ'>" + item.Address + "</td>");
                     html.Append("   <td data-title='Tỉnh'>" + item.ProvinceName + "</td>");
                     html.Append("   <td data-title='Quan tâm'>" + item.ProductCategory + "</td>");
+                    html.Append("   <td data-title='Nguồn'>" + item.Referer + "</td>");
 
                     string status = "";
                     if(item.Status == 1)
@@ -264,6 +272,10 @@ namespace IM_PJ
                     {
                         html.Append("       <button type='button' class='btn primary-btn h45-btn' data-toggle='modal' data-target='#UpdateRegisterModal' data-backdrop='static' data-keyboard='false' title='Cập nhật thông tin đăng ký'><span class='glyphicon glyphicon-edit'></span></button>");
                     }
+                    if (acc.RoleID == 0)
+                    {
+                        html.Append("       <a href='javascript:;' class='btn primary-btn h45-btn btn-red' title='Xóa thông tin đăng ký này' onclick='deleteRegister(" + item.ID + ")'><i class='fa fa-times' aria-hidden='true'></i></a>");
+                    }
                     html.Append("   </td>");
                     html.Append("</tr>");
                 }
@@ -271,7 +283,7 @@ namespace IM_PJ
             }
             else
             {
-                html.Append("<tr><td colspan=\"12\">Không tìm thấy đăng ký mua sỉ...</td></tr>");
+                html.Append("<tr><td colspan='12'>Không tìm thấy đăng ký mua sỉ...</td></tr>");
             }
 
             html.Append("</tbody>");
@@ -438,9 +450,14 @@ namespace IM_PJ
                 request += "&userid=" + ddlUser.SelectedValue;
             }
 
-            if (ddlProvince.SelectedValue != "")
+            if (ddlProvince.SelectedValue != "0")
             {
                 request += "&provinceid=" + ddlProvince.SelectedValue;
+            }
+
+            if (ddlReferer.SelectedValue != "")
+            {
+                request += "&referer=" + ddlReferer.SelectedValue;
             }
 
             if (ddlCreatedDate.SelectedValue != "")
@@ -456,6 +473,20 @@ namespace IM_PJ
             int ID = RegisterController.UpdateStatus(id, value);
 
             if (ID != 0)
+            {
+                return "true";
+            }
+            else
+            {
+                return "false";
+            }
+        }
+        [WebMethod]
+        public static string deleteRegister(int id)
+        {
+            string register = RegisterController.deleteRegister(id);
+
+            if (register != null)
             {
                 return "true";
             }
@@ -490,6 +521,7 @@ namespace IM_PJ
             register.Address = "";
             register.ProductCategory = "";
             register.ProvinceID = 0;
+            register.Referer = "user";
 
             int ID = RegisterController.Insert(register);
 

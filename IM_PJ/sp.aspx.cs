@@ -38,7 +38,7 @@ namespace IM_PJ
         {
             var category = CategoryController.GetAllWithIsHidden(false);
             ddlCategory.Items.Clear();
-            ddlCategory.Items.Insert(0, new ListItem("Danh mục sản phẩm", "0"));
+            ddlCategory.Items.Insert(0, new ListItem("Danh mục", "0"));
             if (category.Count > 0)
             {
                 addItemCategory(0, "");
@@ -178,7 +178,8 @@ namespace IM_PJ
 
                     if (!string.IsNullOrEmpty(item.ProductContent))
                     {
-                        html.Append("   <p>🔖 " + Regex.Replace(item.ProductContent, @"<img\s[^>]*>(?:\s*?</img>)?", "") + "</p>");
+                        string content = Regex.Replace(item.ProductContent, @"<img\s[^>]*>(?:\s*?</img>)?", "").ToString();
+                        html.Append("   <p>🔖 " + content.Substring(0, content.Length > 100 ? 100 : content.Length) + "</p>");
                     }
 
                     html.Append("   <p>🔖 " + item.ProductInstockStatus + " (" + string.Format("{0:N0}", item.TotalProductInstockQuantityLeft) + " cái)</p>");

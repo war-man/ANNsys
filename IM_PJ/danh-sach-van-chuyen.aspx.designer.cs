@@ -121,6 +121,15 @@ namespace IM_PJ {
         protected global::System.Web.UI.WebControls.DropDownList ddlDeliveryStartAt;
         
         /// <summary>
+        /// ddlDeliveryTimes control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList ddlDeliveryTimes;
+        
+        /// <summary>
         /// ltrList control.
         /// </summary>
         /// <remarks>
@@ -155,6 +164,15 @@ namespace IM_PJ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList ddlShipperModal;
+        
+        /// <summary>
+        /// ddlDeliveryTimesUpdateModal control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList ddlDeliveryTimesUpdateModal;
         
         /// <summary>
         /// ddlTransferCompanyModal control.
@@ -218,6 +236,15 @@ namespace IM_PJ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList ddfShipperPrintModal;
+        
+        /// <summary>
+        /// ddlDeliveryTimesModal control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList ddlDeliveryTimesModal;
         
         /// <summary>
         /// hdfSession control.

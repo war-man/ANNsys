@@ -54,6 +54,7 @@ namespace IM_PJ
         {
             var shipperID = Request.QueryString.Get("shipperid").ToInt(0);
             var shippingType = Request.QueryString.Get("shippingtype").ToInt(0);
+            var deliveryTimes = Request.QueryString.Get("deliverytimes").ToInt(0);
 
             if (shipperID == 0)
             {
@@ -62,6 +63,10 @@ namespace IM_PJ
             else if (shippingType == 0)
             {
                 ltrPrintDelivery.Text = String.Format("ShippingType #{0} truyền vào có vấn đề", shippingType);
+            }
+            else if (deliveryTimes == 0)
+            {
+                ltrPrintDelivery.Text = String.Format("DeliveryTimes #{0} truyền vào có vấn đề", shippingType);
             }
             else
             {
@@ -83,11 +88,11 @@ namespace IM_PJ
                     }
                     else
                     {
-                        ltrPrintDelivery.Text = getTransportReportHTML(data, shipperID);
+                        ltrPrintDelivery.Text = getTransportReportHTML(data, shipperID, deliveryTimes);
                         ltrPrintEnable.Text = "<div class='print-enable true'></div>";
 
                         // Update Delivery
-                        DeliveryController.udpateAfterPrint(shipperID, orders, acc.ID);
+                        DeliveryController.udpateAfterPrint(shipperID, orders, acc.ID, deliveryTimes);
                     }
                 }
                 else if (shippingType == 5) // Báo cáo chuyển hàng của shipper
@@ -109,7 +114,7 @@ namespace IM_PJ
                         ltrPrintEnable.Text = "<div class='print-enable true'></div>";
 
                         // Update Delivery
-                        DeliveryController.udpateAfterPrint(shipperID, orders, acc.ID);
+                        DeliveryController.udpateAfterPrint(shipperID, orders, acc.ID, deliveryTimes);
                     }
                 }
                 else
@@ -119,7 +124,7 @@ namespace IM_PJ
             }
         }
 
-        public string getTransportReportHTML(List<TransportReport> data, int shipperID)
+        public string getTransportReportHTML(List<TransportReport> data, int shipperID, int deliveryTimes)
         {
             var html = new StringBuilder();
             int index = 0;
@@ -136,6 +141,7 @@ namespace IM_PJ
             html.AppendLine("               <div class='info'>");
             html.AppendLine(String.Format(" <p>Ngày giao: {0}</p>", string.Format("{0:dd/MM HH:mm}", DateTime.Now)));
             html.AppendLine(String.Format(" <p>Người giao: {0}</p>", shipperName));
+            html.AppendLine(String.Format(" <p>Đợt giao: Đợt {0}</p>", deliveryTimes));
             html.AppendLine("               </div>");
             html.AppendLine("                <table>");
             html.AppendLine("                    <colgroup>");
@@ -156,7 +162,7 @@ namespace IM_PJ
                 totalCollection += item.Collection;
 
                 html.AppendLine("                        <tr>");
-                html.AppendLine(String.Format("                            <td><strong>{0}</strong></td>", item.TransportName));
+                html.AppendLine(String.Format("                            <td><strong>{0}</strong></td>", item.TransportName.ToTitleCase()));
                 html.AppendLine(String.Format("                            <td>{0:#,###}</td>", item.Quantity));
                 html.AppendLine(String.Format("                            <td>{0:#,###}</td>", item.Collection));
                 html.AppendLine("                        </tr>");

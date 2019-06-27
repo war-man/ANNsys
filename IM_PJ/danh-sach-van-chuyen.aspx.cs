@@ -130,6 +130,7 @@ namespace IM_PJ
                 string CreatedBy = "";
                 string DeliveryStartAt = "";
                 var isDeliverySession = false;
+                int DeliveryTimes = 0;
 
                 if (Request.QueryString["textsearch"] != null)
                     TextSearch = Request.QueryString["textsearch"].Trim();
@@ -153,6 +154,8 @@ namespace IM_PJ
                     DeliveryStartAt = Request.QueryString["deliverystartat"];
                 if (Request.QueryString["isdeliverysession"] != null)
                     isDeliverySession = true;
+                if (Request.QueryString["deliverytimes"] != null)
+                    DeliveryTimes = Request.QueryString["deliverytimes"].ToInt(0);
 
                 txtSearchOrder.Text = TextSearch;
                 ddlTransportCompany.SelectedValue = TransportCompany.ToString();
@@ -165,6 +168,7 @@ namespace IM_PJ
                 ddlCreatedBy.SelectedValue = CreatedBy.ToString();
                 ddlCreatedBy.SelectedValue = CreatedBy.ToString();
                 ddlDeliveryStartAt.SelectedValue = DeliveryStartAt.ToString();
+                ddlDeliveryTimes.SelectedValue = DeliveryTimes.ToString();
 
                 List<OrderList> rs = new List<OrderList>();
                 rs = OrderController.Filter(
@@ -181,7 +185,8 @@ namespace IM_PJ
                     CreatedDate, // CreatedDate
                     String.Empty, // TransferDoneAt
                     TransportCompany, // TransportCompany
-                    DeliveryStartAt // DeliveryStartAt
+                    DeliveryStartAt, // DeliveryStartAt
+                    DeliveryTimes // DeliveryTimes
                 );
 
                 if (ShippingType == 0)
@@ -279,6 +284,7 @@ namespace IM_PJ
             html.Append("    <th>Đã thu</th>");
             html.Append("    <th>Phí</th>");
             html.Append("    <th>Ngày giao</th>");
+            html.Append("    <th>Đợt</th>");
             html.Append("    <th>Hoàn tất đơn</th>");
 
             if (acc.RoleID == 0 || acc.Username == "nhom_zalo406")
@@ -324,6 +330,7 @@ namespace IM_PJ
                     TrTag.AppendLine(String.Format("data-deliverydate='{0:dd/MM/yyyy HH:mm}' ", item.DeliveryDate));
                     TrTag.AppendLine(String.Format("data-shippernote='{0}' ", item.ShipNote));
                     TrTag.AppendLine(String.Format("data-transfercompany='{0}' ", item.TransportCompanyID));
+                    TrTag.AppendLine(String.Format("data-deliverytimes='{0}' ", item.DeliveryTimes));
                     TrTag.AppendLine("/>");
 
                     html.Append(TrTag.ToString());
@@ -340,7 +347,7 @@ namespace IM_PJ
                     html.Append("   <td><a href=\"/thong-tin-don-hang?id=" + item.ID + "\">" + item.ID + "</a></td>");
                     if (!string.IsNullOrEmpty(item.Nick))
                     {
-                        html.Append("   <td data-title='Khách hàng' class='customer-td'><a class=\"col-customer-name-link\" href=\"/thong-tin-don-hang?id=" + item.ID + "\">" + item.CustomerName.ToTitleCase() + "</a><br><span class=\"name-bottom-nick\">(" + item.Nick.ToTitleCase() + ")</span></td>");
+                        html.Append("   <td data-title='Khách hàng' class='customer-td'><a class=\"col-customer-name-link\" href=\"/thong-tin-don-hang?id=" + item.ID + "\">" + item.CustomerName.ToTitleCase() + "</a><br><span class=\"name-bottom-nick\">Nick: " + item.Nick.ToTitleCase() + "</span></td>");
                     }
                     else
                     {
@@ -368,6 +375,15 @@ namespace IM_PJ
                         html.Append("   <td data-title='Ngày giao' id='delDate'>" + String.Format("{0:dd/MM HH:mm}", item.DeliveryDate) + "</td>");
                     else
                         html.Append("   <td data-title='Ngày giao' id='delDate'></td>");
+                    // Đợt giao
+                    if(item.DeliveryTimes > 0)
+                    {
+                        html.Append("   <td data-title='Đợt giao hàng' id='deliveryTimes'>Đợt " + item.DeliveryTimes.ToString() + "</td>");
+                    }
+                    else
+                    {
+                        html.Append("   <td data-title='Đợt giao hàng' id='deliveryTimes'></td>");
+                    }
                     // Ngày hoàn tất đơn
                     string datedone = "";
                     if (item.ExcuteStatus == 2)
@@ -388,7 +404,7 @@ namespace IM_PJ
                     // thông tin thêm
                     html.Append("<tr class='tr-more-info'>");
                     html.Append("   <td colspan='2' data-title='Thông tin thêm'></td>");
-                    html.Append("   <td colspan='13'>");
+                    html.Append("   <td colspan='14'>");
 
                     if (item.ShippingType == 4)
                     {
@@ -428,11 +444,11 @@ namespace IM_PJ
             {
                 if (acc.RoleID == 0)
                 {
-                    html.Append("<tr><td colspan=\"13\">Không tìm thấy đơn hàng...</td></tr>");
+                    html.Append("<tr><td colspan=\"14\">Không tìm thấy đơn hàng...</td></tr>");
                 }
                 else
                 {
-                    html.Append("<tr><td colspan=\"12\">Không tìm thấy đơn hàng...</td></tr>");
+                    html.Append("<tr><td colspan=\"13\">Không tìm thấy đơn hàng...</td></tr>");
                 }
             }
             html.Append("</tbody>");
@@ -607,6 +623,9 @@ namespace IM_PJ
 
             if (ddlDeliveryStartAt.SelectedValue != "")
                 request += "&deliverystartat=" + ddlDeliveryStartAt.SelectedValue;
+
+            if (ddlDeliveryTimes.SelectedValue != "")
+                request += "&deliverytimes=" + ddlDeliveryTimes.SelectedValue;
 
             Response.Redirect(request);
         }

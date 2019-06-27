@@ -333,7 +333,7 @@ namespace IM_PJ
                         }
                         else
                         {
-                            string ProductTitle = Regex.Replace(txtProductTitle.Text, @"\s*\,\s*|\s*\;\s*", " - ");
+                            string ProductTitle = Regex.Replace(txtProductTitle.Text.Trim(), @"\s*\,\s*|\s*\;\s*", " - ");
                             string ProductContent = pContent.Content.ToString();
 
                             double ProductStock = 0;

@@ -550,6 +550,14 @@
                                         <asp:TextBox ID="txtOrderNote" runat="server" CssClass="form-control" placeholder="Ghi chú"></asp:TextBox>
                                     </div>
                                 </div>
+                                <div id="row-createdby" class="form-row hide">
+                                    <div class="row-left">
+                                        Nhân viên phụ trách
+                                    </div>
+                                    <div class="row-right">
+                                        <asp:DropDownList ID="ddlCreatedBy" runat="server" CssClass="form-control createdby"></asp:DropDownList>
+                                    </div>
+                                </div>
                                 <div class="panel-post">
                                     <div class="post-table-links clear">
                                         <a href="javascript:;" class="btn link-btn" id="payall" style="background-color: #f87703; float: right" title="Hoàn tất đơn hàng" onclick="payAll()"><i class="fa fa-floppy-o"></i> Xác nhận</a>
@@ -1066,6 +1074,11 @@
 
             $(document).ready(function () {
                 init();
+
+                // Show change createdby if role = admin
+                if ($("#<%=hdfRoleID.ClientID%>").val() == 0) {
+                    $("#row-createdby").removeClass("hide");
+                }
 
                 // search Product by SKU
                 $("#txtSearch").keydown(function (event) {
@@ -1783,7 +1796,35 @@
                     });
                 }
 
-                if (checkAllValue == true) {
+                var ddlCreatedBy = $("#<%=ddlCreatedBy.ClientID%>").val();
+                var createdBy = $("#<%=hdfUsername.ClientID%>").val();
+
+                if (createdBy != ddlCreatedBy)
+                {
+                    checkAllValue = false;
+                    swal({
+                        title: "Ê nhỏ:",
+                        text: "Chuyển đơn hàng này cho <strong>" + ddlCreatedBy + "</strong> phụ trách hở?<br>Nếu vậy thì khách này cũng chuyển cho nhân viên này phụ trách nhé!",
+                        type: "info",
+                        showCancelButton: true,
+                        closeOnConfirm: true,
+                        closeOnCancel: true,
+                        confirmButtonColor: "#DD6B55",
+                        confirmButtonText: "Đúng rồi sếp!!",
+                        cancelButtonText: "Để em xem lại..",
+                        html: true,
+                    }, function (isconfirm) {
+                        if (isconfirm)
+                        {
+                            checkAllValue = true;
+                            $("#<%=hdfUsername.ClientID%>").val(ddlCreatedBy);
+                            insertOrder();
+                        }
+                    });
+                }
+
+                if (checkAllValue == true)
+                {
                     HoldOn.open();
                     $("#<%=btnOrder.ClientID%>").click();
                 }
@@ -2101,15 +2142,20 @@
 
                 switch (excuteStatus) {
                     case 2:
-                        $("#infor-customer").addClass("disable");
-                        $("#detail").addClass("disable");
-                        if ($("#<%=hdfExcuteStatus.ClientID%>").val() == 2) {
-                            $("#row-payment-status").removeClass("disable");
-                            $("#row-payment-type").removeClass("disable");
-                            $("#row-shipping-type").removeClass("disable");
-                            $("#row-transport-company").removeClass("disable");
-                            $("#row-shipping").removeClass("disable");
-                            $("#row-order-note").removeClass("disable");
+                        if ($("#<%=hdfExcuteStatus.ClientID%>").val() != 1)
+                        {
+                            $("#infor-customer").addClass("disable");
+                            $("#detail").addClass("disable");
+                            $("#row-payment-type").addClass("disable");
+                            $("#row-shipping-type").addClass("disable");
+                            $("#row-transport-company").addClass("disable");
+                            $("#row-shipping").addClass("disable");
+                            $("#row-bank").addClass("disable");
+                            if ($("#<%=hdfExcuteStatus.ClientID%>").val() == 2)
+                            {
+                                $("#row-payment-status").removeClass("disable");
+                                $("#row-order-note").removeClass("disable");
+                            }
                         }
                         break;
                     case 3:
@@ -2123,10 +2169,9 @@
                         $("#row-transport-company").addClass("disable");
                         $("#row-shipping").addClass("disable");
                         $("#row-order-note").addClass("disable");
-
+                        $("#row-bank").addClass("disable");
                         break;
                     case 1:
-
                         if ($("#<%=hdfExcuteStatus.ClientID%>").val() == 1) {
                             $("#infor-order").removeClass("disable");
                             $("#infor-customer").removeClass("disable");
@@ -2138,19 +2183,36 @@
                             $("#row-transport-company").removeClass("disable");
                             $("#row-shipping").removeClass("disable");
                             $("#row-order-note").removeClass("disable");
+                            $("#row-bank").removeClass("disable");
                         }
                         else {
-                            $("#infor-customer").addClass("disable");
-                            $("#detail").addClass("disable");
-                            $("#status .panel-heading").addClass("disable");
-                            $("#row-payment-status").addClass("disable");
-                            $("#row-payment-type").addClass("disable");
-                            $("#row-shipping-type").addClass("disable");
-                            $("#row-transport-company").addClass("disable");
-                            $("#row-shipping").addClass("disable");
-                            $("#row-order-note").addClass("disable");
+                            if($("#<%=hdfRoleID.ClientID%>").val() == 0)
+                            {
+                                $("#infor-order").removeClass("disable");
+                                $("#infor-customer").removeClass("disable");
+                                $("#detail").removeClass("disable");
+                                $("#status .panel-heading").removeClass("disable");
+                                $("#row-payment-status").removeClass("disable");
+                                $("#row-payment-type").removeClass("disable");
+                                $("#row-shipping-type").removeClass("disable");
+                                $("#row-transport-company").removeClass("disable");
+                                $("#row-shipping").removeClass("disable");
+                                $("#row-order-note").removeClass("disable");
+                                $("#row-bank").removeClass("disable");
+                            }
+                            else
+                            {
+                                $("#infor-customer").addClass("disable");
+                                $("#detail").addClass("disable");
+                                $("#status .panel-heading").addClass("disable");
+                                $("#row-payment-type").addClass("disable");
+                                $("#row-shipping-type").addClass("disable");
+                                $("#row-transport-company").addClass("disable");
+                                $("#row-shipping").addClass("disable");
+                                $("#row-order-note").addClass("disable");
+                                $("#row-bank").addClass("disable");
+                            }
                         }
-
                         break;
                 }
             };

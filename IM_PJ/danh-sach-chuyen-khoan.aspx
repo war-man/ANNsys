@@ -95,7 +95,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
-                    <h3 class="page-title left">Danh sách chuyển khoản <span>(<asp:Literal ID="ltrNumberOfOrder" runat="server" EnableViewState="false"></asp:Literal> đơn)</span>
+                    <h3 class="page-title left">Chuyển khoản <span>(<asp:Literal ID="ltrNumberOfOrder" runat="server" EnableViewState="false"></asp:Literal> đơn)</span>
                     </h3>
                 </div>
             </div>
@@ -104,10 +104,10 @@
                     <div class="filter-above-wrap clear">
                         <div class="filter-control">
                             <div class="row">
-                                <div class="col-md-5">
+                                <div class="col-md-5 col-xs-6">
                                     <asp:TextBox ID="txtSearchOrder" runat="server" CssClass="form-control" placeholder="Tìm đơn hàng" autocomplete="off"></asp:TextBox>
                                 </div>
-                                <div class="col-md-2">
+                                <div class="col-md-2 col-xs-6">
                                     <asp:DropDownList ID="ddlExcuteStatus" runat="server" CssClass="form-control">
                                         <asp:ListItem Value="" Text="Xử lý đơn"></asp:ListItem>
                                         <asp:ListItem Value="1" Text="Đang xử lý"></asp:ListItem>
@@ -115,12 +115,10 @@
                                         <asp:ListItem Value="3" Text="Đã hủy"></asp:ListItem>
                                     </asp:DropDownList>
                                 </div>
-                                
-                                
-                                <div class="col-md-2">
+                                <div class="col-md-2 col-xs-6">
                                     <asp:DropDownList ID="ddlCreatedBy" runat="server" CssClass="form-control"></asp:DropDownList>
                                 </div>
-                                <div class="col-md-2">
+                                <div class="col-md-2 col-xs-6">
                                     <asp:DropDownList ID="ddlCreatedDate" runat="server" CssClass="form-control">
                                         <asp:ListItem Value="" Text="Thời gian đơn hàng"></asp:ListItem>
                                         <asp:ListItem Value="today" Text="Hôm nay"></asp:ListItem>
@@ -134,9 +132,10 @@
                                         <asp:ListItem Value="30days" Text="30 ngày"></asp:ListItem>
                                     </asp:DropDownList>
                                 </div>
-                                <div class="col-md-1">
+                                <div class="col-md-1 col-xs-6">
                                     <a href="javascript:;" onclick="searchOrder()" class="btn primary-btn h45-btn"><i class="fa fa-search"></i></a>
                                     <asp:Button ID="btnSearch" runat="server" CssClass="btn primary-btn h45-btn" OnClick="btnSearch_Click" Style="display: none" />
+                                    <a href="/danh-sach-chuyen-khoan" class="btn primary-btn h45-btn"><i class="fa fa-times" aria-hidden="true"></i></a>
                                 </div>
                             </div>
                         </div>
@@ -146,17 +145,17 @@
                             <div class="row">
                                 <div class="col-md-5">
                                 </div>
-                                <div class="col-md-2">
+                                <div class="col-md-2 col-xs-6">
                                     <asp:DropDownList ID="ddlTransferStatus" runat="server" CssClass="form-control">
                                         <asp:ListItem Value="" Text="Trạng thái tiền"></asp:ListItem>
                                         <asp:ListItem Value="1" Text="Đã nhận tiền"></asp:ListItem>
                                         <asp:ListItem Value="2" Text="Chưa nhận tiền"></asp:ListItem>
                                     </asp:DropDownList>
                                 </div>
-                                <div class="col-md-2">
+                                <div class="col-md-2 col-xs-6">
                                     <asp:DropDownList ID="ddlBankReceive" runat="server" CssClass="form-control"></asp:DropDownList>
                                 </div>
-                                <div class="col-md-2">
+                                <div class="col-md-2 col-xs-6">
                                     <asp:DropDownList ID="ddlTransferDoneAt" runat="server" CssClass="form-control">
                                         <asp:ListItem Value="" Text="Thời gian nhận tiền"></asp:ListItem>
                                         <asp:ListItem Value="today" Text="Hôm nay"></asp:ListItem>
@@ -169,9 +168,6 @@
                                         <asp:ListItem Value="beforelastmonth" Text="Tháng trước nữa"></asp:ListItem>
                                         <asp:ListItem Value="30days" Text="30 ngày"></asp:ListItem>
                                     </asp:DropDownList>
-                                </div>
-                                <div class="col-md-1">
-                                    <a href="/danh-sach-chuyen-khoan" class="btn primary-btn h45-btn"><i class="fa fa-times" aria-hidden="true"></i></a>
                                 </div>
                             </div>
                         </div>

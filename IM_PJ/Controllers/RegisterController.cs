@@ -29,6 +29,7 @@ namespace IM_PJ.Controllers
                 newRegister.Status = register.Status;
                 newRegister.UserID = register.UserID;
                 newRegister.CreatedDate = DateTime.Now;
+                newRegister.Referer = register.Referer;
 
                 connect.Registers.Add(newRegister);
                 connect.SaveChanges();
@@ -55,6 +56,7 @@ namespace IM_PJ.Controllers
                     target.UserID = register.UserID;
                     target.CreatedDate = register.CreatedDate;
                     target.ModifiedDate = DateTime.Now;
+                    target.Referer = register.Referer;
 
                     connect.SaveChanges();
                 }
@@ -79,6 +81,21 @@ namespace IM_PJ.Controllers
                 return target.ID;
             }
             
+        }
+        public static string deleteRegister(int id)
+        {
+            using (var dbe = new inventorymanagementEntities())
+            {
+                Register ui = dbe.Registers.Where(a => a.ID == id).SingleOrDefault();
+                if (ui != null)
+                {
+                    dbe.Registers.Remove(ui);
+                    int kq = dbe.SaveChanges();
+                    return kq.ToString();
+                }
+                else
+                    return null;
+            }
         }
         public static int UpdateUser(int id, int userid)
         {
@@ -130,7 +147,7 @@ namespace IM_PJ.Controllers
                         .FirstOrDefault();
             }
         }
-        public static List<RegisterOut> Filter(string TextSearch, int ProvinceID, int UserID, int Status, string CreatedDate)
+        public static List<RegisterOut> Filter(string TextSearch, int ProvinceID, int UserID, int Status, string Referer, string CreatedDate)
         {
             var result = new List<RegisterOut>();
 
@@ -189,6 +206,7 @@ namespace IM_PJ.Controllers
                     .Where(x => ProvinceID <= 0 || (ProvinceID > 0 && x.ProvinceID == ProvinceID))
                     .Where(x => UserID <= 0 || (UserID > 0  && x.UserID == UserID))
                     .Where(x => Status <= 0 || (Status > 0 && x.Status == Status))
+                    .Where(x => string.IsNullOrEmpty(Referer) || (!string.IsNullOrEmpty(Referer) && x.Referer == Referer))
                     .Where(x => string.IsNullOrEmpty(CreatedDate) || (!string.IsNullOrEmpty(CreatedDate) && x.CreatedDate >= fromdate && x.CreatedDate <= todate))
                     .OrderByDescending(x => x.CreatedDate);
 
@@ -214,7 +232,8 @@ namespace IM_PJ.Controllers
                             ProvinceID = parent.register.ProvinceID.HasValue ? parent.register.ProvinceID.Value.ToString() : String.Empty,
                             Status = parent.register.Status.HasValue ? parent.register.Status.Value : 0,
                             UserID = parent.register.UserID.HasValue ? parent.register.UserID.Value : 0,
-                            ProvinceName = child != null ? child.ProvinceName : String.Empty
+                            ProvinceName = child != null ? child.ProvinceName : String.Empty,
+                            Referer = parent.register.Referer
                         }
                     )
                     .OrderByDescending(x => x.CreatedDate)
@@ -275,6 +294,7 @@ namespace IM_PJ.Controllers
             public int UserID { get; set; }
             public string User { get; set; }
             public DateTime CreatedDate { get; set; }
+            public string Referer { get; set; }
         }
         #endregion
     }

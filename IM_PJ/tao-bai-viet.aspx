@@ -92,17 +92,22 @@
                             <div class="form-row">
                                 <asp:Label ID="lblError" runat="server" Visible="false" ForeColor="Red"></asp:Label>
                             </div>
-
                             <div class="form-row">
                                 <div class="row-left">
                                     Tiêu đề
-                                    <asp:RequiredFieldValidator ID="rq" runat="server" ControlToValidate="txtTitle" ForeColor="Red" SetFocusOnError="true" ErrorMessage="(*)" Display="Dynamic"></asp:RequiredFieldValidator>
                                 </div>
                                 <div class="row-right">
-                                    <asp:TextBox ID="txtTitle" runat="server" CssClass="form-control" placeholder="Tiêu đề bài viết" autocomplete="off"></asp:TextBox>
+                                    <asp:TextBox ID="txtTitle" runat="server" CssClass="form-control" placeholder="Tiêu đề bài viết" autocomplete="off" onkeyup="ChangeToSlug();"></asp:TextBox>
                                 </div>
                             </div>
-
+                            <div class="form-row">
+                                <div class="row-left">
+                                    Slug
+                                </div>
+                                <div class="row-right">
+                                    <asp:TextBox ID="txtSlug" runat="server" CssClass="form-control" placeholder="Slug" autocomplete="off"></asp:TextBox>
+                                </div>
+                            </div>
                             <div class="form-row">
                                 <div class="row-left">
                                     Danh mục
@@ -178,6 +183,40 @@
 
     <telerik:RadCodeBlock runat="server">
         <script type="text/javascript">
+
+            function ChangeToSlug() {
+                var title, slug;
+
+                //Lấy text từ thẻ input title 
+                title = $("#<%=txtTitle.ClientID%>").val();
+
+                //Đổi chữ hoa thành chữ thường
+                slug = title.toLowerCase();
+
+                //Đổi ký tự có dấu thành không dấu
+                slug = slug.replace(/á|à|ả|ạ|ã|ă|ắ|ằ|ẳ|ẵ|ặ|â|ấ|ầ|ẩ|ẫ|ậ/gi, 'a');
+                slug = slug.replace(/é|è|ẻ|ẽ|ẹ|ê|ế|ề|ể|ễ|ệ/gi, 'e');
+                slug = slug.replace(/i|í|ì|ỉ|ĩ|ị/gi, 'i');
+                slug = slug.replace(/ó|ò|ỏ|õ|ọ|ô|ố|ồ|ổ|ỗ|ộ|ơ|ớ|ờ|ở|ỡ|ợ/gi, 'o');
+                slug = slug.replace(/ú|ù|ủ|ũ|ụ|ư|ứ|ừ|ử|ữ|ự/gi, 'u');
+                slug = slug.replace(/ý|ỳ|ỷ|ỹ|ỵ/gi, 'y');
+                slug = slug.replace(/đ/gi, 'd');
+                //Xóa các ký tự đặt biệt
+                slug = slug.replace(/\`|\~|\!|\@|\#|\||\$|\%|\^|\&|\*|\(|\)|\+|\=|\,|\.|\/|\?|\>|\<|\'|\"|\:|\;|_/gi, '');
+                //Đổi khoảng trắng thành ký tự gạch ngang
+                slug = slug.replace(/ /gi, "-");
+                //Đổi nhiều ký tự gạch ngang liên tiếp thành 1 ký tự gạch ngang
+                //Phòng trường hợp người nhập vào quá nhiều ký tự trắng
+                slug = slug.replace(/\-\-\-\-\-/gi, '-');
+                slug = slug.replace(/\-\-\-\-/gi, '-');
+                slug = slug.replace(/\-\-\-/gi, '-');
+                slug = slug.replace(/\-\-/gi, '-');
+                //Xóa các ký tự gạch ngang ở đầu và cuối
+                slug = '@' + slug + '@';
+                slug = slug.replace(/\@\-|\-\@|\@/gi, '');
+                //In slug ra textbox có id “slug”
+                $("#<%=txtSlug.ClientID%>").val(slug);
+            }
             
             function redirectTo(ID) {
                 window.location.href = "/xem-bai-viet?id=" +ID;
@@ -193,7 +232,7 @@
                     if (lv < lev) {
                         $(this).remove();
                     }
-                })
+                });
 
                 $.ajax({
                     type: "POST",
@@ -206,16 +245,16 @@
                         var html = "";
                         //var sl = "";
                         if (data.length > 0) {
-                            html += "<select class=\"form-control slparent\" style=\"margin-top:15px;\" data-level=" + level + " onchange=\"selectCategory($(this))\">";
-                            html += "<option  value=\"0\">Chọn danh mục</option>";
+                            html += "<select class='form-control slparent' style='margin-top:15px;' data-level=" + level + " onchange='selectCategory($(this))'>";
+                            html += "<option  value='0'>Chọn danh mục</option>";
                             for (var i = 0; i < data.length; i++) {
-                                html += "<option value=\"" + data[i].ID + "\">" + data[i].CategoryName + "</option>";
+                                html += "<option value='" + data[i].ID + "'>" + data[i].CategoryName + "</option>";
                             }
                             html += "</select>";
                         }
                         $(".parent").append(html);
                     }
-                })
+                });
             }
             
 
@@ -241,6 +280,7 @@
 
                 var category = $("#<%=hdfParentID.ClientID%>").val();
                 var title = $("#<%=txtTitle.ClientID%>").val();
+                var slug = $("#<%=txtSlug.ClientID%>").val();
 
                 if (category == "") {
                     $("#<%=ddlCategory.ClientID%>").focus();
@@ -249,6 +289,10 @@
                 else if (title == "") {
                     $("#<%=txtTitle.ClientID%>").focus();
                     swal("Thông báo", "Chưa nhập tiêu đề bài viết", "error");
+                }
+                else if (slug == "") {
+                    $("#<%=txtSlug.ClientID%>").focus();
+                    swal("Thông báo", "Chưa nhập slug", "error");
                 }
                 else {
                     HoldOn.open();

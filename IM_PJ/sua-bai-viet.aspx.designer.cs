@@ -22,22 +22,22 @@ namespace IM_PJ {
         protected global::System.Web.UI.WebControls.Label lblError;
         
         /// <summary>
-        /// rq control.
+        /// txtTitle control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.RequiredFieldValidator rq;
+        protected global::System.Web.UI.WebControls.TextBox txtTitle;
         
         /// <summary>
-        /// txtPostTitle control.
+        /// txtSlug control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtPostTitle;
+        protected global::System.Web.UI.WebControls.TextBox txtSlug;
         
         /// <summary>
         /// ddlCategory control.

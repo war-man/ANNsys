@@ -13,8 +13,23 @@ namespace IM_PJ.Controllers
 {
     public class PostController
     {
+        static string checkSlug(string slug, int ID = 0)
+        {
+            using (var con = new inventorymanagementEntities())
+            {
+                var product = con.tbl_Post.Where(x => x.Slug == slug && x.ID != ID).FirstOrDefault();
+                if (product != null)
+                {
+                    return checkSlug(slug + "-1", ID);
+                }
+                else
+                {
+                    return slug;
+                }
+            }
+        }
         #region CRUD
-        public static string Insert(string Title, string Content, string Image, int Featured, int CategoryID, int Status, string CreatedBy, DateTime CreatedDate)
+        public static string Insert(string Title, string Content, string Image, int Featured, int CategoryID, int Status, string PostSlug, string CreatedBy, DateTime CreatedDate)
         {
             using (var dbe = new inventorymanagementEntities())
             {
@@ -27,13 +42,17 @@ namespace IM_PJ.Controllers
                 ui.Status = Status;
                 ui.CreatedBy = CreatedBy;
                 ui.CreatedDate = CreatedDate;
+                ui.WebPublish = false;
+                ui.WebUpdate = CreatedDate;
+                ui.Slug = checkSlug(Slug.ConvertToSlug(PostSlug != "" ? PostSlug : Title));
+
                 dbe.tbl_Post.Add(ui);
                 dbe.SaveChanges();
                 int kq = ui.ID;
                 return kq.ToString();
             }
         }
-        public static string Update(int ID, string Title, string Content, string Image, int Featured, int CategoryID, int Status, string ModifiedBy, DateTime ModifiedDate)
+        public static string Update(int ID, string Title, string Content, string Image, int Featured, int CategoryID, int Status, string PostSlug, string ModifiedBy, DateTime ModifiedDate)
         {
             using (var dbe = new inventorymanagementEntities())
             {
@@ -48,6 +67,8 @@ namespace IM_PJ.Controllers
                     ui.Status = Status;
                     ui.ModifiedBy = ModifiedBy;
                     ui.ModifiedDate = ModifiedDate;
+                    ui.Slug = checkSlug(Slug.ConvertToSlug(PostSlug != "" ? PostSlug : Title), ui.ID);
+
                     int kq = dbe.SaveChanges();
                     return kq.ToString();
                 }
@@ -242,6 +263,10 @@ namespace IM_PJ.Controllers
                     entity.CreatedDate = Convert.ToDateTime(reader["CreatedDate"]);
                 if (reader["Status"] != DBNull.Value)
                     entity.Status = reader["Status"].ToString().ToInt(0);
+                if (reader["WebPublish"] != DBNull.Value)
+                    entity.WebPublish = reader["WebPublish"].ToString().ToBool();
+                if (reader["WebUpdate"] != DBNull.Value)
+                    entity.WebUpdate = Convert.ToDateTime(reader["WebUpdate"]);
                 list.Add(entity);
             }
             reader.Close();
@@ -249,6 +274,21 @@ namespace IM_PJ.Controllers
             var list_featured = list.Where(x => x.Featured == 1).OrderByDescending(x => x.CreatedDate).ToList();
             var list_normal = list.Where(x => x.Featured == 0).OrderByDescending(x => x.CreatedDate).ToList();
             return list_featured.Concat(list_normal).ToList();
+        }
+        public static string updateWebPublish(int id, bool value)
+        {
+            using (var dbe = new inventorymanagementEntities())
+            {
+                tbl_Post ui = dbe.tbl_Post.Where(a => a.ID == id).SingleOrDefault();
+                if (ui != null)
+                {
+                    ui.WebPublish = value;
+                    int kq = dbe.SaveChanges();
+                    return kq.ToString();
+                }
+                else
+                    return null;
+            }
         }
         #endregion
         #region Class
@@ -266,6 +306,8 @@ namespace IM_PJ.Controllers
             public Nullable<System.DateTime> CreatedDate { get; set; }
             public string ModifiedBy { get; set; }
             public Nullable<System.DateTime> ModifiedDate { get; set; }
+            public bool WebPublish { get; set; }
+            public DateTime WebUpdate { get; set; }
         }
 
         #endregion

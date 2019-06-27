@@ -116,10 +116,11 @@ namespace IM_PJ
                     int cateID = hdfParentID.Value.ToInt();
                     if (cateID > 0)
                     {
-                        string Title = txtTitle.Text.ToString();
+                        string Title = txtTitle.Text.Trim();
+                        string PostSlug = txtSlug.Text.Trim();
                         string Content = pContent.Content.ToString();
 
-                        string kq = PostController.Insert(Title, Content, "", ddlFeatured.SelectedValue.ToInt(), cateID, 1, acc.Username, currentDate);
+                        string kq = PostController.Insert(Title, Content, "", ddlFeatured.SelectedValue.ToInt(), cateID, 1, PostSlug, acc.Username, currentDate);
 
                         //Phần thêm ảnh đại diện
                         string path = "/uploads/images/";
@@ -128,7 +129,7 @@ namespace IM_PJ
                         {
                             foreach (UploadedFile f in ProductThumbnailImage.UploadedFiles)
                             {
-                                var o = path + kq + '-' + Slug.ConvertToSlug(Path.GetFileName(f.FileName));
+                                var o = path + "post-" + kq + "-" + Slug.ConvertToSlug(Path.GetFileName(f.FileName));
                                 try
                                 {
                                     f.SaveAs(Server.MapPath(o));
@@ -140,14 +141,13 @@ namespace IM_PJ
 
                         string updateImage = PostController.UpdateImage(kq.ToInt(), Image);
 
-
                         //Phần thêm thư viện ảnh
                         string IMG = "";
                         if (hinhDaiDien.UploadedFiles.Count > 0)
                         {
                             foreach (UploadedFile f in hinhDaiDien.UploadedFiles)
                             {
-                                var o = path + kq + '-' + Slug.ConvertToSlug(Path.GetFileName(f.FileName));
+                                var o = path + "post-" + kq + "-" + Slug.ConvertToSlug(Path.GetFileName(f.FileName));
                                 try
                                 {
                                     f.SaveAs(Server.MapPath(o));
@@ -161,7 +161,7 @@ namespace IM_PJ
 
                         if (kq.ToInt(0) > 0)
                         {
-                            PJUtils.ShowMessageBoxSwAlertCallFunction("Tạo sản phẩm thành công", "s", true, "redirectTo(" + kq + ")", Page);
+                            PJUtils.ShowMessageBoxSwAlertCallFunction("Tạo bài viết thành công", "s", true, "redirectTo(" + kq + ")", Page);
                         }
 
                     }

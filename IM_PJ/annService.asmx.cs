@@ -1,6 +1,7 @@
 ﻿using Bnails.Bussiness;
 using IM_PJ.Controllers;
 using IM_PJ.Models;
+using IM_PJ.Utils;
 using MB.Extensions;
 using Newtonsoft.Json;
 using NHST.Bussiness;
@@ -132,13 +133,19 @@ namespace IM_PJ
 
                     foreach (var item in Product)
                     {
+                        item.ProductContent = String.Format("<h3>{0}</h3>", item.ProductTitle) + item.ProductContent;
+
+                        string featuredImage = "";
                         if (!string.IsNullOrEmpty(item.ProductImage))
                         {
+                            featuredImage = item.ProductImage;
                             item.ProductContent += String.Format("<p><img src='/wp-content/uploads/{0}' alt='{1}'/></p>", item.ProductImage, item.ProductTitle);
+                            item.ProductImage = Thumbnail.getURL(item.ProductImage, Thumbnail.Size.Source);
                         }
 
                         if (!string.IsNullOrEmpty(item.ProductImageClean))
                         {
+                            item.ProductImageClean = Thumbnail.getURL(item.ProductImageClean, Thumbnail.Size.Source);
                             item.ProductImage = item.ProductImageClean + "|" + item.ProductImage;
                         }
 
@@ -148,8 +155,11 @@ namespace IM_PJ
                         {
                             foreach (var image in productImage)
                             {
-                                item.ProductImage += "|" + image.ProductImage;
-                                item.ProductContent += String.Format("<p><img src='/wp-content/uploads/{0}' alt='{1}'/></p>", image.ProductImage, item.ProductTitle);
+                                if (image.ProductImage != featuredImage)
+                                {
+                                    item.ProductImage += "|" + Thumbnail.getURL(image.ProductImage, Thumbnail.Size.Source);
+                                    item.ProductContent += String.Format("<p><img src='/wp-content/uploads/{0}' alt='{1}'/></p>", image.ProductImage, item.ProductTitle);
+                                }
                             }
                         }
                     }
@@ -189,13 +199,19 @@ namespace IM_PJ
 
                     foreach (var item in Product)
                     {
+                        item.ProductContent = String.Format("<h3>{0}</h3>", item.ProductTitle) + item.ProductContent;
+
+                        string featuredImage = "";
                         if (!string.IsNullOrEmpty(item.ProductImage))
                         {
+                            featuredImage = item.ProductImage;
                             item.ProductContent += String.Format("<p><img src='/wp-content/uploads/{0}' alt='{1}'/></p>", item.ProductImage, item.ProductTitle);
+                            item.ProductImage = Thumbnail.getURL(item.ProductImage, Thumbnail.Size.Source);
                         }
 
                         if (!string.IsNullOrEmpty(item.ProductImageClean))
                         {
+                            item.ProductImageClean = Thumbnail.getURL(item.ProductImageClean, Thumbnail.Size.Source);
                             item.ProductImage = item.ProductImageClean + "|" + item.ProductImage;
                         }
 
@@ -205,8 +221,11 @@ namespace IM_PJ
                         {
                             foreach (var image in productImage)
                             {
-                                item.ProductImage += "|" + image.ProductImage;
-                                item.ProductContent += String.Format("<p><img src='/wp-content/uploads/{0}' alt='{1}'/></p>", image.ProductImage, item.ProductTitle);
+                                if (image.ProductImage != featuredImage)
+                                {
+                                    item.ProductImage += "|" + Thumbnail.getURL(image.ProductImage, Thumbnail.Size.Source);
+                                    item.ProductContent += String.Format("<p><img src='/wp-content/uploads/{0}' alt='{1}'/></p>", image.ProductImage, item.ProductTitle);
+                                }
                             }
                         }
                     }
@@ -241,6 +260,10 @@ namespace IM_PJ
                 {
                     rs.Code = APIUtils.GetResponseCode(APIUtils.ResponseCode.SUCCESS);
                     rs.Status = APIUtils.ResponseMessage.Success.ToString();
+                    foreach(var item in ProductImage)
+                    {
+                        item.ProductImage = Thumbnail.getURL(item.ProductImage, Thumbnail.Size.Source);
+                    }
                     rs.ProductImage = ProductImage;
                 }
                 else
@@ -278,19 +301,16 @@ namespace IM_PJ
                     {
                         item.Stock = PJUtils.GetSotckProduct(1, item.SKU);
 
-                        if(item.Stock > 0)
+                        if (item.Stock <= 0)
                         {
-                            item.StockStatus = 1;
+                            item.Stock = 1;
                         }
-                        else if (item.Stock == 0)
-                        {
-                            item.StockStatus = 2;
-                        }
-                        else if (item.StockStatus < 0)
-                        {
-                            item.StockStatus = 3;
-                        }
+
+                        item.StockStatus = 1;
+
+                        item.Image = Thumbnail.getURL(item.Image, Thumbnail.Size.Source);
                     }
+
                     rs.ProductVariable = ProductVariable;
                 }
                 else
@@ -1011,7 +1031,7 @@ namespace IM_PJ
         }
         [WebMethod]
         [ScriptMethod(UseHttpGet = false, ResponseFormat = ResponseFormat.Json)]
-        public void insertRegister(string name, string phone, string address, int province, string productcategory, string note, string username, string password)
+        public void insertRegister(string name, string phone, string address, int province, string productcategory, string note, string referer, string username, string password)
         {
             var rs = new ResponseClass();
             if (username == "register" && password == "register@ann")
@@ -1033,6 +1053,7 @@ namespace IM_PJ
                     register.ProductCategory = productcategory;
                     register.ProvinceID = province;
                     register.CreatedDate = DateTime.Now;
+                    register.Referer = referer;
 
                     ID = RegisterController.Update(register);
                 }
@@ -1046,6 +1067,7 @@ namespace IM_PJ
                     register.Address = address;
                     register.ProductCategory = productcategory;
                     register.ProvinceID = province;
+                    register.Referer = referer;
 
                     ID = RegisterController.Insert(register);
                 }

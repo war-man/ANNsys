@@ -193,7 +193,7 @@ namespace IM_PJ.Controllers
         }
         public static string UpdateOnSystem(int ID, int OrderType, string AdditionFee, string DisCount, int CustomerID, string CustomerName,
             string CustomerPhone, string CustomerAddress, string CustomerEmail, string TotalPrice, string TotalPriceNotDiscount, int PaymentStatus,
-            int ExcuteStatus, DateTime ModifiedDate, string ModifiedBy, double DiscountPerProduct, double TotalDiscount,
+            int ExcuteStatus, DateTime ModifiedDate, string CreatedBy, string ModifiedBy, double DiscountPerProduct, double TotalDiscount,
             string FeeShipping, double GuestPaid, double GuestChange, int PaymentType, int ShippingType, string OrderNote, string DateDone, int RefundsGoodsID = 0, string ShippingCode = null, int TransportCompanyID = 0, int TransportCompanySubID = 0, string OtherFeeName = "", double OtherFeeValue = 0, int PostalDeliveryType = 1)
         {
             using (var dbe = new inventorymanagementEntities())
@@ -219,6 +219,7 @@ namespace IM_PJ.Controllers
                     ui.GuestPaid = GuestPaid;
                     ui.GuestChange = GuestChange;
                     ui.ModifiedDate = ModifiedDate;
+                    ui.CreatedBy = CreatedBy;
                     ui.ModifiedBy = ModifiedBy;
                     ui.PaymentType = PaymentType;
                     ui.ShippingType = ShippingType;
@@ -402,7 +403,7 @@ namespace IM_PJ.Controllers
             }
         }
 
-        public static List<OrderList> Filter(string TextSearch, int OrderType, int ExcuteStatus, int PaymentStatus, int TransferStatus, int PaymentType, int ShippingType, string Discount, string OtherFee, string CreatedBy, string CreatedDate, string TransferDoneAt, int TransportCompany, string DeliveryStartAt)
+        public static List<OrderList> Filter(string TextSearch, int OrderType, int ExcuteStatus, int PaymentStatus, int TransferStatus, int PaymentType, int ShippingType, string Discount, string OtherFee, string CreatedBy, string CreatedDate, string TransferDoneAt, int TransportCompany, string DeliveryStartAt, int DeliveryTimes = 0)
         {
             using (var con = new inventorymanagementEntities())
             {
@@ -533,7 +534,7 @@ namespace IM_PJ.Controllers
                     search = UnSign.convert(search);
 
                     var number = Regex.IsMatch(search, @"^\d+$");
-                    var textNumber = Regex.IsMatch(search, @"^\w+\d+$");
+                    var textNumber = Regex.IsMatch(search, @"^[a-zA-Z0-9]+$");
 
                     if (number)
                     {
@@ -546,6 +547,7 @@ namespace IM_PJ.Controllers
                                 {
                                     ID = h.ID,
                                     CustomerID = h.CustomerID,
+                                    ShippingCode = h.ShippingCode,
                                     RefundsGoodsID = h.RefundsGoodsID,
                                     // Customer
                                     CustomerPhone = c.CustomerPhone,
@@ -555,7 +557,8 @@ namespace IM_PJ.Controllers
                             .Where(x =>
                                 x.ID.ToString() == search ||
                                 x.CustomerPhone == search ||
-                                x.CustomerNewPhone == search
+                                x.CustomerNewPhone == search ||
+                                x.ShippingCode == search
                             )
                             .Select(x => new {
                                 ID = x.ID,
@@ -581,14 +584,15 @@ namespace IM_PJ.Controllers
                                 }
                             )
                             .Where(x =>
-                                x.SKU.ToLower().StartsWith(search) ||
+                                x.SKU.ToUpper().StartsWith(search) ||
                                 x.ShippingCode.ToLower() == search
                             )
                             .Select(x => new {
                                 ID = x.ID,
                                 CustomerID = x.CustomerID,
                                 RefundsGoodsID = x.RefundsGoodsID
-                            });
+                            })
+                            .Distinct();
                     }
                     else
                     {
@@ -713,6 +717,35 @@ namespace IM_PJ.Controllers
                         CustomerID = x.CustomerID,
                         RefundsGoodsID = x.RefundsGoodsID
                     });
+                }
+
+                // Filter Delivery times
+                if(DeliveryTimes > 0)
+                {
+                    orderFilter = orders
+                        .GroupJoin(
+                            con.Deliveries,
+                            h => h.ID,
+                            d => d.OrderID,
+                            (h, d) => new { h, d }
+                        )
+                        .SelectMany(
+                            x => x.d.DefaultIfEmpty(),
+                            (parent, child) => new
+                            {
+                                ID = parent.h.ID,
+                                CustomerID = parent.h.CustomerID,
+                                RefundsGoodsID = parent.h.RefundsGoodsID,
+                                // Delivery
+                                DeliveryTimes = child.Times
+                            }
+                        )
+                        .Where(x => x.DeliveryTimes == DeliveryTimes)
+                        .Select(x => new {
+                            ID = x.ID,
+                            CustomerID = x.CustomerID,
+                            RefundsGoodsID = x.RefundsGoodsID
+                        });
                 }
 
                 // Get info main
@@ -883,6 +916,7 @@ namespace IM_PJ.Controllers
                             COO = t.COO,
                             ShipNote = t.ShipNote,
                             Image = t.Image,
+                            DeliveryTimes = t.Times
                         }
                     )
                     .Join(
@@ -899,8 +933,10 @@ namespace IM_PJ.Controllers
                             COO = h.COO,
                             ShipNote = h.ShipNote,
                             Image = h.Image,
+                            DeliveryTimes = h.DeliveryTimes,
                             // Shipper
                             ShipperName = c.Name
+                            
                         }
                     )
                     .OrderByDescending(o => o.OrderID)
@@ -1174,6 +1210,7 @@ namespace IM_PJ.Controllers
                                 result.ShipNote = child.ShipNote;
                                 result.InvoiceImage = child.Image;
                                 result.ShipperName = child.ShipperName;
+                                result.DeliveryTimes = child.DeliveryTimes.HasValue ? child.DeliveryTimes.Value : 0;
                             }
                             else
                             {
@@ -2130,6 +2167,7 @@ namespace IM_PJ.Controllers
             public string ShipperName { get; set; }
             public string InvoiceImage { get; set; }
             public Boolean? CheckDelivery { get; set; }
+            public int DeliveryTimes { get; set; }
         }
 
         public class OrderSQL

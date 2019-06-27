@@ -74,7 +74,7 @@ namespace IM_PJ
             {
                 if (acc.RoleID == 0)
                 {
-                    ltrAddPost.Text = "<a href=\"/tao-bai-viet\" class=\"h45-btn btn primary-btn\">Thêm mới</a>";
+                    ltrAddPost.Text = "<a href='/tao-bai-viet' class='h45-btn btn primary-btn'>Thêm mới</a>";
                 }
             }
             
@@ -82,6 +82,7 @@ namespace IM_PJ
             string CreatedDate = "";
             int CategoryID = 0;
             string Status = "";
+            string WebPublish = "";
 
             if (Request.QueryString["textsearch"] != null)
                 TextSearch = Request.QueryString["textsearch"].Trim();
@@ -91,12 +92,14 @@ namespace IM_PJ
                 CategoryID = Request.QueryString["categoryid"].ToInt();
             if (Request.QueryString["createddate"] != null)
                 CreatedDate = Request.QueryString["createddate"];
-
+            if (Request.QueryString["webpublish"] != null)
+                WebPublish = Request.QueryString["webpublish"];
 
             txtSearchPost.Text = TextSearch;
             ddlCategory.SelectedValue = CategoryID.ToString();
             ddlCreatedDate.SelectedValue = CreatedDate.ToString();
             ddlStatus.SelectedValue = Status.ToString();
+            ddlWebPublish.SelectedValue = WebPublish.ToString();
 
             List<PostSQL> a = new List<PostSQL>();
             a = PostController.GetAllSql(CategoryID, TextSearch);
@@ -108,6 +111,11 @@ namespace IM_PJ
             else
             {
                 a = a.Where(p => p.Status == 1).ToList();
+            }
+
+            if (WebPublish != "")
+            {
+                a = a.Where(p => p.WebPublish == WebPublish.ToBool()).ToList();
             }
 
             if (CreatedDate != "")
@@ -179,6 +187,19 @@ namespace IM_PJ
             return serializer.Serialize(images.Distinct().ToList());
         }
         [WebMethod]
+        public static string updateWebPublish(int id, bool value)
+        {
+            string update = PostController.updateWebPublish(id, value);
+            if (update != null)
+            {
+                return "true";
+            }
+            else
+            {
+                return "false";
+            }
+        }
+        [WebMethod]
         public static string deletePost(int id)
         {
             var post = PostController.GetByID(id);
@@ -186,13 +207,6 @@ namespace IM_PJ
 
             if (post != null)
             {
-                // Delete thumbnail image
-                if (!string.IsNullOrEmpty(post.Image))
-                {
-                    string fileImage = HttpContext.Current.Server.MapPath(post.Image);
-                    File.Delete(fileImage);
-                }
-
                 // Delete image gallery
 
                 var postImage = PostImageController.GetByPostID(post.ID);
@@ -203,15 +217,11 @@ namespace IM_PJ
                     {
                         if (!string.IsNullOrEmpty(img.Image))
                         {
-                            string fileImage = HttpContext.Current.Server.MapPath(img.Image);
-                            File.Delete(fileImage);
-
                             // Delete in database
                             string deletePostImage = PostImageController.Delete(img.ID);
                         }
                     }
                 }
-                
 
                 string deletePost = PostController.Delete(id);
 
@@ -261,8 +271,9 @@ namespace IM_PJ
             html.Append("    <th class='image-column'>Ảnh</th>");
             html.Append("    <th class='name-column'>Tiêu đề</th>");
             html.Append("    <th class='sku-column'>Nổi bật</th>");
-            html.Append("    <th class='stock-status-column'>Trạng thái</th>");
+            html.Append("    <th class='stock-status-column'>Trang nội bộ</th>");
             html.Append("    <th class='category-column'>Danh mục</th>");
+            html.Append("    <th class='category-column'>Trang xem hàng</th>");
             html.Append("    <th class='date-column'>Ngày tạo</th>");
             html.Append("    <th class='action-column'></th>");
             html.Append("</tr>");
@@ -297,11 +308,11 @@ namespace IM_PJ
 
                     if (item.Featured == 1)
                     {
-                        html.Append("   <td>Có</td>");
+                        html.Append("   <td><span class=\"bg-blue\">Nổi bật</span></td>");
                     }
                     else
                     {
-                        html.Append("   <td>Không</td>");
+                        html.Append("   <td></td>");
                     }
 
                     if (item.Status == 1)
@@ -314,6 +325,14 @@ namespace IM_PJ
                     }
 
                     html.Append("   <td>" + item.CategoryName + "</td>");
+                    if (item.WebPublish == false)
+                    {
+                        html.Append("   <td data-title='Trang xem hàng'><span id='showWebPublish_" + item.ID + "'><a href='javascript:;' data-post-id='" + item.ID + "' data-update='true' class='bg-black bg-button' onclick='updateShowWebPublish($(this))'>Đang ẩn</a></span></td>");
+                    }
+                    else
+                    {
+                        html.Append("   <td data-title='Trang xem hàng'><span id='showWebPublish_" + item.ID + "'><a href='javascript:;' data-post-id='" + item.ID + "' data-update='false' class='bg-green bg-button' onclick='updateShowWebPublish($(this))'>Đang hiện</a></span></td>");
+                    }
                     string date = string.Format("{0:dd/MM/yyyy}", item.CreatedDate);
                     html.Append("   <td>" + date + "</td>");
 
@@ -328,7 +347,7 @@ namespace IM_PJ
             }
             else
             {
-                html.Append("<tr><td colspan=\"11\">Không tìm thấy bài viết...</td></tr>");
+                html.Append("<tr><td colspan='11'>Không tìm thấy bài viết...</td></tr>");
             }
 
             ltrList.Text = html.ToString();
@@ -492,6 +511,11 @@ namespace IM_PJ
             if (ddlCategory.SelectedValue != "0")
             {
                 request += "&categoryid=" + ddlCategory.SelectedValue;
+            }
+
+            if (ddlWebPublish.SelectedValue != "")
+            {
+                request += "&webpublish=" + ddlWebPublish.SelectedValue;
             }
 
             if (ddlCreatedDate.SelectedValue != "")

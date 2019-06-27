@@ -13,6 +13,22 @@ namespace IM_PJ.Controllers
 {
     public class ProductController
     {
+        static string checkSlug(string slug)
+        {
+            using (var con = new inventorymanagementEntities())
+            {
+                var product = con.tbl_Product.Where(x => x.Slug == slug).FirstOrDefault();
+                if (product != null)
+                {
+                    return checkSlug(slug + "-1");
+                }
+                else
+                {
+                    return slug;
+                }
+            }
+        }
+
         #region CRUD
         public static string Insert(int CategoryID, int ProductOldID, string ProductTitle, string ProductContent, string ProductSKU, double ProductStock,
             int StockStatus, bool ManageStock, double Regular_Price, double CostOfGood, double Retail_Price, string ProductImage, int ProductType,
@@ -47,6 +63,8 @@ namespace IM_PJ.Controllers
                 ui.ShowHomePage = ShowHomePage;
                 ui.WebPublish = true;
                 ui.WebUpdate = CreatedDate;
+                ui.UnSignedTitle = UnSign.convert(ProductTitle);
+                ui.Slug = checkSlug(Slug.ConvertToSlug(ProductTitle));
 
                 dbe.tbl_Product.Add(ui);
                 dbe.SaveChanges();
@@ -88,6 +106,8 @@ namespace IM_PJ.Controllers
                     ui.MinimumInventoryLevel = MinimumInventoryLevel;
                     ui.MaximumInventoryLevel = MaximumInventoryLevel;
                     ui.ProductImageClean = ProductImageClean;
+                    ui.UnSignedTitle = UnSign.convert(ProductTitle);
+
                     int kq = dbe.SaveChanges();
                     return kq.ToString();
                 }
@@ -932,7 +952,7 @@ namespace IM_PJ.Controllers
 
             if (!string.IsNullOrEmpty(textsearch))
             {
-                sql.AppendLine("    AND (PRD.ProductSKU like N'%" + textsearch + "%' OR PRD.ProductTitle like N'%" + textsearch + "%')");
+                sql.AppendLine("    AND (PRD.ProductSKU like N'%" + textsearch + "%' OR PRD.ProductTitle like N'%" + textsearch + "%' OR PRD.UnSignedTitle like N'%" + textsearch + "%')");
             }
 
             if (categoryID > 0)

@@ -26,6 +26,7 @@ namespace IM_PJ.Controllers
                     old.StartAt = delivery.StartAt;
                     old.ModifiedBy = delivery.ModifiedBy;
                     old.ModifiedDate = delivery.ModifiedDate;
+                    old.Times = delivery.Times;
                     con.SaveChanges();
                 }
                 else
@@ -153,7 +154,7 @@ namespace IM_PJ.Controllers
             }
         }
 
-        public static void udpateAfterPrint(int shiperID, List<int> orders, int user)
+        public static void udpateAfterPrint(int shiperID, List<int> orders, int user, int deliveryTimes)
         {
             using (var con = new inventorymanagementEntities())
             {
@@ -163,13 +164,14 @@ namespace IM_PJ.Controllers
                     var old = con.Deliveries.Where(x => x.OrderID == id).SingleOrDefault();
                     if (old != null)
                     {
-                        // Tránh trường hợp recorde đã được cập nhật trường hợp khác
+                        // Tránh trường hợp record đã được cập nhật trường hợp khác
                         if (old.Status == 2 || old.Status == 3)
                         {
                             old.ShipperID = shiperID;
                             old.Status = 3;
                             old.ModifiedBy = user;
                             old.ModifiedDate = now;
+                            old.Times = deliveryTimes;
                             con.SaveChanges();
                         }
                     }
@@ -189,7 +191,8 @@ namespace IM_PJ.Controllers
                             CreatedBy = user,
                             CreatedDate = now,
                             ModifiedBy = user,
-                            ModifiedDate = now
+                            ModifiedDate = now,
+                            Times = deliveryTimes
                         };
 
                         if (order != null)
