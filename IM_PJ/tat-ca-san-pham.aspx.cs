@@ -89,6 +89,8 @@ namespace IM_PJ
                 int Quantity = 0;
                 int QuantityMin = 0;
                 int QuantityMax = 0;
+                string strColor = String.Empty;
+                string strSize = String.Empty;
 
                 if (Request.QueryString["textsearch"] != null)
                     TextSearch = Request.QueryString["textsearch"].Trim();
@@ -118,6 +120,12 @@ namespace IM_PJ
                     }
                 }
 
+                // Add filter valiable value
+                if (Request.QueryString["color"] != null)
+                    strColor = Request.QueryString["color"].Trim();
+                if (Request.QueryString["size"] != null)
+                    strSize = Request.QueryString["size"].Trim();
+
                 txtSearchProduct.Text = TextSearch;
                 ddlCategory.SelectedValue = CategoryID.ToString();
                 ddlCreatedDate.SelectedValue = CreatedDate.ToString();
@@ -129,8 +137,12 @@ namespace IM_PJ
                 txtQuantityMin.Text = QuantityMin.ToString();
                 txtQuantityMax.Text = QuantityMax.ToString();
 
+                // Add filter valiable value
+                ddlColor.SelectedValue = strColor;
+                ddlSize.SelectedValue = strSize;
+
                 List<ProductSQL> a = new List<ProductSQL>();
-                a = ProductController.GetAllSql(CategoryID, TextSearch);
+                a = ProductController.GetAllSql(CategoryID, TextSearch, strColor, strSize);
 
                 if (StockStatus != 0)
                 {
@@ -923,6 +935,16 @@ namespace IM_PJ
                 {
                     request += "&quantityfilter=" + ddlQuantityFilter.SelectedValue + "&quantitymin=" + txtQuantityMin.Text + "&quantitymax=" + txtQuantityMax.Text;
                 }
+            }
+
+            // Add filter valiable value
+            if (!String.IsNullOrEmpty(ddlColor.SelectedValue))
+            {
+                request += "&color=" + ddlColor.SelectedValue;
+            }
+            if (!String.IsNullOrEmpty(ddlSize.SelectedValue))
+            {
+                request += "&size=" + ddlSize.SelectedValue;
             }
 
             Response.Redirect(request);

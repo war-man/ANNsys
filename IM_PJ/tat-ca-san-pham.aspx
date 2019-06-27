@@ -168,7 +168,21 @@
                     <div class="filter-above-wrap clear">
                         <div class="filter-control">
                             <div class="row">
-                                <div class="col-md-5">
+                                <div class="col-md-2 col-xs-6">
+                                    <asp:DropDownList ID="ddlColor" runat="server" CssClass="form-control">
+                                        <asp:ListItem Value="" Text="Chọn màu"></asp:ListItem>
+                                        <asp:ListItem Value="đỏ" Text="Màu Đỏ"></asp:ListItem>
+                                        <asp:ListItem Value="đen" Text="Màu Đen"></asp:ListItem>
+                                        <asp:ListItem Value="vàng" Text="Màu Vàng"></asp:ListItem>
+                                    </asp:DropDownList>
+                                </div>
+                                <div class="col-md-2 col-xs-6">
+                                    <asp:DropDownList ID="ddlSize" runat="server" CssClass="form-control">
+                                        <asp:ListItem Value="" Text="Chọn size"></asp:ListItem>
+                                        <asp:ListItem Value="x" Text="Size X"></asp:ListItem>
+                                        <asp:ListItem Value="l" Text="Size L"></asp:ListItem>
+                                        <asp:ListItem Value="m" Text="Size M"></asp:ListItem>
+                                    </asp:DropDownList>
                                 </div>
                                 <div class="col-md-2 col-xs-6">
                                     <asp:DropDownList ID="ddlWebPublish" runat="server" CssClass="form-control">
