@@ -739,7 +739,7 @@ namespace IM_PJ
                             {
                                 username = ddlCreatedBy.SelectedValue;
                             }
-
+                            string message = "";
                             int AgentID = Convert.ToInt32(acc.AgentID);
                             int OrderType = hdfOrderType.Value.ToInt();
                             string AdditionFee = "0";
@@ -809,18 +809,29 @@ namespace IM_PJ
                             {
                                 if (ExcuteStatus == 2)
                                 {
+                                    // Nếu chưa có ngày hoàn tất
                                     if (string.IsNullOrEmpty(order.DateDone.ToString()))
                                     {
+                                        // Lấy ngày hiện tại làm ngày hoàn tất
                                         datedone = DateTime.Now.ToString();
+                                    }
+                                    else
+                                    {
+                                        // Nếu đã có ngày hoàn tất nhưng phương thức thanh toán thu hộ thì lấy ngày hiện tại
+                                        if(PaymentType == 3)
+                                        {
+                                            datedone = DateTime.Now.ToString();
+                                            message = "<br>Lưu ý: do đơn hàng này thu hộ nên ngày hoàn tất cập nhật ngày hôm nay!";
+                                        }
                                     }
                                 }
                             }
-                            else
+                            else if (order.ExcuteStatus == 2)
                             {
                                 if (ExcuteStatus == 2)
                                 {
-                                    DateTime old = Convert.ToDateTime(order.DateDone).Date;
-                                    if (old == DateTime.Now.Date)
+                                    DateTime oldDateDone = Convert.ToDateTime(order.DateDone).Date;
+                                    if (oldDateDone == DateTime.Now.Date)
                                     {
                                         datedone = DateTime.Now.ToString();
                                     }
@@ -1144,7 +1155,7 @@ namespace IM_PJ
                                     }
                                 }
 
-                                PJUtils.ShowMessageBoxSwAlertCallFunction("Cập nhật đơn hàng thành công", "s", true, "", Page);
+                                PJUtils.ShowMessageBoxSwAlertCallFunction("Cập nhật đơn hàng thành công" + message, "s", true, "", Page);
                             }
                         }
                     }

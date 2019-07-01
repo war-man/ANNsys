@@ -1338,9 +1338,6 @@
     <Compile Include="Models\tbl_WhiteDomain.cs">
       <DependentUpon>IMModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\View_ProductList.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
-    </Compile>
     <Compile Include="pos.aspx.cs">
       <DependentUpon>pos.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>

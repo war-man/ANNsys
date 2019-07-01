@@ -2,6 +2,15 @@
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
     <style>
+        .select2-container .select2-selection--single {
+            height: 45px;
+        }
+        .select2-container--default .select2-selection--single .select2-selection__rendered {
+            line-height: 45px;
+        }
+        .select2-container--default .select2-selection--single .select2-selection__arrow {
+            height: 43px;
+        }
         .btn.download-btn {
             background-color: #000;
             color: #fff;
@@ -113,7 +122,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
-                    <h3 class="page-title left">Sản phẩm <span>(<asp:Literal ID="ltrNumberOfProduct" runat="server" EnableViewState="false"></asp:Literal>) <a href="/sp" target="_blank" class="btn primary-btn h45-btn">Xem mở rộng</a></span></h3>
+                    <h3 class="page-title left">Sản phẩm <span>(<asp:Literal ID="ltrNumberOfProduct" runat="server" EnableViewState="false"></asp:Literal>) <a href="/sp" target="_blank" class="btn primary-btn h45-btn">Mở rộng</a></span></h3>
                     <div class="right above-list-btn">
                         <asp:Literal ID="ltrAddProduct" runat="server"></asp:Literal>
                     </div>
@@ -157,7 +166,7 @@
                                         <asp:ListItem Value="30days" Text="30 ngày"></asp:ListItem>
                                     </asp:DropDownList>
                                 </div>
-                                <div class="col-md-1 col-xs-6">
+                                <div class="col-md-1 col-xs-6 search-button">
                                     <a href="javascript:;" onclick="searchProduct()" class="btn primary-btn h45-btn"><i class="fa fa-search"></i></a>
                                     <asp:Button ID="btnSearch" runat="server" CssClass="btn primary-btn h45-btn" OnClick="btnSearch_Click" Style="display: none" />
                                     <a href="/tat-ca-san-pham" class="btn primary-btn h45-btn"><i class="fa fa-times" aria-hidden="true"></i></a>
@@ -168,20 +177,94 @@
                     <div class="filter-above-wrap clear">
                         <div class="filter-control">
                             <div class="row">
+                                <div class="col-md-1">
+                                </div>
                                 <div class="col-md-2 col-xs-6">
-                                    <asp:DropDownList ID="ddlColor" runat="server" CssClass="form-control">
+                                    <asp:DropDownList ID="ddlColor" runat="server" CssClass="form-control select2" Width="100%">
                                         <asp:ListItem Value="" Text="Chọn màu"></asp:ListItem>
-                                        <asp:ListItem Value="đỏ" Text="Màu Đỏ"></asp:ListItem>
-                                        <asp:ListItem Value="đen" Text="Màu Đen"></asp:ListItem>
-                                        <asp:ListItem Value="vàng" Text="Màu Vàng"></asp:ListItem>
+                                        <asp:ListItem Value="cam" Text="Cam"></asp:ListItem>
+                                        <asp:ListItem Value="cam tươi" Text="Cam tươi"></asp:ListItem>
+                                        <asp:ListItem Value="cam đất" Text="Cam đất"></asp:ListItem>
+                                        <asp:ListItem Value="cam sữa" Text="Cam sữa"></asp:ListItem>
+                                        <asp:ListItem Value="caro" Text="Caro"></asp:ListItem>
+                                        <asp:ListItem Value="da bò" Text="Da bò"></asp:ListItem>
+                                        <asp:ListItem Value="đen" Text="Đen"></asp:ListItem>
+                                        <asp:ListItem Value="đỏ" Text="Đỏ"></asp:ListItem>
+                                        <asp:ListItem Value="đỏ đô" Text="Đỏ đô"></asp:ListItem>
+                                        <asp:ListItem Value="đỏ tươi" Text="Đỏ tươi"></asp:ListItem>
+                                        <asp:ListItem Value="dưa cải" Text="Dưa cải"></asp:ListItem>
+                                        <asp:ListItem Value="gạch tôm" Text="Gạch tôm"></asp:ListItem>
+                                        <asp:ListItem Value="hồng" Text="Hồng"></asp:ListItem>
+                                        <asp:ListItem Value="hồng cam" Text="Hồng cam"></asp:ListItem>
+                                        <asp:ListItem Value="hồng da" Text="Hồng da"></asp:ListItem>
+                                        <asp:ListItem Value="hồng dâu" Text="Hồng dâu"></asp:ListItem>
+                                        <asp:ListItem Value="hồng phấn" Text="Hồng phấn"></asp:ListItem>
+                                        <asp:ListItem Value="hồng ruốc" Text="Hồng ruốc"></asp:ListItem>
+                                        <asp:ListItem Value="hồng sen" Text="Hồng sen"></asp:ListItem>
+                                        <asp:ListItem Value="kem" Text="Kem"></asp:ListItem>
+                                        <asp:ListItem Value="kem tươi" Text="Kem tươi"></asp:ListItem>
+                                        <asp:ListItem Value="kem đậm" Text="Kem đậm"></asp:ListItem>
+                                        <asp:ListItem Value="kem nhạt" Text="Kem nhạt"></asp:ListItem>
+                                        <asp:ListItem Value="nâu" Text="Nâu"></asp:ListItem>
+                                        <asp:ListItem Value="nho" Text="Nho"></asp:ListItem>
+                                        <asp:ListItem Value="rạch tôm" Text="Rạch tôm"></asp:ListItem>
+                                        <asp:ListItem Value="sọc" Text="Sọc"></asp:ListItem>
+                                        <asp:ListItem Value="tím" Text="Tím"></asp:ListItem>
+                                        <asp:ListItem Value="tím cà" Text="Tím cà"></asp:ListItem>
+                                        <asp:ListItem Value="tím đậm" Text="Tím đậm"></asp:ListItem>
+                                        <asp:ListItem Value="tím xiêm" Text="Tím xiêm"></asp:ListItem>
+                                        <asp:ListItem Value="trắng" Text="Trắng"></asp:ListItem>
+                                        <asp:ListItem Value="trắng-đen" Text="Trắng-đen"></asp:ListItem>
+                                        <asp:ListItem Value="trắng-đỏ" Text="Trắng-đỏ"></asp:ListItem>
+                                        <asp:ListItem Value="trắng-xanh" Text="Trắng-xanh"></asp:ListItem>
+                                        <asp:ListItem Value="vàng" Text="Vàng"></asp:ListItem>
+                                        <asp:ListItem Value="vàng tươi" Text="Vàng tươi"></asp:ListItem>
+                                        <asp:ListItem Value="vàng bò" Text="Vàng bò"></asp:ListItem>
+                                        <asp:ListItem Value="vàng nghệ" Text="Vàng nghệ"></asp:ListItem>
+                                        <asp:ListItem Value="vàng nhạt" Text="Vàng nhạt"></asp:ListItem>
+                                        <asp:ListItem Value="xanh vỏ đậu" Text="Xanh vỏ đậu"></asp:ListItem>
+                                        <asp:ListItem Value="xám" Text="Xám"></asp:ListItem>
+                                        <asp:ListItem Value="xám chì" Text="Xám chì"></asp:ListItem>
+                                        <asp:ListItem Value="xám chuột" Text="Xám chuột"></asp:ListItem>
+                                        <asp:ListItem Value="xám nhạt" Text="Xám nhạt"></asp:ListItem>
+                                        <asp:ListItem Value="xám tiêu" Text="Xám tiêu"></asp:ListItem>
+                                        <asp:ListItem Value="xám xanh" Text="Xám xanh"></asp:ListItem>
+                                        <asp:ListItem Value="xanh biển" Text="Xanh biển"></asp:ListItem>
+                                        <asp:ListItem Value="xanh biển đậm" Text="Xanh biển đậm"></asp:ListItem>
+                                        <asp:ListItem Value="xanh lá chuối" Text="Xanh lá chuối"></asp:ListItem>
+                                        <asp:ListItem Value="xanh cổ vịt" Text="Xanh cổ vịt"></asp:ListItem>
+                                        <asp:ListItem Value="xanh coban" Text="Xanh coban"></asp:ListItem>
+                                        <asp:ListItem Value="xanh da" Text="Xanh da"></asp:ListItem>
+                                        <asp:ListItem Value="xanh dạ quang" Text="Xanh dạ quang"></asp:ListItem>
+                                        <asp:ListItem Value="xanh đen" Text="Xanh đen"></asp:ListItem>
+                                        <asp:ListItem Value="xanh jean" Text="Xanh jean"></asp:ListItem>
+                                        <asp:ListItem Value="xanh lá" Text="Xanh lá"></asp:ListItem>
+                                        <asp:ListItem Value="xanh lá mạ" Text="Xanh lá mạ"></asp:ListItem>
+                                        <asp:ListItem Value="xanh lính" Text="Xanh lính"></asp:ListItem>
+                                        <asp:ListItem Value="xanh lông công" Text="Xanh lông công"></asp:ListItem>
+                                        <asp:ListItem Value="xanh môn" Text="Xanh môn"></asp:ListItem>
+                                        <asp:ListItem Value="xanh ngọc" Text="Xanh ngọc"></asp:ListItem>
+                                        <asp:ListItem Value="xanh rêu" Text="Xanh rêu"></asp:ListItem>
                                     </asp:DropDownList>
                                 </div>
                                 <div class="col-md-2 col-xs-6">
                                     <asp:DropDownList ID="ddlSize" runat="server" CssClass="form-control">
                                         <asp:ListItem Value="" Text="Chọn size"></asp:ListItem>
-                                        <asp:ListItem Value="x" Text="Size X"></asp:ListItem>
-                                        <asp:ListItem Value="l" Text="Size L"></asp:ListItem>
+                                        <asp:ListItem Value="m" Text="Size S"></asp:ListItem>
                                         <asp:ListItem Value="m" Text="Size M"></asp:ListItem>
+                                        <asp:ListItem Value="l" Text="Size L"></asp:ListItem>
+                                        <asp:ListItem Value="xl" Text="Size XL"></asp:ListItem>
+                                        <asp:ListItem Value="xxl" Text="Size XXL"></asp:ListItem>
+                                        <asp:ListItem Value="xxxl" Text="Size XXXL"></asp:ListItem>
+                                        <asp:ListItem Value="28" Text="Size 28"></asp:ListItem>
+                                        <asp:ListItem Value="29" Text="Size 29"></asp:ListItem>
+                                        <asp:ListItem Value="30" Text="Size 30"></asp:ListItem>
+                                        <asp:ListItem Value="31" Text="Size 31"></asp:ListItem>
+                                        <asp:ListItem Value="32" Text="Size 32"></asp:ListItem>
+                                        <asp:ListItem Value="33" Text="Size 33"></asp:ListItem>
+                                        <asp:ListItem Value="34" Text="Size 34"></asp:ListItem>
+                                        <asp:ListItem Value="36" Text="Size 36"></asp:ListItem>
+                                        <asp:ListItem Value="38" Text="Size 38"></asp:ListItem>
                                     </asp:DropDownList>
                                 </div>
                                 <div class="col-md-2 col-xs-6">

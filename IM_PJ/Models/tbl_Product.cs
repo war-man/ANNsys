@@ -45,5 +45,6 @@ namespace IM_PJ.Models
         public Nullable<System.DateTime> WebUpdate { get; set; }
         public string UnSignedTitle { get; set; }
         public string Slug { get; set; }
+        public string Color { get; set; }
     }
 }

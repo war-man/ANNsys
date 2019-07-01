@@ -52,7 +52,6 @@ namespace IM_PJ.Models
         public virtual DbSet<tbl_Variable> tbl_Variable { get; set; }
         public virtual DbSet<tbl_VariableValue> tbl_VariableValue { get; set; }
         public virtual DbSet<tbl_WhiteDomain> tbl_WhiteDomain { get; set; }
-        public virtual DbSet<View_ProductList> View_ProductList { get; set; }
         public virtual DbSet<tbl_OrderDetail> tbl_OrderDetail { get; set; }
         public virtual DbSet<tbl_StockManager> tbl_StockManager { get; set; }
         public virtual DbSet<tbl_TransportCompany> tbl_TransportCompany { get; set; }
@@ -66,7 +65,6 @@ namespace IM_PJ.Models
         public virtual DbSet<tbl_Account> tbl_Account { get; set; }
         public virtual DbSet<Bank> Banks { get; set; }
         public virtual DbSet<BankTransfer> BankTransfers { get; set; }
-        public virtual DbSet<BankAccount> BankAccounts { get; set; }
         public virtual DbSet<Delivery> Deliveries { get; set; }
         public virtual DbSet<Shipper> Shippers { get; set; }
         public virtual DbSet<tbl_Product> tbl_Product { get; set; }
@@ -74,5 +72,6 @@ namespace IM_PJ.Models
         public virtual DbSet<FeeType> FeeTypes { get; set; }
         public virtual DbSet<Session> Sessions { get; set; }
         public virtual DbSet<Register> Registers { get; set; }
+        public virtual DbSet<BankAccount> BankAccounts { get; set; }
     }
 }

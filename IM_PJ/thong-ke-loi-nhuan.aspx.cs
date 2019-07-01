@@ -58,13 +58,9 @@ namespace IM_PJ
             var reportModel = OrderController.GetProfitReport(fromdate, todate);
 
             double TotalRevenue = reportModel.TotalSalePrice - reportModel.TotalRefundPrice;
-
             double TotalCost = reportModel.TotalSaleCost - reportModel.TotalRefundCost;
-            
             double TotalProfit = TotalRevenue - TotalCost - reportModel.TotalSaleDiscount + reportModel.TotalRefundFee;
-
             double TotalProfitPerDay = TotalProfit / day;
-
             double TotalProfitPerOrder = 0;
 
             if (reportModel.TotalNumberOfOrder > 0)

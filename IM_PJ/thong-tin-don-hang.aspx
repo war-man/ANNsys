@@ -2149,6 +2149,7 @@
                             $("#row-payment-type").addClass("disable");
                             $("#row-shipping-type").addClass("disable");
                             $("#row-transport-company").addClass("disable");
+                            $("#row-postal-delivery-type").addClass("disable");
                             $("#row-shipping").addClass("disable");
                             $("#row-bank").addClass("disable");
                             if ($("#<%=hdfExcuteStatus.ClientID%>").val() == 2)
@@ -2167,6 +2168,7 @@
                         $("#row-payment-type").addClass("disable");
                         $("#row-shipping-type").addClass("disable");
                         $("#row-transport-company").addClass("disable");
+                        $("#row-postal-delivery-type").addClass("disable");
                         $("#row-shipping").addClass("disable");
                         $("#row-order-note").addClass("disable");
                         $("#row-bank").addClass("disable");
@@ -2181,6 +2183,7 @@
                             $("#row-payment-type").removeClass("disable");
                             $("#row-shipping-type").removeClass("disable");
                             $("#row-transport-company").removeClass("disable");
+                            $("#row-postal-delivery-type").removeClass("disable");
                             $("#row-shipping").removeClass("disable");
                             $("#row-order-note").removeClass("disable");
                             $("#row-bank").removeClass("disable");
@@ -2196,6 +2199,7 @@
                                 $("#row-payment-type").removeClass("disable");
                                 $("#row-shipping-type").removeClass("disable");
                                 $("#row-transport-company").removeClass("disable");
+                                $("#row-postal-delivery-type").removeClass("disable");
                                 $("#row-shipping").removeClass("disable");
                                 $("#row-order-note").removeClass("disable");
                                 $("#row-bank").removeClass("disable");
@@ -2208,6 +2212,7 @@
                                 $("#row-payment-type").addClass("disable");
                                 $("#row-shipping-type").addClass("disable");
                                 $("#row-transport-company").addClass("disable");
+                                $("#row-postal-delivery-type").addClass("disable");
                                 $("#row-shipping").addClass("disable");
                                 $("#row-order-note").addClass("disable");
                                 $("#row-bank").addClass("disable");

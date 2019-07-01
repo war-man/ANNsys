@@ -7,7 +7,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
-                    <h3 class="page-title left">Đơn hàng chuyển hoàn</h3>
+                    <h3 class="page-title left">Chuyển hoàn <span>(<asp:Literal ID="ltrNumberOfOrder" runat="server" EnableViewState="false"></asp:Literal>)</span></h3>
                     <div class="right above-list-btn">
                         <a href="javascript:;" onclick="addOrder()" class="h45-btn primary-btn btn">Thêm mới</a>
                     </div>

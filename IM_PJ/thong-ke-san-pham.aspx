@@ -2,6 +2,12 @@
 
 <%@ Register Assembly="Telerik.Web.UI" Namespace="Telerik.Web.UI" TagPrefix="telerik" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
+    <style>
+        .fromdate-link {
+            color:#ff8400;
+            text-decoration: underline;
+        }
+    </style>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <main id="main-wrap">
@@ -19,18 +25,21 @@
                     <div class="filter-above-wrap clear">
                         <div class="filter-control">
                             <div class="row">
-                                <div class="col-md-5">
+                                <div class="col-md-3">
                                     <asp:TextBox ID="txtTextSearch" runat="server" CssClass="form-control" placeholder="Tìm sản phẩm"></asp:TextBox>
                                 </div>
+                                <div class="col-md-2">
+                                    <asp:DropDownList ID="ddlCreatedBy" runat="server" CssClass="form-control"></asp:DropDownList>
+                                </div>
                                 <div class="col-md-3">
-                                    <label>Từ ngày</label>
+                                    <label>Từ ngày: <a href="javascript:;" class="fromdate-link fromdate-createddate hide">ngày tạo sản phẩm</a>, <a href="javascript:;" class="fromdate-link fromdate-today hide">hôm nay</a></label>
                                     <telerik:RadDatePicker RenderMode="Lightweight" ID="rFromDate" ShowPopupOnFocus="true" Width="100%" runat="server" DateInput-CssClass="radPreventDecorate" MinDate="01/01/2018">
                                         <DateInput DisplayDateFormat="dd/MM/yyyy" runat="server">
                                         </DateInput>
                                     </telerik:RadDatePicker>
                                 </div>
                                 <div class="col-md-3">
-                                    <label>Đến ngày</label>
+                                    <label>Đến ngày:</label>
                                     <telerik:RadDatePicker RenderMode="Lightweight" ID="rToDate" ShowPopupOnFocus="true" Width="100%" runat="server" DateInput-CssClass="radPreventDecorate" MinDate="01/01/2018">
                                         <DateInput DisplayDateFormat="dd/MM/yyyy" runat="server">
                                         </DateInput>
@@ -135,7 +144,32 @@
             </div>
         </div>
         <script type="text/javascript">
-            function searchWithDateRange() {
+            $(document).ready(() => {
+                if ($("#<%= txtTextSearch.ClientID%>").val() != "")
+                {
+                    $(".fromdate-createddate").removeClass("hide");
+                    $(".fromdate-today").removeClass("hide");
+                }
+            });
+
+            $(".fromdate-createddate").click(e => {
+                var sku = $("#<%= txtTextSearch.ClientID%>").val();
+                var createdby = $("#<%= ddlCreatedBy.ClientID%>").val();
+                window.location.href = "/thong-ke-san-pham?sku=" + sku + "&createdby=" + createdby;
+            });
+
+            $(".fromdate-today").click(e => {
+                var today = new Date();
+                var date = (today.getMonth() + 1) + '/' + today.getDate() + '/' + today.getFullYear();
+                var dateTime = date + ' 12:00:00 AM';
+
+                var sku = $("#<%= txtTextSearch.ClientID%>").val();
+                var createdby = $("#<%= ddlCreatedBy.ClientID%>").val();
+                window.location.href = "/thong-ke-san-pham?sku=" + sku + "&fromdate=" + dateTime + "&todate=" + dateTime + "&createdby=" + createdby;
+            });
+            
+            function searchWithDateRange() 
+            {
                 $("#<%= btnSearch.ClientID%>").click();
             }
         </script>

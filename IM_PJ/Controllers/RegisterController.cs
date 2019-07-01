@@ -147,7 +147,7 @@ namespace IM_PJ.Controllers
                         .FirstOrDefault();
             }
         }
-        public static List<RegisterOut> Filter(string TextSearch, int ProvinceID, int UserID, int Status, string Referer, string CreatedDate)
+        public static List<RegisterOut> Filter(string TextSearch, int ProvinceID, int UserID, int Status, string Referer, string Category, string CreatedDate)
         {
             var result = new List<RegisterOut>();
 
@@ -207,6 +207,7 @@ namespace IM_PJ.Controllers
                     .Where(x => UserID <= 0 || (UserID > 0  && x.UserID == UserID))
                     .Where(x => Status <= 0 || (Status > 0 && x.Status == Status))
                     .Where(x => string.IsNullOrEmpty(Referer) || (!string.IsNullOrEmpty(Referer) && x.Referer == Referer))
+                    .Where(x => string.IsNullOrEmpty(Category) || (!string.IsNullOrEmpty(Category) && x.ProductCategory == Category))
                     .Where(x => string.IsNullOrEmpty(CreatedDate) || (!string.IsNullOrEmpty(CreatedDate) && x.CreatedDate >= fromdate && x.CreatedDate <= todate))
                     .OrderByDescending(x => x.CreatedDate);
 

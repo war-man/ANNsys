@@ -343,6 +343,7 @@ namespace IM_PJ
                             double Retail_Price = Convert.ToDouble(pRetailPrice.Text);
                             int supplierID = ddlSupplier.SelectedValue.ToInt(0);
                             string supplierName = ddlSupplier.SelectedItem.ToString();
+                            string mainColor = ddlColor.SelectedValue.Trim();
                             int a = 1;
 
                             double MinimumInventoryLevel = pMinimumInventoryLevel.Text.ToInt(0);
@@ -357,8 +358,7 @@ namespace IM_PJ
 
                             int ShowHomePage = ddlShowHomePage.SelectedValue.ToInt(0);
 
-
-                            string kq = ProductController.Insert(cateID, 0, ProductTitle, ProductContent, ProductSKU, ProductStock, StockStatus, true, Regular_Price, CostOfGood, Retail_Price, "", a, false, currentDate, username, supplierID, supplierName, txtMaterials.Text, MinimumInventoryLevel, MaximumInventoryLevel, a, ShowHomePage);
+                            string kq = ProductController.Insert(cateID, 0, ProductTitle, ProductContent, ProductSKU, ProductStock, StockStatus, true, Regular_Price, CostOfGood, Retail_Price, "", a, false, currentDate, username, supplierID, supplierName, txtMaterials.Text, MinimumInventoryLevel, MaximumInventoryLevel, a, ShowHomePage, mainColor);
 
                             //Phần thêm ảnh đại diện sản phẩm
                             string path = "/uploads/images/";

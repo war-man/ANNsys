@@ -180,23 +180,11 @@ namespace IM_PJ
                 ltrNumberOfOrder.Text = rs.Count().ToString();
 
                 // THỐNG KÊ ĐƠN HÀNG
-                int TotalOrders = rs.Count;
-                int TotalProducts = 0;
+                int TotalOrders = rs.Count();
+                int TotalProducts = rs.Sum(x => x.Quantity);
 
-                double TotalMoneyOrder = 0;
-                double TotalMoneyReceive = 0;
-
-                for (int i = 0; i < rs.Count; i++)
-                {
-                    var item = rs[i];
-
-                    // Tính tổng số sản phẩm trong tổng số đơn hàng
-                    TotalProducts += item.Quantity;
-
-                    // Tính số tiền
-                    TotalMoneyOrder += item.TotalPrice;
-                    TotalMoneyReceive += Convert.ToDouble(item.MoneyReceive);
-                }
+                double TotalMoneyOrder = rs.Sum(x => x.TotalPrice);
+                double TotalMoneyReceive = Convert.ToDouble(rs.Sum(x => x.MoneyReceive));
 
                 StringBuilder htmlReport = new StringBuilder();
 
@@ -318,7 +306,7 @@ namespace IM_PJ
                     }
                     else
                     {
-                        html.Append("   <td id='statusName' data-title='Trạng thái'><span class='bg-red'>" + item.StatusName + "</span></td>");
+                        html.Append("   <td id='statusName' data-title='Trạng thái'><span class='bg-red'>" + (string.IsNullOrEmpty(item.StatusName) ? "Chưa nhận tiền" : item.StatusName) + "</span></td>");
                     }
                     html.Append("   <td data-title='Tổng tiền'><strong>" + String.Format("{0:#,###}", Convert.ToDouble(item.TotalPrice - item.TotalRefund)) + "</strong></td>");
                     if (item.TransferStatus == 1)

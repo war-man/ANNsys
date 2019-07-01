@@ -249,61 +249,19 @@ namespace IM_PJ
 
                 // THỐNG KÊ ĐƠN HÀNG
                 int TotalOrders = rs.Count;
-                int Type1Orders = 0;
-                int Type2Orders = 0;
-                int TotalProducts = 0;
+                int Type1Orders = rs.Where(x => x.OrderType == 1).Count();
+                int Type2Orders = rs.Where(x => x.OrderType == 2).Count();
+                int TotalProducts = rs.Sum(x => x.Quantity);
 
-                int ShippingType1 = 0;
-                int ShippingType2 = 0;
-                int ShippingType3 = 0;
-                int ShippingType4 = 0;
+                int ShippingType1 = rs.Where(x => x.ShippingType == 1).Count();
+                int ShippingType2 = rs.Where(x => x.ShippingType == 2).Count();
+                int ShippingType3 = rs.Where(x => x.ShippingType == 3).Count();
+                int ShippingType4 = rs.Where(x => x.ShippingType == 4).Count();
 
-                double TotalMoney = 0;
-                double TotalDiscount = 0;
-                double FeeShipping = 0;
-                double OtherFeeValue = 0;
-
-                for (int i = 0; i < rs.Count; i++)
-                {
-                    var item = rs[i];
-
-                    // Tính tổng số sản phẩm trong tổng số đơn hàng
-                    TotalProducts += item.Quantity;
-                    // Tính tổng đơn hàng sỉ và lẻ
-
-                    if (item.OrderType == 2)
-                    {
-                        Type2Orders++;
-                    }
-                    if (item.OrderType == 1)
-                    {
-                        Type1Orders++;
-                    }
-
-                    // Tính số đơn dựa vào kiểu vận chuyển
-                    if (item.ShippingType == 1)
-                    {
-                        ShippingType1++;
-                    }
-                    if (item.ShippingType == 2)
-                    {
-                        ShippingType2++;
-                    }
-                    if (item.ShippingType == 3)
-                    {
-                        ShippingType3++;
-                    }
-                    if (item.ShippingType == 4)
-                    {
-                        ShippingType4++;
-                    }
-
-                    // Tính số tiền
-                    TotalMoney += item.TotalPrice;
-                    TotalDiscount += item.TotalDiscount;
-                    FeeShipping += item.FeeShipping;
-                    OtherFeeValue += item.OtherFeeValue;
-                }
+                double TotalMoney = rs.Sum(x => x.TotalPrice);
+                double TotalDiscount = rs.Sum(x => x.TotalDiscount);
+                double FeeShipping = rs.Sum(x => x.FeeShipping);
+                double OtherFeeValue = rs.Sum(x => x.OtherFeeValue);
 
                 StringBuilder htmlReport = new StringBuilder();
 

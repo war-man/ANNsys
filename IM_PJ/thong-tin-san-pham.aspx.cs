@@ -149,6 +149,12 @@ namespace IM_PJ
                     pRetailPrice.Text = p.Retail_Price.ToString();
                     ddlSupplier.SelectedValue = p.SupplierID.ToString();
                     ddlCategory.SelectedValue = p.CategoryID.ToString();
+
+                    if (!string.IsNullOrEmpty(p.Color))
+                    {
+                        ddlColor.SelectedValue =  p.Color.Trim();
+                    }
+
                     txtMaterials.Text = p.Materials;
                     pMinimumInventoryLevel.Text = p.MinimumInventoryLevel.ToString();
                     pMaximumInventoryLevel.Text = p.MaximumInventoryLevel.ToString();
@@ -284,7 +290,7 @@ namespace IM_PJ
                 double CostOfGood = Convert.ToDouble(pCostOfGood.Text);
                 double Retail_Price = Convert.ToDouble(pRetailPrice.Text);
                 int CategoryID = hdfParentID.Value.ToInt();
-
+                string mainColor = ddlColor.SelectedValue.ToString();
                 double MinimumInventoryLevel = 0;
                 if (pMinimumInventoryLevel.Text != "")
                 {
@@ -379,7 +385,7 @@ namespace IM_PJ
                 string kq = ProductController.Update(ProductID, CategoryID, 0, ProductTitle, ProductContent, ProductSKU, ProductStock,
                     StockStatus, ManageStock, Regular_Price, CostOfGood, Retail_Price, ProductImage, 0,
                     false, DateTime.Now, username, ddlSupplier.SelectedValue.ToInt(0), ddlSupplier.SelectedItem.ToString(),
-                    txtMaterials.Text, MinimumInventoryLevel, MaximumInventoryLevel, ProductImageClean);
+                    txtMaterials.Text, MinimumInventoryLevel, MaximumInventoryLevel, ProductImageClean, mainColor);
 
                 // Upload image gallery
 

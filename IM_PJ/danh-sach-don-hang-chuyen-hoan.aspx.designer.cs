@@ -13,6 +13,15 @@ namespace IM_PJ {
     public partial class danh_sach_don_hang_chuyen_hoan {
         
         /// <summary>
+        /// ltrNumberOfOrder control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Literal ltrNumberOfOrder;
+        
+        /// <summary>
         /// txtAgentName control.
         /// </summary>
         /// <remarks>

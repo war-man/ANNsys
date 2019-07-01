@@ -140,7 +140,6 @@
                             <div class="form-row">
                                 <asp:Label ID="lblError" runat="server" Visible="false" ForeColor="Red"></asp:Label>
                             </div>
-
                             <div class="form-row">
                                 <div class="row-left">
                                     Tên sản phẩm
@@ -150,7 +149,6 @@
                                     <asp:TextBox ID="txtProductTitle" runat="server" CssClass="form-control" placeholder="Tên sản phẩm" autocomplete="off"></asp:TextBox>
                                 </div>
                             </div>
-
                             <div class="form-row">
                                 <div class="row-left">
                                     Danh mục
@@ -178,7 +176,6 @@
                                     <asp:TextBox ID="txtMaterials" runat="server" CssClass="form-control" placeholder="Chất liệu"></asp:TextBox>
                                 </div>
                             </div>
-
                             <div class="form-row">
                                 <div class="row-left">
                                     Loại sản phẩm
@@ -190,7 +187,79 @@
                                     </select>
                                 </div>
                             </div>
-
+                            <div class="form-row main-color">
+                                <div class="row-left">
+                                    Màu chủ đạo
+                                </div>
+                                <div class="row-right">
+                                    <asp:DropDownList ID="ddlColor" runat="server" CssClass="form-control select2" Width="100%">
+                                        <asp:ListItem Value="" Text="Chọn màu chủ đạo"></asp:ListItem>
+                                        <asp:ListItem Value="cam" Text="Cam"></asp:ListItem>
+                                        <asp:ListItem Value="cam tươi" Text="Cam tươi"></asp:ListItem>
+                                        <asp:ListItem Value="cam đất" Text="Cam đất"></asp:ListItem>
+                                        <asp:ListItem Value="cam sữa" Text="Cam sữa"></asp:ListItem>
+                                        <asp:ListItem Value="caro" Text="Caro"></asp:ListItem>
+                                        <asp:ListItem Value="da bò" Text="Da bò"></asp:ListItem>
+                                        <asp:ListItem Value="đen" Text="Đen"></asp:ListItem>
+                                        <asp:ListItem Value="đỏ" Text="Đỏ"></asp:ListItem>
+                                        <asp:ListItem Value="đỏ đô" Text="Đỏ đô"></asp:ListItem>
+                                        <asp:ListItem Value="đỏ tươi" Text="Đỏ tươi"></asp:ListItem>
+                                        <asp:ListItem Value="dưa cải" Text="Dưa cải"></asp:ListItem>
+                                        <asp:ListItem Value="gạch tôm" Text="Gạch tôm"></asp:ListItem>
+                                        <asp:ListItem Value="hồng" Text="Hồng"></asp:ListItem>
+                                        <asp:ListItem Value="hồng cam" Text="Hồng cam"></asp:ListItem>
+                                        <asp:ListItem Value="hồng da" Text="Hồng da"></asp:ListItem>
+                                        <asp:ListItem Value="hồng dâu" Text="Hồng dâu"></asp:ListItem>
+                                        <asp:ListItem Value="hồng phấn" Text="Hồng phấn"></asp:ListItem>
+                                        <asp:ListItem Value="hồng ruốc" Text="Hồng ruốc"></asp:ListItem>
+                                        <asp:ListItem Value="hồng sen" Text="Hồng sen"></asp:ListItem>
+                                        <asp:ListItem Value="kem" Text="Kem"></asp:ListItem>
+                                        <asp:ListItem Value="kem tươi" Text="Kem tươi"></asp:ListItem>
+                                        <asp:ListItem Value="kem đậm" Text="Kem đậm"></asp:ListItem>
+                                        <asp:ListItem Value="kem nhạt" Text="Kem nhạt"></asp:ListItem>
+                                        <asp:ListItem Value="nâu" Text="Nâu"></asp:ListItem>
+                                        <asp:ListItem Value="nho" Text="Nho"></asp:ListItem>
+                                        <asp:ListItem Value="rạch tôm" Text="Rạch tôm"></asp:ListItem>
+                                        <asp:ListItem Value="sọc" Text="Sọc"></asp:ListItem>
+                                        <asp:ListItem Value="tím" Text="Tím"></asp:ListItem>
+                                        <asp:ListItem Value="tím cà" Text="Tím cà"></asp:ListItem>
+                                        <asp:ListItem Value="tím đậm" Text="Tím đậm"></asp:ListItem>
+                                        <asp:ListItem Value="tím xiêm" Text="Tím xiêm"></asp:ListItem>
+                                        <asp:ListItem Value="trắng" Text="Trắng"></asp:ListItem>
+                                        <asp:ListItem Value="trắng-đen" Text="Trắng-đen"></asp:ListItem>
+                                        <asp:ListItem Value="trắng-đỏ" Text="Trắng-đỏ"></asp:ListItem>
+                                        <asp:ListItem Value="trắng-xanh" Text="Trắng-xanh"></asp:ListItem>
+                                        <asp:ListItem Value="vàng" Text="Vàng"></asp:ListItem>
+                                        <asp:ListItem Value="vàng tươi" Text="Vàng tươi"></asp:ListItem>
+                                        <asp:ListItem Value="vàng bò" Text="Vàng bò"></asp:ListItem>
+                                        <asp:ListItem Value="vàng nghệ" Text="Vàng nghệ"></asp:ListItem>
+                                        <asp:ListItem Value="vàng nhạt" Text="Vàng nhạt"></asp:ListItem>
+                                        <asp:ListItem Value="xanh vỏ đậu" Text="Xanh vỏ đậu"></asp:ListItem>
+                                        <asp:ListItem Value="xám" Text="Xám"></asp:ListItem>
+                                        <asp:ListItem Value="xám chì" Text="Xám chì"></asp:ListItem>
+                                        <asp:ListItem Value="xám chuột" Text="Xám chuột"></asp:ListItem>
+                                        <asp:ListItem Value="xám nhạt" Text="Xám nhạt"></asp:ListItem>
+                                        <asp:ListItem Value="xám tiêu" Text="Xám tiêu"></asp:ListItem>
+                                        <asp:ListItem Value="xám xanh" Text="Xám xanh"></asp:ListItem>
+                                        <asp:ListItem Value="xanh biển" Text="Xanh biển"></asp:ListItem>
+                                        <asp:ListItem Value="xanh biển đậm" Text="Xanh biển đậm"></asp:ListItem>
+                                        <asp:ListItem Value="xanh lá chuối" Text="Xanh lá chuối"></asp:ListItem>
+                                        <asp:ListItem Value="xanh cổ vịt" Text="Xanh cổ vịt"></asp:ListItem>
+                                        <asp:ListItem Value="xanh coban" Text="Xanh coban"></asp:ListItem>
+                                        <asp:ListItem Value="xanh da" Text="Xanh da"></asp:ListItem>
+                                        <asp:ListItem Value="xanh dạ quang" Text="Xanh dạ quang"></asp:ListItem>
+                                        <asp:ListItem Value="xanh đen" Text="Xanh đen"></asp:ListItem>
+                                        <asp:ListItem Value="xanh jean" Text="Xanh jean"></asp:ListItem>
+                                        <asp:ListItem Value="xanh lá" Text="Xanh lá"></asp:ListItem>
+                                        <asp:ListItem Value="xanh lá mạ" Text="Xanh lá mạ"></asp:ListItem>
+                                        <asp:ListItem Value="xanh lính" Text="Xanh lính"></asp:ListItem>
+                                        <asp:ListItem Value="xanh lông công" Text="Xanh lông công"></asp:ListItem>
+                                        <asp:ListItem Value="xanh môn" Text="Xanh môn"></asp:ListItem>
+                                        <asp:ListItem Value="xanh ngọc" Text="Xanh ngọc"></asp:ListItem>
+                                        <asp:ListItem Value="xanh rêu" Text="Xanh rêu"></asp:ListItem>
+                                    </asp:DropDownList>
+                                </div>
+                            </div>
                             <div class="form-row" id="Minimum">
                                 <div class="row-left">
                                     Tồn kho ít nhất
@@ -317,7 +386,7 @@
                                                 <asp:DropDownList runat="server" ID="ddlVariablename" CssClass="form-control" DataTextField="VariableName" DataValueField="ID" AppendDataBoundItems="True" AutoPostBack="True" OnSelectedIndexChanged="ddlVariablename_SelectedIndexChanged" />
                                             </div>
                                             <div class="variable-value-select">
-                                                <asp:DropDownList runat="server" ID="ddlVariableValue" CssClass="form-control select2" DataTextField="VariableValue" DataValueField="ID" AppendDataBoundItems="True" AutoPostBack="True" />
+                                                <asp:DropDownList runat="server" ID="ddlVariableValue" CssClass="form-control select2" Width="100%" DataTextField="VariableValue" DataValueField="ID" AppendDataBoundItems="True" AutoPostBack="True" />
                                             </div>
                                         </ContentTemplate>
                                     </asp:UpdatePanel>
@@ -570,9 +639,11 @@
                 $("#<%=hdfsetStyle.ClientID%>").val(vl);
                 if (vl == 2) {
                     $(".variable").show();
+                    $(".main-color").hide();
                 }
                 else {
                     $(".variable").hide();
+                    $(".main-color").show();
                 }
             }
 
@@ -922,6 +993,7 @@
                     var giasi = $("#<%=pRegular_Price.ClientID%>").val();
                     var giavon = $("#<%=pCostOfGood.ClientID%>").val();
                     var giale = $("#<%=pRetailPrice.ClientID%>").val();
+                    var maincolor = $("#<%=ddlColor.ClientID%>").val();
 
                     if (parent == "") {
                         $("#<%=ddlCategory.ClientID%>").focus();
@@ -938,6 +1010,10 @@
                     else if (materials == "") {
                         $("#<%=txtMaterials.ClientID%>").focus();
                         swal("Thông báo", "Chưa nhập chất liệu sản phẩm", "error");
+                    }
+                    else if (maincolor == "") {
+                        $("#<%=ddlColor.ClientID%>").focus();
+                        swal("Thông báo", "Chưa chọn màu chủ đạo", "error");
                     }
                     else if (giasi == "") {
                         $("#<%=pRegular_Price.ClientID%>").focus();

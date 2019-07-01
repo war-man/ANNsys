@@ -1953,7 +1953,7 @@ namespace IM_PJ.Controllers
                 var orderInfo = con.tbl_Order
                     .Where(x => (x.DateDone >= fromDate && x.DateDone <= toDate)
                                 && x.ExcuteStatus == 2
-                                && x.PaymentStatus == 3)
+                                && (x.PaymentStatus == 2 || x.PaymentStatus == 3))
                     .Join(
                         customers,
                         order => order.CustomerID,
@@ -2028,7 +2028,7 @@ namespace IM_PJ.Controllers
                         or = db.tbl_Order
                             .Where(r => r.DateDone >= fd && r.DateDone <= td)
                             .Where(r => r.ExcuteStatus == 2)
-                            .Where(r => r.PaymentStatus == 3)
+                            .Where(r => (r.PaymentStatus == 3 || r.PaymentStatus == 2))
                             .ToList();
                     }
                     else
@@ -2037,7 +2037,7 @@ namespace IM_PJ.Controllers
                         or = db.tbl_Order
                             .Where(r => r.CreatedDate >= fd)
                             .Where(r => r.ExcuteStatus == 2)
-                            .Where(r => r.PaymentStatus == 3)
+                            .Where(r => (r.PaymentStatus == 3 || r.PaymentStatus == 2))
                             .ToList();
                     }
                 }
@@ -2049,62 +2049,18 @@ namespace IM_PJ.Controllers
                         or = db.tbl_Order
                             .Where(r => r.CreatedDate <= td)
                             .Where(r => r.ExcuteStatus == 2)
-                            .Where(r => r.PaymentStatus == 3)
+                            .Where(r => (r.PaymentStatus == 3 || r.PaymentStatus == 2))
                             .ToList();
                     }
                     else
                     {
                         or = db.tbl_Order
                             .Where(r => r.ExcuteStatus == 2)
-                            .Where(r => r.PaymentStatus == 3)
+                            .Where(r => (r.PaymentStatus == 3 || r.PaymentStatus == 2))
                             .ToList();
                     }
                 }
                 return or;
-            }
-        }
-
-        public static long GetTotalPriceByAccount(string accountName, DateTime fromdate, DateTime todate)
-        {
-            using (var con = new inventorymanagementEntities())
-            {
-                return con.tbl_Order
-                    .Where(x => (fromdate <= x.DateDone && x.DateDone <= todate)
-                                && x.CreatedBy.Trim().ToUpper() == accountName.Trim().ToUpper()
-                                && (x.ExcuteStatus == 2 && x.PaymentStatus == 3)
-                           )
-                     .ToList()
-                     .Sum(x => Convert.ToInt64(x.TotalPrice));
-            }
-        }
-
-        public static int GetTotalProductSalesByAccount(string accountName, DateTime fromdate, DateTime todate)
-        {
-            using (var con = new inventorymanagementEntities())
-            {
-                List<tbl_Order> or = new List<tbl_Order>();
-                or = con.tbl_Order
-                    .Where(x => (fromdate <= x.DateDone && x.DateDone <= todate)
-                                && x.CreatedBy == accountName
-                                && (x.ExcuteStatus == 2 && x.PaymentStatus != 1)
-                           )
-                     .ToList();
-                int tongbanra = 0;
-                if (or != null)
-                {
-                    foreach (var item in or)
-                    {
-                        var oddetail = OrderDetailController.GetByOrderID(item.ID);
-                        if (oddetail != null)
-                        {
-                            foreach (var temp in oddetail)
-                            {
-                                tongbanra += Convert.ToInt32(temp.Quantity);
-                            }
-                        }
-                    }
-                }
-                return tongbanra;
             }
         }
 
@@ -2243,7 +2199,7 @@ namespace IM_PJ.Controllers
                 var orderTarget = con.tbl_Order
                     .Where(x => (x.DateDone >= fromDate && x.DateDone <= toDate)
                                 && x.ExcuteStatus == 2
-                                && x.PaymentStatus == 3)
+                                && (x.PaymentStatus == 2 || x.PaymentStatus == 3))
                     .OrderBy(x => x.ID);
 
                 var orderDetailTarget = con.tbl_OrderDetail.OrderBy(x => x.OrderID).ThenBy(x => x.ID);
@@ -2383,7 +2339,7 @@ namespace IM_PJ.Controllers
             }
         }
 
-        public static ProductReportModel getProductReport(string SKU, DateTime fromDate, DateTime toDate)
+        public static UserReportModel getUserReport(string CreatedBy, DateTime fromDate, DateTime toDate)
         {
             var list = new List<OrderReport>();
             var sql = new StringBuilder();
@@ -2397,8 +2353,60 @@ namespace IM_PJ.Controllers
             sql.AppendLine(String.Format("LEFT JOIN tbl_Product AS Product"));
             sql.AppendLine(String.Format("ON     OrdDetail.SKU = Product.ProductSKU"));
             sql.AppendLine(String.Format("WHERE 1 = 1"));
+            sql.AppendLine(String.Format("    AND Ord.CreatedBy = '{0}'", CreatedBy));
             sql.AppendLine(String.Format("    AND Ord.ExcuteStatus = 2"));
-            sql.AppendLine(String.Format("    AND Ord.PaymentStatus = 3"));
+            sql.AppendLine(String.Format("    AND (Ord.PaymentStatus = 2 OR Ord.PaymentStatus = 3)"));
+            sql.AppendLine(String.Format("    AND    CONVERT(datetime, Ord.DateDone, 121) BETWEEN CONVERT(datetime, '{0}', 121) AND CONVERT(datetime, '{1}', 121)", fromDate.ToString(), toDate.ToString()));
+            sql.AppendLine(String.Format("GROUP BY Ord.ID"));
+
+            var reader = (IDataReader)SqlHelper.ExecuteDataReader(sql.ToString());
+            while (reader.Read())
+            {
+                var entity = new OrderReport();
+
+                entity.ID = Convert.ToInt32(reader["ID"]);
+                entity.Quantity = Convert.ToInt32(reader["Quantity"]);
+                entity.TotalRevenue = Convert.ToDouble(reader["TotalRevenue"]);
+                entity.TotalCost = Convert.ToDouble(reader["TotalCost"]);
+                list.Add(entity);
+            }
+            reader.Close();
+
+            return new UserReportModel()
+            {
+                totalSoldQuantity = list.Sum(x => x.Quantity),
+                totalRevenue = list.Sum(x => x.TotalRevenue),
+                totalCost = list.Sum(x => x.TotalCost)
+            };
+        }
+
+        public class UserReportModel
+        {
+            public int totalSoldQuantity { get; set; }
+            public double totalRevenue { get; set; }
+            public double totalCost { get; set; }
+        }
+
+        public static ProductReportModel getProductReport(string SKU, string CreatedBy, DateTime fromDate, DateTime toDate)
+        {
+            var list = new List<OrderReport>();
+            var sql = new StringBuilder();
+
+            sql.AppendLine(String.Format("SELECT Ord.ID, SUM(ISNULL(OrdDetail.Quantity, 0)) AS Quantity, SUM(OrdDetail.Quantity * ISNULL(Product.CostOfGood, Variable.CostOfGood)) AS TotalCost, SUM(OrdDetail.Quantity * (OrdDetail.Price - Ord.DiscountPerProduct)) AS TotalRevenue"));
+            sql.AppendLine(String.Format("FROM tbl_Order AS Ord"));
+            sql.AppendLine(String.Format("INNER JOIN tbl_OrderDetail AS OrdDetail"));
+            sql.AppendLine(String.Format("ON     Ord.ID = OrdDetail.OrderID"));
+            sql.AppendLine(String.Format("LEFT JOIN tbl_ProductVariable AS Variable"));
+            sql.AppendLine(String.Format("ON     OrdDetail.SKU = Variable.SKU"));
+            sql.AppendLine(String.Format("LEFT JOIN tbl_Product AS Product"));
+            sql.AppendLine(String.Format("ON     OrdDetail.SKU = Product.ProductSKU"));
+            sql.AppendLine(String.Format("WHERE 1 = 1"));
+            if (CreatedBy != "")
+            {
+                sql.AppendLine(String.Format("    AND Ord.CreatedBy = '{0}'", CreatedBy));
+            }
+            sql.AppendLine(String.Format("    AND Ord.ExcuteStatus = 2"));
+            sql.AppendLine(String.Format("    AND (Ord.PaymentStatus = 2 OR Ord.PaymentStatus = 3)"));
             sql.AppendLine(String.Format("    AND OrdDetail.SKU LIKE '{0}%'", SKU));
             sql.AppendLine(String.Format("    AND    CONVERT(datetime, Ord.DateDone, 121) BETWEEN CONVERT(datetime, '{0}', 121) AND CONVERT(datetime, '{1}', 121)", fromDate.ToString(), toDate.ToString()));
             sql.AppendLine(String.Format("GROUP BY Ord.ID"));

@@ -8,7 +8,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
-                    <h3 class="page-title left">Danh sách nhà xe <span>(<asp:Literal ID="ltrNumberOfTransport" runat="server" EnableViewState="false"></asp:Literal> nhà xe)</span></h3>
+                    <h3 class="page-title left">Nhà xe <span>(<asp:Literal ID="ltrNumberOfTransport" runat="server" EnableViewState="false"></asp:Literal>)</span></h3>
                     <div class="right above-list-btn">
                         <a href="/them-moi-nha-xe" class="h45-btn primary-btn btn">Thêm mới</a>
                     </div>
@@ -48,9 +48,10 @@
                                         <asp:ListItem Value="30days" Text="30 ngày"></asp:ListItem>
                                     </asp:DropDownList>
                                 </div>
-                                <div class="col-md-1">
+                                <div class="col-md-1 search-button">
                                     <a href="javascript:;" onclick="searchTransport()" class="btn primary-btn h45-btn"><i class="fa fa-search"></i></a>
                                     <asp:Button ID="btnSearch" runat="server" CssClass="btn primary-btn h45-btn" OnClick="btnSearch_Click" Style="display: none" />
+                                    <a href="/danh-sach-nha-xe" class="btn primary-btn h45-btn"><i class="fa fa-times" aria-hidden="true"></i></a>
                                 </div>
                             </div>
                         </div>

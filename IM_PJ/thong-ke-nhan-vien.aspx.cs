@@ -41,13 +41,14 @@ namespace IM_PJ
             DateTime fromdate = DateTime.Today;
             DateTime todate = fromdate.AddDays(1).AddMinutes(-1);
 
-            long totalSales = 0;
-            double averageSales = 0D;
-            int totalOutput = 0;
-            int averageOutput = 0;
-            int totalRefund = 0;
-            int averageRefund = 0;
-            double totalDays = 0D;
+            double totalRevenue = 0;
+            double averageRevenue = 0;
+            double totalProfit = 0;
+            int totalSoldQuantity = 0;
+            int averageSoldQuantity = 0;
+            int totalRefundQuantity = 0;
+            int averageRefundQuantity = 0;
+            int totalDays = 0;
 
             if (!String.IsNullOrEmpty(Request.QueryString["accountName"]))
             {
@@ -67,40 +68,42 @@ namespace IM_PJ
             ddlAccountInfo.SelectedValue = accountName;
             rFromDate.SelectedDate = fromdate;
             rToDate.SelectedDate = todate;
-            totalDays = (todate - fromdate).TotalDays;
+            totalDays = Convert.ToInt32((todate - fromdate).TotalDays);
 
             // Load trang lan dau hoac la chua chon nhan vien
             if (String.IsNullOrEmpty(accountName))
             {
-                this.ltrTotalSales.Text = String.Empty;
-                this.ltrAverageSales.Text = String.Empty;
-                this.ltrTotalOutput.Text = String.Empty;
-                this.ltrAverageOutput.Text = String.Empty;
-                this.ltrTotalRefund.Text = String.Empty;
-                this.ltrAverageRefund.Text = String.Empty;
-
+                this.ltrTotalRevenue.Text = String.Empty;
+                this.ltrAverageRevenue.Text = String.Empty;
+                this.ltrTotalSoldQuantity.Text = String.Empty;
+                this.ltrAverageSoldQuantity.Text = String.Empty;
+                this.ltrTotalRefundQuantity.Text = String.Empty;
+                this.ltrAverageRefundQuantity.Text = String.Empty;
+                this.ltrTotalProfit.Text = String.Empty;
                 return;
             }
 
+            var userReport = OrderController.getUserReport(accountName, fromdate, todate);
 
-            totalSales = OrderController.GetTotalPriceByAccount(accountName, fromdate, todate);
-            averageSales = Math.Ceiling(totalSales / totalDays);
+            totalRevenue = userReport.totalRevenue;
+            averageRevenue = totalRevenue / totalDays;
+            totalSoldQuantity = userReport.totalSoldQuantity;
+            averageSoldQuantity = totalSoldQuantity / totalDays;
 
+            var userRefundReport = RefundGoodController.getUserReport(accountName, fromdate, todate);
 
-            totalOutput = OrderController.GetTotalProductSalesByAccount(accountName, fromdate, todate);
-            averageOutput = totalOutput / Convert.ToInt32(totalDays);
+            totalRefundQuantity = userRefundReport.totalRefundQuantity;
+            averageRefundQuantity = totalRefundQuantity / totalDays;
+            totalProfit = (userReport.totalRevenue - userReport.totalCost) - (userRefundReport.totalRevenue - userRefundReport.totalCost) + userRefundReport.totalRefundFee;
 
-            totalRefund = RefundGoodController.GetTotalRefundByAccount(accountName, fromdate, todate);
-            averageRefund = totalRefund / Convert.ToInt32(totalDays);
-
-
-            ltrTotalSales.Text = String.Format("{0:N0}  đ", totalSales);
-            ltrAverageSales.Text = String.Format("{0:N0}   đ/ngày", averageSales);
-            ltrTotalOutput.Text = totalOutput.ToString() + " cái";
-            ltrAverageOutput.Text = averageOutput.ToString() + " cái/ngày";
-            ltrTotalRefund.Text = totalRefund.ToString() + " cái";
-            ltrAverageRefund.Text = averageRefund.ToString() + " cái/ngày";
-            ltrTotalRemain.Text = (totalOutput - totalRefund).ToString() + " cái";
+            ltrTotalRevenue.Text = String.Format("{0:N0}", totalRevenue);
+            ltrAverageRevenue.Text = String.Format("{0:N0}/ngày", averageRevenue);
+            ltrTotalSoldQuantity.Text = totalSoldQuantity.ToString() + " cái";
+            ltrAverageSoldQuantity.Text = averageSoldQuantity.ToString() + " cái/ngày";
+            ltrTotalRefundQuantity.Text = totalRefundQuantity.ToString() + " cái";
+            ltrAverageRefundQuantity.Text = averageRefundQuantity.ToString() + " cái/ngày";
+            ltrTotalRemain.Text = (totalSoldQuantity - totalRefundQuantity).ToString() + " cái";
+            ltrTotalProfit.Text = String.Format("{0:N0}", totalProfit);
         }
 
         /// <summary>

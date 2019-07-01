@@ -93,7 +93,7 @@ namespace IM_PJ
             { }
             return returnValue;
         }
-        private int PageCount;
+        private int PageCount = 0;
         protected void DisplayHtmlStringPaging1()
         {
 

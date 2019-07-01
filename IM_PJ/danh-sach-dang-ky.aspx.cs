@@ -116,6 +116,7 @@ namespace IM_PJ
                 int UserID = 0;
                 int ProvinceID = 0;
                 string Referer = "";
+                string Category = "";
 
                 if (Request.QueryString["textsearch"] != null)
                 {
@@ -141,6 +142,10 @@ namespace IM_PJ
                 {
                     Referer = Request.QueryString["referer"];
                 }
+                if (Request.QueryString["category"] != null)
+                {
+                    Category = Request.QueryString["category"];
+                }
 
                 txtSearch.Text = TextSearch;
                 ddlStatus.SelectedValue = Status.ToString();
@@ -148,8 +153,9 @@ namespace IM_PJ
                 ddlCreatedDate.SelectedValue = CreatedDate.ToString();
                 ddlProvince.SelectedValue = ProvinceID.ToString();
                 ddlReferer.SelectedValue = Referer;
+                ddlProductCategory.SelectedValue = Category;
 
-                var rs = RegisterController.Filter(TextSearch, ProvinceID, UserID, Status, Referer, CreatedDate);
+                var rs = RegisterController.Filter(TextSearch, ProvinceID, UserID, Status, Referer, Category, CreatedDate);
 
                 if(acc.RoleID != 0 && acc.Username != "hotline")
                 {
@@ -175,6 +181,7 @@ namespace IM_PJ
             StringBuilder html = new StringBuilder();
             html.Append("<thead>");
             html.Append("<tr>");
+            html.Append("    <th>#</th>");
             html.Append("    <th>Tên</th>");
             html.Append("    <th>Điện thoại</th>");
             html.Append("    <th>Địa chỉ</th>");
@@ -222,6 +229,7 @@ namespace IM_PJ
                     {
                         message = "<a href='javascript:;' class='view-message' data-id='" + item.ID + "' data-toggle='modal' data-target='#ViewMessageModal' data-backdrop='static' data-keyboard='false'>(tin nhắn)</a>";
                     }
+                    html.Append("   <td data-title='#'>" + (i + 1).ToString() + "</td>");
                     html.Append("   <td data-title='Tên'><strong>" + item.Name + "</strong> " + message + "</td>");
 
                     string phone = item.Phone;
@@ -256,10 +264,6 @@ namespace IM_PJ
                     else if (item.Status == 4)
                     {
                         status = "<span class='bg-green'>Đã tiếp nhận</span>";
-                    }
-                    else if (item.Status == 5)
-                    {
-                        status = "<span class='bg-red'>Đã hủy</span>";
                     }
                     html.Append("   <td id='status' data-title='Trạng thái'>" + status + "</td>");
 
@@ -458,6 +462,11 @@ namespace IM_PJ
             if (ddlReferer.SelectedValue != "")
             {
                 request += "&referer=" + ddlReferer.SelectedValue;
+            }
+
+            if (ddlProductCategory.SelectedValue != "")
+            {
+                request += "&category=" + ddlProductCategory.SelectedValue;
             }
 
             if (ddlCreatedDate.SelectedValue != "")

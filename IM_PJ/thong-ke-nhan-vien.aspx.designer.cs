@@ -49,58 +49,58 @@ namespace IM_PJ {
         protected global::System.Web.UI.WebControls.Button btnSearch;
         
         /// <summary>
-        /// ltrTotalSales control.
+        /// ltrTotalRevenue control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Literal ltrTotalSales;
+        protected global::System.Web.UI.WebControls.Literal ltrTotalRevenue;
         
         /// <summary>
-        /// ltrAverageSales control.
+        /// ltrAverageRevenue control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Literal ltrAverageSales;
+        protected global::System.Web.UI.WebControls.Literal ltrAverageRevenue;
         
         /// <summary>
-        /// ltrTotalOutput control.
+        /// ltrTotalSoldQuantity control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Literal ltrTotalOutput;
+        protected global::System.Web.UI.WebControls.Literal ltrTotalSoldQuantity;
         
         /// <summary>
-        /// ltrAverageOutput control.
+        /// ltrAverageSoldQuantity control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Literal ltrAverageOutput;
+        protected global::System.Web.UI.WebControls.Literal ltrAverageSoldQuantity;
         
         /// <summary>
-        /// ltrTotalRefund control.
+        /// ltrTotalRefundQuantity control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Literal ltrTotalRefund;
+        protected global::System.Web.UI.WebControls.Literal ltrTotalRefundQuantity;
         
         /// <summary>
-        /// ltrAverageRefund control.
+        /// ltrAverageRefundQuantity control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Literal ltrAverageRefund;
+        protected global::System.Web.UI.WebControls.Literal ltrAverageRefundQuantity;
         
         /// <summary>
         /// ltrTotalRemain control.
@@ -110,5 +110,14 @@ namespace IM_PJ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Literal ltrTotalRemain;
+        
+        /// <summary>
+        /// ltrTotalProfit control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Literal ltrTotalProfit;
     }
 }

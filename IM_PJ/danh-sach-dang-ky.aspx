@@ -100,7 +100,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
-                    <h3 class="page-title left">Đăng ký mua sỉ <span>(<asp:Literal ID="ltrNumberOfOrder" runat="server" EnableViewState="false"></asp:Literal> đơn)</span></h3>
+                    <h3 class="page-title left">Đăng ký mua hàng <span>(<asp:Literal ID="ltrNumberOfOrder" runat="server" EnableViewState="false"></asp:Literal>)</span></h3>
                     <div class="right above-list-btn">
                         <asp:Literal ID="ltrCreateButton" runat="server" EnableViewState="false"></asp:Literal>
                     </div>
@@ -123,7 +123,7 @@
                                         <asp:ListItem Value="1" Text="Chưa xem"></asp:ListItem>
                                         <asp:ListItem Value="2" Text="Đã xem"></asp:ListItem>
                                         <asp:ListItem Value="3" Text="Đã bàn giao"></asp:ListItem>
-                                        <asp:ListItem Value="4" Text="Đã hủy"></asp:ListItem>
+                                        <asp:ListItem Value="4" Text="Đã tiếp nhận"></asp:ListItem>
                                     </asp:DropDownList>
                                 </div>
                                 <div class="col-md-2 col-xs-6">
@@ -143,7 +143,7 @@
                                         <asp:ListItem Value="30days" Text="30 ngày"></asp:ListItem>
                                     </asp:DropDownList>
                                 </div>
-                                <div class="col-md-1 col-xs-6">
+                                <div class="col-md-1 col-xs-6 search-button">
                                     <a href="javascript:;" onclick="searchRegister()" class="btn primary-btn h45-btn"><i class="fa fa-search"></i></a>
                                     <asp:Button ID="btnSearch" runat="server" CssClass="btn primary-btn h45-btn" OnClick="btnSearch_Click" Style="display: none" />
                                     <a href="/danh-sach-dang-ky" class="btn primary-btn h45-btn"><i class="fa fa-times" aria-hidden="true"></i></a>
@@ -154,7 +154,17 @@
                     <div class="filter-above-wrap clear">
                         <div class="filter-control">
                             <div class="row">
-                                <div class="col-md-9">
+                                <div class="col-md-7">
+                                </div>
+                                <div class="col-md-2 col-xs-6">
+                                    <asp:DropDownList ID="ddlProductCategory" runat="server" CssClass="form-control">
+                                        <asp:ListItem Value="" Text="Quan tâm"></asp:ListItem>
+                                        <asp:ListItem Value="Mua lẻ" Text="Mua lẻ"></asp:ListItem>
+                                        <asp:ListItem Value="Quần áo nam" Text="Quần áo nam"></asp:ListItem>
+                                        <asp:ListItem Value="Quần áo nữ" Text="Quần áo nữ"></asp:ListItem>
+                                        <asp:ListItem Value="Nước hoa" Text="Nước hoa"></asp:ListItem>
+                                        <asp:ListItem Value="Tất cả sản phẩm" Text="Tất cả sản phẩm"></asp:ListItem>
+                                    </asp:DropDownList>
                                 </div>
                                 <div class="col-md-2 col-xs-6">
                                     <asp:DropDownList ID="ddlReferer" runat="server" CssClass="form-control">

@@ -33,7 +33,7 @@ namespace IM_PJ.Controllers
         public static string Insert(int CategoryID, int ProductOldID, string ProductTitle, string ProductContent, string ProductSKU, double ProductStock,
             int StockStatus, bool ManageStock, double Regular_Price, double CostOfGood, double Retail_Price, string ProductImage, int ProductType,
             bool IsHidden, DateTime CreatedDate, string CreatedBy, int SupplierID, string SupplierName, string Materials,
-            double MinimumInventoryLevel, double MaximumInventoryLevel, int ProductStyle, int ShowHomePage)
+            double MinimumInventoryLevel, double MaximumInventoryLevel, int ProductStyle, int ShowHomePage, string mainColor)
         {
             using (var dbe = new inventorymanagementEntities())
             {
@@ -65,6 +65,7 @@ namespace IM_PJ.Controllers
                 ui.WebUpdate = CreatedDate;
                 ui.UnSignedTitle = UnSign.convert(ProductTitle);
                 ui.Slug = checkSlug(Slug.ConvertToSlug(ProductTitle));
+                ui.Color = mainColor;
 
                 dbe.tbl_Product.Add(ui);
                 dbe.SaveChanges();
@@ -75,7 +76,7 @@ namespace IM_PJ.Controllers
         public static string Update(int ID, int CategoryID, int ProductOldID, string ProductTitle, string ProductContent, string ProductSKU, double ProductStock,
             int StockStatus, bool ManageStock, double Regular_Price, double CostOfGood, double Retail_Price, string ProductImage, int ProductType,
             bool IsHidden, DateTime ModifiedDate, string ModifiedBy, int SupplierID, string SupplierName, string Materials,
-            double MinimumInventoryLevel, double MaximumInventoryLevel, string ProductImageClean)
+            double MinimumInventoryLevel, double MaximumInventoryLevel, string ProductImageClean, string mainColor)
         {
             using (var dbe = new inventorymanagementEntities())
             {
@@ -107,6 +108,7 @@ namespace IM_PJ.Controllers
                     ui.MaximumInventoryLevel = MaximumInventoryLevel;
                     ui.ProductImageClean = ProductImageClean;
                     ui.UnSignedTitle = UnSign.convert(ProductTitle);
+                    ui.Color = mainColor;
 
                     int kq = dbe.SaveChanges();
                     return kq.ToString();
@@ -324,15 +326,7 @@ namespace IM_PJ.Controllers
                 return ags;
             }
         }
-        public static List<View_ProductList> View_GetByCategoryID(string s, int CategoryID)
-        {
-            using (var dbe = new inventorymanagementEntities())
-            {
-                List<View_ProductList> ags = new List<View_ProductList>();
-                ags = dbe.View_ProductList.Where(p => p.ProductTitle.Contains(s) && p.CategoryID == CategoryID).OrderByDescending(o => o.ID).ToList();
-                return ags;
-            }
-        }
+        
         public static List<ProductSQL> GetProductReport(int categoryID)
         {
             var list = new List<ProductSQL>();
@@ -1023,6 +1017,7 @@ namespace IM_PJ.Controllers
             {
                 sql.AppendLine("    AND (");
                 sql.AppendLine(String.Format("        LOWER(PRD.ProductTitle) like N'%{0}%'", strColor.ToLower()));
+                sql.AppendLine(String.Format("        OR LOWER(PRD.Color) like N'%{0}%'", strColor.ToLower()));
                 sql.AppendLine("        OR EXISTS (");
                 sql.AppendLine("            SELECT");
                 sql.AppendLine("                NULL AS DUMMY");

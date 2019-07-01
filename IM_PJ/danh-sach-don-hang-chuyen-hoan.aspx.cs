@@ -56,55 +56,56 @@ namespace IM_PJ
             var acc = AccountController.GetByUsername(username);
             if (acc != null)
             {
-                int agentID = Convert.ToInt32(acc.AgentID);
-                int orderType = 0;
-                int paymentStatus = 0;
-                int payment = 0;
-                int ship = 0;
-                string s = "";
-                string sku = "";
-                int by = 0;
-                if (Request.QueryString["o"] != null)
-                {
-                    orderType = Request.QueryString["o"].ToInt(0);
-                }
-                if (Request.QueryString["p"] != null)
-                {
-                    paymentStatus = Request.QueryString["p"].ToInt(0);
-                }
-                if (Request.QueryString["pay"] != null)
-                {
-                    payment = Request.QueryString["pay"].ToInt(0);
-                }
-                if (Request.QueryString["sh"] != null)
-                {
-                    ship = Request.QueryString["sh"].ToInt(0);
-                }
-                if (Request.QueryString["s"] != null)
-                {
-                    s = Request.QueryString["s"].Trim();
-                }
-                if (Request.QueryString["sku"] != null)
-                {
-                    sku = Request.QueryString["sku"];
-                }
-                if (Request.QueryString["sku"] != null)
-                {
-                    sku = Request.QueryString["sku"];
-                }
-                if (Request.QueryString["by"] != null)
-                {
-                    by = Request.QueryString["by"].ToInt(0);
-                }
-                txtAgentName.Text = s;
-                ddlOrderType.SelectedValue = orderType.ToString();
-                ddlPaymentStatus.SelectedValue = paymentStatus.ToString();
-                ddlPaymentType.SelectedValue = payment.ToString();
-                ddlShippingType.SelectedValue = ship.ToString();
-                ddlCreateBy.SelectedValue = by.ToString();
-
                 if (acc.RoleID == 0 || acc.RoleID == 2)
                 {
+                    int agentID = Convert.ToInt32(acc.AgentID);
+                    int orderType = 0;
+                    int paymentStatus = 0;
+                    int payment = 0;
+                    int ship = 0;
+                    string s = "";
+                    string sku = "";
+                    int by = 0;
+                    if (Request.QueryString["o"] != null)
+                    {
+                        orderType = Request.QueryString["o"].ToInt(0);
+                    }
+                    if (Request.QueryString["p"] != null)
+                    {
+                        paymentStatus = Request.QueryString["p"].ToInt(0);
+                    }
+                    if (Request.QueryString["pay"] != null)
+                    {
+                        payment = Request.QueryString["pay"].ToInt(0);
+                    }
+                    if (Request.QueryString["sh"] != null)
+                    {
+                        ship = Request.QueryString["sh"].ToInt(0);
+                    }
+                    if (Request.QueryString["s"] != null)
+                    {
+                        s = Request.QueryString["s"].Trim();
+                    }
+                    if (Request.QueryString["sku"] != null)
+                    {
+                        sku = Request.QueryString["sku"];
+                    }
+                    if (Request.QueryString["sku"] != null)
+                    {
+                        sku = Request.QueryString["sku"];
+                    }
+                    if (Request.QueryString["by"] != null)
+                    {
+                        by = Request.QueryString["by"].ToInt(0);
+                    }
+                    txtAgentName.Text = s;
+                    ddlOrderType.SelectedValue = orderType.ToString();
+                    ddlPaymentStatus.SelectedValue = paymentStatus.ToString();
+                    ddlPaymentType.SelectedValue = payment.ToString();
+                    ddlShippingType.SelectedValue = ship.ToString();
+                    ddlCreateBy.SelectedValue = by.ToString();
+
+                
                     var rs = OrderController.SearchByStatical(orderType, paymentStatus, 4, s, agentID, payment, ship, sku);
                     if (rs.Count > 0)
                     {
@@ -129,6 +130,8 @@ namespace IM_PJ
                             pagingall(rs.Where(x => x.CreatedBy == acc.Username).OrderByDescending(x => x.ModifiedDate).ToList());
                         }
                     }
+
+                    ltrNumberOfOrder.Text = rs.Count().ToString();
                 }
             }
         }

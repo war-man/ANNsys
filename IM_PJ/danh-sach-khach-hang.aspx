@@ -7,7 +7,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
-                    <h3 class="page-title left">Danh sách khách hàng <span>(<asp:Literal ID="ltrNumberOfCustomer" runat="server" EnableViewState="false"></asp:Literal> khách hàng)</span></h3>
+                    <h3 class="page-title left">Khách hàng <span>(<asp:Literal ID="ltrNumberOfCustomer" runat="server" EnableViewState="false"></asp:Literal>)</span></h3>
                     <div class="right above-list-btn">
                         <a href="/them-moi-khach-hang" class="h45-btn primary-btn btn">Thêm mới</a>
                     </div>
@@ -19,7 +19,7 @@
                         <div class="filter-control">
                             <div class="row">
                                 <div class="col-md-3">
-                                    <asp:TextBox ID="txtTextSearch" runat="server" CssClass="form-control"></asp:TextBox>
+                                    <asp:TextBox ID="txtTextSearch" runat="server" CssClass="form-control" placeholder="Tìm khách hàng"></asp:TextBox>
                                 </div>
                                 <div class="col-md-2">
                                     <asp:DropDownList ID="ddlProvince" runat="server" CssClass="form-control"></asp:DropDownList>
@@ -50,9 +50,10 @@
                                 <div class="col-md-2">
                                     <asp:DropDownList ID="ddlCreatedBy" runat="server" CssClass="form-control create"></asp:DropDownList>
                                 </div>
-                                <div class="col-md-1">
+                                <div class="col-md-1 search-button">
                                     <a href="javascript:;" onclick="searchCustomer()" class="btn primary-btn h45-btn"><i class="fa fa-search"></i></a>
                                     <asp:Button ID="btnSearch" runat="server" CssClass="btn primary-btn h45-btn" OnClick="btnSearch_Click" Style="display: none" />
+                                    <a href="/danh-sach-khach-hang" class="btn primary-btn h45-btn"><i class="fa fa-times" aria-hidden="true"></i></a>
                                 </div>
                             </div>
                         </div>

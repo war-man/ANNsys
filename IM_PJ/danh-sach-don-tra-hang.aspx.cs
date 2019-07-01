@@ -126,35 +126,13 @@ namespace IM_PJ
                 pagingall(rs);
 
                 // THỐNG KÊ ĐƠN HÀNG
-                int TotalOrders = rs.Count;
-                int Type1Orders = 0;
-                int Type2Orders = 0;
+                int TotalOrders = rs.Count();
+                int Type1Orders = rs.Where(x => x.Status == 1).Count();
+                int Type2Orders = rs.Where(x => x.Status == 2).Count();
 
-                int TotalProducts = 0;
-                double TotalMoney = 0;
-                double TotalRefundFee = 0;
-
-                for (int i = 0; i < rs.Count; i++)
-                {
-                    var item = rs[i];
-
-                    // Tính tổng số sản phẩm trong tổng số đơn hàng
-                    TotalProducts += item.Quantity;
-                    // Tính tổng đơn hàng sỉ và lẻ
-
-                    if (item.Status == 2)
-                    {
-                        Type2Orders++;
-                    }
-                    if (item.Status == 1)
-                    {
-                        Type1Orders++;
-                    }
-
-                    // Tính số tiền
-                    TotalMoney += item.TotalPrice;
-                    TotalRefundFee += item.TotalRefundFee;
-                }
+                int TotalProducts = rs.Sum(x => x.Quantity);
+                double TotalMoney = rs.Sum(x => x.TotalPrice);
+                double TotalRefundFee = rs.Sum(x => x.TotalRefundFee);
 
                 ltrTotalOrders.Text = TotalOrders.ToString();
                 ltrType2Orders.Text = Type2Orders.ToString();

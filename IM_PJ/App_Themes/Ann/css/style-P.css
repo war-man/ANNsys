@@ -1,4 +1,8 @@
-﻿.search-box {
+﻿
+.search-button a {
+    padding: 10px 10px!important;
+}
+.search-box {
     width: 100%;
 }
 .search-box input.form-control {

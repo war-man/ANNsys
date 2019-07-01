@@ -67,7 +67,7 @@ namespace IM_PJ
                 double totaldiscount = 0;
                 foreach (var item in od)
                 {
-                    totaldiscount += Convert.ToInt32(item.TotalDiscount);
+                    totaldiscount += Convert.ToDouble(item.TotalDiscount);
                 }
 
                 double discountperday = totaldiscount / day;

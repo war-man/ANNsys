@@ -365,7 +365,7 @@ namespace IM_PJ.Controllers
             return list;
         }
 
-        public static RefundProductReportModel getRefundProductReport(string SKU, DateTime fromDate, DateTime toDate)
+        public static UserReportModel getUserReport(string CreatedBy, DateTime fromDate, DateTime toDate)
         {
             var list = new List<RefundReport>();
             var sql = new StringBuilder();
@@ -379,6 +379,59 @@ namespace IM_PJ.Controllers
             sql.AppendLine(String.Format("LEFT JOIN tbl_Product AS Product"));
             sql.AppendLine(String.Format("ON 	OrdDetail.SKU = Product.ProductSKU"));
             sql.AppendLine(String.Format("WHERE 1 = 1"));
+            sql.AppendLine(String.Format("    AND Ord.CreatedBy = '{0}'", CreatedBy));
+            sql.AppendLine(String.Format("	AND	(CONVERT(datetime, Ord.CreatedDate, 121) BETWEEN CONVERT(datetime, '{0}', 121) AND CONVERT(datetime, '{1}', 121))", fromDate.ToString(), toDate.ToString()));
+            sql.AppendLine(String.Format("GROUP BY Ord.ID, OrdDetail.RefundFeePerProduct"));
+
+            var reader = (IDataReader)SqlHelper.ExecuteDataReader(sql.ToString());
+            while (reader.Read())
+            {
+                var entity = new RefundReport();
+
+                entity.ID = Convert.ToInt32(reader["ID"]);
+                entity.Quantity = Convert.ToInt32(reader["Quantity"]);
+                entity.TotalCost = Convert.ToDouble(reader["TotalCost"]);
+                entity.TotalRevenue = Convert.ToDouble(reader["TotalRevenue"]);
+                entity.TotalRefundFee = Convert.ToInt32(reader["TotalRefundFee"]);
+                list.Add(entity);
+            }
+            reader.Close();
+
+            return new UserReportModel()
+            {
+                totalRefundQuantity = list.Sum(x => x.Quantity),
+                totalRevenue = list.Sum(x => x.TotalRevenue),
+                totalCost = list.Sum(x => x.TotalCost),
+                totalRefundFee = list.Sum(x => x.TotalRefundFee),
+            };
+        }
+
+        public class UserReportModel
+        {
+            public int totalRefundQuantity { get; set; }
+            public double totalCost { get; set; }
+            public double totalRevenue { get; set; }
+            public double totalRefundFee { get; set; }
+        }
+
+        public static RefundProductReportModel getRefundProductReport(string SKU, string CreatedBy, DateTime fromDate, DateTime toDate)
+        {
+            var list = new List<RefundReport>();
+            var sql = new StringBuilder();
+
+            sql.AppendLine(String.Format("SELECT Ord.ID, SUM(ISNULL(OrdDetail.Quantity, 0)) AS Quantity, SUM(OrdDetail.Quantity * ISNULL(Product.CostOfGood, Variable.CostOfGood)) AS TotalCost, SUM(OrdDetail.Quantity * OrdDetail.SoldPricePerProduct) AS TotalRevenue, SUM(OrdDetail.Quantity * OrdDetail.RefundFeePerProduct) AS TotalRefundFee"));
+            sql.AppendLine(String.Format("FROM tbl_RefundGoods AS Ord"));
+            sql.AppendLine(String.Format("INNER JOIN tbl_RefundGoodsDetails AS OrdDetail"));
+            sql.AppendLine(String.Format("ON 	Ord.ID = OrdDetail.RefundGoodsID"));
+            sql.AppendLine(String.Format("LEFT JOIN tbl_ProductVariable AS Variable"));
+            sql.AppendLine(String.Format("ON 	OrdDetail.SKU = Variable.SKU"));
+            sql.AppendLine(String.Format("LEFT JOIN tbl_Product AS Product"));
+            sql.AppendLine(String.Format("ON 	OrdDetail.SKU = Product.ProductSKU"));
+            sql.AppendLine(String.Format("WHERE 1 = 1"));
+            if (CreatedBy != "")
+            {
+                sql.AppendLine(String.Format("    AND Ord.CreatedBy = '{0}'", CreatedBy));
+            }
             sql.AppendLine(String.Format("	AND OrdDetail.SKU LIKE '{0}%'", SKU));
             sql.AppendLine(String.Format("	AND	(CONVERT(datetime, Ord.CreatedDate, 121) BETWEEN CONVERT(datetime, '{0}', 121) AND CONVERT(datetime, '{1}', 121))", fromDate.ToString(), toDate.ToString()));
             sql.AppendLine(String.Format("GROUP BY Ord.ID, OrdDetail.RefundFeePerProduct"));
