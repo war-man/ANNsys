@@ -403,10 +403,40 @@ namespace IM_PJ.Controllers
             }
         }
 
-        public static List<OrderList> Filter(string TextSearch, int OrderType, int ExcuteStatus, int PaymentStatus, int TransferStatus, int PaymentType, int ShippingType, string Discount, string OtherFee, string CreatedBy, string CreatedDate, string TransferDoneAt, int TransportCompany, string DeliveryStartAt, int DeliveryTimes = 0)
+        public static List<OrderList> Filter(
+                ref int totalPage,
+                ref int totalItems,
+                string TextSearch,
+                int OrderType,
+                List<int> ExcuteStatus,
+                int PaymentStatus,
+                int TransferStatus,
+                int PaymentType,
+                List<int> ShippingType,
+                string Discount,
+                string OtherFee,
+                string QuantityFilter,
+                string CreatedBy,
+                string CreatedDate,
+                string TransferDoneAt,
+                int TransportCompany,
+                int ShipperID,
+                string DeliveryStartAt,
+                int DeliveryTimes = 0,
+                int CurrentPage = 1,
+                int PageSize = 30
+            )
         {
             using (var con = new inventorymanagementEntities())
             {
+                DateTime year = new DateTime(2019, 2, 15);
+
+                var config = ConfigController.GetByTop1();
+                if (config.ViewAllOrders == 1)
+                {
+                    year = new DateTime(2018, 6, 22);
+                }
+                
                 var orders = con.tbl_Order
                     .Select(x => new
                     {
@@ -427,7 +457,7 @@ namespace IM_PJ.Controllers
                         OrderNote = x.OrderNote,
                         RefundsGoodsID = x.RefundsGoodsID,
                     })
-                    .Where(x => 1 == 1);
+                    .Where(x => x.CreatedDate >= year);
 
                 // Filter Order Type
                 if (OrderType > 0)
@@ -451,17 +481,17 @@ namespace IM_PJ.Controllers
                     );
                 }
                 // Filter Excute Status
-                if (ExcuteStatus > 0)
+                if (ExcuteStatus.Count() > 0)
                 {
                     orders = orders.Where(x =>
-                        x.ExcuteStatus == ExcuteStatus
+                       ExcuteStatus.Contains(x.ExcuteStatus.HasValue ? x.ExcuteStatus.Value : 0)
                     );
                 }
                 // Filter Shipping Type
-                if (ShippingType > 0)
+                if (ShippingType.Count() > 0)
                 {
                     orders = orders.Where(x =>
-                       x.ShippingType == ShippingType
+                       ShippingType.Contains(x.ShippingType.HasValue ? x.ShippingType.Value : 0) 
                     );
                 }
 
@@ -505,7 +535,7 @@ namespace IM_PJ.Controllers
                     DateTime todate = DateTime.Now;
                     CalDate(CreatedDate, ref fromdate, ref todate);
 
-                    if (ExcuteStatus == 2)
+                    if (ExcuteStatus.Count() == 1 && ExcuteStatus.Contains(2))
                     {
                         orders = orders.Where(x =>
                             x.DateDone >= fromdate &&
@@ -521,11 +551,15 @@ namespace IM_PJ.Controllers
                     }
                 }
 
+                
+
                 var orderFilter = orders.Select(x => new {
                     ID = x.ID,
                     CustomerID = x.CustomerID,
                     RefundsGoodsID = x.RefundsGoodsID
                 });
+
+                
 
                 // Filter orderid or customername or customerphone or nick or shipcode
                 if (!String.IsNullOrEmpty(TextSearch))
@@ -720,7 +754,7 @@ namespace IM_PJ.Controllers
                 }
 
                 // Filter Delivery times
-                if(DeliveryTimes > 0)
+                if (DeliveryTimes > 0)
                 {
                     orderFilter = orders
                         .GroupJoin(
@@ -747,6 +781,47 @@ namespace IM_PJ.Controllers
                             RefundsGoodsID = x.RefundsGoodsID
                         });
                 }
+
+                // Filter Shipper
+                if (ShipperID > 0)
+                {
+                    orderFilter = orders
+                        .GroupJoin(
+                            con.Deliveries,
+                            h => h.ID,
+                            d => d.OrderID,
+                            (h, d) => new { h, d }
+                        )
+                        .SelectMany(
+                            x => x.d.DefaultIfEmpty(),
+                            (parent, child) => new
+                            {
+                                ID = parent.h.ID,
+                                CustomerID = parent.h.CustomerID,
+                                RefundsGoodsID = parent.h.RefundsGoodsID,
+                                ShipperID = child.ShipperID,
+                            }
+                        )
+                        .Where(x => x.ShipperID == ShipperID)
+                        .Select(x => new {
+                            ID = x.ID,
+                            CustomerID = x.CustomerID,
+                            RefundsGoodsID = x.RefundsGoodsID
+                        });
+                }
+
+                totalItems = orderFilter.Count();
+                totalPage = (int)Math.Ceiling(totalItems / (double)PageSize);
+
+                orderFilter = orderFilter
+                    .OrderByDescending(x => x.ID)
+                    .Skip((CurrentPage - 1) * PageSize)
+                    .Take(PageSize)
+                    .Select(x => new {
+                        ID = x.ID,
+                        CustomerID = x.CustomerID,
+                        RefundsGoodsID = x.RefundsGoodsID
+                    });
 
                 // Get info main
                 var header = orderFilter

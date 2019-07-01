@@ -103,12 +103,13 @@ namespace IM_PJ
             if (acc != null)
             {
                 int TransferStatus = 0;
-                int ExcuteStatus = 0;
+                var ExcuteStatus = new List<int>() { 1, 2 };
                 int BankReceive = 0;
                 string TextSearch = "";
                 string CreatedBy = "";
                 string CreatedDate = "";
                 string TransferDoneAt = "";
+                int Page = 1;
 
                 if (Request.QueryString["textsearch"] != null)
                 {
@@ -120,7 +121,7 @@ namespace IM_PJ
                 }
                 if (Request.QueryString["excutestatus"] != null)
                 {
-                    ExcuteStatus = Request.QueryString["excutestatus"].ToInt(0);
+                    ExcuteStatus.Add(Request.QueryString["excutestatus"].ToInt(0));
                 }
                 if (Request.QueryString["createdby"] != null)
                 {
@@ -138,46 +139,53 @@ namespace IM_PJ
                 {
                     BankReceive = Request.QueryString["bankreceive"].ToInt(0);
                 }
+                if (Request.QueryString["Page"] != null)
+                {
+                    Page = Request.QueryString["Page"].ToInt();
+                }
 
                 txtSearchOrder.Text = TextSearch;
                 ddlTransferStatus.SelectedValue = TransferStatus.ToString();
-                ddlExcuteStatus.SelectedValue = ExcuteStatus.ToString();
+                ddlExcuteStatus.SelectedValue = ExcuteStatus.Count() > 1 ? ExcuteStatus.FirstOrDefault().ToString() : "0";
                 ddlBankReceive.SelectedValue = BankReceive.ToString();
                 ddlCreatedBy.SelectedValue = CreatedBy.ToString();
                 ddlCreatedDate.SelectedValue = CreatedDate.ToString();
                 ddlTransferDoneAt.SelectedValue = TransferDoneAt.ToString();
 
+                int totalPage = 0;
+                int totalItems = 0;
                 List<OrderList> rs = new List<OrderList>();
                 rs = OrderController.Filter(
+                    ref totalPage,
+                    ref totalItems,
                     TextSearch, 
                     0,
                     ExcuteStatus,
                     0,
                     TransferStatus,
                     2, // Chuyển khoản
-                    0, // All
-                    String.Empty, // All
-                    String.Empty, // All
+                    new List<int>(), // ShippingType
+                    String.Empty, // Discount
+                    String.Empty, // OtherFee
+                    "", // Quantity
                     CreatedBy,
                     CreatedDate,
                     TransferDoneAt,
                     0,
-                    ""
+                    0,
+                    "",
+                    0,
+                    Page
                 );
-
-                if (ExcuteStatus == 0)
-                {
-                    rs = rs.Where(x => x.ExcuteStatus != 4).ToList();
-                }
 
                 if (BankReceive != 0)
                 {
                     rs = rs.Where(x => x.AccBankID == BankReceive).ToList();
                 }
 
-                pagingall(rs);
+                pagingall(rs, Page, totalPage);
 
-                ltrNumberOfOrder.Text = rs.Count().ToString();
+                ltrNumberOfOrder.Text = totalItems.ToString();
 
                 // THỐNG KÊ ĐƠN HÀNG
                 int TotalOrders = rs.Count();
@@ -221,12 +229,10 @@ namespace IM_PJ
 
 
         #region Paging
-        public void pagingall(List<OrderList> acs)
+        public void pagingall(List<OrderList> acs, int page, int totalPage)
         {
             string username = Request.Cookies["userLoginSystem"].Value;
             var acc = AccountController.GetByUsername(username);
-
-            int PageSize = 30;
 
             StringBuilder html = new StringBuilder();
             html.Append("<thead>");
@@ -252,24 +258,11 @@ namespace IM_PJ
             html.Append("<tbody>");
             if (acs.Count > 0)
             {
-                int TotalItems = acs.Count;
-                if (TotalItems % PageSize == 0)
-                    PageCount = TotalItems / PageSize;
-                else
-                    PageCount = TotalItems / PageSize + 1;
+                PageCount = totalPage;
+                Int32 Page = page;
 
-                Int32 Page = GetIntFromQueryString("Page");
-
-                if (Page == -1) Page = 1;
-                int FromRow = (Page - 1) * PageSize;
-                int ToRow = Page * PageSize - 1;
-                if (ToRow >= TotalItems)
-                    ToRow = TotalItems - 1;
-
-
-                for (int i = FromRow; i < ToRow + 1; i++)
+                foreach (var item in acs)
                 {
-                    var item = acs[i];
                     // Insert transfer bank info for tr tag
                     var TrTag = new StringBuilder();
                     TrTag.AppendLine("<tr ");
@@ -403,22 +396,6 @@ namespace IM_PJ
             html.Append("</tbody>");
 
             ltrList.Text = html.ToString();
-        }
-        public static Int32 GetIntFromQueryString(String key)
-        {
-            Int32 returnValue = -1;
-            String queryStringValue = HttpContext.Current.Request.QueryString[key];
-            try
-            {
-                if (queryStringValue == null)
-                    return returnValue;
-                if (queryStringValue.IndexOf("#") > 0)
-                    queryStringValue = queryStringValue.Substring(0, queryStringValue.IndexOf("#"));
-                returnValue = Convert.ToInt32(queryStringValue);
-            }
-            catch
-            { }
-            return returnValue;
         }
         private int PageCount;
         protected void DisplayHtmlStringPaging1()

@@ -288,6 +288,7 @@
           <Property Name="RetailReturnRule" Type="nvarchar(max)" />
           <Property Name="CSSPrintBarcode" Type="text" />
           <Property Name="HideProduct" Type="int" />
+          <Property Name="ViewAllOrders" Type="int" />
         </EntityType>
         <EntityType Name="tbl_Customer">
           <Key>
@@ -1544,6 +1545,7 @@
           <Property Name="RetailReturnRule" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="CSSPrintBarcode" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="HideProduct" Type="Int32" />
+          <Property Name="ViewAllOrders" Type="Int32" />
         </EntityType>
         <EntityType Name="tbl_Post">
           <Key>
@@ -2399,6 +2401,7 @@
           <EntitySetMapping Name="tbl_Config">
             <EntityTypeMapping TypeName="inventorymanagementModel.tbl_Config">
               <MappingFragment StoreEntitySet="tbl_Config">
+                <ScalarProperty Name="ViewAllOrders" ColumnName="ViewAllOrders" />
                 <ScalarProperty Name="HideProduct" ColumnName="HideProduct" />
                 <ScalarProperty Name="CSSPrintBarcode" ColumnName="CSSPrintBarcode" />
                 <ScalarProperty Name="RetailReturnRule" ColumnName="RetailReturnRule" />

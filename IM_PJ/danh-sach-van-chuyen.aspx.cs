@@ -121,7 +121,7 @@ namespace IM_PJ
             {
                 string TextSearch = "";
                 int TransportCompany = 0;
-                int ShippingType = 0;
+                var ShippingType = new List<int>() {4, 5};
                 int PaymentType = 0;
                 int ShipperID = 0;
                 int InvoiceStatus = 0;
@@ -131,13 +131,17 @@ namespace IM_PJ
                 string DeliveryStartAt = "";
                 var isDeliverySession = false;
                 int DeliveryTimes = 0;
+                int Page = 1;
 
                 if (Request.QueryString["textsearch"] != null)
                     TextSearch = Request.QueryString["textsearch"].Trim();
                 if (Request.QueryString["transportcompany"] != null)
                     TransportCompany = Request.QueryString["transportcompany"].ToInt(0);
                 if (Request.QueryString["shippingtype"] != null)
-                    ShippingType = Request.QueryString["shippingtype"].ToInt(0);
+                {
+                    ShippingType.Clear();
+                    ShippingType.Add(Request.QueryString["shippingtype"].ToInt(0));
+                }
                 if (Request.QueryString["paymenttype"] != null)
                     PaymentType = Request.QueryString["paymenttype"].ToInt(0);
                 if (Request.QueryString["shipperid"] != null)
@@ -156,43 +160,47 @@ namespace IM_PJ
                     isDeliverySession = true;
                 if (Request.QueryString["deliverytimes"] != null)
                     DeliveryTimes = Request.QueryString["deliverytimes"].ToInt(0);
+                if (Request.QueryString["Page"] != null)
+                    Page = Request.QueryString["Page"].ToInt();
 
                 txtSearchOrder.Text = TextSearch;
                 ddlTransportCompany.SelectedValue = TransportCompany.ToString();
-                ddlShippingType.SelectedValue = ShippingType.ToString();
+                ddlShippingType.SelectedValue = ShippingType.Count() > 1 ? "0" : ShippingType.FirstOrDefault().ToString() ;
                 ddlPaymentType.SelectedValue = PaymentType.ToString();
                 ddlShipperFilter.SelectedValue = ShipperID.ToString();
                 ddlInvoiceStatus.SelectedValue = InvoiceStatus.ToString();
                 ddlDeliveryStatusFilter.SelectedValue = DeliveryStatus.ToString();
                 ddlCreatedDate.SelectedValue = CreatedDate.ToString();
                 ddlCreatedBy.SelectedValue = CreatedBy.ToString();
-                ddlCreatedBy.SelectedValue = CreatedBy.ToString();
                 ddlDeliveryStartAt.SelectedValue = DeliveryStartAt.ToString();
                 ddlDeliveryTimes.SelectedValue = DeliveryTimes.ToString();
 
+                int totalPage = 0;
+                int totalItems = 0;
                 List<OrderList> rs = new List<OrderList>();
                 rs = OrderController.Filter(
+                    ref totalPage,
+                    ref totalItems,
                     TextSearch, 
                     0, // Ordertype
-                    2, // Excutestatus
+                    new List<int>() { 2 }, // Excutestatus
                     0, // PaymentStatus
                     0, // TransferStatus
                     PaymentType, // PaymentType
                     ShippingType, // ShippingType All
                     String.Empty, // Discount All
                     String.Empty, // OtherFee
+                    "", // Quantity
                     CreatedBy, // CreatedBy
                     CreatedDate, // CreatedDate
                     String.Empty, // TransferDoneAt
                     TransportCompany, // TransportCompany
+                    ShipperID,
                     DeliveryStartAt, // DeliveryStartAt
-                    DeliveryTimes // DeliveryTimes
+                    DeliveryTimes, // DeliveryTimes
+                    Page
                 );
-
-                if (ShippingType == 0)
-                    rs = rs.Where(x => x.ShippingType == 4 || x.ShippingType == 5).ToList();
-                if (ShipperID != 0)
-                    rs = rs.Where(x => x.ShipperID == ShipperID).ToList();
+                    
                 if (DeliveryStatus != 0)
                     rs = rs.Where(x => x.DeliveryStatus == DeliveryStatus).ToList();
 
@@ -255,19 +263,17 @@ namespace IM_PJ
                         .ToList();
                 }
 
-                pagingall(rs);
-                ltrNumberOfOrder.Text = rs.Count().ToString();
+                pagingall(rs, Page, totalPage);
+
+                ltrNumberOfOrder.Text = totalItems.ToString();
             }
         }
 
-
         #region Paging
-        public void pagingall(List<OrderList> acs)
+        public void pagingall(List<OrderList> acs, int page, int totalPage)
         {
             string username = Request.Cookies["userLoginSystem"].Value;
             var acc = AccountController.GetByUsername(username);
-
-            int PageSize = 60;
 
             StringBuilder html = new StringBuilder();
             html.Append("<thead>");
@@ -298,24 +304,11 @@ namespace IM_PJ
             html.Append("<tbody>");
             if (acs.Count > 0)
             {
-                int TotalItems = acs.Count;
-                if (TotalItems % PageSize == 0)
-                    PageCount = TotalItems / PageSize;
-                else
-                    PageCount = TotalItems / PageSize + 1;
+                PageCount = totalPage;
+                Int32 Page = page;
 
-                Int32 Page = GetIntFromQueryString("Page");
-
-                if (Page == -1) Page = 1;
-                int FromRow = (Page - 1) * PageSize;
-                int ToRow = Page * PageSize - 1;
-                if (ToRow >= TotalItems)
-                    ToRow = TotalItems - 1;
-
-
-                for (int i = FromRow; i < ToRow + 1; i++)
+                foreach (var item in acs)
                 {
-                    var item = acs[i];
                     // Insert transfer bank info for tr tag
                     var TrTag = new StringBuilder();
                     TrTag.AppendLine("<tr ");
@@ -454,22 +447,6 @@ namespace IM_PJ
             html.Append("</tbody>");
 
             ltrList.Text = html.ToString();
-        }
-        public static Int32 GetIntFromQueryString(String key)
-        {
-            Int32 returnValue = -1;
-            String queryStringValue = HttpContext.Current.Request.QueryString[key];
-            try
-            {
-                if (queryStringValue == null)
-                    return returnValue;
-                if (queryStringValue.IndexOf("#") > 0)
-                    queryStringValue = queryStringValue.Substring(0, queryStringValue.IndexOf("#"));
-                returnValue = Convert.ToInt32(queryStringValue);
-            }
-            catch
-            { }
-            return returnValue;
         }
         private int PageCount;
         protected void DisplayHtmlStringPaging1()

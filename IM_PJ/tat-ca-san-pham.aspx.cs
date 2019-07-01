@@ -76,7 +76,7 @@ namespace IM_PJ
             {
                 if (acc.RoleID == 0 || acc.RoleID == 1)
                 {
-                    ltrAddProduct.Text = "<a href=\"/tao-san-pham\" class=\"h45-btn btn primary-btn\">Thêm mới</a>";
+                    ltrAddProduct.Text = "<a href='/tao-san-pham' class='h45-btn btn primary-btn'>Thêm mới</a>";
                 }
 
                 string TextSearch = "";
