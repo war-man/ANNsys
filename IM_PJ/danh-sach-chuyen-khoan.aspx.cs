@@ -110,6 +110,11 @@ namespace IM_PJ
                 string CreatedDate = "";
                 string TransferDoneAt = "";
                 int Page = 1;
+                // add filter quantity
+                string QuantityFilter = "";
+                int Quantity = 0;
+                int QuantityMin = 0;
+                int QuantityMax = 0;
 
                 if (Request.QueryString["textsearch"] != null)
                 {
@@ -143,6 +148,21 @@ namespace IM_PJ
                 {
                     Page = Request.QueryString["Page"].ToInt();
                 }
+                // add filter quantity
+                if (Request.QueryString["quantityfilter"] != null)
+                {
+                    QuantityFilter = Request.QueryString["quantityfilter"];
+
+                    if (QuantityFilter == "greaterthan" || QuantityFilter == "lessthan")
+                    {
+                        Quantity = Request.QueryString["quantity"].ToInt();
+                    }
+                    if (QuantityFilter == "between")
+                    {
+                        QuantityMin = Request.QueryString["quantitymin"].ToInt();
+                        QuantityMax = Request.QueryString["quantitymax"].ToInt();
+                    }
+                }
 
                 txtSearchOrder.Text = TextSearch;
                 ddlTransferStatus.SelectedValue = TransferStatus.ToString();
@@ -151,6 +171,11 @@ namespace IM_PJ
                 ddlCreatedBy.SelectedValue = CreatedBy.ToString();
                 ddlCreatedDate.SelectedValue = CreatedDate.ToString();
                 ddlTransferDoneAt.SelectedValue = TransferDoneAt.ToString();
+                // add filter quantity
+                ddlQuantityFilter.SelectedValue = QuantityFilter.ToString();
+                txtQuantity.Text = Quantity.ToString();
+                txtQuantityMin.Text = QuantityMin.ToString();
+                txtQuantityMax.Text = QuantityMax.ToString();
 
                 int totalPage = 0;
                 int totalItems = 0;
@@ -167,7 +192,7 @@ namespace IM_PJ
                     new List<int>(), // ShippingType
                     String.Empty, // Discount
                     String.Empty, // OtherFee
-                    "", // Quantity
+                    QuantityFilter, // Quantity
                     CreatedBy,
                     CreatedDate,
                     TransferDoneAt,
@@ -175,7 +200,10 @@ namespace IM_PJ
                     0,
                     "",
                     0,
-                    Page
+                    Page,
+                    Quantity:Quantity,
+                    QuantityMin:QuantityMin,
+                    QuantityMax:QuantityMax
                 );
 
                 if (BankReceive != 0)
@@ -554,6 +582,21 @@ namespace IM_PJ
             {
                 request += "&bankreceive=" + ddlBankReceive.SelectedValue;
             }
+
+            // add filter quantity
+            if (ddlQuantityFilter.SelectedValue != "")
+            {
+                if (ddlQuantityFilter.SelectedValue == "greaterthan" || ddlQuantityFilter.SelectedValue == "lessthan")
+                {
+                    request += "&quantityfilter=" + ddlQuantityFilter.SelectedValue + "&quantity=" + txtQuantity.Text;
+                }
+
+                if (ddlQuantityFilter.SelectedValue == "between")
+                {
+                    request += "&quantityfilter=" + ddlQuantityFilter.SelectedValue + "&quantitymin=" + txtQuantityMin.Text + "&quantitymax=" + txtQuantityMax.Text;
+                }
+            }
+
             Response.Redirect(request);
         }
 

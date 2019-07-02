@@ -217,6 +217,27 @@
                                         <asp:ListItem Value="2" Text="Đợt 2"></asp:ListItem>
                                     </asp:DropDownList>
                                 </div>
+                                <div class="col-md-2 col-xs-6">
+                                    <asp:DropDownList ID="ddlQuantityFilter" runat="server" CssClass="form-control" onchange="changeQuantityFilter($(this))">
+                                        <asp:ListItem Value="" Text="Số lượng"></asp:ListItem>
+                                        <asp:ListItem Value="greaterthan" Text="Lớn hơn"></asp:ListItem>
+                                        <asp:ListItem Value="lessthan" Text="Nhỏ hơn"></asp:ListItem>
+                                        <asp:ListItem Value="between" Text="Trong khoảng"></asp:ListItem>
+                                    </asp:DropDownList>
+                                </div>
+                                <div class="col-md-2 col-xs-6 greaterthan lessthan">
+                                    <asp:TextBox ID="txtQuantity" runat="server" CssClass="form-control" placeholder="Số lượng" autocomplete="off"></asp:TextBox>
+                                </div>
+                                <div class="col-md-2 col-xs-6 between hide">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <asp:TextBox ID="txtQuantityMin" runat="server" CssClass="form-control" placeholder="Min" autocomplete="off"></asp:TextBox>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <asp:TextBox ID="txtQuantityMax" runat="server" CssClass="form-control" placeholder="Max" autocomplete="off"></asp:TextBox>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

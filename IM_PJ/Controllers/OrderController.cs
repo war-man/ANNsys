@@ -424,7 +424,10 @@ namespace IM_PJ.Controllers
                 string DeliveryStartAt,
                 int DeliveryTimes = 0,
                 int CurrentPage = 1,
-                int PageSize = 30
+                int PageSize = 30,
+                int Quantity = 0,
+                int QuantityMin = 0,
+                int QuantityMax = 0
             )
         {
             using (var con = new inventorymanagementEntities())
@@ -551,15 +554,11 @@ namespace IM_PJ.Controllers
                     }
                 }
 
-                
-
                 var orderFilter = orders.Select(x => new {
                     ID = x.ID,
                     CustomerID = x.CustomerID,
                     RefundsGoodsID = x.RefundsGoodsID
                 });
-
-                
 
                 // Filter orderid or customername or customerphone or nick or shipcode
                 if (!String.IsNullOrEmpty(TextSearch))
@@ -695,7 +694,6 @@ namespace IM_PJ.Controllers
                         });
                 }
 
-
                 // Filter Transfer Status or DoneAt
                 if (TransferStatus > 0 || !String.IsNullOrEmpty(TransferDoneAt))
                 {
@@ -810,6 +808,117 @@ namespace IM_PJ.Controllers
                         });
                 }
 
+                // Get info quantiy
+                var orderQuantity = orderFilter
+                    .Join(
+                        con.tbl_OrderDetail,
+                        h => h.ID,
+                        od => od.OrderID.Value,
+                        (h, od) => new
+                        {
+                            OrderID = h.ID,
+                            Quantity = od.Quantity.HasValue ? od.Quantity.Value : 0
+                        }
+                    )
+                    .GroupBy(x => x.OrderID)
+                    .Select(g => new
+                    {
+                        OrderID = g.Key,
+                        Quantity = g.Sum(x => x.Quantity)
+                    });
+
+                // Filter quantity
+                if (!String.IsNullOrEmpty(QuantityFilter))
+                {
+                    if (QuantityFilter.Equals("greaterthan"))
+                    {
+                        orderFilter = orderFilter
+                            .Join(
+                                orderQuantity.Where(p => p.Quantity >= Quantity),
+                                o => o.ID,
+                                b => b.OrderID,
+                                (o, b) => o
+                            );
+                    }
+                    else if (QuantityFilter.Equals("lessthan"))
+                    {
+                        orderFilter = orderFilter
+                            .Join(
+                                orderQuantity.Where(p => p.Quantity <= Quantity),
+                                o => o.ID,
+                                b => b.OrderID,
+                                (o, b) => o
+                            );
+                    }
+                    else if (QuantityFilter.Equals("between"))
+                    {
+                        orderFilter = orderFilter
+                            .Join(
+                                orderQuantity.Where(p => p.Quantity >= QuantityMin && p.Quantity <= QuantityMax),
+                                o => o.ID,
+                                b => b.OrderID,
+                                (o, b) => o
+                            );
+                    }
+                }
+
+                // Get fee of product
+                var orderFee = orderFilter
+                    .Join(
+                        con.Fees,
+                        h => h.ID,
+                        f => f.OrderID,
+                        (h, f) => new
+                        {
+                            OrderID = h.ID,
+                            FeeTypeID = f.FeeTypeID,
+                            FeePrice = f.FeePrice
+                        }
+                    )
+                    .Join(
+                        con.FeeTypes,
+                        d => d.FeeTypeID,
+                        t => t.ID,
+                        (d, t) => new
+                        {
+                            OrderID = d.OrderID,
+                            FeeTypeName = t.Name,
+                            FeePrice = d.FeePrice
+                        }
+                    )
+                    .GroupBy(x => x.OrderID)
+                    .Select(g => new
+                    {
+                        OrderID = g.Key,
+                        OtherFeeName = g.Count() > 1 ? "Nhiều phí khác" : g.Max(x => x.FeeTypeName),
+                        OtherFeeValue = g.Sum(x => x.FeePrice)
+                    });
+
+                // Filter fee of product
+                if (!String.IsNullOrEmpty(OtherFee))
+                {
+                    if (OtherFee.Equals("yes"))
+                    {
+                        orderFilter = orderFilter
+                            .Join(
+                                orderFee.Where(x => x.OtherFeeValue != 0),
+                                o => o.ID,
+                                b => b.OrderID,
+                                (o, b) => o
+                            );
+                    }
+                    else
+                    {
+                        orderFilter = orderFilter
+                            .Join(
+                                orderFee.Where(x => x.OtherFeeValue == 0),
+                                o => o.ID,
+                                b => b.OrderID,
+                                (o, b) => o
+                            );
+                    }
+                }
+
                 totalItems = orderFilter.Count();
                 totalPage = (int)Math.Ceiling(totalItems / (double)PageSize);
 
@@ -835,23 +944,7 @@ namespace IM_PJ.Controllers
                     .ToList();
 
                 // Get info quantiy
-                var body = orderFilter
-                    .Join(
-                        con.tbl_OrderDetail,
-                        h => h.ID,
-                        od => od.OrderID.Value,
-                        (h, od) => new
-                        {
-                            OrderID = h.ID,
-                            Quantity = od.Quantity.HasValue ? od.Quantity.Value : 0
-                        }
-                    )
-                    .GroupBy(x => x.OrderID)
-                    .Select(g => new
-                    {
-                        OrderID = g.Key,
-                        Quantity = g.Sum(x => x.Quantity)
-                    })
+                var body = orderQuantity
                     .OrderByDescending(o => o.OrderID)
                     .ToList();
 
@@ -886,36 +979,7 @@ namespace IM_PJ.Controllers
                     .ToList();
 
                 // Get info fee
-                var fee = orderFilter
-                    .Join(
-                        con.Fees,
-                        h => h.ID,
-                        f => f.OrderID,
-                        (h, f) => new
-                        {
-                            OrderID = h.ID,
-                            FeeTypeID = f.FeeTypeID,
-                            FeePrice = f.FeePrice
-                        }
-                    )
-                    .Join(
-                        con.FeeTypes,
-                        d => d.FeeTypeID,
-                        t => t.ID,
-                        (d, t) => new
-                        {
-                            OrderID = d.OrderID,
-                            FeeTypeName = t.Name,
-                            FeePrice = d.FeePrice
-                        }
-                    )
-                    .GroupBy(x => x.OrderID)
-                    .Select(g => new
-                    {
-                        OrderID = g.Key,
-                        OtherFeeName = g.Count() > 1 ? "Nhiều phí khác" : g.Max(x => x.FeeTypeName),
-                        OtherFeeValue = g.Sum(x => x.FeePrice)
-                    })
+                var fee = orderFee
                     .OrderByDescending(o => o.OrderID)
                     .ToList();
 
@@ -1295,23 +1359,10 @@ namespace IM_PJ.Controllers
                             return result;
                         }
                     )
-                    .Where(x => 1 == 1);
+                    .OrderByDescending(o => o.ID)
+                    .ToList();
 
-                if (!String.IsNullOrEmpty(OtherFee))
-                {
-                    if (OtherFee.Equals("yes"))
-                    {
-                        data = data.Where(x => x.OtherFeeValue != 0);
-                    }
-                    else
-                    {
-                        data = data.Where(x => x.OtherFeeValue == 0);
-                    }
-                }
-
-                var list = data.OrderByDescending(o => o.ID).ToList();
-
-                return list;
+                return data;
             }
         }
 
