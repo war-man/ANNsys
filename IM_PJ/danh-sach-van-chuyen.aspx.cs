@@ -132,6 +132,11 @@ namespace IM_PJ
                 var isDeliverySession = false;
                 int DeliveryTimes = 0;
                 int Page = 1;
+                // add filter quantity
+                string QuantityFilter = "";
+                int Quantity = 0;
+                int QuantityMin = 0;
+                int QuantityMax = 0;
 
                 if (Request.QueryString["textsearch"] != null)
                     TextSearch = Request.QueryString["textsearch"].Trim();
@@ -162,6 +167,21 @@ namespace IM_PJ
                     DeliveryTimes = Request.QueryString["deliverytimes"].ToInt(0);
                 if (Request.QueryString["Page"] != null)
                     Page = Request.QueryString["Page"].ToInt();
+                // add filter quantity
+                if (Request.QueryString["quantityfilter"] != null)
+                {
+                    QuantityFilter = Request.QueryString["quantityfilter"];
+
+                    if (QuantityFilter == "greaterthan" || QuantityFilter == "lessthan")
+                    {
+                        Quantity = Request.QueryString["quantity"].ToInt();
+                    }
+                    if (QuantityFilter == "between")
+                    {
+                        QuantityMin = Request.QueryString["quantitymin"].ToInt();
+                        QuantityMax = Request.QueryString["quantitymax"].ToInt();
+                    }
+                }
 
                 txtSearchOrder.Text = TextSearch;
                 ddlTransportCompany.SelectedValue = TransportCompany.ToString();
@@ -174,6 +194,11 @@ namespace IM_PJ
                 ddlCreatedBy.SelectedValue = CreatedBy.ToString();
                 ddlDeliveryStartAt.SelectedValue = DeliveryStartAt.ToString();
                 ddlDeliveryTimes.SelectedValue = DeliveryTimes.ToString();
+                // add filter quantity
+                ddlQuantityFilter.SelectedValue = QuantityFilter.ToString();
+                txtQuantity.Text = Quantity.ToString();
+                txtQuantityMin.Text = QuantityMin.ToString();
+                txtQuantityMax.Text = QuantityMax.ToString();
 
                 int totalPage = 0;
                 int totalItems = 0;
@@ -190,7 +215,7 @@ namespace IM_PJ
                     ShippingType, // ShippingType All
                     String.Empty, // Discount All
                     String.Empty, // OtherFee
-                    "", // Quantity
+                    QuantityFilter, // Quantity
                     CreatedBy, // CreatedBy
                     CreatedDate, // CreatedDate
                     String.Empty, // TransferDoneAt
@@ -198,7 +223,10 @@ namespace IM_PJ
                     ShipperID,
                     DeliveryStartAt, // DeliveryStartAt
                     DeliveryTimes, // DeliveryTimes
-                    Page
+                    Page,
+                    Quantity: Quantity,
+                    QuantityMin: QuantityMin,
+                    QuantityMax: QuantityMax
                 );
                     
                 if (DeliveryStatus != 0)
@@ -603,6 +631,20 @@ namespace IM_PJ
 
             if (ddlDeliveryTimes.SelectedValue != "")
                 request += "&deliverytimes=" + ddlDeliveryTimes.SelectedValue;
+
+            // add filter quantity
+            if (ddlQuantityFilter.SelectedValue != "")
+            {
+                if (ddlQuantityFilter.SelectedValue == "greaterthan" || ddlQuantityFilter.SelectedValue == "lessthan")
+                {
+                    request += "&quantityfilter=" + ddlQuantityFilter.SelectedValue + "&quantity=" + txtQuantity.Text;
+                }
+
+                if (ddlQuantityFilter.SelectedValue == "between")
+                {
+                    request += "&quantityfilter=" + ddlQuantityFilter.SelectedValue + "&quantitymin=" + txtQuantityMin.Text + "&quantitymax=" + txtQuantityMax.Text;
+                }
+            }
 
             Response.Redirect(request);
         }

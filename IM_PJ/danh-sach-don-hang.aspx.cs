@@ -244,24 +244,11 @@ namespace IM_PJ
                     "", 
                     0, 
                     Page,
-                    30
+                    30,
+                    Quantity,
+                    QuantityMin,
+                    QuantityMax
                 );
-
-                //if (QuantityFilter != "")
-                //{
-                //    if (QuantityFilter == "greaterthan")
-                //    {
-                //        rs = rs.Where(p => p.Quantity >= Quantity).ToList();
-                //    }
-                //    else if (QuantityFilter == "lessthan")
-                //    {
-                //        rs = rs.Where(p => p.Quantity <= Quantity).ToList();
-                //    }
-                //    else if (QuantityFilter == "between")
-                //    {
-                //        rs = rs.Where(p => p.Quantity >= QuantityMin && p.Quantity <= QuantityMax).ToList();
-                //    }
-                //}
 
                 pagingall(rs, Page, totalPage);
 
