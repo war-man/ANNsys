@@ -78,47 +78,7 @@ namespace IM_PJ
             ddlCreatedDate.SelectedValue = CreatedDate.ToString();
 
             List<PostSQL> a = new List<PostSQL>();
-            a = PostController.GetAllSql(CategoryID, TextSearch);
-            a = a.Where(p => p.Status == 1).ToList();
-
-            if (CreatedDate != "")
-            {
-                DateTime fromdate = DateTime.Today;
-                DateTime todate = DateTime.Now;
-                switch (CreatedDate)
-                {
-                    case "today":
-                        fromdate = DateTime.Today;
-                        todate = DateTime.Now;
-                        break;
-                    case "yesterday":
-                        fromdate = fromdate.AddDays(-1);
-                        todate = DateTime.Today;
-                        break;
-                    case "beforeyesterday":
-                        fromdate = DateTime.Today.AddDays(-2);
-                        todate = DateTime.Today.AddDays(-1);
-                        break;
-                    case "week":
-                        int days = DateTime.Today.DayOfWeek == DayOfWeek.Sunday ? 7 : (int)DateTime.Today.DayOfWeek;
-                        fromdate = fromdate.AddDays(-days + 1);
-                        todate = DateTime.Now;
-                        break;
-                    case "month":
-                        fromdate = new DateTime(fromdate.Year, fromdate.Month, 1);
-                        todate = DateTime.Now;
-                        break;
-                    case "7days":
-                        fromdate = DateTime.Today.AddDays(-6);
-                        todate = DateTime.Now;
-                        break;
-                    case "30days":
-                        fromdate = DateTime.Today.AddDays(-29);
-                        todate = DateTime.Now;
-                        break;
-                }
-                a = a.Where(p => p.CreatedDate >= fromdate && p.CreatedDate <= todate ).ToList();
-            }
+            a = PostController.GetAllSql(CategoryID, TextSearch, "1", "false", CreatedDate);
 
             pagingall(a);
         }

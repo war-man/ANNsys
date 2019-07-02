@@ -83,48 +83,11 @@ namespace IM_PJ
             ddlStockStatus.SelectedValue = StockStatus.ToString();
 
             List<ProductSQL> a = new List<ProductSQL>();
-            a = ProductController.GetAllSql(CategoryID, TextSearch);
+            a = ProductController.GetAllSql(CategoryID, TextSearch, CreatedDate);
+
             if (StockStatus != 0)
             {
                 a = a.Where(p => p.StockStatus == StockStatus).ToList();
-            }
-            if (CreatedDate != "")
-            {
-                DateTime fromdate = DateTime.Today;
-                DateTime todate = DateTime.Now;
-                switch (CreatedDate)
-                {
-                    case "today":
-                        fromdate = DateTime.Today;
-                        todate = DateTime.Now;
-                        break;
-                    case "yesterday":
-                        fromdate = fromdate.AddDays(-1);
-                        todate = DateTime.Today;
-                        break;
-                    case "beforeyesterday":
-                        fromdate = DateTime.Today.AddDays(-2);
-                        todate = DateTime.Today.AddDays(-1);
-                        break;
-                    case "week":
-                        int days = DateTime.Today.DayOfWeek == DayOfWeek.Sunday ? 7 : (int)DateTime.Today.DayOfWeek;
-                        fromdate = fromdate.AddDays(-days + 1);
-                        todate = DateTime.Now;
-                        break;
-                    case "month":
-                        fromdate = new DateTime(fromdate.Year, fromdate.Month, 1);
-                        todate = DateTime.Now;
-                        break;
-                    case "7days":
-                        fromdate = DateTime.Today.AddDays(-6);
-                        todate = DateTime.Now;
-                        break;
-                    case "30days":
-                        fromdate = DateTime.Today.AddDays(-29);
-                        todate = DateTime.Now;
-                        break;
-                }
-                a = a.Where(p => p.CreatedDate >= fromdate && p.CreatedDate <= todate ).ToList();
             }
 
             pagingall(a);

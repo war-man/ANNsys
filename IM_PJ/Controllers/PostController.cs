@@ -140,7 +140,7 @@ namespace IM_PJ.Controllers
                 return ags;
             }
         }
-        public static List<PostSQL> GetAllSql(int categoryID, string textsearch)
+        public static List<PostSQL> GetAllSql(int categoryID, string textsearch, string PostStatus, string WebPublish, string CreatedDate)
         {
             var list = new List<PostSQL>();
             StringBuilder sql = new StringBuilder();
@@ -192,6 +192,60 @@ namespace IM_PJ.Controllers
             if (!string.IsNullOrEmpty(textsearch))
             {
                 sql.AppendLine("    AND (POS.Title like N'%" + textsearch + "%')");
+            }
+
+            if (!string.IsNullOrEmpty(PostStatus))
+            {
+                sql.AppendLine("    AND (POS.Status = " + PostStatus.ToInt() + ")");
+            }
+
+            if (!string.IsNullOrEmpty(WebPublish))
+            {
+                sql.AppendLine("    AND (POS.WebPublish = '" + WebPublish + "')");
+            }
+
+            if (!string.IsNullOrEmpty(CreatedDate))
+            {
+                DateTime fromdate = DateTime.Today;
+                DateTime todate = DateTime.Now;
+                switch (CreatedDate)
+                {
+                    case "today":
+                        fromdate = DateTime.Today;
+                        todate = DateTime.Now;
+                        break;
+                    case "yesterday":
+                        fromdate = fromdate.AddDays(-1);
+                        todate = DateTime.Today;
+                        break;
+                    case "beforeyesterday":
+                        fromdate = DateTime.Today.AddDays(-2);
+                        todate = DateTime.Today.AddDays(-1);
+                        break;
+                    case "week":
+                        int days = DateTime.Today.DayOfWeek == DayOfWeek.Sunday ? 7 : (int)DateTime.Today.DayOfWeek;
+                        fromdate = fromdate.AddDays(-days + 1);
+                        todate = DateTime.Now;
+                        break;
+                    case "thismonth":
+                        fromdate = new DateTime(fromdate.Year, fromdate.Month, 1);
+                        todate = DateTime.Now;
+                        break;
+                    case "lastmonth":
+                        var thismonth = new DateTime(fromdate.Year, fromdate.Month, 1);
+                        fromdate = thismonth.AddMonths(-1);
+                        todate = thismonth;
+                        break;
+                    case "7days":
+                        fromdate = DateTime.Today.AddDays(-6);
+                        todate = DateTime.Now;
+                        break;
+                    case "30days":
+                        fromdate = DateTime.Today.AddDays(-29);
+                        todate = DateTime.Now;
+                        break;
+                }
+                sql.AppendLine(String.Format("	AND	(CONVERT(datetime, POS.CreatedDate, 103) BETWEEN CONVERT(datetime, '{0}', 103) AND CONVERT(datetime, '{1}', 103))", fromdate.ToString(), todate.ToString()));
             }
 
             if (categoryID > 0)

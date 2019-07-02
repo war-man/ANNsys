@@ -895,7 +895,7 @@ namespace IM_PJ.Controllers
             return list.OrderByDescending(x => x.ID).Take(limit).ToList();
         }
 
-        public static List<ProductSQL> GetAllSql(int categoryID, string textsearch, string strColor = "", string strSize = "")
+        public static List<ProductSQL> GetAllSql(int categoryID, string textsearch, string CreatedDate = "", string ShowHomePage = "", string WebPublish = "", string strColor = "", string strSize = "")
         {
             var list = new List<ProductSQL>();
             StringBuilder sql = new StringBuilder();
@@ -1000,7 +1000,7 @@ namespace IM_PJ.Controllers
             sql.AppendLine("            PRD.*");
             sql.AppendLine("    INTO #Product");
             sql.AppendLine("    FROM");
-            sql.AppendLine("            tbl_product AS PRD");
+            sql.AppendLine("            tbl_Product AS PRD");
             sql.AppendLine("    WHERE");
             sql.AppendLine("            1 = 1");
 
@@ -1011,6 +1011,64 @@ namespace IM_PJ.Controllers
                 sql.AppendLine(String.Format("        OR PRD.ProductTitle like N'%{0}%'", textsearch));
                 sql.AppendLine(String.Format("        OR PRD.UnSignedTitle like N'%{0}%'", textsearch));
                 sql.AppendLine("    )");
+            }
+
+            if (!string.IsNullOrEmpty(ShowHomePage))
+            {
+                sql.AppendLine("    AND (");
+                sql.AppendLine(String.Format("        PRD.ShowHomePage = {0}", ShowHomePage));
+                sql.AppendLine("    )");
+            }
+
+            if (!string.IsNullOrEmpty(WebPublish))
+            {
+                sql.AppendLine("    AND (");
+                sql.AppendLine(String.Format("        PRD.WebPublish = {0}", WebPublish));
+                sql.AppendLine("    )");
+            }
+
+            if (!string.IsNullOrEmpty(CreatedDate))
+            {
+                DateTime fromdate = DateTime.Today;
+                DateTime todate = DateTime.Now;
+                switch (CreatedDate)
+                {
+                    case "today":
+                        fromdate = DateTime.Today;
+                        todate = DateTime.Now;
+                        break;
+                    case "yesterday":
+                        fromdate = fromdate.AddDays(-1);
+                        todate = DateTime.Today;
+                        break;
+                    case "beforeyesterday":
+                        fromdate = DateTime.Today.AddDays(-2);
+                        todate = DateTime.Today.AddDays(-1);
+                        break;
+                    case "week":
+                        int days = DateTime.Today.DayOfWeek == DayOfWeek.Sunday ? 7 : (int)DateTime.Today.DayOfWeek;
+                        fromdate = fromdate.AddDays(-days + 1);
+                        todate = DateTime.Now;
+                        break;
+                    case "thismonth":
+                        fromdate = new DateTime(fromdate.Year, fromdate.Month, 1);
+                        todate = DateTime.Now;
+                        break;
+                    case "lastmonth":
+                        var thismonth = new DateTime(fromdate.Year, fromdate.Month, 1);
+                        fromdate = thismonth.AddMonths(-1);
+                        todate = thismonth;
+                        break;
+                    case "7days":
+                        fromdate = DateTime.Today.AddDays(-6);
+                        todate = DateTime.Now;
+                        break;
+                    case "30days":
+                        fromdate = DateTime.Today.AddDays(-29);
+                        todate = DateTime.Now;
+                        break;
+                }
+                sql.AppendLine(String.Format("	AND	(CONVERT(datetime, PRD.CreatedDate, 103) BETWEEN CONVERT(datetime, '{0}', 103) AND CONVERT(datetime, '{1}', 103))", fromdate.ToString(), todate.ToString()));
             }
 
             if (!String.IsNullOrEmpty(strColor))

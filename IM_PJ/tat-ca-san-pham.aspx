@@ -270,8 +270,8 @@
                                 <div class="col-md-2 col-xs-6">
                                     <asp:DropDownList ID="ddlWebPublish" runat="server" CssClass="form-control">
                                         <asp:ListItem Value="" Text="Trang xem hàng"></asp:ListItem>
-                                        <asp:ListItem Value="false" Text="Đang ẩn"></asp:ListItem>
-                                        <asp:ListItem Value="true" Text="Đang hiện"></asp:ListItem>
+                                        <asp:ListItem Value="0" Text="Đang ẩn"></asp:ListItem>
+                                        <asp:ListItem Value="1" Text="Đang hiện"></asp:ListItem>
                                     </asp:DropDownList>
                                 </div>
                                 <div class="col-md-2 col-xs-6">
