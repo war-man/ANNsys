@@ -120,13 +120,14 @@ namespace IM_PJ
                 string CreatedBy = "";
                 string CreatedDate = "";
                 string TransferDoneAt = "";
-                string QuantityFilter = "";
-                int Quantity = 0;
-                int QuantityMin = 0;
-                int QuantityMax = 0;
                 int TransportCompany = 0;
                 int ShipperID = 0;
                 int Page = 1;
+
+                // add filter quantity
+                string Quantity = "";
+                int QuantityFrom = 0;
+                int QuantityTo = 0;
 
                 if (Request.QueryString["textsearch"] != null)
                 {
@@ -169,20 +170,6 @@ namespace IM_PJ
                 {
                     CreatedDate = Request.QueryString["createddate"];
                 }
-                if (Request.QueryString["quantityfilter"] != null)
-                {
-                    QuantityFilter = Request.QueryString["quantityfilter"];
-
-                    if (QuantityFilter == "greaterthan" || QuantityFilter == "lessthan")
-                    {
-                        Quantity = Request.QueryString["quantity"].ToInt();
-                    }
-                    if (QuantityFilter == "between")
-                    {
-                        QuantityMin = Request.QueryString["quantitymin"].ToInt();
-                        QuantityMax = Request.QueryString["quantitymax"].ToInt();
-                    }
-                }
                 if (Request.QueryString["transportcompany"] != null)
                 {
                     TransportCompany = Request.QueryString["transportcompany"].ToInt(0);
@@ -197,6 +184,26 @@ namespace IM_PJ
                     Page = Request.QueryString["Page"].ToInt();
                 }
 
+                // add filter quantity
+                if (Request.QueryString["quantityfilter"] != null)
+                {
+                    Quantity = Request.QueryString["quantityfilter"];
+
+                    if (Quantity == "greaterthan")
+                    {
+                        QuantityFrom = Request.QueryString["quantity"].ToInt();
+                    }
+                    else if (Quantity == "lessthan")
+                    {
+                        QuantityTo = Request.QueryString["quantity"].ToInt();
+                    }
+                    else if (Quantity == "between")
+                    {
+                        QuantityFrom = Request.QueryString["quantitymin"].ToInt();
+                        QuantityTo = Request.QueryString["quantitymax"].ToInt();
+                    }
+                }
+
                 txtSearchOrder.Text = TextSearch;
                 ddlOrderType.SelectedValue = OrderType.ToString();
                 ddlExcuteStatus.SelectedValue = ExcuteStatus.Count() > 1 ? "0" : ExcuteStatus.FirstOrDefault().ToString();
@@ -207,160 +214,70 @@ namespace IM_PJ
                 ddlOtherFee.SelectedValue = OtherFee.ToString();
                 ddlCreatedBy.SelectedValue = CreatedBy.ToString();
                 ddlCreatedDate.SelectedValue = CreatedDate.ToString();
-
-                ddlQuantityFilter.SelectedValue = QuantityFilter.ToString();
-                txtQuantity.Text = Quantity.ToString();
-                txtQuantityMin.Text = QuantityMin.ToString();
-                txtQuantityMax.Text = QuantityMax.ToString();
                 ddlTransportCompany.SelectedValue = TransportCompany.ToString();
                 ddlShipperFilter.SelectedValue = ShipperID.ToString();
+                // add filter quantity
+                ddlQuantityFilter.SelectedValue = Quantity.ToString();
+                if (Quantity == "greaterthan")
+                {
+                    txtQuantity.Text = QuantityFrom.ToString();
+                    txtQuantityMin.Text = "0";
+                    txtQuantityMax.Text = "0";
+                }
+                else if (Quantity == "lessthan")
+                {
+                    txtQuantity.Text = QuantityTo.ToString();
+                    txtQuantityMin.Text = "0";
+                    txtQuantityMax.Text = "0";
+                }
+                else if (Quantity == "between")
+                {
+                    txtQuantity.Text = "0";
+                    txtQuantityMin.Text = QuantityFrom.ToString();
+                    txtQuantityMax.Text = QuantityTo.ToString();
+                }
 
                 if (acc.RoleID != 0)
                 {
                     CreatedBy = acc.Username;
                 }
 
-                int totalPage = 0;
-                int totalItems = 0;
-                List<OrderList> rs = new List<OrderList>();
-                rs = OrderController.Filter(
-                    ref totalPage, 
-                    ref totalItems, 
-                    TextSearch, 
-                    OrderType, 
-                    ExcuteStatus, 
-                    PaymentStatus, 
-                    0, 
-                    PaymentType, 
-                    ShippingType, 
-                    Discount, 
-                    OtherFee,
-                    QuantityFilter,
-                    CreatedBy, 
-                    CreatedDate, 
-                    TransferDoneAt, 
-                    TransportCompany, 
-                    ShipperID,
-                    "", 
-                    0, 
-                    Page,
-                    30,
-                    Quantity,
-                    QuantityMin,
-                    QuantityMax
-                );
-
-                pagingall(rs, Page, totalPage);
-
-                ltrNumberOfOrder.Text = totalItems.ToString();
-
-                // THỐNG KÊ ĐƠN HÀNG
-                int TotalOrders = rs.Count;
-                int Type1Orders = rs.Where(x => x.OrderType == 1).Count();
-                int Type2Orders = rs.Where(x => x.OrderType == 2).Count();
-                int TotalProducts = rs.Sum(x => x.Quantity);
-
-                int ShippingType1 = rs.Where(x => x.ShippingType == 1).Count();
-                int ShippingType2 = rs.Where(x => x.ShippingType == 2).Count();
-                int ShippingType3 = rs.Where(x => x.ShippingType == 3).Count();
-                int ShippingType4 = rs.Where(x => x.ShippingType == 4).Count();
-
-                double TotalMoney = rs.Sum(x => x.TotalPrice);
-                double TotalDiscount = rs.Sum(x => x.TotalDiscount);
-                double FeeShipping = rs.Sum(x => x.FeeShipping);
-                double OtherFeeValue = rs.Sum(x => x.OtherFeeValue);
-
-                StringBuilder htmlReport = new StringBuilder();
-
-                htmlReport.AppendLine(String.Format("<div class='row pad'>"));
-                htmlReport.AppendLine(String.Format("    <div class='col-md-3'>"));
-                htmlReport.AppendLine(String.Format("        <label class='left pad10'>Tổng số đơn hàng: </label>"));
-                htmlReport.AppendLine(String.Format("        <div class='ordertype'>"));
-                htmlReport.AppendLine(String.Format("            {0}", TotalOrders.ToString()));
-                htmlReport.AppendLine(String.Format("        </div>"));
-                htmlReport.AppendLine(String.Format("    </div>"));
-                htmlReport.AppendLine(String.Format("    <div class='col-md-3'>"));
-                htmlReport.AppendLine(String.Format("        <label class='left pad10'>Số đơn hàng sỉ: </label>"));
-                htmlReport.AppendLine(String.Format("        <div class='ordercreateby'>"));
-                htmlReport.AppendLine(String.Format("            {0}", Type2Orders.ToString()));
-                htmlReport.AppendLine(String.Format("        </div>"));
-                htmlReport.AppendLine(String.Format("    </div>"));
-                htmlReport.AppendLine(String.Format("    <div class='col-md-3'>"));
-                htmlReport.AppendLine(String.Format("        <label class='left pad10'>Số đơn hàng lẻ: </label>"));
-                htmlReport.AppendLine(String.Format("        <div class='ordercreatedate'>"));
-                htmlReport.AppendLine(String.Format("            {0}", Type1Orders.ToString()));
-                htmlReport.AppendLine(String.Format("        </div>"));
-                htmlReport.AppendLine(String.Format("    </div>"));
-                htmlReport.AppendLine(String.Format("    <div class='col-md-3'> "));
-                htmlReport.AppendLine(String.Format("        <label class='left pad10'>Tổng sản phẩm: </label>"));
-                htmlReport.AppendLine(String.Format("        <div class='ordernote'>"));
-                htmlReport.AppendLine(String.Format("            {0}", TotalProducts.ToString()));
-                htmlReport.AppendLine(String.Format("        </div>"));
-                htmlReport.AppendLine(String.Format("    </div>"));
-                htmlReport.AppendLine(String.Format("</div>"));
-                if (acc.RoleID == 0)
+                // Create order fileter
+                var filter = new OrderFilterModel()
                 {
-                    htmlReport.AppendLine(String.Format("<div class='row pad'>"));
-                    htmlReport.AppendLine(String.Format("    <div class='col-md-3'>"));
-                    htmlReport.AppendLine(String.Format("        <label class='left pad10'>Tổng số tiền: </label>"));
-                    htmlReport.AppendLine(String.Format("        <div class='orderquantity'>"));
-                    htmlReport.AppendLine(String.Format("            {0}", string.Format("{0:N0}", Convert.ToDouble(TotalMoney)).ToString()));
-                    htmlReport.AppendLine(String.Format("        </div>"));
-                    htmlReport.AppendLine(String.Format("    </div>"));
-                    htmlReport.AppendLine(String.Format("    <div class='col-md-3'>"));
-                    htmlReport.AppendLine(String.Format("        <label class='left pad10'>Tổng chiết khấu: </label>"));
-                    htmlReport.AppendLine(String.Format("        <div class='ordertotalprice'>"));
-                    htmlReport.AppendLine(String.Format("            {0}", string.Format("{0:N0}", Convert.ToDouble(TotalDiscount)).ToString()));
-                    htmlReport.AppendLine(String.Format("        </div>"));
-                    htmlReport.AppendLine(String.Format("    </div>"));
-                    htmlReport.AppendLine(String.Format("    <div class='col-md-3'>"));
-                    htmlReport.AppendLine(String.Format("        <label class='left pad10'>Tổng phí vận chuyển: </label>"));
-                    htmlReport.AppendLine(String.Format("        <div class='ordertotalprice'>"));
-                    htmlReport.AppendLine(String.Format("            {0}", string.Format("{0:N0}", Convert.ToDouble(FeeShipping)).ToString()));
-                    htmlReport.AppendLine(String.Format("        </div>"));
-                    htmlReport.AppendLine(String.Format("    </div>"));
-                    htmlReport.AppendLine(String.Format("    <div class='col-md-3'>"));
-                    htmlReport.AppendLine(String.Format("        <label class='left pad10'>Tổng phí khác: </label>"));
-                    htmlReport.AppendLine(String.Format("        <div class='ordertotalprice'>"));
-                    htmlReport.AppendLine(String.Format("            {0}", string.Format("{0:N0}", Convert.ToDouble(OtherFeeValue)).ToString()));
-                    htmlReport.AppendLine(String.Format("        </div>"));
-                    htmlReport.AppendLine(String.Format("    </div>"));
-                    htmlReport.AppendLine(String.Format("</div>"));
-                }
-                htmlReport.AppendLine(String.Format("<div class='row pad'>"));
-                htmlReport.AppendLine(String.Format("    <div class='col-md-3'>"));
-                htmlReport.AppendLine(String.Format("        <label class='left pad10'>Số đơn lấy trực tiếp: </label>"));
-                htmlReport.AppendLine(String.Format("        <div class='orderquantity'>"));
-                htmlReport.AppendLine(String.Format("            {0}", ShippingType1.ToString()));
-                htmlReport.AppendLine(String.Format("        </div>"));
-                htmlReport.AppendLine(String.Format("    </div>"));
-                htmlReport.AppendLine(String.Format("    <div class='col-md-3'>"));
-                htmlReport.AppendLine(String.Format("        <label class='left pad10'>Số đơn chuyển bưu điện: </label>"));
-                htmlReport.AppendLine(String.Format("        <div class='ordertotalprice'>"));
-                htmlReport.AppendLine(String.Format("            {0}", ShippingType2.ToString()));
-                htmlReport.AppendLine(String.Format("        </div>"));
-                htmlReport.AppendLine(String.Format("    </div>"));
-                htmlReport.AppendLine(String.Format("    <div class='col-md-3'>"));
-                htmlReport.AppendLine(String.Format("        <label class='left pad10'>Số đơn gửi dịch vụ: </label>"));
-                htmlReport.AppendLine(String.Format("        <div class='orderstatus'>"));
-                htmlReport.AppendLine(String.Format("            {0}", ShippingType3.ToString()));
-                htmlReport.AppendLine(String.Format("        </div>"));
-                htmlReport.AppendLine(String.Format("    </div>"));
-                htmlReport.AppendLine(String.Format("    <div class='col-md-3'> "));
-                htmlReport.AppendLine(String.Format("        <label class='left pad10'>Số đơn chuyển xe: </label>"));
-                htmlReport.AppendLine(String.Format("        <div class='ordernote'>"));
-                htmlReport.AppendLine(String.Format("            {0}", ShippingType4.ToString()));
-                htmlReport.AppendLine(String.Format("        </div>"));
-                htmlReport.AppendLine(String.Format("    </div>"));
-                htmlReport.AppendLine(String.Format("</div>"));
+                    search = TextSearch,
+                    orderType = OrderType,
+                    excuteStatus = ExcuteStatus,
+                    paymentStatus = PaymentStatus,
+                    paymentType = PaymentType,
+                    shippingType = ShippingType,
+                    discount = Discount,
+                    otherFee = OtherFee,
+                    quantity = Quantity,
+                    quantityFrom = QuantityFrom,
+                    quantityTo = QuantityTo,
+                    orderCreatedBy = CreatedBy,
+                    orderDate = CreatedDate,
+                    transferDone = TransferDoneAt,
+                    transportCompany = TransportCompany,
+                    shipper = ShipperID,
+                };
+                // Create pagination
+                var page = new PaginationMetadataModel()
+                {
+                    currentPage = Page
+                };
+                List<OrderList> rs = new List<OrderList>();
+                rs = OrderController.Filter(filter, ref page);
 
-                ltrReport.Text = htmlReport.ToString();
-                
+                pagingall(rs, page);
+
+                ltrNumberOfOrder.Text = page.totalCount.ToString();
             }
         }
 
         #region Paging
-        public void pagingall(List<OrderList> acs, int page, int totalPage)
+        public void pagingall(List<OrderList> acs, PaginationMetadataModel page)
         {
             string username = Request.Cookies["userLoginSystem"].Value;
             var acc = AccountController.GetByUsername(username);
@@ -390,8 +307,8 @@ namespace IM_PJ
             html.Append("<tbody>");
             if (acs.Count > 0)
             {
-                PageCount = totalPage;
-                Int32 Page = page;
+                PageCount = page.totalPages;
+                Int32 Page = page.currentPage;
                 
                 foreach(var item in acs)
                 {

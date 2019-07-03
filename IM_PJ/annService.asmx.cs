@@ -124,7 +124,11 @@ namespace IM_PJ
             var rs = new ResponseClass();
             if (Login(username, password))
             {
-                var Product = ProductController.GetAllSql(0, SKU);
+                // Create order fileter
+                var filter = new ProductFilterModel() { search = SKU};
+                // Create pagination
+                var page = new PaginationMetadataModel();
+                var Product = ProductController.GetAllSql(filter, ref page);
 
                 if (Product.Count > 0)
                 {

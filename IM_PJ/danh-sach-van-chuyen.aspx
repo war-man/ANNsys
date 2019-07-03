@@ -218,7 +218,7 @@
                                     </asp:DropDownList>
                                 </div>
                                 <div class="col-md-2 col-xs-6">
-                                    <asp:DropDownList ID="ddlQuantityFilter" runat="server" CssClass="form-control" onchange="changeQuantityFilter($(this))">
+                                    <asp:DropDownList ID="ddlQuantityFilter" runat="server" CssClass="form-control">
                                         <asp:ListItem Value="" Text="Số lượng"></asp:ListItem>
                                         <asp:ListItem Value="greaterthan" Text="Lớn hơn"></asp:ListItem>
                                         <asp:ListItem Value="lessthan" Text="Nhỏ hơn"></asp:ListItem>
@@ -728,7 +728,35 @@
                         });
                     }
                 });
+
+                // Hidden input min, max of quantity
+                var url_param = url_query('quantityfilter');
+                if (url_param) {
+                    if (url_param == "greaterthan" || url_param == "lessthan") {
+                        $(".greaterthan").removeClass("hide");
+                        $(".between").addClass("hide");
+                    }
+                    else if (url_param == "between") {
+                        $(".between").removeClass("hide");
+                        $(".greaterthan").addClass("hide");
+                    }
+                }
             });
+
+            // Handle change quantity filter
+                $("#<%=ddlQuantityFilter.ClientID%>").change(e => {
+                    let value = e.currentTarget.value;
+                    if (value == "greaterthan" || value == "lessthan") {
+                        $(".greaterthan").removeClass("hide");
+                        $(".between").addClass("hide");
+                        $("#<%=txtQuantity.ClientID%>").focus().select();
+                    }
+                    else if (value == "between") {
+                        $(".between").removeClass("hide");
+                        $(".greaterthan").addClass("hide");
+                        $("#<%=txtQuantityMin.ClientID%>").focus().select();
+                    }
+                });
 
             $("#<%=ddlDeliveryStatusModal.ClientID%>").on('change', function() {
                 if (this.value == "1") {
