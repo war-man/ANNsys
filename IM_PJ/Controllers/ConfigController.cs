@@ -10,8 +10,21 @@ namespace IM_PJ.Controllers
     public class ConfigController
     {
         #region CRUD
-        public static string Update(int ID, double NumOfDateToChangeProduct, double NumOfProductCanChange, double FeeChangeProduct, double FeeDiscountPerProduct,
-            string ChangeGoodsRule, string RetailReturnRule, DateTime ModifiedDate, string ModifiedBy, string CSSPrintBarcode, int HideProduct)
+        public static string Update(
+            int ID, 
+            double NumOfDateToChangeProduct, 
+            double NumOfProductCanChange, 
+            double FeeChangeProduct, 
+            double FeeDiscountPerProduct,
+            string ChangeGoodsRule, 
+            string RetailReturnRule, 
+            DateTime ModifiedDate, 
+            string ModifiedBy, 
+            string CSSPrintBarcode, 
+            int HideProduct, 
+            int ViewAllOrders, 
+            int ViewAllReports
+            )
         {
             using (var dbe = new inventorymanagementEntities())
             {
@@ -28,6 +41,9 @@ namespace IM_PJ.Controllers
                     ui.ModifiedDate = ModifiedDate;
                     ui.CSSPrintBarcode = CSSPrintBarcode;
                     ui.HideProduct = HideProduct;
+                    ui.ViewAllOrders = ViewAllOrders;
+                    ui.ViewAllReports = ViewAllReports;
+
                     int kq = dbe.SaveChanges();
                     return kq.ToString();
                 }

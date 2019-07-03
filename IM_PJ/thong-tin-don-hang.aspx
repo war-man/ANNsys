@@ -5,6 +5,15 @@
     <script src="/App_Themes/Ann/js/search-customer.js?v=23052019"></script>
     <script src="/App_Themes/Ann/js/search-product.js?v=15052021"></script>
     <style>
+        .panel-post {
+            margin-bottom: 20px;
+        }
+        #old-order-note ul {
+            margin-left: 15px;
+        }
+        #old-order-note a {
+            color: #ff8400;
+        }
         .search-product-content {
             background: #fff;
         }
@@ -571,6 +580,7 @@
                         </div>
                     </div>
                 </div>
+                <asp:Literal ID="ltrOldOrderNote" runat="server" EnableViewState="false"></asp:Literal>
             </div>
             <div id="buttonbar">
                 <div class="row">
@@ -587,6 +597,7 @@
                     </div>
                 </div>
             </div>
+
             <asp:HiddenField ID="notAcceptChangeUser" Value="1" runat="server" />
             <asp:HiddenField ID="hdfDiscountInOrder" runat="server" />
             <asp:HiddenField ID="hdfUsername" runat="server" />

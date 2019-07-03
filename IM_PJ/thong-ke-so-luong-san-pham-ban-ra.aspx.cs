@@ -12,9 +12,14 @@ namespace IM_PJ
     {
         protected void Page_Load(object sender, EventArgs e)
         {
+            var config = ConfigController.GetByTop1();
+            if (config.ViewAllReports == 0)
+            {
+                Response.Redirect("/trang-chu");
+            }
+
             if (!IsPostBack)
             {
-
                 if (Request.Cookies["userLoginSystem"] != null)
                 {
                     string username = Request.Cookies["userLoginSystem"].Value;
@@ -56,32 +61,25 @@ namespace IM_PJ
 
             int day = Convert.ToInt32((todate - fromdate).TotalDays);
 
-            int TotalSales = 0;
-            var order = OrderDetailController.Report(fromdate.ToString(), todate.ToString());
-            if (order != null)
+            var reportModel = OrderController.GetProfitReport(fromdate, todate);
+
+            double TotalRevenue = reportModel.TotalSalePrice - reportModel.TotalRefundPrice;
+            double TotalCost = reportModel.TotalSaleCost - reportModel.TotalRefundCost;
+            double TotalProfit = TotalRevenue - TotalCost - reportModel.TotalSaleDiscount + reportModel.TotalRefundFee;
+            double AverageProfitPerProduct = 0;
+            int TotalRemainQuantity = reportModel.TotalSoldQuantity - reportModel.TotalRefundQuantity;
+            if (reportModel.TotalNumberOfOrder > 0)
             {
-                foreach (var item in order)
-                {
-                    TotalSales += Convert.ToInt32(item.Quantity);
-                }
+                AverageProfitPerProduct = Math.Ceiling(TotalProfit / TotalRemainQuantity);
             }
 
-            int TotalRefund = 0;
-            var refund = RefundGoodController.TotalRefund(fromdate.ToString(), todate.ToString());
-            if (refund.Count() > 0)
-            {
-                foreach (var vl in refund)
-                {
-                    TotalRefund += Convert.ToInt32(vl.TotalQuantity);
-                }
-            }
-
-            ltrTotalRemain.Text = (TotalSales - TotalRefund).ToString() + " cái";
-            ltrAverageTotalRemain.Text = ((TotalSales - TotalRefund) / day).ToString() + " cái / ngày";
-            ltrTotalSales.Text = TotalSales.ToString() + " cái";
-            ltrAverageTotalSales.Text = (TotalSales / day).ToString() + " cái / ngày";
-            ltrTotalRefund.Text = TotalRefund.ToString() + " cái";
-            ltrAverageTotalRefund.Text = (TotalRefund / day).ToString() + " cái / ngày";
+            ltrTotalRemain.Text = (TotalRemainQuantity).ToString() + " cái";
+            ltrAverageTotalRemain.Text = (TotalRemainQuantity / day).ToString() + " cái/ngày";
+            ltrTotalSales.Text = (reportModel.TotalSoldQuantity).ToString() + " cái";
+            ltrAverageTotalSales.Text = (reportModel.TotalSoldQuantity / day).ToString() + " cái / ngày";
+            ltrTotalRefund.Text = (reportModel.TotalRefundQuantity).ToString() + " cái";
+            ltrAverageTotalRefund.Text = (reportModel.TotalRefundQuantity / day).ToString() + " cái / ngày";
+            ltrAverageProfitPerProduct.Text = string.Format("{0:N0}", AverageProfitPerProduct) + " đ / cái";
 
         }
 

@@ -2030,7 +2030,15 @@ namespace IM_PJ.Controllers
             }
 
         }
-
+        public static List<tbl_Order> GetAllNoteByCustomerID(int ID, int currentOrderID)
+        {
+            using (var dbe = new inventorymanagementEntities())
+            {
+                List<tbl_Order> las = new List<tbl_Order>();
+                las = dbe.tbl_Order.Where(x => x.CustomerID == ID && x.ID < currentOrderID && !String.IsNullOrEmpty(x.OrderNote)).OrderByDescending(x => x.ID).ToList();
+                return las;
+            }
+        }
         public static List<tbl_Order> GetByCustomerID(int ID)
         {
             using (var dbe = new inventorymanagementEntities())
@@ -2275,6 +2283,8 @@ namespace IM_PJ.Controllers
             using (var con = new inventorymanagementEntities())
             {
                 int TotalNumberOfOrder = 0;
+                int TotalSoldQuantity = 0;
+                int TotalRefundQuantity = 0;
                 double TotalSalePrice = 0;
                 double TotalSaleCost = 0;
                 double TotalSaleDiscount = 0;
@@ -2414,6 +2424,10 @@ namespace IM_PJ.Controllers
 
                 TotalNumberOfOrder = inforOrder.GroupBy(x => x.OrderID).Count();
 
+                TotalSoldQuantity = inforOrder
+                    .Select(x => new { TotalSoldQuantity =  Convert.ToInt32(x.Quantity) })
+                    .Sum(x => x.TotalSoldQuantity);
+
                 TotalSalePrice = inforOrder
                     .Select(x => new { TotalSalePrice = x.Quantity * Convert.ToDouble(x.Price) })
                     .Sum(x => x.TotalSalePrice);
@@ -2450,9 +2464,15 @@ namespace IM_PJ.Controllers
                     .Select(g => new { TotalRefundFee = g.Max(x => Convert.ToDouble(x.TotalRefundFee)) })
                     .Sum(x => x.TotalRefundFee);
 
+                TotalRefundQuantity = infoRefund
+                    .Select(x => new { TotalRefundQuantity = Convert.ToInt32(x.Quantity) })
+                    .Sum(x => x.TotalRefundQuantity);
+
                 return new ProfitReportModel()
                 {
                     TotalNumberOfOrder = TotalNumberOfOrder,
+                    TotalSoldQuantity = TotalSoldQuantity,
+                    TotalRefundQuantity = TotalRefundQuantity,
                     TotalSalePrice = TotalSalePrice,
                     TotalSaleCost = TotalSaleCost,
                     TotalSaleDiscount = TotalSaleDiscount,
@@ -2482,7 +2502,7 @@ namespace IM_PJ.Controllers
             sql.AppendLine(String.Format("    AND Ord.CreatedBy = '{0}'", CreatedBy));
             sql.AppendLine(String.Format("    AND Ord.ExcuteStatus = 2"));
             sql.AppendLine(String.Format("    AND (Ord.PaymentStatus = 2 OR Ord.PaymentStatus = 3)"));
-            sql.AppendLine(String.Format("    AND    CONVERT(datetime, Ord.DateDone, 121) BETWEEN CONVERT(datetime, '{0}', 121) AND CONVERT(datetime, '{1}', 121)", fromDate.ToString(), toDate.ToString()));
+            sql.AppendLine(String.Format("    AND    CONVERT(datetime, Ord.DateDone, 103) BETWEEN CONVERT(datetime, '{0}', 103) AND CONVERT(datetime, '{1}', 103)", fromDate.ToString(), toDate.ToString()));
             sql.AppendLine(String.Format("GROUP BY Ord.ID"));
 
             var reader = (IDataReader)SqlHelper.ExecuteDataReader(sql.ToString());
@@ -2513,29 +2533,113 @@ namespace IM_PJ.Controllers
             public double totalCost { get; set; }
         }
 
-        public static ProductReportModel getProductReport(string SKU, string CreatedBy, DateTime fromDate, DateTime toDate)
+        public static ProductReportModel getProductReport(string SKU, int CategoryID, string CreatedBy, DateTime fromDate, DateTime toDate)
         {
             var list = new List<OrderReport>();
             var sql = new StringBuilder();
 
-            sql.AppendLine(String.Format("SELECT Ord.ID, SUM(ISNULL(OrdDetail.Quantity, 0)) AS Quantity, SUM(OrdDetail.Quantity * ISNULL(Product.CostOfGood, Variable.CostOfGood)) AS TotalCost, SUM(OrdDetail.Quantity * (OrdDetail.Price - Ord.DiscountPerProduct)) AS TotalRevenue"));
-            sql.AppendLine(String.Format("FROM tbl_Order AS Ord"));
-            sql.AppendLine(String.Format("INNER JOIN tbl_OrderDetail AS OrdDetail"));
-            sql.AppendLine(String.Format("ON     Ord.ID = OrdDetail.OrderID"));
-            sql.AppendLine(String.Format("LEFT JOIN tbl_ProductVariable AS Variable"));
-            sql.AppendLine(String.Format("ON     OrdDetail.SKU = Variable.SKU"));
-            sql.AppendLine(String.Format("LEFT JOIN tbl_Product AS Product"));
-            sql.AppendLine(String.Format("ON     OrdDetail.SKU = Product.ProductSKU"));
-            sql.AppendLine(String.Format("WHERE 1 = 1"));
-            if (CreatedBy != "")
+            sql.AppendLine("BEGIN");
+
+            if (CategoryID > 0)
+            {
+                sql.AppendLine(String.Empty);
+                sql.AppendLine("WITH category AS(");
+                sql.AppendLine("    SELECT");
+                sql.AppendLine("            ID");
+                sql.AppendLine("    ,       CategoryName");
+                sql.AppendLine("    ,       ParentID");
+                sql.AppendLine("    FROM");
+                sql.AppendLine("            tbl_Category");
+                sql.AppendLine("    WHERE");
+                sql.AppendLine("            1 = 1");
+                sql.AppendLine("    AND     ID = " + CategoryID);
+                sql.AppendLine("");
+                sql.AppendLine("    UNION ALL");
+                sql.AppendLine("");
+                sql.AppendLine("    SELECT");
+                sql.AppendLine("            CHI.ID");
+                sql.AppendLine("    ,       CHI.CategoryName");
+                sql.AppendLine("    ,       CHI.ParentID");
+                sql.AppendLine("    FROM");
+                sql.AppendLine("            category AS PAR");
+                sql.AppendLine("    INNER JOIN tbl_Category AS CHI");
+                sql.AppendLine("        ON PAR.ID = CHI.ParentID");
+                sql.AppendLine(")");
+                sql.AppendLine("SELECT");
+                sql.AppendLine("        ID");
+                sql.AppendLine(",       CategoryName");
+                sql.AppendLine(",       ParentID");
+                sql.AppendLine("INTO #category");
+                sql.AppendLine("FROM category;");
+            }
+
+            sql.AppendLine("SELECT");
+            sql.AppendLine("    Ord.ID,");
+            sql.AppendLine("    Ord.DiscountPerProduct,");
+            sql.AppendLine("    OrdDetail.SKU,");
+            sql.AppendLine("    OrdDetail.Quantity,");
+            sql.AppendLine("    OrdDetail.Price");
+            sql.AppendLine("INTO #data");
+            sql.AppendLine("FROM tbl_Order AS Ord");
+            sql.AppendLine("INNER JOIN tbl_OrderDetail AS OrdDetail");
+            sql.AppendLine("ON     Ord.ID = OrdDetail.OrderID");
+            sql.AppendLine("WHERE 1 = 1");
+            sql.AppendLine("    AND Ord.ExcuteStatus = 2");
+            sql.AppendLine("    AND (Ord.PaymentStatus = 2 OR Ord.PaymentStatus = 3)");
+
+            if (!String.IsNullOrEmpty(CreatedBy))
             {
                 sql.AppendLine(String.Format("    AND Ord.CreatedBy = '{0}'", CreatedBy));
             }
-            sql.AppendLine(String.Format("    AND Ord.ExcuteStatus = 2"));
-            sql.AppendLine(String.Format("    AND (Ord.PaymentStatus = 2 OR Ord.PaymentStatus = 3)"));
-            sql.AppendLine(String.Format("    AND OrdDetail.SKU LIKE '{0}%'", SKU));
-            sql.AppendLine(String.Format("    AND    CONVERT(datetime, Ord.DateDone, 121) BETWEEN CONVERT(datetime, '{0}', 121) AND CONVERT(datetime, '{1}', 121)", fromDate.ToString(), toDate.ToString()));
-            sql.AppendLine(String.Format("GROUP BY Ord.ID"));
+
+            if (!String.IsNullOrEmpty(SKU))
+            {
+                sql.AppendLine(String.Format("    AND OrdDetail.SKU LIKE '{0}%'", SKU));
+            }
+
+            sql.AppendLine(String.Format("    AND    CONVERT(datetime, Ord.DateDone, 103) BETWEEN CONVERT(datetime, '{0}', 103) AND CONVERT(datetime, '{1}', 103)", fromDate.ToString(), toDate.ToString()));
+
+            sql.AppendLine("SELECT");
+            sql.AppendLine("    DAT.ID,");
+            sql.AppendLine("    SUM(ISNULL(DAT.Quantity, 0)) AS Quantity,");
+            sql.AppendLine("    SUM(DAT.Quantity * ISNULL(PRO.CostOfGood, 0)) AS TotalCost,");
+            sql.AppendLine("    SUM(DAT.Quantity * (DAT.Price - DAT.DiscountPerProduct)) AS TotalRevenue");
+            sql.AppendLine("FROM #data AS DAT");
+            sql.AppendLine("INNER JOIN (");
+            sql.AppendLine("    SELECT");
+            sql.AppendLine("        Product.CategoryID,");
+            sql.AppendLine("        (");
+            sql.AppendLine("            CASE Product.ProductStyle");
+            sql.AppendLine("                WHEN 1 THEN Product.ProductSKU");
+            sql.AppendLine("                ELSE Variable.SKU");
+            sql.AppendLine("            END");
+            sql.AppendLine("        ) AS SKU,");
+            sql.AppendLine("        (");
+            sql.AppendLine("            CASE Product.ProductStyle");
+            sql.AppendLine("                WHEN 1 THEN Product.CostOfGood");
+            sql.AppendLine("                ELSE Variable.CostOfGood");
+            sql.AppendLine("            END");
+            sql.AppendLine("        ) AS CostOfGood");
+            sql.AppendLine("    FROM tbl_Product AS Product");
+            sql.AppendLine("    LEFT JOIN tbl_ProductVariable AS Variable");
+            sql.AppendLine("    ON Product.ID = Variable.ProductID");
+            sql.AppendLine("    WHERE 1 = 1");
+            if (CategoryID > 0)
+            {
+                sql.AppendLine("    AND EXISTS(");
+                sql.AppendLine("            SELECT");
+                sql.AppendLine("                    NULL AS DUMMY");
+                sql.AppendLine("            FROM");
+                sql.AppendLine("                    #category");
+                sql.AppendLine("            WHERE");
+                sql.AppendLine("                    ID = Product.CategoryID");
+                sql.AppendLine("    )");
+            }
+            sql.AppendLine(") AS PRO");
+            sql.AppendLine("ON     DAT.SKU = PRO.SKU");
+            sql.AppendLine("GROUP BY DAT.ID");
+
+            sql.AppendLine(" END");
 
             var reader = (IDataReader)SqlHelper.ExecuteDataReader(sql.ToString());
             while (reader.Read())

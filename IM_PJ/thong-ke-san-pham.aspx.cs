@@ -1,5 +1,6 @@
 ﻿using IM_PJ.Controllers;
 using IM_PJ.Models;
+using MB.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +14,12 @@ namespace IM_PJ
     {
         protected void Page_Load(object sender, EventArgs e)
         {
+            var config = ConfigController.GetByTop1();
+            if (config.ViewAllReports == 0)
+            {
+                Response.Redirect("/trang-chu");
+            }
+
             if (!IsPostBack)
             {
                 if (Request.Cookies["userLoginSystem"] != null)
@@ -32,10 +39,37 @@ namespace IM_PJ
                     Response.Redirect("/dang-nhap");
                 }
                 LoadCreatedBy();
+                LoadCategory();
                 LoadData();
             }
         }
+        public void LoadCategory()
+        {
+            var category = CategoryController.GetAllWithIsHidden(false);
+            ddlCategory.Items.Clear();
+            ddlCategory.Items.Insert(0, new ListItem("Danh mục", "0"));
+            if (category.Count > 0)
+            {
+                addItemCategory(0, "");
+                ddlCategory.DataBind();
+            }
+        }
 
+        public void addItemCategory(int id, string h = "")
+        {
+            var categories = CategoryController.GetByParentID("", id);
+
+            if (categories.Count > 0)
+            {
+                foreach (var c in categories)
+                {
+                    ListItem listitem = new ListItem(h + c.CategoryName, c.ID.ToString());
+                    ddlCategory.Items.Add(listitem);
+
+                    addItemCategory(c.ID, h + "---");
+                }
+            }
+        }
         public void LoadCreatedBy()
         {
             var CreateBy = AccountController.GetAllNotSearch();
@@ -58,6 +92,7 @@ namespace IM_PJ
         public void LoadData()
         {
             string SKU = String.Empty;
+            int CategoryID = 0;
             DateTime fromdate = DateTime.Today;
             DateTime todate = fromdate.AddDays(1).AddMinutes(-1);
 
@@ -83,6 +118,11 @@ namespace IM_PJ
                 }
             }
 
+            if (!String.IsNullOrEmpty(Request.QueryString["categoryid"]))
+            {
+                CategoryID = Request.QueryString["categoryid"].ToInt(0);
+            }
+
             if (!String.IsNullOrEmpty(Request.QueryString["createdby"]))
             {
                 CreatedBy = Request.QueryString["createdby"];
@@ -99,6 +139,7 @@ namespace IM_PJ
             }
 
             txtTextSearch.Text = SKU;
+            ddlCategory.SelectedValue = CategoryID.ToString();
             ddlCreatedBy.SelectedValue = CreatedBy;
             rFromDate.SelectedDate = fromdate;
             rToDate.SelectedDate = todate;
@@ -109,33 +150,28 @@ namespace IM_PJ
                 totalDays = 1;
             }
 
-            if (String.IsNullOrEmpty(SKU))
-            {
-                this.ltrTotalRemain.Text = String.Empty;
-                this.ltrTotalRemainPerDay.Text = String.Empty;
-                this.ltrTotalSold.Text = String.Empty;
-                this.ltrTotalRefund.Text = String.Empty;
-                this.ltrTotalProfit.Text = String.Empty;
-                this.ltrTotalRevenue.Text = String.Empty;
-                this.ltrTotalStock.Text = String.Empty;
-                this.ltrTotalStockValue.Text = String.Empty;
+            this.ltrTotalRemain.Text = String.Empty;
+            this.ltrTotalRemainPerDay.Text = String.Empty;
+            this.ltrTotalSold.Text = String.Empty;
+            this.ltrTotalRefund.Text = String.Empty;
+            this.ltrTotalProfit.Text = String.Empty;
+            this.ltrTotalRevenue.Text = String.Empty;
+            this.ltrTotalStock.Text = String.Empty;
+            this.ltrTotalStockValue.Text = String.Empty;
 
-                return;
-            }
-
-            var productReport = OrderController.getProductReport(SKU, CreatedBy, fromdate, todate);
+            var productReport = OrderController.getProductReport(SKU, CategoryID, CreatedBy, fromdate, todate);
             totalSoldQuantity = productReport.totalSold;
             totalRevenue = productReport.totalRevenue;
             totalCost = productReport.totalCost;
             totalProfit = totalRevenue - totalCost;
 
-            var productRefundReport = RefundGoodController.getRefundProductReport(SKU, CreatedBy, fromdate, todate);
+            var productRefundReport = RefundGoodController.getRefundProductReport(SKU, CategoryID, CreatedBy, fromdate, todate);
             totalRefundQuantity = productRefundReport.totalRefund;
             totalRefundProfit = productRefundReport.totalRevenue - productRefundReport.totalCost;
 
             totalRemainQuantity = totalSoldQuantity - totalRefundQuantity;
 
-            var productStockReport = ProductController.getProductStockReport(SKU);
+            var productStockReport = ProductController.getProductStockReport(SKU, CategoryID);
 
             ltrTotalSold.Text = totalSoldQuantity.ToString();
             ltrTotalRefund.Text = totalRefundQuantity.ToString();
@@ -150,11 +186,12 @@ namespace IM_PJ
         protected void btnSearch_Click(object sender, EventArgs e)
         {
             string SKU = txtTextSearch.Text;
+            string CategoryID = ddlCategory.SelectedValue;
             string CreatedBy = ddlCreatedBy.SelectedValue;
             string fromdate = rFromDate.SelectedDate.ToString();
             string todate = rToDate.SelectedDate.ToString();
             
-            Response.Redirect(String.Format("/thong-ke-san-pham?SKU={0}&createdby={1}&fromdate={2}&todate={3}", SKU, CreatedBy, fromdate, todate));
+            Response.Redirect(String.Format("/thong-ke-san-pham?SKU={0}&categoryid={1}&createdby={2}&fromdate={3}&todate={4}", SKU, CategoryID, CreatedBy, fromdate, todate));
         }
     }
 }

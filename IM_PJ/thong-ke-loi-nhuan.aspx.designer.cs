@@ -67,6 +67,33 @@ namespace IM_PJ {
         protected global::System.Web.UI.WebControls.Literal ltrProfitPerOrder;
         
         /// <summary>
+        /// ltrTotalRemainQuantity control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Literal ltrTotalRemainQuantity;
+        
+        /// <summary>
+        /// ltrAverageRemainQuantity control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Literal ltrAverageRemainQuantity;
+        
+        /// <summary>
+        /// ltrTotalSoldQuantity control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Literal ltrTotalSoldQuantity;
+        
+        /// <summary>
         /// ltrTotalSalePrice control.
         /// </summary>
         /// <remarks>

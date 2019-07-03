@@ -44,7 +44,7 @@
                         </div>
                     </div>
                     <div class="panel-table clear">
-                        <div class="row">
+                        <div class="row margin-bottom-15">
                             <div class="col-md-2">
                                 <div class="report-column">
                                     <div class="report-label">
@@ -106,7 +106,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row">
+                        <div class="row margin-bottom-15">
                             <div class="col-md-2">
                                 <div class="report-column">
                                     <div class="report-label">

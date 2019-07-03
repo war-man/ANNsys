@@ -361,7 +361,7 @@ namespace IM_PJ.Controllers
             sql.AppendLine("            PRD.*");
             sql.AppendLine("    INTO #Product");
             sql.AppendLine("    FROM");
-            sql.AppendLine("            tbl_product AS PRD");
+            sql.AppendLine("            tbl_Product AS PRD");
             sql.AppendLine("    WHERE");
             sql.AppendLine("            1 = 1");
 
@@ -1333,22 +1333,68 @@ namespace IM_PJ.Controllers
             return list.OrderByDescending(x => x.ID).ToList();
         }
 
-        public static ProductStockReport getProductStockReport(string SKU)
+        public static ProductStockReport getProductStockReport(string SKU, int CategoryID)
         {
             var list = new List<ProductStockReport>();
             StringBuilder sql = new StringBuilder();
 
             sql.AppendLine("BEGIN");
 
+            if (CategoryID > 0)
+            {
+                sql.AppendLine(String.Empty);
+                sql.AppendLine("WITH category AS(");
+                sql.AppendLine("    SELECT");
+                sql.AppendLine("            ID");
+                sql.AppendLine("    ,       CategoryName");
+                sql.AppendLine("    ,       ParentID");
+                sql.AppendLine("    FROM");
+                sql.AppendLine("            tbl_Category");
+                sql.AppendLine("    WHERE");
+                sql.AppendLine("            1 = 1");
+                sql.AppendLine("    AND     ID = " + CategoryID);
+                sql.AppendLine("");
+                sql.AppendLine("    UNION ALL");
+                sql.AppendLine("");
+                sql.AppendLine("    SELECT");
+                sql.AppendLine("            CHI.ID");
+                sql.AppendLine("    ,       CHI.CategoryName");
+                sql.AppendLine("    ,       CHI.ParentID");
+                sql.AppendLine("    FROM");
+                sql.AppendLine("            category AS PAR");
+                sql.AppendLine("    INNER JOIN tbl_Category AS CHI");
+                sql.AppendLine("        ON PAR.ID = CHI.ParentID");
+                sql.AppendLine(")");
+                sql.AppendLine("SELECT");
+                sql.AppendLine("        ID");
+                sql.AppendLine(",       CategoryName");
+                sql.AppendLine(",       ParentID");
+                sql.AppendLine("INTO #category");
+                sql.AppendLine("FROM category;");
+            }
+
             sql.AppendLine(String.Empty);
             sql.AppendLine("    SELECT");
             sql.AppendLine("            PRD.*");
             sql.AppendLine("    INTO #Product");
             sql.AppendLine("    FROM");
-            sql.AppendLine("            tbl_product AS PRD");
+            sql.AppendLine("            tbl_Product AS PRD");
             sql.AppendLine("    WHERE");
             sql.AppendLine("            1 = 1");
-            sql.AppendLine("    AND (PRD.ProductSKU like N'%" + SKU + "%')");
+            sql.AppendLine("    AND (PRD.ProductSKU like '" + SKU + "%')");
+
+            if (CategoryID > 0)
+            {
+                sql.AppendLine("    AND EXISTS(");
+                sql.AppendLine("            SELECT");
+                sql.AppendLine("                    NULL AS DUMMY");
+                sql.AppendLine("            FROM");
+                sql.AppendLine("                    #category");
+                sql.AppendLine("            WHERE");
+                sql.AppendLine("                    ID = PRD.CategoryID");
+                sql.AppendLine("    )");
+            }
+
             sql.AppendLine("     ORDER BY");
             sql.AppendLine("             PRD.ProductStyle");
             sql.AppendLine("     ,       PRD.ID");

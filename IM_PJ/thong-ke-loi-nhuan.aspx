@@ -80,6 +80,38 @@
                                 <div class="col-md-4">
                                     <div class="report-column">
                                         <div class="report-label">
+                                            SL còn lại:
+                                        </div>
+                                        <div class="report-value">
+                                            <asp:Literal ID="ltrTotalRemainQuantity" runat="server" EnableViewState="false"></asp:Literal>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="report-column">
+                                        <div class="report-label">
+                                            SL còn lại mỗi ngày:
+                                        </div>
+                                        <div class="report-value">
+                                            <asp:Literal ID="ltrAverageRemainQuantity" runat="server" EnableViewState="false"></asp:Literal>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="report-column">
+                                        <div class="report-label">
+                                            SL bán ra:
+                                        </div>
+                                        <div class="report-value">
+                                            <asp:Literal ID="ltrTotalSoldQuantity" runat="server" EnableViewState="false"></asp:Literal>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row margin-bottom-15">
+                                <div class="col-md-4">
+                                    <div class="report-column">
+                                        <div class="report-label">
                                             Tổng doanh thu bán ra:
                                         </div>
                                         <div class="report-value">

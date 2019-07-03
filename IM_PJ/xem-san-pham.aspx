@@ -77,6 +77,14 @@
                                     <asp:Label ID="lbMaterials" runat="server" CssClass="form-control"></asp:Label>
                                 </div>
                             </div>
+                            <div class="form-row main-color">
+                                <div class="row-left">
+                                    Màu chủ đạo
+                                </div>
+                                <div class="row-right">
+                                    <asp:Label ID="lbColor" runat="server" CssClass="form-control"></asp:Label>
+                                </div>
+                            </div>
                             <div class="form-row">
                                 <div class="row-left">
                                     Số lượng

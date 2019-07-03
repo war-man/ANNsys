@@ -29,5 +29,6 @@ namespace IM_PJ.Models
         public string CSSPrintBarcode { get; set; }
         public Nullable<int> HideProduct { get; set; }
         public Nullable<int> ViewAllOrders { get; set; }
+        public Nullable<int> ViewAllReports { get; set; }
     }
 }

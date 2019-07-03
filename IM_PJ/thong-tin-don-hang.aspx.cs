@@ -223,17 +223,17 @@ namespace IM_PJ
                     }
                     int customerType = Convert.ToInt32(order.OrderType);
                     ltrCustomerType.Text = "";
-                    ltrCustomerType.Text += "<select class=\"form-control customer-type\" onchange=\"getProductPrice($(this))\">";
+                    ltrCustomerType.Text += "<select class='form-control customer-type' onchange='getProductPrice($(this))'>";
                     if (customerType == 1)
                     {
-                        ltrCustomerType.Text += "<option value=\"2\">Khách mua sỉ</option>";
-                        ltrCustomerType.Text += "<option value=\"1\" selected>Khách mua lẻ</option>";
+                        ltrCustomerType.Text += "<option value='2'>Khách mua sỉ</option>";
+                        ltrCustomerType.Text += "<option value='1' selected>Khách mua lẻ</option>";
 
                     }
                     else
                     {
-                        ltrCustomerType.Text += "<option value=\"2\" selected>Khách mua sỉ</option>";
-                        ltrCustomerType.Text += "<option value=\"1\">Khách mua lẻ</option>";
+                        ltrCustomerType.Text += "<option value='2' selected>Khách mua sỉ</option>";
+                        ltrCustomerType.Text += "<option value='1'>Khách mua lẻ</option>";
 
                     }
                     ltrCustomerType.Text += "</select>";
@@ -274,6 +274,42 @@ namespace IM_PJ
                     int TransportCompanySubID = Convert.ToInt32(order.TransportCompanySubID);
                     int PostalDeliveryType = Convert.ToInt32(order.PostalDeliveryType);
                     int paymenttype = Convert.ToInt32(order.PaymentType);
+
+                    #region Lấy ghi chú đơn hàng cũ
+
+                    var oldOrders = OrderController.GetAllNoteByCustomerID(customerID, ID);
+                    if (oldOrders.Count() > 1)
+                    {
+                        StringBuilder notestring = new StringBuilder();
+                        foreach (var item in oldOrders)
+                        {
+                            notestring.AppendLine(String.Format("<li>Đơn <strong><a href='/thong-tin-don-hang?id={0}' target='_blank'>{0}</a></strong> (<em>{1}<em>): {2}</li>", item.ID, item.DateDone, item.OrderNote));
+                        }
+
+                        StringBuilder notehtml = new StringBuilder();
+                        notehtml.AppendLine("<div id='old-order-note' class='row'>");
+                        notehtml.AppendLine("    <div class='col-md-12'>");
+                        notehtml.AppendLine("        <div class='panel panelborderheading'>");
+                        notehtml.AppendLine("            <div class='panel-heading clear'>");
+                        notehtml.AppendLine("                <h3 class='page-title left not-margin-bot'>Ghi chú đơn hàng cũ</h3>");
+                        notehtml.AppendLine("            </div>");
+                        notehtml.AppendLine("            <div class='panel-body'>");
+                        notehtml.AppendLine("                <div class='row'>");
+                        notehtml.AppendLine("                    <div class='col-sm-12'>");
+                        notehtml.AppendLine("                        <ul>");
+                        notehtml.AppendLine(String.Format("{0}", notestring));
+                        notehtml.AppendLine("                        </ul>");
+                        notehtml.AppendLine("                    <div>");
+                        notehtml.AppendLine("                <div>");
+                        notehtml.AppendLine("            </div>");
+                        notehtml.AppendLine("        </div>");
+                        notehtml.AppendLine("    </div>");
+                        notehtml.AppendLine("</div>");
+
+                        ltrOldOrderNote.Text = notehtml.ToString();
+                    }
+
+                    #endregion
 
                     #region Lấy danh sách sản phẩm
 

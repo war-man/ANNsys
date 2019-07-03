@@ -46,7 +46,7 @@
                     </div>
 
                     <div class="panel-table clear">
-                        <div class="row">
+                        <div class="row margin-bottom-15">
                             <div class="col-md-2">
                                 <div class="report-column">
                                     <div class="report-label">
@@ -104,6 +104,18 @@
                                     </div>
                                     <div class="report-value">
                                         <asp:Literal ID="ltrAverageTotalRefund" runat="server" EnableViewState="false"></asp:Literal>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row margin-bottom-15">
+                            <div class="col-md-2">
+                                <div class="report-column">
+                                    <div class="report-label">
+                                        TB lợi nhuận mỗi cái:
+                                    </div>
+                                    <div class="report-value">
+                                        <asp:Literal ID="ltrAverageProfitPerProduct" runat="server" EnableViewState="false"></asp:Literal>
                                     </div>
                                 </div>
                             </div>

@@ -179,6 +179,7 @@ namespace IM_PJ
                 ddlSupplier.SelectedValue = p.SupplierID.ToString();
                 ddlCategory.SelectedValue = p.CategoryID.ToString();
                 lbMaterials.Text = p.Materials;
+                lbColor.Text = p.Color;
 
                 // thư viện ảnh
                 var image = ProductImageController.GetByProductID(id);

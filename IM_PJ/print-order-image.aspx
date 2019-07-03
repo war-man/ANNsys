@@ -9,9 +9,20 @@
     <link rel="stylesheet" href="/App_Themes/Ann/css/responsive.css" type="text/css"/>
     <script src="/App_Themes/Ann/js/jquery-2.1.3.min.js"></script>
     <script src="/App_Themes/Ann/js/html2canvas.js"></script>
-    <title></title>    
+    <title>Lấy ảnh đơn hàng</title>    
+    <style>
+        #old-order-note {
+            background: #707070;
+            color: #fff;
+            padding: 15px;
+        }
+        #old-order-note ul {
+            padding-left: 15px;
+        }
+    </style>
 </head>
 <body>
+    <asp:Literal ID="ltrOldOrderNote" runat="server"></asp:Literal>
     <h2 class="guide">Click chuột phải vào ảnh -> Chọn Sao chép hình ảnh -> Dán vào Zalo hoặc Facebook (làm từng ảnh)</h2>
     <div id="previewImage"></div>
     <asp:Literal ID="ltrPrintInvoice" runat="server"></asp:Literal>

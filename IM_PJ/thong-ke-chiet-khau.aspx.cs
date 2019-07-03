@@ -12,6 +12,12 @@ namespace IM_PJ
     {
         protected void Page_Load(object sender, EventArgs e)
         {
+            var config = ConfigController.GetByTop1();
+            if (config.ViewAllReports == 0)
+            {
+                Response.Redirect("/trang-chu");
+            }
+
             if (!IsPostBack)
             {
                 if (Request.Cookies["userLoginSystem"] != null)

@@ -29,16 +29,19 @@
                                     <asp:TextBox ID="txtTextSearch" runat="server" CssClass="form-control" placeholder="Tìm sản phẩm"></asp:TextBox>
                                 </div>
                                 <div class="col-md-2">
+                                    <asp:DropDownList ID="ddlCategory" runat="server" CssClass="form-control"></asp:DropDownList>
+                                </div>
+                                <div class="col-md-2">
                                     <asp:DropDownList ID="ddlCreatedBy" runat="server" CssClass="form-control"></asp:DropDownList>
                                 </div>
-                                <div class="col-md-3">
+                                <div class="col-md-2">
                                     <label>Từ ngày: <a href="javascript:;" class="fromdate-link fromdate-createddate hide">ngày tạo sản phẩm</a>, <a href="javascript:;" class="fromdate-link fromdate-today hide">hôm nay</a></label>
                                     <telerik:RadDatePicker RenderMode="Lightweight" ID="rFromDate" ShowPopupOnFocus="true" Width="100%" runat="server" DateInput-CssClass="radPreventDecorate" MinDate="01/01/2018">
                                         <DateInput DisplayDateFormat="dd/MM/yyyy" runat="server">
                                         </DateInput>
                                     </telerik:RadDatePicker>
                                 </div>
-                                <div class="col-md-3">
+                                <div class="col-md-2">
                                     <label>Đến ngày:</label>
                                     <telerik:RadDatePicker RenderMode="Lightweight" ID="rToDate" ShowPopupOnFocus="true" Width="100%" runat="server" DateInput-CssClass="radPreventDecorate" MinDate="01/01/2018">
                                         <DateInput DisplayDateFormat="dd/MM/yyyy" runat="server">

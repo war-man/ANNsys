@@ -13,6 +13,12 @@ namespace IM_PJ
     {
         protected void Page_Load(object sender, EventArgs e)
         {
+            var config = ConfigController.GetByTop1();
+            if (config.ViewAllReports == 0)
+            {
+                Response.Redirect("/trang-chu");
+            }
+
             if (!IsPostBack)
             {
                 if (Request.Cookies["userLoginSystem"] != null)
@@ -55,7 +61,7 @@ namespace IM_PJ
                         foreach (var temp in list)
                         {
                             quantity += Convert.ToInt32(temp.TotalProductInstockQuantityLeft);
-                            totalprice += Convert.ToInt32(temp.CostOfGood) * Convert.ToInt32(temp.TotalProductInstockQuantityLeft);
+                            totalprice += temp.CostOfGood * temp.TotalProductInstockQuantityLeft;
                         }
                     }
                     totalProduct += quantity;

@@ -12,6 +12,12 @@ namespace IM_PJ
     {
         protected void Page_Load(object sender, EventArgs e)
         {
+            var config = ConfigController.GetByTop1();
+            if (config.ViewAllReports == 0)
+            {
+                Response.Redirect("/trang-chu");
+            }
+
             if (!IsPostBack)
             {
                 if (Request.Cookies["userLoginSystem"] != null)
@@ -62,7 +68,7 @@ namespace IM_PJ
             double TotalProfit = TotalRevenue - TotalCost - reportModel.TotalSaleDiscount + reportModel.TotalRefundFee;
             double TotalProfitPerDay = TotalProfit / day;
             double TotalProfitPerOrder = 0;
-
+            int TotalRemainQuantity = reportModel.TotalSoldQuantity - reportModel.TotalRefundQuantity;
             if (reportModel.TotalNumberOfOrder > 0)
             {
                 TotalProfitPerOrder = Math.Ceiling(TotalProfit / reportModel.TotalNumberOfOrder);
@@ -73,6 +79,10 @@ namespace IM_PJ
             ltrTotalProfit.Text = string.Format("{0:N0}", TotalProfit);
             ltrProfitPerDay.Text = string.Format("{0:N0}", TotalProfitPerDay);
             ltrProfitPerOrder.Text = string.Format("{0:N0}", TotalProfitPerOrder);
+
+            ltrTotalRemainQuantity.Text = (TotalRemainQuantity).ToString() + " cái";
+            ltrAverageRemainQuantity.Text = (TotalRemainQuantity / day).ToString() + " cái/ngày";
+            ltrTotalSoldQuantity.Text = (reportModel.TotalSoldQuantity).ToString() + " cái";
 
             ltrTotalSalePrice.Text = string.Format("{0:N0}", reportModel.TotalSalePrice);
             ltrTotalSaleCost.Text = string.Format("{0:N0}", reportModel.TotalSaleCost);

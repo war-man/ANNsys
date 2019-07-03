@@ -283,6 +283,30 @@ namespace IM_PJ
                 
                 if (order != null)
                 {
+                    #region Lấy ghi chú đơn hàng cũ
+
+                    var oldOrders = OrderController.GetAllNoteByCustomerID(Convert.ToInt32(order.CustomerID), ID);
+                    if (oldOrders.Count() > 1)
+                    {
+                        StringBuilder notestring = new StringBuilder();
+                        foreach (var item in oldOrders)
+                        {
+                            notestring.AppendLine(String.Format("<li>Đơn <strong><a href='/thong-tin-don-hang?id={0}' target='_blank'>{0}</a></strong> (<em>{1}<em>): {2}</li>", item.ID, item.DateDone, item.OrderNote));
+                        }
+
+                        StringBuilder notehtml = new StringBuilder();
+                        notehtml.AppendLine("<div id='old-order-note'>");
+                        notehtml.AppendLine("   <h2>Ghi chú đơn hàng cũ:</h2>");
+                        notehtml.AppendLine("   <ul>");
+                        notehtml.AppendLine(String.Format("{0}", notestring));
+                        notehtml.AppendLine("   </ul>");
+                        notehtml.AppendLine("</div>");
+
+                        ltrOldOrderNote.Text = notehtml.ToString();
+                    }
+
+                    #endregion
+
                     string error = "";
                     string Print = "";
 
