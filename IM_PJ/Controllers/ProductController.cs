@@ -895,14 +895,22 @@ namespace IM_PJ.Controllers
             return list.OrderByDescending(x => x.ID).Take(limit).ToList();
         }
 
-        public static List<ProductSQL> GetAllSql(int categoryID, string textsearch, string CreatedDate = "", string ShowHomePage = "", string WebPublish = "", string strColor = "", string strSize = "")
+        public static List<ProductSQL> GetAllSql(ProductFilterModel filter, ref PaginationMetadataModel page)
         {
             var list = new List<ProductSQL>();
             StringBuilder sql = new StringBuilder();
 
             sql.AppendLine("BEGIN");
-
-            if (categoryID > 0)
+            #region Khai báo biến phân trang
+            sql.AppendLine(String.Empty);
+            sql.AppendLine("    DECLARE @totalCount int = 0;");
+            sql.AppendLine(String.Format("    DECLARE @pageSize int = {0};", page.pageSize));
+            sql.AppendLine(String.Format("    DECLARE @currentPage int = {0};", page.currentPage));
+            sql.AppendLine("    DECLARE @totalPages int = 0;");
+            #endregion
+            #region Lấy id category (gồm của category cha and con)
+            sql.AppendLine(String.Empty);
+            if (filter.category > 0)
             {
                 sql.AppendLine(String.Empty);
                 sql.AppendLine("WITH category AS(");
@@ -914,7 +922,7 @@ namespace IM_PJ.Controllers
                 sql.AppendLine("            tbl_Category");
                 sql.AppendLine("    WHERE");
                 sql.AppendLine("            1 = 1");
-                sql.AppendLine("    AND     ID = " + categoryID);
+                sql.AppendLine("    AND     ID = " + filter.category);
                 sql.AppendLine("");
                 sql.AppendLine("    UNION ALL");
                 sql.AppendLine("");
@@ -934,9 +942,11 @@ namespace IM_PJ.Controllers
                 sql.AppendLine("INTO #category");
                 sql.AppendLine("FROM category;");
             }
+            #endregion
 
+            #region Lấy id màu mà có chứa từ khóa
             // Filter by color product
-            if (!String.IsNullOrEmpty(strColor))
+            if (!String.IsNullOrEmpty(filter.color))
             {
                 sql.AppendLine(String.Empty);
                 sql.AppendLine("    With VariableValue AS (");
@@ -945,7 +955,7 @@ namespace IM_PJ.Controllers
                 sql.AppendLine("        FROM");
                 sql.AppendLine("            tbl_VariableValue");
                 sql.AppendLine("        WHERE");
-                sql.AppendLine(String.Format("        VariableID = 1 AND  LOWER(VariableValue) LIKE N'%{0}%'", strColor.ToLower()));
+                sql.AppendLine(String.Format("        VariableID = 1 AND  LOWER(VariableValue) LIKE N'%{0}%'", filter.color.ToLower()));
                 sql.AppendLine("    )");
                 sql.AppendLine("    SELECT");
                 sql.AppendLine("        PVA.ProductID AS ID");
@@ -964,9 +974,11 @@ namespace IM_PJ.Controllers
                 sql.AppendLine("    ON  PVF.ProductVariableID = PVA.ID");
                 sql.AppendLine("    GROUP BY PVA.ProductID;");
             }
+            #endregion
 
+            #region Lấy ra id size mà có chứa từ khóa
             // Filter by size product
-            if (!String.IsNullOrEmpty(strSize))
+            if (!String.IsNullOrEmpty(filter.size))
             {
                 sql.AppendLine(String.Empty);
                 sql.AppendLine("    With VariableValue AS (");
@@ -975,7 +987,7 @@ namespace IM_PJ.Controllers
                 sql.AppendLine("        FROM");
                 sql.AppendLine("            tbl_VariableValue");
                 sql.AppendLine("        WHERE");
-                sql.AppendLine(String.Format("        VariableID = 2 AND  LOWER(VariableValue) LIKE N'%{0}%'", strSize.ToLower()));
+                sql.AppendLine(String.Format("        VariableID = 2 AND  LOWER(VariableValue) LIKE N'%{0}%'", filter.size.ToLower()));
                 sql.AppendLine("    )");
                 sql.AppendLine("    SELECT");
                 sql.AppendLine("        PVA.ProductID AS ID");
@@ -994,7 +1006,10 @@ namespace IM_PJ.Controllers
                 sql.AppendLine("    ON  PVF.ProductVariableID = PVA.ID");
                 sql.AppendLine("    GROUP BY PVA.ProductID;");
             }
+            #endregion
 
+            #region Thực thi lấy dữ liệu
+            #region Trích xuất dữ liệu chính
             sql.AppendLine(String.Empty);
             sql.AppendLine("    SELECT");
             sql.AppendLine("            PRD.*");
@@ -1004,34 +1019,41 @@ namespace IM_PJ.Controllers
             sql.AppendLine("    WHERE");
             sql.AppendLine("            1 = 1");
 
-            if (!string.IsNullOrEmpty(textsearch))
+            #region Loc theo từ khóa (Tên sản phẩm, SKU, màu)
+            if (!string.IsNullOrEmpty(filter.search))
             {
                 sql.AppendLine("    AND (");
-                sql.AppendLine(String.Format("        PRD.ProductSKU like N'%{0}%'", textsearch));
-                sql.AppendLine(String.Format("        OR PRD.ProductTitle like N'%{0}%'", textsearch));
-                sql.AppendLine(String.Format("        OR PRD.UnSignedTitle like N'%{0}%'", textsearch));
+                sql.AppendLine(String.Format("        PRD.ProductSKU like N'%{0}%'", filter.search));
+                sql.AppendLine(String.Format("        OR PRD.ProductTitle like N'%{0}%'", filter.search));
+                sql.AppendLine(String.Format("        OR PRD.UnSignedTitle like N'%{0}%'", filter.search));
                 sql.AppendLine("    )");
             }
+            #endregion
 
-            if (!string.IsNullOrEmpty(ShowHomePage))
+            #region Lọc sản phẩm show lên home page
+            if (!string.IsNullOrEmpty(filter.showHomePage))
             {
                 sql.AppendLine("    AND (");
-                sql.AppendLine(String.Format("        PRD.ShowHomePage = {0}", ShowHomePage));
+                sql.AppendLine(String.Format("        PRD.ShowHomePage = {0}", filter.showHomePage));
                 sql.AppendLine("    )");
             }
+            #endregion
 
-            if (!string.IsNullOrEmpty(WebPublish))
+            #region Lọc sản phẩm hiển thị tại trang quảng cáo
+            if (!string.IsNullOrEmpty(filter.webPublish))
             {
                 sql.AppendLine("    AND (");
-                sql.AppendLine(String.Format("        PRD.WebPublish = {0}", WebPublish));
+                sql.AppendLine(String.Format("        PRD.WebPublish = {0}", filter.webPublish));
                 sql.AppendLine("    )");
             }
+            #endregion
 
-            if (!string.IsNullOrEmpty(CreatedDate))
+            #region Lọc sản phẩm theo ngày khởi tạo
+            if (!string.IsNullOrEmpty(filter.productDate))
             {
                 DateTime fromdate = DateTime.Today;
                 DateTime todate = DateTime.Now;
-                switch (CreatedDate)
+                switch (filter.productDate)
                 {
                     case "today":
                         fromdate = DateTime.Today;
@@ -1070,12 +1092,14 @@ namespace IM_PJ.Controllers
                 }
                 sql.AppendLine(String.Format("	AND	(CONVERT(datetime, PRD.CreatedDate, 103) BETWEEN CONVERT(datetime, '{0}', 103) AND CONVERT(datetime, '{1}', 103))", fromdate.ToString(), todate.ToString()));
             }
+            #endregion
 
-            if (!String.IsNullOrEmpty(strColor))
+            #region Lọc sản phẩm theo màu
+            if (!String.IsNullOrEmpty(filter.color))
             {
                 sql.AppendLine("    AND (");
-                sql.AppendLine(String.Format("        LOWER(PRD.ProductTitle) like N'%{0}%'", strColor.ToLower()));
-                sql.AppendLine(String.Format("        OR LOWER(PRD.Color) like N'%{0}%'", strColor.ToLower()));
+                sql.AppendLine(String.Format("        LOWER(PRD.ProductTitle) like N'%{0}%'", filter.color.ToLower()));
+                sql.AppendLine(String.Format("        OR LOWER(PRD.Color) like N'%{0}%'", filter.color.ToLower()));
                 sql.AppendLine("        OR EXISTS (");
                 sql.AppendLine("            SELECT");
                 sql.AppendLine("                NULL AS DUMMY");
@@ -1086,8 +1110,10 @@ namespace IM_PJ.Controllers
                 sql.AppendLine("        )");
                 sql.AppendLine("    )");
             }
+            #endregion
 
-            if (!String.IsNullOrEmpty(strSize))
+            #region Lọc sản phẩm theo size
+            if (!String.IsNullOrEmpty(filter.size))
             {
                 sql.AppendLine("    AND EXISTS (");
                 sql.AppendLine("        SELECT");
@@ -1098,8 +1124,10 @@ namespace IM_PJ.Controllers
                 sql.AppendLine("            PRD.ID = PRS.ID");
                 sql.AppendLine("    )");
             }
+            #endregion
 
-            if (categoryID > 0)
+            #region Lọc sản phẩm theo nhanh cateory (gồm cha và con)
+            if (filter.category > 0)
             {
                 sql.AppendLine("    AND EXISTS(");
                 sql.AppendLine("            SELECT");
@@ -1110,6 +1138,7 @@ namespace IM_PJ.Controllers
                 sql.AppendLine("                    ID = PRD.CategoryID");
                 sql.AppendLine("    )");
             }
+            #endregion
 
             sql.AppendLine("     ORDER BY");
             sql.AppendLine("             PRD.ProductStyle");
@@ -1117,6 +1146,10 @@ namespace IM_PJ.Controllers
             sql.AppendLine("     ;");
             sql.AppendLine(String.Empty);
             sql.AppendLine("     CREATE INDEX [ID_PROCDUCT] ON #Product([ProductStyle], [ID])");
+            #endregion
+
+            #region Trích xuất thông tin kho
+            #region Thông tin kho vơi sản phẩm thường
             sql.AppendLine(String.Empty);
             sql.AppendLine("     SELECT");
             sql.AppendLine("             STM.ProductID");
@@ -1140,6 +1173,9 @@ namespace IM_PJ.Controllers
             sql.AppendLine("             [ProductID] ASC");
             sql.AppendLine("     ,       [CreatedDate] DESC");
             sql.AppendLine("     )");
+            #endregion
+
+            #region Thông tin kho với sản phẩm biến thể
             sql.AppendLine(String.Empty);
             sql.AppendLine("     SELECT");
             sql.AppendLine("             STM.ProductVariableID");
@@ -1163,6 +1199,9 @@ namespace IM_PJ.Controllers
             sql.AppendLine("             [ProductVariableID] ASC");
             sql.AppendLine("     ,       [CreatedDate] DESC");
             sql.AppendLine("     )");
+            #endregion
+
+            #region Tính thông tin kho của tất cả sản phẩm ( sản phẩm thường và sản phẩm biến thể)
             sql.AppendLine(String.Empty);
             sql.AppendLine("     SELECT");
             sql.AppendLine("             PRQ.ProductStyle");
@@ -1232,9 +1271,65 @@ namespace IM_PJ.Controllers
             sql.AppendLine("     ;");
             sql.AppendLine(String.Empty);
             sql.AppendLine("     CREATE INDEX [ID_PROCDUCT] ON #ProductQuantity([ProductStyle], [ParentID])");
+            #endregion
+            #endregion
+
+            #region Lọc lại dữ liệu liên quan đến kho
+            if (filter.stockStatus != 0 || !String.IsNullOrEmpty(filter.quantity))
+            {
+                sql.AppendLine(String.Empty);
+                sql.AppendLine("DELETE #Product");
+                sql.AppendLine("WHERE NOT EXISTS (");
+                sql.AppendLine("    SELECT");
+                sql.AppendLine("        NULL AS DUMMY");
+                sql.AppendLine("    FROM");
+                sql.AppendLine("        #Product AS p");
+                sql.AppendLine("    LEFT JOIN #ProductQuantity AS PRQ");
+                sql.AppendLine("    ON  p.ProductStyle = PRQ.ProductStyle");
+                sql.AppendLine("    AND p.ID = PRQ.ParentID");
+                sql.AppendLine("    WHERE 1 = 1");
+                if (filter.stockStatus == (int)StockStatus.stocking)
+                    sql.AppendLine("    AND PRQ.QuantityLeft > 0");
+                else if (filter.stockStatus == (int)StockStatus.stockOut)
+                    sql.AppendLine("    AND PRQ.QuantityLeft < 0");
+                else if (filter.stockStatus == (int)StockStatus.stockIn)
+                    sql.AppendLine("    AND PRQ.QuantityLeft IS NULL");
+
+                if (filter.quantity.Equals("greaterthan"))
+                    sql.AppendLine(String.Format("  AND PRQ.QuantityLeft >= {0}", filter.quantityFrom));
+                else if (filter.quantity.Equals("lessthan"))
+                    sql.AppendLine(String.Format("  AND PRQ.QuantityLeft <= {0}", filter.quantityTo));
+                else if (filter.quantity.Equals("between"))
+                    sql.AppendLine(String.Format("  AND PRQ.QuantityLeft BETWEEN {0} AND {1}", filter.quantityFrom, filter.quantityTo));
+                sql.AppendLine(");");
+
+                sql.AppendLine("DELETE #ProductQuantity");
+                sql.AppendLine("WHERE NOT EXISTS (");
+                sql.AppendLine("    SELECT");
+                sql.AppendLine("        NULL AS DUMMY");
+                sql.AppendLine("    FROM");
+                sql.AppendLine("        #Product AS p");
+                sql.AppendLine("    WHERE");
+                sql.AppendLine("        p.ProductStyle = ProductStyle");
+                sql.AppendLine("    AND p.ID = ParentID");
+                sql.AppendLine(");");
+            }
+            #endregion
+
+            #region Tính toán phân trang
+            sql.AppendLine(String.Empty);
+            sql.AppendLine("SELECT");
+            sql.AppendLine("    @totalCount = COUNT(*),");
+            sql.AppendLine("    @totalPages = CEILING(COUNT(*) / (@pageSize * 1.0))");
+            sql.AppendLine("FROM");
+            sql.AppendLine("    #Product AS p;");
+            #endregion
+            #region Kết thúc
             sql.AppendLine(String.Empty);
             sql.AppendLine("     SELECT");
-            sql.AppendLine("             p.ProductStyle AS ProductStyle");
+            sql.AppendLine("             @totalCount AS TotalCount");
+            sql.AppendLine("     ,       @totalPages AS TotalPages");
+            sql.AppendLine("     ,       p.ProductStyle AS ProductStyle");
             sql.AppendLine("     ,       c.CategoryName");
             sql.AppendLine("     ,       p.*");
             sql.AppendLine("     ,       PRQ.QuantityLeft");
@@ -1253,8 +1348,12 @@ namespace IM_PJ.Controllers
             sql.AppendLine("     ON c.ID = p.CategoryID");
             sql.AppendLine("     ORDER BY");
             sql.AppendLine("             p.ID");
+            sql.AppendLine("     OFFSET @pageSize * (@currentPage - 1) ROWS");
+            sql.AppendLine("     FETCH NEXT @pageSize ROWS ONLY");
             sql.AppendLine("     ;");
             sql.AppendLine(String.Empty);
+            #endregion
+            #endregion
             sql.AppendLine(" END");
 
             var reader = (IDataReader)SqlHelper.ExecuteDataReader(sql.ToString());
@@ -1327,6 +1426,11 @@ namespace IM_PJ.Controllers
                     entity.WebPublish = reader["WebPublish"].ToString().ToBool();
                 if (reader["WebUpdate"] != DBNull.Value)
                     entity.WebUpdate = Convert.ToDateTime(reader["WebUpdate"]);
+                // get infe page header
+                if (reader["TotalCount"] != DBNull.Value)
+                    page.totalCount = reader["TotalCount"].ToString().ToInt(0);
+                if (reader["TotalPages"] != DBNull.Value)
+                    page.totalPages = reader["TotalPages"].ToString().ToInt(0);
                 list.Add(entity);
             }
             reader.Close();

@@ -85,12 +85,13 @@ namespace IM_PJ
                 int StockStatus = 0;
                 string ShowHomePage = "";
                 string WebPublish = "";
-                string QuantityFilter = "";
-                int Quantity = 0;
-                int QuantityMin = 0;
-                int QuantityMax = 0;
                 string strColor = String.Empty;
                 string strSize = String.Empty;
+                int Page = 1;
+                // add filter quantity
+                string Quantity = "";
+                int QuantityFrom = 0;
+                int QuantityTo = 0;
 
                 if (Request.QueryString["textsearch"] != null)
                     TextSearch = Request.QueryString["textsearch"].Trim();
@@ -104,27 +105,34 @@ namespace IM_PJ
                     ShowHomePage = Request.QueryString["showhomepage"];
                 if (Request.QueryString["webpublish"] != null)
                     WebPublish = Request.QueryString["webpublish"];
-
-                if (Request.QueryString["quantityfilter"] != null)
-                {
-                    QuantityFilter = Request.QueryString["quantityfilter"];
-
-                    if (QuantityFilter == "greaterthan" || QuantityFilter == "lessthan")
-                    {
-                        Quantity = Request.QueryString["quantity"].ToInt();
-                    }
-                    if(QuantityFilter == "between")
-                    {
-                        QuantityMin = Request.QueryString["quantitymin"].ToInt();
-                        QuantityMax = Request.QueryString["quantitymax"].ToInt();
-                    }
-                }
-
                 // Add filter valiable value
                 if (Request.QueryString["color"] != null)
                     strColor = Request.QueryString["color"].Trim();
                 if (Request.QueryString["size"] != null)
                     strSize = Request.QueryString["size"].Trim();
+                if (Request.QueryString["Page"] != null)
+                {
+                    Page = Request.QueryString["Page"].ToInt();
+                }
+                // add filter quantity
+                if (Request.QueryString["quantityfilter"] != null)
+                {
+                    Quantity = Request.QueryString["quantityfilter"];
+
+                    if (Quantity == "greaterthan")
+                    {
+                        QuantityFrom = Request.QueryString["quantity"].ToInt();
+                    }
+                    else if (Quantity == "lessthan")
+                    {
+                        QuantityTo = Request.QueryString["quantity"].ToInt();
+                    }
+                    else if (Quantity == "between")
+                    {
+                        QuantityFrom = Request.QueryString["quantitymin"].ToInt();
+                        QuantityTo = Request.QueryString["quantitymax"].ToInt();
+                    }
+                }
 
                 txtSearchProduct.Text = TextSearch;
                 ddlCategory.SelectedValue = CategoryID.ToString();
@@ -132,40 +140,55 @@ namespace IM_PJ
                 ddlStockStatus.SelectedValue = StockStatus.ToString();
                 ddlShowHomePage.SelectedValue = ShowHomePage.ToString();
                 ddlWebPublish.SelectedValue = WebPublish.ToString();
-                ddlQuantityFilter.SelectedValue = QuantityFilter.ToString();
-                txtQuantity.Text = Quantity.ToString();
-                txtQuantityMin.Text = QuantityMin.ToString();
-                txtQuantityMax.Text = QuantityMax.ToString();
+                // add filter quantity
+                ddlQuantityFilter.SelectedValue = Quantity.ToString();
+                if (Quantity == "greaterthan")
+                {
+                    txtQuantity.Text = QuantityFrom.ToString();
+                    txtQuantityMin.Text = "0";
+                    txtQuantityMax.Text = "0";
+                }
+                else if (Quantity == "lessthan")
+                {
+                    txtQuantity.Text = QuantityTo.ToString();
+                    txtQuantityMin.Text = "0";
+                    txtQuantityMax.Text = "0";
+                }
+                else if (Quantity == "between")
+                {
+                    txtQuantity.Text = "0";
+                    txtQuantityMin.Text = QuantityFrom.ToString();
+                    txtQuantityMax.Text = QuantityTo.ToString();
+                }
 
                 // Add filter valiable value
                 ddlColor.SelectedValue = strColor;
                 ddlSize.SelectedValue = strSize;
 
+                // Create order fileter
+                var filter = new ProductFilterModel()
+                {
+                    category = CategoryID,
+                    search = TextSearch,
+                    color = strColor,
+                    size = strSize,
+                    stockStatus = StockStatus,
+                    quantity = Quantity,
+                    quantityFrom = QuantityFrom,
+                    quantityTo = QuantityTo,
+                    productDate = CreatedDate,
+                    showHomePage = ShowHomePage,
+                    webPublish = WebPublish
+                };
+                // Create pagination
+                var page = new PaginationMetadataModel()
+                {
+                    currentPage = Page
+                };
                 List<ProductSQL> a = new List<ProductSQL>();
-                a = ProductController.GetAllSql(CategoryID, TextSearch, CreatedDate, ShowHomePage, WebPublish, strColor, strSize);
+                a = ProductController.GetAllSql(filter, ref page);
 
-                if (StockStatus != 0)
-                {
-                    a = a.Where(p => p.StockStatus == StockStatus).ToList();
-                }
-
-                if (QuantityFilter != "")
-                {
-                    if (QuantityFilter == "greaterthan")
-                    {
-                        a = a.Where(p => p.TotalProductInstockQuantityLeft >= Quantity).ToList();
-                    }
-                    else if(QuantityFilter == "lessthan")
-                    {
-                        a = a.Where(p => p.TotalProductInstockQuantityLeft <= Quantity).ToList();
-                    }
-                    else if (QuantityFilter == "between")
-                    {
-                        a = a.Where(p => p.TotalProductInstockQuantityLeft >= QuantityMin && p.TotalProductInstockQuantityLeft <= QuantityMax).ToList();
-                    }
-                }
-
-                pagingall(a);
+                pagingall(a, page);
 
                 ltrNumberOfProduct.Text = a.Count().ToString();
             }
@@ -585,12 +608,11 @@ namespace IM_PJ
             public string VariableValue { get; set; }
         }
         #region Paging
-        public void pagingall(List<ProductSQL> acs)
+        public void pagingall(List<ProductSQL> acs, PaginationMetadataModel page)
         {
             string username = Request.Cookies["userLoginSystem"].Value;
             var acc = AccountController.GetByUsername(username);
 
-            int PageSize = 30;
             StringBuilder html = new StringBuilder();
             html.Append("<thead>");
             html.Append("<tr>");
@@ -619,23 +641,11 @@ namespace IM_PJ
             html.Append("<tbody>");
             if (acs.Count > 0)
             {
-                int TotalItems = acs.Count;
-                if (TotalItems % PageSize == 0)
-                    PageCount = TotalItems / PageSize;
-                else
-                    PageCount = TotalItems / PageSize + 1;
+                PageCount = page.totalPages;
+                Int32 Page = page.currentPage;
 
-                Int32 Page = GetIntFromQueryString("Page");
-
-                if (Page == -1) Page = 1;
-                int FromRow = (Page - 1) * PageSize;
-                int ToRow = Page * PageSize - 1;
-                if (ToRow >= TotalItems)
-                    ToRow = TotalItems - 1;
-
-                for (int i = FromRow; i < ToRow + 1; i++)
+                foreach (var item in acs)
                 {
-                    var item = acs[i];
                     html.Append("<tr>");
 
                     html.Append("<td>");

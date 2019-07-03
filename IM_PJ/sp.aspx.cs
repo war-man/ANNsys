@@ -67,6 +67,7 @@ namespace IM_PJ
             string CreatedDate = "";
             int CategoryID = 0;
             int StockStatus = 0;
+            int Page = 1;
 
             if (Request.QueryString["textsearch"] != null)
                 TextSearch = Request.QueryString["textsearch"].Trim();
@@ -76,26 +77,37 @@ namespace IM_PJ
                 CategoryID = Request.QueryString["categoryid"].ToInt();
             if (Request.QueryString["createddate"] != null)
                 CreatedDate = Request.QueryString["createddate"];
+            if (Request.QueryString["Page"] != null)
+                Page = Request.QueryString["Page"].ToInt();
 
             txtSearchProduct.Text = TextSearch;
             ddlCategory.SelectedValue = CategoryID.ToString();
             ddlCreatedDate.SelectedValue = CreatedDate.ToString();
             ddlStockStatus.SelectedValue = StockStatus.ToString();
 
-            List<ProductSQL> a = new List<ProductSQL>();
-            a = ProductController.GetAllSql(CategoryID, TextSearch, CreatedDate);
-
-            if (StockStatus != 0)
+            // Create order fileter
+            var filter = new ProductFilterModel()
             {
-                a = a.Where(p => p.StockStatus == StockStatus).ToList();
-            }
+                category = CategoryID,
+                search = TextSearch,
+                stockStatus = StockStatus,
+                productDate = CreatedDate
+            };
+            // Create pagination
+            var page = new PaginationMetadataModel()
+            {
+                currentPage = Page,
+                pageSize = 15
+            };
+            List<ProductSQL> a = new List<ProductSQL>();
+            a = ProductController.GetAllSql(filter, ref page);
 
-            pagingall(a);
+            pagingall(a, page);
 
         }
         [WebMethod]
         #region Paging
-        public void pagingall(List<ProductSQL> acs)
+        public void pagingall(List<ProductSQL> acs, PaginationMetadataModel page)
         {
             var config = ConfigController.GetByTop1();
             string cssClass = "col-xs-6";
@@ -104,30 +116,18 @@ namespace IM_PJ
                 cssClass = "col-xs-4";
             }
 
-            int PageSize = 15;
             StringBuilder html = new StringBuilder();
             html.Append("<div class='row'>");
 
             if (acs.Count > 0)
             {
-                int TotalItems = acs.Count;
-                if (TotalItems % PageSize == 0)
-                    PageCount = TotalItems / PageSize;
-                else
-                    PageCount = TotalItems / PageSize + 1;
+                PageCount = page.totalPages;
+                Int32 Page = page.currentPage;
+                var index = 0;
 
-                Int32 Page = GetIntFromQueryString("Page");
-
-                if (Page == -1) Page = 1;
-                int FromRow = (Page - 1) * PageSize;
-                int ToRow = Page * PageSize - 1;
-                if (ToRow >= TotalItems)
-                    ToRow = TotalItems - 1;
-
-                for (int i = FromRow; i < ToRow + 1; i++)
+                foreach (var item in acs)
                 {
-                    var item = acs[i];
-                    html.Append("<div class='col-md-3 item-" + i + " product-item'>");
+                    html.Append("<div class='col-md-3 item-" + index + " product-item'>");
                     html.Append("<div class='row'>");
                     html.Append("     <div class='col-xs-12'>");
                     html.Append("   <p><a href='/xem-sp?id=" + item.ID + "'><img src='" + Thumbnail.getURL(item.ProductImage, Thumbnail.Size.Large) + "'></a></p>");
@@ -178,10 +178,11 @@ namespace IM_PJ
 
                     html.Append("</div>");
 
-                    if((i + 1) % 4 == 0)
+                    if((index + 1) % 4 == 0)
                     {
                         html.Append("<div class='clear'></div>");
                     }
+                    ++index;
                 }
             }
             else
