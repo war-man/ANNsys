@@ -120,13 +120,14 @@ namespace IM_PJ
                 string CreatedBy = "";
                 string CreatedDate = "";
                 string TransferDoneAt = "";
-                string QuantityFilter = "";
-                int Quantity = 0;
-                int QuantityMin = 0;
-                int QuantityMax = 0;
                 int TransportCompany = 0;
                 int ShipperID = 0;
                 int Page = 1;
+
+                // add filter quantity
+                string Quantity = "";
+                int QuantityFrom = 0;
+                int QuantityTo = 0;
 
                 if (Request.QueryString["textsearch"] != null)
                 {
@@ -169,20 +170,6 @@ namespace IM_PJ
                 {
                     CreatedDate = Request.QueryString["createddate"];
                 }
-                if (Request.QueryString["quantityfilter"] != null)
-                {
-                    QuantityFilter = Request.QueryString["quantityfilter"];
-
-                    if (QuantityFilter == "greaterthan" || QuantityFilter == "lessthan")
-                    {
-                        Quantity = Request.QueryString["quantity"].ToInt();
-                    }
-                    if (QuantityFilter == "between")
-                    {
-                        QuantityMin = Request.QueryString["quantitymin"].ToInt();
-                        QuantityMax = Request.QueryString["quantitymax"].ToInt();
-                    }
-                }
                 if (Request.QueryString["transportcompany"] != null)
                 {
                     TransportCompany = Request.QueryString["transportcompany"].ToInt(0);
@@ -197,6 +184,26 @@ namespace IM_PJ
                     Page = Request.QueryString["Page"].ToInt();
                 }
 
+                // add filter quantity
+                if (Request.QueryString["quantityfilter"] != null)
+                {
+                    Quantity = Request.QueryString["quantityfilter"];
+
+                    if (Quantity == "greaterthan")
+                    {
+                        QuantityFrom = Request.QueryString["quantity"].ToInt();
+                    }
+                    else if (Quantity == "lessthan")
+                    {
+                        QuantityTo = Request.QueryString["quantity"].ToInt();
+                    }
+                    else if (Quantity == "between")
+                    {
+                        QuantityFrom = Request.QueryString["quantitymin"].ToInt();
+                        QuantityTo = Request.QueryString["quantitymax"].ToInt();
+                    }
+                }
+
                 txtSearchOrder.Text = TextSearch;
                 ddlOrderType.SelectedValue = OrderType.ToString();
                 ddlExcuteStatus.SelectedValue = ExcuteStatus.Count() > 1 ? "0" : ExcuteStatus.FirstOrDefault().ToString();
@@ -207,58 +214,70 @@ namespace IM_PJ
                 ddlOtherFee.SelectedValue = OtherFee.ToString();
                 ddlCreatedBy.SelectedValue = CreatedBy.ToString();
                 ddlCreatedDate.SelectedValue = CreatedDate.ToString();
-
-                ddlQuantityFilter.SelectedValue = QuantityFilter.ToString();
-                txtQuantity.Text = Quantity.ToString();
-                txtQuantityMin.Text = QuantityMin.ToString();
-                txtQuantityMax.Text = QuantityMax.ToString();
                 ddlTransportCompany.SelectedValue = TransportCompany.ToString();
                 ddlShipperFilter.SelectedValue = ShipperID.ToString();
+                // add filter quantity
+                ddlQuantityFilter.SelectedValue = Quantity.ToString();
+                if (Quantity == "greaterthan")
+                {
+                    txtQuantity.Text = QuantityFrom.ToString();
+                    txtQuantityMin.Text = "0";
+                    txtQuantityMax.Text = "0";
+                }
+                else if (Quantity == "lessthan")
+                {
+                    txtQuantity.Text = QuantityTo.ToString();
+                    txtQuantityMin.Text = "0";
+                    txtQuantityMax.Text = "0";
+                }
+                else if (Quantity == "between")
+                {
+                    txtQuantity.Text = "0";
+                    txtQuantityMin.Text = QuantityFrom.ToString();
+                    txtQuantityMax.Text = QuantityTo.ToString();
+                }
 
                 if (acc.RoleID != 0)
                 {
                     CreatedBy = acc.Username;
                 }
 
-                int totalPage = 0;
-                int totalItems = 0;
+                // Create order fileter
+                var filter = new OrderFilterModel()
+                {
+                    search = TextSearch,
+                    orderType = OrderType,
+                    excuteStatus = ExcuteStatus,
+                    paymentStatus = PaymentStatus,
+                    paymentType = PaymentType,
+                    shippingType = ShippingType,
+                    discount = Discount,
+                    otherFee = OtherFee,
+                    quantity = Quantity,
+                    quantityFrom = QuantityFrom,
+                    quantityTo = QuantityTo,
+                    orderCreatedBy = CreatedBy,
+                    orderDate = CreatedDate,
+                    transferDone = TransferDoneAt,
+                    transportCompany = TransportCompany,
+                    shipper = ShipperID,
+                };
+                // Create pagination
+                var page = new PaginationMetadataModel()
+                {
+                    currentPage = Page
+                };
                 List<OrderList> rs = new List<OrderList>();
-                rs = OrderController.Filter(
-                    ref totalPage, 
-                    ref totalItems, 
-                    TextSearch, 
-                    OrderType, 
-                    ExcuteStatus, 
-                    PaymentStatus, 
-                    0, 
-                    PaymentType, 
-                    ShippingType, 
-                    Discount, 
-                    OtherFee,
-                    QuantityFilter,
-                    CreatedBy, 
-                    CreatedDate, 
-                    TransferDoneAt, 
-                    TransportCompany, 
-                    ShipperID,
-                    "", 
-                    0, 
-                    Page,
-                    30,
-                    Quantity,
-                    QuantityMin,
-                    QuantityMax
-                );
+                rs = OrderController.Filter(filter, ref page);
 
-                pagingall(rs, Page, totalPage);
+                pagingall(rs, page);
 
-                ltrNumberOfOrder.Text = totalItems.ToString();
-                
+                ltrNumberOfOrder.Text = page.totalCount.ToString();
             }
         }
 
         #region Paging
-        public void pagingall(List<OrderList> acs, int page, int totalPage)
+        public void pagingall(List<OrderList> acs, PaginationMetadataModel page)
         {
             string username = Request.Cookies["userLoginSystem"].Value;
             var acc = AccountController.GetByUsername(username);
@@ -288,8 +307,8 @@ namespace IM_PJ
             html.Append("<tbody>");
             if (acs.Count > 0)
             {
-                PageCount = totalPage;
-                Int32 Page = page;
+                PageCount = page.totalPages;
+                Int32 Page = page.currentPage;
                 
                 foreach(var item in acs)
                 {

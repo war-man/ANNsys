@@ -875,6 +875,11 @@
     <Compile Include="Models\BankTransfer.cs">
       <DependentUpon>IMModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\Common\BusinessReportModel.cs" />
+    <Compile Include="Models\Common\AllTypeModel.cs" />
+    <Compile Include="Models\Common\PaginationMetadataModel.cs" />
+    <Compile Include="Models\Common\OrderFilterModel.cs" />
+    <Compile Include="Models\Common\ProductFilterModel.cs" />
     <Compile Include="Models\Delivery.cs">
       <DependentUpon>IMModel.tt</DependentUpon>
     </Compile>

@@ -403,35 +403,11 @@ namespace IM_PJ.Controllers
             }
         }
 
-        public static List<OrderList> Filter(
-                ref int totalPage,
-                ref int totalItems,
-                string TextSearch,
-                int OrderType,
-                List<int> ExcuteStatus,
-                int PaymentStatus,
-                int TransferStatus,
-                int PaymentType,
-                List<int> ShippingType,
-                string Discount,
-                string OtherFee,
-                string QuantityFilter,
-                string CreatedBy,
-                string CreatedDate,
-                string TransferDoneAt,
-                int TransportCompany,
-                int ShipperID,
-                string DeliveryStartAt,
-                int DeliveryTimes = 0,
-                int CurrentPage = 1,
-                int PageSize = 30,
-                int Quantity = 0,
-                int QuantityMin = 0,
-                int QuantityMax = 0
-            )
+        public static List<OrderList> Filter(OrderFilterModel filter, ref PaginationMetadataModel page)
         {
             using (var con = new inventorymanagementEntities())
             {
+                #region Loại bớt data chỉ lấy những dữ liệu tỏng 2019-02-15
                 DateTime year = new DateTime(2019, 2, 15);
 
                 var config = ConfigController.GetByTop1();
@@ -461,55 +437,57 @@ namespace IM_PJ.Controllers
                         RefundsGoodsID = x.RefundsGoodsID,
                     })
                     .Where(x => x.CreatedDate >= year);
+                #endregion
 
+                #region Các filter trức tiếp trên bản tbl_Product
                 // Filter Order Type
-                if (OrderType > 0)
+                if (filter.orderType > 0)
                 {
                     orders = orders.Where(x =>
-                        x.OrderType == OrderType
+                        x.OrderType == filter.orderType
                     );
                 }
                 // Filter Payment Type
-                if (PaymentType > 0)
+                if (filter.paymentType > 0)
                 {
                     orders = orders.Where(x =>
-                        x.PaymentType == PaymentType
+                        x.PaymentType == filter.paymentType
                     );
                 }
                 // Filter Payment Status
-                if (PaymentStatus > 0)
+                if (filter.paymentStatus > 0)
                 {
                     orders = orders.Where(x =>
-                        x.PaymentStatus == PaymentStatus
+                        x.PaymentStatus == filter.paymentStatus
                     );
                 }
                 // Filter Excute Status
-                if (ExcuteStatus.Count() > 0)
+                if (filter.excuteStatus.Count() > 0)
                 {
                     orders = orders.Where(x =>
-                       ExcuteStatus.Contains(x.ExcuteStatus.HasValue ? x.ExcuteStatus.Value : 0)
+                       filter.excuteStatus.Contains(x.ExcuteStatus.HasValue ? x.ExcuteStatus.Value : 0)
                     );
                 }
                 // Filter Shipping Type
-                if (ShippingType.Count() > 0)
+                if (filter.shippingType.Count() > 0)
                 {
                     orders = orders.Where(x =>
-                       ShippingType.Contains(x.ShippingType.HasValue ? x.ShippingType.Value : 0) 
+                       filter.shippingType.Contains(x.ShippingType.HasValue ? x.ShippingType.Value : 0) 
                     );
                 }
 
                 // Filter Transport Company
-                if (TransportCompany > 0)
+                if (filter.transportCompany > 0)
                 {
                     orders = orders.Where(x =>
-                       x.TransportCompanyID == TransportCompany
+                       x.TransportCompanyID == filter.transportCompany
                     );
                 }
 
                 // Filter Discount
-                if (!String.IsNullOrEmpty(Discount))
+                if (!String.IsNullOrEmpty(filter.discount))
                 {
-                    if (Discount.Equals("yes"))
+                    if (filter.discount.Equals("yes"))
                     {
                         orders = orders.Where(x =>
                            x.TotalDiscount > 0
@@ -524,21 +502,21 @@ namespace IM_PJ.Controllers
                 }
 
                 // Filter Created By
-                if (!String.IsNullOrEmpty(CreatedBy))
+                if (!String.IsNullOrEmpty(filter.orderCreatedBy))
                 {
                     orders = orders.Where(x =>
-                        x.CreatedBy == CreatedBy
+                        x.CreatedBy == filter.orderCreatedBy
                     );
                 }
 
                 // Filter Created Date
-                if (!String.IsNullOrEmpty(CreatedDate))
+                if (!String.IsNullOrEmpty(filter.orderDate))
                 {
                     DateTime fromdate = DateTime.Today;
                     DateTime todate = DateTime.Now;
-                    CalDate(CreatedDate, ref fromdate, ref todate);
+                    CalDate(filter.orderDate, ref fromdate, ref todate);
 
-                    if (ExcuteStatus.Count() == 1 && ExcuteStatus.Contains(2))
+                    if (filter.excuteStatus.Count() == 1 && filter.excuteStatus.Contains(2))
                     {
                         orders = orders.Where(x =>
                             x.DateDone >= fromdate &&
@@ -553,17 +531,22 @@ namespace IM_PJ.Controllers
                         );
                     }
                 }
+                #endregion
 
+                #region Lấy dữ liệu cần thiết cho việc filter liên kết bảng
                 var orderFilter = orders.Select(x => new {
                     ID = x.ID,
                     CustomerID = x.CustomerID,
                     RefundsGoodsID = x.RefundsGoodsID
                 });
+                #endregion
 
+                #region Các filter cần liên kết bản
+                #region Tìm kiếm theo từ khóa
                 // Filter orderid or customername or customerphone or nick or shipcode
-                if (!String.IsNullOrEmpty(TextSearch))
+                if (!String.IsNullOrEmpty(filter.search))
                 {
-                    string search = Regex.Replace(TextSearch.Trim(), @"[^0-9a-zA-Z\s_ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ]+", "").Trim().ToLower();
+                    string search = Regex.Replace(filter.search.Trim(), @"[^0-9a-zA-Z\s_ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ]+", "").Trim().ToLower();
                     search = UnSign.convert(search);
 
                     var number = Regex.IsMatch(search, @"^\d+$");
@@ -657,13 +640,15 @@ namespace IM_PJ.Controllers
                             });
                     }
                 }
+                #endregion
 
+                #region Tìm kiếm theo ngày giao hàng
                 // Filter Delivery Start At
-                if (!String.IsNullOrEmpty(DeliveryStartAt))
+                if (!String.IsNullOrEmpty(filter.deliveryStart))
                 {
                     DateTime fromdate = DateTime.Today;
                     DateTime todate = DateTime.Now;
-                    CalDate(DeliveryStartAt, ref fromdate, ref todate);
+                    CalDate(filter.deliveryStart, ref fromdate, ref todate);
 
                     orderFilter = orders
                         .GroupJoin(
@@ -693,13 +678,15 @@ namespace IM_PJ.Controllers
                             RefundsGoodsID = x.RefundsGoodsID
                         });
                 }
+                #endregion
 
+                #region Tìm kiếm trạng thái chuyển khoản hoặc ngày kết kết thúc chuyển khoản
                 // Filter Transfer Status or DoneAt
-                if (TransferStatus > 0 || !String.IsNullOrEmpty(TransferDoneAt))
+                if (filter.transferStatus > 0 || !String.IsNullOrEmpty(filter.transferDone))
                 {
                     DateTime fromdate = DateTime.Today;
                     DateTime todate = DateTime.Now;
-                    CalDate(TransferDoneAt, ref fromdate, ref todate);
+                    CalDate(filter.transferDone, ref fromdate, ref todate);
 
                     var tempTrans = orders
                         .GroupJoin(
@@ -722,20 +709,20 @@ namespace IM_PJ.Controllers
                         )
                         .Where(x => 1 == 1);
 
-                    if (TransferStatus == 1)
+                    if (filter.transferStatus == 1)
                     {
                         tempTrans = tempTrans.Where(x =>
                             x.TransStatus == 1
                         );
                     }
-                    else if (TransferStatus == 2)
+                    else if (filter.transferStatus == 2)
                     {
                         tempTrans = tempTrans.Where(x =>
                             x.TransStatus != 1
                         );
                     }
 
-                    if (!String.IsNullOrEmpty(TransferDoneAt))
+                    if (!String.IsNullOrEmpty(filter.transferDone))
                     {
 
                         tempTrans = tempTrans.Where(x =>
@@ -750,9 +737,11 @@ namespace IM_PJ.Controllers
                         RefundsGoodsID = x.RefundsGoodsID
                     });
                 }
+                #endregion
 
+                #region Tìm kiếm lần giam hàng
                 // Filter Delivery times
-                if (DeliveryTimes > 0)
+                if (filter.deliveryTimes > 0)
                 {
                     orderFilter = orders
                         .GroupJoin(
@@ -772,16 +761,18 @@ namespace IM_PJ.Controllers
                                 DeliveryTimes = child.Times
                             }
                         )
-                        .Where(x => x.DeliveryTimes == DeliveryTimes)
+                        .Where(x => x.DeliveryTimes == filter.deliveryTimes)
                         .Select(x => new {
                             ID = x.ID,
                             CustomerID = x.CustomerID,
                             RefundsGoodsID = x.RefundsGoodsID
                         });
                 }
+                #endregion
 
+                #region Tìm kiếm theo shipper
                 // Filter Shipper
-                if (ShipperID > 0)
+                if (filter.shipper > 0)
                 {
                     orderFilter = orders
                         .GroupJoin(
@@ -800,14 +791,16 @@ namespace IM_PJ.Controllers
                                 ShipperID = child.ShipperID,
                             }
                         )
-                        .Where(x => x.ShipperID == ShipperID)
+                        .Where(x => x.ShipperID == filter.shipper)
                         .Select(x => new {
                             ID = x.ID,
                             CustomerID = x.CustomerID,
                             RefundsGoodsID = x.RefundsGoodsID
                         });
                 }
+                #endregion
 
+                #region Tìm kiếm theo số lượng đơn hàng
                 // Get info quantiy
                 var orderQuantity = orderFilter
                     .Join(
@@ -828,40 +821,42 @@ namespace IM_PJ.Controllers
                     });
 
                 // Filter quantity
-                if (!String.IsNullOrEmpty(QuantityFilter))
+                if (!String.IsNullOrEmpty(filter.quantity))
                 {
-                    if (QuantityFilter.Equals("greaterthan"))
+                    if (filter.quantity.Equals("greaterthan"))
                     {
                         orderFilter = orderFilter
                             .Join(
-                                orderQuantity.Where(p => p.Quantity >= Quantity),
+                                orderQuantity.Where(p => p.Quantity >= filter.quantityFrom),
                                 o => o.ID,
                                 b => b.OrderID,
                                 (o, b) => o
                             );
                     }
-                    else if (QuantityFilter.Equals("lessthan"))
+                    else if (filter.quantity.Equals("lessthan"))
                     {
                         orderFilter = orderFilter
                             .Join(
-                                orderQuantity.Where(p => p.Quantity <= Quantity),
+                                orderQuantity.Where(p => p.Quantity <= filter.quantityTo),
                                 o => o.ID,
                                 b => b.OrderID,
                                 (o, b) => o
                             );
                     }
-                    else if (QuantityFilter.Equals("between"))
+                    else if (filter.quantity.Equals("between"))
                     {
                         orderFilter = orderFilter
                             .Join(
-                                orderQuantity.Where(p => p.Quantity >= QuantityMin && p.Quantity <= QuantityMax),
+                                orderQuantity.Where(p => p.Quantity >= filter.quantityFrom && p.Quantity <= filter.quantityTo),
                                 o => o.ID,
                                 b => b.OrderID,
                                 (o, b) => o
                             );
                     }
                 }
+                #endregion
 
+                #region Tìm kiếm theo phí sản phẩm
                 // Get fee of product
                 var orderFee = orderFilter
                     .Join(
@@ -895,9 +890,9 @@ namespace IM_PJ.Controllers
                     });
 
                 // Filter fee of product
-                if (!String.IsNullOrEmpty(OtherFee))
+                if (!String.IsNullOrEmpty(filter.otherFee))
                 {
-                    if (OtherFee.Equals("yes"))
+                    if (filter.otherFee.Equals("yes"))
                     {
                         orderFilter = orderFilter
                             .Join(
@@ -918,73 +913,11 @@ namespace IM_PJ.Controllers
                             );
                     }
                 }
+                #endregion
 
-                totalItems = orderFilter.Count();
-                totalPage = (int)Math.Ceiling(totalItems / (double)PageSize);
-
-                orderFilter = orderFilter
-                    .OrderByDescending(x => x.ID)
-                    .Skip((CurrentPage - 1) * PageSize)
-                    .Take(PageSize)
-                    .Select(x => new {
-                        ID = x.ID,
-                        CustomerID = x.CustomerID,
-                        RefundsGoodsID = x.RefundsGoodsID
-                    });
-
-                // Get info main
-                var header = orderFilter
-                    .Join(
-                        con.tbl_Order,
-                        h => h.ID,
-                        o => o.ID,
-                        (h, o) => o
-                    )
-                    .OrderByDescending(o => o.ID)
-                    .ToList();
-
-                // Get info quantiy
-                var body = orderQuantity
-                    .OrderByDescending(o => o.OrderID)
-                    .ToList();
-
-                // Get info refunds
-                var refunds = orderFilter.Where(x => x.RefundsGoodsID.HasValue)
-                    .Join(
-                        con.tbl_RefundGoods,
-                        h => h.RefundsGoodsID.Value,
-                        r => r.ID,
-                        (h, r) => new
-                        {
-                            OrderID = h.ID,
-                            RefundsGoodsID = h.RefundsGoodsID,
-                            TotalPrice = r.TotalPrice
-                        });
-
-                // Get info customer
-                var customer = orderFilter
-                    .Join(
-                        con.tbl_Customer,
-                        h => h.CustomerID,
-                        c => c.ID,
-                        (h, c) => new
-                        {
-                            OrderID = h.ID,
-                            CustomerID = c.ID,
-                            CustomerName = c.CustomerName,
-                            Nick = c.Nick,
-                            CustomerPhone = c.CustomerPhone
-                        })
-                    .OrderByDescending(o => o.OrderID)
-                    .ToList();
-
-                // Get info fee
-                var fee = orderFee
-                    .OrderByDescending(o => o.OrderID)
-                    .ToList();
-
-                // Get info transfer bank
-                var trans = orderFilter
+                #region Tìm kiếm theo tài khoản ngân hàng nhận tiền
+                // Filter banck receive
+                var orderBank = orderFilter
                     .Join(
                         con.BankTransfers,
                         h => h.ID,
@@ -1035,12 +968,22 @@ namespace IM_PJ.Controllers
                             // Bank Account
                             AccBankName = a.BankName
                         }
-                    )
-                    .OrderByDescending(o => o.OrderID)
-                    .ToList();
+                    );
 
-                // Get info delivery
-                var deliveries = orderFilter
+                if (filter.bankReceive != 0)
+                {
+                    orderFilter = orderFilter
+                        .Join(
+                            orderBank.Where(x => x.AccBankID == filter.bankReceive),
+                            o => o.ID,
+                            b => b.OrderID,
+                            (o, b) => o
+                        );
+                }
+                #endregion
+
+                #region Tìm kiếm theo phiếu giao hàng
+                var orderDelivery = orderFilter
                     .Join(
                         con.Deliveries,
                         h => h.ID,
@@ -1075,12 +1018,135 @@ namespace IM_PJ.Controllers
                             DeliveryTimes = h.DeliveryTimes,
                             // Shipper
                             ShipperName = c.Name
-                            
                         }
+                    );
+
+                if (filter.deliveryStatus != 0)
+                {
+                    orderFilter = orderFilter
+                        .Join(
+                            orderDelivery.Where(x => x.Status == filter.deliveryStatus),
+                            o => o.ID,
+                            b => b.OrderID,
+                            (o, b) => o
+                        );
+                }
+
+                switch (filter.invoiceStatus)
+                {
+                    case (int)InvoiceStatus.Yes:
+                        orderFilter = orderFilter
+                        .Join(
+                            orderDelivery.Where(x => !String.IsNullOrEmpty(x.Image)),
+                            o => o.ID,
+                            b => b.OrderID,
+                            (o, b) => o
+                        );
+                        break;
+                    case (int)InvoiceStatus.No:
+                        orderFilter = orderFilter
+                        .Join(
+                            orderDelivery.Where(x => String.IsNullOrEmpty(x.Image)),
+                            o => o.ID,
+                            b => b.OrderID,
+                            (o, b) => o
+                        );
+                        break;
+                    default:
+                        break;
+                }
+                #endregion
+                #endregion
+
+                #region Tính toán phân trang
+                // Calculate pagination
+                page.totalCount = orderFilter.Count();
+                page.totalPages = (int)Math.Ceiling(page.totalCount / (double)page.pageSize);
+
+                orderFilter = orderFilter
+                    .OrderByDescending(x => x.ID)
+                    .Skip((page.currentPage - 1) * page.pageSize)
+                    .Take(page.pageSize);
+                #endregion
+
+                #region Xuất dữ liệu
+                #region Xuất thông tin chính
+                // Get info main
+                var header = orderFilter
+                    .Join(
+                        con.tbl_Order,
+                        h => h.ID,
+                        o => o.ID,
+                        (h, o) => o
                     )
+                    .OrderByDescending(o => o.ID)
+                    .ToList();
+                #endregion
+
+                #region Xuất thông tin về số lượng order
+                // Get info quantiy
+                var body = orderQuantity
                     .OrderByDescending(o => o.OrderID)
                     .ToList();
+                #endregion
 
+                #region Xuất thông tin về tra hàng
+                // Get info refunds
+                var refunds = orderFilter.Where(x => x.RefundsGoodsID.HasValue)
+                    .Join(
+                        con.tbl_RefundGoods,
+                        h => h.RefundsGoodsID.Value,
+                        r => r.ID,
+                        (h, r) => new
+                        {
+                            OrderID = h.ID,
+                            RefundsGoodsID = h.RefundsGoodsID,
+                            TotalPrice = r.TotalPrice
+                        });
+                #endregion
+
+                #region Xuất thông tin khách hàng
+                // Get info customer
+                var customer = orderFilter
+                    .Join(
+                        con.tbl_Customer,
+                        h => h.CustomerID,
+                        c => c.ID,
+                        (h, c) => new
+                        {
+                            OrderID = h.ID,
+                            CustomerID = c.ID,
+                            CustomerName = c.CustomerName,
+                            Nick = c.Nick,
+                            CustomerPhone = c.CustomerPhone
+                        })
+                    .OrderByDescending(o => o.OrderID)
+                    .ToList();
+                #endregion
+
+                #region Xuất thông tin phí của đơn hàng
+                // Get info fee
+                var fee = orderFee
+                    .OrderByDescending(o => o.OrderID)
+                    .ToList();
+                #endregion
+
+                #region Xuất thông tin giao dich ngân hàng
+                // Get info transfer bank
+                var trans = orderBank
+                    .OrderByDescending(o => o.OrderID)
+                    .ToList();
+                #endregion
+
+                #region Xuất thông tin giao hàng
+                // Get info delivery
+                var deliveries = orderDelivery
+                    .OrderByDescending(o => o.OrderID)
+                    .ToList();
+                #endregion
+                #endregion
+
+                #region Kêt thúc: Tổng hợp lại các thông tin
                 var data = header
                     .Join(
                         body,
@@ -1353,14 +1419,15 @@ namespace IM_PJ.Controllers
                             }
                             else
                             {
-                                result.DeliveryStatus = 2;
+                                result.DeliveryStatus = (int)DeliveryStatus.Waiting;
                             }
 
                             return result;
                         }
                     )
-                    .OrderByDescending(o => o.ID)
+                    .OrderByDescending(x => x.ID)
                     .ToList();
+                #endregion
 
                 return data;
             }

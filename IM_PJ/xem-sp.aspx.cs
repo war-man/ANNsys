@@ -48,8 +48,12 @@ namespace IM_PJ
                     ViewState["SKU"] = p.ProductSKU;
 
                     ltrProductName.Text = p.ProductSKU + " - " + p.ProductTitle;
-                    var a = ProductController.GetAllSql(0, p.ProductSKU);
-                    if(a.Count() > 0)
+                    // Create order fileter
+                    var filter = new ProductFilterModel() { search = p.ProductSKU };
+                    // Create pagination
+                    var page = new PaginationMetadataModel();
+                    var a = ProductController.GetAllSql(filter, ref page);
+                    if(page.totalCount > 0)
                     {
                         foreach (var item in a)
                         {

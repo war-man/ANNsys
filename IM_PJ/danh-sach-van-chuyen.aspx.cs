@@ -133,10 +133,9 @@ namespace IM_PJ
                 int DeliveryTimes = 0;
                 int Page = 1;
                 // add filter quantity
-                string QuantityFilter = "";
-                int Quantity = 0;
-                int QuantityMin = 0;
-                int QuantityMax = 0;
+                string Quantity = "";
+                int QuantityFrom = 0;
+                int QuantityTo = 0;
 
                 if (Request.QueryString["textsearch"] != null)
                     TextSearch = Request.QueryString["textsearch"].Trim();
@@ -170,16 +169,20 @@ namespace IM_PJ
                 // add filter quantity
                 if (Request.QueryString["quantityfilter"] != null)
                 {
-                    QuantityFilter = Request.QueryString["quantityfilter"];
+                    Quantity = Request.QueryString["quantityfilter"];
 
-                    if (QuantityFilter == "greaterthan" || QuantityFilter == "lessthan")
+                    if (Quantity == "greaterthan")
                     {
-                        Quantity = Request.QueryString["quantity"].ToInt();
+                        QuantityFrom = Request.QueryString["quantity"].ToInt();
                     }
-                    if (QuantityFilter == "between")
+                    else if (Quantity == "lessthan")
                     {
-                        QuantityMin = Request.QueryString["quantitymin"].ToInt();
-                        QuantityMax = Request.QueryString["quantitymax"].ToInt();
+                        QuantityTo = Request.QueryString["quantity"].ToInt();
+                    }
+                    else if (Quantity == "between")
+                    {
+                        QuantityFrom = Request.QueryString["quantitymin"].ToInt();
+                        QuantityTo = Request.QueryString["quantitymax"].ToInt();
                     }
                 }
 
@@ -195,56 +198,52 @@ namespace IM_PJ
                 ddlDeliveryStartAt.SelectedValue = DeliveryStartAt.ToString();
                 ddlDeliveryTimes.SelectedValue = DeliveryTimes.ToString();
                 // add filter quantity
-                ddlQuantityFilter.SelectedValue = QuantityFilter.ToString();
-                txtQuantity.Text = Quantity.ToString();
-                txtQuantityMin.Text = QuantityMin.ToString();
-                txtQuantityMax.Text = QuantityMax.ToString();
-
-                int totalPage = 0;
-                int totalItems = 0;
-                List<OrderList> rs = new List<OrderList>();
-                rs = OrderController.Filter(
-                    ref totalPage,
-                    ref totalItems,
-                    TextSearch, 
-                    0, // Ordertype
-                    new List<int>() { 2 }, // Excutestatus
-                    0, // PaymentStatus
-                    0, // TransferStatus
-                    PaymentType, // PaymentType
-                    ShippingType, // ShippingType All
-                    String.Empty, // Discount All
-                    String.Empty, // OtherFee
-                    QuantityFilter, // Quantity
-                    CreatedBy, // CreatedBy
-                    CreatedDate, // CreatedDate
-                    String.Empty, // TransferDoneAt
-                    TransportCompany, // TransportCompany
-                    ShipperID,
-                    DeliveryStartAt, // DeliveryStartAt
-                    DeliveryTimes, // DeliveryTimes
-                    Page,
-                    Quantity: Quantity,
-                    QuantityMin: QuantityMin,
-                    QuantityMax: QuantityMax
-                );
-                    
-                if (DeliveryStatus != 0)
-                    rs = rs.Where(x => x.DeliveryStatus == DeliveryStatus).ToList();
-
-                switch(InvoiceStatus)
+                ddlQuantityFilter.SelectedValue = Quantity.ToString();
+                if (Quantity == "greaterthan")
                 {
-                    case 1:
-                        rs = rs.Where(x => !String.IsNullOrEmpty(x.InvoiceImage)).ToList();
-                        break;
-                    case 2:
-                        rs = rs.Where(x => String.IsNullOrEmpty(x.InvoiceImage)).ToList();
-                        break;
-                    default:
-                        break;
+                    txtQuantity.Text = QuantityFrom.ToString();
+                    txtQuantityMin.Text = "0";
+                    txtQuantityMax.Text = "0";
                 }
-                if (DeliveryStatus != 0)
-                    rs = rs.Where(x => x.DeliveryStatus == DeliveryStatus).ToList();
+                else if (Quantity == "lessthan")
+                {
+                    txtQuantity.Text = QuantityTo.ToString();
+                    txtQuantityMin.Text = "0";
+                    txtQuantityMax.Text = "0";
+                }
+                else if (Quantity == "between")
+                {
+                    txtQuantity.Text = "0";
+                    txtQuantityMin.Text = QuantityFrom.ToString();
+                    txtQuantityMax.Text = QuantityTo.ToString();
+                }
+
+                // Create order fileter
+                var filter = new OrderFilterModel()
+                {
+                    search = TextSearch,
+                    excuteStatus = new List<int>() { (int)ExcuteStatus.Done },
+                    paymentType = PaymentType,
+                    shippingType = ShippingType,
+                    quantity = Quantity,
+                    quantityFrom = QuantityFrom,
+                    quantityTo = QuantityTo,
+                    orderCreatedBy = CreatedBy, // CreatedBy
+                    orderDate = CreatedDate, // CreatedDate
+                    transportCompany = TransportCompany, // TransportCompany
+                    shipper = ShipperID,
+                    deliveryStart = DeliveryStartAt, // DeliveryStartAt
+                    deliveryTimes = DeliveryTimes, // DeliveryTimes
+                    deliveryStatus = DeliveryStatus,
+                    invoiceStatus = InvoiceStatus
+                };
+                // Create pagination
+                var page = new PaginationMetadataModel()
+                {
+                    currentPage = Page
+                };
+                List<OrderList> rs = new List<OrderList>();
+                rs = OrderController.Filter(filter, ref page);
 
                 var deliverySession = SessionController.getDeliverySession(acc);
                 hdfSession.Value = JsonConvert.SerializeObject(deliverySession);
@@ -291,14 +290,14 @@ namespace IM_PJ
                         .ToList();
                 }
 
-                pagingall(rs, Page, totalPage);
+                pagingall(rs, page);
 
-                ltrNumberOfOrder.Text = totalItems.ToString();
+                ltrNumberOfOrder.Text = page.currentPage.ToString();
             }
         }
 
         #region Paging
-        public void pagingall(List<OrderList> acs, int page, int totalPage)
+        public void pagingall(List<OrderList> acs, PaginationMetadataModel page)
         {
             string username = Request.Cookies["userLoginSystem"].Value;
             var acc = AccountController.GetByUsername(username);
@@ -332,8 +331,8 @@ namespace IM_PJ
             html.Append("<tbody>");
             if (acs.Count > 0)
             {
-                PageCount = totalPage;
-                Int32 Page = page;
+                PageCount = page.totalPages;
+                Int32 Page = page.currentPage;
 
                 foreach (var item in acs)
                 {
