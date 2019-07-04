@@ -105,33 +105,35 @@
                             <div class="filter-above-wrap clear">
                                 <div class="filter-control">
                                     <div class="row">
-                                        <div class="col-md-5">
-                                            <asp:TextBox ID="txtSearchPost" runat="server" CssClass="form-control" placeholder="Tìm bài viết" autocomplete="off"></asp:TextBox>
+                                        <div class="col-md-9 col-xs-12">
+                                            <div class="row">
+                                                <div class="col-md-6 col-xs-12 margin-bottom-15">
+                                                    <asp:TextBox ID="txtSearchPost" runat="server" CssClass="form-control" placeholder="Tìm bài viết" autocomplete="off"></asp:TextBox>
+                                                </div>
+                                                <div class="col-md-3 col-xs-6 margin-bottom-15">
+                                                    <asp:DropDownList ID="ddlCategory" runat="server" CssClass="form-control"></asp:DropDownList>
+                                                </div>
+                                                <div class="col-md-3 col-xs-6 margin-bottom-15">
+                                                    <asp:DropDownList ID="ddlCreatedDate" runat="server" CssClass="form-control">
+                                                        <asp:ListItem Value="" Text="Thời gian"></asp:ListItem>
+                                                        <asp:ListItem Value="today" Text="Hôm nay"></asp:ListItem>
+                                                        <asp:ListItem Value="yesterday" Text="Hôm qua"></asp:ListItem>
+                                                        <asp:ListItem Value="beforeyesterday" Text="Hôm kia"></asp:ListItem>
+                                                        <asp:ListItem Value="week" Text="Tuần này"></asp:ListItem>
+                                                        <asp:ListItem Value="month" Text="Tháng này"></asp:ListItem>
+                                                        <asp:ListItem Value="7days" Text="7 ngày"></asp:ListItem>
+                                                        <asp:ListItem Value="30days" Text="30 ngày"></asp:ListItem>
+                                                    </asp:DropDownList>
+                                                </div>
+                                            </div>
                                         </div>
-                                        <div class="col-md-3">
-                                            <asp:DropDownList ID="ddlCategory" runat="server" CssClass="form-control"></asp:DropDownList>
-                                        </div>
-                                        <div class="col-md-2">
-                                            <asp:DropDownList ID="ddlCreatedDate" runat="server" CssClass="form-control">
-                                                <asp:ListItem Value="" Text="Tất cả thời gian"></asp:ListItem>
-                                                <asp:ListItem Value="today" Text="Hôm nay"></asp:ListItem>
-                                                <asp:ListItem Value="yesterday" Text="Hôm qua"></asp:ListItem>
-                                                <asp:ListItem Value="beforeyesterday" Text="Hôm kia"></asp:ListItem>
-                                                <asp:ListItem Value="week" Text="Tuần này"></asp:ListItem>
-                                                <asp:ListItem Value="month" Text="Tháng này"></asp:ListItem>
-                                                <asp:ListItem Value="7days" Text="7 ngày"></asp:ListItem>
-                                                <asp:ListItem Value="30days" Text="30 ngày"></asp:ListItem>
-                                            </asp:DropDownList>
-                                        </div>
-                                        <div class="col-md-2">
-                                            <div class="col-xs-6">
-                                                <div class="row">
+                                        <div class="col-md-3 col-xs-12">
+                                            <div class="row">
+                                                <div class="col-xs-6">
                                                     <a href="javascript:;" onclick="searchPost()" class="btn primary-btn h45-btn"><i class="fa fa-search"></i> Tìm kiếm</a>
                                                     <asp:Button ID="btnSearch" runat="server" CssClass="btn primary-btn h45-btn" OnClick="btnSearch_Click" Style="display: none" />
                                                 </div>
-                                            </div>
-                                            <div class="col-xs-6">
-                                                <div class="row">
+                                                <div class="col-xs-6">
                                                     <a href="/bv" class="btn primary-btn h45-btn download-btn"><i class="fa fa-times" aria-hidden="true"></i> Làm lại</a>
                                                 </div>
                                             </div>

@@ -67,6 +67,8 @@ namespace IM_PJ
             string CreatedDate = "";
             int CategoryID = 0;
             int StockStatus = 0;
+            string strColor = String.Empty;
+            string strSize = String.Empty;
             int Page = 1;
 
             if (Request.QueryString["textsearch"] != null)
@@ -77,10 +79,16 @@ namespace IM_PJ
                 CategoryID = Request.QueryString["categoryid"].ToInt();
             if (Request.QueryString["createddate"] != null)
                 CreatedDate = Request.QueryString["createddate"];
+            if (Request.QueryString["color"] != null)
+                strColor = Request.QueryString["color"].Trim();
+            if (Request.QueryString["size"] != null)
+                strSize = Request.QueryString["size"].Trim();
             if (Request.QueryString["Page"] != null)
                 Page = Request.QueryString["Page"].ToInt();
 
             txtSearchProduct.Text = TextSearch;
+            ddlColor.SelectedValue = strColor;
+            ddlSize.SelectedValue = strSize;
             ddlCategory.SelectedValue = CategoryID.ToString();
             ddlCreatedDate.SelectedValue = CreatedDate.ToString();
             ddlStockStatus.SelectedValue = StockStatus.ToString();
@@ -90,6 +98,8 @@ namespace IM_PJ
             {
                 category = CategoryID,
                 search = TextSearch,
+                color = strColor,
+                size = strSize,
                 stockStatus = StockStatus,
                 productDate = CreatedDate
             };
@@ -97,7 +107,7 @@ namespace IM_PJ
             var page = new PaginationMetadataModel()
             {
                 currentPage = Page,
-                pageSize = 15
+                pageSize = 20
             };
             List<ProductSQL> a = new List<ProductSQL>();
             a = ProductController.GetAllSql(filter, ref page);
@@ -182,7 +192,7 @@ namespace IM_PJ
                     {
                         html.Append("<div class='clear'></div>");
                     }
-                    ++index;
+                    index++;
                 }
             }
             else
@@ -324,6 +334,15 @@ namespace IM_PJ
             if (search != "")
             {
                 request += "&textsearch=" + search;
+            }
+
+            if (!String.IsNullOrEmpty(ddlColor.SelectedValue))
+            {
+                request += "&color=" + ddlColor.SelectedValue;
+            }
+            if (!String.IsNullOrEmpty(ddlSize.SelectedValue))
+            {
+                request += "&size=" + ddlSize.SelectedValue;
             }
 
             if (ddlStockStatus.SelectedValue != "")

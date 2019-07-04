@@ -85,7 +85,8 @@ namespace IM_PJ
 
                     if (!string.IsNullOrEmpty(p.ProductContent))
                     {
-                        ltrContent.Text = "<p><strong>🔖 Mô tả</strong>: " + p.ProductContent + "</p>";
+                        string content = Regex.Replace(p.ProductContent, @"<img\s[^>]*>(?:\s*?</img>)?", "").ToString();
+                        ltrContent.Text = "<p><strong>🔖 Mô tả</strong>: " + content + "</p>";
                     }
 
                     if (p.ProductImage != null)

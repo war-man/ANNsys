@@ -37,7 +37,7 @@ namespace IM_PJ
         {
             var category = PostCategoryController.GetAll();
             ddlCategory.Items.Clear();
-            ddlCategory.Items.Insert(0, new ListItem("Danh mục bài viết", "0"));
+            ddlCategory.Items.Insert(0, new ListItem("Danh mục", "0"));
             if (category.Count > 0)
             {
                 addItemCategory(0, "");

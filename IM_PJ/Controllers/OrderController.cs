@@ -440,6 +440,14 @@ namespace IM_PJ.Controllers
                 #endregion
 
                 #region Các filter trức tiếp trên bản tbl_Product
+
+                // Filter Created By
+                if (!String.IsNullOrEmpty(filter.orderCreatedBy))
+                {
+                    orders = orders.Where(x =>
+                        x.CreatedBy == filter.orderCreatedBy
+                    );
+                }
                 // Filter Order Type
                 if (filter.orderType > 0)
                 {
@@ -475,7 +483,6 @@ namespace IM_PJ.Controllers
                        filter.shippingType.Contains(x.ShippingType.HasValue ? x.ShippingType.Value : 0) 
                     );
                 }
-
                 // Filter Transport Company
                 if (filter.transportCompany > 0)
                 {
@@ -483,7 +490,6 @@ namespace IM_PJ.Controllers
                        x.TransportCompanyID == filter.transportCompany
                     );
                 }
-
                 // Filter Discount
                 if (!String.IsNullOrEmpty(filter.discount))
                 {
@@ -499,14 +505,6 @@ namespace IM_PJ.Controllers
                            x.TotalDiscount == 0
                         );
                     }
-                }
-
-                // Filter Created By
-                if (!String.IsNullOrEmpty(filter.orderCreatedBy))
-                {
-                    orders = orders.Where(x =>
-                        x.CreatedBy == filter.orderCreatedBy
-                    );
                 }
 
                 // Filter Created Date

@@ -190,7 +190,7 @@ namespace IM_PJ
 
                 pagingall(a, page);
 
-                ltrNumberOfProduct.Text = a.Count().ToString();
+                ltrNumberOfProduct.Text = page.totalCount.ToString();
             }
         }
         [WebMethod]
@@ -502,7 +502,8 @@ namespace IM_PJ
 
                 if (!string.IsNullOrEmpty(product.ProductContent))
                 {
-                    html.Append("<p>🔖 " + product.ProductContent + "</p>\r\n");
+                    string content = Regex.Replace(product.ProductContent, @"<img\s[^>]*>(?:\s*?</img>)?", "").ToString();
+                    html.Append("<p>🔖 " + content + "</p>\r\n");
                     html.Append("<p></p>\r\n");
                 }
 

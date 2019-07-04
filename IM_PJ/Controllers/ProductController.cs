@@ -1347,7 +1347,7 @@ namespace IM_PJ.Controllers
             sql.AppendLine("     ) AS c");
             sql.AppendLine("     ON c.ID = p.CategoryID");
             sql.AppendLine("     ORDER BY");
-            sql.AppendLine("             p.ID");
+            sql.AppendLine("             p.ID DESC");
             sql.AppendLine("     OFFSET @pageSize * (@currentPage - 1) ROWS");
             sql.AppendLine("     FETCH NEXT @pageSize ROWS ONLY");
             sql.AppendLine("     ;");
@@ -1385,18 +1385,18 @@ namespace IM_PJ.Controllers
 
                     if (quantityLeft > 0)
                     {
-                        entity.ProductInstockStatus = "<span class=\"bg-green\">Còn hàng</span>";
+                        entity.ProductInstockStatus = "<span class='bg-green'>Còn hàng</span>";
                         entity.StockStatus = 1;
                     }
                     else
                     {
-                        entity.ProductInstockStatus = "<span class=\"bg-red\">Hết hàng</span>";
+                        entity.ProductInstockStatus = "<span class='bg-red'>Hết hàng</span>";
                         entity.StockStatus = 2;
                     }
                 }
                 else
                 {
-                    entity.ProductInstockStatus = "<span class=\"bg-yellow\">Nhập hàng</span>";
+                    entity.ProductInstockStatus = "<span class='bg-yellow'>Nhập hàng</span>";
                     entity.StockStatus = 3;
                 }
 
