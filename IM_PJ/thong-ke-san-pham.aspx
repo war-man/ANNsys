@@ -158,7 +158,8 @@
             $(".fromdate-createddate").click(e => {
                 var sku = $("#<%= txtTextSearch.ClientID%>").val();
                 var createdby = $("#<%= ddlCreatedBy.ClientID%>").val();
-                window.location.href = "/thong-ke-san-pham?sku=" + sku + "&createdby=" + createdby;
+                var categoryid = $("#<%= ddlCategory.ClientID%>").val();
+                window.location.href = "/thong-ke-san-pham?sku=" + sku + "&categoryid=" + categoryid + "&createdby=" + createdby;
             });
 
             $(".fromdate-today").click(e => {
@@ -168,7 +169,8 @@
 
                 var sku = $("#<%= txtTextSearch.ClientID%>").val();
                 var createdby = $("#<%= ddlCreatedBy.ClientID%>").val();
-                window.location.href = "/thong-ke-san-pham?sku=" + sku + "&fromdate=" + dateTime + "&todate=" + dateTime + "&createdby=" + createdby;
+                var categoryid = $("#<%= ddlCategory.ClientID%>").val();
+                window.location.href = "/thong-ke-san-pham?sku=" + sku + "&categoryid=" + categoryid + "&createdby=" + createdby + "&fromdate=" + dateTime + "&todate=" + dateTime;
             });
             
             function searchWithDateRange() 

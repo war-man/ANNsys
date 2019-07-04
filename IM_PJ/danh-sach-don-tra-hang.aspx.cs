@@ -125,24 +125,7 @@ namespace IM_PJ
 
                 pagingall(rs);
 
-                // THỐNG KÊ ĐƠN HÀNG
-                int TotalOrders = rs.Count();
-                int Type1Orders = rs.Where(x => x.Status == 1).Count();
-                int Type2Orders = rs.Where(x => x.Status == 2).Count();
-
-                int TotalProducts = rs.Sum(x => x.Quantity);
-                double TotalMoney = rs.Sum(x => x.TotalPrice);
-                double TotalRefundFee = rs.Sum(x => x.TotalRefundFee);
-
-                ltrTotalOrders.Text = TotalOrders.ToString();
-                ltrType2Orders.Text = Type2Orders.ToString();
-                ltrType1Orders.Text = Type1Orders.ToString();
-
-                ltrTotalProducts.Text = TotalProducts.ToString();
-                ltrTotalMoney.Text = string.Format("{0:N0}", Convert.ToDouble(TotalMoney)).ToString();
-                ltrTotalRefundFee.Text = string.Format("{0:N0}", Convert.ToDouble(TotalRefundFee)).ToString();
-
-                ltrNumberOfOrder.Text = TotalOrders.ToString();
+                ltrNumberOfOrder.Text = rs.Count().ToString();
             }
         }
         #region Paging

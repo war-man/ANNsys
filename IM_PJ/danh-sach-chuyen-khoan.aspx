@@ -211,18 +211,6 @@
                     </div>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="panel panelborderheading">
-                        <div class="panel-heading clear">
-                            <h3 class="page-title left not-margin-bot">Thống kê chuyển khoản</h3>
-                        </div>
-                        <div class="panel-body">
-                            <asp:Literal ID="ltrReport" runat="server" EnableViewState="false"></asp:Literal>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
 
         <!-- Modal phí khác -->

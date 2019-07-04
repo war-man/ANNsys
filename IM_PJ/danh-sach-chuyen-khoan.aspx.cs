@@ -215,43 +215,6 @@ namespace IM_PJ
 
                 ltrNumberOfOrder.Text = totalItems.ToString();
 
-                // THỐNG KÊ ĐƠN HÀNG
-                int TotalOrders = rs.Count();
-                int TotalProducts = rs.Sum(x => x.Quantity);
-
-                double TotalMoneyOrder = rs.Sum(x => x.TotalPrice);
-                double TotalMoneyReceive = Convert.ToDouble(rs.Sum(x => x.MoneyReceive));
-
-                StringBuilder htmlReport = new StringBuilder();
-
-                htmlReport.AppendLine(String.Format("<div class='row pad'>"));
-                htmlReport.AppendLine(String.Format("    <div class='col-md-3'>"));
-                htmlReport.AppendLine(String.Format("        <label class='left pad10'>Tổng số đơn hàng: </label>"));
-                htmlReport.AppendLine(String.Format("        <div class='ordertype'>"));
-                htmlReport.AppendLine(String.Format("            {0}", TotalOrders.ToString()));
-                htmlReport.AppendLine(String.Format("        </div>"));
-                htmlReport.AppendLine(String.Format("    </div>"));
-                htmlReport.AppendLine(String.Format("    <div class='col-md-3'>"));
-                htmlReport.AppendLine(String.Format("        <label class='left pad10'>Tổng tiền đơn hàng: </label>"));
-                htmlReport.AppendLine(String.Format("        <div class='orderquantity'>"));
-                htmlReport.AppendLine(String.Format("            {0}", string.Format("{0:N0}", TotalMoneyOrder).ToString()));
-                htmlReport.AppendLine(String.Format("        </div>"));
-                htmlReport.AppendLine(String.Format("    </div>"));
-                htmlReport.AppendLine(String.Format("    <div class='col-md-3'>"));
-                htmlReport.AppendLine(String.Format("        <label class='left pad10'>Tổng tiền đã nhận: </label>"));
-                htmlReport.AppendLine(String.Format("        <div class='ordertotalprice'>"));
-                htmlReport.AppendLine(String.Format("            {0}", string.Format("{0:N0}", TotalMoneyReceive).ToString()));
-                htmlReport.AppendLine(String.Format("        </div>"));
-                htmlReport.AppendLine(String.Format("    </div>"));
-                htmlReport.AppendLine(String.Format("    <div class='col-md-3'> "));
-                htmlReport.AppendLine(String.Format("        <label class='left pad10'>Tổng sản phẩm: </label>"));
-                htmlReport.AppendLine(String.Format("        <div class='ordernote'>"));
-                htmlReport.AppendLine(String.Format("            {0}", TotalProducts.ToString()));
-                htmlReport.AppendLine(String.Format("        </div>"));
-                htmlReport.AppendLine(String.Format("    </div>"));
-                htmlReport.AppendLine(String.Format("</div>"));
-
-                ltrReport.Text = htmlReport.ToString();
             }
         }
 

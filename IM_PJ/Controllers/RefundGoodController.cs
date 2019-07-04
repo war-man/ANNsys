@@ -380,7 +380,7 @@ namespace IM_PJ.Controllers
             sql.AppendLine(String.Format("ON 	OrdDetail.SKU = Product.ProductSKU"));
             sql.AppendLine(String.Format("WHERE 1 = 1"));
             sql.AppendLine(String.Format("    AND Ord.CreatedBy = '{0}'", CreatedBy));
-            sql.AppendLine(String.Format("	AND	(CONVERT(datetime, Ord.CreatedDate, 103) BETWEEN CONVERT(datetime, '{0}', 103) AND CONVERT(datetime, '{1}', 103))", fromDate.ToString(), toDate.ToString()));
+            sql.AppendLine(String.Format("	AND	(CONVERT(datetime, Ord.CreatedDate, 121) BETWEEN CONVERT(datetime, '{0}', 121) AND CONVERT(datetime, '{1}', 121))", fromDate.ToString(), toDate.ToString()));
             sql.AppendLine(String.Format("GROUP BY Ord.ID, OrdDetail.RefundFeePerProduct"));
 
             var reader = (IDataReader)SqlHelper.ExecuteDataReader(sql.ToString());
@@ -476,7 +476,7 @@ namespace IM_PJ.Controllers
                 sql.AppendLine(String.Format("    AND OrdDetail.SKU LIKE '{0}%'", SKU));
             }
 
-            sql.AppendLine(String.Format("    AND    CONVERT(datetime, Ord.CreatedDate, 103) BETWEEN CONVERT(datetime, '{0}', 103) AND CONVERT(datetime, '{1}', 103)", fromDate.ToString(), toDate.ToString()));
+            sql.AppendLine(String.Format("    AND    CONVERT(datetime, Ord.CreatedDate, 121) BETWEEN CONVERT(datetime, '{0}', 121) AND CONVERT(datetime, '{1}', 121)", fromDate.ToString(), toDate.ToString()));
 
             sql.AppendLine("SELECT");
             sql.AppendLine("    DAT.ID,");

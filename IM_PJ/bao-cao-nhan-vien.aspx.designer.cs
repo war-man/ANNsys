@@ -10,16 +10,25 @@
 namespace IM_PJ {
     
     
-    public partial class thong_ke_nhan_vien {
+    public partial class bao_cao_nhan_vien {
         
         /// <summary>
-        /// ddlAccountInfo control.
+        /// txtTextSearch control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlAccountInfo;
+        protected global::System.Web.UI.WebControls.TextBox txtTextSearch;
+        
+        /// <summary>
+        /// ddlCategory control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList ddlCategory;
         
         /// <summary>
         /// rFromDate control.
@@ -49,22 +58,40 @@ namespace IM_PJ {
         protected global::System.Web.UI.WebControls.Button btnSearch;
         
         /// <summary>
-        /// ltrTotalRevenue control.
+        /// ltrTotalRemainQuantity control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Literal ltrTotalRevenue;
+        protected global::System.Web.UI.WebControls.Literal ltrTotalRemainQuantity;
         
         /// <summary>
-        /// ltrAverageRevenue control.
+        /// ltrAverageRemainQuantity control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Literal ltrAverageRevenue;
+        protected global::System.Web.UI.WebControls.Literal ltrAverageRemainQuantity;
+        
+        /// <summary>
+        /// ltrTotalSaleOrder control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Literal ltrTotalSaleOrder;
+        
+        /// <summary>
+        /// ltrAverageSaleOrder control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Literal ltrAverageSaleOrder;
         
         /// <summary>
         /// ltrTotalSoldQuantity control.
@@ -101,32 +128,5 @@ namespace IM_PJ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Literal ltrAverageRefundQuantity;
-        
-        /// <summary>
-        /// ltrTotalRemainQuantity control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Literal ltrTotalRemainQuantity;
-        
-        /// <summary>
-        /// ltrAverageRemainQuantity control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Literal ltrAverageRemainQuantity;
-        
-        /// <summary>
-        /// ltrTotalProfit control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Literal ltrTotalProfit;
     }
 }

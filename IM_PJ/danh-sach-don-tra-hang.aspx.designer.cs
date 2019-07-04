@@ -85,60 +85,6 @@ namespace IM_PJ {
         protected global::System.Web.UI.WebControls.Literal ltrList;
         
         /// <summary>
-        /// ltrTotalOrders control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Literal ltrTotalOrders;
-        
-        /// <summary>
-        /// ltrType2Orders control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Literal ltrType2Orders;
-        
-        /// <summary>
-        /// ltrType1Orders control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Literal ltrType1Orders;
-        
-        /// <summary>
-        /// ltrTotalProducts control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Literal ltrTotalProducts;
-        
-        /// <summary>
-        /// ltrTotalMoney control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Literal ltrTotalMoney;
-        
-        /// <summary>
-        /// ltrTotalRefundFee control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Literal ltrTotalRefundFee;
-        
-        /// <summary>
         /// ltrPrintOrder control.
         /// </summary>
         /// <remarks>

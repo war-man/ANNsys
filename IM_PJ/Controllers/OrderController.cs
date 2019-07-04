@@ -2502,7 +2502,7 @@ namespace IM_PJ.Controllers
             sql.AppendLine(String.Format("    AND Ord.CreatedBy = '{0}'", CreatedBy));
             sql.AppendLine(String.Format("    AND Ord.ExcuteStatus = 2"));
             sql.AppendLine(String.Format("    AND (Ord.PaymentStatus = 2 OR Ord.PaymentStatus = 3)"));
-            sql.AppendLine(String.Format("    AND    CONVERT(datetime, Ord.DateDone, 103) BETWEEN CONVERT(datetime, '{0}', 103) AND CONVERT(datetime, '{1}', 103)", fromDate.ToString(), toDate.ToString()));
+            sql.AppendLine(String.Format("    AND    CONVERT(datetime, Ord.DateDone, 121) BETWEEN CONVERT(datetime, '{0}', 121) AND CONVERT(datetime, '{1}', 121)", fromDate.ToString(), toDate.ToString()));
             sql.AppendLine(String.Format("GROUP BY Ord.ID"));
 
             var reader = (IDataReader)SqlHelper.ExecuteDataReader(sql.ToString());
@@ -2597,7 +2597,7 @@ namespace IM_PJ.Controllers
                 sql.AppendLine(String.Format("    AND OrdDetail.SKU LIKE '{0}%'", SKU));
             }
 
-            sql.AppendLine(String.Format("    AND    CONVERT(datetime, Ord.DateDone, 103) BETWEEN CONVERT(datetime, '{0}', 103) AND CONVERT(datetime, '{1}', 103)", fromDate.ToString(), toDate.ToString()));
+            sql.AppendLine(String.Format("    AND    CONVERT(datetime, Ord.DateDone, 121) BETWEEN CONVERT(datetime, '{0}', 121) AND CONVERT(datetime, '{1}', 121)", fromDate.ToString(), toDate.ToString()));
 
             sql.AppendLine("SELECT");
             sql.AppendLine("    DAT.ID,");
@@ -2656,6 +2656,7 @@ namespace IM_PJ.Controllers
 
             return new ProductReportModel()
             {
+                totalOrder = list.Count,
                 totalSold = list.Sum(x => x.Quantity),
                 totalRevenue = list.Sum(x => x.TotalRevenue),
                 totalCost = list.Sum(x => x.TotalCost)
@@ -2664,6 +2665,7 @@ namespace IM_PJ.Controllers
 
         public class ProductReportModel
         {
+            public int totalOrder { get; set; }
             public int totalSold { get; set; }
             public double totalRevenue { get; set; }
             public double totalCost { get; set; }

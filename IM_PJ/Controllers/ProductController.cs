@@ -1068,7 +1068,7 @@ namespace IM_PJ.Controllers
                         todate = DateTime.Now;
                         break;
                 }
-                sql.AppendLine(String.Format("	AND	(CONVERT(datetime, PRD.CreatedDate, 103) BETWEEN CONVERT(datetime, '{0}', 103) AND CONVERT(datetime, '{1}', 103))", fromdate.ToString(), todate.ToString()));
+                sql.AppendLine(String.Format("	AND	(CONVERT(datetime, PRD.CreatedDate, 121) BETWEEN CONVERT(datetime, '{0}', 121) AND CONVERT(datetime, '{1}', 121))", fromdate.ToString(), todate.ToString()));
             }
 
             if (!String.IsNullOrEmpty(strColor))

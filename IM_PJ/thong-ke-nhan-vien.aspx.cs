@@ -108,7 +108,8 @@ namespace IM_PJ
             ltrAverageSoldQuantity.Text = averageSoldQuantity.ToString() + " cái/ngày";
             ltrTotalRefundQuantity.Text = totalRefundQuantity.ToString() + " cái";
             ltrAverageRefundQuantity.Text = averageRefundQuantity.ToString() + " cái/ngày";
-            ltrTotalRemain.Text = (totalSoldQuantity - totalRefundQuantity).ToString() + " cái";
+            ltrTotalRemainQuantity.Text = (totalSoldQuantity - totalRefundQuantity).ToString() + " cái";
+            ltrAverageRemainQuantity.Text = ((totalSoldQuantity - totalRefundQuantity) / totalDays).ToString() + " cái/ngày";
             ltrTotalProfit.Text = String.Format("{0:N0}", totalProfit);
         }
 
