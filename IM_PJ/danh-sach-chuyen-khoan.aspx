@@ -325,6 +325,13 @@
         </div>
 
         <script type="text/javascript">
+            $("#<%=txtSearchOrder.ClientID%>").keyup(function (e) {
+                if (e.keyCode == 13)
+                {
+                    $("#<%= btnSearch.ClientID%>").click();
+                }
+            });
+
             $(document).ready(() => {
                 $("button[data-toggle='modal']").click(e => {
                     let row = e.currentTarget.parentNode.parentNode;

@@ -2,6 +2,22 @@
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
     <style>
+        .search-box-type .col-1, .search-box-type .col-2 {
+            float: left;
+        }
+        .search-box-type .col-1 {
+            width: calc(100% - 145px);
+        }
+        .search-box-type .col-1 input {
+            border-right: none;
+        }
+        .search-box-type .col-2 {
+            width: 145px;
+        }
+        .search-box-type .col-2 select {
+            border-left: none;
+            background-color: #f7f7f7!important;
+        }
         .select2-container .select2-selection--single {
             height: 45px;
         }
@@ -111,8 +127,16 @@
                     <div class="filter-above-wrap clear">
                         <div class="filter-control">
                             <div class="row">
-                                <div class="col-md-5 col-xs-6">
-                                    <asp:TextBox ID="txtSearchOrder" runat="server" CssClass="form-control" placeholder="Tìm đơn hàng" autocomplete="off"></asp:TextBox>
+                                <div class="col-md-5 col-xs-12 search-box-type">
+                                    <div class="col-1">
+                                        <asp:TextBox ID="txtSearchOrder" runat="server" CssClass="form-control" placeholder="Tìm đơn hàng" autocomplete="off"></asp:TextBox>
+                                    </div>
+                                    <div class="col-2">
+                                        <asp:DropDownList ID="ddlSearchType" runat="server" CssClass="form-control">
+                                            <asp:ListItem Value="1" Text="Tìm đơn hàng"></asp:ListItem>
+                                            <asp:ListItem Value="2" Text="Tìm sản phẩm"></asp:ListItem>
+                                        </asp:DropDownList>
+                                    </div>
                                 </div>
                                 <div class="col-md-2 col-xs-6">
                                     <asp:DropDownList ID="ddlDiscount" runat="server" CssClass="form-control">
@@ -292,6 +316,13 @@
         </div>
 
         <script type="text/javascript">
+            $("#<%=txtSearchOrder.ClientID%>").keyup(function (e) {
+                if (e.keyCode == 13)
+                {
+                    $("#<%= btnSearch.ClientID%>").click();
+                }
+            });
+
             // Parse URL Queries
             function url_query(query) {
                 query = query.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");

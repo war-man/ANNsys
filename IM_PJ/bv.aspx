@@ -166,9 +166,7 @@
         
                 <script type="text/javascript">
 
-                    function searchPost() {
-                        $("#<%= btnSearch.ClientID%>").click();
-                    }
+                    
 
                 </script>
             </main>
@@ -182,7 +180,19 @@
             <script src="/App_Themes/Ann/js/master.js?v=2011"></script>
             <script src="/App_Themes/Ann/js/copy-post-info.js?v=2011"></script>
             <script src="/App_Themes/Ann/js/download-post-image.js?v=2011"></script>
+
             <script type="text/javascript">
+
+                $("#<%=txtSearchPost.ClientID%>").keyup(function (e) {
+                    if (e.keyCode == 13)
+                    {
+                        $("#<%= btnSearch.ClientID%>").click();
+                    }
+                });
+
+                function searchPost() {
+                    $("#<%= btnSearch.ClientID%>").click();
+                }
 
                 $(document).ready(function () {
                     LoadSelect();

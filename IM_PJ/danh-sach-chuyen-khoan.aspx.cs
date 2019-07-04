@@ -197,6 +197,7 @@ namespace IM_PJ
 
                 // Create order fileter
                 var filter = new OrderFilterModel() {
+                    searchType = (int)SearchType.Order,
                     search = TextSearch,
                     excuteStatus = ExcuteStatus,
                     transferStatus = TransferStatus,

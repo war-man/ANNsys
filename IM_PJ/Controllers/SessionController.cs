@@ -40,8 +40,8 @@ namespace IM_PJ.Controllers
                         .Except(
                             deliverySession.Join(
                                     oldDdeliveries,
-                                    news => news.OrderID,
-                                    olds => olds.OrderID,
+                                    news => new { OrderID = news.OrderID, DeliveryTimes = news.DeliveryTimes },
+                                    olds => new { OrderID = olds.OrderID, DeliveryTimes = olds.DeliveryTimes },
                                     (news, olds) => news
                                 )
                          )
@@ -139,5 +139,6 @@ namespace IM_PJ.Controllers
         public int OrderID { get; set; }
         public int ShippingType { get; set; }
         public DateTime CreatedDate { get; set; }
+        public int DeliveryTimes { get; set; }
     }
 }

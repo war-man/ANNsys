@@ -317,13 +317,6 @@
                         </div>
                     </div>
                 </div>
-        
-                <script type="text/javascript">
-                    function searchProduct() {
-                        $("#<%= btnSearch.ClientID%>").click();
-                    }
-
-                </script>
             </main>
 
             <a href="javascript:;" class="scroll-top-link" id="scroll-top"><i class="fa fa-angle-up"></i></a>
@@ -336,7 +329,20 @@
             <script src="/App_Themes/Ann/js/copy-product-info.js?v=2011"></script>
             <script src="/App_Themes/Ann/js/sync-product-small.js?v=30052019"></script>
             <script src="/App_Themes/Ann/js/download-product-image.js?v=2011"></script>
+
             <script type="text/javascript">
+
+                $("#<%=txtSearchProduct.ClientID%>").keyup(function (e) {
+                    if (e.keyCode == 13)
+                    {
+                        $("#<%= btnSearch.ClientID%>").click();
+                    }
+                });
+
+                function searchProduct()
+                {
+                    $("#<%= btnSearch.ClientID%>").click();
+                }
 
                 $(document).ready(function () {
                     LoadSelect();

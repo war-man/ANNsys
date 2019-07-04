@@ -128,10 +128,16 @@ namespace IM_PJ
                 string Quantity = "";
                 int QuantityFrom = 0;
                 int QuantityTo = 0;
+                // add filter seach type
+                int SearchType = 0;
 
                 if (Request.QueryString["textsearch"] != null)
                 {
                     TextSearch = Request.QueryString["textsearch"].Trim();
+                }
+                if (Request.QueryString["searchtype"] != null)
+                {
+                    SearchType = Request.QueryString["searchtype"].ToInt(0);
                 }
                 if (Request.QueryString["ordertype"] != null)
                 {
@@ -205,6 +211,7 @@ namespace IM_PJ
                 }
 
                 txtSearchOrder.Text = TextSearch;
+                ddlSearchType.SelectedValue = SearchType.ToString();
                 ddlOrderType.SelectedValue = OrderType.ToString();
                 ddlExcuteStatus.SelectedValue = ExcuteStatus.Count() > 1 ? "0" : ExcuteStatus.FirstOrDefault().ToString();
                 ddlPaymentStatus.SelectedValue = PaymentStatus.ToString();
@@ -246,6 +253,7 @@ namespace IM_PJ
                 var filter = new OrderFilterModel()
                 {
                     search = TextSearch,
+                    searchType = SearchType,
                     orderType = OrderType,
                     excuteStatus = ExcuteStatus,
                     paymentStatus = PaymentStatus,
@@ -587,6 +595,11 @@ namespace IM_PJ
         {
             string search = txtSearchOrder.Text.Trim();
             string request = "/danh-sach-don-hang?";
+
+            if (ddlSearchType.SelectedValue != "")
+            {
+                request += "&searchtype=" + ddlSearchType.SelectedValue;
+            }
 
             if (search != "")
             {

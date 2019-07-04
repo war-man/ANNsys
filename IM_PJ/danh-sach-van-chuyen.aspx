@@ -250,7 +250,7 @@
                                     </a>
                                 </div>
                                 <div class="col-md-2 col-xs-4">
-                                    <a href="javascript:;" class="btn primary-btn fw-btn width-100" onclick="deleteAllDeliverySession()">
+                                    <a href="javascript:;" class="btn primary-btn fw-btn width-100" onclick="openRemoveOrderModal()">
                                         <i class="fa fa-remove" aria-hidden="true"></i> Bỏ chọn
                                     </a>
                                 </div>
@@ -461,13 +461,53 @@
             </div>
         </div>
 
+         <!-- Modal Print Delivery -->
+        <div class="modal fade" id="RemoveOrderModal" role="dialog">
+            <div class="modal-dialog">
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Bỏ chọn đơn hàng</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row form-group">
+                            <div class="col-xs-3">
+                                <p>Chọn đợt giao</p>
+                            </div>
+                            <div class="col-xs-9">
+                                <asp:DropDownList ID="ddlRemoveDeliveryTimesModal" runat="server" CssClass="form-control">
+                                    <asp:ListItem Value="" Text="Chọn đợt giao hàng"></asp:ListItem>
+                                    <asp:ListItem Value="0" Text="Tất cả"></asp:ListItem>
+                                    <asp:ListItem Value="1" Text="Đợt 1"></asp:ListItem>
+                                    <asp:ListItem Value="2" Text="Đợt 2"></asp:ListItem>
+                                </asp:DropDownList>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button id="closeRemoveOrder" type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
+                        <button id="submitRemoveOrder" type="button" class="btn btn-primary" onclick="removeOrder()">Xác nhận</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <asp:HiddenField ID="hdfSession" runat="server" />
         <script type="text/javascript">
+            $("#<%=txtSearchOrder.ClientID%>").keyup(function (e) {
+                if (e.keyCode == 13)
+                {
+                    $("#<%= btnSearch.ClientID%>").click();
+                }
+            });
+
             class OrderChoosed {
-                constructor(OrderID, ShippingType, CreatedDate) {
+                constructor(OrderID, ShippingType, CreatedDate, DeliveryTimes) {
                     this.OrderID = OrderID;
                     this.ShippingType = ShippingType;
                     this.CreatedDate = CreatedDate;
+                    this.DeliveryTimes = DeliveryTimes
                 }
             };
 
@@ -493,7 +533,7 @@
                         }
 
                         // Thêm vào mảng order đã chọn
-                        orderChoosed.push(new OrderChoosed(item.OrderID, item.ShippingType, createdDate));
+                        orderChoosed.push(new OrderChoosed(item.OrderID, item.ShippingType, createdDate, item.DeliveryTimes));
                     });
 
                     // Thể hiện số lượng đơn hàng sẽ In
@@ -1056,9 +1096,10 @@
                     let parent = element.parentElement.parentElement;
                     let orderID = parent.dataset["orderid"];
                     let shippingType = parent.dataset["shippingtype"];
+                    let deliveryTimes = parent.dataset["deliverytimes"];
 
                     element.checked = checked;
-                    data.push(new OrderChoosed(orderID, shippingType, now.format("yyyy-MM-dd")))
+                    data.push(new OrderChoosed(orderID, shippingType, now.format("yyyy-MM-dd"), deliveryTimes))
                 });
 
                 if (checked) {
@@ -1090,21 +1131,23 @@
                 let parent = self.parent().parent();
                 let orderID = parent.data("orderid");
                 let shippingType = parent.data("shippingtype");
+                let deliveryTimes = parent.data("deliverytimes");
 
                 // Thông báo khi order được chọn in đã được chuyển trạng thái hoàng tất đơn hàng
-                if (self.is(":checked")) {
+                if (self.is(":checked"))
+                {
                     let deliveryStatus = parent.data("deliverystatus");
 
-                    if (deliveryStatus && deliveryStatus == 1)
+                    if (deliveryStatus && (deliveryStatus == 1 || deliveryStatus == 3))
                     {
                         swal({
                             title: 'Thông báo',
-                            text: 'Đơn hàng đã hoàn tất giao hàng.',
+                            text: 'Đơn hàng đang giao hoặc đã giao...',
                             type: 'warning',
                             showCancelButton: true,
                             closeOnConfirm: true,
                             cancelButtonText: "Để em xem lại...",
-                            confirmButtonText: "Tiếp tục cho In",
+                            confirmButtonText: "Vẫn chọn đơn này!",
                         }, function (confirm) {
                             if (confirm)
                                 self.prop("checked", true);
@@ -1120,7 +1163,7 @@
 
                 if (self.is(":checked")) {
                     let now = new Date();
-                    let data = new OrderChoosed(orderID, shippingType, now.format("yyyy-MM-dd"));
+                    let data = new OrderChoosed(orderID, shippingType, now.format("yyyy-MM-dd"), deliveryTimes);
                     addOrderChoose([data]);
                 }
                 else {
@@ -1133,25 +1176,30 @@
             }
 
             function openPrintModal() {
-                let shippers = orderChoosed.filter((item) => { return item.ShippingType == 5; })
-                let transports = orderChoosed.filter((item) => { return item.ShippingType == 4; })
-
-                if (shippers.length == 0 && transports.lenght == 0) {
-                    swal("Thông báo", "Bạn chưa chọn đơn hàng nào!", "error");
+                if (orderChoosed.length == 0) {
+                    swal("Thông báo", "Chưa có đơn hàng nào được chọn!", "error");
                 }
                 else {
-                    // Phiếu nhân viên giao
-                    if (shippers.length == 0)
-                        $("#shipperPrint").attr("style", "display: none")
-                    else
-                        $("#shipperPrint").removeAttr("style");
-                    // Phiếu chuyển xe
-                    if (transports.length == 0)
-                        $("#transportPrint").attr("style", "display: none")
-                    else
-                        $("#transportPrint").removeAttr("style");
+                    let shippers = orderChoosed.filter((item) => { return item.ShippingType == 5; })
+                    let transports = orderChoosed.filter((item) => { return item.ShippingType == 4; })
 
-                    $("#PrintModal").modal({ show: 'true', backdrop: 'static', keyboard: 'false'})
+                    if (shippers.length == 0 && transports.lenght == 0) {
+                        swal("Thông báo", "Bạn chưa chọn đơn hàng nào!", "error");
+                    }
+                    else {
+                        // Phiếu nhân viên giao
+                        if (shippers.length == 0)
+                            $("#shipperPrint").attr("style", "display: none")
+                        else
+                            $("#shipperPrint").removeAttr("style");
+                        // Phiếu chuyển xe
+                        if (transports.length == 0)
+                            $("#transportPrint").attr("style", "display: none")
+                        else
+                            $("#transportPrint").removeAttr("style");
+
+                        $("#PrintModal").modal({ show: 'true', backdrop: 'static', keyboard: 'false' })
+                    }
                 }
             }
 
@@ -1210,6 +1258,12 @@
                         });
                     }
 
+                   this.orderChoosed.forEach(item => {
+                        item.DeliveryTimes = parseInt(deliveryTimes);
+                    })
+
+                    addOrderChoose(this.orderChoosed);
+
                     // Gửi thông tin về server để tao đơn in
                     let url = "/print-delivery?shipperid=" + shipperID + "&shippingtype=" + shippingType + "&deliverytimes=" + deliveryTimes;
                     window.open(url);
@@ -1228,48 +1282,57 @@
             };
 
             function getDeliverySession() {
-                let url = window.location.href;
-                let reg = /\?/g;
+                if (orderChoosed.length == 0) {
+                    swal("Thông báo", "Chưa có đơn hàng nào được chọn!", "error");
+                }
+                else {
+                    let url = window.location.href;
+                    let reg = /\?/g;
 
-                url = url.replace(/(&?Page=\d+)/g, "");
-                if (url.search(reg) > 0)
-                    url = url + "&isdeliverysession=1";
-                else
-                    url = url + "?isdeliverysession=1"
+                    url = url.replace(/(&?Page=\d+)/g, "");
+                    if (url.search(reg) > 0)
+                        url = url + "&isdeliverysession=1";
+                    else
+                        url = url + "?isdeliverysession=1"
 
-                let win = window.open(url, '_self');
-                if (win) {
-                    //Browser has allowed it to be opened
-                    win.focus();
-                } else {
-                    //Browser has blocked it
-                    swal("Thông báo", "Vui lòng cho phép cửa sổ bật lên cho trang web này", "error");
+                    let win = window.open(url, '_self');
+                    if (win) {
+                        //Browser has allowed it to be opened
+                        win.focus();
+                    } else {
+                        //Browser has blocked it
+                        swal("Thông báo", "Vui lòng cho phép cửa sổ bật lên cho trang web này", "error");
+                    }
                 }
             }
 
-            function deleteAllDeliverySession() {
-                $.ajax({
-                    type: "POST",
-                    url: "/danh-sach-van-chuyen.aspx/deleteAllOrderChoose",
-                    contentType: "application/json; charset=utf-8",
-                    success: (response) => {
-                        $("#<%=hdfSession.ClientID%>").val("")
-                        orderChoosed = [];
-                        $("#numberPrint").html("")
+            function openRemoveOrderModal() {
+                if (orderChoosed.length == 0)
+                {
+                    swal("Thông báo", "Chưa có đơn hàng nào được chọn!", "error");
+                }
+                else
+                {
+                    $("#RemoveOrderModal").modal({ show: 'true', backdrop: 'static', keyboard: 'false' });
+                }
+            }
 
-                        let win = window.open('/danh-sach-van-chuyen', '_self');
-                        if (win) {
-                            //Browser has allowed it to be opened
-                            win.focus();
-                        } else {
-                            //Browser has blocked it
-                            swal("Thông báo", "Vui lòng cho phép cửa sổ bật lên cho trang web này", "error");
-                        }
-                    },
-                    error: (xmlhttprequest, textstatus, errorthrow) => {
-                        swal("Thông báo", "Có lỗi trong quá trình xóa tất cả order đã check", "error");
+            function removeOrder() {
+                let deliveryTimes = $("#<%=ddlRemoveDeliveryTimesModal.ClientID%> :selected").val();
+                if (deliveryTimes == "")
+                {
+                    swal("Thông báo", "Hãy chọn đợt giao hàng cần xử lý", "error");
+                }
+                else
+                {
+                    let data = orderChoosed;
+                    if (deliveryTimes > 0) {
+                        data = orderChoosed.filter((item) => { return item.DeliveryTimes == deliveryTimes; });
                     }
-                })
+
+                    deleteOrderChoose(data);
+                    window.location.replace(window.location.href);
+                }
             }
 
             function showNumberOrderChoose() {

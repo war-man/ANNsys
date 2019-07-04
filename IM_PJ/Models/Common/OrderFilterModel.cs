@@ -7,6 +7,8 @@ namespace IM_PJ.Models
 {
     public class OrderFilterModel
     {
+        // Thể loại tìm kiếm ( 1: tìm đơn hàng | 2: tìm sản phẩm)
+        public int searchType { get; set; } = 0;
         // Sản phâm: SKU, tên product, màu
         // Khách hàng: Tên khách hàng, nick, số điện thoại
         // Delivery: Mã code dịch vụ shipping

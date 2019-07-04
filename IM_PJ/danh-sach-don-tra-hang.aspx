@@ -174,7 +174,12 @@
             <asp:Literal ID="ltrPrintOrder" runat="server"></asp:Literal>
         </div>
         <script type="text/javascript">
-
+            $("#<%=txtSearchOrder.ClientID%>").keyup(function (e) {
+                if (e.keyCode == 13)
+                {
+                    $("#<%= btnSearch.ClientID%>").click();
+                }
+            });
             function searchAgent() {
                 $("#<%= btnSearch.ClientID%>").click();
             }

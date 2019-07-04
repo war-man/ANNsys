@@ -283,6 +283,15 @@ namespace IM_PJ {
         protected global::System.Web.UI.WebControls.DropDownList ddlDeliveryTimesModal;
         
         /// <summary>
+        /// ddlRemoveDeliveryTimesModal control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList ddlRemoveDeliveryTimesModal;
+        
+        /// <summary>
         /// hdfSession control.
         /// </summary>
         /// <remarks>

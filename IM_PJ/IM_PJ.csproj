@@ -501,7 +501,6 @@
     <Content Include="dang-xuat.aspx" />
     <Content Include="danh-sach-anh-san-pham.aspx" />
     <Content Include="danh-sach-chiet-khau.aspx" />
-    <Content Include="danh-sach-chuyen-hang.aspx" />
     <Content Include="danh-sach-don-hang.aspx" />
     <Content Include="danh-sach-don-tra-hang.aspx" />
     <Content Include="danh-sach-nhom-khach-hang.aspx" />
@@ -1130,13 +1129,6 @@
     </Compile>
     <Compile Include="danh-sach-chiet-khau.aspx.designer.cs">
       <DependentUpon>danh-sach-chiet-khau.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="danh-sach-chuyen-hang.aspx.cs">
-      <DependentUpon>danh-sach-chuyen-hang.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="danh-sach-chuyen-hang.aspx.designer.cs">
-      <DependentUpon>danh-sach-chuyen-hang.aspx</DependentUpon>
     </Compile>
     <Compile Include="danh-sach-don-hang.aspx.cs">
       <DependentUpon>danh-sach-don-hang.aspx</DependentUpon>

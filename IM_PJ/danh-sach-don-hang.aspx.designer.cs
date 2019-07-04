@@ -31,6 +31,15 @@ namespace IM_PJ {
         protected global::System.Web.UI.WebControls.TextBox txtSearchOrder;
         
         /// <summary>
+        /// ddlSearchType control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList ddlSearchType;
+        
+        /// <summary>
         /// ddlDiscount control.
         /// </summary>
         /// <remarks>

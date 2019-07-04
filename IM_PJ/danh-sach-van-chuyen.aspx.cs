@@ -221,6 +221,7 @@ namespace IM_PJ
                 // Create order fileter
                 var filter = new OrderFilterModel()
                 {
+                    searchType = (int)SearchType.Order,
                     search = TextSearch,
                     excuteStatus = new List<int>() { (int)ExcuteStatus.Done },
                     paymentType = PaymentType,
@@ -292,7 +293,7 @@ namespace IM_PJ
 
                 pagingall(rs, page);
 
-                ltrNumberOfOrder.Text = page.currentPage.ToString();
+                ltrNumberOfOrder.Text = page.totalCount.ToString();
             }
         }
 

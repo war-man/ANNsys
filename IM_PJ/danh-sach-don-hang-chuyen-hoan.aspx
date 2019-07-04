@@ -106,6 +106,13 @@
         </div>
         <asp:HiddenField ID="hdfcreate" runat="server" />
         <script type="text/javascript">
+            $("#<%=txtAgentName.ClientID%>").keyup(function (e) {
+                if (e.keyCode == 13)
+                {
+                    $("#<%= btnSearch.ClientID%>").click();
+                }
+            });
+
             function searchAgent() {
                 $("#<%= btnSearch.ClientID%>").click();
             }

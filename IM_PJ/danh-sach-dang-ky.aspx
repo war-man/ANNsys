@@ -293,8 +293,14 @@
             </div>
         </div>
 
-
         <script type="text/javascript">
+            $("#<%=txtSearch.ClientID%>").keyup(function (e) {
+                if (e.keyCode == 13)
+                {
+                    $("#<%= btnSearch.ClientID%>").click();
+                }
+            });
+
             $(document).ready(() => {
 
                 $("a[data-target='#ViewMessageModal']").click(e => {

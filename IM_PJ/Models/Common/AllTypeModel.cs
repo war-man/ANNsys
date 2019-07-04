@@ -5,6 +5,12 @@ using System.Web;
 
 namespace IM_PJ.Models
 {
+    public enum SearchType
+    {
+        Order = 1,        // Liên quan đến đơn hàng
+        Product = 2       // Liên quan đến sản phẩm
+        
+    }
     public enum OrderType
     {
         Retail = 1,         // Lẻ

@@ -328,6 +328,12 @@
         <script src="/App_Themes/Ann/js/download-product-image.js?v=2011"></script>
         
         <script type="text/javascript">
+            $("#<%=txtSearchProduct.ClientID%>").keyup(function (e) {
+                if (e.keyCode == 13)
+                {
+                    $("#<%= btnSearch.ClientID%>").click();
+                }
+            });
 
             // Parse URL Queries
             function url_query(query)

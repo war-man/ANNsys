@@ -80,6 +80,12 @@
         </div>
     </main>
     <script type="text/javascript">
+        $("#<%=txtTextSearch.ClientID%>").keyup(function (e) {
+            if (e.keyCode == 13)
+            {
+                $("#<%= btnSearch.ClientID%>").click();
+            }
+        });
         function searchTransport() {
             $("#<%= btnSearch.ClientID%>").click();
         }

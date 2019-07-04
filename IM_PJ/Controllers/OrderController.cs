@@ -548,39 +548,87 @@ namespace IM_PJ.Controllers
                     search = UnSign.convert(search);
 
                     var number = Regex.IsMatch(search, @"^\d+$");
-                    var textNumber = Regex.IsMatch(search, @"^[a-zA-Z0-9]+$");
 
-                    if (number)
+                    if (filter.searchType == (int)SearchType.Order)
                     {
-                        orderFilter = orders
-                            .Join(
-                                con.tbl_Customer,
-                                h => h.CustomerID,
-                                c => c.ID,
-                                (h, c) => new
-                                {
-                                    ID = h.ID,
-                                    CustomerID = h.CustomerID,
-                                    ShippingCode = h.ShippingCode,
-                                    RefundsGoodsID = h.RefundsGoodsID,
-                                    // Customer
-                                    CustomerPhone = c.CustomerPhone,
-                                    CustomerNewPhone = h.CustomerNewPhone
-                                }
-                            )
-                            .Where(x =>
-                                x.ID.ToString() == search ||
-                                x.CustomerPhone == search ||
-                                x.CustomerNewPhone == search ||
-                                x.ShippingCode == search
-                            )
-                            .Select(x => new {
-                                ID = x.ID,
-                                CustomerID = x.CustomerID,
-                                RefundsGoodsID = x.RefundsGoodsID
-                            });
+                        if (number)
+                        {
+                            if (search.Length <= 6)
+                            {
+                                orderFilter = orders
+                                    .Where(x =>
+                                        x.ID.ToString() == search
+                                    )
+                                    .Select(x => new {
+                                        ID = x.ID,
+                                        CustomerID = x.CustomerID,
+                                        RefundsGoodsID = x.RefundsGoodsID
+                                    });
+                            }
+                            else
+                            {
+                                orderFilter = orders
+                                    .Join(
+                                        con.tbl_Customer,
+                                        h => h.CustomerID,
+                                        c => c.ID,
+                                        (h, c) => new
+                                        {
+                                            ID = h.ID,
+                                            CustomerID = h.CustomerID,
+                                            ShippingCode = h.ShippingCode,
+                                            RefundsGoodsID = h.RefundsGoodsID,
+                                            // Customer
+                                            Zalo = c.Zalo,
+                                            CustomerPhone = c.CustomerPhone,
+                                            CustomerNewPhone = h.CustomerNewPhone
+                                        }
+                                    )
+                                    .Where(x =>
+                                        x.CustomerPhone == search ||
+                                        x.CustomerNewPhone == search ||
+                                        x.Zalo == search ||
+                                        x.ShippingCode == search
+                                    )
+                                    .Select(x => new {
+                                        ID = x.ID,
+                                        CustomerID = x.CustomerID,
+                                        RefundsGoodsID = x.RefundsGoodsID
+                                    });
+                            }
+                        }
+                        else
+                        {
+                            orderFilter = orders
+                                .Join(
+                                    con.tbl_Customer,
+                                    h => h.CustomerID,
+                                    c => c.ID,
+                                    (h, c) => new
+                                    {
+                                        ID = h.ID,
+                                        CustomerID = h.CustomerID,
+                                        ShippingCode = h.ShippingCode,
+                                        RefundsGoodsID = h.RefundsGoodsID,
+                                        // Customer
+                                        UnSignedName = c.UnSignedName,
+                                        UnSignedNick = c.UnSignedNick
+                                    }
+                                )
+                                .Where(x =>
+                                    x.UnSignedName.ToLower().Contains(search) ||
+                                    x.UnSignedNick.ToLower().Contains(search) ||
+                                    x.ShippingCode.ToLower() == search
+                                )
+                                .Select(x => new {
+                                    ID = x.ID,
+                                    CustomerID = x.CustomerID,
+                                    RefundsGoodsID = x.RefundsGoodsID
+                                });
+                        }
+                        
                     }
-                    else if (textNumber)
+                    else if (filter.searchType == (int)SearchType.Product)
                     {
                         orderFilter = orders
                             .Join(
@@ -594,42 +642,11 @@ namespace IM_PJ.Controllers
                                     ShippingCode = h.ShippingCode,
                                     RefundsGoodsID = h.RefundsGoodsID,
                                     // Order detail
-                                    SKU = d.SKU,
+                                    SKU = d.SKU
                                 }
                             )
                             .Where(x =>
-                                x.SKU.ToUpper().StartsWith(search) ||
-                                x.ShippingCode.ToLower() == search
-                            )
-                            .Select(x => new {
-                                ID = x.ID,
-                                CustomerID = x.CustomerID,
-                                RefundsGoodsID = x.RefundsGoodsID
-                            })
-                            .Distinct();
-                    }
-                    else
-                    {
-                        orderFilter = orders
-                            .Join(
-                                con.tbl_Customer,
-                                h => h.CustomerID,
-                                c => c.ID,
-                                (h, c) => new
-                                {
-                                    ID = h.ID,
-                                    CustomerID = h.CustomerID,
-                                    ShippingCode = h.ShippingCode,
-                                    RefundsGoodsID = h.RefundsGoodsID,
-                                    // Customer
-                                    UnSignedName = c.UnSignedName,
-                                    UnSignedNick = c.UnSignedNick
-                                }
-                            )
-                            .Where(x =>
-                                x.UnSignedName.ToLower().Contains(search) ||
-                                x.UnSignedNick.ToLower().Contains(search) ||
-                                x.ShippingCode == search
+                                x.SKU.ToUpper().StartsWith(search)
                             )
                             .Select(x => new {
                                 ID = x.ID,
