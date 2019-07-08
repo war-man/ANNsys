@@ -36,20 +36,24 @@ namespace IM_PJ.Controllers
                 if (session != null)
                 {
                     var oldDdeliveries = JsonConvert.DeserializeObject<List<DeliverySession>>(session.Value);
-                    var data = deliverySession
-                        .Except(
-                            deliverySession.Join(
-                                    oldDdeliveries,
-                                    news => new { OrderID = news.OrderID, DeliveryTimes = news.DeliveryTimes },
-                                    olds => new { OrderID = olds.OrderID, DeliveryTimes = olds.DeliveryTimes },
-                                    (news, olds) => news
-                                )
-                         )
-                         .ToList();
-
-                    if (data.Count > 0)
+                    // Loc ra dua lieu cu
+                    var dataExists = oldDdeliveries
+                        .Join(
+                            deliverySession,
+                            olds => olds.OrderID,
+                            news => news.OrderID,
+                            (olds, news) => olds
+                        )
+                        .ToList();
+                    // Remove du lieu cu
+                    foreach (var item in dataExists)
                     {
-                        oldDdeliveries.AddRange(data);
+                        oldDdeliveries.Remove(item);
+                    }
+
+                    if (deliverySession.Count > 0)
+                    {
+                        oldDdeliveries.AddRange(deliverySession);
                         oldDdeliveries = oldDdeliveries.OrderByDescending(o => o.OrderID).ToList();
                         session.Value = JsonConvert.SerializeObject(oldDdeliveries);
                         session.ModifiedDate = DateTime.Now;
