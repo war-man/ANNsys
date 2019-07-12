@@ -159,6 +159,29 @@ namespace IM_PJ.Controllers
                 return ags;
             }
         }
+
+        public static List<tbl_Category> getCategoryChild(tbl_Category parent)
+        {
+            using (var con = new inventorymanagementEntities())
+            {
+                var result = new List<tbl_Category>();
+                result.Add(parent);
+
+                var child = con.tbl_Category
+                    .Where(x => x.ParentID.Value == parent.ID)
+                    .ToList();
+
+                if (child.Count > 0)
+                {
+                    foreach (var id in child)
+                    {
+                        result.AddRange(getCategoryChild(id));
+                    }
+                }
+
+                return result;
+            }
+        }
         #endregion
     }
 }

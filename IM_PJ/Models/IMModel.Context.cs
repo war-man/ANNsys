@@ -73,5 +73,7 @@ namespace IM_PJ.Models
         public virtual DbSet<Session> Sessions { get; set; }
         public virtual DbSet<Register> Registers { get; set; }
         public virtual DbSet<BankAccount> BankAccounts { get; set; }
+        public virtual DbSet<CategoryShelf> CategoryShelves { get; set; }
+        public virtual DbSet<ShelfManager> ShelfManagers { get; set; }
     }
 }

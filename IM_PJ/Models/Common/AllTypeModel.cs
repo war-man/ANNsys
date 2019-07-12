@@ -75,4 +75,12 @@ namespace IM_PJ.Models
         stockOut = 2,       // Hết hàng
         stockIn = 3         // Nhập hàng
     }
+
+    public enum ShelfLevel
+    {
+        Floor = 1,          // Tầng
+        Row = 2,            // Hàng
+        Shelf = 3,          // Kệ
+        FloorShelf = 4      // Tần của kệ
+    }
 }
