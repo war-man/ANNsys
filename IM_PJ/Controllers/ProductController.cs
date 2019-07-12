@@ -1709,8 +1709,767 @@ namespace IM_PJ.Controllers
             reader.Close();
             return entity;
         }
+
+        private static void CalDate(string strDate, ref DateTime fromdate, ref DateTime todate)
+        {
+            switch (strDate)
+            {
+                case "today":
+                    fromdate = DateTime.Today;
+                    todate = DateTime.Now;
+                    break;
+                case "yesterday":
+                    fromdate = fromdate.AddDays(-1);
+                    todate = DateTime.Today;
+                    break;
+                case "beforeyesterday":
+                    fromdate = DateTime.Today.AddDays(-2);
+                    todate = DateTime.Today.AddDays(-1);
+                    break;
+                case "week":
+                    int days = DateTime.Today.DayOfWeek == DayOfWeek.Sunday ? 7 : (int)DateTime.Today.DayOfWeek;
+                    fromdate = fromdate.AddDays(-days + 1);
+                    todate = DateTime.Now;
+                    break;
+                case "thismonth":
+                    fromdate = new DateTime(fromdate.Year, fromdate.Month, 1);
+                    todate = DateTime.Now;
+                    break;
+                case "lastmonth":
+                    var thismonth = new DateTime(fromdate.Year, fromdate.Month, 1);
+                    fromdate = thismonth.AddMonths(-1);
+                    todate = thismonth;
+                    break;
+                case "beforelastmonth":
+                    thismonth = new DateTime(fromdate.Year, fromdate.Month, 1);
+                    fromdate = thismonth.AddMonths(-2);
+                    todate = thismonth.AddMonths(-1);
+                    break;
+                case "7days":
+                    fromdate = fromdate.AddDays(-6);
+                    todate = DateTime.Now;
+                    break;
+                case "30days":
+                    fromdate = fromdate.AddDays(-29);
+                    todate = DateTime.Now;
+                    break;
+            }
+        }
+
+        public static List<ProductShelf> GetProductShelf(ProductFilterModel filter, ref PaginationMetadataModel page)
+        {
+            using (var con = new inventorymanagementEntities())
+            {
+                var productFilter = con.tbl_Product.Select(x => x);
+                var productVariableFilter = con.tbl_ProductVariable.Select(x => x);
+
+                #region Lọc với text search
+                if (!String.IsNullOrEmpty(filter.search))
+                {
+                    var search = filter.search.Trim().ToLower();
+                    productFilter = productFilter
+                        .Where(x =>
+                            x.ProductSKU.Trim().ToLower().Contains(search) ||
+                            x.UnSignedTitle.Trim().ToLower().Contains(search)
+                        );
+
+                    productVariableFilter = productVariableFilter
+                        .Join(
+                            con.tbl_Product.Where(x => x.ProductStyle == 2),
+                            v => v.ProductID,
+                            p => p.ID,
+                            (v, p) => new { v, p }
+                        )
+                        .Where(x =>
+                             x.p.ProductSKU.Trim().ToLower().Contains(search) ||
+                             x.p.UnSignedTitle.Trim().ToLower().Contains(search)
+                        )
+                        .Select(x => x.v); ;
+                }
+                #endregion
+
+                #region Lọc với danh mục
+                if (filter.category > 0)
+                {
+                    var parentCatogory = con.tbl_Category.Where(x => x.ID == filter.category).FirstOrDefault();
+                    var catogoryFilter = CategoryController.getCategoryChild(parentCatogory).Select(x => x.ID).ToList();
+
+                    productFilter = productFilter
+                        .Where(x => 
+                            catogoryFilter.Contains(
+                                x.CategoryID.HasValue ? x.CategoryID.Value : 0
+                                )
+                        );
+
+                    productVariableFilter = productVariableFilter
+                        .Join(
+                            con.tbl_Product.Where(x => x.ProductStyle == 2),
+                            v => v.ProductID,
+                            p => p.ID,
+                            (v, p) => new { v, p }
+                        )
+                        .Where(x => catogoryFilter.Contains(x.p.CategoryID.HasValue ? x.p.CategoryID.Value : 0))
+                        .Select(x => x.v);
+                }
+                #endregion
+
+                #region Lọc với số lượng còn hay hết dựa theo kiểm kệ gần nhất
+                if (filter.stockStatus > 0)
+                {
+                    productFilter = productFilter
+                        .GroupJoin(
+                            con.ShelfManagers.Where(x => x.ProductVariableID == 0),
+                            p => p.ID,
+                            s => s.ProductID,
+                            (p, s) => new { p, s }
+                        )
+                        .SelectMany(
+                            x => x.s.DefaultIfEmpty(),
+                            (parent, child) => new
+                            {
+                                product = parent.p,
+                                quantity = child != null ? child.Quantity : 0
+                            }
+                        )
+                        .Where(x =>
+                            (filter.stockStatus == (int)StockStatus.stocking && x.quantity > 0) ||
+                            (filter.stockStatus == (int)StockStatus.stockOut && x.quantity <= 0)
+                        )
+                        .Select(x => x.product);
+
+                    productVariableFilter = productVariableFilter
+                        .GroupJoin(
+                            con.ShelfManagers.Where(x => x.ProductVariableID != 0),
+                            pv => new {
+                                productID = pv.ProductID.Value,
+                                productVariableID = pv.ID
+                            },
+                            s => new {
+                                productID = s.ProductID,
+                                productVariableID = s.ProductVariableID
+                            },
+                            (pv, s) => new { pv, s }
+                        )
+                        .SelectMany(
+                            x => x.s.DefaultIfEmpty(),
+                            (parent, child) => new
+                            {
+                                productVariable = parent.pv,
+                                quantity = child != null ? child.Quantity : 0
+                            }
+                        )
+                        .Where(x =>
+                            (filter.stockStatus == (int)StockStatus.stocking && x.quantity > 0) ||
+                            (filter.stockStatus == (int)StockStatus.stockOut && x.quantity <= 0)
+                        )
+                        .Select(x => x.productVariable);
+                }
+                #endregion
+
+                #region Lọc với thời gian khởi tạo sản phẩm
+                if(!String.IsNullOrEmpty(filter.productDate))
+                {
+                    DateTime fromdate = DateTime.Today;
+                    DateTime todate = DateTime.Now;
+                    CalDate(filter.productDate, ref fromdate, ref todate);
+
+                    productFilter = productFilter
+                        .Where(x => x.CreatedDate >= fromdate)
+                        .Where(x => x.CreatedDate <= todate);
+
+                    productVariableFilter = productVariableFilter
+                        .Where(x => x.CreatedDate >= fromdate)
+                        .Where(x => x.CreatedDate <= todate);
+                }
+                #endregion
+
+                #region Lọc với màu
+                if(!String.IsNullOrEmpty(filter.color))
+                {
+                    productFilter = productFilter.Where(x => x.ProductStyle == 2);
+
+                    productVariableFilter = productVariableFilter.Where(x => x.color == filter.color.Trim().ToLower());
+                }
+                #endregion
+
+                #region Lọc với size
+                if (!String.IsNullOrEmpty(filter.size))
+                {
+                    productFilter = productFilter.Where(x => x.ProductStyle == 2);
+
+                    productVariableFilter = productVariableFilter.Where(x => x.size == filter.size.Trim().ToLower());
+                }
+                #endregion
+
+                #region Lọc với sắp xếp kệ
+                if (filter.floor > 0)
+                {
+                    var temp1 = productFilter
+                        .Join(
+                            con.ShelfManagers.Where(x => x.ProductVariableID == 0),
+                            p => p.ID,
+                            s => s.ProductID,
+                            (p, s) => new { p, s }
+                        )
+                        .Where(x => x.s.Floor == filter.floor);
+
+                    var temp2 = productVariableFilter
+                        .Join(
+                            con.ShelfManagers.Where(x => x.ProductVariableID != 0),
+                            pv => new {
+                                productID = pv.ProductID.Value,
+                                productVariableID = pv.ID
+                            },
+                            s => new {
+                                productID = s.ProductID,
+                                productVariableID = s.ProductVariableID
+                            },
+                            (pv, s) => new { pv, s }
+                        )
+                        .Where(x => x.s.Floor == filter.floor);
+
+                    if (filter.row > 0)
+                    {
+                        temp1 = temp1.Where(x => x.s.Row == filter.row);
+                        temp2 = temp2.Where(x => x.s.Row == filter.row);
+
+                        if(filter.shelf > 0)
+                        {
+                            temp1 = temp1.Where(x => x.s.Shelf == filter.shelf);
+                            temp2 = temp2.Where(x => x.s.Shelf == filter.shelf);
+
+                            if (filter.floorShelf > 0)
+                            {
+                                temp1 = temp1.Where(x => x.s.FloorShelf == filter.floorShelf);
+                                temp2 = temp2.Where(x => x.s.FloorShelf == filter.floorShelf);
+                            }
+                        }
+                    }
+
+                    productFilter = productFilter
+                        .Join(
+                            temp1.Select(x => x.p),
+                            p => p.ID,
+                            t1 => t1.ID,
+                            (p, t1) => p
+                        );
+
+                    productVariableFilter = productVariableFilter
+                        .Join(
+                            temp2.Select(x => x.pv),
+                            pv => pv.ID,
+                            t2 => t2.ID,
+                            (pv, t2) => pv
+                        );
+                }
+                #endregion
+
+                #region Lấy những thông tin cần thiết để tiếp tục phân trang
+                var dataPagination = productFilter
+                    .GroupJoin(
+                        productVariableFilter,
+                        p => p.ID,
+                        v => v.ProductID,
+                        (p, v) => new { p, v }
+                    )
+                    .SelectMany(
+                        x => x.v.DefaultIfEmpty(),
+                        (parent, child) => new
+                        {
+                            categoryID = parent.p.CategoryID.Value,
+                            productID = parent.p.ID,
+                            productVariableID = child != null ? child.ID : 0,
+                            sku = child != null ? child.SKU : parent.p.ProductSKU,
+                            title = parent.p.ProductTitle,
+                            image = child != null ? child.Image : parent.p.ProductImage,
+                            materials = parent.p.Materials,
+                            content = parent.p.ProductContent,
+                            costOfGood = child != null ? child.CostOfGood.Value : parent.p.CostOfGood.Value,
+                            regularPrice = child != null ? child.Regular_Price.Value : parent.p.Regular_Price.Value,
+                            retailPrice = child != null ? child.RetailPrice.Value : parent.p.Retail_Price.Value,
+                            craeteDate = child != null ? child.CreatedDate.Value : parent.p.CreatedDate.Value
+                        }
+                    );
+                #endregion
+
+                #region Tính toán phân trang
+                // Calculate pagination
+                page.totalCount = dataPagination.Count();
+                page.totalPages = (int)Math.Ceiling(page.totalCount / (double)page.pageSize);
+
+                dataPagination = dataPagination
+                   .OrderByDescending(o => new { o.productID, o.productVariableID })
+                   .Skip((page.currentPage - 1) * page.pageSize)
+                   .Take(page.pageSize);
+                #endregion
+
+                #region Lấy thông tin kệ
+                var shelf = con.ShelfManagers
+                    .Join(
+                        con.CategoryShelves.Where(x => x.Level == 1),
+                        s => s.Floor,
+                        c => c.ID,
+                        (s, c) => new
+                        {
+                            shelf = s,
+                            floorName = c.Name
+                        }
+                    )
+                    .Join(
+                        con.CategoryShelves.Where(x => x.Level == 2),
+                        t1 => t1.shelf.Row,
+                        c => c.ID,
+                        (t1, c) => new
+                        {
+                            shelf = t1.shelf,
+                            floorName = t1.floorName,
+                            rowName = c.Name
+                        }
+                    )
+                    .Join(
+                        con.CategoryShelves.Where(x => x.Level == 3),
+                        t2 => t2.shelf.Shelf,
+                        c => c.ID,
+                        (t2, c) => new
+                        {
+                            shelf = t2.shelf,
+                            floorName = t2.floorName,
+                            rowName = t2.rowName,
+                            shelfName = c.Name
+                        }
+                    )
+                    .Join(
+                        con.CategoryShelves.Where(x => x.Level == 4),
+                        t3 => t3.shelf.FloorShelf,
+                        c => c.ID,
+                        (t3, c) => new
+                        {
+                            shelf = t3.shelf,
+                            floorName = t3.floorName,
+                            rowName = t3.rowName,
+                            shelfName = t3.shelfName,
+                            floorShelfName = c.Name
+                        }
+                    );
+                #endregion
+
+                var result = dataPagination
+                    .Join(
+                        con.tbl_Category,
+                        d => d.categoryID,
+                        c => c.ID,
+                        (d, c) => new { d, c }
+                    )
+                    .GroupJoin(
+                        shelf,
+                        t1 => new { productID = t1.d.productID, productVariable = t1.d.productVariableID },
+                        s => new { productID = s.shelf.ProductID, productVariable = s.shelf.ProductVariableID },
+                        (t1, s) => new { t1, s }
+                    )
+                    .SelectMany(
+                        x => x.s.DefaultIfEmpty(),
+                        (parent, child) => new ProductShelf {
+                            CategoryID = parent.t1.d.categoryID,
+                            CategoryName = parent.t1.c.CategoryName,
+                            ProductID = parent.t1.d.productID,
+                            ProductVariable = parent.t1.d.productVariableID,
+                            SKU = parent.t1.d.sku,
+                            Title = parent.t1.d.title,
+                            Image = parent.t1.d.image,
+                            Materials = parent.t1.d.materials,
+                            Content = parent.t1.d.content,
+                            Quantity = child != null ? child.shelf.Quantity : 0,
+                            CostOfGood = parent.t1.d.costOfGood,
+                            RegularPrice = parent.t1.d.regularPrice,
+                            RetailPrice = parent.t1.d.retailPrice,
+                            CreatedDate = parent.t1.d.craeteDate,
+                            Floor = child != null ? child.shelf.Floor : 0,
+                            FloorName = child != null ? child.floorName : String.Empty,
+                            Row = child != null ? child.shelf.Row : 0,
+                            RowName = child != null ? child.rowName : String.Empty,
+                            Shelf = child != null ? child.shelf.Shelf : 0,
+                            ShelfName = child != null ? child.shelfName : String.Empty,
+                            FloorShelf = child != null ? child.shelf.FloorShelf : 0,
+                            FloorShelfName = child != null ? child.floorShelfName : String.Empty
+                        }
+                    )
+                    .OrderByDescending(o => new { o.ProductID, o.ProductVariable })
+                    .ToList();
+
+                return result;
+            }
+        }
+
+        public static List<Product> GetProductShelf(ProductFilterModel filter, bool useChangeShelf = false)
+        {
+            using (var con = new inventorymanagementEntities())
+            {
+                var productFilter = con.tbl_Product
+                    .Where(x => 
+                        x.ProductSKU.ToLower() == filter.search.Trim().ToLower()
+                    )
+                    .FirstOrDefault();
+
+                var productVariableFilter = con.tbl_ProductVariable
+                    .Where(x => 
+                        x.SKU.ToLower().Contains(filter.search.Trim().ToLower())
+                    )
+                    .FirstOrDefault();
+
+                if (productFilter == null && productVariableFilter == null)
+                    return null;
+
+                #region Lấy thông tin sản phẩm
+                Product data;
+                if (productVariableFilter == null)
+                {
+                    // Trường hợp sản phẩm không có biến thể
+                    data = new Product()
+                    {
+                        productID = productFilter.ID,
+                        productVariableID = 0,
+                        sku = productFilter.ProductSKU,
+                        title = productFilter.ProductTitle,
+                        image = productFilter.ProductImage,
+                        color = String.Empty,
+                        size = String.Empty,
+                    };
+                }
+                else
+                {
+                    // Trường hợp có biến thể
+                    var color = con.tbl_ProductVariableValue.Where(x => x.ProductVariableID == productVariableFilter.ID)
+                        .Join(
+                            con.tbl_VariableValue.Where(x => x.VariableID == 1), // Chỉ lấy màu
+                            p => p.VariableValueID,
+                            v => v.ID,
+                            (p, v) => v.VariableValue
+                        )
+                        .FirstOrDefault();
+
+                    var size = con.tbl_ProductVariableValue.Where(x => x.ProductVariableID == productVariableFilter.ID)
+                        .Join(
+                            con.tbl_VariableValue.Where(x => x.VariableID == 2), // Chỉ lấy size
+                            p => p.VariableValueID,
+                            v => v.ID,
+                            (p, v) => v.VariableValue
+                        )
+                        .FirstOrDefault();
+
+                    var title = con.tbl_Product
+                        .Where(x => x.ID == productVariableFilter.ProductID)
+                        .Select(x => x.ProductTitle)
+                        .FirstOrDefault();
+
+                    data = new Product()
+                    {
+                        productID = productVariableFilter.ProductID.Value,
+                        productVariableID = productVariableFilter.ID,
+                        sku = productVariableFilter.SKU,
+                        title = title,
+                        image = productVariableFilter.Image,
+                        color = color,
+                        size = size,
+                    };
+                }
+                #endregion
+
+                #region Lấy thông tin kệ
+                var shelf = con.ShelfManagers
+                    .Where(x => x.ProductID == data.productID && x.ProductVariableID == data.productVariableID)
+                    .Join(
+                        con.CategoryShelves.Where(x => x.Level == 1),
+                        s => s.Floor,
+                        c => c.ID,
+                        (s, c) => new
+                        {
+                            shelf = s,
+                            floorName = c.Name
+                        }
+                    )
+                    .Join(
+                        con.CategoryShelves.Where(x => x.Level == 2),
+                        t1 => t1.shelf.Row,
+                        c => c.ID,
+                        (t1, c) => new
+                        {
+                            shelf = t1.shelf,
+                            floorName = t1.floorName,
+                            rowName = c.Name
+                        }
+                    )
+                    .Join(
+                        con.CategoryShelves.Where(x => x.Level == 3),
+                        t2 => t2.shelf.Shelf,
+                        c => c.ID,
+                        (t2, c) => new
+                        {
+                            shelf = t2.shelf,
+                            floorName = t2.floorName,
+                            rowName = t2.rowName,
+                            shelfName = c.Name
+                        }
+                    )
+                    .Join(
+                        con.CategoryShelves.Where(x => x.Level == 4),
+                        t3 => t3.shelf.FloorShelf,
+                        c => c.ID,
+                        (t3, c) => new
+                        {
+                            shelf = t3.shelf,
+                            floorName = t3.floorName,
+                            rowName = t3.rowName,
+                            shelfName = t3.shelfName,
+                            floorShelfName = c.Name
+                        }
+                    )
+                    .ToList();
+                #endregion
+
+                var result = new List<Product>();
+                var existShelf = false;
+                foreach (var item in shelf)
+                {
+                    if (
+                        item.shelf.Floor == filter.floor &&
+                        item.shelf.Row == filter.row &&
+                        item.shelf.Shelf == filter.shelf &&
+                        item.shelf.FloorShelf == filter.floorShelf
+                    )
+                    {
+                        if (!useChangeShelf)
+                        {
+                            existShelf = true;
+                        }
+                        else
+                        {
+                            if (
+                                item.shelf.ProductID == data.productID &&
+                                item.shelf.ProductVariableID == data.productVariableID
+                                )
+                            {
+                                continue;
+                            }
+                        }
+                    }
+
+                    result.Add(new Product()
+                    {
+                        productID = data.productID,
+                        productVariableID = data.productVariableID,
+                        sku = data.sku,
+                        title = data.title,
+                        image = data.image,
+                        color = data.color,
+                        size = data.size,
+                        quantity = item.shelf.Quantity,
+                        floor = item.shelf.Floor,
+                        floorName = item.floorName,
+                        row = item.shelf.Row,
+                        rowName = item.rowName,
+                        shelf = item.shelf.Shelf,
+                        shelfName = item.shelfName,
+                        floorShelf = item.shelf.FloorShelf,
+                        floorShelfName = item.floorShelfName
+                    });
+                }
+
+                if (!useChangeShelf && !existShelf)
+                {
+                    var floorName = con.CategoryShelves
+                        .Where(x => x.Level == 1 && x.ID == filter.floor)
+                        .Select(x => x.Name)
+                        .FirstOrDefault();
+                    var rowName = con.CategoryShelves
+                        .Where(x => x.Level == 2 && x.ID == filter.row)
+                        .Select(x => x.Name)
+                        .FirstOrDefault();
+                    var shelfName = con.CategoryShelves
+                        .Where(x => x.Level == 3 && x.ID == filter.shelf)
+                        .Select(x => x.Name)
+                        .FirstOrDefault();
+                    var floorShelfName = con.CategoryShelves
+                        .Where(x => x.Level == 4 && x.ID == filter.floorShelf)
+                        .Select(x => x.Name)
+                        .FirstOrDefault();
+
+                    result.Add(new Product()
+                    {
+                        productID = data.productID,
+                        productVariableID = data.productVariableID,
+                        sku = data.sku,
+                        title = data.title,
+                        image = data.image,
+                        color = data.color,
+                        size = data.size,
+                        quantity = 0,
+                        floor = filter.floor,
+                        floorName = floorName,
+                        row = filter.row,
+                        rowName = rowName,
+                        shelf = filter.shelf,
+                        shelfName = shelfName,
+                        floorShelf = filter.floorShelf,
+                        floorShelfName = floorShelfName
+                    });
+                }
+
+                return result;
+            }
+        }
+
+        public static void updateProductQuantityInShelf(List<Product> productShelf, int requester)
+        {
+            using (var con = new inventorymanagementEntities())
+            {
+                foreach (var item in productShelf)
+                {
+                    var prodOld = con.ShelfManagers
+                        .Where(x => x.Floor == item.floor)
+                        .Where(x => x.Row == item.row)
+                        .Where(x => x.Shelf == item.shelf)
+                        .Where(x => x.FloorShelf == item.floorShelf)
+                        .Where(x => x.ProductID == item.productID)
+                        .Where(x => x.ProductVariableID == item.productVariableID)
+                        .FirstOrDefault();
+
+                    var now = DateTime.Now;
+
+                    if (prodOld != null)
+                    {
+                        prodOld.Quantity = Convert.ToInt32(item.quantity);
+                        prodOld.ModifiedBy = requester;
+                        prodOld.ModifiedDate = now;
+                        con.SaveChanges();
+                    }
+                    else
+                    {
+                        con.ShelfManagers.Add(new ShelfManager()
+                        {
+                            Floor = item.floor,
+                            Row = item.row,
+                            Shelf = item.shelf,
+                            FloorShelf = item.floorShelf,
+                            ProductID = item.productID,
+                            ProductVariableID = item.productVariableID,
+                            Quantity = Convert.ToInt32(item.quantity),
+                            CreatedBy = requester,
+                            CreatedDate = now,
+                            ModifiedBy = requester,
+                            ModifiedDate = now
+                        });
+                        con.SaveChanges();
+                    }
+                }
+            }
+        }
+
+        public static void updateChangeShelf(List<Product> productShelf, int floor, int row, int shelf, int floorShelf, int requester)
+        {
+            using (var con = new inventorymanagementEntities())
+            {
+                foreach (var item in productShelf)
+                {
+                    var prod = con.ShelfManagers
+                        .Where(x => x.Floor == item.floor)
+                        .Where(x => x.Row == item.row)
+                        .Where(x => x.Shelf == item.shelf)
+                        .Where(x => x.FloorShelf == item.floorShelf)
+                        .Where(x => x.ProductID == item.productID)
+                        .Where(x => x.ProductVariableID == item.productVariableID)
+                        .FirstOrDefault();
+
+                    var now = DateTime.Now;
+
+                    if (prod != null)
+                    {
+                        var prodChage = con.ShelfManagers
+                            .Where(x => x.Floor == floor)
+                            .Where(x => x.Row == row)
+                            .Where(x => x.Shelf == shelf)
+                            .Where(x => x.FloorShelf == floorShelf)
+                            .Where(x => x.ProductID == item.productID)
+                            .Where(x => x.ProductVariableID == item.productVariableID)
+                            .FirstOrDefault();
+
+                        if (prodChage != null)
+                        {
+                            prodChage.Quantity += Convert.ToInt32(item.quantity);
+                            prodChage.ModifiedBy = requester;
+                            prodChage.ModifiedDate = now;
+                        }
+                        else
+                        {
+                            con.ShelfManagers.Add(new ShelfManager()
+                            {
+                                Floor = floor,
+                                Row = row,
+                                Shelf = shelf,
+                                FloorShelf = floorShelf,
+                                ProductID = item.productID,
+                                ProductVariableID = item.productVariableID,
+                                Quantity = Convert.ToInt32(item.quantity),
+                                CreatedBy = requester,
+                                CreatedDate = now,
+                                ModifiedBy = requester,
+                                ModifiedDate = now
+                            });
+                        }
+
+                        con.ShelfManagers.Remove(prod);
+                        con.SaveChanges();
+                    }
+                }
+            }
+        }
         #endregion
         #region Class
+        public class Product
+        {
+            public int productID { get; set; }
+            public int productVariableID { get; set; }
+            public string sku { get; set; }
+            public string title { get; set; }
+            public string image { get; set; }
+            public string color { get; set; }
+            public string size { get; set; }
+            public double quantity { get; set; }
+            public int floor { get; set; }
+            public string floorName { get; set; }
+            public int row { get; set; }
+            public string rowName { get; set; }
+            public int shelf { get; set; }
+            public string shelfName { get; set; }
+            public int floorShelf { get; set; }
+            public string floorShelfName { get; set; }
+
+        }
+        public class ProductShelf
+        {
+            public int CategoryID { get; set; }
+            public string CategoryName { get; set; }
+            public int ProductID { get; set; }
+            public int ProductVariable { get; set; }
+            public string SKU { get; set; }
+            public string Title { get; set; }
+            public string Image { get; set; }
+            public string Materials { get; set; }
+            public string Content { get; set; }
+            public double Quantity { get; set; }
+            public double CostOfGood { get; set; }
+            public double RegularPrice { get; set; }
+            public double RetailPrice { get; set; }
+            public DateTime CreatedDate { get; set; }
+            public int Floor { get; set; }
+            public string FloorName { get; set; }
+            public int Row { get; set; }
+            public string RowName { get; set; }
+            public int Shelf { get; set; }
+            public string ShelfName { get; set; }
+            public int FloorShelf { get; set; }
+            public string FloorShelfName { get; set; }
+
+        }
         public class ProductSQL
         {
             public int ID { get; set; }

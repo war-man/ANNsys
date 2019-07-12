@@ -15,6 +15,7 @@ namespace IM_PJ.Models
         public string color { get; set; } = String.Empty;
         // Tìm kiếm theo một số size mặc định
         public string size { get; set; } = String.Empty;
+        // Tìm kiếm theo trạng thái kho
         public int stockStatus { get; set; } = 0;
         public string quantity { get; set; } = String.Empty;
         public int quantityFrom { get; set; } = 0;
@@ -25,5 +26,13 @@ namespace IM_PJ.Models
         public string showHomePage { get; set; } = String.Empty;
         // Lọc những sản phẩm cho phép show ở trang quảng cáo
         public string webPublish { get; set; } = String.Empty;
+        // Lọc nhưng sản phẩm theo tầng
+        public int floor { get; set; } = 0;
+        // Lọc nhưng sản phẩm theo dãy
+        public int row { get; set; } = 0;
+        // Lọc nhưng sản phẩm theo kệ
+        public int shelf { get; set; } = 0;
+        // Lọc nhưng sản phẩm tầng của kệ
+        public int floorShelf { get; set; } = 0;
     }
 }
