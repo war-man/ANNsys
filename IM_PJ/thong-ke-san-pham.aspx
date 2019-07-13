@@ -113,6 +113,16 @@
                                 <div class="col-md-3">
                                     <div class="report-column">
                                         <div class="report-label">
+                                            Lợi nhuận mỗi ngày:
+                                        </div>
+                                        <div class="report-value">
+                                            <asp:Literal ID="ltrAverageProfit" runat="server" EnableViewState="false"></asp:Literal>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="report-column">
+                                        <div class="report-label">
                                             Doanh số:
                                         </div>
                                         <div class="report-value">
@@ -130,6 +140,8 @@
                                         </div>
                                     </div>
                                 </div>
+                            </div>
+                            <div class="row margin-bottom-15">
                                 <div class="col-md-3">
                                     <div class="report-column">
                                         <div class="report-label">

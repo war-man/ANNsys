@@ -283,7 +283,7 @@ namespace IM_PJ
                         StringBuilder notestring = new StringBuilder();
                         foreach (var item in oldOrders)
                         {
-                            notestring.AppendLine(String.Format("<li>Đơn <strong><a href='/thong-tin-don-hang?id={0}' target='_blank'>{0}</a></strong> (<em>{1}<em>): {2}</li>", item.ID, item.DateDone, item.OrderNote));
+                            notestring.AppendLine(String.Format("<li>Đơn <strong><a href='/thong-tin-don-hang?id={0}' target='_blank'>{0}</a></strong> (<em>{1}</em>): {2}</li>", item.ID, item.DateDone, item.OrderNote));
                         }
 
                         StringBuilder notehtml = new StringBuilder();
@@ -299,8 +299,8 @@ namespace IM_PJ
                         notehtml.AppendLine("                        <ul>");
                         notehtml.AppendLine(String.Format("{0}", notestring));
                         notehtml.AppendLine("                        </ul>");
-                        notehtml.AppendLine("                    <div>");
-                        notehtml.AppendLine("                <div>");
+                        notehtml.AppendLine("                    </div>");
+                        notehtml.AppendLine("                </div>");
                         notehtml.AppendLine("            </div>");
                         notehtml.AppendLine("        </div>");
                         notehtml.AppendLine("    </div>");

@@ -2,7 +2,7 @@
 
 <%@ Register Assembly="Telerik.Web.UI" Namespace="Telerik.Web.UI" TagPrefix="telerik" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
-    <script src="/App_Themes/Ann/js/search-customer.js?v=23052019"></script>
+    <script src="/App_Themes/Ann/js/search-customer.js?v=13072019"></script>
     <script src="/App_Themes/Ann/js/search-product.js?v=15052021"></script>
     <style>
         .panel-post {

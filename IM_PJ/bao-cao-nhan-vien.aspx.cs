@@ -122,6 +122,20 @@ namespace IM_PJ
                 totalRefundQuantity = userRefundReport.totalRefund;
                 averageRefundQuantity = totalRefundQuantity / totalDays;
 
+                // Tổng hệ thống
+
+                var totalSystemReport = OrderController.getProductReport(SKU, CategoryID, "", fromdate, todate);
+                var totalRefundSystemReport = RefundGoodController.getRefundProductReport(SKU, CategoryID, "", fromdate, todate);
+
+                int totalSystemProfit = totalSystemReport.totalSold - totalRefundSystemReport.totalRefund;
+
+                int PercentOfSystem = 0;
+                if (totalSystemProfit > 0)
+                {
+                    PercentOfSystem = (totalSoldQuantity - totalRefundQuantity) * 100 / totalSystemProfit;
+                }
+                var newCustomer = CustomerController.Report(user, fromdate, todate);
+
                 ltrTotalSaleOrder.Text = userReport.totalOrder.ToString() + " đơn";
                 ltrAverageSaleOrder.Text = (userReport.totalOrder / totalDays).ToString() + " đơn/ngày";
                 ltrTotalSoldQuantity.Text = totalSoldQuantity.ToString() + " cái";
@@ -130,6 +144,8 @@ namespace IM_PJ
                 ltrAverageRefundQuantity.Text = averageRefundQuantity.ToString() + " cái/ngày";
                 ltrTotalRemainQuantity.Text = (totalSoldQuantity - totalRefundQuantity).ToString() + " cái";
                 ltrAverageRemainQuantity.Text = ((totalSoldQuantity - totalRefundQuantity) / totalDays).ToString() + " cái/ngày";
+                ltrPercentOfSystem.Text = PercentOfSystem.ToString() + "%";
+                ltrTotalNewCustomer.Text = newCustomer.Count() + " khách mới";
             }
         }
 

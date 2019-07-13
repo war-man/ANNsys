@@ -102,6 +102,7 @@ namespace IM_PJ
             int totalRefundQuantity = 0;
             double totalCost = 0;
             double totalProfit = 0;
+            double totalSaleProfit = 0;
             double totalRefundProfit = 0;
             double totalRevenue = 0;
 
@@ -173,13 +174,16 @@ namespace IM_PJ
 
             var productStockReport = ProductController.getProductStockReport(SKU, CategoryID);
 
+            totalProfit = totalProfit - totalRefundProfit + productRefundReport.totalRefundFee;
+
             ltrTotalSold.Text = totalSoldQuantity.ToString();
             ltrTotalRefund.Text = totalRefundQuantity.ToString();
             ltrTotalRemain.Text = totalRemainQuantity.ToString();
             ltrTotalRemainPerDay.Text = (totalRemainQuantity / totalDays).ToString() + " cái/ngày";
             ltrTotalRevenue.Text = string.Format("{0:N0}", totalRevenue);
-            ltrTotalProfit.Text = string.Format("{0:N0}", (totalProfit - totalRefundProfit + productRefundReport.totalRefundFee));
-            ltrTotalStock.Text = productStockReport.totalStock.ToString();
+            ltrTotalProfit.Text = string.Format("{0:N0}", totalProfit);
+            ltrAverageProfit.Text = (totalProfit / totalDays).ToString();
+            ltrTotalStock.Text = productStockReport.totalStock.ToString() + " cái";
             ltrTotalStockValue.Text = string.Format("{0:N0}", productStockReport.totalStockValue);
         }
 

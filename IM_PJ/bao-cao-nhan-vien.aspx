@@ -138,6 +138,28 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="row margin-bottom-15">
+                            <div class="col-md-4">
+                                <div class="report-column">
+                                    <div class="report-label">
+                                        Phần trăm sản lượng / tổng hệ thống:
+                                    </div>
+                                    <div class="report-value">
+                                        <asp:Literal ID="ltrPercentOfSystem" runat="server" EnableViewState="false"></asp:Literal>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="report-column">
+                                    <div class="report-label">
+                                        Tổng số khách mới:
+                                    </div>
+                                    <div class="report-value">
+                                        <asp:Literal ID="ltrTotalNewCustomer" runat="server" EnableViewState="false"></asp:Literal>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

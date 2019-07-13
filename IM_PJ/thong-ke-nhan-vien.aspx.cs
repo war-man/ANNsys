@@ -76,19 +76,6 @@ namespace IM_PJ
             rToDate.SelectedDate = todate;
             totalDays = Convert.ToInt32((todate - fromdate).TotalDays);
 
-            // Load trang lan dau hoac la chua chon nhan vien
-            if (String.IsNullOrEmpty(accountName))
-            {
-                this.ltrTotalRevenue.Text = String.Empty;
-                this.ltrAverageRevenue.Text = String.Empty;
-                this.ltrTotalSoldQuantity.Text = String.Empty;
-                this.ltrAverageSoldQuantity.Text = String.Empty;
-                this.ltrTotalRefundQuantity.Text = String.Empty;
-                this.ltrAverageRefundQuantity.Text = String.Empty;
-                this.ltrTotalProfit.Text = String.Empty;
-                return;
-            }
-
             var userReport = OrderController.getUserReport(accountName, fromdate, todate);
 
             totalRevenue = userReport.totalRevenue;
@@ -102,6 +89,28 @@ namespace IM_PJ
             averageRefundQuantity = totalRefundQuantity / totalDays;
             totalProfit = (userReport.totalRevenue - userReport.totalCost) - (userRefundReport.totalRevenue - userRefundReport.totalCost) + userRefundReport.totalRefundFee;
 
+            // Tổng hệ thống
+
+            var systemReport = OrderController.getUserReport("", fromdate, todate);
+            var systemRefundReport = RefundGoodController.getUserReport("", fromdate, todate);
+
+            int totalSystemQuantity = systemReport.totalSoldQuantity - systemRefundReport.totalRefundQuantity;
+            int PercentQuantityOfSystem = 0;
+            if (totalSystemQuantity > 0)
+            {
+                PercentQuantityOfSystem = (totalSoldQuantity - totalRefundQuantity) * 100 / totalSystemQuantity;
+            }
+
+            double totalSystemProfit = (systemReport.totalRevenue - systemReport.totalCost) - (systemRefundReport.totalRevenue - systemRefundReport.totalCost) + systemRefundReport.totalRefundFee;
+            double PercentProfitOfSystem = 0;
+            if (totalSystemProfit > 0)
+            {
+                PercentProfitOfSystem = totalProfit * 100 / totalSystemProfit;
+            }
+
+            // Khách mới
+            var newCustomer = CustomerController.Report(accountName, fromdate, todate);
+
             ltrTotalRevenue.Text = String.Format("{0:N0}", totalRevenue);
             ltrAverageRevenue.Text = String.Format("{0:N0}/ngày", averageRevenue);
             ltrTotalSoldQuantity.Text = totalSoldQuantity.ToString() + " cái";
@@ -111,6 +120,9 @@ namespace IM_PJ
             ltrTotalRemainQuantity.Text = (totalSoldQuantity - totalRefundQuantity).ToString() + " cái";
             ltrAverageRemainQuantity.Text = ((totalSoldQuantity - totalRefundQuantity) / totalDays).ToString() + " cái/ngày";
             ltrTotalProfit.Text = String.Format("{0:N0}", totalProfit);
+            ltrQuantityPercentOfSystem.Text = PercentQuantityOfSystem.ToString() + "%";
+            ltrProfitPercentOfSystem.Text = Math.Round(PercentProfitOfSystem, 1).ToString() + "%";
+            ltrTotalNewCustomer.Text = newCustomer.Count() + " khách mới";
         }
 
         /// <summary>

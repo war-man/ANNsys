@@ -511,7 +511,20 @@ namespace IM_PJ.Controllers
 
             return result;
         }
+        public static List<tbl_Customer> Report(string CreatedBy, DateTime fromDate, DateTime toDate)
+        {
+            var result = new List<tbl_Customer>();
 
+            using (var dbe = new inventorymanagementEntities())
+            {
+
+                result = dbe.tbl_Customer
+                    .Where(x => x.CreatedBy == CreatedBy)
+                    .Where(x => x.CreatedDate >= fromDate && x.CreatedDate <= toDate)
+                    .ToList();
+            }
+            return result;
+        }
         public static List<CustomerGet> GetNotInGroupByGroupID(int GroupID)
         {
             var list = new List<CustomerGet>();
