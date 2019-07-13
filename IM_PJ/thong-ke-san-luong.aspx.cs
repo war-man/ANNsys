@@ -8,7 +8,7 @@ using System.Web.UI.WebControls;
 
 namespace IM_PJ
 {
-    public partial class thong_ke_so_luong_san_pham_ban_ra : System.Web.UI.Page
+    public partial class thong_ke_san_luong : System.Web.UI.Page
     {
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -76,10 +76,10 @@ namespace IM_PJ
             ltrTotalRemain.Text = (TotalRemainQuantity).ToString() + " cái";
             ltrAverageTotalRemain.Text = (TotalRemainQuantity / day).ToString() + " cái/ngày";
             ltrTotalSales.Text = (reportModel.TotalSoldQuantity).ToString() + " cái";
-            ltrAverageTotalSales.Text = (reportModel.TotalSoldQuantity / day).ToString() + " cái / ngày";
+            ltrAverageTotalSales.Text = (reportModel.TotalSoldQuantity / day).ToString() + " cái/ngày";
             ltrTotalRefund.Text = (reportModel.TotalRefundQuantity).ToString() + " cái";
-            ltrAverageTotalRefund.Text = (reportModel.TotalRefundQuantity / day).ToString() + " cái / ngày";
-            ltrAverageProfitPerProduct.Text = string.Format("{0:N0}", AverageProfitPerProduct) + " đ / cái";
+            ltrAverageTotalRefund.Text = (reportModel.TotalRefundQuantity / day).ToString() + " cái/ngày";
+            ltrAverageProfitPerProduct.Text = string.Format("{0:N0}", AverageProfitPerProduct) + " đ/cái";
 
         }
 

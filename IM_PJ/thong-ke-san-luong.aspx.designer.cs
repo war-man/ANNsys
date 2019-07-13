@@ -10,7 +10,7 @@
 namespace IM_PJ {
     
     
-    public partial class thong_ke_so_luong_san_pham_ban_ra {
+    public partial class thong_ke_san_luong {
         
         /// <summary>
         /// rFromDate control.

@@ -541,7 +541,6 @@
     <Content Include="them-moi-noi-den-nha-xe.aspx" />
     <Content Include="thong-ke-san-pham.aspx" />
     <Content Include="thong-ke-nhan-vien.aspx" />
-    <Content Include="thong-ke-phi-van-chuyen.aspx" />
     <Content Include="thong-tin-don-hang-chuyen-hoan.aspx" />
     <Content Include="sua-bai-viet.aspx" />
     <Content Include="xem-don-hang-doi-tra.aspx" />
@@ -667,12 +666,9 @@
     <Content Include="them-moi-thuoc-tinh.aspx" />
     <Content Include="them-nhan-vien.aspx" />
     <Content Include="them-thuoc-tinh-san-pham.aspx" />
-    <Content Include="thong-ke-chiet-khau.aspx" />
     <Content Include="thong-ke-doanh-thu.aspx" />
-    <Content Include="thong-ke-khach-hang.aspx" />
     <Content Include="thong-ke-loi-nhuan.aspx" />
-    <Content Include="thong-ke-so-luong-hang-doi-tra.aspx" />
-    <Content Include="thong-ke-so-luong-san-pham-ban-ra.aspx" />
+    <Content Include="thong-ke-san-luong.aspx" />
     <Content Include="thong-ke-so-luong-ton-kho-theo-danh-muc.aspx" />
     <Content Include="thong-tin-anh-san-pham.aspx" />
     <Content Include="thong-tin-dai-ly.aspx" />
@@ -1615,13 +1611,6 @@
     <Compile Include="them-thuoc-tinh-san-pham.aspx.designer.cs">
       <DependentUpon>them-thuoc-tinh-san-pham.aspx</DependentUpon>
     </Compile>
-    <Compile Include="thong-ke-chiet-khau.aspx.cs">
-      <DependentUpon>thong-ke-chiet-khau.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="thong-ke-chiet-khau.aspx.designer.cs">
-      <DependentUpon>thong-ke-chiet-khau.aspx</DependentUpon>
-    </Compile>
     <Compile Include="thong-ke-san-pham.aspx.cs">
       <DependentUpon>thong-ke-san-pham.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -1643,13 +1632,6 @@
     <Compile Include="thong-ke-doanh-thu.aspx.designer.cs">
       <DependentUpon>thong-ke-doanh-thu.aspx</DependentUpon>
     </Compile>
-    <Compile Include="thong-ke-khach-hang.aspx.cs">
-      <DependentUpon>thong-ke-khach-hang.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="thong-ke-khach-hang.aspx.designer.cs">
-      <DependentUpon>thong-ke-khach-hang.aspx</DependentUpon>
-    </Compile>
     <Compile Include="thong-ke-loi-nhuan.aspx.cs">
       <DependentUpon>thong-ke-loi-nhuan.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -1657,26 +1639,12 @@
     <Compile Include="thong-ke-loi-nhuan.aspx.designer.cs">
       <DependentUpon>thong-ke-loi-nhuan.aspx</DependentUpon>
     </Compile>
-    <Compile Include="thong-ke-phi-van-chuyen.aspx.cs">
-      <DependentUpon>thong-ke-phi-van-chuyen.aspx</DependentUpon>
+    <Compile Include="thong-ke-san-luong.aspx.cs">
+      <DependentUpon>thong-ke-san-luong.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="thong-ke-phi-van-chuyen.aspx.designer.cs">
-      <DependentUpon>thong-ke-phi-van-chuyen.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="thong-ke-so-luong-hang-doi-tra.aspx.cs">
-      <DependentUpon>thong-ke-so-luong-hang-doi-tra.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="thong-ke-so-luong-hang-doi-tra.aspx.designer.cs">
-      <DependentUpon>thong-ke-so-luong-hang-doi-tra.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="thong-ke-so-luong-san-pham-ban-ra.aspx.cs">
-      <DependentUpon>thong-ke-so-luong-san-pham-ban-ra.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="thong-ke-so-luong-san-pham-ban-ra.aspx.designer.cs">
-      <DependentUpon>thong-ke-so-luong-san-pham-ban-ra.aspx</DependentUpon>
+    <Compile Include="thong-ke-san-luong.aspx.designer.cs">
+      <DependentUpon>thong-ke-san-luong.aspx</DependentUpon>
     </Compile>
     <Compile Include="thong-ke-so-luong-ton-kho-theo-danh-muc.aspx.cs">
       <DependentUpon>thong-ke-so-luong-ton-kho-theo-danh-muc.aspx</DependentUpon>

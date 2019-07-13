@@ -7,7 +7,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
-                    <h3 class="page-title left">Thống kê số lượng tồn kho theo danh mục</h3>
+                    <h3 class="page-title left">Thống kê tồn kho</h3>
 
                 </div>
             </div>

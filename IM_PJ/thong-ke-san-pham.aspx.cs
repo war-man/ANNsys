@@ -182,7 +182,7 @@ namespace IM_PJ
             ltrTotalRemainPerDay.Text = (totalRemainQuantity / totalDays).ToString() + " cái/ngày";
             ltrTotalRevenue.Text = string.Format("{0:N0}", totalRevenue);
             ltrTotalProfit.Text = string.Format("{0:N0}", totalProfit);
-            ltrAverageProfit.Text = (totalProfit / totalDays).ToString();
+            ltrAverageProfit.Text = string.Format("{0:N0}", totalProfit / totalDays).ToString();
             ltrTotalStock.Text = productStockReport.totalStock.ToString() + " cái";
             ltrTotalStockValue.Text = string.Format("{0:N0}", productStockReport.totalStockValue);
         }

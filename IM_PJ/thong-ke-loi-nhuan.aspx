@@ -8,7 +8,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
-                    <h3 class="page-title left">Lợi nhuận</h3>
+                    <h3 class="page-title left">Thống kê lợi nhuận</h3>
                     <div class="right above-list-btn">
                         <a href="/bao-cao" class="h45-btn btn" style="background-color: #ff3f4c">Trở về</a>
                     </div>

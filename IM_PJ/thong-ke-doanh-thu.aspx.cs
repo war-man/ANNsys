@@ -65,9 +65,9 @@ namespace IM_PJ
             double TotalSale = od.TotalSalePrice - od.TotalRefundPrice - od.TotalSaleDiscount;
 
             ltrTotalNumberOfOrder.Text =  od.TotalNumberOfOrder.ToString() + " đơn";
-            ltrNumberOfOrderPerDay.Text = (od.TotalNumberOfOrder / day).ToString() + " đơn / ngày";
-            ltrTotalRevenue.Text = string.Format("{0:N0}", TotalSale) + "đ";
-            ltrAverageRevenue.Text = string.Format("{0:N0}", TotalSale / day) + "đ / ngày";
+            ltrNumberOfOrderPerDay.Text = (od.TotalNumberOfOrder / day).ToString() + " đơn/ngày";
+            ltrTotalRevenue.Text = string.Format("{0:N0}", TotalSale);
+            ltrAverageRevenue.Text = string.Format("{0:N0}", TotalSale / day) + "đ/ngày";
 
             if (od.TotalNumberOfOrder == 0)
             {
@@ -75,7 +75,7 @@ namespace IM_PJ
             }
             else
             {
-                ltrRevenuePerOrder.Text = string.Format("{0:N0}", TotalSale / od.TotalNumberOfOrder) + "đ / đơn";
+                ltrRevenuePerOrder.Text = string.Format("{0:N0}", TotalSale / od.TotalNumberOfOrder) + "đ/đơn";
             }
         }
         protected void btnSearch_Click(object sender, EventArgs e)

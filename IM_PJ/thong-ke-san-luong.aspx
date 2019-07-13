@@ -1,4 +1,4 @@
-﻿<%@ Page Title="Thống kê số lượng sản phẩm bán ra" Language="C#" AutoEventWireup="true" MasterPageFile="~/MasterPage.Master" CodeBehind="thong-ke-so-luong-san-pham-ban-ra.aspx.cs" Inherits="IM_PJ.thong_ke_so_luong_san_pham_ban_ra" %>
+﻿<%@ Page Title="Thống kê sản lượng" Language="C#" AutoEventWireup="true" MasterPageFile="~/MasterPage.Master" CodeBehind="thong-ke-san-luong.aspx.cs" Inherits="IM_PJ.thong_ke_san_luong" %>
 
 <%@ Register Assembly="Telerik.Web.UI" Namespace="Telerik.Web.UI" TagPrefix="telerik" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
@@ -8,7 +8,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
-                    <h3 class="page-title left">Thống kê số lượng sản phẩm bán ra</h3>
+                    <h3 class="page-title left">Thống kê sản lượng</h3>
                      <div class="right above-list-btn">
                         <a href="/bao-cao" class="h45-btn btn" style="background-color: #ff3f4c">Trở về</a>
                     </div>
