@@ -437,7 +437,7 @@ function selectCustomer() {
 
             var button = "<a href=\"javascript:;\" class=\"btn primary-btn fw-btn not-fullwidth\" onclick=\"viewCustomerDetail('" + id + "')\"><i class=\"fa fa-address-card-o\" aria-hidden=\"true\"></i> Xem</a>";
             button += "<a href=\"chi-tiet-khach-hang?id=" + id + "\" class=\"btn primary-btn fw-btn not-fullwidth edit-customer-btn\" target=\"_blank\"><i class=\"fa fa-pencil-square-o\" aria-hidden=\"true\"></i> Sửa</a>";
-            button += "<a href=\"danh-sach-don-hang?textsearch=" + phone + "\" class=\"btn primary-btn fw-btn not-fullwidth edit-customer-btn\" target=\"_blank\"><i class=\"fa fa-history\" aria-hidden=\"true\"></i> Lịch sử</a>";
+            button += "<a href=\"danh-sach-don-hang?searchtype=1&textsearch=" + phone + "\" class=\"btn primary-btn fw-btn not-fullwidth edit-customer-btn\" target=\"_blank\"><i class=\"fa fa-history\" aria-hidden=\"true\"></i> Lịch sử</a>";
             button += "<a href=\"javascript:;\" class=\"btn primary-btn fw-btn not-fullwidth clear-btn\" onclick=\"clearCustomerDetail()\"><i class=\"fa fa-times\" aria-hidden=\"true\"></i> Bỏ</a>";
             $(".view-detail").html(button).show();
 
@@ -478,7 +478,7 @@ function checkOrderOld(customerID) {
                     show = 1;
                     $("#warningTextOrder").removeClass("hide");
                     openOrderDOM.removeAttr('style');
-                    openOrderDOM.attr('onClick', "window.open('/danh-sach-don-hang?&textsearch=" + data.phone + "&excutestatus=1', '_blank')")
+                    openOrderDOM.attr('onClick', "window.open('/danh-sach-don-hang?searchtype=1&textsearch=" + data.phone + "&excutestatus=1', '_blank')")
                 }
                 else {
                     $("#warningTextOrder").addClass("hide");
@@ -610,7 +610,7 @@ function selectCustomerDetail(data) {
 
     if (createdby === username) {
         button += "<a href=\"chi-tiet-khach-hang?id=" + data.ID + "\" class=\"btn primary-btn fw-btn not-fullwidth edit-customer-btn\" target=\"_blank\"><i class=\"fa fa-pencil-square-o\" aria-hidden=\"true\"></i> Sửa</a>";
-        button += "<a href=\"danh-sach-don-hang?textsearch=" + data.CustomerPhone + "\" class=\"btn primary-btn fw-btn not-fullwidth edit-customer-btn\" target=\"_blank\"><i class=\"fa fa-history\" aria-hidden=\"true\"></i> Lịch sử</a>";
+        button += "<a href=\"danh-sach-don-hang?searchtype=1&textsearch=" + data.CustomerPhone + "\" class=\"btn primary-btn fw-btn not-fullwidth edit-customer-btn\" target=\"_blank\"><i class=\"fa fa-history\" aria-hidden=\"true\"></i> Lịch sử</a>";
     }
     
     button += "<a href=\"javascript:;\" class=\"btn primary-btn fw-btn not-fullwidth clear-btn\" onclick=\"clearCustomerDetail()\"><i class=\"fa fa-times\" aria-hidden=\"true\"></i> Bỏ</a>";
