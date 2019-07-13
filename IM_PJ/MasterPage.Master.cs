@@ -50,6 +50,7 @@ namespace IM_PJ
                         ltrMenu.Text += "<li><a href='/danh-sach-don-hang-chuyen-hoan'><span class='icon-menu icon-order'></span>Chuyển hoàn</a></li>";
                         ltrMenu.Text += "<li><a href='/danh-sach-dang-ky'><span class='icon-menu icon-order'></span>Đăng ký</a></li>";
                         ltrMenu.Text += "<li><a href='/tat-ca-san-pham'><span class='icon-menu icon-lib'></span>Sản phẩm</a></li>";
+                        ltrMenu.Text += "<li><a href='/san-pham-theo-ke'><span class='icon-menu icon-lib'></span>Sản phẩm kệ</a></li>";
                         ltrMenu.Text += "<li><a href='/sp' target='_blank'><span class='icon-menu icon-lib'></span>SP mở rộng</a></li>";
                         ltrMenu.Text += "<li><a href='/bv' target='_blank'><span class='icon-menu icon-lib'></span>Bài viết</a></li>";
                         ltrMenu.Text += "<li><a href='/danh-sach-bai-viet'><span class='icon-menu icon-lib'></span>QL bài viết</a></li>";
@@ -58,6 +59,8 @@ namespace IM_PJ
                         ltrMenu.Text += "<li><a href='/danh-sach-khach-hang'><span class='icon-menu icon-product'></span>Khách hàng</a></li>";
                         ltrMenu.Text += "<li><a href='/danh-sach-nhom-khach-hang'><span class='icon-menu icon-product'></span>Nhóm KH</a></li>";
                         ltrMenu.Text += "<li><a href='/tao-ma-vach'><span class='icon-menu icon-product'></span>In mã vạch</a></li>";
+                        ltrMenu.Text += "<li><a href='/kiem-ke'><span class='icon-menu icon-product'></span>Kiểm kệ</a></li>";
+                        ltrMenu.Text += "<li><a href='/chuyen-ke'><span class='icon-menu icon-product'></span>Chuyển kệ</a></li>";
                         ltrMenu.Text += "<li><a href='/quan-ly-nhap-kho'><span class='icon-menu icon-product'></span>Nhập kho</a></li>";
                         ltrMenu.Text += "<li><a href='/quan-ly-xuat-kho'><span class='icon-menu icon-product'></span>Xuất kho</a></li>";
                         ltrMenu.Text += "<li><a href='/danh-sach-nha-xe'><span class='icon-menu icon-product'></span>Nhà xe</a></li>";
@@ -75,7 +78,10 @@ namespace IM_PJ
                     {
                         ltrMenu.Text += "<li><a href='/trang-chu'><span class='icon-menu icon-home'></span>Trang chủ</a></li>";
                         ltrMenu.Text += "<li><a href='/tat-ca-san-pham'><span class='icon-menu icon-lib'></span>Sản phẩm</a></li>";
+                        ltrMenu.Text += "<li><a href='/san-pham-theo-ke'><span class='icon-menu icon-lib'></span>Sản phẩm kệ</a></li>";
                         ltrMenu.Text += "<li><a href='/tao-ma-vach'><span class='icon-menu icon-product'></span>In mã vạch</a></li>";
+                        ltrMenu.Text += "<li><a href='/kiem-ke'><span class='icon-menu icon-lib'></span>Kiểm kệ</a></li>";
+                        ltrMenu.Text += "<li><a href='/chuyen-ke'><span class='icon-menu icon-product'></span>Chuyển kệ</a></li>";
                         ltrMenu.Text += "<li><a href='/quan-ly-nhap-kho'><span class='icon-menu icon-product'></span>Nhập kho</a></li>";
                         ltrMenu.Text += "<li><a href='/quan-ly-xuat-kho'><span class='icon-menu icon-product'></span>Xuất kho </a></li>";
                         ltrMenu.Text += "<li><a href='/kiem-kho'><span class='icon-menu icon-product'></span>Kiểm kho</a></li>";
@@ -88,6 +94,7 @@ namespace IM_PJ
                         ltrMenu.Text += "<li><a href='/danh-sach-don-tra-hang'><span class='icon-menu icon-order'></span>Đổi trả hàng</a></li>";
                         ltrMenu.Text += "<li><a href='/danh-sach-don-hang-chuyen-hoan'><span class='icon-menu icon-order'></span>Chuyển hoàn</a></li>";
                         ltrMenu.Text += "<li><a href='/tat-ca-san-pham'><span class='icon-menu icon-lib'></span>Sản phẩm</a></li>";
+                        ltrMenu.Text += "<li><a href='/san-pham-theo-ke'><span class='icon-menu icon-lib'></span>Sản phẩm kệ</a></li>";
                         ltrMenu.Text += "<li><a href='/sp' target='_blank'><span class='icon-menu icon-lib'></span>SP mở rộng</a></li>";
                         ltrMenu.Text += "<li><a href='/bv' target='_blank'><span class='icon-menu icon-lib'></span>Bài viết</a></li>";
                         ltrMenu.Text += "<li><a href='/danh-sach-khach-hang'><span class='icon-menu icon-product'></span>Khách hàng</a></li>";

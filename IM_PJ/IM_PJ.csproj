@@ -445,6 +445,7 @@
     <Content Include="danh-sach-chuyen-khoan.aspx" />
     <Content Include="FilesResources\ToolContentAccount.xml" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="chuyen-ke.aspx" />
     <Content Include="login-hidden-page.aspx" />
     <Content Include="print-delivery.aspx" />
     <Content Include="Scripts\bootstrap-datetimepicker.js" />
@@ -478,6 +479,7 @@
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
     <Content Include="Scripts\uuid.js" />
+    <Content Include="san-pham-theo-ke.aspx" />
     <Content Include="sua-thong-tin-nha-xe.aspx" />
     <Content Include="chi-tiet-nha-xe.aspx" />
     <Content Include="chi-tiet-noi-den-nha-xe.aspx" />
@@ -532,6 +534,7 @@
     <Content Include="danh-sach-bai-viet.aspx" />
     <Content Include="tao-bai-viet.aspx" />
     <Content Include="bao-cao-nhan-vien.aspx" />
+    <Content Include="kiem-ke.aspx" />
     <Content Include="uploadf.aspx" />
     <Content Include="them-chiet-khau.aspx" />
     <Content Include="them-danh-muc.aspx" />
@@ -821,6 +824,7 @@
     <Compile Include="bao-cao.aspx.designer.cs">
       <DependentUpon>bao-cao.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Controllers\CategoryShelfController.cs" />
     <Compile Include="Controllers\RegisterController.cs" />
     <Compile Include="Controllers\BankAccountController.cs" />
     <Compile Include="Controllers\BankController.cs" />
@@ -854,6 +858,13 @@
     <Compile Include="danh-sach-chuyen-khoan.aspx.designer.cs">
       <DependentUpon>danh-sach-chuyen-khoan.aspx</DependentUpon>
     </Compile>
+    <Compile Include="chuyen-ke.aspx.cs">
+      <DependentUpon>chuyen-ke.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="chuyen-ke.aspx.designer.cs">
+      <DependentUpon>chuyen-ke.aspx</DependentUpon>
+    </Compile>
     <Compile Include="login-hidden-page.aspx.cs">
       <DependentUpon>login-hidden-page.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -868,6 +879,9 @@
       <DependentUpon>IMModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\BankTransfer.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\CategoryShelf.cs">
       <DependentUpon>IMModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Common\BusinessReportModel.cs" />
@@ -888,6 +902,9 @@
       <DependentUpon>IMModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Session.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\ShelfManager.cs">
       <DependentUpon>IMModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Shipper.cs">
@@ -915,6 +932,13 @@
     </Compile>
     <Compile Include="print-delivery.aspx.designer.cs">
       <DependentUpon>print-delivery.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="san-pham-theo-ke.aspx.cs">
+      <DependentUpon>san-pham-theo-ke.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="san-pham-theo-ke.aspx.designer.cs">
+      <DependentUpon>san-pham-theo-ke.aspx</DependentUpon>
     </Compile>
     <Compile Include="sua-thong-tin-nha-xe.aspx.cs">
       <DependentUpon>sua-thong-tin-nha-xe.aspx</DependentUpon>
@@ -1442,6 +1466,13 @@
     </Compile>
     <Compile Include="bao-cao-nhan-vien.aspx.designer.cs">
       <DependentUpon>bao-cao-nhan-vien.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="kiem-ke.aspx.cs">
+      <DependentUpon>kiem-ke.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="kiem-ke.aspx.designer.cs">
+      <DependentUpon>kiem-ke.aspx</DependentUpon>
     </Compile>
     <Compile Include="uploadf.aspx.cs">
       <DependentUpon>uploadf.aspx</DependentUpon>

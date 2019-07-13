@@ -262,6 +262,7 @@ namespace IM_PJ
                             x.CheckDelivery = true;
                             return x;
                         })
+                        .Distinct()
                         .ToList();
                 }
                 else
@@ -288,6 +289,7 @@ namespace IM_PJ
                             }
                         )
                         .Select(x => x.ord)
+                        .Distinct()
                         .ToList();
                 }
 
