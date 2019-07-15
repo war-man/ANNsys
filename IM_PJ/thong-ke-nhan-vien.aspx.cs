@@ -131,7 +131,7 @@ namespace IM_PJ
         private void LoadAccountInfo()
         {
             ddlAccountInfo.Items.Clear();
-            ddlAccountInfo.Items.Insert(0, new ListItem("Chọn nhân viên", "0"));
+            ddlAccountInfo.Items.Insert(0, new ListItem("Chọn nhân viên", ""));
             var accounts = AccountController.GetAllUser();
             foreach (var acc in accounts)
             {

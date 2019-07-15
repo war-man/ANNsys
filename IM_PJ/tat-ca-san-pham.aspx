@@ -276,10 +276,10 @@
                                 </div>
                                 <div class="col-md-2 col-xs-6">
                                     <asp:DropDownList ID="ddlQuantityFilter" runat="server" CssClass="form-control" onchange="changeQuantityFilter($(this))">
-                                        <asp:ListItem Value="" Text="Số lượng"></asp:ListItem>
-                                        <asp:ListItem Value="greaterthan" Text="Lớn hơn"></asp:ListItem>
-                                        <asp:ListItem Value="lessthan" Text="Nhỏ hơn"></asp:ListItem>
-                                        <asp:ListItem Value="between" Text="Trong khoảng"></asp:ListItem>
+                                        <asp:ListItem Value="" Text="Số lượng kho"></asp:ListItem>
+                                        <asp:ListItem Value="greaterthan" Text="Số lượng lớn hơn"></asp:ListItem>
+                                        <asp:ListItem Value="lessthan" Text="Số lượng nhỏ hơn"></asp:ListItem>
+                                        <asp:ListItem Value="between" Text="Số lượng trong khoảng"></asp:ListItem>
                                     </asp:DropDownList>
                                 </div>
                                 <div class="col-md-2 col-xs-6 greaterthan lessthan">

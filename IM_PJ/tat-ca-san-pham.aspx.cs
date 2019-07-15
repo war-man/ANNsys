@@ -16,6 +16,7 @@ using static IM_PJ.Controllers.ProductController;
 using IM_PJ.Utils;
 using System.Drawing;
 using System.Web.Hosting;
+using System.IO;
 
 namespace IM_PJ
 {
@@ -196,36 +197,73 @@ namespace IM_PJ
         [WebMethod]
         public static string getAllProductImage(string sku)
         {
+            string rootPath = @"C:/Users/phanhoanganh9x/Documents/ANNsys/IM_PJ";
+
             var product = ProductController.GetBySKU(sku);
             List<string> images = new List<string>();
+
             if (product != null)
             {
-                images.Add(Thumbnail.getURL(product.ProductImage, Thumbnail.Size.Source));
+                // lấy ảnh đại diện
+                string imgAdd = Thumbnail.getURL(product.ProductImage, Thumbnail.Size.Source);
+                if (File.Exists(rootPath + imgAdd))
+                {
+                    images.Add(imgAdd);
+                }
 
                 // lấy ảnh sản phẩm từ thư viện
-
                 var imageProduct = ProductImageController.GetByProductID(product.ID);
-
-                if(imageProduct != null)
+                if (imageProduct != null)
                 {
                     foreach (var img in imageProduct)
                     {
-                        images.Add(Thumbnail.getURL(img.ProductImage, Thumbnail.Size.Source));
+                        imgAdd = Thumbnail.getURL(img.ProductImage, Thumbnail.Size.Source);
+                        if (File.Exists(rootPath + imgAdd))
+                        {
+                            images.Add(imgAdd);
+                        }
                     }
                 }
 
                 // lấy ảnh sản phẩm từ biến thể
-
                 var variable = ProductVariableController.GetByParentSKU(product.ProductSKU);
-
-                if(variable != null)
+                if (variable != null)
                 {
                     foreach (var v in variable)
                     {
-                        images.Add(Thumbnail.getURL(v.Image, Thumbnail.Size.Source));
+                        if (!String.IsNullOrEmpty(v.Image))
+                        {
+                            imgAdd = Thumbnail.getURL(v.Image, Thumbnail.Size.Source);
+                            if (File.Exists(rootPath + imgAdd))
+                            {
+                                images.Add(imgAdd);
+                            }
+                        }
                     }
                 }
+            }
 
+            images = images.Distinct().ToList();
+
+            if (images.Count() > 0)
+            {
+                for (int i = 0; i < images.Count - 1; i++)
+                {
+                    for (int y = i + 1; y < images.Count; y++)
+                    {
+                        string img1 = images[i];
+                        string img2 = images[y];
+
+                        // so sánh 2 hình và lọc hình trùng lặp
+                        Bitmap bmp1 = (Bitmap)Bitmap.FromFile(rootPath + img1);
+                        Bitmap bmp2 = (Bitmap)Bitmap.FromFile(rootPath + img2);
+                        if (CompareBitmapsLazy(bmp1, bmp2))
+                        {
+                            images.RemoveAt(y);
+                            y--;
+                        }
+                    }
+                }
             }
             JavaScriptSerializer serializer = new JavaScriptSerializer();
             return serializer.Serialize(images.Distinct().ToList());
@@ -282,29 +320,40 @@ namespace IM_PJ
                 {
                     // so sánh 2 hình ảnh đại diện
                     var rootPath = HostingEnvironment.ApplicationPhysicalPath;
+                    string img1 = Thumbnail.getURL(product.ProductImage, Thumbnail.Size.Source);
+                    string img2 = Thumbnail.getURL(product.ProductImageClean, Thumbnail.Size.Source);
 
-                    Bitmap bmp1 = (Bitmap)Bitmap.FromFile(rootPath + Thumbnail.getURL(product.ProductImage, Thumbnail.Size.Source));
-                    Bitmap bmp2 = (Bitmap)Bitmap.FromFile(rootPath + Thumbnail.getURL(product.ProductImageClean, Thumbnail.Size.Source));
-
-                    if (CompareBitmapsLazy(bmp1, bmp2))
+                    if (File.Exists(rootPath + img1) && File.Exists(rootPath + img2))
                     {
-                        // Nếu giống nhau
-                        return "sameimage";
-                    }
-                    else
-                    {
-                        // Nếu khác nhau thì tiến hành update
-                        string update = ProductController.updateShowHomePage(id, value);
+                        Bitmap bmp1 = (Bitmap)Bitmap.FromFile(rootPath + img1);
+                        Bitmap bmp2 = (Bitmap)Bitmap.FromFile(rootPath + img2);
 
-                        if (update != null)
+                        if (CompareBitmapsLazy(bmp1, bmp2))
                         {
-                            return "true";
+                            // Nếu giống nhau
+                            return "sameimage";
                         }
                         else
                         {
-                            return "false";
+                            // Nếu khác nhau thì tiến hành update
+                            string update = ProductController.updateShowHomePage(id, value);
+
+                            if (update != null)
+                            {
+                                return "true";
+                            }
+                            else
+                            {
+                                return "false";
+                            }
                         }
                     }
+                    else
+                    {
+                        return "false";
+                    }
+
+                    
                 }
             }
             

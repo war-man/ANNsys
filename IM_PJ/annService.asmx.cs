@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Script.Services;
 using System.Web.Services;
@@ -1040,40 +1041,47 @@ namespace IM_PJ
             var rs = new ResponseClass();
             if (username == "register" && password == "register@ann")
             {
-                var checkRegister = RegisterController.GetByPhone(phone);
-
-                Register register = new Register();
                 int ID = 0;
 
-                if (checkRegister != null)
-                {
-                    register.ID = checkRegister.ID;
-                    register.Name = name;
-                    register.Phone = checkRegister.Phone;
-                    register.UserID = checkRegister.UserID;
-                    register.Status = checkRegister.Status;
-                    register.Note = note;
-                    register.Address = address;
-                    register.ProductCategory = productcategory;
-                    register.ProvinceID = province;
-                    register.CreatedDate = DateTime.Now;
-                    register.Referer = referer;
+                Regex digitsOnly = new Regex(@"[^\d]");
+                string numberphone = digitsOnly.Replace(phone, "");
 
-                    ID = RegisterController.Update(register);
-                }
-                else
+                if (numberphone.Length >= 9)
                 {
-                    register.Name = name;
-                    register.Phone = phone;
-                    register.UserID = null;
-                    register.Status = 1;
-                    register.Note = note;
-                    register.Address = address;
-                    register.ProductCategory = productcategory;
-                    register.ProvinceID = province;
-                    register.Referer = referer;
+                    var checkRegister = RegisterController.GetByPhone(numberphone);
 
-                    ID = RegisterController.Insert(register);
+                    Register register = new Register();
+
+                    if (checkRegister != null)
+                    {
+                        register.ID = checkRegister.ID;
+                        register.Name = name;
+                        register.Phone = checkRegister.Phone;
+                        register.UserID = checkRegister.UserID;
+                        register.Status = checkRegister.Status;
+                        register.Note = note;
+                        register.Address = address;
+                        register.ProductCategory = productcategory;
+                        register.ProvinceID = province;
+                        register.CreatedDate = DateTime.Now;
+                        register.Referer = referer;
+
+                        ID = RegisterController.Update(register);
+                    }
+                    else
+                    {
+                        register.Name = name;
+                        register.Phone = numberphone;
+                        register.UserID = null;
+                        register.Status = 1;
+                        register.Note = note;
+                        register.Address = address;
+                        register.ProductCategory = productcategory;
+                        register.ProvinceID = province;
+                        register.Referer = referer;
+
+                        ID = RegisterController.Insert(register);
+                    }
                 }
 
                 if(ID != 0)
@@ -1081,13 +1089,13 @@ namespace IM_PJ
                     rs.OrderID = ID;
                     rs.Code = APIUtils.GetResponseCode(APIUtils.ResponseCode.SUCCESS);
                     rs.Status = APIUtils.ResponseMessage.Success.ToString();
-                    rs.Message = "Tạo mới đăng ký mua sỉ thành công.";
+                    rs.Message = "Tạo mới đăng ký thành công.";
                 }
                 else
                 {
                     rs.Code = APIUtils.GetResponseCode(APIUtils.ResponseCode.NotFound);
                     rs.Status = APIUtils.ResponseMessage.Error.ToString();
-                    rs.Message = "Có lỗi trong quá trình đăng ký mua sỉ.";
+                    rs.Message = "Có lỗi trong quá trình tạo đăng ký.";
                 }
             }
             else

@@ -52,5 +52,6 @@ namespace IM_PJ.Models
         public Nullable<double> OtherFeeValue { get; set; }
         public Nullable<int> PostalDeliveryType { get; set; }
         public string CustomerNewPhone { get; set; }
+        public string UserHelp { get; set; }
     }
 }

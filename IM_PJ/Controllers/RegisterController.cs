@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Web;
 using WebUI.Business;
 
@@ -17,11 +18,14 @@ namespace IM_PJ.Controllers
         {
             using (var connect = new inventorymanagementEntities())
             {
+                Regex digitsOnly = new Regex(@"[^\d]");
+                string numberphone = digitsOnly.Replace(register.Phone, "");
+
                 Register newRegister = new Register();
                 newRegister.ID = GetIDNew();
                 newRegister.Name = register.Name;
                 newRegister.UnSignedName = UnSign.convert(register.Name);
-                newRegister.Phone = register.Phone;
+                newRegister.Phone = numberphone;
                 newRegister.Address = register.Address;
                 newRegister.ProvinceID = register.ProvinceID;
                 newRegister.Note = register.Note;

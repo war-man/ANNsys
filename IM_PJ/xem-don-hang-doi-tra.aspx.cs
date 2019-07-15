@@ -89,7 +89,7 @@ namespace IM_PJ
                                         }
                                         else
                                         {
-                                            if (r.RefundNote.Trim() != "Được tạo giúp bởi " + acc.Username + ".")
+                                            if (r.UserHelp != acc.Username)
                                             {
                                                 PJUtils.ShowMessageBoxSwAlertError("Đơn hàng này không phải do bạn tạo giúp", "e", true, "/danh-sach-don-tra-hang", Page);
                                             }
@@ -195,7 +195,7 @@ namespace IM_PJ
 
                             // Title
                             this.Title = String.Format("{0} - Đổi trả", string.IsNullOrEmpty(cus.Nick) ? cus.Nick.ToTitleCase() : cus.CustomerName.ToTitleCase());
-                            ltrHeading.Text = "Đơn đổi trả #" + ID.ToString() + " - " + (cus.Nick != "" ? cus.Nick.ToTitleCase() : cus.CustomerName.ToTitleCase());
+                            ltrHeading.Text = "Đơn đổi trả #" + ID.ToString() + " - " + (cus.Nick != "" ? cus.Nick.ToTitleCase() : cus.CustomerName.ToTitleCase()) + (!String.IsNullOrEmpty(r.UserHelp) ? " (được tạo giúp bởi " + r.UserHelp + ")" : "");
 
                             ltrTotal.Text = string.Format("{0:N0}", Convert.ToDouble(r.TotalPrice));
                             ltrQuantity.Text = string.Format("{0:N0}", Convert.ToDouble(r.TotalQuantity));

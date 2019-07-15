@@ -230,11 +230,12 @@ namespace IM_PJ
                 if (a != null)
                 {
                     // Change user
-                    string RefundNote = "";
+                    
+                    string UserHelp = "";
                     string redirectToUsername = "";
                     if (username != hdfUsernameCurrent.Value)
                     {
-                        RefundNote = "Được tạo giúp bởi " + username;
+                        UserHelp = username;
                         username = hdfUsernameCurrent.Value;
                         redirectToUsername = hdfUsernameCurrent.Value;
                     }
@@ -247,6 +248,7 @@ namespace IM_PJ
                     string CustomerAddress = txtAddress.Text.Trim();
                     string Zalo = txtZalo.Text.Trim();
                     string Facebook = txtFacebook.Text.Trim();
+                    string RefundNote = txtRefundsNote.Text;
 
                     if (!string.IsNullOrEmpty(CustomerPhone))
                     {
@@ -273,12 +275,10 @@ namespace IM_PJ
 
                             //insert ddlstatus, refundnote
                             int status = ddlRefundStatus.SelectedValue.ToInt();
-                            RefundNote += ". " + txtRefundsNote.Text;
 
                             if (OrderSaleID != 0)
                             {
                                 status = 2;
-                                RefundNote += "Đã trừ tiền trong đơn " + OrderSaleID.ToString();
                             }
 
                             int rID = RefundGoodController.Insert(
@@ -296,7 +296,8 @@ namespace IM_PJ
                                     CustomerPhone = checkCustomer.CustomerPhone,
                                     AgentName = agentName,
                                     RefundNote = RefundNote,
-                                    OrderSaleID = OrderSaleID
+                                    OrderSaleID = OrderSaleID,
+                                    UserHelp = UserHelp
                                 });
 
                             if (rID > 0)

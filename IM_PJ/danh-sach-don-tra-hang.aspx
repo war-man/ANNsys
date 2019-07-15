@@ -122,8 +122,8 @@
                                 <div class="col-md-2 col-xs-6">
                                     <asp:DropDownList ID="ddlRefundFee" runat="server" CssClass="form-control">
                                         <asp:ListItem Value="">Phí đổi hàng</asp:ListItem>
-                                        <asp:ListItem Value="yes">Có phí</asp:ListItem>
-                                        <asp:ListItem Value="no">Miễn phí</asp:ListItem>
+                                        <asp:ListItem Value="yes">Có phí đổi hàng</asp:ListItem>
+                                        <asp:ListItem Value="no">Miễn phí đổi hàng</asp:ListItem>
                                     </asp:DropDownList>
                                 </div>
                                 <div class="col-md-2 col-xs-6">

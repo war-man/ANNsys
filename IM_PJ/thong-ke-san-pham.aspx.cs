@@ -102,7 +102,6 @@ namespace IM_PJ
             int totalRefundQuantity = 0;
             double totalCost = 0;
             double totalProfit = 0;
-            double totalSaleProfit = 0;
             double totalRefundProfit = 0;
             double totalRevenue = 0;
 

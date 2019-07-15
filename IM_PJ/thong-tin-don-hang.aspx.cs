@@ -190,7 +190,7 @@ namespace IM_PJ
                         txtFacebook.Text = cus.Facebook;
                         if (!string.IsNullOrEmpty(cus.Facebook))
                         {
-                            ltrFb.Text += "<a href =\"" + cus.Facebook + "\" class=\"btn primary-btn fw-btn not-fullwidth\" target=\"_blank\">Xem</a>";
+                            ltrFb.Text += "<a href='" + cus.Facebook + "' class='btn primary-btn fw-btn not-fullwidth' target='_blank'>Xem</a>";
                         }
                         else
                         {
@@ -200,7 +200,7 @@ namespace IM_PJ
 
                     // Title
                     this.Title = String.Format("{0} - Đơn hàng", cus.Nick != "" ? cus.Nick.ToTitleCase() : cus.CustomerName.ToTitleCase());
-                    ltrHeading.Text = "Đơn hàng #" + ID.ToString() + " - " + (cus.Nick != "" ? cus.Nick.ToTitleCase() : cus.CustomerName.ToTitleCase());
+                    ltrHeading.Text = "Đơn hàng #" + ID.ToString() + " - " + (cus.Nick != "" ? cus.Nick.ToTitleCase() : cus.CustomerName.ToTitleCase()) + (!String.IsNullOrEmpty(order.UserHelp) ? " (được tạo giúp bởi " + order.UserHelp + ")" : "");
 
                     int customerID = Convert.ToInt32(order.CustomerID);
                     ltrViewDetail.Text = "<a href=\"javascript:;\" class=\"btn primary-btn fw-btn not-fullwidth\" onclick=\"viewCustomerDetail('" + customerID + "')\"><i class=\"fa fa-address-card-o\" aria-hidden=\"true\"></i> Xem</a>";

@@ -141,15 +141,15 @@
                                 <div class="col-md-2 col-xs-6">
                                     <asp:DropDownList ID="ddlDiscount" runat="server" CssClass="form-control">
                                         <asp:ListItem Value="" Text="Chiết khấu"></asp:ListItem>
-                                        <asp:ListItem Value="yes" Text="Có"></asp:ListItem>
-                                        <asp:ListItem Value="no" Text="Không"></asp:ListItem>
+                                        <asp:ListItem Value="yes" Text="Có chiết khấu"></asp:ListItem>
+                                        <asp:ListItem Value="no" Text="Không chiết khấu"></asp:ListItem>
                                     </asp:DropDownList>
                                 </div>
                                 <div class="col-md-2 col-xs-6">
                                     <asp:DropDownList ID="ddlOtherFee" runat="server" CssClass="form-control">
                                         <asp:ListItem Value="" Text="Phí khác"></asp:ListItem>
-                                        <asp:ListItem Value="yes" Text="Có"></asp:ListItem>
-                                        <asp:ListItem Value="no" Text="Không"></asp:ListItem>
+                                        <asp:ListItem Value="yes" Text="Có phí khác"></asp:ListItem>
+                                        <asp:ListItem Value="no" Text="Không phí khác"></asp:ListItem>
                                     </asp:DropDownList>
                                 </div>
                                 <div class="col-md-2 col-xs-6">
@@ -230,7 +230,14 @@
                     <div class="filter-above-wrap clear">
                         <div class="filter-control">
                             <div class="row">
-                                <div class="col-md-3">
+                                <div class="col-md-1">
+                                </div>
+                                <div class="col-md-2 col-xs-6">
+                                    <asp:DropDownList ID="ddlOrderNote" runat="server" CssClass="form-control">
+                                        <asp:ListItem Value="" Text="Ghi chú"></asp:ListItem>
+                                        <asp:ListItem Value="yes" Text="Có ghi chú"></asp:ListItem>
+                                        <asp:ListItem Value="no" Text="Không ghi chú"></asp:ListItem>
+                                    </asp:DropDownList>
                                 </div>
                                 <div class="col-md-2 col-xs-6">
                                     <asp:DropDownList ID="ddlShipperFilter" runat="server" CssClass="form-control"></asp:DropDownList>
@@ -240,10 +247,10 @@
                                 </div>
                                 <div class="col-md-2 col-xs-6">
                                     <asp:DropDownList ID="ddlQuantityFilter" runat="server" CssClass="form-control" onchange="changeQuantityFilter($(this))">
-                                        <asp:ListItem Value="" Text="Số lượng"></asp:ListItem>
-                                        <asp:ListItem Value="greaterthan" Text="Lớn hơn"></asp:ListItem>
-                                        <asp:ListItem Value="lessthan" Text="Nhỏ hơn"></asp:ListItem>
-                                        <asp:ListItem Value="between" Text="Trong khoảng"></asp:ListItem>
+                                        <asp:ListItem Value="" Text="Số lượng mua"></asp:ListItem>
+                                        <asp:ListItem Value="greaterthan" Text="Số lượng lớn hơn"></asp:ListItem>
+                                        <asp:ListItem Value="lessthan" Text="Số lượng nhỏ hơn"></asp:ListItem>
+                                        <asp:ListItem Value="between" Text="Số lượng trong khoảng"></asp:ListItem>
                                     </asp:DropDownList>
                                 </div>
                                 <div class="col-md-2 col-xs-6 greaterthan lessthan">

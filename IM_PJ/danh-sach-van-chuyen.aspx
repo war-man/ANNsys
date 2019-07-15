@@ -178,8 +178,8 @@
                                 <div class="col-md-2 col-xs-6">
                                     <asp:DropDownList ID="ddlInvoiceStatus" runat="server" CssClass="form-control">
                                         <asp:ListItem Value="0" Text="Biên nhận"></asp:ListItem>
-                                        <asp:ListItem Value="1" Text="Có"></asp:ListItem>
-                                        <asp:ListItem Value="2" Text="Không"></asp:ListItem>
+                                        <asp:ListItem Value="1" Text="Có biên nhận"></asp:ListItem>
+                                        <asp:ListItem Value="2" Text="Không biên nhận"></asp:ListItem>
                                     </asp:DropDownList>
                                 </div>
                                 <div class="col-md-2 col-xs-6">
@@ -219,10 +219,10 @@
                                 </div>
                                 <div class="col-md-2 col-xs-6">
                                     <asp:DropDownList ID="ddlQuantityFilter" runat="server" CssClass="form-control">
-                                        <asp:ListItem Value="" Text="Số lượng"></asp:ListItem>
-                                        <asp:ListItem Value="greaterthan" Text="Lớn hơn"></asp:ListItem>
-                                        <asp:ListItem Value="lessthan" Text="Nhỏ hơn"></asp:ListItem>
-                                        <asp:ListItem Value="between" Text="Trong khoảng"></asp:ListItem>
+                                        <asp:ListItem Value="" Text="Số lượng mua"></asp:ListItem>
+                                        <asp:ListItem Value="greaterthan" Text="Số lượng lớn hơn"></asp:ListItem>
+                                        <asp:ListItem Value="lessthan" Text="Số lượng nhỏ hơn"></asp:ListItem>
+                                        <asp:ListItem Value="between" Text="Số lượng trong khoảng"></asp:ListItem>
                                     </asp:DropDownList>
                                 </div>
                                 <div class="col-md-2 col-xs-6 greaterthan lessthan">

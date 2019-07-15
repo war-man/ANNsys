@@ -519,7 +519,7 @@ namespace IM_PJ.Controllers
             {
 
                 result = dbe.tbl_Customer
-                    .Where(x => x.CreatedBy == CreatedBy)
+                    .Where(x => string.IsNullOrEmpty(CreatedBy) || (!string.IsNullOrEmpty(CreatedBy) && x.CreatedBy == CreatedBy))
                     .Where(x => x.CreatedDate >= fromDate && x.CreatedDate <= toDate)
                     .ToList();
             }

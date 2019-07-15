@@ -110,10 +110,6 @@ namespace IM_PJ
                 string CreatedDate = "";
                 string TransferDoneAt = "";
                 int Page = 1;
-                // add filter quantity
-                string Quantity = "";
-                int QuantityFrom = 0;
-                int QuantityTo = 0;
 
                 if (Request.QueryString["textsearch"] != null)
                 {
@@ -125,6 +121,7 @@ namespace IM_PJ
                 }
                 if (Request.QueryString["excutestatus"] != null)
                 {
+                    ExcuteStatus.Clear();
                     ExcuteStatus.Add(Request.QueryString["excutestatus"].ToInt(0));
                 }
                 if (Request.QueryString["createdby"] != null)
@@ -147,53 +144,14 @@ namespace IM_PJ
                 {
                     Page = Request.QueryString["Page"].ToInt();
                 }
-                // add filter quantity
-                if (Request.QueryString["quantityfilter"] != null)
-                {
-                    Quantity = Request.QueryString["quantityfilter"];
-
-                    if (Quantity == "greaterthan")
-                    {
-                        QuantityFrom = Request.QueryString["quantity"].ToInt();
-                    }
-                    else if (Quantity == "lessthan")
-                    {
-                        QuantityTo = Request.QueryString["quantity"].ToInt();
-                    }
-                    else if (Quantity == "between")
-                    {
-                        QuantityFrom = Request.QueryString["quantitymin"].ToInt();
-                        QuantityTo = Request.QueryString["quantitymax"].ToInt();
-                    }
-                }
 
                 txtSearchOrder.Text = TextSearch;
                 ddlTransferStatus.SelectedValue = TransferStatus.ToString();
-                ddlExcuteStatus.SelectedValue = ExcuteStatus.Count() > 1 ? ExcuteStatus.FirstOrDefault().ToString() : "0";
+                ddlExcuteStatus.SelectedValue = ExcuteStatus.Count() > 1 ? "0" : ExcuteStatus.FirstOrDefault().ToString();
                 ddlBankReceive.SelectedValue = BankReceive.ToString();
                 ddlCreatedBy.SelectedValue = CreatedBy.ToString();
                 ddlCreatedDate.SelectedValue = CreatedDate.ToString();
                 ddlTransferDoneAt.SelectedValue = TransferDoneAt.ToString();
-                // add filter quantity
-                ddlQuantityFilter.SelectedValue = Quantity.ToString();
-                if (Quantity == "greaterthan")
-                {
-                    txtQuantity.Text = QuantityFrom.ToString();
-                    txtQuantityMin.Text = "0";
-                    txtQuantityMax.Text = "0";
-                }
-                else if (Quantity == "lessthan")
-                {
-                    txtQuantity.Text = QuantityTo.ToString();
-                    txtQuantityMin.Text = "0";
-                    txtQuantityMax.Text = "0";
-                }
-                else if (Quantity == "between")
-                {
-                    txtQuantity.Text = "0";
-                    txtQuantityMin.Text = QuantityFrom.ToString();
-                    txtQuantityMax.Text = QuantityTo.ToString();
-                }
 
                 // Create order fileter
                 var filter = new OrderFilterModel() {
@@ -202,9 +160,6 @@ namespace IM_PJ
                     excuteStatus = ExcuteStatus,
                     transferStatus = TransferStatus,
                     paymentType = (int)PaymentType.Bank,
-                    quantity = Quantity,
-                    quantityFrom = QuantityFrom,
-                    quantityTo = QuantityTo,
                     orderCreatedBy = CreatedBy,
                     orderDate = CreatedDate,
                     transferDone = TransferDoneAt,
@@ -549,20 +504,6 @@ namespace IM_PJ
             if (ddlBankReceive.SelectedValue != "0")
             {
                 request += "&bankreceive=" + ddlBankReceive.SelectedValue;
-            }
-
-            // add filter quantity
-            if (ddlQuantityFilter.SelectedValue != "")
-            {
-                if (ddlQuantityFilter.SelectedValue == "greaterthan" || ddlQuantityFilter.SelectedValue == "lessthan")
-                {
-                    request += "&quantityfilter=" + ddlQuantityFilter.SelectedValue + "&quantity=" + txtQuantity.Text;
-                }
-
-                if (ddlQuantityFilter.SelectedValue == "between")
-                {
-                    request += "&quantityfilter=" + ddlQuantityFilter.SelectedValue + "&quantitymin=" + txtQuantityMin.Text + "&quantitymax=" + txtQuantityMax.Text;
-                }
             }
 
             Response.Redirect(request);

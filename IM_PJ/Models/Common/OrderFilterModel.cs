@@ -56,5 +56,6 @@ namespace IM_PJ.Models
         // Thời gian đơn hàng ( 'today': Hôm nay | 'yesterday': Hôm qua | 'beforeyesterday': Hôm kia | 'week': Tuần nay |
         // '7days': 7 ngày | 'thismonth': Tháng này | 'lastmonth': Tháng trước | 'beforelastmonth': Tháng trước nữa | '30days': 30 ngày)
         public string orderDate { get; set; } = String.Empty;
+        public string orderNote { get; set; } = String.Empty;
     }
 }

@@ -122,17 +122,18 @@ namespace IM_PJ
                 totalRefundQuantity = userRefundReport.totalRefund;
                 averageRefundQuantity = totalRefundQuantity / totalDays;
 
+                double totalProfit = (userReport.totalRevenue - userReport.totalCost) - (userRefundReport.totalRevenue - userRefundReport.totalCost) + userRefundReport.totalRefundFee;
                 // Tổng hệ thống
 
-                var totalSystemReport = OrderController.getProductReport(SKU, CategoryID, "", fromdate, todate);
-                var totalRefundSystemReport = RefundGoodController.getRefundProductReport(SKU, CategoryID, "", fromdate, todate);
+                var systemReport = OrderController.getProductReport(SKU, CategoryID, "", fromdate, todate);
+                var systemRefundReport = RefundGoodController.getRefundProductReport(SKU, CategoryID, "", fromdate, todate);
 
-                int totalSystemProfit = totalSystemReport.totalSold - totalRefundSystemReport.totalRefund;
+                double totalSystemProfit = (systemReport.totalRevenue - systemReport.totalCost) - (systemRefundReport.totalRevenue - systemRefundReport.totalCost) + systemRefundReport.totalRefundFee;
 
-                int PercentOfSystem = 0;
+                double PercentOfSystem = 0;
                 if (totalSystemProfit > 0)
                 {
-                    PercentOfSystem = (totalSoldQuantity - totalRefundQuantity) * 100 / totalSystemProfit;
+                    PercentOfSystem = totalProfit * 100 / totalSystemProfit;
                 }
                 var newCustomer = CustomerController.Report(user, fromdate, todate);
 
@@ -144,7 +145,7 @@ namespace IM_PJ
                 ltrAverageRefundQuantity.Text = averageRefundQuantity.ToString() + " cái/ngày";
                 ltrTotalRemainQuantity.Text = (totalSoldQuantity - totalRefundQuantity).ToString() + " cái";
                 ltrAverageRemainQuantity.Text = ((totalSoldQuantity - totalRefundQuantity) / totalDays).ToString() + " cái/ngày";
-                ltrPercentOfSystem.Text = PercentOfSystem.ToString() + "%";
+                ltrPercentOfSystem.Text = Math.Round(PercentOfSystem, 1).ToString() + "%";
                 ltrTotalNewCustomer.Text = newCustomer.Count() + " khách mới";
             }
         }

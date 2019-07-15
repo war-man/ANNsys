@@ -67,7 +67,7 @@ namespace IM_PJ.Controllers
         }
         public static tbl_Order InsertOnSystem(int AgentID, int OrderType, string AdditionFee, string DisCount, int CustomerID, string CustomerName, string CustomerPhone,
            string CustomerAddress, string CustomerEmail, string TotalPrice, string TotalPriceNotDiscount, int PaymentStatus, int ExcuteStatus, bool IsHidden, int WayIn,
-           DateTime CreatedDate, string CreatedBy, double DiscountPerProduct, double TotalDiscount, string FeeShipping, double GuestPaid, double GuestChange, int PaymentType, int ShippingType, string OrderNote, DateTime DateDone, string OtherFeeName, double OtherFeeValue, int PostalDeliveryType)
+           DateTime CreatedDate, string CreatedBy, double DiscountPerProduct, double TotalDiscount, string FeeShipping, double GuestPaid, double GuestChange, int PaymentType, int ShippingType, string OrderNote, DateTime DateDone, string OtherFeeName, double OtherFeeValue, int PostalDeliveryType, string UserHelp)
         {
             using (var dbe = new inventorymanagementEntities())
             {
@@ -102,6 +102,7 @@ namespace IM_PJ.Controllers
                 ui.OtherFeeName = OtherFeeName;
                 ui.OtherFeeValue = OtherFeeValue;
                 ui.PostalDeliveryType = PostalDeliveryType;
+                ui.UserHelp = UserHelp;
                 dbe.tbl_Order.Add(ui);
                 dbe.SaveChanges();
 
@@ -439,7 +440,7 @@ namespace IM_PJ.Controllers
                     .Where(x => x.CreatedDate >= year);
                 #endregion
 
-                #region Các filter trức tiếp trên bản tbl_Product
+                #region Các filter trức tiếp trên bản tbl_Order
 
                 // Filter Created By
                 if (!String.IsNullOrEmpty(filter.orderCreatedBy))
@@ -526,6 +527,22 @@ namespace IM_PJ.Controllers
                         orders = orders.Where(x =>
                             x.CreatedDate >= fromdate &&
                             x.CreatedDate <= todate
+                        );
+                    }
+                }
+                // Filter Order Note
+                if (!String.IsNullOrEmpty(filter.orderNote))
+                {
+                    if (filter.orderNote.Equals("yes"))
+                    {
+                        orders = orders.Where(x =>
+                            !String.IsNullOrEmpty(x.OrderNote)
+                        );
+                    }
+                    else
+                    {
+                        orders = orders.Where(x =>
+                            String.IsNullOrEmpty(x.OrderNote)
                         );
                     }
                 }
@@ -2587,7 +2604,7 @@ namespace IM_PJ.Controllers
             }
             sql.AppendLine(String.Format("    AND Ord.ExcuteStatus = 2"));
             sql.AppendLine(String.Format("    AND (Ord.PaymentStatus = 2 OR Ord.PaymentStatus = 3)"));
-            sql.AppendLine(String.Format("    AND    CONVERT(datetime, Ord.DateDone, 103) BETWEEN CONVERT(datetime, '{0}', 103) AND CONVERT(datetime, '{1}', 103)", fromDate.ToString(), toDate.ToString()));
+            sql.AppendLine(String.Format("    AND    CONVERT(datetime, Ord.DateDone, 121) BETWEEN CONVERT(datetime, '{0}', 121) AND CONVERT(datetime, '{1}', 121)", fromDate.ToString(), toDate.ToString()));
             sql.AppendLine(String.Format("GROUP BY Ord.ID"));
 
             var reader = (IDataReader)SqlHelper.ExecuteDataReader(sql.ToString());
@@ -2682,7 +2699,7 @@ namespace IM_PJ.Controllers
                 sql.AppendLine(String.Format("    AND OrdDetail.SKU LIKE '{0}%'", SKU));
             }
 
-            sql.AppendLine(String.Format("    AND    CONVERT(datetime, Ord.DateDone, 103) BETWEEN CONVERT(datetime, '{0}', 103) AND CONVERT(datetime, '{1}', 103)", fromDate.ToString(), toDate.ToString()));
+            sql.AppendLine(String.Format("    AND    CONVERT(datetime, Ord.DateDone, 121) BETWEEN CONVERT(datetime, '{0}', 121) AND CONVERT(datetime, '{1}', 121)", fromDate.ToString(), toDate.ToString()));
 
             sql.AppendLine("SELECT");
             sql.AppendLine("    DAT.ID,");
@@ -2777,7 +2794,8 @@ namespace IM_PJ.Controllers
                         tranID = 0,
                         tranName = String.Empty,
                         tranSubID = 0,
-                        tranSubName = String.Empty
+                        tranSubName = String.Empty,
+                        shippingFee = orderLast.FeeShipping
                     };
 
                     // Lấy thông tin ngân hàng
@@ -2849,6 +2867,7 @@ namespace IM_PJ.Controllers
             public string tranName { get; set; }
             public int tranSubID { get; set; }
             public string tranSubName { get; set; }
+            public string shippingFee { get; set; }
         }
     }
 }

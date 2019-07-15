@@ -1,4 +1,4 @@
-﻿<%@ Page Title="Danh sách đăng ký mua sỉ" Language="C#" MasterPageFile="~/MasterPage.Master" AutoEventWireup="true" CodeBehind="danh-sach-dang-ky.aspx.cs" Inherits="IM_PJ.danh_sach_dang_ky" EnableSessionState="ReadOnly" %>
+﻿<%@ Page Title="Danh sách đăng ký mua hàng" Language="C#" MasterPageFile="~/MasterPage.Master" AutoEventWireup="true" CodeBehind="danh-sach-dang-ky.aspx.cs" Inherits="IM_PJ.danh_sach_dang_ky" EnableSessionState="ReadOnly" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
     <style>
@@ -472,7 +472,7 @@
                             let row = $("tr[data-registerid='" + ID + "']");
                             let statusDOM = row.find('#status');
                             let phoneDOM = row.find('#phone');
-                            phoneDOM.html(phone);
+                            phoneDOM.html("<a href='https://zalo.me/" + phone + "' target='_blank'>" + phone + "</a>");
                             if (update == 2) {
                                 statusDOM.html("<span class='bg-yellow'>Đã xem</span>");
                             }

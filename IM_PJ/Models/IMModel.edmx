@@ -16,20 +16,9 @@
           <Property Name="ModifiedBy" Type="int" Nullable="false" />
           <Property Name="ModifiedDate" Type="datetime" Nullable="false" />
         </EntityType>
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'inventorymanagement.dbo.BankAccount' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="BankAccount">
           <Key>
             <PropertyRef Name="ID" />
-            
-            
-            
-            
-            
-            
-            
-            
-            
           </Key>
           <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="BankName" Type="nvarchar" MaxLength="100" Nullable="false" />
@@ -515,6 +504,7 @@ warning 6002: The table/view 'inventorymanagement.dbo.BankAccount' does not have
           <Property Name="OtherFeeValue" Type="float" />
           <Property Name="PostalDeliveryType" Type="int" />
           <Property Name="CustomerNewPhone" Type="nchar" MaxLength="15" />
+          <Property Name="UserHelp" Type="nvarchar(max)" />
         </EntityType>
         <EntityType Name="tbl_OrderDetail">
           <Key>
@@ -629,7 +619,7 @@ warning 6002: The table/view 'inventorymanagement.dbo.BankAccount' does not have
           <Property Name="WebUpdate" Type="datetime" />
           <Property Name="UnSignedTitle" Type="varchar" MaxLength="255" />
           <Property Name="Slug" Type="varchar" MaxLength="255" />
-          <Property Name="Color" Type="varchar" MaxLength="255" />
+          <Property Name="Color" Type="nchar" MaxLength="30" />
         </EntityType>
         <EntityType Name="tbl_ProductImage">
           <Key>
@@ -728,6 +718,7 @@ warning 6002: The table/view 'inventorymanagement.dbo.BankAccount' does not have
           <Property Name="AgentName" Type="nvarchar(max)" />
           <Property Name="RefundNote" Type="nvarchar(max)" />
           <Property Name="OrderSaleID" Type="int" />
+          <Property Name="UserHelp" Type="nvarchar(max)" />
         </EntityType>
         <EntityType Name="tbl_RefundGoodsDetails">
           <Key>
@@ -884,6 +875,7 @@ warning 6002: The table/view 'inventorymanagement.dbo.BankAccount' does not have
         </EntityType>
         <EntityContainer Name="inventorymanagementModelStoreContainer">
           <EntitySet Name="Bank" EntityType="Self.Bank" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="BankAccount" EntityType="Self.BankAccount" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="BankTransfer" EntityType="Self.BankTransfer" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CategoryShelf" EntityType="Self.CategoryShelf" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Delivery" EntityType="Self.Delivery" Schema="dbo" store:Type="Tables" />
@@ -932,22 +924,6 @@ warning 6002: The table/view 'inventorymanagement.dbo.BankAccount' does not have
           <EntitySet Name="tbl_Variable" EntityType="Self.tbl_Variable" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_VariableValue" EntityType="Self.tbl_VariableValue" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_WhiteDomain" EntityType="Self.tbl_WhiteDomain" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="BankAccount" EntityType="Self.BankAccount" store:Type="Tables" store:Schema="dbo">
-            <DefiningQuery>SELECT 
-    [BankAccount].[ID] AS [ID], 
-    [BankAccount].[BankName] AS [BankName], 
-    [BankAccount].[AccountName] AS [AccountName], 
-    [BankAccount].[AccountNumber] AS [AccountNumber], 
-    [BankAccount].[BranchName] AS [BranchName], 
-    [BankAccount].[Status] AS [Status], 
-    [BankAccount].[Note] AS [Note], 
-    [BankAccount].[CreatedBy] AS [CreatedBy], 
-    [BankAccount].[CreatedDate] AS [CreatedDate], 
-    [BankAccount].[ModifiedBy] AS [ModifiedBy], 
-    [BankAccount].[ModifiedDate] AS [ModifiedDate], 
-    [BankAccount].[BankID] AS [BankID]
-    FROM [dbo].[BankAccount] AS [BankAccount]</DefiningQuery>
-          </EntitySet>
         </EntityContainer>
       </Schema></edmx:StorageModels>
     <!-- CSDL content -->
@@ -1568,6 +1544,7 @@ warning 6002: The table/view 'inventorymanagement.dbo.BankAccount' does not have
           <Property Name="OtherFeeValue" Type="Double" />
           <Property Name="PostalDeliveryType" Type="Int32" />
           <Property Name="CustomerNewPhone" Type="String" MaxLength="15" FixedLength="true" Unicode="true" />
+          <Property Name="UserHelp" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="tbl_RefundGoods">
           <Key>
@@ -1589,6 +1566,7 @@ warning 6002: The table/view 'inventorymanagement.dbo.BankAccount' does not have
           <Property Name="AgentName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="RefundNote" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="OrderSaleID" Type="Int32" />
+          <Property Name="UserHelp" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="tbl_Config">
           <Key>
@@ -1762,7 +1740,7 @@ warning 6002: The table/view 'inventorymanagement.dbo.BankAccount' does not have
           <Property Name="WebUpdate" Type="DateTime" Precision="3" />
           <Property Name="UnSignedTitle" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
           <Property Name="Slug" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Name="Color" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="Color" Type="String" MaxLength="30" FixedLength="true" Unicode="true" />
         </EntityType>
         <EntityType Name="Fee">
           <Key>
@@ -2431,6 +2409,7 @@ warning 6002: The table/view 'inventorymanagement.dbo.BankAccount' does not have
           <EntitySetMapping Name="tbl_Order">
             <EntityTypeMapping TypeName="inventorymanagementModel.tbl_Order">
               <MappingFragment StoreEntitySet="tbl_Order">
+                <ScalarProperty Name="UserHelp" ColumnName="UserHelp" />
                 <ScalarProperty Name="CustomerNewPhone" ColumnName="CustomerNewPhone" />
                 <ScalarProperty Name="PostalDeliveryType" ColumnName="PostalDeliveryType" />
                 <ScalarProperty Name="OtherFeeValue" ColumnName="OtherFeeValue" />
@@ -2475,6 +2454,7 @@ warning 6002: The table/view 'inventorymanagement.dbo.BankAccount' does not have
           <EntitySetMapping Name="tbl_RefundGoods">
             <EntityTypeMapping TypeName="inventorymanagementModel.tbl_RefundGoods">
               <MappingFragment StoreEntitySet="tbl_RefundGoods">
+                <ScalarProperty Name="UserHelp" ColumnName="UserHelp" />
                 <ScalarProperty Name="OrderSaleID" ColumnName="OrderSaleID" />
                 <ScalarProperty Name="RefundNote" ColumnName="RefundNote" />
                 <ScalarProperty Name="AgentName" ColumnName="AgentName" />

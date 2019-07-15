@@ -244,10 +244,10 @@ namespace IM_PJ
                 if (acc.RoleID == 0 || acc.RoleID == 2)
                 {
                     // Change user
-                    string OrderNote = "";
+                    string UserHelp = "";
                     if (username != hdfUsernameCurrent.Value)
                     {
-                        OrderNote = "Được tính tiền giúp bởi " + username;
+                        UserHelp = username;
                         username = hdfUsernameCurrent.Value;
                     }
 
@@ -296,7 +296,8 @@ namespace IM_PJ
 
                     var ret = OrderController.InsertOnSystem(AgentID, OrderType, AdditionFee, DisCount, CustomerID, CustomerName, CustomerPhone, CustomerAddress,
                         CustomerEmail, totalPrice, totalPriceNotDiscount, PaymentStatus, ExcuteStatus, IsHidden, WayIn, currentDate, username, DiscountPerProduct,
-                        TotalDiscount, FeeShipping, GuestPaid, GuestChange, PaymentType, ShippingType, OrderNote, DateTime.Now, String.Empty, 0, 1);
+                        TotalDiscount, FeeShipping, GuestPaid, GuestChange, PaymentType, ShippingType, String.Empty, DateTime.Now, String.Empty, 0, 1, UserHelp);
+
                     int OrderID = ret.ID;
 
                     // Insert Other Fee

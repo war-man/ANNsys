@@ -84,13 +84,14 @@ namespace IM_PJ.Controllers
                 if (cusBankID != null && accBankID != null)
                 {
                     var now = DateTime.Now;
+                    var nullDate = new DateTime(1970, 1, 1, 0, 0, 0);
                     var transfer = new BankTransfer();
                     transfer.UUID = Guid.NewGuid();
                     transfer.OrderID = order.ID;
                     transfer.CusBankID = cusBankID.ID;
                     transfer.AccBankID = accBankID.ID;
-                    transfer.DoneAt = now;
-                    transfer.Money = Convert.ToDecimal(order.TotalPrice);
+                    transfer.DoneAt = nullDate;
+                    transfer.Money = 0;
                     transfer.Status = 2; // Chưa nhận tiền
                     transfer.CreatedBy = user.ID;
                     transfer.CreatedDate = now;
@@ -120,6 +121,7 @@ namespace IM_PJ.Controllers
                     old.Money = transfer.Money;
                     old.DoneAt = transfer.DoneAt;
                     old.Status = transfer.Status;
+                    old.Note = transfer.Note;
                     old.ModifiedBy = transfer.ModifiedBy;
                     old.ModifiedDate = transfer.ModifiedDate;
                     con.SaveChanges();

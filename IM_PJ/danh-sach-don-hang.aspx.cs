@@ -116,6 +116,7 @@ namespace IM_PJ
                 var ShippingType = new List<int>();
                 string Discount = "";
                 string OtherFee = "";
+                string OrderNote = "";
                 string TextSearch = "";
                 string CreatedBy = "";
                 string CreatedDate = "";
@@ -168,6 +169,10 @@ namespace IM_PJ
                 {
                     OtherFee = Request.QueryString["otherfee"].ToString();
                 }
+                if (Request.QueryString["ordernote"] != null)
+                {
+                    OrderNote = Request.QueryString["ordernote"].ToString();
+                }
                 if (Request.QueryString["createdby"] != null)
                 {
                     CreatedBy = Request.QueryString["createdby"];
@@ -217,14 +222,16 @@ namespace IM_PJ
                 ddlPaymentStatus.SelectedValue = PaymentStatus.ToString();
                 ddlPaymentType.SelectedValue = PaymentType.ToString();
                 ddlShippingType.SelectedValue = ShippingType.Count() > 0 ? ShippingType.FirstOrDefault().ToString() : "0";
-                ddlDiscount.SelectedValue = Discount.ToString();
-                ddlOtherFee.SelectedValue = OtherFee.ToString();
-                ddlCreatedBy.SelectedValue = CreatedBy.ToString();
-                ddlCreatedDate.SelectedValue = CreatedDate.ToString();
+                ddlDiscount.SelectedValue = Discount;
+                ddlOtherFee.SelectedValue = OtherFee;
+                ddlOrderNote.SelectedValue = OrderNote;
+                ddlCreatedBy.SelectedValue = CreatedBy;
+                ddlCreatedDate.SelectedValue = CreatedDate;
                 ddlTransportCompany.SelectedValue = TransportCompany.ToString();
                 ddlShipperFilter.SelectedValue = ShipperID.ToString();
+
                 // add filter quantity
-                ddlQuantityFilter.SelectedValue = Quantity.ToString();
+                ddlQuantityFilter.SelectedValue = Quantity;
                 if (Quantity == "greaterthan")
                 {
                     txtQuantity.Text = QuantityFrom.ToString();
@@ -269,6 +276,7 @@ namespace IM_PJ
                     transferDone = TransferDoneAt,
                     transportCompany = TransportCompany,
                     shipper = ShipperID,
+                    orderNote = OrderNote
                 };
                 // Create pagination
                 var page = new PaginationMetadataModel()
@@ -455,11 +463,11 @@ namespace IM_PJ
             {
                 if (acc.RoleID == 0)
                 {
-                    html.Append("<tr><td colspan=\"13\">Không tìm thấy đơn hàng...</td></tr>");
+                    html.Append("<tr><td colspan='13'>Không tìm thấy đơn hàng...</td></tr>");
                 }
                 else
                 {
-                    html.Append("<tr><td colspan=\"12\">Không tìm thấy đơn hàng...</td></tr>");
+                    html.Append("<tr><td colspan='12'>Không tìm thấy đơn hàng...</td></tr>");
                 }
             }
             html.Append("</tbody>");
@@ -639,6 +647,11 @@ namespace IM_PJ
             if (ddlOtherFee.SelectedValue != "")
             {
                 request += "&otherfee=" + ddlOtherFee.SelectedValue;
+            }
+
+            if (ddlOrderNote.SelectedValue != "")
+            {
+                request += "&ordernote=" + ddlOrderNote.SelectedValue;
             }
 
             if (ddlCreatedBy.SelectedValue != "")

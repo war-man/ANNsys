@@ -344,6 +344,14 @@
                                     <asp:DropDownList ID="ddlTransportCompanySubID" runat="server" CssClass="form-control customerlist select2" Height="40px" Width="100%"></asp:DropDownList>
                                 </div>
                             </div>
+                            <div id="shippingFeeModal" class="row form-group">
+                                <div class="col-md-4 text-align-left">
+                                    Phí vận chuyển
+                                </div>
+                                <div class="col-md-8">
+                                    <asp:TextBox ID="txtShippingFeeModal" placeholder="Có thể bỏ qua" runat="server" CssClass="form-control text-right" data-type="currency" onkeypress='return event.charCode >= 48 && event.charCode <= 57' onkeyup="updateShippingFeeFromModal()"></asp:TextBox>
+                                </div>
+                            </div>
                         </div>
                         <div class="modal-footer">
                             <button id="closeOrderInfo" type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
@@ -746,7 +754,9 @@
                     let customerID = $("#<%=hdfCustomerID.ClientID%>").val();
                     let payTypeDOM = $("#<%=ddlPaymentType.ClientID%>");
                     let shipTypeDOM = $("#<%=ddlShippingType.ClientID%>");
-
+                    let shippingFeeDOM = $("#<%=txtShippingFeeModal.ClientID%>");
+                    let shippingFeeValue = $("#<%=pFeeShip.ClientID%>").val();
+                    shippingFeeDOM.val(shippingFeeValue);
                     onchangePaymentType(payTypeDOM);
                     onchangeShippingType(shipTypeDOM);
 
@@ -1090,7 +1100,7 @@
                 if (excuteStatus == 2) {
                     if (shippingtype == 2 || shippingtype == 3) {
                         if (feeship == 0 && $("#<%=pFeeShip.ClientID%>").is(":disabled") == false) {
-                            $("#<%=pFeeShip.ClientID%>").focus();
+                            $("#<%=txtShippingFeeModal.ClientID%>").select();
                             swal({
                                 title: "Có vấn đề:",
                                 text: "Chưa nhập phí vận chuyển!<br><br>Hỏng lẻ miễn phí vận chuyển luôn hở?",
@@ -1110,7 +1120,7 @@
                             if (trans != 0 && transSub != 0) {
                                 var checkPrepay = checkPrepayTransport(trans, transSub);
                                 if (checkPrepay == 1) {
-                                    $("#<%=pFeeShip.ClientID%>").focus();
+                                    $("#<%=txtShippingFeeModal.ClientID%>").select();
                                     swal({
                                         title: "Coi nè:",
                                         text: "Chưa nhập phí vận chuyển do nhà xe này <strong>trả cước trước</strong> nè!<br><br>Hay là miễn phí vận chuyển luôn hở?",
@@ -1132,7 +1142,7 @@
 
                 if (feeship > 0 && feeship < 10000) {
                     checkAllValue = false;
-                    $("#<%=pFeeShip.ClientID%>").focus();
+                    $("#<%=txtShippingFeeModal.ClientID%>").select();
                     swal({
                         title: "Lạ vậy:",
                         text: "Sao phí vận chuyển lại nhỏ hơn <strong>10.000đ</strong> nè?<br><br>Xem lại nha!",
@@ -1151,7 +1161,8 @@
 
                 if (discount > 11000 && $("#<%=hdfRoleID.ClientID%>").val() != 0) {
                     checkAllValue = false;
-                    $("#<%=pDiscount.ClientID%>").focus();
+                    $("#closeOrderInfo").click();
+                    $("#<%=pDiscount.ClientID%>").select();
                     swal({
                         title: "Lạ vậy:",
                         text: "Sao chiết khấu lại lớn hơn <strong>11.000đ</strong> nè?<br><br>Nếu có lý do thì báo chị Ngọc nha!",
@@ -1467,6 +1478,13 @@
                     (d ? '.' + Math.round(d * Math.pow(10, dp || 2)) : '');
             };
 
+            function updateShippingFeeFromModal()
+            {
+                let newValue = $("#<%=txtShippingFeeModal.ClientID%>").val();
+                let shippingFeeDOM = $("#<%=pFeeShip.ClientID%>");
+                shippingFeeDOM.val(newValue);
+                getAllPrice();
+            }
             function onchangePaymentType(payType)
             {
                 $("#<%=ddlBank.ClientID%>").val(0);
@@ -1632,11 +1650,11 @@
                         let transSubDOM = $("#<%=ddlTransportCompanySubID.ClientID%>");
                         let tranContainerDOM = $("[id$=ddlTransportCompanyID-container]");
                         let tranSubContainerDOM = $("[id$=ddlTransportCompanySubID-container]");
-
+                        let shippingFeeDOM = $("#<%=txtShippingFeeModal.ClientID%>");
                         if (data) {
                             // Phương thức thanh toán
                             payType.val(data.payType);
-                            onchangePaymentType(payType)
+                            onchangePaymentType(payType);
                             // Ngân hàng
                             if (data.payType == "2")
                                 banksDOM.val(data.bankID);
@@ -1644,7 +1662,7 @@
                                 banksDOM.val(0);
                             // Phương thức giao hàng
                             shipType.val(data.shipType);
-                            onchangeShippingType(shipType)
+                            onchangeShippingType(shipType);
                             // Chành xe & nơi tới
                             if (data.shipType == "4") {
                                 transDOM.val(data.tranID);
@@ -1659,6 +1677,12 @@
                                 tranSubContainerDOM.val(0);
                                 tranSubContainerDOM.attr("title", "Chọn nơi nhận");
                                 tranSubContainerDOM.html("Chọn nơi nhận");
+                            }
+                            // Phí vận chuyển
+                            if (shippingFeeDOM.val() == 0) {
+                                shippingFeeDOM.val(formatNumber(data.shippingFee));
+                                $("#<%=pFeeShip.ClientID%>").val(formatNumber(data.shippingFee));
+                                getAllPrice();
                             }
                         }
                         else {

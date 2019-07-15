@@ -112,7 +112,6 @@
                                         <asp:ListItem Value="" Text="Xử lý đơn"></asp:ListItem>
                                         <asp:ListItem Value="1" Text="Đang xử lý"></asp:ListItem>
                                         <asp:ListItem Value="2" Text="Đã hoàn tất"></asp:ListItem>
-                                        <asp:ListItem Value="3" Text="Đã hủy"></asp:ListItem>
                                     </asp:DropDownList>
                                 </div>
                                 <div class="col-md-2 col-xs-6">
@@ -143,7 +142,7 @@
                     <div class="filter-above-wrap clear">
                         <div class="filter-control">
                             <div class="row">
-                                <div class="col-md-1"></div>
+                                <div class="col-md-5"></div>
                                 <div class="col-md-2 col-xs-6">
                                     <asp:DropDownList ID="ddlTransferStatus" runat="server" CssClass="form-control">
                                         <asp:ListItem Value="" Text="Trạng thái tiền"></asp:ListItem>
@@ -168,27 +167,7 @@
                                         <asp:ListItem Value="30days" Text="30 ngày"></asp:ListItem>
                                     </asp:DropDownList>
                                 </div>
-                                <div class="col-md-2 col-xs-6">
-                                    <asp:DropDownList ID="ddlQuantityFilter" runat="server" CssClass="form-control">
-                                        <asp:ListItem Value="" Text="Số lượng"></asp:ListItem>
-                                        <asp:ListItem Value="greaterthan" Text="Lớn hơn"></asp:ListItem>
-                                        <asp:ListItem Value="lessthan" Text="Nhỏ hơn"></asp:ListItem>
-                                        <asp:ListItem Value="between" Text="Trong khoảng"></asp:ListItem>
-                                    </asp:DropDownList>
-                                </div>
-                                <div class="col-md-2 col-xs-6 greaterthan lessthan">
-                                    <asp:TextBox ID="txtQuantity" runat="server" CssClass="form-control" placeholder="Số lượng" autocomplete="off"></asp:TextBox>
-                                </div>
-                                <div class="col-md-2 col-xs-6 between hide">
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <asp:TextBox ID="txtQuantityMin" runat="server" CssClass="form-control" placeholder="Min" autocomplete="off"></asp:TextBox>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <asp:TextBox ID="txtQuantityMax" runat="server" CssClass="form-control" placeholder="Max" autocomplete="off"></asp:TextBox>
-                                        </div>
-                                    </div>
-                                </div>
+                                <div class="col-md-1"></div>
                             </div>
                         </div>
                     </div>
@@ -333,6 +312,7 @@
             });
 
             $(document).ready(() => {
+
                 $("button[data-toggle='modal']").click(e => {
                     let row = e.currentTarget.parentNode.parentNode;
                     let modal = $("#TransferBankModal");
@@ -351,96 +331,49 @@
                         date: new Date()
                     });
 
-                    let status = row.dataset["statusid"];
+                    // Xử lý bank
+                    cusBankDOM.val(row.dataset["cusbankid"] ? row.dataset["cusbankid"] : "0");
+                    accBankDOM.val(row.dataset["accbankid"] ? row.dataset["accbankid"] : "0");
 
-                    // Đã nhận tiền
-                    if (status && status == 1) {
-                        moneyReceivedDOM.removeAttr("disabled");
-                        cusBankDOM.val(row.dataset["cusbankid"]);
-                        accBankDOM.val(row.dataset["accbankid"]);
-                        // Money receive
-                        if (row.dataset["moneyreceived"]) {
-                            moneyReceivedDOM.val(formatThousands(row.dataset["moneyreceived"]));
-                        }
-                        pickerDOM.val(row.dataset["doneat"]);
+                    // Tổng tiền đơn hàng
+                    priceDOM.val(formatThousands(row.dataset["price"]));
+
+                    // Xử lý input tiền đã nhận
+                    let moneyreceived = row.dataset["moneyreceived"];
+                    if (moneyreceived)
+                    {
+                        moneyReceivedDOM.val(formatThousands(row.dataset["moneyreceived"]));
                     }
-                    else {
-                        moneyReceivedDOM.val("");
-                        moneyReceivedDOM.attr("disabled", true);
+                    else
+                    {
+                        moneyReceivedDOM.val(formatThousands(row.dataset["price"]));
                     }
 
-
-                    priceDOM.val(formatThousands(row.dataset["price"]))
-
-                    if (row.dataset["doneat"]) {
-                        pickerDOM.data("DateTimePicker").date(row.dataset["doneat"]);
-                        statusDOM.val(status);
+                    // Xử lý input date
+                    let doneat = row.dataset["doneat"];
+                    if (doneat && doneat != "01/01/1970 00:00")
+                    {
+                        pickerDOM.val(doneat);
+                        pickerDOM.data("DateTimePicker").date(doneat);
                     }
-                    else {
-                        statusDOM.val(1);
-                        moneyReceivedDOM.val(priceDOM.val());
-                        moneyReceivedDOM.attr("disabled", false);
+                    else
+                    {
                         pickerDOM.data("DateTimePicker").date(moment(new Date).format('DD/MM/YYYY HH:mm'));
+                    }
+
+                    // Xử lý input status
+                    let status = row.dataset["statusid"];
+                    if (!status || (status && doneat == "01/01/1970 00:00"))
+                    {
+                        statusDOM.val(1);
+                    }
+                    else
+                    {
+                        statusDOM.val(status);
                     }
 
                     // Note
                     noteDOM.val(row.dataset["transfernote"]);
-
-                    if (!cusBankDOM.val() || !accBankDOM.val() || !noteDOM.val()) {
-                        let data = {
-                            'orderID': row.dataset["orderid"],
-                            'cusID': row.dataset["cusid"]
-                        }
-                        $.ajax({
-                            type: "POST",
-                            url: "/danh-sach-chuyen-khoan.aspx/getTransferLast",
-                            data: JSON.stringify(data),
-                            contentType: "application/json; charset=utf-8",
-                            dataType: "json",
-                            success: function (msg) {
-                                var data = JSON.parse(msg.d);
-                                if (data) {
-                                    // Customer Bank
-                                    cusBankDOM.val(data.CusBankID);
-                                    // Account Bank
-                                    accBankDOM.val(data.AccBankID);
-                                    // Note
-                                    noteDOM.val(data.Note);
-                                }
-                            },
-                            error: function (xmlhttprequest, textstatus, errorthrow) {
-                                swal("Thông báo", "Đã có vấn đề lấy thông tin chuyển khoản", "error");
-                            }
-                        });
-                    }
-
-                    // Hidden input min, max of quantity
-                    var url_param = url_query('quantityfilter');
-                    if (url_param) {
-                        if (url_param == "greaterthan" || url_param == "lessthan") {
-                            $(".greaterthan").removeClass("hide");
-                            $(".between").addClass("hide");
-                        }
-                        else if (url_param == "between") {
-                            $(".between").removeClass("hide");
-                            $(".greaterthan").addClass("hide");
-                        }
-                    }
-                });
-
-                // Handle change quantity filter
-                $("#<%=ddlQuantityFilter.ClientID%>").change(e => {
-                    let value = e.currentTarget.value;
-                    if (value == "greaterthan" || value == "lessthan") {
-                        $(".greaterthan").removeClass("hide");
-                        $(".between").addClass("hide");
-                        $("#<%=txtQuantity.ClientID%>").focus().select();
-                    }
-                    else if (value == "between") {
-                        $(".between").removeClass("hide");
-                        $(".greaterthan").addClass("hide");
-                        $("#<%=txtQuantityMin.ClientID%>").focus().select();
-                    }
                 });
 
                 // Change status tien reset = 0
@@ -457,7 +390,8 @@
                     {
                         let orderID = $("#<%=hdOrderID.ClientID%>").val();
                         let row = $("tr[data-orderid='" + orderID + "'")
-                        if (row.data("moneyreceived")) {
+                        if (row.data("moneyreceived"))
+                        {
                             moneyReceivedDOM.val(formatThousands(row.data("moneyreceived")));
                         }
                         moneyReceivedDOM.removeAttr("disabled");
@@ -470,7 +404,8 @@
                     let cusBankID = accBankID;
                     let status = $("#<%=ddlStatus.ClientID%>").val();
                     let money = $("#<%=txtMoneyReceived.ClientID%>").val().replace(/\,/g, '');
-                    if (money == "") {
+                    if (money == "")
+                    {
                         money = $("#<%=txtPrice.ClientID%>").val().replace(/\,/g, '');
                     }
                     let doneAt = $("#dtDoneAt").data('date');
