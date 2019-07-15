@@ -255,8 +255,23 @@
                                     </a>
                                 </div>
                                 <div class="col-md-2 col-xs-4">
-                                    <a id="printOrderChoose" href="javascript:;" class="btn primary-btn fw-btn width-100" onclick="openPrintModal()">
+                                    <a id="chooseShipper" href="javascript:;" class="btn primary-btn fw-btn width-100" onclick="openChooseShipperModal()">
+                                        <i class="fa fa-user-plus" aria-hidden="true"></i> Chọn người giao
+                                    </a>
+                                </div>
+                                <div class="col-md-2 col-xs-4">
+                                    <a id="chooseTimes" href="javascript:;" class="btn primary-btn fw-btn width-100" onclick="openChooseTimesModal()">
+                                        <i class="fa fa-calendar" aria-hidden="true"></i> Chọn lượt giao
+                                    </a>
+                                </div>
+                                <div class="col-md-2 col-xs-4">
+                                    <a id="printOrderChoose" href="javascript:;" class="btn primary-btn fw-btn width-100" onclick="startPrint()">
                                         <i class="fa fa-print" aria-hidden="true"></i> In phiếu
+                                    </a>
+                                </div>
+                                <div class="col-md-2 col-xs-4">
+                                    <a id="doneDelivery" href="javascript:;" class="btn primary-btn fw-btn width-100" onclick="changeDoneDelivery()">
+                                        <i class="fa fa-check" aria-hidden="true"></i> Trạng thái kết thúc đơn hàng
                                     </a>
                                 </div>
                             </div>
@@ -421,8 +436,8 @@
             </div>
         </div>
 
-        <!-- Modal Print Delivery -->
-        <div class="modal fade" id="PrintModal" role="dialog">
+        <!-- Modal setting the info before print the delivery page -->
+        <div class="modal fade" id="SettingModal" role="dialog">
             <div class="modal-dialog">
                 <!-- Modal content-->
                 <div class="modal-content">
@@ -431,7 +446,7 @@
                         <h4 class="modal-title">Cập nhật thông tin phiếu</h4>
                     </div>
                     <div class="modal-body">
-                        <div class="row form-group">
+                        <div id="setting-shipper" class="row form-group">
                             <div class="col-xs-3">
                                 <p>Người giao</p>
                             </div>
@@ -439,13 +454,13 @@
                                 <asp:DropDownList ID="ddfShipperPrintModal" runat="server" CssClass="form-control"></asp:DropDownList>
                             </div>
                         </div>
-                        <div class="row form-group">
+                        <div id="setting-times" class="row form-group">
                             <div class="col-xs-3">
                                 <p>Đợt giao</p>
                             </div>
                             <div class="col-xs-9">
                                 <asp:DropDownList ID="ddlDeliveryTimesModal" runat="server" CssClass="form-control">
-                                    <asp:ListItem Value="" Text="Chọn đợt giao hàng"></asp:ListItem>
+                                    <asp:ListItem Value="0" Text="Chọn đợt giao hàng"></asp:ListItem>
                                     <asp:ListItem Value="1" Text="Đợt 1"></asp:ListItem>
                                     <asp:ListItem Value="2" Text="Đợt 2"></asp:ListItem>
                                 </asp:DropDownList>
@@ -453,9 +468,9 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button id="closePrint" type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
-                        <button id="shipperPrint" type="button" class="btn btn-primary" onclick="startPrint(5)">Phiếu nhân viên giao</button>
-                        <button id="transportPrint" type="button" class="btn btn-primary" onclick="startPrint(4)">Phiếu chuyển xe</button>
+                        <button id="closeSetting" type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
+                        <button id="saveShipper" type="button" class="btn btn-primary" onclick="applyShipper()">Lưu</button>
+                        <button id="saveTimers" type="button" class="btn btn-primary" onclick="applyTimers()">Lưu</button>
                     </div>
                 </div>
             </div>
@@ -503,11 +518,13 @@
             });
 
             class OrderChoosed {
-                constructor(OrderID, ShippingType, CreatedDate, DeliveryTimes) {
+                constructor(OrderID, ShipperID, ShippingType, CreatedDate, DeliveryTimes, DeliveryStatus) {
                     this.OrderID = OrderID;
+                    this.ShipperID = ShipperID;
                     this.ShippingType = ShippingType;
                     this.CreatedDate = CreatedDate;
-                    this.DeliveryTimes = DeliveryTimes
+                    this.DeliveryTimes = DeliveryTimes;
+                    this.DeliveryStatus = DeliveryStatus;
                 }
             };
 
@@ -533,7 +550,14 @@
                         }
 
                         // Thêm vào mảng order đã chọn
-                        orderChoosed.push(new OrderChoosed(item.OrderID, item.ShippingType, createdDate, item.DeliveryTimes));
+                        orderChoosed.push(new OrderChoosed(
+                            item.OrderID,
+                            +item.ShipperID || 0,
+                            item.ShippingType,
+                            createdDate,
+                            +item.DeliveryTimes || 0,
+                            +item.DeliveryStatus || 2
+                            ));
                     });
 
                     // Thể hiện số lượng đơn hàng sẽ In
@@ -1095,11 +1119,20 @@
                 childDOM.each((index, element) => {
                     let parent = element.parentElement.parentElement;
                     let orderID = parent.dataset["orderid"];
+                    let shipperID = +parent.dataset["shipperid"] || 0;
                     let shippingType = parent.dataset["shippingtype"];
-                    let deliveryTimes = parent.dataset["deliverytimes"];
+                    let deliveryTimes = +parent.dataset["deliverytimes"] || 0;
+                    let deliveryStatus = +parent.dataset["deliverystatus"] || 2;
 
                     element.checked = checked;
-                    data.push(new OrderChoosed(orderID, shippingType, now.format("yyyy-MM-dd"), deliveryTimes))
+                    data.push(new OrderChoosed(
+                        orderID,
+                        shipperID,
+                        shippingType,
+                        now.format("yyyy-MM-dd"),
+                        deliveryTimes,
+                        deliveryStatus
+                        ))
                 });
 
                 if (checked) {
@@ -1130,8 +1163,10 @@
             function changeCheckPrint(self) {
                 let parent = self.parent().parent();
                 let orderID = parent.data("orderid");
+                let shipperID = +parent.data("shipperid") || 0;
                 let shippingType = parent.data("shippingtype");
-                let deliveryTimes = parent.data("deliverytimes");
+                let deliveryTimes = +parent.data("deliverytimes") || 0;
+                let deliveryStatus = +parent.data("deliverystatus") || 2;
 
                 // Thông báo khi order được chọn in đã được chuyển trạng thái hoàng tất đơn hàng
                 if (self.is(":checked"))
@@ -1163,7 +1198,14 @@
 
                 if (self.is(":checked")) {
                     let now = new Date();
-                    let data = new OrderChoosed(orderID, shippingType, now.format("yyyy-MM-dd"), deliveryTimes);
+                    let data = new OrderChoosed(
+                        orderID,
+                        shipperID,
+                        shippingType,
+                        now.format("yyyy-MM-dd"),
+                        deliveryTimes,
+                        deliveryStatus
+                        );
                     addOrderChoose([data]);
                 }
                 else {
@@ -1175,51 +1217,132 @@
                 checkPrintAll();
             }
 
-            function openPrintModal() {
+            function openChooseShipperModal() {
+                $("#setting-shipper").css('display', '');
+                $("#setting-times").css('display', 'none');
+                $("#saveShipper").css('display', '');
+                $("#saveTimers").css('display', 'none');
+                openSettingModal();
+            }
+
+            function openChooseTimesModal() {
+                $("#setting-shipper").css('display', 'none');
+                $("#setting-times").css('display', '');
+                $("#saveShipper").css('display', 'none');
+                $("#saveTimers").css('display', '');
+                openSettingModal();
+            }
+
+            function openSettingModal() {
                 if (orderChoosed.length == 0) {
                     swal("Thông báo", "Chưa có đơn hàng nào được chọn!", "error");
                 }
                 else {
-                    let shippers = orderChoosed.filter((item) => { return item.ShippingType == 5; })
-                    let transports = orderChoosed.filter((item) => { return item.ShippingType == 4; })
-
-                    if (shippers.length == 0 && transports.lenght == 0) {
-                        swal("Thông báo", "Bạn chưa chọn đơn hàng nào!", "error");
-                    }
-                    else {
-                        // Phiếu nhân viên giao
-                        if (shippers.length == 0)
-                            $("#shipperPrint").attr("style", "display: none")
-                        else
-                            $("#shipperPrint").removeAttr("style");
-                        // Phiếu chuyển xe
-                        if (transports.length == 0)
-                            $("#transportPrint").attr("style", "display: none")
-                        else
-                            $("#transportPrint").removeAttr("style");
-
-                        $("#PrintModal").modal({ show: 'true', backdrop: 'static', keyboard: 'false' })
-                    }
+                    $("#SettingModal").modal({ show: 'true', backdrop: 'static', keyboard: 'false' })
                 }
             }
 
-            function startPrint(shippingType) {
-                let shipperID = $("#<%=ddfShipperPrintModal.ClientID%>").val();
-                let deliveryTimes = $("#<%=ddlDeliveryTimesModal.ClientID%>").val();
+            function applyShipper() {
+                let shipper = $("#<%=ddfShipperPrintModal.ClientID%>");
 
-                if (shipperID != "0" && deliveryTimes != "0") {
-                    let childDOM = null;
+                if (shipper.val() == "0") {
+                    swal("Thông báo", "Chưa chọn người giao hàng", "error");
+                }
+                else {
+                    orderChoosed.forEach(item =>
+                        item.shipperID = parseInt(shipper.val())
+                    );
 
-                    switch (shippingType) {
-                        case 5: // Nhân viên giao hàng
-                            childDOM = $("tr[data-shippingtype='5']>td>input[type='checkbox']:checked");
-                            break;
-                        case 4: // Chuyển nhà xe
-                            childDOM = $("tr[data-shippingtype='4']>td>input[type='checkbox']:checked");
-                            break;
-                        default:
-                            break;
-                    }
+                    $.ajax({
+                        type: "POST",
+                        url: "/danh-sach-van-chuyen.aspx/updateOrderChoose",
+                        data: JSON.stringify({ 'deliverySession': orderChoosed }),
+                        contentType: "application/json; charset=utf-8",
+                        dataType: "json",
+                        success: respon => {
+                            orderChoosed.forEach(item => {
+                                let row = $("tr[data-orderid='" + item.OrderID + "']");
+                                row.data('shipperid', item.ShipperID);
+                                let shipperName = shipper.find("option:selected").html();
+                                row.find("#shiperName").html(shipperName);
+                            });
+
+                            $("#closeSetting").click();
+                        },
+                        error: (xmlhttprequest, textstatus, errorthrow) => {
+                            swal("Thông báo", "Có lỗi trong quá trình cập nhật người giao hàng", "error");
+                        }
+                    });
+                }
+            }
+
+            function applyTimers() {
+                let deliveryTimes = $("#<%=ddlDeliveryTimesModal.ClientID%>");
+
+                if (deliveryTimes.val() == "0") {
+                    swal("Thông báo", "Chưa chọn đợt giao hàng", "error");
+                }
+                else {
+                    orderChoosed.forEach(item =>
+                        item.DeliveryTimes = parseInt(deliveryTimes.val())
+                    );
+
+                    $.ajax({
+                        type: "POST",
+                        url: "/danh-sach-van-chuyen.aspx/updateOrderChoose",
+                        data: JSON.stringify({ 'deliverySession': orderChoosed }),
+                        contentType: "application/json; charset=utf-8",
+                        dataType: "json",
+                        success: respon => {
+                            orderChoosed.forEach(item => {
+                                let row = $("tr[data-orderid='" + item.OrderID + "']");
+                                row.data('deliverytimes', item.DeliveryTimes);
+                                let timesName = deliveryTimes.find("option:selected").html();
+                                row.find("#deliveryTimes").html(timesName);
+                            });
+
+                            $("#closeSetting").click();
+                        },
+                        error: (xmlhttprequest, textstatus, errorthrow) => {
+                            swal("Thông báo", "Có lỗi trong quá trình cập nhật lần giao hàng", "error");
+                        }
+                    });
+                }
+            }
+
+            function changeDoneDelivery() {
+                if (orderChoosed.length == 0) {
+                    swal("Thông báo", "Chưa có đơn hàng nào được chọn!", "error");
+                }
+                else {
+                    orderChoosed.forEach(item =>
+                        item.DeliveryStatus = 1 // Trạng thái hàng tất giao hàng
+                    );
+
+                    $.ajax({
+                        type: "POST",
+                        url: "/danh-sach-van-chuyen.aspx/updateOrderChoose",
+                        data: JSON.stringify({ 'deliverySession': orderChoosed }),
+                        contentType: "application/json; charset=utf-8",
+                        dataType: "json",
+                        success: respon => {
+                            orderChoosed.forEach(item => {
+                                let row = $("tr[data-orderid='" + item.OrderID + "']");
+                                row.attr('data-deliverystatus', 1);
+                                row.find("#deliveryStatus").html('<span class="bg-green">Đã giao</span>');
+                            });
+                            swal("Thông báo", "Tất cả đơn chọn đã chuyển qua trạng thái hoàn tất", "success");
+                        },
+                        error: (xmlhttprequest, textstatus, errorthrow) => {
+                            swal("Thông báo", "Có lỗi trong quá trình chuyển trạng thái hoàn tất đơn hàng", "error");
+                        }
+                    });
+                }
+            }
+
+            function startPrint() {
+                if (orderChoosed.length > 0) {
+                    let childDOM = $("tr>td>input[type='checkbox']:checked");
 
                     //Cập nhật lại thông tin trên màn hình
                     if (childDOM) {
@@ -1233,9 +1356,6 @@
                             let deliveryTimesLabel = $("#<%=ddlDeliveryTimesModal.ClientID%> :selected").text();
                             let now = new Date();
 
-                            // Update screen
-                            row.attr("data-shipperid", shipperID);
-                            row.attr("data-deliverytimes", deliveryTimes);
                             // Trường hợp khác đơn đã hoàn thành thì chuyển về trạng thái đang giao
                             if (deliveryStatus != "1")
                             {
@@ -1243,9 +1363,6 @@
                                 row.attr("data-deliverydate", now.format("dd/MM/yyyy HH:mm"));
                             }
 
-                            // Update screen
-                            row.children("#shiperName").html(shiperName);
-                            row.children("#deliveryTimes").html(deliveryTimesLabel);
                             // Trường hợp khác đơn đã hoàn thành thì chuyển về trạng thái đang giao
                             if (deliveryStatus != "1")
                             {
@@ -1258,26 +1375,11 @@
                         });
                     }
 
-                   this.orderChoosed.forEach(item => {
-                        item.DeliveryTimes = parseInt(deliveryTimes);
-                    })
-
-                    addOrderChoose(this.orderChoosed);
-
                     // Gửi thông tin về server để tao đơn in
-                    let url = "/print-delivery?shipperid=" + shipperID + "&shippingtype=" + shippingType + "&deliverytimes=" + deliveryTimes;
-                    window.open(url);
-                    $("#closePrint").click();
+                    window.open("/print-delivery");
                 }
                 else {
-                    if (shipperID == "0")
-                    {
-                        swal("Thông báo", "Chưa chọn người giao hàng", "error");
-                    }
-                    if (deliveryTimes == "0")
-                    {
-                        swal("Thông báo", "Chưa chọn đợt giao hàng", "error");
-                    }
+                    swal("Thông báo", "Chưa có đơn hàng nào được chọn!", "error");
                 }
             };
 

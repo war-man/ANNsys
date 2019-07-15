@@ -74,7 +74,7 @@ namespace IM_PJ.Controllers
                             TransportID = t.TransportID,
                             TransportName = t.TransportName,
                             Quantity = 1,
-                            Collection = h.PaymentType == 3 ? 1 : 0
+                            Collection = h.PaymentType == (int)PaymentType.CashCollection ? 1 : 0
                         }
                     )
                     .GroupBy(x => x.TransportID)
@@ -256,6 +256,57 @@ namespace IM_PJ.Controllers
                 }
 
                 return serializer.Serialize(last);
+            }
+        }
+        
+        public static void updateDelivery(tbl_Account acc, List<DeliverySession> session)
+        {
+            using (var con = new inventorymanagementEntities())
+            {
+                var now = DateTime.Now;
+
+                foreach (var item in session)
+                {
+                    var data = con.Deliveries
+                    .Where(x => x.OrderID == item.OrderID)
+                    .FirstOrDefault();
+
+                    if (data != null)
+                    {
+                        data.ShipperID = item.ShipperID;
+                        data.Times = item.DeliveryTimes;
+                        data.Status = item.DeliveryStatus;
+                        data.ModifiedBy = acc.ID;
+                        data.ModifiedDate = now;
+
+                        con.SaveChanges();
+                    }
+                    else
+                    {
+                        var delivery = new Delivery()
+                        {
+                            UUID = Guid.NewGuid(),
+                            OrderID = item.OrderID,
+                            ShipperID = item.ShipperID,
+                            Status = item.DeliveryStatus,
+                            Image = String.Empty,
+                            COD = 0,
+                            COO = 0,
+                            ShipNote = String.Empty,
+                            StartAt = now,
+                            Note = String.Empty,
+                            CreatedBy = acc.ID,
+                            CreatedDate = now,
+                            ModifiedBy = acc.ID,
+                            ModifiedDate = now,
+                            Times = item.DeliveryTimes
+                        };
+
+                        con.Deliveries.Add(delivery);
+                        con.SaveChanges();
+                    }
+
+                }
             }
         }
 

@@ -52,75 +52,63 @@ namespace IM_PJ
 
         public void LoadData()
         {
-            var shipperID = Request.QueryString.Get("shipperid").ToInt(0);
-            var shippingType = Request.QueryString.Get("shippingtype").ToInt(0);
-            var deliveryTimes = Request.QueryString.Get("deliverytimes").ToInt(0);
+            string username = Request.Cookies["userLoginSystem"].Value;
+            var acc = AccountController.GetByUsername(username);
+            var session = SessionController.getDeliverySession(acc);
+            var shippers = session
+                .Select(x => x.ShipperID)
+                .Distinct()
+                .OrderBy(o => o)
+                .ToList();
 
-            if (shipperID == 0)
+            ltrPrintDelivery.Text = String.Empty;
+            foreach (var shipperID in shippers)
             {
-                ltrPrintDelivery.Text = String.Format("ShipperID #{0} truyền vào có vấn đề", shipperID);
+                for (var timers = 1; timers <= 2; ++timers)
+                {
+                    // Báo cáo chuyển hàng tới nhà xe
+                    var transforOrders = session
+                            .Where(x => x.ShipperID == shipperID)
+                            .Where(x => x.ShippingType == (int)DeliveryType.TransferStation)
+                            .Where(x => x.DeliveryTimes == timers)
+                            .Select(x => x.OrderID)
+                            .OrderBy(o => o)
+                            .ToList();
+                    var transforData = DeliveryController.getTransportReport(transforOrders);
+
+                    if (transforData.Count > 0)
+                    {
+                        ltrPrintDelivery.Text += getTransportReportHTML(transforData, shipperID, timers);
+                        // Update Delivery
+                        DeliveryController.udpateAfterPrint(shipperID, transforOrders, acc.ID, timers);
+                    }
+                    
+                    // Báo cáo chuyển hàng của shipper
+                    var orders = session
+                            .Where(x => x.ShipperID == shipperID)
+                            .Where(x => x.ShippingType == (int)DeliveryType.Shipper)
+                            .Where(x => x.DeliveryTimes == timers)
+                            .Select(x => x.OrderID)
+                            .OrderBy(o => o)
+                            .ToList();
+                    var shipperData = DeliveryController.getShipperReport(orders);
+
+                    if (shipperData.Count > 0)
+                    {
+                        ltrPrintDelivery.Text += getShipperReportHTML(shipperData, shipperID);
+                        // Update Delivery
+                        DeliveryController.udpateAfterPrint(shipperID, orders, acc.ID, timers);
+                    }
+                }
             }
-            else if (shippingType == 0)
+            
+            if (!String.IsNullOrEmpty(ltrPrintDelivery.Text))
             {
-                ltrPrintDelivery.Text = String.Format("ShippingType #{0} truyền vào có vấn đề", shippingType);
-            }
-            else if (deliveryTimes == 0)
-            {
-                ltrPrintDelivery.Text = String.Format("DeliveryTimes #{0} truyền vào có vấn đề", shippingType);
+                ltrPrintEnable.Text = "<div class='print-enable true'></div>";
             }
             else
             {
-                string username = Request.Cookies["userLoginSystem"].Value;
-                var acc = AccountController.GetByUsername(username);
-
-                if (shippingType == 4) // Báo cáo chuyển hàng tới nhà xe
-                {
-                    var orders = SessionController.getDeliverySession(acc)
-                        .Where(x => x.ShippingType == shippingType)
-                        .Select(x => x.OrderID)
-                        .OrderBy(o => o)
-                        .ToList();
-
-                    var data = DeliveryController.getTransportReport(orders);
-                    if (data.Count == 0)
-                    {
-                        ltrPrintDelivery.Text = "Không tìm thấy dữ liệu để xuất hóa đơn giao hàng";
-                    }
-                    else
-                    {
-                        ltrPrintDelivery.Text = getTransportReportHTML(data, shipperID, deliveryTimes);
-                        ltrPrintEnable.Text = "<div class='print-enable true'></div>";
-
-                        // Update Delivery
-                        DeliveryController.udpateAfterPrint(shipperID, orders, acc.ID, deliveryTimes);
-                    }
-                }
-                else if (shippingType == 5) // Báo cáo chuyển hàng của shipper
-                {
-                    var orders = SessionController.getDeliverySession(acc)
-                        .Where(x => x.ShippingType == shippingType)
-                        .Select(x => x.OrderID)
-                        .OrderBy(o => o)
-                        .ToList();
-
-                    var data = DeliveryController.getShipperReport(orders);
-                    if (data.Count == 0)
-                    {
-                        ltrPrintDelivery.Text = "Không tìm thấy dữ liệu để xuất hóa đơn giao hàng";
-                    }
-                    else
-                    {
-                        ltrPrintDelivery.Text = getShipperReportHTML(data, shipperID);
-                        ltrPrintEnable.Text = "<div class='print-enable true'></div>";
-
-                        // Update Delivery
-                        DeliveryController.udpateAfterPrint(shipperID, orders, acc.ID, deliveryTimes);
-                    }
-                }
-                else
-                {
-                    ltrPrintDelivery.Text = String.Format("Không có báo có vần chuyển nào với ShippintType #{0} này.", shippingType);
-                }
+                ltrPrintDelivery.Text = "Không tìm thấy dữ liệu để xuất hóa đơn giao hàng";
             }
         }
 
@@ -237,7 +225,11 @@ namespace IM_PJ
                 html.AppendLine("                        </tr>");
             }
             html.AppendLine("                        <tr>");
-            html.AppendLine("                            <td colspan='2' style='text-align: right'>Tổng đơn</td>");
+            html.AppendLine("                            <td colspan='2' style='text-align: right'>Tổng số đơn</td>");
+            html.AppendLine(String.Format("                            <td colspan='3'>{0:#,###}</td>", data.Count));
+            html.AppendLine("                        </tr>");
+            html.AppendLine("                        <tr>");
+            html.AppendLine("                            <td colspan='2' style='text-align: right'>Tổng tiền</td>");
             html.AppendLine(String.Format("                            <td colspan='3'>{0:#,###}</td>", totalPayment));
             html.AppendLine("                        </tr>");
             if (totalMoneyCollection > 0)
