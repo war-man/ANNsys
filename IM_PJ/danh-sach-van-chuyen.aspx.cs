@@ -661,6 +661,16 @@ namespace IM_PJ
         }
 
         [WebMethod]
+        public static void updateOrderChoose(List<DeliverySession> deliverySession)
+        {
+            var username = HttpContext.Current.Request.Cookies["userLoginSystem"].Value;
+            var acc = AccountController.GetByUsername(username);
+
+            SessionController.updateDeliverySession(acc, deliverySession);
+            DeliveryController.updateDelivery(acc, deliverySession);
+        }
+
+        [WebMethod]
         public static string deleteOrderChoose(List<DeliverySession> deliverySession)
         {
             var username = HttpContext.Current.Request.Cookies["userLoginSystem"].Value;

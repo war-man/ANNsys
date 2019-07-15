@@ -1015,41 +1015,34 @@ namespace IM_PJ.Controllers
                 #endregion
 
                 #region Tìm kiếm theo phiếu giao hàng
-                var orderDelivery = orderFilter
+                var orderDelivery = con.Deliveries
                     .Join(
-                        con.Deliveries,
-                        h => h.ID,
-                        t => t.OrderID,
-                        (h, t) => new
-                        {
-                            OrderID = h.ID,
-                            StartAt = t.StartAt,
-                            Status = t.Status,
-                            ShipperID = t.ShipperID,
-                            COD = t.COD,
-                            COO = t.COO,
-                            ShipNote = t.ShipNote,
-                            Image = t.Image,
-                            DeliveryTimes = t.Times
-                        }
+                        orderFilter,
+                        d => d.OrderID,
+                        o => o.ID,
+                        (d, o) => new { d, o }
                     )
-                    .Join(
+                    .GroupJoin(
                         con.Shippers,
-                        h => h.ShipperID,
+                        t1 => t1.d.ShipperID,
                         c => c.ID,
-                        (h, c) => new
+                        (t1, c) => new { t1, c }
+                    )
+                    .SelectMany(
+                        x => x.c.DefaultIfEmpty(),
+                        (parent, child) => new
                         {
-                            OrderID = h.OrderID,
-                            StartAt = h.StartAt,
-                            Status = h.Status,
-                            ShipperID = h.ShipperID,
-                            COD = h.COD,
-                            COO = h.COO,
-                            ShipNote = h.ShipNote,
-                            Image = h.Image,
-                            DeliveryTimes = h.DeliveryTimes,
+                            OrderID = parent.t1.d.OrderID,
+                            StartAt = parent.t1.d.StartAt,
+                            Status = parent.t1.d.Status,
+                            ShipperID = parent.t1.d.ShipperID,
+                            COD = parent.t1.d.COD,
+                            COO = parent.t1.d.COO,
+                            ShipNote = parent.t1.d.ShipNote,
+                            Image = parent.t1.d.Image,
+                            DeliveryTimes = parent.t1.d.Times,
                             // Shipper
-                            ShipperName = c.Name
+                            ShipperName = child != null ? child.Name : String.Empty
                         }
                     );
 

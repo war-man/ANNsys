@@ -85,6 +85,54 @@ namespace IM_PJ.Controllers
             }
         }
 
+        public static void updateDeliverySession(
+            tbl_Account acc, 
+            List<DeliverySession> deliverySession, 
+            string page = "danh-sach-van-chuyen"
+        )
+        {
+            using (var con = new inventorymanagementEntities())
+            {
+                var session = con.Sessions
+                    .Where(x => x.AccountID == acc.ID)
+                    .Where(x => x.Page.ToLower() == page.ToLower())
+                    .FirstOrDefault();
+
+                if (session != null)
+                {
+                    var oldDdeliveries = JsonConvert.DeserializeObject<List<DeliverySession>>(session.Value);
+                    // update dữ liệu
+                    oldDdeliveries = oldDdeliveries
+                        .GroupJoin(
+                            deliverySession,
+                            olds => olds.OrderID,
+                            news => news.OrderID,
+                            (olds, news) => new { olds, news}
+                        )
+                        .SelectMany(
+                            x => x.news.DefaultIfEmpty(),
+                            (parent, child) =>
+                            {
+                                if (child != null)
+                                {
+                                    return child;
+                                }
+                                else
+                                {
+                                    return parent.olds;
+                                }
+                            }
+                        )
+                        .ToList();
+
+                    session.Value = JsonConvert.SerializeObject(oldDdeliveries);
+                    session.ModifiedDate = DateTime.Now;
+
+                    con.SaveChanges();
+                }
+            }
+        }
+
         public static string deleteDeliverySession(tbl_Account acc, List<DeliverySession> deliverySession, string page = "danh-sach-van-chuyen")
         {
             using (var con = new inventorymanagementEntities())
@@ -141,8 +189,10 @@ namespace IM_PJ.Controllers
     public class DeliverySession
     {
         public int OrderID { get; set; }
+        public int ShipperID { get; set; }
         public int ShippingType { get; set; }
         public DateTime CreatedDate { get; set; }
         public int DeliveryTimes { get; set; }
+        public int DeliveryStatus { get; set; }
     }
 }
