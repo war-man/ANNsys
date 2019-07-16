@@ -648,6 +648,10 @@ namespace IM_PJ
                 }
             }
 
+            // add filter selected
+            if (Request.QueryString["isdeliverysession"] != null)
+                request += "&isdeliverysession=1";
+
             Response.Redirect(request);
         }
 
