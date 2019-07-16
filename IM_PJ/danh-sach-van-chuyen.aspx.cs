@@ -347,9 +347,9 @@ namespace IM_PJ
                     TrTag.AppendLine(String.Format("data-shippingtype='{0}' ", item.ShippingType));
                     TrTag.AppendLine(String.Format("data-deliverystatus='{0}' ", item.DeliveryStatus));
                     TrTag.AppendLine(String.Format("data-invoiceimage='{0}' ", item.InvoiceImage));
-                    TrTag.AppendLine(String.Format("data-coloford='{0:#}' ", item.CollectionOfOrder != null ? item.CollectionOfOrder : Convert.ToDecimal(item.TotalPrice - item.TotalRefund) ));
+                    TrTag.AppendLine(String.Format("data-coloford='{0:#,###}' ", item.CollectionOfOrder.HasValue ? item.CollectionOfOrder : Convert.ToDecimal(item.TotalPrice - item.TotalRefund) ));
                     TrTag.AppendLine(String.Format("data-shipperid='{0}' ", item.ShipperID));
-                    TrTag.AppendLine(String.Format("data-cosofdev='{0:#}' ", item.CostOfDelivery != null ? item.CostOfDelivery :  Convert.ToDecimal(item.FeeShipping) ));
+                    TrTag.AppendLine(String.Format("data-cosofdev='{0:#,###}' ", item.CostOfDelivery.HasValue ? item.CostOfDelivery :  Convert.ToDecimal(item.FeeShipping) ));
                     TrTag.AppendLine(String.Format("data-deliverydate='{0:dd/MM/yyyy HH:mm}' ", item.DeliveryDate));
                     TrTag.AppendLine(String.Format("data-shippernote='{0}' ", item.ShipNote));
                     TrTag.AppendLine(String.Format("data-transfercompany='{0}' ", item.TransportCompanyID));
@@ -647,6 +647,10 @@ namespace IM_PJ
                     request += "&quantityfilter=" + ddlQuantityFilter.SelectedValue + "&quantitymin=" + txtQuantityMin.Text + "&quantitymax=" + txtQuantityMax.Text;
                 }
             }
+
+            // add filter selected
+            if (Request.QueryString["isdeliverysession"] != null)
+                request += "&isdeliverysession=1";
 
             Response.Redirect(request);
         }

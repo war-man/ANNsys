@@ -39,7 +39,7 @@ namespace IM_PJ.Controllers
             return true;
         }
 
-        public static List<TransportReport> getTransportReport(List<int> orders)
+        public static TransportReport getTransportReport(List<int> orders)
         {
             using (var con = new inventorymanagementEntities())
             {
@@ -64,29 +64,70 @@ namespace IM_PJ.Controllers
                      })
                      .OrderBy(o => o.OrderID);
 
-                var report = header
+                var customer = con.tbl_Customer
+                    .Join(
+                        header,
+                        c => c.ID,
+                        o => o.CustomerID,
+                        (c, o) => c
+                    )
+                    .Distinct()
+                    .OrderBy(o => o.ID);
+
+                var data = header
+                    .Join(
+                        customer,
+                        o => o.CustomerID,
+                        c => c.ID,
+                        (o, c) => new { o, c }
+                    )
                     .Join(
                         transport,
-                        h => h.ID,
+                        h => h.o.ID,
                         t => t.OrderID,
                         (h, t) => new
                         {
+                            OrderID = h.o.ID,
                             TransportID = t.TransportID,
                             TransportName = t.TransportName,
+                            CustomerID = h.o.CustomerID.Value,
+                            CustomerName = h.c.CustomerName,
                             Quantity = 1,
-                            Collection = h.PaymentType == (int)PaymentType.CashCollection ? 1 : 0
+                            Collection = h.o.PaymentType == (int)PaymentType.CashCollection ? 1 : 0,
+                            Payment = h.o.TotalPrice
                         }
                     )
-                    .GroupBy(x => x.TransportID)
-                    .Select(g => new TransportReport
-                    {
-                        TransportID = g.Key,
-                        TransportName = g.Max(x => x.TransportName),
-                        Quantity = g.Sum(x => x.Quantity),
-                        Collection = g.Sum(x => x.Collection)
-                    })
-                    .OrderBy(o => o.TransportName)
                     .ToList();
+
+                var report = new TransportReport()
+                {
+                    Transports = data
+                        .GroupBy(x => x.TransportID)
+                        .Select(g => new TransportInfo
+                        {
+                            TransportID = g.Key,
+                            TransportName = g.Max(x => x.TransportName),
+                            Quantity = g.Sum(x => x.Quantity),
+                            Collection = g.Sum(x => x.Collection),
+                        })
+                        .OrderBy(o => o.TransportName)
+                        .ToList(),
+                    Collections = data.Where(x => x.Collection == 1)
+                        .Select(x => new CollectionInfo()
+                        {
+                            OrderID = x.OrderID,
+                            TransportID = x.TransportID,
+                            TransportName = x.TransportName,
+                            CustomerID = x.CustomerID,
+                            CustomerName = x.CustomerName,
+                            Collection = Convert.ToDecimal(x.Payment)
+                        })
+                        .OrderByDescending(o => new {
+                            o.TransportName,
+                            o.OrderID
+                        })
+                        .ToList()
+                }; 
 
                 return report;
             }
@@ -310,13 +351,30 @@ namespace IM_PJ.Controllers
             }
         }
 
-        public class TransportReport
+        public class TransportInfo
         {
             public int TransportID { get; set; }
             public string TransportName { get; set; }
             public double Quantity { get; set; }
             // Số lượng thu hộ
             public double Collection { get; set; }
+        }
+
+        public class CollectionInfo
+        {
+            public int OrderID { get; set; }
+            public int TransportID { get; set; }
+            public string TransportName { get; set; }
+            public int CustomerID { get; set; }
+            public string CustomerName { get; set; }
+            // Số tiền thu hộ
+            public decimal Collection { get; set; }
+        }
+
+        public class TransportReport
+        {
+            public List<TransportInfo> Transports { get; set; }
+            public List<CollectionInfo> Collections { get; set; }
         }
 
         public class ShipperReport

@@ -76,7 +76,7 @@ namespace IM_PJ
                             .ToList();
                     var transforData = DeliveryController.getTransportReport(transforOrders);
 
-                    if (transforData.Count > 0)
+                    if (transforData.Transports.Count > 0 && transforData.Collections.Count > 0)
                     {
                         ltrPrintDelivery.Text += getTransportReportHTML(transforData, shipperID, timers);
                         // Update Delivery
@@ -112,7 +112,7 @@ namespace IM_PJ
             }
         }
 
-        public string getTransportReportHTML(List<TransportReport> data, int shipperID, int deliveryTimes)
+        public string getTransportReportHTML(TransportReport data, int shipperID, int deliveryTimes)
         {
             var html = new StringBuilder();
             int index = 0;
@@ -143,7 +143,7 @@ namespace IM_PJ
             html.AppendLine("                        <th>Thu hộ</th>");
             html.AppendLine("                    </thead>");
             html.AppendLine("                    <tbody>");
-            foreach(var item in data)
+            foreach(var item in data.Transports)
             {
                 index += 1;
                 totalQuantity += item.Quantity;
@@ -173,12 +173,60 @@ namespace IM_PJ
             html.AppendLine("    </div>");
             html.AppendLine("</div>");
 
+            // Thông tin bổ xung cho giao hàng thu hộ
+            html.AppendLine("<h1>Thông tin giao hàng thu hộ</h1>");
+            html.AppendLine("<div class='delivery'>");
+            html.AppendLine("    <div class='all'>");
+            html.AppendLine("        <div class='body'>");
+            html.AppendLine("            <div class='table-2'>");
+            html.AppendLine("                <table>");
+            html.AppendLine("                    <colgroup>");
+            html.AppendLine("                        <col />");
+            html.AppendLine("                        <col />");
+            html.AppendLine("                        <col />");
+            html.AppendLine("                        <col />");
+            html.AppendLine("                    </colgroup>");
+            html.AppendLine("                    <thead>");
+            html.AppendLine("                        <th>Mã</th>");
+            html.AppendLine("                        <th>Nhà xe</th>");
+            html.AppendLine("                        <th>Khách hàng</th>");
+            html.AppendLine("                        <th>Thu hộ</th>");
+            html.AppendLine("                    </thead>");
+            html.AppendLine("                    <tbody>");
+            foreach (var item in data.Collections)
+            {
+                html.AppendLine("                        <tr>");
+                html.AppendLine(String.Format("                            <td><strong>{0}</strong></td>", item.OrderID));
+                html.AppendLine(String.Format("                            <td>{0}</td>", item.TransportName.ToTitleCase()));
+                html.AppendLine(String.Format("                            <td>{0}</td>", item.CustomerName.ToTitleCase()));
+                html.AppendLine(String.Format("                            <td style='text-align: right'>{0:#,###}</td>", item.Collection));
+                html.AppendLine("                        </tr>");
+            }
+            html.AppendLine("                        <tr>");
+            html.AppendLine("                            <td colspan='3' style='text-align: right'>Tổng số đơn</td>");
+            html.AppendLine(String.Format("                            <td colspan='4'>{0:#,###}</td>", data.Collections.Count));
+            html.AppendLine("                        </tr>");
+            if (totalCollection > 0)
+            {
+                html.AppendLine("                        <tr>");
+                html.AppendLine("                            <td colspan='3' style='text-align: right'>Thu hộ</td>");
+                html.AppendLine(String.Format("                            <td colspan='4'>{0:#,###}</td>", data.Collections.Sum(x => x.Collection)));
+                html.AppendLine("                        </tr>");
+            }
+            html.AppendLine("                    </tbody>");
+            html.AppendLine("                </table>");
+            html.AppendLine("            </div>");
+            html.AppendLine("        </div>");
+            html.AppendLine("    </div>");
+            html.AppendLine("</div>");
+
             return html.ToString();
         }
 
         public string getShipperReportHTML(List<ShipperReport> data, int shipperID)
         {
             var html = new StringBuilder();
+            var index = 0;
             decimal totalPayment = 0;
             decimal totalMoneyCollection = 0;
             decimal totalPrice = 0;
@@ -200,50 +248,60 @@ namespace IM_PJ
             html.AppendLine("                        <col />");
             html.AppendLine("                        <col />");
             html.AppendLine("                        <col />");
-            html.AppendLine("                        <col />");
             html.AppendLine("                    </colgroup>");
             html.AppendLine("                    <thead>");
-            html.AppendLine("                        <th>Mã</th>");
-            html.AppendLine("                        <th>Tên khách kàng</th>");
-            html.AppendLine("                        <th>Số tiền</th>");
-            html.AppendLine("                        <th>Thu hộ</th>");
-            html.AppendLine("                        <th>Phí</th>");
+            html.AppendLine("                        <tr>");
+            html.AppendLine("                            <th rowspan='2' style='text-align: center;'>#</th>");
+            html.AppendLine("                            <th colspan='3'>Tên khách hàng - Mã</th>");
+            html.AppendLine("                        </tr>");
+            html.AppendLine("                        <tr>");
+            html.AppendLine("                            <th>Số tiền</th>");
+            html.AppendLine("                            <th>Thu hộ</th>");
+            html.AppendLine("                            <th>Phí</th>");
+            html.AppendLine("                        </tr>");
             html.AppendLine("                    </thead>");
             html.AppendLine("                    <tbody>");
             foreach (var item in data)
             {
+                index +=  1;
                 totalPayment += item.Payment;
                 totalMoneyCollection += item.MoneyCollection;
                 totalPrice += item.Price;
 
                 html.AppendLine("                        <tr>");
-                html.AppendLine(String.Format("                            <td>{0}</td>", item.OrderID));
-                html.AppendLine(String.Format("                            <td><strong>{0}</strong></td>", item.CustomerName));
-                html.AppendLine(String.Format("                            <td>{0:#,###}</td>", item.Payment));
-                html.AppendLine(String.Format("                            <td>{0:#,###}</td>", item.MoneyCollection));
-                html.AppendLine(String.Format("                            <td>{0:#,###}</td>", item.Price));
+                html.AppendLine(String.Format("                            <td rowspan='2' style='text-align: center;'>{0:#,###}</td>", index));
+                html.AppendLine(String.Format("                            <td colspan='3' style='border-bottom: 0;'><strong>{0}</strong> - {1}</td>", item.CustomerName, item.OrderID));
+                html.AppendLine("                        </tr>");
+
+                html.AppendLine("                        <tr>");
+                html.AppendLine(String.Format("                            <td style='border-top: 0;'>{0:#,###}</td>", item.Payment));
+                html.AppendLine(String.Format("                            <td style='border-top: 0;'>{0:#,###}</td>", item.MoneyCollection));
+                html.AppendLine(String.Format("                            <td style='border-top: 0;'>{0:#,###}</td>", item.Price));
                 html.AppendLine("                        </tr>");
             }
             html.AppendLine("                        <tr>");
-            html.AppendLine("                            <td colspan='2' style='text-align: right'>Tổng số đơn</td>");
-            html.AppendLine(String.Format("                            <td colspan='3'>{0:#,###}</td>", data.Count));
+            html.AppendLine("                            <td colspan='3'></td>");
             html.AppendLine("                        </tr>");
             html.AppendLine("                        <tr>");
-            html.AppendLine("                            <td colspan='2' style='text-align: right'>Tổng tiền</td>");
-            html.AppendLine(String.Format("                            <td colspan='3'>{0:#,###}</td>", totalPayment));
+            html.AppendLine("                            <td colspan='3' style='text-align: right'>Tổng số đơn</td>");
+            html.AppendLine(String.Format("                            <td style='text-align: right'>{0:#,###}</td>", data.Count));
+            html.AppendLine("                        </tr>");
+            html.AppendLine("                        <tr>");
+            html.AppendLine("                            <td colspan='3' style='text-align: right'>Tổng tiền</td>");
+            html.AppendLine(String.Format("                            <td style='text-align: right'>{0:#,###}</td>", totalPayment));
             html.AppendLine("                        </tr>");
             if (totalMoneyCollection > 0)
             {
                 html.AppendLine("                        <tr>");
-                html.AppendLine("                            <td colspan='2'  style='text-align: right'>Tổng thu hộ</td>");
-                html.AppendLine(String.Format("                            <td colspan='3'>{0:#,###}</td>", totalMoneyCollection));
+                html.AppendLine("                            <td colspan='3' style='text-align: right'>Tổng thu hộ</td>");
+                html.AppendLine(String.Format("                            <td style='text-align: right'>{0:#,###}</td>", totalMoneyCollection));
                 html.AppendLine("                        </tr>");
             }
             if (totalPrice > 0)
             {
                 html.AppendLine("                        <tr>");
-                html.AppendLine("                            <td colspan='2'  style='text-align: right'>Tổng phí</td>");
-                html.AppendLine(String.Format("                            <td colspan='3'>{0:#,###}</td>", totalPrice));
+                html.AppendLine("                            <td colspan='3'  style='text-align: right'>Tổng phí</td>");
+                html.AppendLine(String.Format("                            <td style='text-align: right'>{0:#,###}</td>", totalPrice));
                 html.AppendLine("                        </tr>");
             }
             html.AppendLine("                    </tbody>");
