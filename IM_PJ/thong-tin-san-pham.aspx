@@ -1,4 +1,4 @@
-﻿<%@ Page Title="Thông tin sản phẩm" Language="C#" MasterPageFile="~/MasterPage.Master" AutoEventWireup="true" CodeBehind="thong-tin-san-pham.aspx.cs" Inherits="IM_PJ.thong_tin_san_pham" %>
+﻿<%@ Page Title="Thông tin sản phẩm" Language="C#" MasterPageFile="~/MasterPage.Master" AutoEventWireup="true" CodeBehind="thong-tin-san-pham.aspx.cs" Inherits="IM_PJ.thong_tin_san_pham" EnableSessionState="ReadOnly" %>
 
 <%@ Register Assembly="Telerik.Web.UI" Namespace="Telerik.Web.UI" TagPrefix="telerik" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
@@ -285,7 +285,8 @@
                                 <div class="row-right">
                                     <telerik:RadAsyncUpload Skin="Metro" runat="server" ID="ProductThumbnailImage" ChunkSize="0"
                                         Localization-Select="Chọn ảnh" AllowedFileExtensions=".jpeg,.jpg,.png"
-                                        MultipleFileSelection="Disabled" OnClientFileSelected="OnClientFileSelected1" MaxFileInputsCount="1"  OnClientFileUploadRemoved="OnClientFileUploadRemoved1">
+                                        MultipleFileSelection="Disabled" OnClientFileSelected="OnClientFileSelected1" 
+                                        MaxFileInputsCount="1" OnClientFileUploadRemoved="OnClientFileUploadRemoved1">
                                     </telerik:RadAsyncUpload>
                                     <asp:Image runat="server" ID="ProductThumbnail" class="img-product" />
                                     <asp:HiddenField runat="server" ID="ListProductThumbnail" ClientIDMode="Static" />
@@ -319,7 +320,8 @@
                                 <div class="row-right">
                                     <telerik:RadAsyncUpload Skin="Metro" runat="server" ID="ProductThumbnailImageClean" ChunkSize="0"
                                         Localization-Select="Chọn ảnh" AllowedFileExtensions=".jpeg,.jpg,.png"
-                                        MultipleFileSelection="Disabled" OnClientFileSelected="OnClientFileSelected2" MaxFileInputsCount="1"  OnClientFileUploadRemoved="OnClientFileUploadRemoved2">
+                                        MultipleFileSelection="Disabled" OnClientFileSelected="OnClientFileSelected2" 
+                                        MaxFileInputsCount="1"  OnClientFileUploadRemoved="OnClientFileUploadRemoved2">
                                     </telerik:RadAsyncUpload>
                                     <asp:Image runat="server" ID="ProductThumbnailClean" Width="200" />
                                     <asp:HiddenField runat="server" ID="ListProductThumbnailClean" ClientIDMode="Static" />
@@ -656,19 +658,26 @@
                                     var checked = true;
                                     var image = $(this).find(".imgpreview").attr("data-file-name");
 
-                                    if (!isBlank(productvariablesku) && !isBlank(regularprice) && !isBlank(costofgood) && !isBlank(retailprice) && !isBlank(StockStatus)) {
-
+                                    if (!isBlank(productvariablesku) && !isBlank(regularprice) && !isBlank(costofgood) && !isBlank(retailprice) && !isBlank(StockStatus))
+                                    {
                                         listv += datanameid + ";" + datavalueid + ";" + datanametext + ";" + datavaluetext + ";" + productvariablesku + ";" + regularprice.replace(",", "") + ";" + costofgood.replace(",", "") + ";" + retailprice.replace(",", "") + ";" + datanamevalue + ";" + maximum + ";" + minimum + ";" + StockStatus + ";" + checked + ";" + image + ",";
-
                                         $("#<%=hdfVariableListInsert.ClientID%>").val(listv);
-
-                                        HoldOn.open();
-                                        $("#<%=btnSubmit.ClientID%>").click();
                                     }
-                                    else {
+                                    else
+                                    {
                                         swal("Lỗi", "Hãy kiểm tra thông tin các biến thể", "error");
                                     }
                                 });
+
+                                if ($("#<%=hdfVariableListInsert.ClientID%>").val() != "")
+                                {
+                                    HoldOn.open();
+                                    $("#<%=btnSubmit.ClientID%>").click();
+                                }
+                                else
+                                {
+                                    swal("Lỗi", "Hãy kiểm tra thông tin các biến thể", "error");
+                                }
                             }
                         }
                         else {

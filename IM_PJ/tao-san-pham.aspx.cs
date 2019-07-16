@@ -368,21 +368,17 @@ namespace IM_PJ
                                 foreach (UploadedFile f in ProductThumbnailImage.UploadedFiles)
                                 {
                                     var o = path + kq + '-' + Slug.ConvertToSlug(Path.GetFileName(f.FileName));
-                                    try
+                                    if (!File.Exists(Server.MapPath(o)))
                                     {
-                                        if (!File.Exists(Server.MapPath(o)))
-                                        {
-                                            f.SaveAs(Server.MapPath(o));
-                                            // Thumbnail
-                                            Thumbnail.create(Server.MapPath(o), 85, 113);
-                                            Thumbnail.create(Server.MapPath(o), 159, 212);
-                                            Thumbnail.create(Server.MapPath(o), 240, 320);
-                                            Thumbnail.create(Server.MapPath(o), 350, 467);
-                                        }
-                                        
-                                        ProductImage = Path.GetFileName(Server.MapPath(o));
+                                        f.SaveAs(Server.MapPath(o));
+                                        // Thumbnail
+                                        Thumbnail.create(Server.MapPath(o), 85, 113);
+                                        Thumbnail.create(Server.MapPath(o), 159, 212);
+                                        Thumbnail.create(Server.MapPath(o), 240, 320);
+                                        Thumbnail.create(Server.MapPath(o), 350, 467);
                                     }
-                                    catch { }
+
+                                    ProductImage = Path.GetFileName(Server.MapPath(o));
                                 }
                             }
                             string updateImage = ProductController.UpdateImage(kq.ToInt(), ProductImage);
@@ -394,21 +390,17 @@ namespace IM_PJ
                                 foreach (UploadedFile f in ProductThumbnailImageClean.UploadedFiles)
                                 {
                                     var o = path + kq + "-clean-" + Slug.ConvertToSlug(Path.GetFileName(f.FileName));
-                                    try
+                                    if (!File.Exists(Server.MapPath(o)))
                                     {
-                                        if (!File.Exists(Server.MapPath(o)))
-                                        {
-                                            f.SaveAs(Server.MapPath(o));
-                                            // Thumbnail
-                                            Thumbnail.create(Server.MapPath(o), 85, 113);
-                                            Thumbnail.create(Server.MapPath(o), 159, 212);
-                                            Thumbnail.create(Server.MapPath(o), 240, 320);
-                                            Thumbnail.create(Server.MapPath(o), 350, 467);
-                                        }
-                                        
-                                        ProductImageClean = Path.GetFileName(Server.MapPath(o));
+                                        f.SaveAs(Server.MapPath(o));
+                                        // Thumbnail
+                                        Thumbnail.create(Server.MapPath(o), 85, 113);
+                                        Thumbnail.create(Server.MapPath(o), 159, 212);
+                                        Thumbnail.create(Server.MapPath(o), 240, 320);
+                                        Thumbnail.create(Server.MapPath(o), 350, 467);
                                     }
-                                    catch { }
+
+                                    ProductImageClean = Path.GetFileName(Server.MapPath(o));
                                 }
                             }
                             string updateImageClean = ProductController.UpdateImageClean(kq.ToInt(), ProductImageClean);
@@ -420,22 +412,18 @@ namespace IM_PJ
                                 foreach (UploadedFile f in hinhDaiDien.UploadedFiles)
                                 {
                                     var o = path + kq + '-' + Slug.ConvertToSlug(Path.GetFileName(f.FileName));
-                                    try
+                                    if (!File.Exists(Server.MapPath(o)))
                                     {
-                                        if (!File.Exists(Server.MapPath(o)))
-                                        {
-                                            f.SaveAs(Server.MapPath(o));
-                                            // Thumbnail
-                                            Thumbnail.create(Server.MapPath(o), 85, 113);
-                                            Thumbnail.create(Server.MapPath(o), 159, 212);
-                                            Thumbnail.create(Server.MapPath(o), 240, 320);
-                                            Thumbnail.create(Server.MapPath(o), 350, 467);
-                                        }
-                                        
-                                        IMG = Path.GetFileName(Server.MapPath(o));
-                                        ProductImageController.Insert(kq.ToInt(), IMG, false, currentDate, username);
+                                        f.SaveAs(Server.MapPath(o));
+                                        // Thumbnail
+                                        Thumbnail.create(Server.MapPath(o), 85, 113);
+                                        Thumbnail.create(Server.MapPath(o), 159, 212);
+                                        Thumbnail.create(Server.MapPath(o), 240, 320);
+                                        Thumbnail.create(Server.MapPath(o), 350, 467);
                                     }
-                                    catch { }
+
+                                    IMG = Path.GetFileName(Server.MapPath(o));
+                                    ProductImageController.Insert(kq.ToInt(), IMG, false, currentDate, username);
                                 }
                             }
                             
