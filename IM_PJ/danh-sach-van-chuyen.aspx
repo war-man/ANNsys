@@ -741,17 +741,17 @@
 
                                 deliveryStatusDom.removeClass();
                                 row.children("#deliveryTimes").html(deliveryTimesLabel);
+                                // Phí giao hàng
+                                if (cosOfDel)
+                                    row.children("#cosOfDel").html("<strong>" + cosOfDel + "</strong>");
 
                                 switch (status) {
                                     case "1":
                                         deliveryStatusDom.addClass("bg-green");
                                         row.children("#delDate").html(formatDate(startAt));
-                                        
                                         if (colOfOrd)
-                                            row.children("#colOfOrd").html("<strong>" +
-                                                 formatThousands(colOfOrd) + "</strong>");
-                                        if (cosOfDel)
-                                            row.children("#cosOfDel").html("<strong>" + formatThousands(cosOfDel) + "</strong>");
+                                            row.children("#colOfOrd").html("<strong>" + colOfOrd + "</strong>");
+                                        
                                         if (result) {
                                             if (row.children("#updateButton").find('#downloadInvoiceImage').length) {
                                                 row.find("#downloadInvoiceImage").show();
