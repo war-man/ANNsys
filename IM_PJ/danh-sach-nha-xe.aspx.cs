@@ -26,7 +26,6 @@ namespace IM_PJ
                 {
                     string username = Request.Cookies["userLoginSystem"].Value;
                     var acc = AccountController.GetByUsername(username);
-                    int agent = acc.AgentID.ToString().ToInt();
 
                     if (acc != null)
                     {
@@ -34,7 +33,14 @@ namespace IM_PJ
                         {
                             Response.Redirect("/trang-chu");
                         }
-
+                        else if (acc.RoleID == 0)
+                        {
+                            LoadStatus();
+                        }
+                        else if (acc.RoleID == 2)
+                        {
+                            LoadStatus(acc);
+                        }
                         LoadData();
                     }
                 }
@@ -44,16 +50,34 @@ namespace IM_PJ
                 }
             }
         }
-
+        public void LoadStatus(tbl_Account acc = null)
+        {
+            if (acc != null)
+            {
+                ddlStatus.Items.Clear();
+                ddlStatus.Items.Insert(0, new ListItem("Đang hiện", "1"));
+            }
+            else
+            {
+                ddlStatus.Items.Clear();
+                ddlStatus.Items.Insert(0, new ListItem("Trạng thái", ""));
+                ddlStatus.Items.Insert(1, new ListItem("Đang hiện", "1"));
+                ddlStatus.Items.Insert(2, new ListItem("Đang ẩn", "0"));
+            }
+        }
         /// <summary>
         /// Setting init when load page
         /// </summary>
         private void LoadData()
         {
+            string username = Request.Cookies["userLoginSystem"].Value;
+            var acc = AccountController.GetByUsername(username);
+
             string TextSearch = "";
             string COD = "";
             string Prepay = "";
             string CreatedDate = "";
+            string Status = "";
 
             if (Request.QueryString["textsearch"] != null)
             {
@@ -71,22 +95,42 @@ namespace IM_PJ
             {
                 CreatedDate = Request.QueryString["createddate"];
             }
+            if (Request.QueryString["status"] != null)
+            {
+                Status = Request.QueryString["status"];
+            }
 
             txtTextSearch.Text = TextSearch;
             ddlCOD.SelectedValue = COD.ToString();
             ddlPrepay.SelectedValue = Prepay.ToString();
             ddlCreatedDate.SelectedValue = CreatedDate.ToString();
+            ddlStatus.SelectedValue = Status.ToString();
 
             var rs = TransportCompanyController.Filter(TextSearch);
+
+            if (acc.RoleID == 2)
+            {
+                rs = rs.Where(x => x.Status == 1).ToList();
+            }
+
+            if (acc.RoleID == 0)
+            {
+                if (Status != "")
+                {
+                    rs = rs.Where(x => x.Status == Status.ToInt()).ToList();
+                }
+            }
 
             if (COD != "")
             {
                 rs = rs.Where(x => x.COD == COD.ToBool()).ToList();
             }
+
             if (Prepay != "")
             {
                 rs = rs.Where(x => x.Prepay == Prepay.ToBool()).ToList();
             }
+
             if (CreatedDate != "")
             {
                 DateTime fromdate = DateTime.Today;
@@ -154,6 +198,11 @@ namespace IM_PJ
             if (ddlCreatedDate.SelectedValue != "")
             {
                 request += "&createddate=" + ddlCreatedDate.SelectedValue;
+            }
+
+            if (ddlStatus.SelectedValue != "")
+            {
+                request += "&status=" + ddlStatus.SelectedValue;
             }
 
             Response.Redirect(request);

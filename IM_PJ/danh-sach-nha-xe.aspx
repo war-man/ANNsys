@@ -24,7 +24,7 @@
                     <div class="filter-above-wrap clear">
                         <div class="filter-control">
                             <div class="row">
-                                <div class="col-md-5">
+                                <div class="col-md-3">
                                     <asp:TextBox ID="txtTextSearch" runat="server" CssClass="form-control" placeholder="Tìm nhà xe"></asp:TextBox>
                                 </div>
                                 <div class="col-md-2">
@@ -40,6 +40,9 @@
                                         <asp:ListItem Value="true" Text="Trả trước"></asp:ListItem>
                                         <asp:ListItem Value="false" Text="Trả sau"></asp:ListItem>
                                     </asp:DropDownList>
+                                </div>
+                                <div class="col-md-2">
+                                    <asp:DropDownList ID="ddlStatus" runat="server" CssClass="form-control"></asp:DropDownList>
                                 </div>
                                 <div class="col-md-2">
                                     <asp:DropDownList ID="ddlCreatedDate" runat="server" CssClass="form-control">

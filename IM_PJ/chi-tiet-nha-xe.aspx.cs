@@ -57,7 +57,7 @@ namespace IM_PJ
         /// </summary>
         private void Initialize(int ID)
         {
-            var company = TransportCompanyController.GetTransportCompanyByID(ID);
+            var company = TransportCompanyController.GetAllTransportCompanyByID(ID);
 
             if (company == null)
             {
@@ -75,7 +75,7 @@ namespace IM_PJ
 
                 ltrEditButton.Text = "<a href=\"/sua-thong-tin-nha-xe?id=" + ID.ToString() + "\" class=\"btn primary-btn fw-btn not-fullwidth\"><i class=\"fa fa-pencil-square-o\" aria-hidden=\"true\"></i> Chỉnh sửa</a>";
 
-                var transprots = TransportCompanyController.GetReceivePlace(ID);
+                var transprots = TransportCompanyController.GetAllReceivePlace(ID);
 
                 pagingall(transprots);
             }

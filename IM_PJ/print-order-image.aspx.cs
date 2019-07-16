@@ -296,7 +296,7 @@ namespace IM_PJ
 
                         StringBuilder notehtml = new StringBuilder();
                         notehtml.AppendLine("<div id='old-order-note'>");
-                        notehtml.AppendLine("   <h2>Ghi chú đơn hàng cũ:</h2>");
+                        notehtml.AppendLine("   <h2>" + oldOrders.Count() + " đơn hàng cũ gần nhất có ghi chú:</h2>");
                         notehtml.AppendLine("   <ul>");
                         notehtml.AppendLine(String.Format("{0}", notestring));
                         notehtml.AppendLine("   </ul>");

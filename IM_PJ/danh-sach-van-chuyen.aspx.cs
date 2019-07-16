@@ -132,10 +132,6 @@ namespace IM_PJ
                 var isDeliverySession = false;
                 int DeliveryTimes = 0;
                 int Page = 1;
-                // add filter quantity
-                string Quantity = "";
-                int QuantityFrom = 0;
-                int QuantityTo = 0;
 
                 if (Request.QueryString["textsearch"] != null)
                     TextSearch = Request.QueryString["textsearch"].Trim();
@@ -166,25 +162,6 @@ namespace IM_PJ
                     DeliveryTimes = Request.QueryString["deliverytimes"].ToInt(0);
                 if (Request.QueryString["Page"] != null)
                     Page = Request.QueryString["Page"].ToInt();
-                // add filter quantity
-                if (Request.QueryString["quantityfilter"] != null)
-                {
-                    Quantity = Request.QueryString["quantityfilter"];
-
-                    if (Quantity == "greaterthan")
-                    {
-                        QuantityFrom = Request.QueryString["quantity"].ToInt();
-                    }
-                    else if (Quantity == "lessthan")
-                    {
-                        QuantityTo = Request.QueryString["quantity"].ToInt();
-                    }
-                    else if (Quantity == "between")
-                    {
-                        QuantityFrom = Request.QueryString["quantitymin"].ToInt();
-                        QuantityTo = Request.QueryString["quantitymax"].ToInt();
-                    }
-                }
 
                 txtSearchOrder.Text = TextSearch;
                 ddlTransportCompany.SelectedValue = TransportCompany.ToString();
@@ -197,26 +174,6 @@ namespace IM_PJ
                 ddlCreatedBy.SelectedValue = CreatedBy.ToString();
                 ddlDeliveryStartAt.SelectedValue = DeliveryStartAt.ToString();
                 ddlDeliveryTimes.SelectedValue = DeliveryTimes.ToString();
-                // add filter quantity
-                ddlQuantityFilter.SelectedValue = Quantity.ToString();
-                if (Quantity == "greaterthan")
-                {
-                    txtQuantity.Text = QuantityFrom.ToString();
-                    txtQuantityMin.Text = "0";
-                    txtQuantityMax.Text = "0";
-                }
-                else if (Quantity == "lessthan")
-                {
-                    txtQuantity.Text = QuantityTo.ToString();
-                    txtQuantityMin.Text = "0";
-                    txtQuantityMax.Text = "0";
-                }
-                else if (Quantity == "between")
-                {
-                    txtQuantity.Text = "0";
-                    txtQuantityMin.Text = QuantityFrom.ToString();
-                    txtQuantityMax.Text = QuantityTo.ToString();
-                }
 
                 // Create order fileter
                 var filter = new OrderFilterModel()
@@ -226,9 +183,6 @@ namespace IM_PJ
                     excuteStatus = new List<int>() { (int)ExcuteStatus.Done },
                     paymentType = PaymentType,
                     shippingType = ShippingType,
-                    quantity = Quantity,
-                    quantityFrom = QuantityFrom,
-                    quantityTo = QuantityTo,
                     orderCreatedBy = CreatedBy, // CreatedBy
                     //orderDate = CreatedDate, // CreatedDate
                     transportCompany = TransportCompany, // TransportCompany
@@ -633,20 +587,6 @@ namespace IM_PJ
 
             if (ddlDeliveryTimes.SelectedValue != "")
                 request += "&deliverytimes=" + ddlDeliveryTimes.SelectedValue;
-
-            // add filter quantity
-            if (ddlQuantityFilter.SelectedValue != "")
-            {
-                if (ddlQuantityFilter.SelectedValue == "greaterthan" || ddlQuantityFilter.SelectedValue == "lessthan")
-                {
-                    request += "&quantityfilter=" + ddlQuantityFilter.SelectedValue + "&quantity=" + txtQuantity.Text;
-                }
-
-                if (ddlQuantityFilter.SelectedValue == "between")
-                {
-                    request += "&quantityfilter=" + ddlQuantityFilter.SelectedValue + "&quantitymin=" + txtQuantityMin.Text + "&quantitymax=" + txtQuantityMax.Text;
-                }
-            }
 
             // add filter selected
             if (Request.QueryString["isdeliverysession"] != null)

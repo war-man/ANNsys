@@ -2118,7 +2118,7 @@ namespace IM_PJ.Controllers
             using (var dbe = new inventorymanagementEntities())
             {
                 List<tbl_Order> las = new List<tbl_Order>();
-                las = dbe.tbl_Order.Where(x => x.CustomerID == ID && x.ID < currentOrderID && !String.IsNullOrEmpty(x.OrderNote)).OrderByDescending(x => x.ID).ToList();
+                las = dbe.tbl_Order.Where(x => x.CustomerID == ID && x.ID < currentOrderID && !String.IsNullOrEmpty(x.OrderNote)).OrderByDescending(x => x.ID).Take(5).ToList();
                 return las;
             }
         }

@@ -56,7 +56,7 @@ namespace IM_PJ
         /// </summary>
         private void LoadData(int ID)
         {
-            var company = TransportCompanyController.GetTransportCompanyByID(ID);
+            var company = TransportCompanyController.GetAllTransportCompanyByID(ID);
 
             if (company == null)
             {

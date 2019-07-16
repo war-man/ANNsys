@@ -291,7 +291,7 @@ namespace IM_PJ
                         notehtml.AppendLine("    <div class='col-md-12'>");
                         notehtml.AppendLine("        <div class='panel panelborderheading'>");
                         notehtml.AppendLine("            <div class='panel-heading clear'>");
-                        notehtml.AppendLine("                <h3 class='page-title left not-margin-bot'>Ghi chú đơn hàng cũ</h3>");
+                        notehtml.AppendLine("                <h3 class='page-title left not-margin-bot'>" + oldOrders.Count() + " đơn hàng cũ gần nhất có ghi chú:</h3>");
                         notehtml.AppendLine("            </div>");
                         notehtml.AppendLine("            <div class='panel-body'>");
                         notehtml.AppendLine("                <div class='row'>");

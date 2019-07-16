@@ -52,7 +52,7 @@ namespace IM_PJ
         private void Initialize(int ID, int SubID)
         {
             // Init value
-            var transportCompany = TransportCompanyController.GetReceivePlaceByID(ID, SubID);
+            var transportCompany = TransportCompanyController.GetAllReceivePlaceByID(ID, SubID);
 
             if (transportCompany != null)
             {

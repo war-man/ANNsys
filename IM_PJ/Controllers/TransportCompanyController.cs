@@ -207,11 +207,19 @@ namespace IM_PJ.Controllers
             using (var connect = new inventorymanagementEntities())
             {
                 return connect.tbl_TransportCompany
+                        .Where(x => x.ID == ID && x.SubID == 0 && x.Status == 1)
+                        .SingleOrDefault();
+            }
+        }
+        public static tbl_TransportCompany GetAllTransportCompanyByID(int ID)
+        {
+            using (var connect = new inventorymanagementEntities())
+            {
+                return connect.tbl_TransportCompany
                         .Where(x => x.ID == ID && x.SubID == 0)
                         .SingleOrDefault();
             }
         }
-
         /// <summary>
         /// get receive place by id
         /// </summary>
@@ -222,17 +230,23 @@ namespace IM_PJ.Controllers
             using (var connect = new inventorymanagementEntities())
             {
                 return connect.tbl_TransportCompany
+                        .Where(x => x.ID == ID && x.SubID == SubID && x.Status == 1)
+                        .SingleOrDefault();
+            }
+        }
+        public static tbl_TransportCompany GetAllReceivePlaceByID(int ID, int SubID)
+        {
+            using (var connect = new inventorymanagementEntities())
+            {
+                return connect.tbl_TransportCompany
                         .Where(x => x.ID == ID && x.SubID == SubID)
                         .SingleOrDefault();
             }
         }
-
         public static List<tbl_TransportCompany> Filter(string TextSearch)
         {
             using (var con = new inventorymanagementEntities())
             {
-                
-
                 if (!String.IsNullOrEmpty(TextSearch))
                 {
                     var unsignTextSearch = UnSign.convert(TextSearch);
@@ -285,7 +299,7 @@ namespace IM_PJ.Controllers
         {
             using (var connect = new inventorymanagementEntities())
             {
-                return connect.tbl_TransportCompany.Where(x => x.SubID == 0).OrderBy(x => x.CompanyName).ToList();
+                return connect.tbl_TransportCompany.Where(x => x.SubID == 0 && x.Status == 1).OrderBy(x => x.CompanyName).ToList();
             }
         }
 
@@ -295,6 +309,13 @@ namespace IM_PJ.Controllers
         /// <param name="ID"></param>
         /// <returns></returns>
         public static List<tbl_TransportCompany> GetReceivePlace(int ID)
+        {
+            using (var connect = new inventorymanagementEntities())
+            {
+                return connect.tbl_TransportCompany.Where(x => x.ID == ID && x.SubID != 0 && x.Status == 1).ToList();
+            }
+        }
+        public static List<tbl_TransportCompany> GetAllReceivePlace(int ID)
         {
             using (var connect = new inventorymanagementEntities())
             {
@@ -309,7 +330,7 @@ namespace IM_PJ.Controllers
             data.Add(new ListItem(String.Empty, "0"));
             using (var con = new inventorymanagementEntities())
             {
-                foreach (var tran in con.tbl_TransportCompany.Where(x => x.SubID == 0).ToList())
+                foreach (var tran in con.tbl_TransportCompany.Where(x => x.SubID == 0 && x.Status == 1).ToList())
                 {
                     data.Add(new ListItem(tran.CompanyName, tran.ID.ToString()));
                 }

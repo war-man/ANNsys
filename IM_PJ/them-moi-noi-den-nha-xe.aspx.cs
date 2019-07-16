@@ -55,7 +55,7 @@ namespace IM_PJ
             var acc = AccountController.GetByUsername(username);
 
             // Init value
-            var transportCompany = TransportCompanyController.GetTransportCompanyByID(ID);
+            var transportCompany = TransportCompanyController.GetAllTransportCompanyByID(ID);
 
             if (transportCompany != null)
             {
