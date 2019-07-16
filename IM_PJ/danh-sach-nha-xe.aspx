@@ -1,6 +1,11 @@
 ﻿<%@ Page Title="Danh sách nhà xe" Language="C#" MasterPageFile="~/MasterPage.Master" AutoEventWireup="true" CodeBehind="danh-sach-nha-xe.aspx.cs" Inherits="IM_PJ.danh_sach_nha_xe" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
+    <style>
+        tr.status-0 td {
+            background-color: #fed1d1!important;
+        }
+    </style>
 </asp:Content>
 
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
@@ -88,6 +93,55 @@
         });
         function searchTransport() {
             $("#<%= btnSearch.ClientID%>").click();
+        }
+
+        function updateStatus(obj) {
+            var ID = obj.attr("data-id");
+            var SubID = obj.attr("data-subid");
+            var Status = obj.attr("data-status");
+            swal({
+                title: 'Thông báo',
+                text: 'Bạn có muốn ẩn/hiện nhà xe này?',
+                type: 'warning',
+                showCancelButton: true,
+                closeOnConfirm: true,
+                confirmButtonText: "Xác nhận",
+            }, function (confirm) {
+                if (confirm)
+                {
+                    $.ajax({
+                        type: "POST",
+                        url: "/danh-sach-nha-xe.aspx/updateStatus",
+                        data: "{ID: " + ID + ", SubID: " + SubID + "}",
+                        contentType: "application/json; charset=utf-8",
+                        dataType: "json",
+                        success: function (msg) {
+                            if (msg.d == "true")
+                            {
+                                if (Status == 1) {
+                                    $(obj).attr("title", "Hiện nhà xe");
+                                    $(obj).attr("data-status", "0");
+                                    $(obj).removeClass("btn-red");
+                                    $(obj).addClass("btn-blue");
+                                    $(obj).html("<i class='fa fa-refresh' aria-hidden='true'></i>");
+                                    $(obj).parent().parent().removeClass("status-1").addClass("status-0");
+                                }
+                                else {
+                                    $(obj).attr("title", "Ẩn nhà xe");
+                                    $(obj).attr("data-status", "1");
+                                    $(obj).removeClass("btn-blue");
+                                    $(obj).addClass("btn-red");
+                                    $(obj).html("<i class='fa fa-times' aria-hidden='true'></i>");
+                                    $(obj).parent().parent().removeClass("status-0").addClass("status-1");
+                                }
+                            }
+                            else {
+                                alert("Lỗi");
+                            }
+                        }
+                    });
+                } 
+            });
         }
     </script>
 </asp:Content>

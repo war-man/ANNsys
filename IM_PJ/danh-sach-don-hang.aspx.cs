@@ -109,6 +109,35 @@ namespace IM_PJ
             var acc = AccountController.GetByUsername(username);
             if (acc != null)
             {
+                DateTime DateConfig = new DateTime(2019, 2, 15);
+
+                var config = ConfigController.GetByTop1();
+                if (config.ViewAllOrders == 1)
+                {
+                    DateConfig = new DateTime(2018, 6, 22);
+                }
+
+                DateTime OrderFromDate = DateConfig;
+                DateTime OrderToDate = DateTime.Today;
+
+                if (!String.IsNullOrEmpty(Request.QueryString["orderfromdate"]))
+                {
+                    OrderFromDate = Convert.ToDateTime(Request.QueryString["orderfromdate"]);
+                }
+
+                if (!String.IsNullOrEmpty(Request.QueryString["ordertodate"]))
+                {
+                    OrderToDate = Convert.ToDateTime(Request.QueryString["ordertodate"]).AddDays(1).AddMinutes(-1);
+                }
+
+                rOrderFromDate.SelectedDate = OrderFromDate;
+                rOrderFromDate.MinDate = DateConfig;
+                rOrderFromDate.MaxDate = DateTime.Today;
+
+                rOrderToDate.SelectedDate = OrderToDate;
+                rOrderToDate.MinDate = DateConfig;
+                rOrderToDate.MaxDate = DateTime.Today;
+
                 int OrderType = 0;
                 int PaymentStatus = 0;
                 var ExcuteStatus = new List<int>() {1, 2, 3};
@@ -119,8 +148,6 @@ namespace IM_PJ
                 string OrderNote = "";
                 string TextSearch = "";
                 string CreatedBy = "";
-                string CreatedDate = "";
-                string TransferDoneAt = "";
                 int TransportCompany = 0;
                 int ShipperID = 0;
                 int Page = 1;
@@ -177,10 +204,6 @@ namespace IM_PJ
                 {
                     CreatedBy = Request.QueryString["createdby"];
                 }
-                if(Request.QueryString["createddate"] != null)
-                {
-                    CreatedDate = Request.QueryString["createddate"];
-                }
                 if (Request.QueryString["transportcompany"] != null)
                 {
                     TransportCompany = Request.QueryString["transportcompany"].ToInt(0);
@@ -226,7 +249,6 @@ namespace IM_PJ
                 ddlOtherFee.SelectedValue = OtherFee;
                 ddlOrderNote.SelectedValue = OrderNote;
                 ddlCreatedBy.SelectedValue = CreatedBy;
-                ddlCreatedDate.SelectedValue = CreatedDate;
                 ddlTransportCompany.SelectedValue = TransportCompany.ToString();
                 ddlShipperFilter.SelectedValue = ShipperID.ToString();
 
@@ -272,8 +294,8 @@ namespace IM_PJ
                     quantityFrom = QuantityFrom,
                     quantityTo = QuantityTo,
                     orderCreatedBy = CreatedBy,
-                    orderDate = CreatedDate,
-                    transferDone = TransferDoneAt,
+                    orderFromDate = OrderFromDate,
+                    orderToDate = OrderToDate,
                     transportCompany = TransportCompany,
                     shipper = ShipperID,
                     orderNote = OrderNote
@@ -659,9 +681,14 @@ namespace IM_PJ
                 request += "&createdby=" + ddlCreatedBy.SelectedValue;
             }
 
-            if (ddlCreatedDate.SelectedValue != "")
+            if (rOrderFromDate.SelectedDate.HasValue)
             {
-                request += "&createddate=" + ddlCreatedDate.SelectedValue;
+                request += "&orderfromdate=" + rOrderFromDate.SelectedDate.ToString();
+            }
+
+            if (rOrderToDate.SelectedDate.HasValue)
+            {
+                request += "&ordertodate=" + rOrderToDate.SelectedDate.ToString();
             }
 
             if (ddlQuantityFilter.SelectedValue != "")

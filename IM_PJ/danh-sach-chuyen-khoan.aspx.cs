@@ -102,13 +102,42 @@ namespace IM_PJ
             var acc = AccountController.GetByUsername(username);
             if (acc != null)
             {
+                DateTime DateConfig = new DateTime(2019, 2, 15);
+
+                var config = ConfigController.GetByTop1();
+                if (config.ViewAllOrders == 1)
+                {
+                    DateConfig = new DateTime(2018, 6, 22);
+                }
+
+                // Filter Order Date
+
+                DateTime OrderFromDate = DateConfig;
+                DateTime OrderToDate = DateTime.Today;
+
+                if (!String.IsNullOrEmpty(Request.QueryString["orderfromdate"]))
+                {
+                    OrderFromDate = Convert.ToDateTime(Request.QueryString["orderfromdate"]);
+                }
+
+                if (!String.IsNullOrEmpty(Request.QueryString["ordertodate"]))
+                {
+                    OrderToDate = Convert.ToDateTime(Request.QueryString["ordertodate"]).AddDays(1).AddMinutes(-1);
+                }
+
+                rOrderFromDate.SelectedDate = OrderFromDate;
+                rOrderFromDate.MinDate = DateConfig;
+                rOrderFromDate.MaxDate = DateTime.Today;
+
+                rOrderToDate.SelectedDate = OrderToDate;
+                rOrderToDate.MinDate = DateConfig;
+                rOrderToDate.MaxDate = DateTime.Today;
+
                 int TransferStatus = 0;
                 var ExcuteStatus = new List<int>() { 1, 2 };
                 int BankReceive = 0;
                 string TextSearch = "";
                 string CreatedBy = "";
-                string CreatedDate = "";
-                string TransferDoneAt = "";
                 int Page = 1;
 
                 if (Request.QueryString["textsearch"] != null)
@@ -128,14 +157,6 @@ namespace IM_PJ
                 {
                     CreatedBy = Request.QueryString["createdby"];
                 }
-                if (Request.QueryString["createddate"] != null)
-                {
-                    CreatedDate = Request.QueryString["createddate"];
-                }
-                if (Request.QueryString["transferdoneat"] != null)
-                {
-                    TransferDoneAt = Request.QueryString["transferdoneat"];
-                }
                 if (Request.QueryString["bankreceive"] != null)
                 {
                     BankReceive = Request.QueryString["bankreceive"].ToInt(0);
@@ -150,8 +171,6 @@ namespace IM_PJ
                 ddlExcuteStatus.SelectedValue = ExcuteStatus.Count() > 1 ? "0" : ExcuteStatus.FirstOrDefault().ToString();
                 ddlBankReceive.SelectedValue = BankReceive.ToString();
                 ddlCreatedBy.SelectedValue = CreatedBy.ToString();
-                ddlCreatedDate.SelectedValue = CreatedDate.ToString();
-                ddlTransferDoneAt.SelectedValue = TransferDoneAt.ToString();
 
                 // Create order fileter
                 var filter = new OrderFilterModel() {
@@ -161,8 +180,8 @@ namespace IM_PJ
                     transferStatus = TransferStatus,
                     paymentType = (int)PaymentType.Bank,
                     orderCreatedBy = CreatedBy,
-                    orderDate = CreatedDate,
-                    transferDone = TransferDoneAt,
+                    orderFromDate = OrderFromDate,
+                    orderToDate = OrderToDate,
                     bankReceive = BankReceive
                 };
                 // Create pagination
@@ -491,14 +510,14 @@ namespace IM_PJ
                 request += "&createdby=" + ddlCreatedBy.SelectedValue;
             }
 
-            if (ddlCreatedDate.SelectedValue != "")
+            if (rOrderFromDate.SelectedDate.HasValue)
             {
-                request += "&createddate=" + ddlCreatedDate.SelectedValue;
+                request += "&orderfromdate=" + rOrderFromDate.SelectedDate.ToString();
             }
 
-            if (ddlTransferDoneAt.SelectedValue != "")
+            if (rOrderToDate.SelectedDate.HasValue)
             {
-                request += "&transferdoneat=" + ddlTransferDoneAt.SelectedValue;
+                request += "&ordertodate=" + rOrderToDate.SelectedDate.ToString();
             }
 
             if (ddlBankReceive.SelectedValue != "0")

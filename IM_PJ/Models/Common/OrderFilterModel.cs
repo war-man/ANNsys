@@ -33,9 +33,6 @@ namespace IM_PJ.Models
         public int bankReceive { get; set; } = 0;
         // Trạng thái chuyển khoản ( 1: Đã nhận tiền | 2: Chưa nhận tiền)
         public int transferStatus { get; set; } = 0;
-        // Thời gian nhận tiền ( 'today': Hôm nay | 'yesterday': Hôm qua | 'beforeyesterday': Hôm kia | 'week': Tuần nay |
-        // '7days': 7 ngày | 'thismonth': Tháng này | 'lastmonth': Tháng trước | 'beforelastmonth': Tháng trước nữa | '30days': 30 ngày)
-        public string transferDone { get; set; } = String.Empty;
         // Kiểu giao hàng ( 1: Lấy hàng trực tiếp | 2: Chuyển Bưu Điện | 3: Dịch vụ Proship | 4: Chuyển xe | 5: Nhân viên giao hàng
         // 6: Giao hàng tiết kiệm | 7: Viettel )
         public List<int> shippingType { get; set; } = new List<int>();
@@ -53,9 +50,12 @@ namespace IM_PJ.Models
         // Trạng thái biên nhận (1: Có | 2: Không)
         public int invoiceStatus { get; set; } = 0;
         public string orderCreatedBy { get; set; } = String.Empty;
-        // Thời gian đơn hàng ( 'today': Hôm nay | 'yesterday': Hôm qua | 'beforeyesterday': Hôm kia | 'week': Tuần nay |
-        // '7days': 7 ngày | 'thismonth': Tháng này | 'lastmonth': Tháng trước | 'beforelastmonth': Tháng trước nữa | '30days': 30 ngày)
-        public string orderDate { get; set; } = String.Empty;
+        // Thời gian đơn hàng
+        public DateTime? orderFromDate { get; set; }
+        public DateTime? orderToDate { get; set; }
+        // Thời gian chuyển khoản ngân hàng
+        public DateTime? transferFromDate { get; set; }
+        public DateTime? transferToDate { get; set; }
         public string orderNote { get; set; } = String.Empty;
     }
 }

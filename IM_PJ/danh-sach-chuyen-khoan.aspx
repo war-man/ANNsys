@@ -1,6 +1,6 @@
 ﻿<%@ Page Title="Danh sách chuyển khoản" Language="C#" MasterPageFile="~/MasterPage.Master" AutoEventWireup="true" CodeBehind="danh-sach-chuyen-khoan.aspx.cs" Inherits="IM_PJ.danh_sach_chuyen_khoan" EnableSessionState="ReadOnly" %>
 
-
+<%@ Register Assembly="Telerik.Web.UI" Namespace="Telerik.Web.UI" TagPrefix="telerik" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
     <script src="/Scripts/moment.min.js"></script>
     <script src="/Scripts/moment-with-locales.min.js"></script>
@@ -104,7 +104,7 @@
                     <div class="filter-above-wrap clear">
                         <div class="filter-control">
                             <div class="row">
-                                <div class="col-md-5 col-xs-6">
+                                <div class="col-md-3 col-xs-12">
                                     <asp:TextBox ID="txtSearchOrder" runat="server" CssClass="form-control" placeholder="Tìm đơn hàng" autocomplete="off"></asp:TextBox>
                                 </div>
                                 <div class="col-md-2 col-xs-6">
@@ -115,21 +115,17 @@
                                     </asp:DropDownList>
                                 </div>
                                 <div class="col-md-2 col-xs-6">
-                                    <asp:DropDownList ID="ddlCreatedBy" runat="server" CssClass="form-control"></asp:DropDownList>
+                                    <asp:DropDownList ID="ddlTransferStatus" runat="server" CssClass="form-control">
+                                        <asp:ListItem Value="" Text="Trạng thái tiền"></asp:ListItem>
+                                        <asp:ListItem Value="1" Text="Đã nhận tiền"></asp:ListItem>
+                                        <asp:ListItem Value="2" Text="Chưa nhận tiền"></asp:ListItem>
+                                    </asp:DropDownList>
                                 </div>
                                 <div class="col-md-2 col-xs-6">
-                                    <asp:DropDownList ID="ddlCreatedDate" runat="server" CssClass="form-control">
-                                        <asp:ListItem Value="" Text="Thời gian đơn hàng"></asp:ListItem>
-                                        <asp:ListItem Value="today" Text="Hôm nay"></asp:ListItem>
-                                        <asp:ListItem Value="yesterday" Text="Hôm qua"></asp:ListItem>
-                                        <asp:ListItem Value="beforeyesterday" Text="Hôm kia"></asp:ListItem>
-                                        <asp:ListItem Value="week" Text="Tuần này"></asp:ListItem>
-                                        <asp:ListItem Value="7days" Text="7 ngày"></asp:ListItem>
-                                        <asp:ListItem Value="thismonth" Text="Tháng này"></asp:ListItem>
-                                        <asp:ListItem Value="lastmonth" Text="Tháng trước"></asp:ListItem>
-                                        <asp:ListItem Value="beforelastmonth" Text="Tháng trước nữa"></asp:ListItem>
-                                        <asp:ListItem Value="30days" Text="30 ngày"></asp:ListItem>
-                                    </asp:DropDownList>
+                                    <asp:DropDownList ID="ddlBankReceive" runat="server" CssClass="form-control"></asp:DropDownList>
+                                </div>
+                                <div class="col-md-2 col-xs-6">
+                                    <asp:DropDownList ID="ddlCreatedBy" runat="server" CssClass="form-control"></asp:DropDownList>
                                 </div>
                                 <div class="col-md-1 col-xs-6 search-button">
                                     <a href="javascript:;" onclick="searchOrder()" class="btn primary-btn h45-btn"><i class="fa fa-search"></i></a>
@@ -142,30 +138,20 @@
                     <div class="filter-above-wrap clear">
                         <div class="filter-control">
                             <div class="row">
-                                <div class="col-md-5"></div>
+                                <div class="col-md-7"></div>
                                 <div class="col-md-2 col-xs-6">
-                                    <asp:DropDownList ID="ddlTransferStatus" runat="server" CssClass="form-control">
-                                        <asp:ListItem Value="" Text="Trạng thái tiền"></asp:ListItem>
-                                        <asp:ListItem Value="1" Text="Đã nhận tiền"></asp:ListItem>
-                                        <asp:ListItem Value="2" Text="Chưa nhận tiền"></asp:ListItem>
-                                    </asp:DropDownList>
+                                    <label>Từ ngày</label>
+                                    <telerik:RadDatePicker RenderMode="Lightweight" ID="rOrderFromDate" ShowPopupOnFocus="true" Width="100%" runat="server" DateInput-CssClass="radPreventDecorate">
+                                        <DateInput DisplayDateFormat="dd/MM/yyyy" runat="server">
+                                        </DateInput>
+                                    </telerik:RadDatePicker>
                                 </div>
                                 <div class="col-md-2 col-xs-6">
-                                    <asp:DropDownList ID="ddlBankReceive" runat="server" CssClass="form-control"></asp:DropDownList>
-                                </div>
-                                <div class="col-md-2 col-xs-6">
-                                    <asp:DropDownList ID="ddlTransferDoneAt" runat="server" CssClass="form-control">
-                                        <asp:ListItem Value="" Text="Thời gian nhận tiền"></asp:ListItem>
-                                        <asp:ListItem Value="today" Text="Hôm nay"></asp:ListItem>
-                                        <asp:ListItem Value="yesterday" Text="Hôm qua"></asp:ListItem>
-                                        <asp:ListItem Value="beforeyesterday" Text="Hôm kia"></asp:ListItem>
-                                        <asp:ListItem Value="week" Text="Tuần này"></asp:ListItem>
-                                        <asp:ListItem Value="7days" Text="7 ngày"></asp:ListItem>
-                                        <asp:ListItem Value="thismonth" Text="Tháng này"></asp:ListItem>
-                                        <asp:ListItem Value="lastmonth" Text="Tháng trước"></asp:ListItem>
-                                        <asp:ListItem Value="beforelastmonth" Text="Tháng trước nữa"></asp:ListItem>
-                                        <asp:ListItem Value="30days" Text="30 ngày"></asp:ListItem>
-                                    </asp:DropDownList>
+                                    <label>Đến ngày</label>
+                                    <telerik:RadDatePicker RenderMode="Lightweight" ID="rOrderToDate" ShowPopupOnFocus="true" Width="100%" runat="server" DateInput-CssClass="radPreventDecorate">
+                                        <DateInput DisplayDateFormat="dd/MM/yyyy" runat="server">
+                                        </DateInput>
+                                    </telerik:RadDatePicker>
                                 </div>
                                 <div class="col-md-1"></div>
                             </div>

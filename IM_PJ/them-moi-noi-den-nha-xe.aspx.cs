@@ -51,6 +51,9 @@ namespace IM_PJ
         /// <param name="ID"></param>
         private void Initialize(int ID)
         {
+            string username = Request.Cookies["userLoginSystem"].Value;
+            var acc = AccountController.GetByUsername(username);
+
             // Init value
             var transportCompany = TransportCompanyController.GetTransportCompanyByID(ID);
 
@@ -60,6 +63,19 @@ namespace IM_PJ
                 this.txtCompanyName.Text = transportCompany.CompanyName;
                 this.txtCompanyPhone.Text = transportCompany.CompanyPhone;
                 this.txtCompanyAddress.Text = transportCompany.CompanyAddress;
+                if (transportCompany.Prepay == true)
+                {
+                    this.rdbPrepay.SelectedValue = "true";
+                    this.rdbPrepay.Enabled = false;
+                    if (acc.RoleID == 0)
+                    {
+                        this.rdbPrepay.Enabled = true;
+                    }
+                }
+                else
+                {
+                    this.rdbPrepay.SelectedValue = "false";
+                }
             }
             else
             {

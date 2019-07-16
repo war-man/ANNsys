@@ -230,7 +230,7 @@ namespace IM_PJ
                     quantityFrom = QuantityFrom,
                     quantityTo = QuantityTo,
                     orderCreatedBy = CreatedBy, // CreatedBy
-                    orderDate = CreatedDate, // CreatedDate
+                    //orderDate = CreatedDate, // CreatedDate
                     transportCompany = TransportCompany, // TransportCompany
                     shipper = ShipperID,
                     deliveryStart = DeliveryStartAt, // DeliveryStartAt

@@ -1,18 +1,19 @@
 ﻿<%@ Page Title="Danh sách đơn hàng" Language="C#" MasterPageFile="~/MasterPage.Master" AutoEventWireup="true" CodeBehind="danh-sach-don-hang.aspx.cs" Inherits="IM_PJ.danh_sach_don_hang" EnableSessionState="ReadOnly" %>
 
+<%@ Register Assembly="Telerik.Web.UI" Namespace="Telerik.Web.UI" TagPrefix="telerik" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
     <style>
         .search-box-type .col-1, .search-box-type .col-2 {
             float: left;
         }
         .search-box-type .col-1 {
-            width: calc(100% - 145px);
+            width: calc(100% - 115px);
         }
         .search-box-type .col-1 input {
             border-right: none;
         }
         .search-box-type .col-2 {
-            width: 145px;
+            width: 115px;
         }
         .search-box-type .col-2 select {
             border-left: none;
@@ -127,14 +128,14 @@
                     <div class="filter-above-wrap clear">
                         <div class="filter-control">
                             <div class="row">
-                                <div class="col-md-5 col-xs-12 search-box-type">
+                                <div class="col-md-3 col-xs-12 search-box-type">
                                     <div class="col-1">
                                         <asp:TextBox ID="txtSearchOrder" runat="server" CssClass="form-control" placeholder="Tìm đơn hàng" autocomplete="off"></asp:TextBox>
                                     </div>
                                     <div class="col-2">
                                         <asp:DropDownList ID="ddlSearchType" runat="server" CssClass="form-control">
-                                            <asp:ListItem Value="1" Text="Tìm đơn hàng"></asp:ListItem>
-                                            <asp:ListItem Value="2" Text="Tìm sản phẩm"></asp:ListItem>
+                                            <asp:ListItem Value="1" Text="Đơn hàng"></asp:ListItem>
+                                            <asp:ListItem Value="2" Text="Sản phẩm"></asp:ListItem>
                                         </asp:DropDownList>
                                     </div>
                                 </div>
@@ -153,18 +154,18 @@
                                     </asp:DropDownList>
                                 </div>
                                 <div class="col-md-2 col-xs-6">
-                                    <asp:DropDownList ID="ddlCreatedDate" runat="server" CssClass="form-control">
-                                        <asp:ListItem Value="" Text="Thời gian đơn hàng"></asp:ListItem>
-                                        <asp:ListItem Value="today" Text="Hôm nay"></asp:ListItem>
-                                        <asp:ListItem Value="yesterday" Text="Hôm qua"></asp:ListItem>
-                                        <asp:ListItem Value="beforeyesterday" Text="Hôm kia"></asp:ListItem>
-                                        <asp:ListItem Value="week" Text="Tuần này"></asp:ListItem>
-                                        <asp:ListItem Value="7days" Text="7 ngày"></asp:ListItem>
-                                        <asp:ListItem Value="thismonth" Text="Tháng này"></asp:ListItem>
-                                        <asp:ListItem Value="lastmonth" Text="Tháng trước"></asp:ListItem>
-                                        <asp:ListItem Value="beforelastmonth" Text="Tháng trước nữa"></asp:ListItem>
-                                        <asp:ListItem Value="30days" Text="30 ngày"></asp:ListItem>
-                                    </asp:DropDownList>
+                                    <label>Từ ngày</label>
+                                    <telerik:RadDatePicker RenderMode="Lightweight" ID="rOrderFromDate" ShowPopupOnFocus="true" Width="100%" runat="server" DateInput-CssClass="radPreventDecorate">
+                                        <DateInput DisplayDateFormat="dd/MM/yyyy" runat="server">
+                                        </DateInput>
+                                    </telerik:RadDatePicker>
+                                </div>
+                                <div class="col-md-2 col-xs-6">
+                                    <label>Đến ngày</label>
+                                    <telerik:RadDatePicker RenderMode="Lightweight" ID="rOrderToDate" ShowPopupOnFocus="true" Width="100%" runat="server" DateInput-CssClass="radPreventDecorate">
+                                        <DateInput DisplayDateFormat="dd/MM/yyyy" runat="server">
+                                        </DateInput>
+                                    </telerik:RadDatePicker>
                                 </div>
                                 <div class="col-md-1 col-xs-6 search-button">
                                     <a href="javascript:;" onclick="searchOrder()" class="btn primary-btn h45-btn"><i class="fa fa-search"></i></a>

@@ -507,26 +507,21 @@ namespace IM_PJ.Controllers
                         );
                     }
                 }
-
-                // Filter Created Date
-                if (!String.IsNullOrEmpty(filter.orderDate))
+                // Filter Order Created Date
+                if (filter.orderFromDate.HasValue && filter.orderToDate.HasValue)
                 {
-                    DateTime fromdate = DateTime.Today;
-                    DateTime todate = DateTime.Now;
-                    CalDate(filter.orderDate, ref fromdate, ref todate);
-
                     if (filter.excuteStatus.Count() == 1 && filter.excuteStatus.Contains(2))
                     {
                         orders = orders.Where(x =>
-                            x.DateDone >= fromdate &&
-                            x.DateDone <= todate
+                            x.DateDone >= filter.orderFromDate &&
+                            x.DateDone <= filter.orderToDate
                         );
                     }
                     else
                     {
                         orders = orders.Where(x =>
-                            x.CreatedDate >= fromdate &&
-                            x.CreatedDate <= todate
+                            x.CreatedDate >= filter.orderFromDate &&
+                            x.CreatedDate <= filter.orderToDate
                         );
                     }
                 }
@@ -714,12 +709,8 @@ namespace IM_PJ.Controllers
 
                 #region Tìm kiếm trạng thái chuyển khoản hoặc ngày kết kết thúc chuyển khoản
                 // Filter Transfer Status or DoneAt
-                if (filter.transferStatus > 0 || !String.IsNullOrEmpty(filter.transferDone))
+                if (filter.transferStatus > 0 || (filter.transferFromDate.HasValue && filter.transferToDate.HasValue))
                 {
-                    DateTime fromdate = DateTime.Today;
-                    DateTime todate = DateTime.Now;
-                    CalDate(filter.transferDone, ref fromdate, ref todate);
-
                     var tempTrans = orders
                         .GroupJoin(
                             con.BankTransfers,
@@ -754,12 +745,12 @@ namespace IM_PJ.Controllers
                         );
                     }
 
-                    if (!String.IsNullOrEmpty(filter.transferDone))
+                    if (filter.transferFromDate.HasValue && filter.transferToDate.HasValue)
                     {
 
                         tempTrans = tempTrans.Where(x =>
-                            x.TransDoneAt >= fromdate &&
-                            x.TransDoneAt <= todate
+                            x.TransDoneAt >= filter.transferFromDate &&
+                            x.TransDoneAt <= filter.transferToDate
                         );
                     }
 
@@ -771,7 +762,7 @@ namespace IM_PJ.Controllers
                 }
                 #endregion
 
-                #region Tìm kiếm lần giam hàng
+                #region Tìm kiếm đợt giao hàng
                 // Filter Delivery times
                 if (filter.deliveryTimes > 0)
                 {

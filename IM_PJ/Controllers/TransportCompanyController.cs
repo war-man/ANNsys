@@ -104,7 +104,25 @@ namespace IM_PJ.Controllers
             }
             return company.ID;
         }
+        public static string UpdateStatus(int ID, int SubID)
+        {
+            using (var connect = new inventorymanagementEntities())
+            {
+                tbl_TransportCompany target = connect.tbl_TransportCompany
+                    .Where(x => x.ID == ID && x.SubID == SubID)
+                    .SingleOrDefault();
 
+                if (target != null)
+                {
+                    target.Status = target.Status == 1 ? 0 : 1;
+                    target.ModifiedDate = DateTime.Now;
+
+                    connect.SaveChanges();
+                    return "true";
+                }
+            }
+            return "false";
+        }
         /// <summary>
         /// update receive place of transport company
         /// </summary>
