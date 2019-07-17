@@ -1,6 +1,6 @@
 ﻿<%@ Page Title="Danh sách giao hàng" Language="C#" MasterPageFile="~/MasterPage.Master" AutoEventWireup="true" CodeBehind="danh-sach-van-chuyen.aspx.cs" Inherits="IM_PJ.danh_sach_van_chuyen" EnableSessionState="ReadOnly" %>
 
-
+<%@ Register Assembly="Telerik.Web.UI" Namespace="Telerik.Web.UI" TagPrefix="telerik" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
     <script src="/Scripts/moment.min.js"></script>
     <script src="/Scripts/moment-with-locales.min.js"></script>
@@ -126,13 +126,6 @@
                                     <asp:TextBox ID="txtSearchOrder" runat="server" CssClass="form-control" placeholder="Tìm đơn hàng" autocomplete="off"></asp:TextBox>
                                 </div>
                                 <div class="col-md-2 col-xs-6">
-                                    <asp:DropDownList ID="ddlShippingType" runat="server" CssClass="form-control">
-                                        <asp:ListItem Value="0" Text="Kiểu giao hàng"></asp:ListItem>
-                                        <asp:ListItem Value="4" Text="Chuyển xe"></asp:ListItem>
-                                        <asp:ListItem Value="5" Text="Nhân viên giao"></asp:ListItem>
-                                    </asp:DropDownList>
-                                </div>
-                                <div class="col-md-2 col-xs-6">
                                     <asp:DropDownList ID="ddlPaymentType" runat="server" CssClass="form-control">
                                         <asp:ListItem Value="0" Text="Kiểu thanh toán"></asp:ListItem>
                                         <asp:ListItem Value="1" Text="Tiền mặt"></asp:ListItem>
@@ -145,18 +138,18 @@
                                     <asp:DropDownList ID="ddlCreatedBy" runat="server" CssClass="form-control"></asp:DropDownList>
                                 </div>
                                 <div class="col-md-2 col-xs-6">
-                                    <asp:DropDownList ID="ddlCreatedDate" runat="server" CssClass="form-control">
-                                        <asp:ListItem Value="" Text="Ngày hoàn tất"></asp:ListItem>
-                                        <asp:ListItem Value="today" Text="Hôm nay"></asp:ListItem>
-                                        <asp:ListItem Value="yesterday" Text="Hôm qua"></asp:ListItem>
-                                        <asp:ListItem Value="beforeyesterday" Text="Hôm kia"></asp:ListItem>
-                                        <asp:ListItem Value="week" Text="Tuần này"></asp:ListItem>
-                                        <asp:ListItem Value="7days" Text="7 ngày"></asp:ListItem>
-                                        <asp:ListItem Value="thismonth" Text="Tháng này"></asp:ListItem>
-                                        <asp:ListItem Value="lastmonth" Text="Tháng trước"></asp:ListItem>
-                                        <asp:ListItem Value="beforelastmonth" Text="Tháng trước nữa"></asp:ListItem>
-                                        <asp:ListItem Value="30days" Text="30 ngày"></asp:ListItem>
-                                    </asp:DropDownList>
+                                    <label>Từ ngày</label>
+                                    <telerik:RadDatePicker RenderMode="Lightweight" ID="rOrderFromDate" ShowPopupOnFocus="true" Width="100%" runat="server" DateInput-CssClass="radPreventDecorate">
+                                        <DateInput DisplayDateFormat="dd/MM/yyyy" runat="server">
+                                        </DateInput>
+                                    </telerik:RadDatePicker>
+                                </div>
+                                <div class="col-md-2 col-xs-6">
+                                    <label>Đến ngày</label>
+                                    <telerik:RadDatePicker RenderMode="Lightweight" ID="rOrderToDate" ShowPopupOnFocus="true" Width="100%" runat="server" DateInput-CssClass="radPreventDecorate">
+                                        <DateInput DisplayDateFormat="dd/MM/yyyy" runat="server">
+                                        </DateInput>
+                                    </telerik:RadDatePicker>
                                 </div>
                                 <div class="col-md-1 col-xs-6 search-button">
                                     <a href="javascript:;" onclick="searchOrder()" class="btn primary-btn h45-btn"><i class="fa fa-search"></i></a>
@@ -171,9 +164,16 @@
                             <div class="row">
                                 <div class="col-md-1 col-xs-6">
                                     <asp:DropDownList ID="ddlDeliveryTimes" runat="server" CssClass="form-control">
-                                        <asp:ListItem Value="" Text="Đợt giao"></asp:ListItem>
+                                        <asp:ListItem Value="" Text="Đợt"></asp:ListItem>
                                         <asp:ListItem Value="1" Text="Đợt 1"></asp:ListItem>
                                         <asp:ListItem Value="2" Text="Đợt 2"></asp:ListItem>
+                                    </asp:DropDownList>
+                                </div>
+                                <div class="col-md-2 col-xs-6">
+                                    <asp:DropDownList ID="ddlShippingType" runat="server" CssClass="form-control">
+                                        <asp:ListItem Value="0" Text="Kiểu giao hàng"></asp:ListItem>
+                                        <asp:ListItem Value="4" Text="Chuyển xe"></asp:ListItem>
+                                        <asp:ListItem Value="5" Text="Nhân viên giao"></asp:ListItem>
                                     </asp:DropDownList>
                                 </div>
                                 <div class="col-md-2 col-xs-6">
@@ -195,20 +195,6 @@
                                         <asp:ListItem Value="1" Text="Đã giao"></asp:ListItem>
                                         <asp:ListItem Value="2" Text="Chưa giao"></asp:ListItem>
                                         <asp:ListItem Value="3" Text="Đang giao"></asp:ListItem>
-                                    </asp:DropDownList>
-                                </div>
-                                <div class="col-md-2 col-xs-6">
-                                    <asp:DropDownList ID="ddlDeliveryStartAt" runat="server" CssClass="form-control">
-                                        <asp:ListItem Value="" Text="Ngày giao hàng"></asp:ListItem>
-                                        <asp:ListItem Value="today" Text="Hôm nay"></asp:ListItem>
-                                        <asp:ListItem Value="yesterday" Text="Hôm qua"></asp:ListItem>
-                                        <asp:ListItem Value="beforeyesterday" Text="Hôm kia"></asp:ListItem>
-                                        <asp:ListItem Value="week" Text="Tuần này"></asp:ListItem>
-                                        <asp:ListItem Value="7days" Text="7 ngày"></asp:ListItem>
-                                        <asp:ListItem Value="thismonth" Text="Tháng này"></asp:ListItem>
-                                        <asp:ListItem Value="lastmonth" Text="Tháng trước"></asp:ListItem>
-                                        <asp:ListItem Value="beforelastmonth" Text="Tháng trước nữa"></asp:ListItem>
-                                        <asp:ListItem Value="30days" Text="30 ngày"></asp:ListItem>
                                     </asp:DropDownList>
                                 </div>
                             </div>
@@ -234,7 +220,7 @@
                                 </div>
                                 <div class="col-md-2 col-xs-4">
                                     <a id="chooseTimes" href="javascript:;" class="btn primary-btn fw-btn width-100" onclick="openChooseTimesModal()">
-                                        <i class="fa fa-calendar" aria-hidden="true"></i> Chọn lượt giao
+                                        <i class="fa fa-calendar" aria-hidden="true"></i> Chọn đợt giao
                                     </a>
                                 </div>
                                 <div class="col-md-2 col-xs-4">
@@ -244,7 +230,7 @@
                                 </div>
                                 <div class="col-md-2 col-xs-4">
                                     <a id="doneDelivery" href="javascript:;" class="btn primary-btn fw-btn width-100" onclick="changeDoneDelivery()">
-                                        <i class="fa fa-check" aria-hidden="true"></i> Trạng thái kết thúc đơn hàng
+                                        <i class="fa fa-check" aria-hidden="true"></i> Cập nhật đã giao
                                     </a>
                                 </div>
                             </div>
@@ -765,35 +751,7 @@
                         });
                     }
                 });
-
-                // Hidden input min, max of quantity
-                var url_param = url_query('quantityfilter');
-                if (url_param) {
-                    if (url_param == "greaterthan" || url_param == "lessthan") {
-                        $(".greaterthan").removeClass("hide");
-                        $(".between").addClass("hide");
-                    }
-                    else if (url_param == "between") {
-                        $(".between").removeClass("hide");
-                        $(".greaterthan").addClass("hide");
-                    }
-                }
             });
-
-            // Handle change quantity filter
-                $("#<%=ddlQuantityFilter.ClientID%>").change(e => {
-                    let value = e.currentTarget.value;
-                    if (value == "greaterthan" || value == "lessthan") {
-                        $(".greaterthan").removeClass("hide");
-                        $(".between").addClass("hide");
-                        $("#<%=txtQuantity.ClientID%>").focus().select();
-                    }
-                    else if (value == "between") {
-                        $(".between").removeClass("hide");
-                        $(".greaterthan").addClass("hide");
-                        $("#<%=txtQuantityMin.ClientID%>").focus().select();
-                    }
-                });
 
             $("#<%=ddlDeliveryStatusModal.ClientID%>").on('change', function() {
                 if (this.value == "1") {

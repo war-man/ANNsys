@@ -28,7 +28,6 @@ namespace IM_PJ
                 {
                     string username = Request.Cookies["userLoginSystem"].Value;
                     var acc = AccountController.GetByUsername(username);
-                    int agent = acc.AgentID.ToString().ToInt();
 
                     if (acc != null)
                     {
@@ -36,7 +35,7 @@ namespace IM_PJ
                         if (acc.RoleID == 0 || acc.Username == "nhom_zalo406")
                         {
                             LoadShipper();
-                            LoadCreatedBy(agent);
+                            LoadCreatedBy();
                             LoadTransportCompany();
                         }
                         else
@@ -73,7 +72,7 @@ namespace IM_PJ
                 ddlTransferCompanyModal.DataBind();
             }
         }
-        public void LoadCreatedBy(int AgentID, tbl_Account acc = null)
+        public void LoadCreatedBy(tbl_Account acc = null)
         {
             if (acc != null)
             {
@@ -82,7 +81,7 @@ namespace IM_PJ
             }
             else
             {
-                var CreateBy = AccountController.GetAllNotSearch();
+                var CreateBy = AccountController.GetAllNotSearch().Where(x => x.RoleID == 2).ToList();
                 ddlCreatedBy.Items.Clear();
                 ddlCreatedBy.Items.Insert(0, new ListItem("Nhân viên tạo đơn", ""));
                 if (CreateBy.Count > 0)
@@ -119,6 +118,35 @@ namespace IM_PJ
             var acc = AccountController.GetByUsername(username);
             if (acc != null)
             {
+                DateTime DateConfig = new DateTime(2019, 2, 15);
+
+                var config = ConfigController.GetByTop1();
+                if (config.ViewAllOrders == 1)
+                {
+                    DateConfig = new DateTime(2018, 6, 22);
+                }
+
+                DateTime OrderFromDate = DateConfig;
+                DateTime OrderToDate = DateTime.Today;
+
+                if (!String.IsNullOrEmpty(Request.QueryString["orderfromdate"]))
+                {
+                    OrderFromDate = Convert.ToDateTime(Request.QueryString["orderfromdate"]);
+                }
+
+                if (!String.IsNullOrEmpty(Request.QueryString["ordertodate"]))
+                {
+                    OrderToDate = Convert.ToDateTime(Request.QueryString["ordertodate"]).AddDays(1).AddMinutes(-1);
+                }
+
+                rOrderFromDate.SelectedDate = OrderFromDate;
+                rOrderFromDate.MinDate = DateConfig;
+                rOrderFromDate.MaxDate = DateTime.Today;
+
+                rOrderToDate.SelectedDate = OrderToDate;
+                rOrderToDate.MinDate = DateConfig;
+                rOrderToDate.MaxDate = DateTime.Today;
+
                 string TextSearch = "";
                 int TransportCompany = 0;
                 var ShippingType = new List<int>() {4, 5};
@@ -126,9 +154,7 @@ namespace IM_PJ
                 int ShipperID = 0;
                 int InvoiceStatus = 0;
                 int DeliveryStatus = 0;
-                string CreatedDate = "";
                 string CreatedBy = "";
-                string DeliveryStartAt = "";
                 var isDeliverySession = false;
                 int DeliveryTimes = 0;
                 int Page = 1;
@@ -150,12 +176,8 @@ namespace IM_PJ
                     InvoiceStatus = Request.QueryString["invoicestatus"].ToInt(0);
                 if (Request.QueryString["deliverystatus"] != null)
                     DeliveryStatus = Request.QueryString["deliverystatus"].ToInt(0);
-                if (Request.QueryString["createddate"] != null)
-                    CreatedDate = Request.QueryString["createddate"];
                 if (Request.QueryString["createdby"] != null)
                     CreatedBy = Request.QueryString["createdby"];
-                if (Request.QueryString["deliverystartat"] != null)
-                    DeliveryStartAt = Request.QueryString["deliverystartat"];
                 if (Request.QueryString["isdeliverysession"] != null)
                     isDeliverySession = true;
                 if (Request.QueryString["deliverytimes"] != null)
@@ -170,9 +192,7 @@ namespace IM_PJ
                 ddlShipperFilter.SelectedValue = ShipperID.ToString();
                 ddlInvoiceStatus.SelectedValue = InvoiceStatus.ToString();
                 ddlDeliveryStatusFilter.SelectedValue = DeliveryStatus.ToString();
-                ddlCreatedDate.SelectedValue = CreatedDate.ToString();
                 ddlCreatedBy.SelectedValue = CreatedBy.ToString();
-                ddlDeliveryStartAt.SelectedValue = DeliveryStartAt.ToString();
                 ddlDeliveryTimes.SelectedValue = DeliveryTimes.ToString();
 
                 // Create order fileter
@@ -185,9 +205,11 @@ namespace IM_PJ
                     shippingType = ShippingType,
                     orderCreatedBy = CreatedBy, // CreatedBy
                     //orderDate = CreatedDate, // CreatedDate
+                    orderFromDate = OrderFromDate,
+                    orderToDate = OrderToDate,
                     transportCompany = TransportCompany, // TransportCompany
                     shipper = ShipperID,
-                    deliveryStart = DeliveryStartAt, // DeliveryStartAt
+                    //deliveryStart = DeliveryStartAt, // DeliveryStartAt
                     deliveryTimes = DeliveryTimes, // DeliveryTimes
                     deliveryStatus = DeliveryStatus,
                     invoiceStatus = InvoiceStatus
@@ -576,14 +598,18 @@ namespace IM_PJ
             if (ddlDeliveryStatusFilter.SelectedValue != "0")
                 request += "&deliverystatus=" + ddlDeliveryStatusFilter.SelectedValue;
 
-            if (ddlCreatedDate.SelectedValue != "")
-                request += "&createddate=" + ddlCreatedDate.SelectedValue;
+            if (rOrderFromDate.SelectedDate.HasValue)
+            {
+                request += "&orderfromdate=" + rOrderFromDate.SelectedDate.ToString();
+            }
+
+            if (rOrderToDate.SelectedDate.HasValue)
+            {
+                request += "&ordertodate=" + rOrderToDate.SelectedDate.ToString();
+            }
 
             if (ddlCreatedBy.SelectedValue != "")
                 request += "&createdby=" + ddlCreatedBy.SelectedValue;
-
-            if (ddlDeliveryStartAt.SelectedValue != "")
-                request += "&deliverystartat=" + ddlDeliveryStartAt.SelectedValue;
 
             if (ddlDeliveryTimes.SelectedValue != "")
                 request += "&deliverytimes=" + ddlDeliveryTimes.SelectedValue;

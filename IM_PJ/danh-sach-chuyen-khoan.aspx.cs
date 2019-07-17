@@ -26,13 +26,12 @@ namespace IM_PJ
                 {
                     string username = Request.Cookies["userLoginSystem"].Value;
                     var acc = AccountController.GetByUsername(username);
-                    int agent = acc.AgentID.ToString().ToInt();
 
                     if (acc != null)
                     {
                         if (acc.RoleID == 0)
                         {
-                            LoadCreatedBy(agent);
+                            LoadCreatedBy();
                         }
                         else
                         {
@@ -48,7 +47,7 @@ namespace IM_PJ
             }
         }
 
-        public void LoadCreatedBy(int AgentID, tbl_Account acc = null)
+        public void LoadCreatedBy(tbl_Account acc = null)
         {
             if (acc != null)
             {
@@ -57,7 +56,7 @@ namespace IM_PJ
             }
             else
             {
-                var CreateBy = AccountController.GetAllNotSearch();
+                var CreateBy = AccountController.GetAllNotSearch().Where(x => x.RoleID == 0 || x.RoleID == 2).ToList();
                 ddlCreatedBy.Items.Clear();
                 ddlCreatedBy.Items.Insert(0, new ListItem("Nhân viên tạo đơn", ""));
                 if (CreateBy.Count > 0)

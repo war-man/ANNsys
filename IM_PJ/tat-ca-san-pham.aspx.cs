@@ -195,18 +195,22 @@ namespace IM_PJ
             }
         }
         [WebMethod]
+        
         public static string getAllProductImage(string sku)
         {
-            string rootPath = @"C:/Users/phanhoanganh9x/Documents/ANNsys/IM_PJ";
+            List<string> result = new List<string>();
 
+            string rootPath = HostingEnvironment.ApplicationPhysicalPath;
+            string uploadsImagesPath = rootPath + "/uploads/images/";
             var product = ProductController.GetBySKU(sku);
-            List<string> images = new List<string>();
 
             if (product != null)
             {
+                List<string> images = new List<string>();
+
                 // lấy ảnh đại diện
-                string imgAdd = Thumbnail.getURL(product.ProductImage, Thumbnail.Size.Source);
-                if (File.Exists(rootPath + imgAdd))
+                string imgAdd = product.ProductImage;
+                if (File.Exists(uploadsImagesPath + imgAdd))
                 {
                     images.Add(imgAdd);
                 }
@@ -217,8 +221,8 @@ namespace IM_PJ
                 {
                     foreach (var img in imageProduct)
                     {
-                        imgAdd = Thumbnail.getURL(img.ProductImage, Thumbnail.Size.Source);
-                        if (File.Exists(rootPath + imgAdd))
+                        imgAdd = img.ProductImage;
+                        if (File.Exists(uploadsImagesPath + imgAdd))
                         {
                             images.Add(imgAdd);
                         }
@@ -233,40 +237,47 @@ namespace IM_PJ
                     {
                         if (!String.IsNullOrEmpty(v.Image))
                         {
-                            imgAdd = Thumbnail.getURL(v.Image, Thumbnail.Size.Source);
-                            if (File.Exists(rootPath + imgAdd))
+                            imgAdd = v.Image;
+                            if (File.Exists(uploadsImagesPath + imgAdd))
                             {
                                 images.Add(imgAdd);
                             }
                         }
                     }
                 }
-            }
 
-            images = images.Distinct().ToList();
+                images = images.Distinct().ToList();
 
-            if (images.Count() > 0)
-            {
-                for (int i = 0; i < images.Count - 1; i++)
+                if (images.Count() > 0)
                 {
-                    for (int y = i + 1; y < images.Count; y++)
+                    for (int i = 0; i < images.Count - 1; i++)
                     {
-                        string img1 = images[i];
-                        string img2 = images[y];
-
-                        // so sánh 2 hình và lọc hình trùng lặp
-                        Bitmap bmp1 = (Bitmap)Bitmap.FromFile(rootPath + img1);
-                        Bitmap bmp2 = (Bitmap)Bitmap.FromFile(rootPath + img2);
-                        if (CompareBitmapsLazy(bmp1, bmp2))
+                        for (int y = i + 1; y < images.Count; y++)
                         {
-                            images.RemoveAt(y);
-                            y--;
+                            string img1 = Thumbnail.getURL(images[i], Thumbnail.Size.Micro);
+                            string img2 = Thumbnail.getURL(images[y], Thumbnail.Size.Micro);
+
+                            // so sánh 2 hình và lọc hình trùng lặp
+                            Bitmap bmp1 = (Bitmap)Bitmap.FromFile(rootPath + img1);
+                            Bitmap bmp2 = (Bitmap)Bitmap.FromFile(rootPath + img2);
+                            if (CompareBitmapsLazy(bmp1, bmp2))
+                            {
+                                images.RemoveAt(y);
+                                y--;
+                            }
                         }
                     }
                 }
+
+                // lấy hình gốc
+                for (int i = 0; i < images.Count; i++)
+                {
+                    result.Add(Thumbnail.getURL(images[i], Thumbnail.Size.Source));
+                }
             }
+
             JavaScriptSerializer serializer = new JavaScriptSerializer();
-            return serializer.Serialize(images.Distinct().ToList());
+            return serializer.Serialize(result.ToList());
         }
         public static bool CompareBitmapsLazy(Bitmap bmp1, Bitmap bmp2)
         {

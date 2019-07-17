@@ -120,7 +120,7 @@ namespace IM_PJ
             double totalCollection = 0;
             string shipperName = ShipperController.getShipperNameByID(shipperID);
 
-            html.AppendLine("<h1>PHIẾU GỬI HÀNG</h1>");
+            html.AppendLine("<h1>PHIẾU GỬI XE</h1>");
             
             html.AppendLine("<div class='delivery'>");
             html.AppendLine("    <div class='all'>");
@@ -174,7 +174,7 @@ namespace IM_PJ
             html.AppendLine("</div>");
 
             // Thông tin bổ xung cho giao hàng thu hộ
-            html.AppendLine("<h1>Thông tin giao hàng thu hộ</h1>");
+            html.AppendLine("<h1>Danh sách đơn thu hộ</h1>");
             html.AppendLine("<div class='delivery'>");
             html.AppendLine("    <div class='all'>");
             html.AppendLine("        <div class='body'>");
@@ -209,7 +209,7 @@ namespace IM_PJ
             if (totalCollection > 0)
             {
                 html.AppendLine("                        <tr>");
-                html.AppendLine("                            <td colspan='3' style='text-align: right'>Thu hộ</td>");
+                html.AppendLine("                            <td colspan='3' style='text-align: right'>Tổng thu hộ</td>");
                 html.AppendLine(String.Format("                            <td colspan='4'>{0:#,###}</td>", data.Collections.Sum(x => x.Collection)));
                 html.AppendLine("                        </tr>");
             }
@@ -232,7 +232,7 @@ namespace IM_PJ
             decimal totalPrice = 0;
             string shipperName = ShipperController.getShipperNameByID(shipperID);
 
-            html.AppendLine("<h1>PHIẾU GỬI HÀNG</h1>");
+            html.AppendLine("<h1>PHIẾU NHÂN VIÊN GIAO</h1>");
 
             html.AppendLine("<div class='delivery'>");
             html.AppendLine("    <div class='all'>");
@@ -270,7 +270,7 @@ namespace IM_PJ
 
                 html.AppendLine("                        <tr>");
                 html.AppendLine(String.Format("                            <td rowspan='2' style='text-align: center;'>{0:#,###}</td>", index));
-                html.AppendLine(String.Format("                            <td colspan='3' style='border-bottom: 0;'><strong>{0}</strong> - {1}</td>", item.CustomerName, item.OrderID));
+                html.AppendLine(String.Format("                            <td colspan='3' style='border-bottom: 0;'><strong>{0}</strong> - {1}</td>", item.CustomerName.ToTitleCase(), item.OrderID));
                 html.AppendLine("                        </tr>");
 
                 html.AppendLine("                        <tr>");
