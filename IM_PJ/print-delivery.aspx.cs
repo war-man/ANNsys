@@ -76,7 +76,7 @@ namespace IM_PJ
                             .ToList();
                     var transforData = DeliveryController.getTransportReport(transforOrders);
 
-                    if (transforData.Transports.Count > 0 && transforData.Collections.Count > 0)
+                    if (transforData.Transports.Count > 0)
                     {
                         ltrPrintDelivery.Text += getTransportReportHTML(transforData, shipperID, timers);
                         // Update Delivery
@@ -152,7 +152,14 @@ namespace IM_PJ
                 html.AppendLine("                        <tr>");
                 html.AppendLine(String.Format("                            <td><strong>{0}</strong></td>", item.TransportName.ToTitleCase()));
                 html.AppendLine(String.Format("                            <td>{0:#,###}</td>", item.Quantity));
-                html.AppendLine(String.Format("                            <td>{0:#,###}</td>", item.Collection));
+                if (item.Collection > 0)
+                {
+                    html.AppendLine(String.Format("                            <td>{0:#,###}</td>", item.Collection));
+                }
+                else
+                {
+                    html.AppendLine("                            <td>Không</td>");
+                }
                 html.AppendLine("                        </tr>");
             }
             html.AppendLine("                        <tr>");
@@ -174,51 +181,54 @@ namespace IM_PJ
             html.AppendLine("</div>");
 
             // Thông tin bổ xung cho giao hàng thu hộ
-            html.AppendLine("<h1>Danh sách đơn thu hộ</h1>");
-            html.AppendLine("<div class='delivery'>");
-            html.AppendLine("    <div class='all'>");
-            html.AppendLine("        <div class='body'>");
-            html.AppendLine("            <div class='table-2'>");
-            html.AppendLine("                <table>");
-            html.AppendLine("                    <colgroup>");
-            html.AppendLine("                        <col />");
-            html.AppendLine("                        <col />");
-            html.AppendLine("                        <col />");
-            html.AppendLine("                        <col />");
-            html.AppendLine("                    </colgroup>");
-            html.AppendLine("                    <thead>");
-            html.AppendLine("                        <th>Mã</th>");
-            html.AppendLine("                        <th>Nhà xe</th>");
-            html.AppendLine("                        <th>Khách hàng</th>");
-            html.AppendLine("                        <th>Thu hộ</th>");
-            html.AppendLine("                    </thead>");
-            html.AppendLine("                    <tbody>");
-            foreach (var item in data.Collections)
+            if (data.Collections.Count > 0)
             {
+                html.AppendLine("<h1>Danh sách đơn thu hộ</h1>");
+                html.AppendLine("<div class='delivery'>");
+                html.AppendLine("    <div class='all'>");
+                html.AppendLine("        <div class='body'>");
+                html.AppendLine("            <div class='table-2'>");
+                html.AppendLine("                <table>");
+                html.AppendLine("                    <colgroup>");
+                html.AppendLine("                        <col />");
+                html.AppendLine("                        <col />");
+                html.AppendLine("                        <col />");
+                html.AppendLine("                        <col />");
+                html.AppendLine("                    </colgroup>");
+                html.AppendLine("                    <thead>");
+                html.AppendLine("                        <th>Mã</th>");
+                html.AppendLine("                        <th>Nhà xe</th>");
+                html.AppendLine("                        <th>Khách hàng</th>");
+                html.AppendLine("                        <th>Thu hộ</th>");
+                html.AppendLine("                    </thead>");
+                html.AppendLine("                    <tbody>");
+                foreach (var item in data.Collections)
+                {
+                    html.AppendLine("                        <tr>");
+                    html.AppendLine(String.Format("                            <td><strong>{0}</strong></td>", item.OrderID));
+                    html.AppendLine(String.Format("                            <td>{0}</td>", item.TransportName.ToTitleCase()));
+                    html.AppendLine(String.Format("                            <td>{0}</td>", item.CustomerName.ToTitleCase()));
+                    html.AppendLine(String.Format("                            <td style='text-align: right'>{0:#,###}</td>", item.Collection));
+                    html.AppendLine("                        </tr>");
+                }
                 html.AppendLine("                        <tr>");
-                html.AppendLine(String.Format("                            <td><strong>{0}</strong></td>", item.OrderID));
-                html.AppendLine(String.Format("                            <td>{0}</td>", item.TransportName.ToTitleCase()));
-                html.AppendLine(String.Format("                            <td>{0}</td>", item.CustomerName.ToTitleCase()));
-                html.AppendLine(String.Format("                            <td style='text-align: right'>{0:#,###}</td>", item.Collection));
+                html.AppendLine("                            <td colspan='3' style='text-align: right'>Tổng số đơn</td>");
+                html.AppendLine(String.Format("                            <td colspan='4'>{0:#,###}</td>", data.Collections.Count));
                 html.AppendLine("                        </tr>");
+                if (totalCollection > 0)
+                {
+                    html.AppendLine("                        <tr>");
+                    html.AppendLine("                            <td colspan='3' style='text-align: right'>Tổng thu hộ</td>");
+                    html.AppendLine(String.Format("                            <td colspan='4'>{0:#,###}</td>", data.Collections.Sum(x => x.Collection)));
+                    html.AppendLine("                        </tr>");
+                }
+                html.AppendLine("                    </tbody>");
+                html.AppendLine("                </table>");
+                html.AppendLine("            </div>");
+                html.AppendLine("        </div>");
+                html.AppendLine("    </div>");
+                html.AppendLine("</div>");
             }
-            html.AppendLine("                        <tr>");
-            html.AppendLine("                            <td colspan='3' style='text-align: right'>Tổng số đơn</td>");
-            html.AppendLine(String.Format("                            <td colspan='4'>{0:#,###}</td>", data.Collections.Count));
-            html.AppendLine("                        </tr>");
-            if (totalCollection > 0)
-            {
-                html.AppendLine("                        <tr>");
-                html.AppendLine("                            <td colspan='3' style='text-align: right'>Tổng thu hộ</td>");
-                html.AppendLine(String.Format("                            <td colspan='4'>{0:#,###}</td>", data.Collections.Sum(x => x.Collection)));
-                html.AppendLine("                        </tr>");
-            }
-            html.AppendLine("                    </tbody>");
-            html.AppendLine("                </table>");
-            html.AppendLine("            </div>");
-            html.AppendLine("        </div>");
-            html.AppendLine("    </div>");
-            html.AppendLine("</div>");
 
             return html.ToString();
         }

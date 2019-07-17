@@ -74,27 +74,55 @@ namespace IM_PJ.Controllers
                     .Distinct()
                     .OrderBy(o => o.ID);
 
+                var refund = con.tbl_RefundGoods
+                    .Join(
+                        header,
+                        r => r.ID,
+                        o => o.RefundsGoodsID,
+                        (r, o) => r
+                    )
+                    .OrderBy(o => o.ID);
+
                 var data = header
+                    .GroupJoin(
+                        refund,
+                        o => o.RefundsGoodsID,
+                        r => r.ID,
+                        (o, r) => new { o, r }
+                    )
+                    .SelectMany(
+                        x => x.r.DefaultIfEmpty(),
+                        (parent, child) => new
+                        {
+                            order = parent.o,
+                            moneyRefund = child != null ? child.TotalPrice : "0"
+                        }
+                    )
                     .Join(
                         customer,
-                        o => o.CustomerID,
+                        tem1 => tem1.order.CustomerID,
                         c => c.ID,
-                        (o, c) => new { o, c }
+                        (tem1, c) => new {
+                            order = tem1.order,
+                            customer = c,
+                            moneyRefund = tem1.moneyRefund
+                        }
                     )
                     .Join(
                         transport,
-                        h => h.o.ID,
+                        tem2 => tem2.order.ID,
                         t => t.OrderID,
-                        (h, t) => new
+                        (tem2, t) => new
                         {
-                            OrderID = h.o.ID,
+                            OrderID = tem2.order.ID,
                             TransportID = t.TransportID,
                             TransportName = t.TransportName,
-                            CustomerID = h.o.CustomerID.Value,
-                            CustomerName = h.c.CustomerName,
+                            CustomerID = tem2.order.CustomerID.Value,
+                            CustomerName = tem2.customer.CustomerName,
                             Quantity = 1,
-                            Collection = h.o.PaymentType == (int)PaymentType.CashCollection ? 1 : 0,
-                            Payment = h.o.TotalPrice
+                            Collection = tem2.order.PaymentType == (int)PaymentType.CashCollection ? 1 : 0,
+                            Payment = tem2.order.TotalPrice,
+                            moneyRefund = tem2.moneyRefund
                         }
                     )
                     .ToList();
@@ -120,7 +148,7 @@ namespace IM_PJ.Controllers
                             TransportName = x.TransportName,
                             CustomerID = x.CustomerID,
                             CustomerName = x.CustomerName,
-                            Collection = Convert.ToDecimal(x.Payment)
+                            Collection = Convert.ToDecimal(x.Payment) - Convert.ToDecimal(x.moneyRefund)
                         })
                         .OrderByDescending(o => new {
                             o.TransportName,
@@ -139,56 +167,86 @@ namespace IM_PJ.Controllers
             {
                 var delivery = con.Deliveries
                     .Where(x => orders.Contains(x.OrderID))
-                    .OrderBy(o => o.OrderID)
-                    .ToList();
+                    .OrderBy(o => o.OrderID);
 
                 var order = con.tbl_Order
                      .Where(x => x.ExcuteStatus == 2) // Đơn đã hoàn tất
                      .Where(x => x.ShippingType == 5) // Nhân viên giao hàng
                      .Where(x => orders.Contains(x.ID))
-                     .OrderBy(o => o.ID)
-                     .ToList();
+                     .OrderBy(o => o.ID);
 
-                var report = order
+                var refund = con.tbl_RefundGoods
+                    .Join(
+                        order,
+                        r => r.ID,
+                        o => o.RefundsGoodsID,
+                        (r, o) => r
+                    )
+                    .OrderBy(o => o.ID);
+
+                var data = order
+                    .GroupJoin(
+                        refund,
+                        o => o.RefundsGoodsID.Value,
+                        r => r.ID,
+                        (o, r) => new { o, r }
+                    )
+                    .SelectMany(
+                        x => x.r.DefaultIfEmpty(),
+                        (parent, child) => new
+                        {
+                            order = parent.o,
+                            moneyRefund = child != null ? child.TotalPrice : "0"
+                        }
+                    )
                     .GroupJoin(
                         delivery,
-                        ord => ord.ID,
+                        tem1 => tem1.order.ID,
                         del => del.OrderID,
-                        (ord, del) => new { ord, del }
+                        (tem1, del) => new { tem1, del }
                     )
                     .SelectMany(
                         x => x.del.DefaultIfEmpty(),
-                        (parent, child) => {
-                            var data = new ShipperReport();
-
-                            data.OrderID = parent.ord.ID;
-                            data.CustomerName = parent.ord.CustomerName;
-                            data.Payment = Convert.ToDecimal(parent.ord.TotalPrice);
-                            data.MoneyCollection = 0;
-                            data.Price = 0;
-
-                            if (child != null)
-                            {
-                                // Thu hộ
-                                if (parent.ord.PaymentType == 3)
-                                {
-                                    data.MoneyCollection = child.COO;
-                                }
-                                data.Price = child.COD;
-                            }
-                            else
-                            {
-                                // Thu hộ
-                                if (parent.ord.PaymentType == 3)
-                                {
-                                    data.MoneyCollection = data.Payment;
-                                }
-                                data.Price = Convert.ToDecimal(parent.ord.FeeShipping);
-                            }
-
-                            return data;
+                        (parent, child) => new {
+                            order = parent.tem1.order,
+                            delivery = child,
+                            moneyRefund = parent.tem1.moneyRefund
                         }
                     )
+                    .ToList();
+
+                var report = data
+                    .Select(x =>
+                    {
+                        var item = new ShipperReport();
+
+                        item.OrderID = x.order.ID;
+                        item.CustomerName = x.order.CustomerName;
+                        item.Payment = Convert.ToDecimal(x.order.TotalPrice) - Convert.ToDecimal(x.moneyRefund);
+                        item.MoneyCollection = 0;
+                        item.Price = 0;
+
+                        if (x.delivery != null)
+                        {
+                            // Thu hộ
+                            if (x.order.PaymentType == 3)
+                            {
+                                item.MoneyCollection = x.delivery.COO;
+                            }
+                            item.Price = x.delivery.COD;
+                        }
+                        else
+                        {
+                            // Thu hộ
+                            if (x.order.PaymentType == 3)
+                            {
+                                item.MoneyCollection = item.Payment;
+                            }
+                            item.Price = Convert.ToDecimal(x.order.FeeShipping);
+                        }
+
+                        return item;
+                    })
                     .ToList();
 
                 return report;
