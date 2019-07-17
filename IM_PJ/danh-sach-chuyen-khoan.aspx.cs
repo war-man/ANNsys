@@ -112,7 +112,7 @@ namespace IM_PJ
                 // Filter Order Date
 
                 DateTime OrderFromDate = DateConfig;
-                DateTime OrderToDate = DateTime.Today;
+                DateTime OrderToDate = DateTime.Now;
 
                 if (!String.IsNullOrEmpty(Request.QueryString["orderfromdate"]))
                 {
@@ -126,11 +126,11 @@ namespace IM_PJ
 
                 rOrderFromDate.SelectedDate = OrderFromDate;
                 rOrderFromDate.MinDate = DateConfig;
-                rOrderFromDate.MaxDate = DateTime.Today;
+                rOrderFromDate.MaxDate = DateTime.Now;
 
                 rOrderToDate.SelectedDate = OrderToDate;
                 rOrderToDate.MinDate = DateConfig;
-                rOrderToDate.MaxDate = DateTime.Today;
+                rOrderToDate.MaxDate = DateTime.Now;
 
                 int TransferStatus = 0;
                 var ExcuteStatus = new List<int>() { 1, 2 };
