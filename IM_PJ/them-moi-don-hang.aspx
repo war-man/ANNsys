@@ -775,6 +775,16 @@
                         createReturnOrder(customerID);
                     }
                 });
+
+                // Handling min value for shipper fee 
+                $("#<%=txtShippingFeeModal.ClientID%>").change(e => {
+                    let value = e.target.value;
+
+                    if (value == "")
+                    {
+                        e.target.value = 0;
+                    }
+                })
             });
 
             // order of item list
@@ -1480,7 +1490,7 @@
 
             function updateShippingFeeFromModal()
             {
-                let newValue = $("#<%=txtShippingFeeModal.ClientID%>").val();
+                let newValue = +$("#<%=txtShippingFeeModal.ClientID%>").val() || 0;
                 let shippingFeeDOM = $("#<%=pFeeShip.ClientID%>");
                 shippingFeeDOM.val(newValue);
                 getAllPrice();

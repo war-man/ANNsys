@@ -114,7 +114,7 @@ namespace IM_PJ
                 }
 
                 DateTime OrderFromDate = DateConfig;
-                DateTime OrderToDate = DateTime.Today;
+                DateTime OrderToDate = DateTime.Now;
 
                 if (!String.IsNullOrEmpty(Request.QueryString["orderfromdate"]))
                 {
@@ -128,11 +128,11 @@ namespace IM_PJ
 
                 rOrderFromDate.SelectedDate = OrderFromDate;
                 rOrderFromDate.MinDate = DateConfig;
-                rOrderFromDate.MaxDate = DateTime.Today;
+                rOrderFromDate.MaxDate = DateTime.Now;
 
                 rOrderToDate.SelectedDate = OrderToDate;
                 rOrderToDate.MinDate = DateConfig;
-                rOrderToDate.MaxDate = DateTime.Today;
+                rOrderToDate.MaxDate = DateTime.Now;
 
                 int OrderType = 0;
                 int PaymentStatus = 0;
