@@ -265,24 +265,34 @@ namespace IM_PJ.Controllers
                         .OrderBy(x => x.CompanyName)
                         .ToList();
 
-                    tranSub = tranSub
+                    var data = tran
+                        .GroupJoin(
+                            tranSub,
+                            t => t.ID,
+                            tb => tb.ID,
+                            (t, tb) => new { t, tb }
+                        )
+                        .SelectMany(
+                            x => x.tb.DefaultIfEmpty(),
+                            (parent, child) => new {
+                                transfor = parent.t,
+                                CompanyName = parent.t.CompanyName,
+                                CompanyAddress = parent.t.CompanyAddress,
+                                CompanyPhone = parent.t.CompanyPhone,
+                                ShipTo = child != null? child.ShipTo : String.Empty
+                            }
+                        )
                         .Where(x =>
                             UnSign.convert(x.CompanyName).Contains(unsignTextSearch) ||
                             UnSign.convert(x.CompanyAddress).Contains(unsignTextSearch) ||
                             UnSign.convert(x.ShipTo).Contains(unsignTextSearch) ||
                             x.CompanyPhone == unsignTextSearch
                         )
-                        .ToList();
-
-                    return tran
-                        .Join(
-                            tranSub,
-                            t => t.ID,
-                            tb => tb.ID,
-                            (t, tb) => t
-                        )
+                        .Select(x => x.transfor)
                         .OrderBy(x => x.CompanyName)
                         .ToList();
+
+                    return data;
                 }
                 else
                 {
