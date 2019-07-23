@@ -1323,6 +1323,8 @@
                     let reg = /\?/g;
 
                     url = url.replace(/(&?Page=\d+)/g, "");
+                    if (url.search(/isdeliverysession=1/g) > 0)
+                        return;
                     if (url.search(reg) > 0)
                         url = url + "&isdeliverysession=1";
                     else

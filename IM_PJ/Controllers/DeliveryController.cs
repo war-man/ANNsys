@@ -127,38 +127,34 @@ namespace IM_PJ.Controllers
                     )
                     .ToList();
 
-                var trans = data
-                    .GroupBy(x => x.TransportID)
-                    .Select(g => new TransportInfo
-                    {
-                        TransportID = g.Key,
-                        TransportName = g.Max(x => x.TransportName),
-                        Quantity = g.Sum(x => x.Quantity),
-                        Collection = g.Sum(x => x.Collection),
-                    })
-                    .OrderBy(o => o.TransportName)
-                    .ToList();
-                var collect = data.Where(x => x.Collection == 1)
-                    .Select(x => new CollectionInfo()
-                    {
-                        OrderID = x.OrderID,
-                        TransportID = x.TransportID,
-                        TransportName = x.TransportName,
-                        CustomerID = x.CustomerID,
-                        CustomerName = x.CustomerName,
-                        Collection = Convert.ToDecimal(x.Payment) - Convert.ToDecimal(x.moneyRefund)
-                    })
-                    .OrderByDescending(o => new
-                    {
-                        o.TransportName,
-                        o.OrderID
-                    })
-                    .ToList();
-
                 var report = new TransportReport()
                 {
-                    Transports = trans,
-                    Collections = collect
+                    Transports = data
+                        .GroupBy(x => x.TransportID)
+                        .Select(g => new TransportInfo
+                        {
+                            TransportID = g.Key,
+                            TransportName = g.Max(x => x.TransportName),
+                            Quantity = g.Sum(x => x.Quantity),
+                            Collection = g.Sum(x => x.Collection),
+                        })
+                        .OrderBy(o => o.TransportName)
+                        .ToList(),
+                    Collections = data.Where(x => x.Collection == 1)
+                        .Select(x => new CollectionInfo()
+                        {
+                            OrderID = x.OrderID,
+                            TransportID = x.TransportID,
+                            TransportName = x.TransportName,
+                            CustomerID = x.CustomerID,
+                            CustomerName = x.CustomerName,
+                            Collection = Convert.ToDecimal(x.Payment) - Convert.ToDecimal(x.moneyRefund)
+                        })
+                        .OrderByDescending(
+                            o =>  o,
+                            new CollectionInfoComparer()
+                        )
+                        .ToList()
                 }; 
 
                 return report;
@@ -431,6 +427,19 @@ namespace IM_PJ.Controllers
             public string CustomerName { get; set; }
             // Số tiền thu hộ
             public decimal Collection { get; set; }
+        }
+
+        public class CollectionInfoComparer : IComparer<CollectionInfo>
+        {
+            public int Compare(CollectionInfo item, CollectionInfo other)
+            {
+                if (item.TransportName == other.TransportName)
+                {
+                    return item.OrderID.CompareTo(other.OrderID);
+                }
+
+                return item.TransportName.CompareTo(other.TransportName);
+            }
         }
 
         public class TransportReport
