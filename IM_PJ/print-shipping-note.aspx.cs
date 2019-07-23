@@ -196,6 +196,11 @@ namespace IM_PJ
                     {
                         error += "<p>- Đơn hàng này <strong>gửi Dịch vụ Proship</strong> nhưng <strong>chưa nhập</strong> MÃ VẬN ĐƠN!</p>";
                     }
+
+                    if (order.PaymentType != 3 && acc.RoleID != 0)
+                    {
+                        error += "<p>- Đơn hàng này <strong>gửi Proship</strong> nhưng <strong>Không gửi thu hộ</strong>. Nếu có lý do thì báo chị Ngọc xử lý nhé!</p>";
+                    }
                 }
                 else if (order.ShippingType == 4)
                 {
@@ -225,6 +230,11 @@ namespace IM_PJ
                     else
                     {
                         error += "<p>- Đơn hàng này <strong>gửi GHTK</strong> nhưng <strong>chưa nhập</strong> MÃ VẬN ĐƠN!</p>";
+                    }
+
+                    if (order.PaymentType != 3 && acc.RoleID != 0)
+                    {
+                        error += "<p>- Đơn hàng này <strong>gửi GHTK</strong> nhưng <strong>Không gửi thu hộ</strong>. Nếu có lý do thì báo chị Ngọc xử lý nhé!</p>";
                     }
                 }
                 else if (order.ShippingType == 7)
@@ -274,6 +284,10 @@ namespace IM_PJ
                 if (order.ShippingType == 4)
                 {
                     ltrPrintButton.Text += "<a class=\"btn show-transport-info\" href=\"javascript:;\" onclick=\"showTransportInfo()\">Hiện thông tin nhà xe</a>";
+                }
+                if (order.ShippingType == 3 && order.PaymentType == 3)
+                {
+                    ltrPrintButton.Text += "<a class=\"btn show-transport-info\" href=\"https://proship.vn/quan-ly-van-don/?isInvoiceFilter=1&generalInfo=" + order.ShippingCode + "\" target=\"_blank\">Kiểm tra thu hộ trên Proship</a>";
                 }
                 ltrPrintButton.Text += "</div>";
             }

@@ -166,7 +166,7 @@
 
         function printIt() {
             swal({
-                title: "Coi lại lần cuối nờ",
+                title: "Coi lại lần cuối nè",
                 text: "Phiếu gửi hàng đúng thông tin hết chưa và có gửi cho khách xem chưa?",
                 type: "warning",
                 showCancelButton: true,

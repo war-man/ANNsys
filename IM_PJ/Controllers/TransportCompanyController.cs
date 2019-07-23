@@ -39,6 +39,7 @@ namespace IM_PJ.Controllers
                 companyNew.CreatedBy = company.CreatedBy;
                 companyNew.ModifiedDate = null;
                 companyNew.ModifiedBy = null;
+                companyNew.Status = company.Status;
 
                 connect.tbl_TransportCompany.Add(companyNew);
                 connect.SaveChanges();
@@ -70,6 +71,7 @@ namespace IM_PJ.Controllers
                 companyNew.CreatedBy = company.CreatedBy;
                 companyNew.ModifiedDate = null;
                 companyNew.ModifiedBy = null;
+                companyNew.Status = company.Status;
 
                 connect.tbl_TransportCompany.Add(companyNew);
                 connect.SaveChanges();
@@ -98,6 +100,7 @@ namespace IM_PJ.Controllers
                     target.COD = company.COD;
                     target.ModifiedDate = DateTime.Now;
                     target.ModifiedBy = company.ModifiedBy;
+                    target.Status = target.Status;
 
                     connect.SaveChanges();
                 }
@@ -144,6 +147,7 @@ namespace IM_PJ.Controllers
                     target.Note = company.Note;
                     target.ModifiedDate = DateTime.Now;
                     target.ModifiedBy = company.ModifiedBy;
+                    target.Status = target.Status;
 
                     connect.SaveChanges();
                 }

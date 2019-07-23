@@ -965,7 +965,7 @@
                 }
                 else {
                     $("#<%=pFeeShip.ClientID%>").prop('disabled', true).css("background-color", "#eeeeee").val(0);
-                    swal("Thông báo", "Đã chọn miễn phí vận chuyển cho đơn hàng này", "success");
+                    swal("Thông báo", "Đã chọn miễn phí vận chuyển cho đơn hàng này<br><strong>Hãy ghi chú lý do miễn phí vận chuyển!!!</strong>", "success");
                     getAllPrice();
                     $("#calfeeship").html("<i class=\"fa fa-pencil-square-o\" aria-hidden=\"true\"></i> Tính phí").css("background-color", "#f87703");
                 }
@@ -1733,7 +1733,7 @@
                 var fs = $("#<%=pFeeShip.ClientID%>").val();
                 var feeship = parseFloat(fs.replace(/\,/g, ''));
 
-                if (shippingtype == 2 || shippingtype == 3) {
+                if (shippingtype == 2 || shippingtype == 3 || shippingtype == 6 || shippingtype == 7) {
                     if (feeship == 0 && $("#<%=pFeeShip.ClientID%>").is(":disabled") == false) {
                         $("#<%=pFeeShip.ClientID%>").focus();
                         swal({

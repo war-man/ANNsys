@@ -60,6 +60,7 @@ namespace IM_PJ
             transportCompanyNew.COD = Convert.ToBoolean(this.rdbCOD.SelectedValue);
             transportCompanyNew.Note = this.pNote.Text;
             transportCompanyNew.CreatedBy = username;
+            transportCompanyNew.Status = 1;
 
             int ID = TransportCompanyController.InsertTransportCompany(transportCompanyNew);
 

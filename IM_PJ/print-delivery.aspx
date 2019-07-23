@@ -14,12 +14,12 @@
     <asp:Literal ID="ltrPrintDelivery" runat="server"></asp:Literal>
     <asp:Literal ID="ltrPrintEnable"  runat="server"></asp:Literal>
     <script type="text/javascript">
-        //window.onload = setTimeout(function () {
-        //    if ($(".print-enable").hasClass("true")) {
-        //        window.print();
-        //        setTimeout(function () { window.close(); }, 1);
-        //    }
-        //}, 1500);
+        window.onload = setTimeout(function () {
+            if ($(".print-enable").hasClass("true")) {
+                window.print();
+                setTimeout(function () { window.close(); }, 1);
+            }
+        }, 1500);
     </script> 
 </body>
 </html>
