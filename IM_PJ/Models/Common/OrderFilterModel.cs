@@ -57,5 +57,9 @@ namespace IM_PJ.Models
         public DateTime? transferFromDate { get; set; }
         public DateTime? transferToDate { get; set; }
         public string orderNote { get; set; } = String.Empty;
+        // Bộ lọc đã chon cho in report
+        public bool selected { get; set; } = false;
+        // Người đang thực hiện filter
+        public tbl_Account account { get; set; }
     }
 }

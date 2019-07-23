@@ -212,7 +212,9 @@ namespace IM_PJ
                     //deliveryStart = DeliveryStartAt, // DeliveryStartAt
                     deliveryTimes = DeliveryTimes, // DeliveryTimes
                     deliveryStatus = DeliveryStatus,
-                    invoiceStatus = InvoiceStatus
+                    invoiceStatus = InvoiceStatus,
+                    selected = isDeliverySession,
+                    account = acc
                 };
                 // Create pagination
                 var page = new PaginationMetadataModel()
@@ -224,50 +226,30 @@ namespace IM_PJ
 
                 var deliverySession = SessionController.getDeliverySession(acc);
                 hdfSession.Value = JsonConvert.SerializeObject(deliverySession);
-                if (isDeliverySession)
-                {
-                    // Chỉ lấy những order đã check
-                    rs = rs.Join(
-                            deliverySession,
-                            ord => ord.ID,
-                            del => del.OrderID,
-                            (ord, del) => ord
-                        )
-                        .Select(x =>
-                        {
-                            x.CheckDelivery = true;
-                            return x;
-                        })
-                        .Distinct()
-                        .ToList();
-                }
-                else
-                {
-                    // Đánh dấu check cho các order đã được check
-                    rs = rs.GroupJoin(
-                            deliverySession,
-                            ord => ord.ID,
-                            del => del.OrderID,
-                            (ord, del) => new { ord, del }
-                        )
-                        .SelectMany(
-                            x => x.del.DefaultIfEmpty(),
-                            (parent, child) => {
-                                if (child != null)
-                                {
-                                    parent.ord.CheckDelivery = true;
-                                }
-                                else
-                                {
-                                    parent.ord.CheckDelivery = false;
-                                }
-                                return parent;
+                // Đánh dấu check cho các order đã được check
+                rs = rs.GroupJoin(
+                        deliverySession,
+                        ord => ord.ID,
+                        del => del.OrderID,
+                        (ord, del) => new { ord, del }
+                    )
+                    .SelectMany(
+                        x => x.del.DefaultIfEmpty(),
+                        (parent, child) => {
+                            if (child != null)
+                            {
+                                parent.ord.CheckDelivery = true;
                             }
-                        )
-                        .Select(x => x.ord)
-                        .Distinct()
-                        .ToList();
-                }
+                            else
+                            {
+                                parent.ord.CheckDelivery = false;
+                            }
+                            return parent;
+                        }
+                    )
+                    .Select(x => x.ord)
+                    .Distinct()
+                    .ToList();
 
                 pagingall(rs, page);
 

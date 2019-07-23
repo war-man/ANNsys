@@ -1,4 +1,5 @@
 ﻿using IM_PJ.Models;
+using Newtonsoft.Json;
 using NHST.Bussiness;
 using System;
 using System.Collections.Generic;
@@ -10,6 +11,7 @@ using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Script.Serialization;
 using WebUI.Business;
+
 
 namespace IM_PJ.Controllers
 {
@@ -540,6 +542,14 @@ namespace IM_PJ.Controllers
                             String.IsNullOrEmpty(x.OrderNote)
                         );
                     }
+                }
+                // Filter những order được chọn để in report
+                if (filter.selected && filter.account != null)
+                {
+                    var deliverySession = SessionController.getDeliverySession(filter.account);
+                    var orderSelected = deliverySession.Select(x => x.OrderID).ToList();
+                    // Chỉ lấy những order đã check
+                    orders = orders.Where(x => orderSelected.Contains(x.ID));
                 }
                 #endregion
 
