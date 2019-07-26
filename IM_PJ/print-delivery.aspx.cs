@@ -60,6 +60,7 @@ namespace IM_PJ
                 .Distinct()
                 .OrderBy(o => o)
                 .ToList();
+            decimal totalMoneyCollection = 0;
 
             ltrPrintDelivery.Text = String.Empty;
             foreach (var shipperID in shippers)
@@ -78,7 +79,7 @@ namespace IM_PJ
 
                     if (transforData.Transports.Count > 0)
                     {
-                        ltrPrintDelivery.Text += getTransportReportHTML(transforData, shipperID, timers);
+                        ltrPrintDelivery.Text += getTransportReportHTML(transforData, shipperID, timers, ref totalMoneyCollection);
                         // Update Delivery
                         DeliveryController.udpateAfterPrint(shipperID, transforOrders, acc.ID, timers);
                     }
@@ -95,11 +96,16 @@ namespace IM_PJ
 
                     if (shipperData.Count > 0)
                     {
-                        ltrPrintDelivery.Text += getShipperReportHTML(shipperData, shipperID);
+                        ltrPrintDelivery.Text += getShipperReportHTML(shipperData, shipperID, ref totalMoneyCollection);
                         // Update Delivery
                         DeliveryController.udpateAfterPrint(shipperID, orders, acc.ID, timers);
                     }
                 }
+            }
+
+            if (totalMoneyCollection > 0)
+            {
+                ltrPrintDelivery.Text += getMoneyCollectionHTML(totalMoneyCollection);
             }
             
             if (!String.IsNullOrEmpty(ltrPrintDelivery.Text))
@@ -112,7 +118,7 @@ namespace IM_PJ
             }
         }
 
-        public string getTransportReportHTML(TransportReport data, int shipperID, int deliveryTimes)
+        public string getTransportReportHTML(TransportReport data, int shipperID, int deliveryTimes, ref decimal moneyCollection)
         {
             var html = new StringBuilder();
             int index = 0;
@@ -210,6 +216,7 @@ namespace IM_PJ
                     html.AppendLine(String.Format("                            <td>{0}</td>", item.CustomerName.ToTitleCase()));
                     html.AppendLine(String.Format("                            <td style='text-align: right'>{0:#,###}</td>", item.Collection));
                     html.AppendLine("                        </tr>");
+                    moneyCollection += item.Collection;
                 }
                 html.AppendLine("                        <tr>");
                 html.AppendLine("                            <td colspan='3' style='text-align: right'>Tổng số đơn</td>");
@@ -233,7 +240,7 @@ namespace IM_PJ
             return html.ToString();
         }
 
-        public string getShipperReportHTML(List<ShipperReport> data, int shipperID)
+        public string getShipperReportHTML(List<ShipperReport> data, int shipperID, ref decimal moneyCollection)
         {
             var html = new StringBuilder();
             var index = 0;
@@ -306,6 +313,7 @@ namespace IM_PJ
                 html.AppendLine("                            <td colspan='3' style='text-align: right'>Tổng thu hộ</td>");
                 html.AppendLine(String.Format("                            <td style='text-align: right'>{0:#,###}</td>", totalMoneyCollection));
                 html.AppendLine("                        </tr>");
+                moneyCollection += totalMoneyCollection;
             }
             if (totalPrice > 0)
             {
@@ -324,5 +332,41 @@ namespace IM_PJ
             return html.ToString();
         }
 
+        public string getMoneyCollectionHTML(decimal totalMoneyCollection)
+        {
+            var html = new StringBuilder();
+
+            html.AppendLine("<h1>Tổng kết số tiền thu hộ</h1>");
+            html.AppendLine("<div class='delivery'>");
+            html.AppendLine("    <div class='all'>");
+            html.AppendLine("        <div class='body'>");
+            html.AppendLine("            <div class='table-2'>");
+            html.AppendLine("                <table>");
+            html.AppendLine("                    <colgroup>");
+            html.AppendLine("                        <col />");
+            html.AppendLine("                        <col />");
+            html.AppendLine("                        <col />");
+            html.AppendLine("                        <col />");
+            html.AppendLine("                    </colgroup>");
+            html.AppendLine("                    <thead>");
+            html.AppendLine("                        <th></th>");
+            html.AppendLine("                        <th></th>");
+            html.AppendLine("                        <th></th>");
+            html.AppendLine("                        <th></th>");
+            html.AppendLine("                    </thead>");
+            html.AppendLine("                    <tbody>");
+            html.AppendLine("                        <tr>");
+            html.AppendLine("                            <td colspan='3' style='text-align: right'>Tổng thu hộ</td>");
+            html.AppendLine(String.Format("                            <td style='text-align: right'>{0:#,###}</td>", totalMoneyCollection));
+            html.AppendLine("                        </tr>");
+            html.AppendLine("                    </tbody>");
+            html.AppendLine("                </table>");
+            html.AppendLine("            </div>");
+            html.AppendLine("        </div>");
+            html.AppendLine("    </div>");
+            html.AppendLine("</div>");
+
+            return html.ToString();
+        }
     }
 }

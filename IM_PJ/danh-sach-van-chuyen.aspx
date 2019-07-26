@@ -1111,8 +1111,8 @@
                 let shippingType = parent.data("shippingtype");
                 let deliveryTimes = +parent.data("deliverytimes") || 0;
                 let deliveryStatus = +parent.data("deliverystatus") || 2;
-                let COD = +parent.data["coloford"] || 0;
-                let ShippingFee = +parent.data["cosofdev"] || 0;
+                let COD = +parent.data("coloford").replace(",", "") || 0;
+                let ShippingFee = +parent.data("cosofdev").replace(",", "") || 0;
                 // Thông báo khi order được chọn in đã được chuyển trạng thái hoàng tất đơn hàng
                 if (self.is(":checked"))
                 {
