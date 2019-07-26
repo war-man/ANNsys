@@ -152,7 +152,7 @@
                 constructor(
                     uuid,
                     productID,
-                    productVariableID,
+                    variableID,
                     sku,
                     title,
                     image,
@@ -171,7 +171,7 @@
                 {
                     this.uuid = uuid;
                     this.productID = productID;
-                    this.productVariableID = productVariableID;
+                    this.variableID = variableID;
                     this.sku = sku;
                     this.title = title;
                     this.image = image;
@@ -422,7 +422,7 @@
 
                                     products.forEach(product => {
                                         if (product.productID == item.productID &&
-                                            product.productVariableID == item.productVariableID &&
+                                            product.variableID == item.variableID &&
                                             product.floor == item.floor &&
                                             product.row == item.row &&
                                             product.shelf == item.shelf &&
@@ -439,7 +439,7 @@
                                         let productNew = new Product(
                                             uuid.v4(),
                                             item.productID,
-                                            item.productVariableID,
+                                            item.variableID,
                                             item.sku,
                                             item.title,
                                             item.image,

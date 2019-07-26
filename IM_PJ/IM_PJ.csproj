@@ -442,13 +442,25 @@
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="danh-sach-dang-ky.aspx" />
+    <Content Include="danh-sach-nhap-hang.aspx" />
     <Content Include="danh-sach-van-chuyen.aspx" />
     <Content Include="danh-sach-chuyen-khoan.aspx" />
     <Content Include="FilesResources\ToolContentAccount.xml" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="chuyen-ke.aspx" />
     <Content Include="login-hidden-page.aspx" />
+    <Content Include="Models\IMModel.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>IMModel.edmx</DependentUpon>
+      <LastGenOutput>IMModel.Context.cs</LastGenOutput>
+    </Content>
+    <Content Include="Models\IMModel.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>IMModel.edmx</DependentUpon>
+      <LastGenOutput>IMModel.cs</LastGenOutput>
+    </Content>
     <Content Include="print-delivery.aspx" />
+    <Content Include="dang-ky-nhap-hang.aspx" />
     <Content Include="Scripts\bootstrap-datetimepicker.js" />
     <Content Include="Scripts\bootstrap-datetimepicker.min.js" />
     <Content Include="Scripts\bootstrap.js" />
@@ -462,6 +474,13 @@
     <Content Include="App_Themes\Ann\css\bootstrap\glyphicons-halflings-regular.eot" />
     <Content Include="App_Themes\Ann\css\bootstrap\glyphicons-halflings-regular.ttf" />
     <Content Include="App_Themes\Ann\css\bootstrap\glyphicons-halflings-regular.woff" />
+    <EntityDeploy Include="Models\IMModel.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>IMModel.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <Content Include="Models\IMModel.edmx.diagram">
+      <DependentUpon>IMModel.edmx</DependentUpon>
+    </Content>
     <None Include="Properties\PublishProfiles\ANN.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
@@ -552,16 +571,9 @@
     <Content Include="xem-bv.aspx" />
     <Content Include="xem-sp.aspx" />
     <Content Include="xem-san-pham.aspx" />
-    <EntityDeploy Include="Models\IMModel.edmx">
-      <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>IMModel.Designer.cs</LastGenOutput>
-    </EntityDeploy>
     <Content Include="getImageByLink.aspx" />
     <Content Include="gia-tri-thuoc-tinh-san-pham.aspx" />
     <Content Include="kiem-kho.aspx" />
-    <Content Include="Models\IMModel.edmx.diagram">
-      <DependentUpon>IMModel.edmx</DependentUpon>
-    </Content>
     <Content Include="App_Themes\Ann\css\accepted.exceptions.php" />
     <Content Include="App_Themes\Ann\css\style.css.map" />
     <Content Include="App_Themes\Ann\fonts\font-awesome-4.7\fonts\fontawesome-webfont.eot" />
@@ -610,16 +622,6 @@
     <None Include="compilerconfig.json.defaults">
       <DependentUpon>compilerconfig.json</DependentUpon>
     </None>
-    <Content Include="Models\IMModel.Context.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>IMModel.edmx</DependentUpon>
-      <LastGenOutput>IMModel.Context.cs</LastGenOutput>
-    </Content>
-    <Content Include="Models\IMModel.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>IMModel.edmx</DependentUpon>
-      <LastGenOutput>IMModel.cs</LastGenOutput>
-    </Content>
     <Content Include="pos.aspx" />
     <Content Include="quan-ly-dai-ly.aspx" />
     <Content Include="quan-ly-danh-muc-san-pham.aspx" />
@@ -836,6 +838,7 @@
     <Compile Include="Controllers\PostCategoryController.cs" />
     <Compile Include="Controllers\PostController.cs" />
     <Compile Include="Controllers\PostImageController.cs" />
+    <Compile Include="Controllers\RegisterProductController.cs" />
     <Compile Include="Controllers\SessionController.cs" />
     <Compile Include="Controllers\ShipperController.cs" />
     <Compile Include="danh-sach-dang-ky.aspx.cs">
@@ -844,6 +847,13 @@
     </Compile>
     <Compile Include="danh-sach-dang-ky.aspx.designer.cs">
       <DependentUpon>danh-sach-dang-ky.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="danh-sach-nhap-hang.aspx.cs">
+      <DependentUpon>danh-sach-nhap-hang.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="danh-sach-nhap-hang.aspx.designer.cs">
+      <DependentUpon>danh-sach-nhap-hang.aspx</DependentUpon>
     </Compile>
     <Compile Include="danh-sach-van-chuyen.aspx.cs">
       <DependentUpon>danh-sach-van-chuyen.aspx</DependentUpon>
@@ -890,6 +900,14 @@
     <Compile Include="Models\Common\PaginationMetadataModel.cs" />
     <Compile Include="Models\Common\OrderFilterModel.cs" />
     <Compile Include="Models\Common\ProductFilterModel.cs" />
+    <Compile Include="bv.aspx.cs">
+      <DependentUpon>bv.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="bv.aspx.designer.cs">
+      <DependentUpon>bv.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Common\RegisterProductFilterModel.cs" />
     <Compile Include="Models\Delivery.cs">
       <DependentUpon>IMModel.tt</DependentUpon>
     </Compile>
@@ -899,7 +917,25 @@
     <Compile Include="Models\FeeType.cs">
       <DependentUpon>IMModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\IMModel.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>IMModel.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\IMModel.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\IMModel.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>IMModel.edmx</DependentUpon>
+    </Compile>
     <Compile Include="Models\Register.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\RegisterProduct.cs">
       <DependentUpon>IMModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Session.cs">
@@ -911,6 +947,66 @@
     <Compile Include="Models\Shipper.cs">
       <DependentUpon>IMModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\tbl_Account.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\tbl_AccountInfo.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\tbl_Agent.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\tbl_AgentProduct.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\tbl_AgentProductVariable.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\tbl_Category.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\tbl_CheckWarehouse.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\tbl_CheckWarehouseDetail.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\tbl_Config.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\tbl_Customer.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\tbl_CustomerLevel.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\tbl_Discount.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\tbl_DiscountCustomer.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\tbl_DiscountGroup.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\tbl_LinkImnage.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\tbl_MovePro.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\tbl_MoveProdDetail.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\tbl_Order.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\tbl_OrderDetail.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\tbl_OrderReturnGood.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\tbl_Post.cs">
       <DependentUpon>IMModel.tt</DependentUpon>
     </Compile>
@@ -920,12 +1016,53 @@
     <Compile Include="Models\tbl_PostImage.cs">
       <DependentUpon>IMModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="bv.aspx.cs">
-      <DependentUpon>bv.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
+    <Compile Include="Models\tbl_Product.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="bv.aspx.designer.cs">
-      <DependentUpon>bv.aspx</DependentUpon>
+    <Compile Include="Models\tbl_ProductImage.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\tbl_ProductVariable.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\tbl_ProductVariableImage.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\tbl_ProductVariableValue.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\tbl_Province.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\tbl_RefundGoods.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\tbl_RefundGoodsDetails.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\tbl_Role.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\tbl_SessionInOu.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\tbl_StockManager.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\tbl_Supplier.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\tbl_TransportCompany.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\tbl_Variable.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\tbl_VariableValue.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\tbl_WhiteDomain.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
     </Compile>
     <Compile Include="print-delivery.aspx.cs">
       <DependentUpon>print-delivery.aspx</DependentUpon>
@@ -933,6 +1070,13 @@
     </Compile>
     <Compile Include="print-delivery.aspx.designer.cs">
       <DependentUpon>print-delivery.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="dang-ky-nhap-hang.aspx.cs">
+      <DependentUpon>dang-ky-nhap-hang.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="dang-ky-nhap-hang.aspx.designer.cs">
+      <DependentUpon>dang-ky-nhap-hang.aspx</DependentUpon>
     </Compile>
     <Compile Include="san-pham-theo-ke.aspx.cs">
       <DependentUpon>san-pham-theo-ke.aspx</DependentUpon>
@@ -982,18 +1126,6 @@
     <Compile Include="Models\ProfitReportModel.cs" />
     <Compile Include="Models\RefundDetailModel.cs" />
     <Compile Include="Models\RefundGoodModel.cs" />
-    <Compile Include="Models\tbl_Customer.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\tbl_Order.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\tbl_StockManager.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\tbl_TransportCompany.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
-    </Compile>
     <Compile Include="print-invoice-return.aspx.cs">
       <DependentUpon>print-invoice-return.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -1246,117 +1378,6 @@
       <DependentUpon>MasterPage.Master</DependentUpon>
     </Compile>
     <Compile Include="Models\IdentityModels.cs" />
-    <Compile Include="Models\IMModel.Context.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>IMModel.Context.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\IMModel.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>IMModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\IMModel.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>IMModel.edmx</DependentUpon>
-    </Compile>
-    <Compile Include="Models\tbl_Account.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\tbl_AccountInfo.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\tbl_Agent.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\tbl_AgentProduct.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\tbl_AgentProductVariable.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\tbl_Category.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\tbl_CheckWarehouse.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\tbl_CheckWarehouseDetail.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\tbl_Config.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\tbl_CustomerLevel.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\tbl_Discount.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\tbl_DiscountCustomer.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\tbl_DiscountGroup.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\tbl_LinkImnage.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\tbl_MovePro.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\tbl_MoveProdDetail.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\tbl_OrderDetail.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\tbl_OrderReturnGood.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\tbl_Product.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\tbl_ProductImage.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\tbl_ProductVariable.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\tbl_ProductVariableImage.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\tbl_ProductVariableValue.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\tbl_Province.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\tbl_RefundGoods.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\tbl_RefundGoodsDetails.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\tbl_Role.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\tbl_SessionInOu.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\tbl_Supplier.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\tbl_Variable.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\tbl_VariableValue.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\tbl_WhiteDomain.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
-    </Compile>
     <Compile Include="pos.aspx.cs">
       <DependentUpon>pos.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>

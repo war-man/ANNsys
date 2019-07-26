@@ -844,6 +844,45 @@ namespace IM_PJ.Controllers
                              .ToList();
             }
         }
+
+        public static List<tbl_StockManager> getStock(int productID, int variableID)
+        {
+            using (var con = new inventorymanagementEntities())
+            {
+                var stockLast = con.tbl_StockManager
+                    .Where(x => x.ParentID == productID)
+                    .Where(x => x.ProductVariableID == variableID)
+                    .GroupBy(g => new { productID = g.ParentID.Value, variableID = g.ProductVariableID.Value })
+                    .Select(x => 
+                        new {
+                            productID = x.Key.productID,
+                            variableID = x.Key.variableID,
+                            last = x.Max(m => m.ID)
+                        }
+                    );
+
+                var result = con.tbl_StockManager
+                    .Join(
+                        stockLast,
+                        s => new
+                        {
+                            productID = s.ParentID.Value,
+                            variableID = s.ProductVariableID.Value,
+                            last = s.ID
+                        },
+                        l => new
+                        {
+                            productID = l.productID,
+                            variableID = l.variableID,
+                            last = l.last
+                        },
+                        (s, l) => s
+                    )
+                    .ToList();
+
+                return result;
+            }
+        }
         #endregion
     }
 }

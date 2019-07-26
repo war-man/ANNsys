@@ -25,55 +25,56 @@ namespace IM_PJ.Models
             throw new UnintentionalCodeFirstException();
         }
     
+        public virtual DbSet<Bank> Banks { get; set; }
+        public virtual DbSet<BankAccount> BankAccounts { get; set; }
+        public virtual DbSet<BankTransfer> BankTransfers { get; set; }
+        public virtual DbSet<CategoryShelf> CategoryShelves { get; set; }
+        public virtual DbSet<Delivery> Deliveries { get; set; }
+        public virtual DbSet<Fee> Fees { get; set; }
+        public virtual DbSet<FeeType> FeeTypes { get; set; }
+        public virtual DbSet<Register> Registers { get; set; }
+        public virtual DbSet<RegisterProduct> RegisterProducts { get; set; }
+        public virtual DbSet<Session> Sessions { get; set; }
+        public virtual DbSet<ShelfManager> ShelfManagers { get; set; }
+        public virtual DbSet<Shipper> Shippers { get; set; }
+        public virtual DbSet<tbl_Account> tbl_Account { get; set; }
         public virtual DbSet<tbl_AccountInfo> tbl_AccountInfo { get; set; }
         public virtual DbSet<tbl_Agent> tbl_Agent { get; set; }
         public virtual DbSet<tbl_AgentProduct> tbl_AgentProduct { get; set; }
         public virtual DbSet<tbl_AgentProductVariable> tbl_AgentProductVariable { get; set; }
         public virtual DbSet<tbl_Category> tbl_Category { get; set; }
-        public virtual DbSet<tbl_CustomerLevel> tbl_CustomerLevel { get; set; }
         public virtual DbSet<tbl_CheckWarehouse> tbl_CheckWarehouse { get; set; }
         public virtual DbSet<tbl_CheckWarehouseDetail> tbl_CheckWarehouseDetail { get; set; }
+        public virtual DbSet<tbl_Config> tbl_Config { get; set; }
+        public virtual DbSet<tbl_Customer> tbl_Customer { get; set; }
+        public virtual DbSet<tbl_CustomerLevel> tbl_CustomerLevel { get; set; }
         public virtual DbSet<tbl_Discount> tbl_Discount { get; set; }
         public virtual DbSet<tbl_DiscountCustomer> tbl_DiscountCustomer { get; set; }
         public virtual DbSet<tbl_DiscountGroup> tbl_DiscountGroup { get; set; }
         public virtual DbSet<tbl_LinkImnage> tbl_LinkImnage { get; set; }
         public virtual DbSet<tbl_MovePro> tbl_MovePro { get; set; }
         public virtual DbSet<tbl_MoveProdDetail> tbl_MoveProdDetail { get; set; }
+        public virtual DbSet<tbl_Order> tbl_Order { get; set; }
+        public virtual DbSet<tbl_OrderDetail> tbl_OrderDetail { get; set; }
         public virtual DbSet<tbl_OrderReturnGood> tbl_OrderReturnGood { get; set; }
+        public virtual DbSet<tbl_Post> tbl_Post { get; set; }
+        public virtual DbSet<tbl_PostCategory> tbl_PostCategory { get; set; }
+        public virtual DbSet<tbl_PostImage> tbl_PostImage { get; set; }
+        public virtual DbSet<tbl_Product> tbl_Product { get; set; }
         public virtual DbSet<tbl_ProductImage> tbl_ProductImage { get; set; }
         public virtual DbSet<tbl_ProductVariable> tbl_ProductVariable { get; set; }
         public virtual DbSet<tbl_ProductVariableImage> tbl_ProductVariableImage { get; set; }
         public virtual DbSet<tbl_ProductVariableValue> tbl_ProductVariableValue { get; set; }
         public virtual DbSet<tbl_Province> tbl_Province { get; set; }
+        public virtual DbSet<tbl_RefundGoods> tbl_RefundGoods { get; set; }
         public virtual DbSet<tbl_RefundGoodsDetails> tbl_RefundGoodsDetails { get; set; }
         public virtual DbSet<tbl_Role> tbl_Role { get; set; }
         public virtual DbSet<tbl_SessionInOu> tbl_SessionInOu { get; set; }
+        public virtual DbSet<tbl_StockManager> tbl_StockManager { get; set; }
         public virtual DbSet<tbl_Supplier> tbl_Supplier { get; set; }
+        public virtual DbSet<tbl_TransportCompany> tbl_TransportCompany { get; set; }
         public virtual DbSet<tbl_Variable> tbl_Variable { get; set; }
         public virtual DbSet<tbl_VariableValue> tbl_VariableValue { get; set; }
         public virtual DbSet<tbl_WhiteDomain> tbl_WhiteDomain { get; set; }
-        public virtual DbSet<tbl_OrderDetail> tbl_OrderDetail { get; set; }
-        public virtual DbSet<tbl_StockManager> tbl_StockManager { get; set; }
-        public virtual DbSet<tbl_TransportCompany> tbl_TransportCompany { get; set; }
-        public virtual DbSet<tbl_Customer> tbl_Customer { get; set; }
-        public virtual DbSet<tbl_Order> tbl_Order { get; set; }
-        public virtual DbSet<tbl_RefundGoods> tbl_RefundGoods { get; set; }
-        public virtual DbSet<tbl_Config> tbl_Config { get; set; }
-        public virtual DbSet<tbl_Post> tbl_Post { get; set; }
-        public virtual DbSet<tbl_PostCategory> tbl_PostCategory { get; set; }
-        public virtual DbSet<tbl_PostImage> tbl_PostImage { get; set; }
-        public virtual DbSet<tbl_Account> tbl_Account { get; set; }
-        public virtual DbSet<Bank> Banks { get; set; }
-        public virtual DbSet<BankTransfer> BankTransfers { get; set; }
-        public virtual DbSet<Delivery> Deliveries { get; set; }
-        public virtual DbSet<Shipper> Shippers { get; set; }
-        public virtual DbSet<tbl_Product> tbl_Product { get; set; }
-        public virtual DbSet<Fee> Fees { get; set; }
-        public virtual DbSet<FeeType> FeeTypes { get; set; }
-        public virtual DbSet<Session> Sessions { get; set; }
-        public virtual DbSet<Register> Registers { get; set; }
-        public virtual DbSet<BankAccount> BankAccounts { get; set; }
-        public virtual DbSet<CategoryShelf> CategoryShelves { get; set; }
-        public virtual DbSet<ShelfManager> ShelfManagers { get; set; }
     }
 }

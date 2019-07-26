@@ -83,4 +83,12 @@ namespace IM_PJ.Models
         Shelf = 3,          // Kệ
         FloorShelf = 4      // Tần của kệ
     }
+
+    public enum RegisterProductStatus
+    {
+        NoApprove = 1,      // Chưa được duyệt
+        Approve = 2,        // Đã được duyệt
+        Ordering = 3,       // Đã đặt hàng
+        Done = 4            // Hàng đã về
+    }
 }

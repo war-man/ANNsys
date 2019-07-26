@@ -1760,31 +1760,33 @@ namespace IM_PJ.Controllers
         {
             using (var con = new inventorymanagementEntities())
             {
-                var productFilter = con.tbl_Product.Select(x => x);
-                var productVariableFilter = con.tbl_ProductVariable.Select(x => x);
+                var product = con.tbl_Product
+                    .GroupJoin(
+                        con.tbl_ProductVariable,
+                        p => new { productID = p.ID, productStyle = p.ProductStyle.Value },
+                        v => new { productID = v.ProductID.Value, productStyle = 2 },
+                        (p, v) => new { p, v}
+                    )
+                    .SelectMany(
+                        x => x.v.DefaultIfEmpty(),
+                        (parent, child) => new
+                        {
+                            product = parent.p,
+                            variable = child
+                        }
+                    );
+
 
                 #region Lọc với text search
                 if (!String.IsNullOrEmpty(filter.search))
                 {
                     var search = filter.search.Trim().ToLower();
-                    productFilter = productFilter
+                    product = product
                         .Where(x =>
-                            x.ProductSKU.Trim().ToLower().Contains(search) ||
-                            x.UnSignedTitle.Trim().ToLower().Contains(search)
+                            x.product.ProductSKU.Trim().ToLower().Contains(search) ||
+                            x.variable.SKU.Trim().ToLower().Contains(search) ||
+                            x.product.UnSignedTitle.Trim().ToLower().Contains(search)
                         );
-
-                    productVariableFilter = productVariableFilter
-                        .Join(
-                            con.tbl_Product.Where(x => x.ProductStyle == 2),
-                            v => v.ProductID,
-                            p => p.ID,
-                            (v, p) => new { v, p }
-                        )
-                        .Where(x =>
-                             x.p.ProductSKU.Trim().ToLower().Contains(search) ||
-                             x.p.UnSignedTitle.Trim().ToLower().Contains(search)
-                        )
-                        .Select(x => x.v); ;
                 }
                 #endregion
 
@@ -1794,33 +1796,31 @@ namespace IM_PJ.Controllers
                     var parentCatogory = con.tbl_Category.Where(x => x.ID == filter.category).FirstOrDefault();
                     var catogoryFilter = CategoryController.getCategoryChild(parentCatogory).Select(x => x.ID).ToList();
 
-                    productFilter = productFilter
+                    product = product
                         .Where(x => 
                             catogoryFilter.Contains(
-                                x.CategoryID.HasValue ? x.CategoryID.Value : 0
+                                x.product.CategoryID.HasValue ? x.product.CategoryID.Value : 0
                                 )
                         );
-
-                    productVariableFilter = productVariableFilter
-                        .Join(
-                            con.tbl_Product.Where(x => x.ProductStyle == 2),
-                            v => v.ProductID,
-                            p => p.ID,
-                            (v, p) => new { v, p }
-                        )
-                        .Where(x => catogoryFilter.Contains(x.p.CategoryID.HasValue ? x.p.CategoryID.Value : 0))
-                        .Select(x => x.v);
                 }
                 #endregion
 
                 #region Lọc với số lượng còn hay hết dựa theo kiểm kệ gần nhất
                 if (filter.stockStatus > 0)
                 {
-                    productFilter = productFilter
+                    product = product
                         .GroupJoin(
                             con.ShelfManagers.Where(x => x.ProductVariableID == 0),
-                            p => p.ID,
-                            s => s.ProductID,
+                            p => new
+                            {
+                                productID = p.product.ID,
+                                variableID = p.variable != null ? p.variable.ID : 0
+                            },
+                            s => new
+                            {
+                                productID = s.ProductID,
+                                variableID = s.ProductVariableID
+                            },
                             (p, s) => new { p, s }
                         )
                         .SelectMany(
@@ -1836,33 +1836,6 @@ namespace IM_PJ.Controllers
                             (filter.stockStatus == (int)StockStatus.stockOut && x.quantity <= 0)
                         )
                         .Select(x => x.product);
-
-                    productVariableFilter = productVariableFilter
-                        .GroupJoin(
-                            con.ShelfManagers.Where(x => x.ProductVariableID != 0),
-                            pv => new {
-                                productID = pv.ProductID.Value,
-                                productVariableID = pv.ID
-                            },
-                            s => new {
-                                productID = s.ProductID,
-                                productVariableID = s.ProductVariableID
-                            },
-                            (pv, s) => new { pv, s }
-                        )
-                        .SelectMany(
-                            x => x.s.DefaultIfEmpty(),
-                            (parent, child) => new
-                            {
-                                productVariable = parent.pv,
-                                quantity = child != null ? child.Quantity : 0
-                            }
-                        )
-                        .Where(x =>
-                            (filter.stockStatus == (int)StockStatus.stocking && x.quantity > 0) ||
-                            (filter.stockStatus == (int)StockStatus.stockOut && x.quantity <= 0)
-                        )
-                        .Select(x => x.productVariable);
                 }
                 #endregion
 
@@ -1873,121 +1846,107 @@ namespace IM_PJ.Controllers
                     DateTime todate = DateTime.Now;
                     CalDate(filter.productDate, ref fromdate, ref todate);
 
-                    productFilter = productFilter
-                        .Where(x => x.CreatedDate >= fromdate)
-                        .Where(x => x.CreatedDate <= todate);
-
-                    productVariableFilter = productVariableFilter
-                        .Where(x => x.CreatedDate >= fromdate)
-                        .Where(x => x.CreatedDate <= todate);
+                    product = product
+                        .Where(x =>
+                            (x.product.CreatedDate >= fromdate && x.product.CreatedDate <= todate) ||
+                            (
+                                x.variable != null && 
+                                (
+                                    x.variable.CreatedDate >= fromdate && 
+                                    x.variable.CreatedDate <= todate
+                                )
+                            )
+                        );
                 }
                 #endregion
 
                 #region Lọc với màu
                 if(!String.IsNullOrEmpty(filter.color))
                 {
-                    productFilter = productFilter.Where(x => x.ProductStyle == 2);
-
-                    productVariableFilter = productVariableFilter.Where(x => x.color == filter.color.Trim().ToLower());
+                    product = product
+                            .Where(x => x.product.ProductStyle == 2)
+                            .Where(x => x.variable.color == filter.color.Trim().ToLower());
                 }
                 #endregion
 
                 #region Lọc với size
                 if (!String.IsNullOrEmpty(filter.size))
                 {
-                    productFilter = productFilter.Where(x => x.ProductStyle == 2);
-
-                    productVariableFilter = productVariableFilter.Where(x => x.size == filter.size.Trim().ToLower());
+                    product = product
+                            .Where(x => x.product.ProductStyle == 2)
+                            .Where(x => x.variable.size == filter.size.Trim().ToLower());
                 }
                 #endregion
 
                 #region Lọc với sắp xếp kệ
                 if (filter.floor > 0)
                 {
-                    var temp1 = productFilter
+                    var temp = product
                         .Join(
                             con.ShelfManagers.Where(x => x.ProductVariableID == 0),
-                            p => p.ID,
-                            s => s.ProductID,
-                            (p, s) => new { p, s }
-                        )
-                        .Where(x => x.s.Floor == filter.floor);
-
-                    var temp2 = productVariableFilter
-                        .Join(
-                            con.ShelfManagers.Where(x => x.ProductVariableID != 0),
-                            pv => new {
-                                productID = pv.ProductID.Value,
-                                productVariableID = pv.ID
+                            p => new
+                            {
+                                productID = p.product.ID,
+                                variableID = p.variable != null ? p.variable.ID : 0
                             },
-                            s => new {
+                            s => new
+                            {
                                 productID = s.ProductID,
-                                productVariableID = s.ProductVariableID
+                                variableID = s.ProductVariableID
                             },
-                            (pv, s) => new { pv, s }
+                            (p, s) => new { p, s }
                         )
                         .Where(x => x.s.Floor == filter.floor);
 
                     if (filter.row > 0)
                     {
-                        temp1 = temp1.Where(x => x.s.Row == filter.row);
-                        temp2 = temp2.Where(x => x.s.Row == filter.row);
+                        temp = temp.Where(x => x.s.Row == filter.row);
 
                         if(filter.shelf > 0)
                         {
-                            temp1 = temp1.Where(x => x.s.Shelf == filter.shelf);
-                            temp2 = temp2.Where(x => x.s.Shelf == filter.shelf);
+                            temp = temp.Where(x => x.s.Shelf == filter.shelf);
 
                             if (filter.floorShelf > 0)
                             {
-                                temp1 = temp1.Where(x => x.s.FloorShelf == filter.floorShelf);
-                                temp2 = temp2.Where(x => x.s.FloorShelf == filter.floorShelf);
+                                temp = temp.Where(x => x.s.FloorShelf == filter.floorShelf);
                             }
                         }
                     }
 
-                    productFilter = productFilter
+                    product = product
                         .Join(
-                            temp1.Select(x => x.p),
-                            p => p.ID,
-                            t1 => t1.ID,
-                            (p, t1) => p
-                        );
-
-                    productVariableFilter = productVariableFilter
-                        .Join(
-                            temp2.Select(x => x.pv),
-                            pv => pv.ID,
-                            t2 => t2.ID,
-                            (pv, t2) => pv
+                            temp.Select(x => x.p),
+                            p => new
+                            {
+                                productID = p.product.ID,
+                                variableID = p.variable != null ? p.variable.ID : 0
+                            },
+                            t => new
+                            {
+                                productID = t.product.ID,
+                                variableID = t.variable != null ? t.variable.ID : 0
+                            },
+                            (p, t) => p
                         );
                 }
                 #endregion
 
                 #region Lấy những thông tin cần thiết để tiếp tục phân trang
-                var dataPagination = productFilter
-                    .GroupJoin(
-                        productVariableFilter,
-                        p => p.ID,
-                        v => v.ProductID,
-                        (p, v) => new { p, v }
-                    )
-                    .SelectMany(
-                        x => x.v.DefaultIfEmpty(),
-                        (parent, child) => new
+                var dataPagination = product
+                    .Select(x => new
                         {
-                            categoryID = parent.p.CategoryID.Value,
-                            productID = parent.p.ID,
-                            productVariableID = child != null ? child.ID : 0,
-                            sku = child != null ? child.SKU : parent.p.ProductSKU,
-                            title = parent.p.ProductTitle,
-                            image = child != null ? child.Image : parent.p.ProductImage,
-                            materials = parent.p.Materials,
-                            content = parent.p.ProductContent,
-                            costOfGood = child != null ? child.CostOfGood.Value : parent.p.CostOfGood.Value,
-                            regularPrice = child != null ? child.Regular_Price.Value : parent.p.Regular_Price.Value,
-                            retailPrice = child != null ? child.RetailPrice.Value : parent.p.Retail_Price.Value,
-                            craeteDate = child != null ? child.CreatedDate.Value : parent.p.CreatedDate.Value
+                            categoryID = x.product.CategoryID.Value,
+                            productID = x.product.ID,
+                            productVariableID = x.variable != null ? x.variable.ID : 0,
+                            sku = x.variable != null ? x.variable.SKU : x.product.ProductSKU,
+                            title = x.product.ProductTitle,
+                            image = x.variable != null ? x.variable.Image : x.product.ProductImage,
+                            materials = x.product.Materials,
+                            content = x.product.ProductContent,
+                            costOfGood = x.variable != null ? x.variable.CostOfGood.Value : x.product.CostOfGood.Value,
+                            regularPrice = x.variable != null ? x.variable.Regular_Price.Value : x.product.Regular_Price.Value,
+                            retailPrice = x.variable != null ? x.variable.RetailPrice.Value : x.product.Retail_Price.Value,
+                            craeteDate = x.variable != null ? x.variable.CreatedDate.Value : x.product.CreatedDate.Value
                         }
                     );
                 #endregion
@@ -2127,7 +2086,7 @@ namespace IM_PJ.Controllers
                     data = new Product()
                     {
                         productID = productFilter.ID,
-                        productVariableID = 0,
+                        variableID = 0,
                         sku = productFilter.ProductSKU,
                         title = productFilter.ProductTitle,
                         image = productFilter.ProductImage,
@@ -2164,7 +2123,7 @@ namespace IM_PJ.Controllers
                     data = new Product()
                     {
                         productID = productVariableFilter.ProductID.Value,
-                        productVariableID = productVariableFilter.ID,
+                        variableID = productVariableFilter.ID,
                         sku = productVariableFilter.SKU,
                         title = title,
                         image = productVariableFilter.Image,
@@ -2176,7 +2135,7 @@ namespace IM_PJ.Controllers
 
                 #region Lấy thông tin kệ
                 var shelf = con.ShelfManagers
-                    .Where(x => x.ProductID == data.productID && x.ProductVariableID == data.productVariableID)
+                    .Where(x => x.ProductID == data.productID && x.ProductVariableID == data.variableID)
                     .Join(
                         con.CategoryShelves.Where(x => x.Level == 1),
                         s => s.Floor,
@@ -2245,7 +2204,7 @@ namespace IM_PJ.Controllers
                         {
                             if (
                                 item.shelf.ProductID == data.productID &&
-                                item.shelf.ProductVariableID == data.productVariableID
+                                item.shelf.ProductVariableID == data.variableID
                                 )
                             {
                                 continue;
@@ -2256,7 +2215,7 @@ namespace IM_PJ.Controllers
                     result.Add(new Product()
                     {
                         productID = data.productID,
-                        productVariableID = data.productVariableID,
+                        variableID = data.variableID,
                         sku = data.sku,
                         title = data.title,
                         image = data.image,
@@ -2296,7 +2255,7 @@ namespace IM_PJ.Controllers
                     result.Add(new Product()
                     {
                         productID = data.productID,
-                        productVariableID = data.productVariableID,
+                        variableID = data.variableID,
                         sku = data.sku,
                         title = data.title,
                         image = data.image,
@@ -2330,7 +2289,7 @@ namespace IM_PJ.Controllers
                         .Where(x => x.Shelf == item.shelf)
                         .Where(x => x.FloorShelf == item.floorShelf)
                         .Where(x => x.ProductID == item.productID)
-                        .Where(x => x.ProductVariableID == item.productVariableID)
+                        .Where(x => x.ProductVariableID == item.variableID)
                         .FirstOrDefault();
 
                     var now = DateTime.Now;
@@ -2351,7 +2310,7 @@ namespace IM_PJ.Controllers
                             Shelf = item.shelf,
                             FloorShelf = item.floorShelf,
                             ProductID = item.productID,
-                            ProductVariableID = item.productVariableID,
+                            ProductVariableID = item.variableID,
                             Quantity = Convert.ToInt32(item.quantity),
                             CreatedBy = requester,
                             CreatedDate = now,
@@ -2376,7 +2335,7 @@ namespace IM_PJ.Controllers
                         .Where(x => x.Shelf == item.shelf)
                         .Where(x => x.FloorShelf == item.floorShelf)
                         .Where(x => x.ProductID == item.productID)
-                        .Where(x => x.ProductVariableID == item.productVariableID)
+                        .Where(x => x.ProductVariableID == item.variableID)
                         .FirstOrDefault();
 
                     var now = DateTime.Now;
@@ -2389,7 +2348,7 @@ namespace IM_PJ.Controllers
                             .Where(x => x.Shelf == shelf)
                             .Where(x => x.FloorShelf == floorShelf)
                             .Where(x => x.ProductID == item.productID)
-                            .Where(x => x.ProductVariableID == item.productVariableID)
+                            .Where(x => x.ProductVariableID == item.variableID)
                             .FirstOrDefault();
 
                         if (prodChage != null)
@@ -2407,7 +2366,7 @@ namespace IM_PJ.Controllers
                                 Shelf = shelf,
                                 FloorShelf = floorShelf,
                                 ProductID = item.productID,
-                                ProductVariableID = item.productVariableID,
+                                ProductVariableID = item.variableID,
                                 Quantity = Convert.ToInt32(item.quantity),
                                 CreatedBy = requester,
                                 CreatedDate = now,
@@ -2422,18 +2381,327 @@ namespace IM_PJ.Controllers
                 }
             }
         }
+
+        public static List<Product> GetAllProduct(ProductFilterModel filter, ref PaginationMetadataModel page)
+        {
+            using (var con = new inventorymanagementEntities())
+            {
+                var product = con.tbl_Product
+                    .GroupJoin(
+                        con.tbl_ProductVariable,
+                        p => new { productID = p.ID, productStyle = p.ProductStyle.Value },
+                        v => new { productID = v.ProductID.Value, productStyle = 2 },
+                        (p, v) => new { p, v }
+                    )
+                    .SelectMany(
+                        x => x.v.DefaultIfEmpty(),
+                        (parent, child) => new
+                        {
+                            product = parent.p,
+                            variable = child
+                        }
+                    );
+
+
+                #region Lọc với text search
+                if (!String.IsNullOrEmpty(filter.search))
+                {
+                    var search = filter.search.Trim().ToLower();
+                    product = product
+                        .Where(x =>
+                            x.product.ProductSKU.Trim().ToLower().Contains(search) ||
+                            x.variable.SKU.Trim().ToLower().Contains(search) ||
+                            x.product.UnSignedTitle.Trim().ToLower().Contains(search)
+                        );
+                }
+                #endregion
+
+                #region Lọc với danh mục
+                if (filter.category > 0)
+                {
+                    var parentCatogory = con.tbl_Category.Where(x => x.ID == filter.category).FirstOrDefault();
+                    var catogoryFilter = CategoryController.getCategoryChild(parentCatogory).Select(x => x.ID).ToList();
+
+                    product = product
+                        .Where(x =>
+                            catogoryFilter.Contains(
+                                x.product.CategoryID.HasValue ? x.product.CategoryID.Value : 0
+                                )
+                        );
+                }
+                #endregion
+
+                #region Lọc với số lượng còn hay hết dựa theo kiểm kệ gần nhất
+                if (filter.stockStatus > 0)
+                {
+                    product = product
+                        .GroupJoin(
+                            con.ShelfManagers.Where(x => x.ProductVariableID == 0),
+                            p => new
+                            {
+                                productID = p.product.ID,
+                                variableID = p.variable != null ? p.variable.ID : 0
+                            },
+                            s => new
+                            {
+                                productID = s.ProductID,
+                                variableID = s.ProductVariableID
+                            },
+                            (p, s) => new { p, s }
+                        )
+                        .SelectMany(
+                            x => x.s.DefaultIfEmpty(),
+                            (parent, child) => new
+                            {
+                                product = parent.p,
+                                quantity = child != null ? child.Quantity : 0
+                            }
+                        )
+                        .Where(x =>
+                            (filter.stockStatus == (int)StockStatus.stocking && x.quantity > 0) ||
+                            (filter.stockStatus == (int)StockStatus.stockOut && x.quantity <= 0)
+                        )
+                        .Select(x => x.product)
+                        .Distinct();
+                }
+                #endregion
+
+                #region Lọc với thời gian khởi tạo sản phẩm
+                if (!String.IsNullOrEmpty(filter.productDate))
+                {
+                    DateTime fromdate = DateTime.Today;
+                    DateTime todate = DateTime.Now;
+                    CalDate(filter.productDate, ref fromdate, ref todate);
+
+                    product = product
+                        .Where(x =>
+                            (x.product.CreatedDate >= fromdate && x.product.CreatedDate <= todate) ||
+                            (
+                                x.variable != null &&
+                                (
+                                    x.variable.CreatedDate >= fromdate &&
+                                    x.variable.CreatedDate <= todate
+                                )
+                            )
+                        );
+                }
+                #endregion
+
+                #region Lọc với màu
+                if (!String.IsNullOrEmpty(filter.color))
+                {
+                    product = product
+                            .Where(x => x.product.ProductStyle == 2)
+                            .Where(x => x.variable.color == filter.color.Trim().ToLower());
+                }
+                #endregion
+
+                #region Lọc với size
+                if (!String.IsNullOrEmpty(filter.size))
+                {
+                    product = product
+                            .Where(x => x.product.ProductStyle == 2)
+                            .Where(x => x.variable.size == filter.size.Trim().ToLower());
+                }
+                #endregion
+
+                #region Lọc với sắp xếp kệ
+                if (filter.floor > 0)
+                {
+                    var temp = product
+                        .Join(
+                            con.ShelfManagers.Where(x => x.ProductVariableID == 0),
+                            p => new
+                            {
+                                productID = p.product.ID,
+                                variableID = p.variable != null ? p.variable.ID : 0
+                            },
+                            s => new
+                            {
+                                productID = s.ProductID,
+                                variableID = s.ProductVariableID
+                            },
+                            (p, s) => new { p, s }
+                        )
+                        .Where(x => x.s.Floor == filter.floor);
+
+                    if (filter.row > 0)
+                    {
+                        temp = temp.Where(x => x.s.Row == filter.row);
+
+                        if (filter.shelf > 0)
+                        {
+                            temp = temp.Where(x => x.s.Shelf == filter.shelf);
+
+                            if (filter.floorShelf > 0)
+                            {
+                                temp = temp.Where(x => x.s.FloorShelf == filter.floorShelf);
+                            }
+                        }
+                    }
+
+                    product = product
+                        .Join(
+                            temp.Select(x => x.p),
+                            p => new
+                            {
+                                productID = p.product.ID,
+                                variableID = p.variable != null ? p.variable.ID : 0
+                            },
+                            t => new
+                            {
+                                productID = t.product.ID,
+                                variableID = t.variable != null ? t.variable.ID : 0
+                            },
+                            (p, t) => p
+                        );
+                }
+                #endregion
+
+                #region Lấy những thông tin cần thiết để tiếp tục phân trang
+                var data = product
+                    .Select(x => new
+                    {
+                        categoryID = x.product.CategoryID.Value,
+                        productID = x.product.ID,
+                        variableID = x.variable != null ? x.variable.ID : 0,
+                        sku = x.variable != null ? x.variable.SKU : x.product.ProductSKU,
+                        title = x.product.ProductTitle,
+                        image = x.variable != null ? x.variable.Image : x.product.ProductImage,
+                        materials = x.product.Materials,
+                        content = x.product.ProductContent,
+                        costOfGood = x.variable != null ? x.variable.CostOfGood.Value : x.product.CostOfGood.Value,
+                        regularPrice = x.variable != null ? x.variable.Regular_Price.Value : x.product.Regular_Price.Value,
+                        retailPrice = x.variable != null ? x.variable.RetailPrice.Value : x.product.Retail_Price.Value,
+                        craeteDate = x.variable != null ? x.variable.CreatedDate.Value : x.product.CreatedDate.Value
+                    }
+                    );
+                #endregion
+
+                #region Tính toán phân trang
+                // Calculate pagination
+                page.totalCount = data.Count();
+                page.totalPages = (int)Math.Ceiling(page.totalCount / (double)page.pageSize);
+
+                var dataPagination = data
+                   .OrderByDescending(o => new { o.productID, o.variableID })
+                   .Skip((page.currentPage - 1) * page.pageSize)
+                   .Take(page.pageSize);
+                #endregion
+
+                #region Lấy thông tin của biến thể
+                var colors = con.tbl_ProductVariableValue
+                    .Join(
+                        data.Where(x => x.variableID > 0),
+                        pvv => pvv.ProductVariableID,
+                        d => d.variableID,
+                        (pvv, d) => pvv
+                    )
+                    .Join(
+                        con.tbl_VariableValue.Where(x => x.VariableID == 1),
+                        pvv => pvv.VariableValueID,
+                        vv => vv.ID,
+                        (pvv, vv) => new
+                        {
+                            variableID = pvv.ProductVariableID,
+                            color = vv.VariableValue
+                        }
+                    )
+                    .ToList();
+
+                var sizes = con.tbl_ProductVariableValue
+                    .Join(
+                        data.Where(x => x.variableID > 0),
+                        pvv => pvv.ProductVariableID,
+                        d => d.variableID,
+                        (pvv, d) => pvv
+                    )
+                    .Join(
+                        con.tbl_VariableValue.Where(x => x.VariableID == 2),
+                        pvv => pvv.VariableValueID,
+                        vv => vv.ID,
+                        (pvv, vv) => new
+                        {
+                            variableID = pvv.ProductVariableID,
+                            size = vv.VariableValue
+                        }
+                    )
+                    .ToList();
+                #endregion
+
+                var result = dataPagination
+                    .ToList()
+                    .GroupJoin(
+                        colors,
+                        d => d.variableID,
+                        c => c.variableID,
+                        (d, c) => new { product = d, color = c }
+                    )
+                    .SelectMany(
+                        x => x.color.DefaultIfEmpty(),
+                        (parent, child) => new { product = parent.product, color = child != null? child.color: String.Empty}
+                    )
+                    .GroupJoin(
+                        sizes,
+                        t1 => t1.product.variableID,
+                        s => s.variableID,
+                        (t1, s) => new { product = t1.product, color = t1.color, size = s }
+                    )
+                    .SelectMany(
+                        x => x.size.DefaultIfEmpty(),
+                        (parent, child) => new { product = parent.product, color = parent.color,  size = child != null ? child.size : String.Empty }
+                    )
+                    .Select(x => {
+                        var stock = StockManagerController.getStock(x.product.productID, x.product.variableID);
+                        double quantity = 0;
+
+                        if (stock.Count > 0)
+                        {
+                            quantity = stock
+                            .Select(s => s.Type == 2 ? (s.QuantityCurrent.Value - s.Quantity.Value) : (s.QuantityCurrent.Value + s.Quantity.Value))
+                            .Sum(s => s);
+                        }
+
+                        return new Product()
+                        {
+                            productID = x.product.productID,
+                            variableID = x.product.variableID,
+                            sku = x.product.sku,
+                            title = x.product.title,
+                            image = x.product.image,
+                            color = x.color,
+                            size = x.size,
+                            materials = x.product.materials,
+                            content = x.product.content,
+                            quantity = quantity,
+                            costOfGood = x.product.costOfGood,
+                            regularPrice = x.product.regularPrice,
+                            retailPrice = x.product.retailPrice,
+                            createdDate = x.product.craeteDate
+                        };
+                    })
+                    .ToList();
+
+                return result;
+            }
+        }
         #endregion
         #region Class
         public class Product
         {
             public int productID { get; set; }
-            public int productVariableID { get; set; }
+            public int variableID { get; set; }
             public string sku { get; set; }
             public string title { get; set; }
             public string image { get; set; }
             public string color { get; set; }
             public string size { get; set; }
             public double quantity { get; set; }
+            public string materials { get; set; }
+            public string content { get; set; }
+            public double costOfGood { get; set; }
+            public double regularPrice { get; set; }
+            public double retailPrice { get; set; }
             public int floor { get; set; }
             public string floorName { get; set; }
             public int row { get; set; }
@@ -2442,6 +2710,7 @@ namespace IM_PJ.Controllers
             public string shelfName { get; set; }
             public int floorShelf { get; set; }
             public string floorShelfName { get; set; }
+            public DateTime createdDate { get; set; }
 
         }
         public class ProductShelf
@@ -2469,6 +2738,31 @@ namespace IM_PJ.Controllers
             public int FloorShelf { get; set; }
             public string FloorShelfName { get; set; }
 
+        }
+        public class RegisterProduct
+        {
+            public string customer { get; set; }
+            public int productID { get; set; }
+            public int variableID { get; set; }
+            public string sku { get; set; }
+            public string title { get; set; }
+            public string image { get; set; }
+            public string color { get; set; }
+            public string size { get; set; }
+            public double quantity { get; set; }
+            // Trạng thái đơn yêu cầu nhập hàng
+            public int status { get; set; }
+            // Ngày bên xưởng giao hàng
+            public int expectedDate { get; set; }
+            public string note { get; set; }
+            // Người tạo yêu cầu nhập hàng
+            public int createdBy { get; set; }
+            // Ngày tạo yêu cầu nhập hàng
+            public DateTime createdDate { get; set; }
+            // Người chỉnh yêu cầu nhập hàng
+            public int modifiedBy { get; set; }
+            // Ngày chỉnh yêu cầu nhập hàng
+            public DateTime modifiedDate { get; set; }
         }
         public class ProductSQL
         {
