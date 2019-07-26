@@ -194,5 +194,7 @@ namespace IM_PJ.Controllers
         public DateTime CreatedDate { get; set; }
         public int DeliveryTimes { get; set; }
         public int DeliveryStatus { get; set; }
+        public decimal COD { get; set; }
+        public decimal ShippingFee { get; set; }
     }
 }

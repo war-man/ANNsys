@@ -3,6 +3,7 @@ using MB.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -78,7 +79,7 @@ namespace IM_PJ
                 int averageSoldQuantity = 0;
                 int totalRefundQuantity = 0;
                 int averageRefundQuantity = 0;
-                int totalDays = 0;
+                int day = 0;
 
                 if (!String.IsNullOrEmpty(Request.QueryString["SKU"]))
                 {
@@ -110,25 +111,34 @@ namespace IM_PJ
                 ddlCategory.SelectedValue = CategoryID.ToString();
                 rFromDate.SelectedDate = fromdate;
                 rToDate.SelectedDate = todate;
-                totalDays = Convert.ToInt32((todate - fromdate).TotalDays);
+                day = Convert.ToInt32((todate - fromdate).TotalDays);
 
                 var userReport = OrderController.getProductReport(SKU, CategoryID, user, fromdate, todate);
 
-                totalSoldQuantity = userReport.totalSold;
-                averageSoldQuantity = totalSoldQuantity / totalDays;
+                totalSoldQuantity = userReport.Sum(x => x.totalSold);
+                averageSoldQuantity = totalSoldQuantity / day;
 
                 var userRefundReport = RefundGoodController.getRefundProductReport(SKU, CategoryID, user, fromdate, todate);
 
-                totalRefundQuantity = userRefundReport.totalRefund;
-                averageRefundQuantity = totalRefundQuantity / totalDays;
+                totalRefundQuantity = userRefundReport.Sum(x => x.totalRefund);
+                averageRefundQuantity = totalRefundQuantity / day;
 
-                double totalProfit = (userReport.totalRevenue - userReport.totalCost) - (userRefundReport.totalRevenue - userRefundReport.totalCost) + userRefundReport.totalRefundFee;
+                double totalRevenue = userReport.Sum(x => x.totalRevenue);
+                double totalCost = userReport.Sum(x => x.totalCost);
+                double totalRefundRevenue = userRefundReport.Sum(x => x.totalRevenue);
+                double totalRefundCost = userRefundReport.Sum(x => x.totalCost);
+                double totalRefundFee = userRefundReport.Sum(x => x.totalRefundFee);
+                double totalProfit = (totalRevenue - totalCost) - (totalRefundRevenue - totalRefundCost) + totalRefundFee;
                 // Tổng hệ thống
 
                 var systemReport = OrderController.getProductReport(SKU, CategoryID, "", fromdate, todate);
                 var systemRefundReport = RefundGoodController.getRefundProductReport(SKU, CategoryID, "", fromdate, todate);
-
-                double totalSystemProfit = (systemReport.totalRevenue - systemReport.totalCost) - (systemRefundReport.totalRevenue - systemRefundReport.totalCost) + systemRefundReport.totalRefundFee;
+                double totalRevenueSystem = systemReport.Sum(x => x.totalRevenue);
+                double totalCostSystem = systemReport.Sum(x => x.totalCost);
+                double totalRefundRevenueSystem = systemRefundReport.Sum(x => x.totalRevenue);
+                double totalRefundCostSystem = systemRefundReport.Sum(x => x.totalCost);
+                double totalRefundFeeSystem = systemRefundReport.Sum(x => x.totalRefundFee);
+                double totalSystemProfit = (totalRevenueSystem - totalCostSystem) - (totalRefundRevenueSystem - totalRefundCostSystem) + totalRefundFeeSystem;
 
                 double PercentOfSystem = 0;
                 if (totalSystemProfit > 0)
@@ -136,17 +146,114 @@ namespace IM_PJ
                     PercentOfSystem = totalProfit * 100 / totalSystemProfit;
                 }
                 var newCustomer = CustomerController.Report(user, fromdate, todate);
-
-                ltrTotalSaleOrder.Text = userReport.totalOrder.ToString() + " đơn";
-                ltrAverageSaleOrder.Text = (userReport.totalOrder / totalDays).ToString() + " đơn/ngày";
+                int totalOrder = userReport.Sum(x => x.totalOrder);
+                ltrTotalSaleOrder.Text = totalOrder + " đơn";
+                ltrAverageSaleOrder.Text = (totalOrder / day).ToString() + " đơn/ngày";
                 ltrTotalSoldQuantity.Text = totalSoldQuantity.ToString() + " cái";
                 ltrAverageSoldQuantity.Text = averageSoldQuantity.ToString() + " cái/ngày";
                 ltrTotalRefundQuantity.Text = totalRefundQuantity.ToString() + " cái";
                 ltrAverageRefundQuantity.Text = averageRefundQuantity.ToString() + " cái/ngày";
                 ltrTotalRemainQuantity.Text = (totalSoldQuantity - totalRefundQuantity).ToString() + " cái";
-                ltrAverageRemainQuantity.Text = ((totalSoldQuantity - totalRefundQuantity) / totalDays).ToString() + " cái/ngày";
+                ltrAverageRemainQuantity.Text = ((totalSoldQuantity - totalRefundQuantity) / day).ToString() + " cái/ngày";
                 ltrPercentOfSystem.Text = Math.Round(PercentOfSystem, 1).ToString() + "%";
                 ltrTotalNewCustomer.Text = newCustomer.Count() + " khách mới";
+
+                if (day > 1)
+                {
+                    string chartLabelDays = "";
+                    string chartTotalNewCustomer = "";
+                    string chartTotalRemainQuantity = "";
+                    string chartPercentOfSystem = "";
+
+                    List<string> dataDays = new List<string>();
+                    List<string> dataTotalNewCustomer = new List<string>();
+                    List<string> dataTotalRemainQuantity = new List<string>();
+                    List<string> dataPercentOfSystem = new List<string>();
+
+                    while (fromdate < todate)
+                    {
+                        // Ngày biểu đồ
+                        dataDays.Add(String.Format("'{0:d/M}'", fromdate));
+
+                        // Biểu đồ sản lượng
+                        int TotalSoldQuantity = userReport.Where(x => x.reportDate.Date == fromdate).Sum(x => x.totalSold);
+                        int TotalRefundQuantity = userRefundReport.Where(x => x.reportDate == fromdate).Sum(x => x.totalRefund);
+                        dataTotalRemainQuantity.Add((TotalSoldQuantity - TotalRefundQuantity).ToString());
+
+                        // Biểu đồ khách mới
+                        int TotalNewCustomer = newCustomer.Where(x => x.CreatedDate.Value.Date == fromdate).Count();
+                        dataTotalNewCustomer.Add(TotalNewCustomer.ToString());
+
+                        // Biểu đồ phần trăm lợi nhuận
+                        double charttotalRevenue = userReport.Where(x => x.reportDate.Date == fromdate).Sum(x => x.totalRevenue);
+                        double charttotalCost = userReport.Where(x => x.reportDate.Date == fromdate).Sum(x => x.totalCost);
+                        double charttotalRefundRevenue = userRefundReport.Where(x => x.reportDate.Date == fromdate).Sum(x => x.totalRevenue);
+                        double charttotalRefundCost = userRefundReport.Where(x => x.reportDate.Date == fromdate).Sum(x => x.totalCost);
+                        double charttotalRefundFee = userRefundReport.Where(x => x.reportDate.Date == fromdate).Sum(x => x.totalRefundFee);
+                        double charttotalProfit = (charttotalRevenue - charttotalCost) - (charttotalRefundRevenue - charttotalRefundCost) + charttotalRefundFee;
+
+                        double charttotalRevenueSystem = systemReport.Where(x => x.reportDate.Date == fromdate).Sum(x => x.totalRevenue);
+                        double charttotalCostSystem = systemReport.Where(x => x.reportDate.Date == fromdate).Sum(x => x.totalCost);
+                        double charttotalRefundRevenueSystem = systemRefundReport.Where(x => x.reportDate.Date == fromdate).Sum(x => x.totalRevenue);
+                        double charttotalRefundCostSystem = systemRefundReport.Where(x => x.reportDate.Date == fromdate).Sum(x => x.totalCost);
+                        double charttotalRefundFeeSystem = systemRefundReport.Where(x => x.reportDate.Date == fromdate).Sum(x => x.totalRefundFee);
+                        double charttotalSystemProfit = (charttotalRevenueSystem - charttotalCostSystem) - (charttotalRefundRevenueSystem - charttotalRefundCostSystem) + charttotalRefundFeeSystem;
+                        double chartResultPercentOfSystem = 0;
+                        if (totalSystemProfit > 0)
+                        {
+                            chartResultPercentOfSystem = charttotalProfit * 100 / charttotalSystemProfit;
+                        }
+                        dataPercentOfSystem.Add(Math.Round(chartResultPercentOfSystem, 1).ToString());
+
+
+                        // Thêm 1 ngày chạy vòng lặp
+                        fromdate = fromdate.AddDays(1);
+                    }
+
+                    chartLabelDays = String.Join(", ", dataDays);
+                    chartTotalNewCustomer = String.Join(", ", dataTotalNewCustomer);
+                    chartTotalRemainQuantity = String.Join(", ", dataTotalRemainQuantity);
+                    chartPercentOfSystem = String.Join(", ", dataPercentOfSystem);
+
+                    StringBuilder html = new StringBuilder();
+                    html.Append("<script>");
+                    html.Append("var lineChartData = {");
+                    html.Append("	labels: [" + chartLabelDays + "],");
+                    html.Append("	datasets: [{");
+                    html.Append("		label: 'Sản lượng',");
+                    html.Append("		borderColor: 'rgb(255, 99, 132)',");
+                    html.Append("		backgroundColor: 'rgb(255, 99, 132)',");
+                    html.Append("		fill: false,");
+                    html.Append("		data: [" + chartTotalRemainQuantity + "],");
+                    html.Append("		yAxisID: 'y-axis-1',");
+                    html.Append("	}]");
+                    html.Append("};");
+                    html.Append("var lineChartData2 = {");
+                    html.Append("	labels: [" + chartLabelDays + "],");
+                    html.Append("	datasets: [{");
+                    html.Append("		label: 'Khách mới',");
+                    html.Append("		borderColor: 'rgb(54, 162, 235)',");
+                    html.Append("		backgroundColor: 'rgb(54, 162, 235)',");
+                    html.Append("		fill: false,");
+                    html.Append("		data: [" + chartTotalNewCustomer + "],");
+                    html.Append("		yAxisID: 'y-axis-1'");
+                    html.Append("	}]");
+                    html.Append("};");
+                    html.Append("var lineChartData3 = {");
+                    html.Append("	labels: [" + chartLabelDays + "],");
+                    html.Append("	datasets: [{");
+                    html.Append("		label: 'Phần trăm / hệ thống',");
+                    html.Append("		borderColor: 'rgb(255, 205, 86)',");
+                    html.Append("		backgroundColor: 'rgb(255, 205, 86)',");
+                    html.Append("		fill: false,");
+                    html.Append("		data: [" + chartPercentOfSystem + "],");
+                    html.Append("		yAxisID: 'y-axis-1'");
+                    html.Append("	}]");
+                    html.Append("};");
+                    html.Append("</script>");
+
+                    ltrChartData.Text = html.ToString();
+                }
             }
         }
 

@@ -375,6 +375,8 @@ namespace IM_PJ.Controllers
                         data.ShipperID = item.ShipperID;
                         data.Times = item.DeliveryTimes;
                         data.Status = item.DeliveryStatus;
+                        data.COD = Convert.ToDecimal(item.ShippingFee);
+                        data.COO = Convert.ToDecimal(item.COD);
                         data.ModifiedBy = acc.ID;
                         data.ModifiedDate = now;
 
@@ -389,8 +391,8 @@ namespace IM_PJ.Controllers
                             ShipperID = item.ShipperID,
                             Status = item.DeliveryStatus,
                             Image = String.Empty,
-                            COD = 0,
-                            COO = 0,
+                            COD = Convert.ToDecimal(item.ShippingFee),
+                            COO = Convert.ToDecimal(item.COD),
                             ShipNote = String.Empty,
                             StartAt = now,
                             Note = String.Empty,

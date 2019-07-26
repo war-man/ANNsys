@@ -4,6 +4,7 @@ using IM_PJ.Models;
 using IM_PJ.Controllers;
 using Newtonsoft.Json;
 using System.IO;
+using System.Collections.Generic;
 
 namespace IM_PJ
 {
@@ -57,6 +58,21 @@ namespace IM_PJ
                 delivery.ModifiedDate = DateTime.Now;
                 
                 DeliveryController.Update(delivery);
+                var session = new List<DeliverySession>()
+                {
+                    new DeliverySession()
+                    {
+                        OrderID = delivery.OrderID,
+                        ShipperID = delivery.ShipperID,
+                        ShippingType = delivery.ShippingType,
+                        CreatedDate = delivery.CreatedDate,
+                        DeliveryTimes = delivery.Times.Value,
+                        DeliveryStatus = delivery.Status,
+                        COD = delivery.COO,
+                        ShippingFee = delivery.COD
+                    }
+                };
+                SessionController.updateDeliverySession(acc, session);
                 context.Response.Write(delivery.Image);
             }
             catch (Exception ex)

@@ -339,6 +339,7 @@
     <Content Include="App_Themes\Ann\js\bootstrap-table\bootstrap-table.css" />
     <Content Include="App_Themes\Ann\js\bootstrap-table\bootstrap-table.js" />
     <Content Include="App_Themes\Ann\js\bootstrap.min.js" />
+    <Content Include="App_Themes\Ann\js\Chart.min.js" />
     <Content Include="App_Themes\Ann\js\chartjs.min.js" />
     <Content Include="App_Themes\Ann\js\copy-post-info.js" />
     <Content Include="App_Themes\Ann\js\download-post-image.js" />

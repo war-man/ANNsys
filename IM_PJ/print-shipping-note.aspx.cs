@@ -128,7 +128,7 @@ namespace IM_PJ
                 rowHtml += Environment.NewLine + String.Format("    <div class=\"top-right\">");
                 rowHtml += Environment.NewLine + String.Format("        <img class=\"img\" src=\"https://ann.com.vn/wp-content/uploads/ANN-logo-3.png\">");
 
-                var company = TransportCompanyController.GetTransportCompanyByID(Convert.ToInt32(order.TransportCompanyID));
+                var company = TransportCompanyController.GetTransportCompanyForOrderList(Convert.ToInt32(order.TransportCompanyID));
                 string transportCompany = "";
                 string transportCompanyPhone = "";
                 string transportCompanyAddress = "";
@@ -152,7 +152,7 @@ namespace IM_PJ
                     }
 
                     var subID = Convert.ToInt32(order.TransportCompanySubID);
-                    var shipto = TransportCompanyController.GetReceivePlaceByID(company.ID, subID);
+                    var shipto = TransportCompanyController.GetReceivePlaceForOrderList(company.ID, subID);
                     if (shipto != null && subID > 0)
                     {
                         CustomerAddress = "<span class=\"phone\">" + shipto.ShipTo.ToTitleCase() + "</span>";

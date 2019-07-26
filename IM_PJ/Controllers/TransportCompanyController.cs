@@ -215,6 +215,15 @@ namespace IM_PJ.Controllers
                         .SingleOrDefault();
             }
         }
+        public static tbl_TransportCompany GetTransportCompanyForOrderList(int ID)
+        {
+            using (var connect = new inventorymanagementEntities())
+            {
+                return connect.tbl_TransportCompany
+                        .Where(x => x.ID == ID && x.SubID == 0)
+                        .SingleOrDefault();
+            }
+        }
         public static tbl_TransportCompany GetAllTransportCompanyByID(int ID)
         {
             using (var connect = new inventorymanagementEntities())
@@ -235,6 +244,15 @@ namespace IM_PJ.Controllers
             {
                 return connect.tbl_TransportCompany
                         .Where(x => x.ID == ID && x.SubID == SubID && x.Status == 1)
+                        .SingleOrDefault();
+            }
+        }
+        public static tbl_TransportCompany GetReceivePlaceForOrderList(int ID, int SubID)
+        {
+            using (var connect = new inventorymanagementEntities())
+            {
+                return connect.tbl_TransportCompany
+                        .Where(x => x.ID == ID && x.SubID == SubID)
                         .SingleOrDefault();
             }
         }
@@ -326,14 +344,14 @@ namespace IM_PJ.Controllers
         {
             using (var connect = new inventorymanagementEntities())
             {
-                return connect.tbl_TransportCompany.Where(x => x.ID == ID && x.SubID != 0 && x.Status == 1).ToList();
+                return connect.tbl_TransportCompany.Where(x => x.ID == ID && x.SubID != 0 && x.Status == 1).OrderByDescending(x => x.CompanyName).ToList();
             }
         }
         public static List<tbl_TransportCompany> GetAllReceivePlace(int ID)
         {
             using (var connect = new inventorymanagementEntities())
             {
-                return connect.tbl_TransportCompany.Where(x => x.ID == ID && x.SubID != 0).ToList();
+                return connect.tbl_TransportCompany.Where(x => x.ID == ID && x.SubID != 0).OrderByDescending(x => x.CompanyName).ToList();
             }
         }
         #endregion
@@ -344,7 +362,7 @@ namespace IM_PJ.Controllers
             data.Add(new ListItem(String.Empty, "0"));
             using (var con = new inventorymanagementEntities())
             {
-                foreach (var tran in con.tbl_TransportCompany.Where(x => x.SubID == 0 && x.Status == 1).ToList())
+                foreach (var tran in con.tbl_TransportCompany.Where(x => x.SubID == 0 && x.Status == 1).OrderByDescending(x => x.CompanyName).ToList())
                 {
                     data.Add(new ListItem(tran.CompanyName, tran.ID.ToString()));
                 }

@@ -2,6 +2,7 @@
 
 <%@ Register Assembly="Telerik.Web.UI" Namespace="Telerik.Web.UI" TagPrefix="telerik" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
+    <script type="text/javascript" src="/App_Themes/Ann/js/Chart.min.js"></script>
     <style>
         .fromdate-link {
             color:#ff8400;
@@ -142,7 +143,7 @@
                             <div class="col-md-4">
                                 <div class="report-column">
                                     <div class="report-label">
-                                        Phần trăm sản lượng / tổng hệ thống:
+                                        Phần trăm / hệ thống:
                                     </div>
                                     <div class="report-value">
                                         <asp:Literal ID="ltrPercentOfSystem" runat="server" EnableViewState="false"></asp:Literal>
@@ -160,10 +161,114 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="row margin-bottom-15">
+                            <div class="col-md-12">
+                                <canvas id="canvas"></canvas>
+                            </div>
+                        </div>
+                        <div class="row margin-bottom-15">
+                            <div class="col-md-12">
+                                <canvas id="canvas2"></canvas>
+                            </div>
+                        </div>
+                        <div class="row margin-bottom-15">
+                            <div class="col-md-12">
+                                <canvas id="canvas3"></canvas>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
+        <asp:Literal ID="ltrChartData" runat="server" EnableViewState="false"></asp:Literal>
+        <script>
+            window.onload = function () {
+                if (typeof lineChartData !== 'undefined')
+                {
+                    var ctx = document.getElementById('canvas').getContext('2d');
+                    window.myLine = Chart.Line(ctx, {
+                        data: lineChartData,
+                        options: {
+                            responsive: true,
+                            aspectRatio: 3,
+                            hoverMode: 'index',
+                            stacked: false,
+                            title: {
+                                display: true,
+                                text: 'Biểu đồ sản lượng'
+                            },
+                            scales: {
+                                yAxes: [{
+                                    type: 'linear', // only linear but allow scale type registration. This allows extensions to exist solely for log scale for instance
+                                    display: true,
+                                    position: 'left',
+                                    id: 'y-axis-1',
+                                    ticks: {
+                                        beginAtZero: true
+                                    }
+                                }],
+                            }
+                        }
+                    });
+                }
+
+                if (typeof lineChartData2 !== 'undefined') {
+                    var ctx = document.getElementById('canvas2').getContext('2d');
+                    window.myLine = Chart.Line(ctx, {
+                        data: lineChartData2,
+                        options: {
+                            responsive: true,
+                            aspectRatio: 3,
+                            hoverMode: 'index',
+                            stacked: false,
+                            title: {
+                                display: true,
+                                text: 'Biểu đồ khách mới'
+                            },
+                            scales: {
+                                yAxes: [{
+                                    type: 'linear', // only linear but allow scale type registration. This allows extensions to exist solely for log scale for instance
+                                    display: true,
+                                    position: 'left',
+                                    id: 'y-axis-1',
+                                    ticks: {
+                                        beginAtZero: true
+                                    }
+                                }],
+                            }
+                        }
+                    });
+                }
+
+                if (typeof lineChartData3 !== 'undefined') {
+                    var ctx = document.getElementById('canvas3').getContext('2d');
+                    window.myLine = Chart.Line(ctx, {
+                        data: lineChartData3,
+                        options: {
+                            responsive: true,
+                            aspectRatio: 3,
+                            hoverMode: 'index',
+                            stacked: false,
+                            title: {
+                                display: true,
+                                text: 'Biểu đồ phần trăm'
+                            },
+                            scales: {
+                                yAxes: [{
+                                    type: 'linear', // only linear but allow scale type registration. This allows extensions to exist solely for log scale for instance
+                                    display: true,
+                                    position: 'left',
+                                    id: 'y-axis-1',
+                                    ticks: {
+                                        beginAtZero: true
+                                    }
+                                }],
+                            }
+                        }
+                    });
+                }
+		    };
+	    </script>
         <script type="text/javascript">
 
             $(document).ready(() => {

@@ -160,20 +160,23 @@ namespace IM_PJ
             this.ltrTotalStockValue.Text = String.Empty;
 
             var productReport = OrderController.getProductReport(SKU, CategoryID, CreatedBy, fromdate, todate);
-            totalSoldQuantity = productReport.totalSold;
-            totalRevenue = productReport.totalRevenue;
-            totalCost = productReport.totalCost;
+            totalSoldQuantity = productReport.Sum(x => x.totalSold);
+            totalRevenue = productReport.Sum(x => x.totalRevenue);
+            totalCost = productReport.Sum(x => x.totalCost);
             totalProfit = totalRevenue - totalCost;
 
             var productRefundReport = RefundGoodController.getRefundProductReport(SKU, CategoryID, CreatedBy, fromdate, todate);
-            totalRefundQuantity = productRefundReport.totalRefund;
-            totalRefundProfit = productRefundReport.totalRevenue - productRefundReport.totalCost;
+            totalRefundQuantity = productRefundReport.Sum(x => x.totalRefund);
+            double totalRefundRevenue = productRefundReport.Sum(x => x.totalRevenue);
+            double totalRefundCost = productRefundReport.Sum(x => x.totalCost);
+            double totalRefundFee = productRefundReport.Sum(x => x.totalRefundFee);
+            totalRefundProfit = totalRefundRevenue - totalRefundCost;
 
             totalRemainQuantity = totalSoldQuantity - totalRefundQuantity;
 
             var productStockReport = ProductController.getProductStockReport(SKU, CategoryID);
 
-            totalProfit = totalProfit - totalRefundProfit + productRefundReport.totalRefundFee;
+            totalProfit = totalProfit - totalRefundProfit + totalRefundFee;
 
             ltrTotalSold.Text = totalSoldQuantity.ToString();
             ltrTotalRefund.Text = totalRefundQuantity.ToString();

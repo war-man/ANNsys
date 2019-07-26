@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -62,19 +63,34 @@ namespace IM_PJ
             int day = Convert.ToInt32((todate - fromdate).TotalDays);
 
             var reportModel = OrderController.GetProfitReport(fromdate, todate);
+            double TotalSalePrice = reportModel.Sum(x => x.TotalSalePrice);
+            double TotalRefundPrice = reportModel.Sum(x => x.TotalRefundPrice);
+            double TotalRevenue = TotalSalePrice - TotalRefundPrice;
 
-            double TotalRevenue = reportModel.TotalSalePrice - reportModel.TotalRefundPrice;
-            double TotalCost = reportModel.TotalSaleCost - reportModel.TotalRefundCost;
-            double TotalProfit = TotalRevenue - TotalCost - reportModel.TotalSaleDiscount + reportModel.TotalRefundFee;
+            double TotalSaleCost = reportModel.Sum(x => x.TotalSaleCost);
+            double TotalRefundCost = reportModel.Sum(x => x.TotalRefundCost);
+            double TotalCost = TotalSaleCost - TotalRefundCost;
+
+            double TotalSaleDiscount = reportModel.Sum(x => x.TotalSaleDiscount);
+            double TotalRefundFee = reportModel.Sum(x => x.TotalRefundFee);
+            double TotalProfit = TotalRevenue - TotalCost - TotalSaleDiscount + TotalRefundFee;
             double TotalProfitPerDay = TotalProfit / day;
             double TotalProfitPerOrder = 0;
-            int TotalRemainQuantity = reportModel.TotalSoldQuantity - reportModel.TotalRefundQuantity;
-            if (reportModel.TotalNumberOfOrder > 0)
+
+            int TotalSoldQuantity = reportModel.Sum(x => x.TotalSoldQuantity);
+            int TotalRefundQuantity = reportModel.Sum(x => x.TotalRefundQuantity);
+            int TotalRemainQuantity = TotalSoldQuantity - TotalRefundQuantity;
+
+            int TotalNumberOfOrder = reportModel.Sum(x => x.TotalNumberOfOrder);
+            if (TotalNumberOfOrder > 0)
             {
-                TotalProfitPerOrder = Math.Ceiling(TotalProfit / reportModel.TotalNumberOfOrder);
+                TotalProfitPerOrder = Math.Ceiling(TotalProfit / TotalNumberOfOrder);
             }
 
-            double TotalActualRevenue = reportModel.TotalSalePrice - reportModel.TotalRefundPrice - reportModel.TotalSaleDiscount;
+            
+            double TotalActualRevenue = TotalSalePrice - TotalRefundPrice - TotalSaleDiscount;
+            double TotalOtherFee = reportModel.Sum(x => x.TotalOtherFee);
+            double TotalShippingFee = reportModel.Sum(x => x.TotalShippingFee);
 
             ltrTotalProfit.Text = string.Format("{0:N0}", TotalProfit);
             ltrProfitPerDay.Text = string.Format("{0:N0}", TotalProfitPerDay);
@@ -82,21 +98,69 @@ namespace IM_PJ
 
             ltrTotalRemainQuantity.Text = (TotalRemainQuantity).ToString() + " cái";
             ltrAverageRemainQuantity.Text = (TotalRemainQuantity / day).ToString() + " cái/ngày";
-            ltrTotalSoldQuantity.Text = (reportModel.TotalSoldQuantity).ToString() + " cái";
+            ltrTotalSoldQuantity.Text = (TotalSoldQuantity).ToString() + " cái";
 
-            ltrTotalSalePrice.Text = string.Format("{0:N0}", reportModel.TotalSalePrice);
-            ltrTotalSaleCost.Text = string.Format("{0:N0}", reportModel.TotalSaleCost);
-            ltrTotalDisount.Text = string.Format("{0:N0}", reportModel.TotalSaleDiscount);
+            ltrTotalSalePrice.Text = string.Format("{0:N0}", TotalSalePrice);
+            ltrTotalSaleCost.Text = string.Format("{0:N0}", TotalSaleCost);
+            ltrTotalDisount.Text = string.Format("{0:N0}", TotalSaleDiscount);
 
-            ltrTotalRefundPrice.Text = string.Format("{0:N0}", reportModel.TotalRefundPrice);
-            ltrTotalRefundCost.Text = string.Format("{0:N0}", reportModel.TotalRefundCost);
-            ltrTotalRefundFee.Text = string.Format("{0:N0}", reportModel.TotalRefundFee);
+            ltrTotalRefundPrice.Text = string.Format("{0:N0}", TotalRefundPrice);
+            ltrTotalRefundCost.Text = string.Format("{0:N0}", TotalRefundCost);
+            ltrTotalRefundFee.Text = string.Format("{0:N0}", TotalRefundFee);
 
             ltrTotalActualRevenue.Text = string.Format("{0:N0}", TotalActualRevenue);
+            ltrTotalOtherFee.Text = string.Format("{0:N0}", TotalOtherFee);
+            ltrTotalShippingFee.Text = string.Format("{0:N0}", TotalShippingFee);
 
-            ltrTotalOtherFee.Text = string.Format("{0:N0}", reportModel.TotalOtherFee);
+            if (day > 1)
+            {
+                string chartLabelDays = "";
+                string chartTotalProfit = "";
+                string chartTotalRemainQuantity = "";
 
-            ltrTotalShippingFee.Text = string.Format("{0:N0}", reportModel.TotalShippingFee);
+                List<string> dataDays = new List<string>();
+                List<string> dataTotalProfit = new List<string>();
+                List<string> dataTotalRemainQuantity = new List<string>();
+
+                foreach (var item in reportModel)
+                {
+                    dataDays.Add(String.Format("'{0:d/M}'", item.DateDone));
+
+                    double chartTotalRevenue = item.TotalSalePrice - item.TotalRefundPrice;
+                    double chartTotalCost = item.TotalSaleCost - item.TotalRefundCost;
+                    dataTotalProfit.Add((chartTotalRevenue - chartTotalCost - item.TotalSaleDiscount + item.TotalRefundFee).ToString());
+
+                    dataTotalRemainQuantity.Add((item.TotalSoldQuantity - item.TotalRefundQuantity).ToString());
+                }
+
+                chartLabelDays = String.Join(", ", dataDays);
+                chartTotalProfit = String.Join(", ", dataTotalProfit);
+                chartTotalRemainQuantity = String.Join(", ", dataTotalRemainQuantity);
+
+                StringBuilder html = new StringBuilder();
+                html.Append("<script>");
+                html.Append("var lineChartData = {");
+                html.Append("	labels: [" + chartLabelDays + "],");
+                html.Append("	datasets: [{");
+                html.Append("		label: 'Lợi nhuận',");
+                html.Append("		borderColor: 'rgb(255, 99, 132)',");
+                html.Append("		backgroundColor: 'rgb(255, 99, 132)',");
+                html.Append("		fill: false,");
+                html.Append("		data: [" + chartTotalProfit + "],");
+                html.Append("		yAxisID: 'y-axis-1',");
+                html.Append("	}, {");
+                html.Append("		label: 'Sản lượng',");
+                html.Append("		borderColor: 'rgb(54, 162, 235)',");
+                html.Append("		backgroundColor: 'rgb(54, 162, 235)',");
+                html.Append("		fill: false,");
+                html.Append("		data: [" + chartTotalRemainQuantity + "],");
+                html.Append("		yAxisID: 'y-axis-2'");
+                html.Append("	}]");
+                html.Append("};");
+                html.Append("</script>");
+
+                ltrChartData.Text = html.ToString();
+            }
         }
 
         protected void btnSearch_Click(object sender, EventArgs e)

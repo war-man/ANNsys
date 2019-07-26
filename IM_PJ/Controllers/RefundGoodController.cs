@@ -418,7 +418,7 @@ namespace IM_PJ.Controllers
             public double totalRefundFee { get; set; }
         }
 
-        public static RefundProductReportModel getRefundProductReport(string SKU, int CategoryID, string CreatedBy, DateTime fromDate, DateTime toDate)
+        public static List<RefundProductReportModel> getRefundProductReport(string SKU, int CategoryID, string CreatedBy, DateTime fromDate, DateTime toDate)
         {
             var list = new List<RefundReport>();
             var sql = new StringBuilder();
@@ -459,6 +459,7 @@ namespace IM_PJ.Controllers
             }
 
             sql.AppendLine("SELECT");
+            sql.AppendLine("    CONVERT(VARCHAR(10), Ord.CreatedDate, 103) AS CreatedDate,");
             sql.AppendLine("    Ord.ID,");
             sql.AppendLine("    OrdDetail.SKU,");
             sql.AppendLine("    OrdDetail.Quantity,");
@@ -480,9 +481,10 @@ namespace IM_PJ.Controllers
                 sql.AppendLine(String.Format("    AND OrdDetail.SKU LIKE '{0}%'", SKU));
             }
 
-            sql.AppendLine(String.Format("    AND    CONVERT(datetime, Ord.CreatedDate, 121) BETWEEN CONVERT(datetime, '{0}', 121) AND CONVERT(datetime, '{1}', 121)", fromDate.ToString(), toDate.ToString()));
+            sql.AppendLine(String.Format("    AND    CONVERT(datetime, Ord.CreatedDate, 103) BETWEEN CONVERT(datetime, '{0}', 103) AND CONVERT(datetime, '{1}', 103)", fromDate.ToString(), toDate.ToString()));
 
             sql.AppendLine("SELECT");
+            sql.AppendLine("    DAT.CreatedDate,");
             sql.AppendLine("    DAT.ID,");
             sql.AppendLine("    SUM(ISNULL(DAT.Quantity, 0)) AS Quantity,");
             sql.AppendLine("    SUM(DAT.Quantity * ISNULL(PRO.CostOfGood, 0)) AS TotalCost,");
@@ -521,15 +523,16 @@ namespace IM_PJ.Controllers
             }
             sql.AppendLine(") AS PRO");
             sql.AppendLine("ON     DAT.SKU = PRO.SKU");
-            sql.AppendLine("GROUP BY DAT.ID");
-
+            sql.AppendLine("GROUP BY");
+            sql.AppendLine("    DAT.CreatedDate");
+            sql.AppendLine(",   DAT.ID");
             sql.AppendLine(" END");
 
             var reader = (IDataReader)SqlHelper.ExecuteDataReader(sql.ToString());
             while (reader.Read())
             {
                 var entity = new RefundReport();
-
+                entity.CreatedDate = Convert.ToDateTime(reader["CreatedDate"]);
                 entity.ID = Convert.ToInt32(reader["ID"]);
                 entity.Quantity = Convert.ToInt32(reader["Quantity"]);
                 entity.TotalCost = Convert.ToDouble(reader["TotalCost"]);
@@ -539,17 +542,24 @@ namespace IM_PJ.Controllers
             }
             reader.Close();
 
-            return new RefundProductReportModel()
-            {
-                totalRefund = list.Sum(x => x.Quantity),
-                totalRevenue = list.Sum(x => x.TotalRevenue),
-                totalCost = list.Sum(x => x.TotalCost),
-                totalRefundFee = list.Sum(x => x.TotalRefundFee),
-            };
+            var result = list.GroupBy(g => g.CreatedDate)
+                .Select(x => new RefundProductReportModel()
+                {
+                    reportDate = x.Key,
+                    totalRefund = x.Sum(s => s.Quantity),
+                    totalRevenue = x.Sum(s => s.TotalRevenue),
+                    totalCost = x.Sum(s => s.TotalCost),
+                    totalRefundFee = x.Sum(s => s.TotalRefundFee),
+                })
+                .OrderBy(o => o.reportDate)
+                .ToList();
+
+            return result;
         }
 
         public class RefundProductReportModel
         {
+            public DateTime reportDate { get; set; }
             public int totalRefund { get; set; }
             public double totalCost { get; set; }
             public double totalRevenue { get; set; }
@@ -752,11 +762,13 @@ namespace IM_PJ.Controllers
         #endregion
         public class RefundReport
         {
+            public DateTime CreatedDate { get; set; }
             public int ID { get; set; }
             public int Quantity { get; set; }
             public double TotalRevenue { get; set; }
             public double TotalCost { get; set; }
             public double TotalRefundFee { get; set; }
+            
         }
         public class RefundOrder
         {

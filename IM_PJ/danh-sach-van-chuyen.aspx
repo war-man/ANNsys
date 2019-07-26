@@ -477,13 +477,15 @@
             });
 
             class OrderChoosed {
-                constructor(OrderID, ShipperID, ShippingType, CreatedDate, DeliveryTimes, DeliveryStatus) {
+                constructor(OrderID, ShipperID, ShippingType, CreatedDate, DeliveryTimes, DeliveryStatus, COD, ShippingFee) {
                     this.OrderID = OrderID;
                     this.ShipperID = ShipperID;
                     this.ShippingType = ShippingType;
                     this.CreatedDate = CreatedDate;
                     this.DeliveryTimes = DeliveryTimes;
                     this.DeliveryStatus = DeliveryStatus;
+                    this.COD = COD;
+                    this.ShippingFee = ShippingFee;
                 }
             };
 
@@ -515,7 +517,9 @@
                             item.ShippingType,
                             createdDate,
                             +item.DeliveryTimes || 0,
-                            +item.DeliveryStatus || 2
+                            +item.DeliveryStatus || 2,
+                            +item.COD || 0,
+                            +item.ShippingFee || 0
                             ));
                     });
 
@@ -631,9 +635,12 @@
                     let startAt = $("#dtDoneAt").data('date');
                     let note = $("#<%=txtNote.ClientID%>").val();
 
+                    let row = $("tr[data-orderid='" + orderID + "']");
+                    let shippingType = row.attr("data-shippingtype");
                     let data = {
                         'OrderID': orderID,
                         'ShipperID': shipperID,
+                        'ShippingType': shippingType,
                         'Status': status,
                         'Image': imageOld,
                         'COD': cosOfDel ? cosOfDel : 0,
@@ -702,14 +709,14 @@
                                 row.children("#deliveryTimes").html(deliveryTimesLabel);
                                 // Phí giao hàng
                                 if (cosOfDel)
-                                    row.children("#cosOfDel").html("<strong>" + cosOfDel + "</strong>");
+                                    row.children("#cosOfDel").html("<strong>" + formatNumber(cosOfDel) + "</strong>");
 
                                 switch (status) {
                                     case "1":
                                         deliveryStatusDom.addClass("bg-green");
                                         row.children("#delDate").html(formatDate(startAt));
                                         if (colOfOrd)
-                                            row.children("#colOfOrd").html("<strong>" + colOfOrd + "</strong>");
+                                            row.children("#colOfOrd").html("<strong>" + formatNumber(colOfOrd) + "</strong>");
                                         
                                         if (result) {
                                             if (row.children("#updateButton").find('#downloadInvoiceImage').length) {
@@ -731,6 +738,8 @@
                                         break;
                                     case "3":
                                         deliveryStatusDom.addClass("bg-blue");
+                                        if (colOfOrd)
+                                            row.children("#colOfOrd").html("<strong>" + formatNumber(colOfOrd) + "</strong>");
                                         row.find("#downloadInvoiceImage").hide();
                                         row.children("#delDate").html("");
                                         break;
@@ -749,6 +758,7 @@
                                 swal("Thông báo", "Đã có vấn đề trong việc cập nhật thông tin vận chuyển", "error");
                             }
                         });
+
                     }
                 });
             });
@@ -1054,7 +1064,8 @@
                     let shippingType = parent.dataset["shippingtype"];
                     let deliveryTimes = +parent.dataset["deliverytimes"] || 0;
                     let deliveryStatus = +parent.dataset["deliverystatus"] || 2;
-
+                    let COD = +parent.dataset["coloford"] || 0;
+                    let ShippingFee = +parent.dataset["cosofdev"] || 0;
                     element.checked = checked;
                     data.push(new OrderChoosed(
                         orderID,
@@ -1062,7 +1073,9 @@
                         shippingType,
                         now.format("yyyy-MM-dd"),
                         deliveryTimes,
-                        deliveryStatus
+                        deliveryStatus,
+                        COD,
+                        ShippingFee
                         ))
                 });
 
@@ -1098,7 +1111,8 @@
                 let shippingType = parent.data("shippingtype");
                 let deliveryTimes = +parent.data("deliverytimes") || 0;
                 let deliveryStatus = +parent.data("deliverystatus") || 2;
-
+                let COD = +parent.data["coloford"] || 0;
+                let ShippingFee = +parent.data["cosofdev"] || 0;
                 // Thông báo khi order được chọn in đã được chuyển trạng thái hoàng tất đơn hàng
                 if (self.is(":checked"))
                 {
@@ -1135,7 +1149,9 @@
                         shippingType,
                         now.format("yyyy-MM-dd"),
                         deliveryTimes,
-                        deliveryStatus
+                        deliveryStatus,
+                        COD,
+                        ShippingFee
                         );
                     addOrderChoose([data]);
                 }
@@ -1246,9 +1262,12 @@
                     swal("Thông báo", "Chưa có đơn hàng nào được chọn!", "error");
                 }
                 else {
-                    orderChoosed.forEach(item =>
-                        item.DeliveryStatus = 1 // Trạng thái hàng tất giao hàng
-                    );
+                    orderChoosed.forEach(item => {
+                        let row = $("tr[data-orderid='" + item.OrderID + "']");
+                        item.DeliveryStatus = 1; // Trạng thái hàng tất giao hàng
+                        item.COD = row.attr("data-coloford").replace(/,/g, '');
+                        item.ShippingFee = row.attr("data-cosofdev").replace(/,/g, '');
+                    });
 
                     $.ajax({
                         type: "POST",
@@ -1260,6 +1279,9 @@
                             orderChoosed.forEach(item => {
                                 let row = $("tr[data-orderid='" + item.OrderID + "']");
                                 row.attr('data-deliverystatus', 1);
+                                row.find("#deliveryStatus").html('<span class="bg-green">Đã giao</span>');
+                                row.find("#colOfOrd").html('<strong>' + item.COD + '</strong>');
+                                row.find("#cosOfDel").html('<strong>' + item.ShippingFee + '</strong>');
                                 row.find("#deliveryStatus").html('<span class="bg-green">Đã giao</span>');
                             });
                             swal("Thông báo", "Tất cả đơn chọn đã chuyển qua trạng thái hoàn tất", "success");

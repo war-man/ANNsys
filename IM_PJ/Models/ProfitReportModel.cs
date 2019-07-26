@@ -7,6 +7,7 @@ namespace IM_PJ.Models
 {
     public class ProfitReportModel
     {
+        public DateTime DateDone { get; set; }
         public int TotalNumberOfOrder { get; set; }
         public int TotalSoldQuantity { get; set; }
         public int TotalRefundQuantity { get; set; }

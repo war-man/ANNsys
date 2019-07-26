@@ -341,13 +341,13 @@ namespace IM_PJ
                     html.Append("   <td data-title='Trạng thái' id='deliveryStatus'>" + PJUtils.DeliveryStatus(Convert.ToInt32(item.DeliveryStatus)) + "</td>");
                     // Tổng đơn hàng
                     html.Append("   <td data-title='Tổng đơn'><strong>" + String.Format("{0:#,###}", Convert.ToDouble(item.TotalPrice - item.TotalRefund)) + "</strong></td>");
-                    // Số tiền đã thu chỉ hiện khi thanh toán kiểu thu hộ và đơn hàng đã giao
-                    if (item.PaymentType == 3 && item.DeliveryStatus == 1)
+                    // Số tiền đã thu chỉ hiện khi thanh toán kiểu thu hộ và đơn hàng đã giao hoặc đang giao
+                    if (item.PaymentType == 3 && (item.DeliveryStatus == 1 || item.DeliveryStatus == 3))
                         html.Append("   <td data-title='Thu hộ' id='colOfOrd'><strong>" + String.Format("{0:#,###}", item.CollectionOfOrder) + "</strong></td>");
                     else
                         html.Append("   <td data-title='Thu hộ' id='colOfOrd'></td>");
                     // Phí giao hàng khi nhân viên giao
-                    if (item.ShippingType == 5 && item.DeliveryStatus == 1 && item.CostOfDelivery != 0)
+                    if (item.ShippingType == 5 && (item.DeliveryStatus == 1 || item.DeliveryStatus == 3) && item.CostOfDelivery != 0)
                         html.Append("   <td data-title='Phí giao hàng' id='cosOfDel'><strong>" + String.Format("{0:#,###}", item.CostOfDelivery) + "</strong></td>");
                     else
                         html.Append("   <td data-title='Phí giao hàng' id='cosOfDel'></td>");
@@ -391,8 +391,8 @@ namespace IM_PJ
                     {
                         if (item.TransportCompanyID != 0)
                         {
-                            var transport = TransportCompanyController.GetTransportCompanyByID(Convert.ToInt32(item.TransportCompanyID));
-                            var transportsub = TransportCompanyController.GetReceivePlaceByID(Convert.ToInt32(item.TransportCompanyID), Convert.ToInt32(item.TransportCompanySubID));
+                            var transport = TransportCompanyController.GetTransportCompanyForOrderList(Convert.ToInt32(item.TransportCompanyID));
+                            var transportsub = TransportCompanyController.GetReceivePlaceForOrderList(Convert.ToInt32(item.TransportCompanyID), Convert.ToInt32(item.TransportCompanySubID));
                             html.Append("<span class='order-info'><strong>Gửi xe: </strong> " + transport.CompanyName.ToTitleCase() + " (" + transportsub.ShipTo.ToTitleCase() + ")</span>");
                         }
                     }

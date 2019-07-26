@@ -521,6 +521,7 @@ namespace IM_PJ.Controllers
                 result = dbe.tbl_Customer
                     .Where(x => string.IsNullOrEmpty(CreatedBy) || (!string.IsNullOrEmpty(CreatedBy) && x.CreatedBy == CreatedBy))
                     .Where(x => x.CreatedDate >= fromDate && x.CreatedDate <= toDate)
+                    .OrderBy(x => x.CreatedDate)
                     .ToList();
             }
             return result;
