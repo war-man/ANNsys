@@ -34,5 +34,7 @@ namespace IM_PJ.Models
         public int shelf { get; set; } = 0;
         // Lọc nhưng sản phẩm tầng của kệ
         public int floorShelf { get; set; } = 0;
+        // Lọc theo thời gian nhập kho
+        public string goodsReceiptDate { get; set; } = String.Empty;
     }
 }

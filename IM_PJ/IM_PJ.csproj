@@ -555,6 +555,7 @@
     <Content Include="tao-bai-viet.aspx" />
     <Content Include="bao-cao-nhan-vien.aspx" />
     <Content Include="kiem-ke.aspx" />
+    <Content Include="thong-ke-nhap-kho.aspx" />
     <Content Include="uploadf.aspx" />
     <Content Include="them-chiet-khau.aspx" />
     <Content Include="them-danh-muc.aspx" />
@@ -932,6 +933,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>IMModel.edmx</DependentUpon>
     </Compile>
+    <Compile Include="Models\Pages\thong-ke-nhap-kho\GoodsReceiptReport.cs" />
     <Compile Include="Models\Register.cs">
       <DependentUpon>IMModel.tt</DependentUpon>
     </Compile>
@@ -1495,6 +1497,13 @@
     </Compile>
     <Compile Include="kiem-ke.aspx.designer.cs">
       <DependentUpon>kiem-ke.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="thong-ke-nhap-kho.aspx.cs">
+      <DependentUpon>thong-ke-nhap-kho.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="thong-ke-nhap-kho.aspx.designer.cs">
+      <DependentUpon>thong-ke-nhap-kho.aspx</DependentUpon>
     </Compile>
     <Compile Include="uploadf.aspx.cs">
       <DependentUpon>uploadf.aspx</DependentUpon>
