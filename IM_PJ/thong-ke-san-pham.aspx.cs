@@ -4,6 +4,7 @@ using MB.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -22,9 +23,9 @@ namespace IM_PJ
 
             if (!IsPostBack)
             {
-                if (Request.Cookies["userLoginSystem"] != null)
+                if (Request.Cookies["usernameLoginSystem"] != null)
                 {
-                    string username = Request.Cookies["userLoginSystem"].Value;
+                    string username = Request.Cookies["usernameLoginSystem"].Value;
                     var acc = AccountController.GetByUsername(username);
                     if (acc != null)
                     {
@@ -105,7 +106,7 @@ namespace IM_PJ
             double totalRefundProfit = 0;
             double totalRevenue = 0;
 
-            int totalDays = 0;
+            int day = 0;
 
             if (!String.IsNullOrEmpty(Request.QueryString["SKU"]))
             {
@@ -143,11 +144,11 @@ namespace IM_PJ
             ddlCreatedBy.SelectedValue = CreatedBy;
             rFromDate.SelectedDate = fromdate;
             rToDate.SelectedDate = todate;
-            totalDays = Convert.ToInt32((todate - fromdate).TotalDays);
+            day = Convert.ToInt32((todate - fromdate).TotalDays);
 
-            if (totalDays <= 0)
+            if (day <= 0)
             {
-                totalDays = 1;
+                day = 1;
             }
 
             this.ltrTotalRemain.Text = String.Empty;
@@ -181,12 +182,55 @@ namespace IM_PJ
             ltrTotalSold.Text = totalSoldQuantity.ToString();
             ltrTotalRefund.Text = totalRefundQuantity.ToString();
             ltrTotalRemain.Text = totalRemainQuantity.ToString();
-            ltrTotalRemainPerDay.Text = (totalRemainQuantity / totalDays).ToString() + " cái/ngày";
+            ltrTotalRemainPerDay.Text = (totalRemainQuantity / day).ToString() + " cái/ngày";
             ltrTotalRevenue.Text = string.Format("{0:N0}", totalRevenue);
             ltrTotalProfit.Text = string.Format("{0:N0}", totalProfit);
-            ltrAverageProfit.Text = string.Format("{0:N0}", totalProfit / totalDays).ToString();
+            ltrAverageProfit.Text = string.Format("{0:N0}", totalProfit / day).ToString();
             ltrTotalStock.Text = productStockReport.totalStock.ToString() + " cái";
             ltrTotalStockValue.Text = string.Format("{0:N0}", productStockReport.totalStockValue);
+
+            if (day > 1)
+            {
+                string chartLabelDays = "";
+                string chartTotalRemainQuantity = "";
+
+                List<string> dataDays = new List<string>();
+                List<string> dataTotalRemainQuantity = new List<string>();
+
+                while (fromdate < todate)
+                {
+                    // Ngày biểu đồ
+                    dataDays.Add(String.Format("'{0:d/M}'", fromdate));
+
+                    // Biểu đồ sản lượng
+                    int TotalSoldQuantity = productReport.Where(x => x.reportDate.Date == fromdate).Sum(x => x.totalSold);
+                    int TotalRefundQuantity = productRefundReport.Where(x => x.reportDate == fromdate).Sum(x => x.totalRefund);
+                    dataTotalRemainQuantity.Add((TotalSoldQuantity - TotalRefundQuantity).ToString());
+
+                    // Thêm 1 ngày chạy vòng lặp
+                    fromdate = fromdate.AddDays(1);
+                }
+
+                chartLabelDays = String.Join(", ", dataDays);
+                chartTotalRemainQuantity = String.Join(", ", dataTotalRemainQuantity);
+
+                StringBuilder html = new StringBuilder();
+                html.Append("<script>");
+                html.Append("var lineChartData = {");
+                html.Append("	labels: [" + chartLabelDays + "],");
+                html.Append("	datasets: [{");
+                html.Append("		label: 'Sản lượng',");
+                html.Append("		borderColor: 'rgb(255, 99, 132)',");
+                html.Append("		backgroundColor: 'rgb(255, 99, 132)',");
+                html.Append("		fill: false,");
+                html.Append("		data: [" + chartTotalRemainQuantity + "],");
+                html.Append("		yAxisID: 'y-axis-1',");
+                html.Append("	}]");
+                html.Append("};");
+                html.Append("</script>");
+
+                ltrChartData.Text = html.ToString();
+            }
         }
 
         protected void btnSearch_Click(object sender, EventArgs e)

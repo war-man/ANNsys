@@ -105,7 +105,7 @@ namespace IM_PJ
             var page = new PaginationMetadataModel()
             {
                 currentPage = Page,
-                pageSize = 20
+                pageSize = 30
             };
             List<Product> a = new List<Product>();
             a = ProductController.GetAllProduct(filter, ref page);
@@ -128,6 +128,7 @@ namespace IM_PJ
 
                 foreach (var item in acs)
                 {
+                    item.content = String.Empty;
                     html.AppendLine("<div class='col-md-3 item-" + index + " product-item'>");
                     html.AppendLine("    <div class='row'>");
                     html.AppendLine("        <div class='col-xs-12'>");
@@ -145,18 +146,6 @@ namespace IM_PJ
                         html.AppendLine("            <p>🔖 Size: " + item.size + "</p>");
                     }
 
-                    if (!string.IsNullOrEmpty(item.materials))
-                    {
-                        html.AppendLine("            <p>🔖 Chất liệu: " + item.materials + "</p>");
-                    }
-
-                    if (!string.IsNullOrEmpty(item.content))
-                    {
-                        string content = Regex.Replace(item.content, @"<img\s[^>]*>(?:\s*?</img>)?", "").ToString();
-                        if (!String.IsNullOrEmpty(content))
-                            html.AppendLine("            <p>🔖 " + content.Substring(0, content.Length > 100 ? 100 : content.Length) + "</p>");
-                    }
-
                     if (item.quantity > 0)
                     {
                         html.AppendLine("            <p>🔖 <span class='bg-green'>Còn hàng</span> (" + string.Format("{0:N0}", item.quantity) + " cái)</p>");
@@ -165,6 +154,7 @@ namespace IM_PJ
                     {
                         html.AppendLine("            <p>🔖 <span class='bg-red'>Hết hàng</span></p>");
                     }
+
                     html.AppendLine("            <p>🔖 " + string.Format("{0:dd/MM/yyyy}", item.createdDate) + "</p>");
                     html.AppendLine("        </div>");
                     html.AppendLine("    </div>");
@@ -172,7 +162,7 @@ namespace IM_PJ
                     html.AppendLine("         <div class='col-xs-12'>");
                     html.AppendLine("              <div class='col-xs-6'>");
                     html.AppendLine("                   <div class='row'>");
-                    html.AppendLine("                      <a href='javascript:;' class='btn primary-btn copy-btn h45-btn' onclick='openRegister(" + JsonConvert.SerializeObject(item) + ")'><i class='fa fa-registered' aria-hidden='true'></i> Register</a>");
+                    html.AppendLine("                      <a href='javascript:;' class='btn primary-btn copy-btn h45-btn' onclick='openRegister(" + JsonConvert.SerializeObject(item) + ")'><i class='fa fa-cart-plus' aria-hidden='true'></i> Đăng ký</a>");
                     html.AppendLine("                   </div>");
                     html.AppendLine("              </div>");
                     html.AppendLine("         </div>");
@@ -357,7 +347,7 @@ namespace IM_PJ
         [WebMethod]
         public static void registerProduct(Models.RegisterProduct item)
         {
-            string username = HttpContext.Current.Request.Cookies["userLoginSystem"].Value;
+            string username = HttpContext.Current.Request.Cookies["loginHiddenPage"].Value;
             var acc = AccountController.GetByUsername(username);
             var now = DateTime.Now;
 

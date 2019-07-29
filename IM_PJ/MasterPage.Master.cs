@@ -20,9 +20,9 @@ namespace IM_PJ
 
         public void LoadData()
         {
-            if (Request.Cookies["userLoginSystem"] != null)
+            if (Request.Cookies["usernameLoginSystem"] != null)
             {
-                string username = Request.Cookies["userLoginSystem"].Value;
+                string username = Request.Cookies["usernameLoginSystem"].Value;
                 var acc = AccountController.GetByUsername(username);
                 if (acc != null)
                 {
@@ -61,8 +61,7 @@ namespace IM_PJ
                         ltrMenu.Text += "<li><a href='/tao-ma-vach'><span class='icon-menu icon-product'></span>In mã vạch</a></li>";
                         ltrMenu.Text += "<li><a href='/kiem-ke'><span class='icon-menu icon-product'></span>Kiểm kệ</a></li>";
                         ltrMenu.Text += "<li><a href='/chuyen-ke'><span class='icon-menu icon-product'></span>Chuyển kệ</a></li>";
-                        ltrMenu.Text += "<li><a href='/danh-sach-nhap-hang'><span class='icon-menu icon-product'></span>Danh sách đăng ký nhập hàng</a></li>";
-                        ltrMenu.Text += "<li><a href='/dang-ky-nhap-hang'><span class='icon-menu icon-product'></span>Đăng ký nhập hàng</a></li>";
+                        ltrMenu.Text += "<li><a href='/danh-sach-nhap-hang'><span class='icon-menu icon-product'></span>NV đặt hàng</a></li>";
                         ltrMenu.Text += "<li><a href='/thong-ke-nhap-kho'><span class='icon-menu icon-product'></span>Thống kê nhập kho</a></li>";
                         ltrMenu.Text += "<li><a href='/quan-ly-nhap-kho'><span class='icon-menu icon-product'></span>Nhập kho</a></li>";
                         ltrMenu.Text += "<li><a href='/quan-ly-xuat-kho'><span class='icon-menu icon-product'></span>Xuất kho</a></li>";
@@ -83,8 +82,7 @@ namespace IM_PJ
                         ltrMenu.Text += "<li><a href='/tat-ca-san-pham'><span class='icon-menu icon-lib'></span>Sản phẩm</a></li>";
                         ltrMenu.Text += "<li><a href='/san-pham-theo-ke'><span class='icon-menu icon-lib'></span>Sản phẩm kệ</a></li>";
                         ltrMenu.Text += "<li><a href='/tao-ma-vach'><span class='icon-menu icon-product'></span>In mã vạch</a></li>";
-                        ltrMenu.Text += "<li><a href='/danh-sach-nhap-hang'><span class='icon-menu icon-product'></span>Danh sách đăng ký nhập hàng</a></li>";
-                        ltrMenu.Text += "<li><a href='/dang-ky-nhap-hang'><span class='icon-menu icon-product'></span>Đăng ký nhập hàng</a></li>";
+                        ltrMenu.Text += "<li><a href='/danh-sach-nhap-hang'><span class='icon-menu icon-product'></span>NV đặt hàng</a></li>";
                         ltrMenu.Text += "<li><a href='/quan-ly-nhap-kho'><span class='icon-menu icon-product'></span>Nhập kho</a></li>";
                         ltrMenu.Text += "<li><a href='/quan-ly-xuat-kho'><span class='icon-menu icon-product'></span>Xuất kho </a></li>";
                         ltrMenu.Text += "<li><a href='/kiem-kho'><span class='icon-menu icon-product'></span>Kiểm kho</a></li>";

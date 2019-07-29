@@ -459,7 +459,7 @@ namespace IM_PJ.Controllers
             }
 
             sql.AppendLine("SELECT");
-            sql.AppendLine("    CONVERT(VARCHAR(10), Ord.CreatedDate, 103) AS CreatedDate,");
+            sql.AppendLine("    CONVERT(VARCHAR(10), Ord.CreatedDate, 121) AS CreatedDate,");
             sql.AppendLine("    Ord.ID,");
             sql.AppendLine("    OrdDetail.SKU,");
             sql.AppendLine("    OrdDetail.Quantity,");
@@ -481,7 +481,7 @@ namespace IM_PJ.Controllers
                 sql.AppendLine(String.Format("    AND OrdDetail.SKU LIKE '{0}%'", SKU));
             }
 
-            sql.AppendLine(String.Format("    AND    CONVERT(datetime, Ord.CreatedDate, 103) BETWEEN CONVERT(datetime, '{0}', 103) AND CONVERT(datetime, '{1}', 103)", fromDate.ToString(), toDate.ToString()));
+            sql.AppendLine(String.Format("    AND    CONVERT(datetime, Ord.CreatedDate, 121) BETWEEN CONVERT(datetime, '{0}', 121) AND CONVERT(datetime, '{1}', 121)", fromDate.ToString(), toDate.ToString()));
 
             sql.AppendLine("SELECT");
             sql.AppendLine("    DAT.CreatedDate,");

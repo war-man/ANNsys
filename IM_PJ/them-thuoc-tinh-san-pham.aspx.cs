@@ -22,9 +22,9 @@ namespace IM_PJ
         {
             if (!IsPostBack)
             {
-                if (Request.Cookies["userLoginSystem"] != null)
+                if (Request.Cookies["usernameLoginSystem"] != null)
                 {
-                    string username = Request.Cookies["userLoginSystem"].Value;
+                    string username = Request.Cookies["usernameLoginSystem"].Value;
                     var acc = AccountController.GetByUsername(username);
                     if (acc != null)
                     {
@@ -77,7 +77,7 @@ namespace IM_PJ
         protected void btnSubmit_Click(object sender, EventArgs e)
         {
             DateTime currentDate = DateTime.Now;
-            string username = Request.Cookies["userLoginSystem"].Value;
+            string username = Request.Cookies["usernameLoginSystem"].Value;
 
             bool check = true;
             string SKU = txtProductSKU.Text.Trim().ToUpper();

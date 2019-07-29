@@ -22,9 +22,9 @@ namespace IM_PJ
         {
             if (!IsPostBack)
             {
-                if (Request.Cookies["userLoginSystem"] != null)
+                if (Request.Cookies["usernameLoginSystem"] != null)
                 {
-                    string username = Request.Cookies["userLoginSystem"].Value;
+                    string username = Request.Cookies["usernameLoginSystem"].Value;
                     var acc = AccountController.GetByUsername(username);
                     int agent = acc.AgentID.ToString().ToInt();
 
@@ -102,7 +102,7 @@ namespace IM_PJ
         }
         public void LoadData()
         {
-            string username = Request.Cookies["userLoginSystem"].Value;
+            string username = Request.Cookies["usernameLoginSystem"].Value;
             var acc = AccountController.GetByUsername(username);
             if (acc != null)
             {
@@ -173,7 +173,7 @@ namespace IM_PJ
         #region Paging
         public void pagingall(List<RegisterOut> acs)
         {
-            string username = Request.Cookies["userLoginSystem"].Value;
+            string username = Request.Cookies["usernameLoginSystem"].Value;
             var acc = AccountController.GetByUsername(username);
 
             int PageSize = 30;

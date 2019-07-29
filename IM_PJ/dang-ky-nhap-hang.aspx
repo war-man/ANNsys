@@ -84,10 +84,6 @@
         .pagination li.current > a, .pagination li:hover > a {
             color: #000;
         }
-        .btn {
-            width: 100%;
-            margin-bottom: 10px;
-        }
         .btn.btn-product {
             background-color: #F44336;
         }
@@ -249,7 +245,7 @@
                                                 <div class="col-md-3 col-xs-6 margin-bottom-15">
                                                     <asp:DropDownList ID="ddlSize" runat="server" CssClass="form-control">
                                                         <asp:ListItem Value="" Text="Chọn size"></asp:ListItem>
-                                                        <asp:ListItem Value="m" Text="Size S"></asp:ListItem>
+                                                        <asp:ListItem Value="s" Text="Size S"></asp:ListItem>
                                                         <asp:ListItem Value="m" Text="Size M"></asp:ListItem>
                                                         <asp:ListItem Value="l" Text="Size L"></asp:ListItem>
                                                         <asp:ListItem Value="xl" Text="Size XL"></asp:ListItem>
@@ -317,13 +313,36 @@
                         </div>
                         <div class="modal-body">
                             <div class="row form-group">
-                                <input type="text" id="txtCustomerName" class="form-control" placeholder="Nhập tên khách hàng" />
+                                <div class="col-md-3 col-xs-4">
+                                    <p>Khách hàng</p>
+                                </div>
+                                <div class="col-md-9 col-xs-8">
+                                    <input type="text" id="txtCustomerName" class="form-control" placeholder="Nhập tên khách hàng" />
+                                </div>
                             </div>
                             <div class="row form-group">
-                                <input type="text" id="txtQuantity" class="form-control text-right" placeholder="Số lượng đăng ký" onkeypress="return event.charCode >= 48 && event.charCode <= 57" />
+                                <div class="col-md-3 col-xs-4">
+                                    <p>Thuộc tính</p>
+                                </div>
+                                <div class="col-md-9 col-xs-8">
+                                    <input type="text" id="txtVariableValue" class="form-control text-right" disabled />
+                                </div>
                             </div>
                             <div class="row form-group">
-                                <textarea id="areaNote" class="form-control" placeholder="Nhập thông tin chú thích" rows="3"></textarea>
+                                <div class="col-md-3 col-xs-4">
+                                    <p>Số lượng</p>
+                                </div>
+                                <div class="col-md-9 col-xs-8">
+                                    <input type="text" id="txtQuantity" class="form-control text-right" placeholder="Số lượng đăng ký" onkeypress="return event.charCode >= 48 && event.charCode <= 57" />
+                                </div>
+                            </div>
+                            <div class="row form-group">
+                                <div class="col-md-3 col-xs-4">
+                                    <p>Ghi chú</p>
+                                </div>
+                                <div class="col-md-9 col-xs-8">
+                                    <textarea id="areaNote" class="form-control" placeholder="Nhập thông tin chú thích" rows="3"></textarea>
+                                </div>
                             </div>
                         </div>
                         <div class="modal-footer">
@@ -494,6 +513,18 @@
 
                 function openRegister(item) {
                     productRegister = new RegisterProduct('', item.productID, item.variableID, item.sku, 1, item.title, item.image, item.color, item.size, 0);
+                    $('#txtCustomerName').focus();
+                    let variableValue = "Đủ màu - Đủ size";
+                    if (item.variableID != 0) {
+                        variableValue = "";
+                        if (item.color) {
+                            variableValue = "Màu: " + item.color;
+                        }
+                        if (item.size) {
+                            variableValue += " - Size: " + item.size;
+                        }
+                    }
+                    $('#txtVariableValue').val(variableValue);
                     $('#registerModal').modal({ show: 'true', backdrop: 'static' });
                 }
 

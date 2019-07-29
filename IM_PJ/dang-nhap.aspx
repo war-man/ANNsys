@@ -32,8 +32,6 @@
                 </div>
                 <div class="form-row">
                     <asp:TextBox ID="txtUsername" runat="server" CssClass="form-control" placeholder="Tên đăng nhập"></asp:TextBox>
-                </div>
-                <div class="form-row">
                     <asp:RequiredFieldValidator ID="req" runat="server" ControlToValidate="txtUsername" ErrorMessage="Không để trống"
                         ForeColor="Red" Display="Dynamic"></asp:RequiredFieldValidator>
                 </div>

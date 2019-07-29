@@ -22,9 +22,9 @@ namespace IM_PJ
         {
             if (!IsPostBack)
             {
-                if (Request.Cookies["userLoginSystem"] != null)
+                if (Request.Cookies["usernameLoginSystem"] != null)
                 {
-                    Session["userLoginSystem"] = Request.Cookies["userLoginSystem"].Value;
+                    Session["usernameLoginSystem"] = Request.Cookies["usernameLoginSystem"].Value;
                 }
                 else
                 {

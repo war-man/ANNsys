@@ -11,9 +11,9 @@ namespace IM_PJ
         {
             if (!IsPostBack)
             {
-                if (Request.Cookies["userLoginSystem"] != null)
+                if (Request.Cookies["usernameLoginSystem"] != null)
                 {
-                    string username = Request.Cookies["userLoginSystem"].Value;
+                    string username = Request.Cookies["usernameLoginSystem"].Value;
                     var acc = AccountController.GetByUsername(username);
 
                     if (acc != null)
@@ -51,7 +51,7 @@ namespace IM_PJ
         /// <param name="ID"></param>
         private void Initialize(int ID)
         {
-            string username = Request.Cookies["userLoginSystem"].Value;
+            string username = Request.Cookies["usernameLoginSystem"].Value;
             var acc = AccountController.GetByUsername(username);
 
             // Init value
@@ -89,7 +89,7 @@ namespace IM_PJ
 
         protected void btnAdd_Click(object sender, EventArgs e)
         {
-            string username = Request.Cookies["userLoginSystem"].Value;
+            string username = Request.Cookies["usernameLoginSystem"].Value;
 
             tbl_TransportCompany receivePlaceNew = new tbl_TransportCompany();
 

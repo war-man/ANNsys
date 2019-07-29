@@ -24,9 +24,9 @@ namespace IM_PJ
         {
             if (!IsPostBack)
             {
-                if (Request.Cookies["userLoginSystem"] != null)
+                if (Request.Cookies["usernameLoginSystem"] != null)
                 {
-                    string username = Request.Cookies["userLoginSystem"].Value;
+                    string username = Request.Cookies["usernameLoginSystem"].Value;
                     var acc = AccountController.GetByUsername(username);
                     if (acc != null)
                     {
@@ -68,7 +68,7 @@ namespace IM_PJ
                 else
                 {
                     hdfOrderID.Value = order.ID.ToString();
-                    string username = HttpContext.Current.Request.Cookies["userLoginSystem"].Value;
+                    string username = HttpContext.Current.Request.Cookies["usernameLoginSystem"].Value;
                     var acc = AccountController.GetByUsername(username);
 
                     // check order condition
@@ -523,7 +523,7 @@ namespace IM_PJ
         protected void btnOrder_Click(object sender, EventArgs e)
         {
             DateTime currentDate = DateTime.Now;
-            string username = Request.Cookies["userLoginSystem"].Value;
+            string username = Request.Cookies["usernameLoginSystem"].Value;
             var acc = AccountController.GetByUsername(username);
 
             if (acc != null)

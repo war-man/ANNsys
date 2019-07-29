@@ -6,6 +6,9 @@
     <script src="/Scripts/moment-with-locales.min.js"></script>
     <script src="/Scripts/bootstrap-datetimepicker.min.js"></script>
     <style>
+        .table-new-product .img-product {
+            width: 7%;
+        }
         #invoice-image li {
             list-style: none;
         }
@@ -112,7 +115,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
-                    <h3 class="page-title left">Giao hàng  <span>(<asp:Literal ID="ltrNumberOfOrder" runat="server" EnableViewState="false"></asp:Literal>)
+                    <h3 class="page-title left">Nhân viên đặt hàng  <span>(<asp:Literal ID="ltrNumberOfOrder" runat="server" EnableViewState="false"></asp:Literal>)
                         </span>
                     </h3>
                 </div>
@@ -235,7 +238,7 @@
                                 <div class="col-md-2 col-xs-6">
                                     <asp:DropDownList ID="ddlSize" runat="server" CssClass="form-control">
                                         <asp:ListItem Value="" Text="Chọn size"></asp:ListItem>
-                                        <asp:ListItem Value="m" Text="Size S"></asp:ListItem>
+                                        <asp:ListItem Value="s" Text="Size S"></asp:ListItem>
                                         <asp:ListItem Value="m" Text="Size M"></asp:ListItem>
                                         <asp:ListItem Value="l" Text="Size L"></asp:ListItem>
                                         <asp:ListItem Value="xl" Text="Size XL"></asp:ListItem>
@@ -576,15 +579,16 @@
                 }
                 else {
                     let item = registers.filter((item) => { return item.id == registerID; });
-                    deleteChoose([item]);
+                    deleteChoose(item);
                 }
 
                 testCheckAll();
             }
 
-            function checkRegisterAll(check)
-            {
-                if (check) {
+            $("#checkRegisterAll").change(e => {
+                let checked = e.target.checked;
+
+                if (checked) {
                     let checkbox = $("tbody > tr > td > input[type='checkbox']").not(":checked");
                     let data = [];
 
@@ -636,7 +640,7 @@
 
                     deleteChoose(data);
                 }
-            }
+            });
 
             function testCheckAll()
             {

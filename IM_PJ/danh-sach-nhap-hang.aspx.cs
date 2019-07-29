@@ -22,9 +22,9 @@ namespace IM_PJ
         {
             if (!IsPostBack)
             {
-                if (Request.Cookies["userLoginSystem"] != null)
+                if (Request.Cookies["usernameLoginSystem"] != null)
                 {
-                    string username = Request.Cookies["userLoginSystem"].Value;
+                    string username = Request.Cookies["usernameLoginSystem"].Value;
                     var acc = AccountController.GetByUsername(username);
 
                     if (acc != null)
@@ -74,7 +74,7 @@ namespace IM_PJ
 
         public void LoadData()
         {
-            string username = Request.Cookies["userLoginSystem"].Value;
+            string username = Request.Cookies["usernameLoginSystem"].Value;
             var acc = AccountController.GetByUsername(username);
             if (acc != null)
             {
@@ -166,29 +166,29 @@ namespace IM_PJ
         #region Paging
         public void pagingall(List<RegisterProductList> acs, PaginationMetadataModel page)
         {
-            string username = Request.Cookies["userLoginSystem"].Value;
+            string username = Request.Cookies["usernameLoginSystem"].Value;
             var acc = AccountController.GetByUsername(username);
 
             StringBuilder html = new StringBuilder();
-            html.Append("<thead>");
-            html.Append("<tr>");
-            html.Append("    <th><input id='checkRegisterAll' type='checkbox' onchange='checkRegisterAll($(this).prop(`checked`))'/></th>");
-            html.Append("    <th>Hình ảnh sản phẩm</th>");
-            html.Append("    <th class='col-customer'>Khách hàng</th>");
-            html.Append("    <th>SKU</th>");
-            html.Append("    <th>Tiêu đề</th>");
-            html.Append("    <th>Màu</th>");
-            html.Append("    <th>Size</th>");
-            html.Append("    <th>Số lượng</th>");
-            html.Append("    <th>Trạng thái</th>");
-            html.Append("    <th>Nhân viên</th>");
-            html.Append("    <th>Ngày khởi tạo</th>");
-            html.Append("    <th>Ngày dự kiến</th>");
-            html.Append("    <th></th>");
-            html.Append("</tr>");
-            html.Append("</thead>");
+            html.AppendLine("<thead>");
+            html.AppendLine("<tr>");
+            html.AppendLine("    <th><input id='checkRegisterAll' type='checkbox'/></th>");
+            html.AppendLine("    <th class='img-product'>Ảnh</th>");
+            html.AppendLine("    <th class='col-customer'>Khách hàng</th>");
+            html.AppendLine("    <th>Mã</th>");
+            html.AppendLine("    <th>Sản phẩm</th>");
+            html.AppendLine("    <th>Màu</th>");
+            html.AppendLine("    <th>Size</th>");
+            html.AppendLine("    <th>Số lượng</th>");
+            html.AppendLine("    <th>Trạng thái</th>");
+            html.AppendLine("    <th>Nhân viên</th>");
+            html.AppendLine("    <th>Ngày đặt</th>");
+            html.AppendLine("    <th>Ngày về dự kiến</th>");
+            html.AppendLine("    <th></th>");
+            html.AppendLine("</tr>");
+            html.AppendLine("</thead>");
 
-            html.Append("<tbody>");
+            html.AppendLine("<tbody>");
             if (acs.Count > 0)
             {
                 PageCount = page.totalPages;
@@ -207,50 +207,44 @@ namespace IM_PJ
                     TrTag.AppendLine(String.Format("data-note='{0}' ", item.note));
                     TrTag.AppendLine("/>");
 
-                    html.Append(TrTag.ToString());
-                    html.Append("   <td><input type='checkbox' onchange='checkRegister($(this))'/></td>");
-                    html.Append("   <td data-title='Hình ảnh sản phẩm'><a href=\"/xem-san-pham?sku=" + item.sku + "\"><img src=\"" + Thumbnail.getURL(item.image, Thumbnail.Size.Small) + "\"/></a></td>");
-                    html.Append("   <td data-title='Khách hàng' class='customer-td'>" + item.customer.ToTitleCase() + "</td>");
-                    html.Append("   <td data-title='Mã sản phẩm'>" + item.sku + "</td>");
-                    html.Append("   <td data-title='Tiêu đề sản phẩm'>" + item.title + "</td>");
-                    html.Append("   <td data-title='Màu đặt'>" + item.color + "</td>");
-                    html.Append("   <td data-title='Kích thước'>" + item.size + "</td>");
-                    html.Append("   <td data-title='Số lượng đặt hàng'>" + String.Format("{0:#,###}", item.quantity) + "</td>");
-                    html.Append("   <td id='status' data-title='Trạng thái đơn yêu cầu nhập hàng'>");
+                    html.AppendLine(TrTag.ToString());
+                    html.AppendLine("   <td><input type='checkbox' onchange='checkRegister($(this))'/></td>");
+                    html.AppendLine("   <td data-title='Ảnh'><a target='_blank' href='/xem-san-pham?sku=" + item.sku + "'><img src='" + Thumbnail.getURL(item.image, Thumbnail.Size.Small) + "'></a></td>");
+                    html.AppendLine("   <td data-title='Khách hàng' class='customer-td'><a target='_blank' href='/xem-san-pham?sku=" + item.sku + "'>" + item.customer.ToTitleCase() + "</a>");
+                    if (!string.IsNullOrEmpty(item.note))
+                    {
+                        html.AppendLine("       <br><span class='order-info'><strong>Ghi chú:</strong> " + item.note + "</span>");
+                    }
+                    html.AppendLine("   </td>");
+                    html.AppendLine("   <td data-title='Mã'>" + item.sku + "</td>");
+                    html.AppendLine("   <td data-title='Sản phẩm'>" + item.title + "</td>");
+                    html.AppendLine("   <td data-title='Màu'>" + item.color + "</td>");
+                    html.AppendLine("   <td data-title='Size'>" + item.size + "</td>");
+                    html.AppendLine("   <td data-title='Số lượng'>" + String.Format("{0:#,###}", item.quantity) + "</td>");
+                    html.AppendLine("   <td id='status' data-title='Trạng thái'>");
                     switch (item.status)
                     {
                         case (int)RegisterProductStatus.Approve:
-                            html.Append("   <span class='bg-green'>" + item.statusName + "</span>");
+                            html.AppendLine("   <span class='bg-green'>" + item.statusName + "</span>");
                             break;
                         case (int)RegisterProductStatus.Ordering:
-                            html.Append("   <span class='bg-yellow'>" + item.statusName + "</span>");
+                            html.AppendLine("   <span class='bg-yellow'>" + item.statusName + "</span>");
                             break;
                         case (int)RegisterProductStatus.Done:
-                            html.Append("   <span class='bg-blue'>" + item.statusName + "</span>");
+                            html.AppendLine("   <span class='bg-blue'>" + item.statusName + "</span>");
                             break;
                         default:
-                            html.Append("   <span class='bg-red'>" + item.statusName + "</span>");
+                            html.AppendLine("   <span class='bg-red'>" + item.statusName + "</span>");
                             break;
                     }
-                    html.Append("   </td>");
-                    html.Append("   <td data-title='Nhân viên tạo đơn'>" + item.staffName + "</td>");
-                    html.Append("   <td data-title='Ngày khởi tạo đơn'>" + String.Format("{0:dd/MM}", item.createdDate) + "</td>");
-                    html.Append("   <td id='expectedDate' data-title='Ngày dự kiến hàng về'>" + String.Format("{0:dd/MM}", item.expectedDate) + "</td>");
-                    html.Append("   <td data-title='Thao tác' class='update-button' id='updateButton'>");
-                    html.Append("       <button type='button' class='btn primary-btn h45-btn' data-toggle='modal' data-target='#RegisterProductModal' data-backdrop='static' data-keyboard='false' title='Cập nhật thông yêu cầu nhập hàng'><span class='glyphicon glyphicon-edit'></span></button>");
-                    html.Append("   </td>");
-                    html.Append("</tr>");
-
-                    // thông tin thêm
-                    html.Append("<tr class='tr-more-info'>");
-                    html.Append("   <td colspan='2' data-title='Thông tin thêm'></td>");
-                    html.Append("   <td colspan='14'>");
-                    if (!string.IsNullOrEmpty(item.note))
-                    {
-                        html.Append("       <span class='order-info'><strong>Ghi chú:</strong> " + item.note + "</span>");
-                    }
-                    html.Append("   </td>");
-                    html.Append("</tr>");
+                    html.AppendLine("   </td>");
+                    html.AppendLine("   <td data-title='Nhân viên'>" + item.staffName + "</td>");
+                    html.AppendLine("   <td data-title='Ngày đặt'>" + String.Format("{0:dd/MM}", item.createdDate) + "</td>");
+                    html.AppendLine("   <td id='expectedDate' data-title='Ngày về dự kiến'>" + String.Format("{0:dd/MM}", item.expectedDate) + "</td>");
+                    html.AppendLine("   <td data-title='Thao tác' class='update-button' id='updateButton'>");
+                    html.AppendLine("       <button type='button' class='btn primary-btn h45-btn' data-toggle='modal' data-target='#RegisterProductModal' data-backdrop='static' data-keyboard='false' title='Cập nhật thông yêu cầu nhập hàng'><span class='glyphicon glyphicon-edit'></span></button>");
+                    html.AppendLine("   </td>");
+                    html.AppendLine("</tr>");
                 }
 
             }
@@ -258,14 +252,14 @@ namespace IM_PJ
             {
                 if (acc.RoleID == 0)
                 {
-                    html.Append("<tr><td colspan=\"14\">Không tìm thấy đơn hàng...</td></tr>");
+                    html.AppendLine("<tr><td colspan=\"14\">Không tìm thấy đơn hàng...</td></tr>");
                 }
                 else
                 {
-                    html.Append("<tr><td colspan=\"13\">Không tìm thấy đơn hàng...</td></tr>");
+                    html.AppendLine("<tr><td colspan=\"13\">Không tìm thấy đơn hàng...</td></tr>");
                 }
             }
-            html.Append("</tbody>");
+            html.AppendLine("</tbody>");
 
             ltrList.Text = html.ToString();
         }
@@ -425,7 +419,7 @@ namespace IM_PJ
         [WebMethod]
         public static void updateRegisterProduct(List<RegisterProductSession> data)
         {
-            var username = HttpContext.Current.Request.Cookies["userLoginSystem"].Value;
+            var username = HttpContext.Current.Request.Cookies["usernameLoginSystem"].Value;
             var acc = AccountController.GetByUsername(username);
 
             // Update session khi mà thực thi update thông phi đăng ký nhập hàng
@@ -436,7 +430,7 @@ namespace IM_PJ
         [WebMethod]
         public static string addChoose(List<RegisterProductSession> data)
         {
-            var username = HttpContext.Current.Request.Cookies["userLoginSystem"].Value;
+            var username = HttpContext.Current.Request.Cookies["usernameLoginSystem"].Value;
             var acc = AccountController.GetByUsername(username);
 
             return SessionController.addRegisterProductSession(acc, data);
@@ -445,7 +439,7 @@ namespace IM_PJ
         [WebMethod]
         public static string deleteChoose(List<RegisterProductSession> data)
         {
-            var username = HttpContext.Current.Request.Cookies["userLoginSystem"].Value;
+            var username = HttpContext.Current.Request.Cookies["usernameLoginSystem"].Value;
             var acc = AccountController.GetByUsername(username);
 
             return SessionController.deleteRegisterProductSession(acc, data);
@@ -454,7 +448,7 @@ namespace IM_PJ
         [WebMethod]
         public static void deleteAllChoose()
         {
-            var username = HttpContext.Current.Request.Cookies["userLoginSystem"].Value;
+            var username = HttpContext.Current.Request.Cookies["usernameLoginSystem"].Value;
             var acc = AccountController.GetByUsername(username);
             SessionController.deleteRegisterProductSession(acc);
         }

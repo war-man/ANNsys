@@ -16,7 +16,7 @@ namespace IM_PJ
         {
             if (!IsPostBack)
             {
-                if (Request.Cookies["userLoginSystem"] != null)
+                if (Request.Cookies["usernameLoginSystem"] != null)
                 {
                     Response.Redirect("/trang-chu");
                 }
@@ -59,10 +59,10 @@ namespace IM_PJ
                 {
                     if (ac.Status == 1)
                     {
-                        Session["userLoginSystem"] = username;
+                        Session["usernameLoginSystem"] = username;
                         Session.Timeout = 43200;
-                        Response.Cookies["userLoginSystem"].Value = username;
-                        Response.Cookies["userLoginSystem"].Expires = DateTime.Now.AddDays(90);
+                        Response.Cookies["usernameLoginSystem"].Value = username;
+                        Response.Cookies["usernameLoginSystem"].Expires = DateTime.Now.AddDays(90);
                         Response.Redirect("/trang-chu");
                     }
                     else

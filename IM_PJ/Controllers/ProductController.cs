@@ -2402,7 +2402,7 @@ namespace IM_PJ.Controllers
                         }
                     );
 
-
+                #region Thực thi triết xuất dữ liệu
                 #region Lọc với text search
                 if (!String.IsNullOrEmpty(filter.search))
                 {
@@ -2490,18 +2490,48 @@ namespace IM_PJ.Controllers
                 #region Lọc với màu
                 if (!String.IsNullOrEmpty(filter.color))
                 {
+                    var productColor = con.tbl_VariableValue
+                        .Where(x => x.VariableID == 1)
+                        .Where(x => x.VariableValue.ToLower().Contains(filter.color.Trim().ToLower()))
+                        .Join(
+                            con.tbl_ProductVariableValue,
+                            vv => vv.ID,
+                            pvv => pvv.VariableValueID,
+                            (vv, pvv) => pvv
+                        );
+
                     product = product
                             .Where(x => x.product.ProductStyle == 2)
-                            .Where(x => x.variable.color == filter.color.Trim().ToLower());
+                            .Join(
+                                productColor,
+                                p => p.variable.ID,
+                                c => c.ProductVariableID,
+                                (p, c) => p
+                            );
                 }
                 #endregion
 
                 #region Lọc với size
                 if (!String.IsNullOrEmpty(filter.size))
                 {
+                    var productSize = con.tbl_VariableValue
+                        .Where(x => x.VariableID == 2)
+                        .Where(x => x.VariableValue.ToLower().Contains(filter.size.Trim().ToLower()))
+                        .Join(
+                            con.tbl_ProductVariableValue,
+                            vv => vv.ID,
+                            pvv => pvv.VariableValueID,
+                            (vv, pvv) => pvv
+                        );
+
                     product = product
                             .Where(x => x.product.ProductStyle == 2)
-                            .Where(x => x.variable.size == filter.size.Trim().ToLower());
+                            .Join(
+                                productSize,
+                                p => p.variable.ID,
+                                c => c.ProductVariableID,
+                                (p, c) => p
+                            );
                 }
                 #endregion
 
@@ -2556,6 +2586,30 @@ namespace IM_PJ.Controllers
                             (p, t) => p
                         );
                 }
+                #endregion
+
+                #region Lấy những sẩn phẩm được yêu cầu nhập hàng theo người khởi tạo
+                if (filter.createdBy > 0)
+                {
+                    var registerProduct = con.RegisterProducts.Where(x => x.CreatedBy == filter.createdBy);
+
+                    product = product
+                        .Join(
+                            registerProduct,
+                            p => new
+                            {
+                                productID = p.product.ID,
+                                variableID = p.variable != null ? p.variable.ID : 0
+                            },
+                            r => new
+                            {
+                                productID = r.ProductID,
+                                variableID = r.VariableID
+                            },
+                            (p, r) => p
+                        );
+                }
+                #endregion
                 #endregion
 
                 #region Lấy những thông tin cần thiết để tiếp tục phân trang

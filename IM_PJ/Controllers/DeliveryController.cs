@@ -276,7 +276,6 @@ namespace IM_PJ.Controllers
                     }
                     else
                     {
-                        var order = con.tbl_Order.Where(x => x.ID == id).FirstOrDefault();
                         var delivery = new Delivery()
                         {
                             UUID = Guid.NewGuid(),
@@ -294,13 +293,25 @@ namespace IM_PJ.Controllers
                             Times = deliveryTimes
                         };
 
+                        var order = con.tbl_Order.Where(x => x.ID == id).FirstOrDefault();
+
                         if (order != null)
                         {
                             // Thu hộ
                             if (order.PaymentType == 3)
                             {
-                                delivery.COO = Convert.ToDecimal(order.TotalPrice);
+                                decimal COD = Convert.ToDecimal(order.TotalPrice);
+                                if (order.RefundsGoodsID > 0)
+                                {
+                                    var refund = con.tbl_RefundGoods.Where(x => x.ID == order.RefundsGoodsID).FirstOrDefault();
+                                    if (refund != null)
+                                    {
+                                        COD = COD - Convert.ToDecimal(refund.TotalPrice);
+                                    }
+                                }
+                                delivery.COO = COD;
                             }
+                            
                             delivery.COD = Convert.ToDecimal(order.FeeShipping);
                         }
                         con.Deliveries.Add(delivery);

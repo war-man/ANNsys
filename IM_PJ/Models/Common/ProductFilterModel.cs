@@ -36,5 +36,7 @@ namespace IM_PJ.Models
         public int floorShelf { get; set; } = 0;
         // Lọc theo thời gian nhập kho
         public string goodsReceiptDate { get; set; } = String.Empty;
+        // Tên người yêu cầu nhập hàng
+        public int createdBy { get; set; }
     }
 }

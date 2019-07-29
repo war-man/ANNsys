@@ -249,7 +249,7 @@
                                                 <div class="col-md-3 col-xs-6 margin-bottom-15">
                                                     <asp:DropDownList ID="ddlSize" runat="server" CssClass="form-control">
                                                         <asp:ListItem Value="" Text="Chọn size"></asp:ListItem>
-                                                        <asp:ListItem Value="m" Text="Size S"></asp:ListItem>
+                                                        <asp:ListItem Value="s" Text="Size S"></asp:ListItem>
                                                         <asp:ListItem Value="m" Text="Size M"></asp:ListItem>
                                                         <asp:ListItem Value="l" Text="Size L"></asp:ListItem>
                                                         <asp:ListItem Value="xl" Text="Size XL"></asp:ListItem>

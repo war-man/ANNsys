@@ -2718,7 +2718,7 @@ namespace IM_PJ.Controllers
             }
 
             sql.AppendLine("SELECT");
-            sql.AppendLine("    CONVERT(VARCHAR(10), Ord.DateDone, 103) AS DateDone");
+            sql.AppendLine("    CONVERT(VARCHAR(10), Ord.DateDone, 121) AS DateDone");
             sql.AppendLine(",   Ord.ID");
             sql.AppendLine(",   Ord.DiscountPerProduct");
             sql.AppendLine(",   OrdDetail.SKU");
@@ -2742,7 +2742,7 @@ namespace IM_PJ.Controllers
                 sql.AppendLine(String.Format("    AND OrdDetail.SKU LIKE '{0}%'", SKU));
             }
 
-            sql.AppendLine(String.Format("    AND    CONVERT(datetime, Ord.DateDone, 103) BETWEEN CONVERT(datetime, '{0}', 103) AND CONVERT(datetime, '{1}', 103);", fromDate.ToString(), toDate.ToString()));
+            sql.AppendLine(String.Format("    AND    CONVERT(datetime, Ord.DateDone, 121) BETWEEN CONVERT(datetime, '{0}', 121) AND CONVERT(datetime, '{1}', 121);", fromDate.ToString(), toDate.ToString()));
 
             sql.AppendLine("SELECT");
             sql.AppendLine("    DAT.DateDone");
