@@ -76,7 +76,8 @@ namespace IM_PJ.Controllers
                 {
                     data = data.Where(x =>
                         x.Title.Contains(filter.search) ||
-                        x.Customer.Contains(filter.search)
+                        x.Customer.Contains(filter.search) ||
+                        x.SKU.Contains(filter.search)
                     );
                 }
                 // Filter theo trang thái
@@ -165,7 +166,7 @@ namespace IM_PJ.Controllers
                                 statusName = "Đã đặt hàng";
                                 break;
                             case (int)RegisterProductStatus.Done:
-                                statusName = "Hàng về";
+                                statusName = "Hàng đã về";
                                 break;
                             default:
                                 statusName = "Chưa duyệt";

@@ -210,14 +210,14 @@ namespace IM_PJ
                     html.AppendLine(TrTag.ToString());
                     html.AppendLine("   <td><input type='checkbox' onchange='checkRegister($(this))'/></td>");
                     html.AppendLine("   <td data-title='Ảnh'><a target='_blank' href='/xem-san-pham?sku=" + item.sku + "'><img src='" + Thumbnail.getURL(item.image, Thumbnail.Size.Small) + "'></a></td>");
-                    html.AppendLine("   <td data-title='Khách hàng' class='customer-td'><a target='_blank' href='/xem-san-pham?sku=" + item.sku + "'>" + item.customer.ToTitleCase() + "</a>");
+                    html.AppendLine("   <td data-title='Khách hàng' class='customer-td'><span class='name'>" + item.customer.ToTitleCase() + "</span>");
                     if (!string.IsNullOrEmpty(item.note))
                     {
-                        html.AppendLine("       <br><span class='order-info'><strong>Ghi chú:</strong> " + item.note + "</span>");
+                        html.AppendLine("       <br><span class='order-info'>Ghi chú: " + item.note + "</span>");
                     }
                     html.AppendLine("   </td>");
                     html.AppendLine("   <td data-title='Mã'>" + item.sku + "</td>");
-                    html.AppendLine("   <td data-title='Sản phẩm'>" + item.title + "</td>");
+                    html.AppendLine("   <td data-title='Sản phẩm'><a target='_blank' href='/xem-san-pham?sku=" + item.sku + "'>" + item.title + "</a></td>");
                     html.AppendLine("   <td data-title='Màu'>" + item.color + "</td>");
                     html.AppendLine("   <td data-title='Size'>" + item.size + "</td>");
                     html.AppendLine("   <td data-title='Số lượng'>" + String.Format("{0:#,###}", item.quantity) + "</td>");

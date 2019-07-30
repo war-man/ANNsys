@@ -9,6 +9,10 @@
         .table-new-product .img-product {
             width: 7%;
         }
+        .table-new-product .customer-td span.name {
+            font-weight: bold;
+            font-size: 16px;
+        }
         #invoice-image li {
             list-style: none;
         }
@@ -322,7 +326,7 @@
                     <div class="modal-body">
                         <div class="row form-group">
                             <div class="col-md-3 col-xs-4">
-                                <p>Customer</p>
+                                <p>Khách hàng</p>
                             </div>
                             <div class="col-md-9 col-xs-8">
                                 <asp:TextBox ID="txtCustomer" runat="server" CssClass="form-control" placeholder="Tên khách hàng"></asp:TextBox>
@@ -351,7 +355,7 @@
                         </div>
                         <div class="row form-group">
                             <div class="col-md-3 col-xs-4">
-                                <p>Ngày dự kiến giao</p>
+                                <p>Ngày về dự kiến</p>
                             </div>
                             <div class="col-md-9 col-xs-8">
                                 <div class="input-group date" id="dtExpectedDate">

@@ -441,6 +441,7 @@
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="nhan-vien-dat-hang.aspx" />
     <Content Include="danh-sach-dang-ky.aspx" />
     <Content Include="danh-sach-nhap-hang.aspx" />
     <Content Include="danh-sach-van-chuyen.aspx" />
@@ -842,6 +843,13 @@
     <Compile Include="Controllers\RegisterProductController.cs" />
     <Compile Include="Controllers\SessionController.cs" />
     <Compile Include="Controllers\ShipperController.cs" />
+    <Compile Include="nhan-vien-dat-hang.aspx.cs">
+      <DependentUpon>nhan-vien-dat-hang.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="nhan-vien-dat-hang.aspx.designer.cs">
+      <DependentUpon>nhan-vien-dat-hang.aspx</DependentUpon>
+    </Compile>
     <Compile Include="danh-sach-dang-ky.aspx.cs">
       <DependentUpon>danh-sach-dang-ky.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>

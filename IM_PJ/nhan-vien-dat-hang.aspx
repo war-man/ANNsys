@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="dang-ky-nhap-hang.aspx.cs" Inherits="IM_PJ.dang_ky_nhap_hang" EnableSessionState="ReadOnly" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="nhan-vien-dat-hang.aspx.cs" Inherits="IM_PJ.nhan_vien_dat_hang" EnableSessionState="ReadOnly" %>
 
 <!DOCTYPE html>
 <html>
@@ -112,10 +112,10 @@
             padding: 15px;
         }
         h3 {
-            margin-top: 10px;
+            margin-top: 0;
         }
         .product-name a {
-            font-size: 18px;
+            font-size: 14px;
             line-height: 1.5;
         }
         .product-sku {
@@ -123,7 +123,7 @@
             color: #0289bc;
         }
         .product-price {
-            font-size: 20px;
+            font-size: 14px;
             color: #ff0023;
         }
         .bg-green, .bg-red, .bg-yellow {
