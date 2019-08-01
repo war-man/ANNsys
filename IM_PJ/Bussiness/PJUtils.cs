@@ -265,9 +265,14 @@ namespace NHST.Bussiness
             {
                 ret = "<span class='bg-red'>Thanh toán thiếu</span>";
             }
-            else
+            else if (PaymentStatus == 3)
             {
                 ret = "<span class='bg-blue'>Đã thanh toán</span>";
+
+            }
+            else
+            {
+                ret = "<span class='bg-blue-hoki'>Đã duyệt</span>";
 
             }
             return ret;

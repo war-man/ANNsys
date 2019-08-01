@@ -72,6 +72,10 @@
       <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="ICSharpCode.SharpZipLib, Version=1.0.0.999, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpZipLib.1.0.0\lib\net45\ICSharpCode.SharpZipLib.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="LeoUtils">
       <HintPath>..\packages\LeoUtils.dll</HintPath>
     </Reference>
@@ -163,6 +167,22 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="NPOI, Version=2.4.1.0, Culture=neutral, PublicKeyToken=0df73ec7942b34e1, processorArchitecture=MSIL">
+      <HintPath>..\packages\NPOI.2.4.1\lib\net45\NPOI.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="NPOI.OOXML, Version=2.4.1.0, Culture=neutral, PublicKeyToken=0df73ec7942b34e1, processorArchitecture=MSIL">
+      <HintPath>..\packages\NPOI.2.4.1\lib\net45\NPOI.OOXML.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="NPOI.OpenXml4Net, Version=2.4.1.0, Culture=neutral, PublicKeyToken=0df73ec7942b34e1, processorArchitecture=MSIL">
+      <HintPath>..\packages\NPOI.2.4.1\lib\net45\NPOI.OpenXml4Net.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="NPOI.OpenXmlFormats, Version=2.4.1.0, Culture=neutral, PublicKeyToken=0df73ec7942b34e1, processorArchitecture=MSIL">
+      <HintPath>..\packages\NPOI.2.4.1\lib\net45\NPOI.OpenXmlFormats.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="QRCoder">
@@ -441,6 +461,7 @@
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="thong-ke-buu-dien.aspx" />
     <Content Include="nhan-vien-dat-hang.aspx" />
     <Content Include="danh-sach-dang-ky.aspx" />
     <Content Include="danh-sach-nhap-hang.aspx" />
@@ -830,6 +851,7 @@
       <DependentUpon>bao-cao.aspx</DependentUpon>
     </Compile>
     <Compile Include="Controllers\CategoryShelfController.cs" />
+    <Compile Include="Controllers\DeliveryPostOfficeController.cs" />
     <Compile Include="Controllers\RegisterController.cs" />
     <Compile Include="Controllers\BankAccountController.cs" />
     <Compile Include="Controllers\BankController.cs" />
@@ -843,6 +865,17 @@
     <Compile Include="Controllers\RegisterProductController.cs" />
     <Compile Include="Controllers\SessionController.cs" />
     <Compile Include="Controllers\ShipperController.cs" />
+    <Compile Include="Models\Common\DeliveryPostOfficeFilterModel.cs" />
+    <Compile Include="Models\DeliveryPostOffice.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="thong-ke-buu-dien.aspx.cs">
+      <DependentUpon>thong-ke-buu-dien.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="thong-ke-buu-dien.aspx.designer.cs">
+      <DependentUpon>thong-ke-buu-dien.aspx</DependentUpon>
+    </Compile>
     <Compile Include="nhan-vien-dat-hang.aspx.cs">
       <DependentUpon>nhan-vien-dat-hang.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -1867,7 +1900,7 @@
     <Folder Include="App_Themes\NewUI\js\sweet\.sass-cache\" />
     <Folder Include="App_Themes\NewUI\plugins\" />
     <Folder Include="uploads\barcodes\" />
-    <Folder Include="uploads\deliveries\" />
+    <Folder Include="uploads\deliveries\post_office\" />
     <Folder Include="uploads\images\" />
   </ItemGroup>
   <ItemGroup>

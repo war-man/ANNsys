@@ -91,4 +91,19 @@ namespace IM_PJ.Models
         Ordering = 3,       // Đã đặt hàng
         Done = 4            // Hàng đã về
     }
+
+    public enum DeliveryPostOfficeReview
+    {
+        NoApprove = 1,      // Chưa được duyệt
+        Approve = 2,        // Đã được duyệt
+        Cancel = 3,         // Đơn hủy
+        NoInfor = 4,         // Không tìm thấy thông tin order
+        NoHandle = 5      // Bỏ qua không cần xử lý
+    }
+
+    public enum PostOfficeFeeStatus
+    {
+        Profitable = 1, // Trạng thái tiền phí lơn hơn hoặc bằng phí của bưu điện
+        Losses = 2
+    }
 }
