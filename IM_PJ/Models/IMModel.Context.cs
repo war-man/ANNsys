@@ -76,5 +76,6 @@ namespace IM_PJ.Models
         public virtual DbSet<tbl_Variable> tbl_Variable { get; set; }
         public virtual DbSet<tbl_VariableValue> tbl_VariableValue { get; set; }
         public virtual DbSet<tbl_WhiteDomain> tbl_WhiteDomain { get; set; }
+        public virtual DbSet<DeliveryPostOffice> DeliveryPostOffices { get; set; }
     }
 }
