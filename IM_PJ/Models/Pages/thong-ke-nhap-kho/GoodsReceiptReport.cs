@@ -18,5 +18,7 @@ namespace IM_PJ.Models.Pages.thong_ke_nhap_kho
         public int quantityStock { get; set; }
         public DateTime goodsReceiptDate { get; set; }
         public bool isVariable { get; set; }
+        public int showHomePage { get; set; }
+        public int webPublish { get; set; }
     }
 }

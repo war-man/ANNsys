@@ -42,6 +42,10 @@
                                         <td><a href="thong-ke-so-luong-ton-kho-theo-danh-muc">Tồn kho</a></td>
                                         <td><a href="thong-ke-so-luong-ton-kho-theo-danh-muc" class="btn primary-btn h45-btn">Chi tiết</a></td>
                                     </tr>
+                                     <tr>
+                                        <td><a href="thong-ke-buu-dien">Thống kê bưu điện</a></td>
+                                        <td><a href="thong-ke-buu-dien" class="btn primary-btn h45-btn">Chi tiết</a></td>
+                                    </tr>
                                 </tbody>
                             </table>
                         </div>

@@ -950,6 +950,13 @@ namespace IM_PJ.Controllers
                 }
                 #endregion
 
+                #region Lọc sản phẩm theo ngày nhập hàng
+                if (filter.fromDate.HasValue && filter.toDate.HasValue)
+                {
+                    stock = stock.Where(x => x.CreatedDate >= filter.fromDate && x.CreatedDate <= filter.toDate);
+                }
+                #endregion
+
                 #region Lọc sản phẩm theo danh mục
                 if (filter.category > 0)
                 {
@@ -999,12 +1006,7 @@ namespace IM_PJ.Controllers
                 }
                 #endregion
 
-                #region Lọc sản phẩm theo ngày nhập hàng
-                if (filter.fromDate.HasValue && filter.toDate.HasValue)
-                {
-                    stock = stock.Where(x => x.CreatedDate >= filter.fromDate && x.CreatedDate <= filter.toDate);
-                }
-                #endregion
+                
 
                 #region Lọc sản phẩm theo màu
                 if (!String.IsNullOrEmpty(filter.color))
@@ -1103,7 +1105,9 @@ namespace IM_PJ.Controllers
                             image = p.product.ProductImage,
                             quantityInput = p.quantityInput,
                             goodsReceiptDate = p.goodsReceiptDate,
-                            isVariable = p.product.ProductStyle == 2 ? true : false
+                            isVariable = p.product.ProductStyle == 2 ? true : false,
+                            showHomePage = p.product.ShowHomePage,
+                            webPublish = p.product.WebPublish
                         }
                     )
                     .ToList();
@@ -1133,7 +1137,9 @@ namespace IM_PJ.Controllers
                             quantityInput = Convert.ToInt32(x.quantityInput),
                             quantityStock = Convert.ToInt32(quantityStock),
                             goodsReceiptDate= x.goodsReceiptDate,
-                            isVariable = x.isVariable
+                            isVariable = x.isVariable,
+                            showHomePage = Convert.ToInt32(x.showHomePage),
+                            webPublish = Convert.ToInt32(x.webPublish)
                         };
                     })
                     .OrderByDescending(x => x.goodsReceiptDate)

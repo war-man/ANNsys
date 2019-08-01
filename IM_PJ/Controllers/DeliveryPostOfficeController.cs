@@ -137,9 +137,10 @@ namespace IM_PJ.Controllers
 
                 #region Tính toán phân trang
                 // Tính toán báo cáo
-                lossMoney = postOffices
-                    .Where(x => x.DeliveryStatus != "Mới tạo")
-                    .Sum(x => x.OrderFee - x.Fee);
+                if(postOffices.Count() > 0)
+                    lossMoney = postOffices
+                        .Where(x => x.DeliveryStatus != "Mới tạo")
+                        .Sum(x => x.OrderFee - x.Fee);
 
                 // Calculate pagination
                 page.totalCount = postOffices.Count();

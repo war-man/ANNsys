@@ -153,7 +153,6 @@ namespace IM_PJ
             int PageSize = 30;
             StringBuilder html = new StringBuilder();
             html.Append("<tr>");
-            //html.Append("     <th class='image-column'>Ảnh</th>");
             html.Append("     <th class='name-column'>Họ tên</th>");
             html.Append("     <th class='nick-column'>Nick đặt hàng</th>");
             html.Append("     <th class='phone-column'>Điện thoại</th>");
@@ -190,7 +189,6 @@ namespace IM_PJ
                     var item = acs[i];
                     html.Append("<tr>");
 
-                    //html.Append("   <td><a href=\"/chi-tiet-khach-hang?id=" + item.ID + "\"><img src=\"" + item.Avatar + "\"/></a></td>");
                     html.Append("   <td class=\"customer-name-link\"><a href=\"/chi-tiet-khach-hang?id=" + item.ID + "\">" + item.CustomerName.ToTitleCase() + "</a></td>");
                     html.Append("   <td class=\"customer-name-link\">" + item.Nick.ToTitleCase() + "</td>");
                     html.Append("   <td>" + item.CustomerPhone + "</td>");

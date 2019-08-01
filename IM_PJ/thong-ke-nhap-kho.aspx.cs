@@ -161,6 +161,7 @@ namespace IM_PJ
             StringBuilder html = new StringBuilder();
             html.AppendLine("<thead>");
             html.AppendLine("<tr>");
+            html.AppendLine("    <th class='stt-column'>#</th>");
             html.AppendLine("    <th class='image-column'>Ảnh</th>");
             html.AppendLine("    <th class='name-column'>Sản phẩm</th>");
             html.AppendLine("    <th class='sku-column'>Mã</th>");
@@ -177,14 +178,17 @@ namespace IM_PJ
             {
                 PageCount = page.totalPages;
                 Int32 Page = page.currentPage;
-
+                int i = 0;
                 foreach (var item in acs)
                 {
+                    i++;
                     html.AppendLine("<tr class='parent-row'>");
+                    html.AppendLine("   <td>" + i + "</td>");
                     html.AppendLine("   <td>");
                     html.AppendLine("      <a href='/xem-san-pham?sku=" + item.sku + "'>");
                     html.AppendLine("          <img src='" + Thumbnail.getURL(item.image, Thumbnail.Size.Small) + "'/>");
                     html.AppendLine("      </a>");
+                    html.AppendLine("   <a href='javascript:;' onclick='copyProductInfo(" + item.productID + ")' class='btn download-btn h45-btn'><i class='fa fa-files-o'></i> Copy</a>");
                     html.AppendLine("   </td>");
                     html.AppendLine("   <td class='customer-name-link'>");
                     html.AppendLine("       <a href='/xem-san-pham?sku=" + item.sku + "'>" + item.title + "</a></td>");
@@ -197,9 +201,14 @@ namespace IM_PJ
                     html.AppendLine("   <td data-title='Thao tác' class='update-button'>");
                     if (item.isVariable)
                     {
-                        html.AppendLine("      <a href='javascript:;' title='Xem thông tin sản phẩm con' class='btn primary-btn h45-btn' onclick='showSubGoodsReceipt($(this), `" + item.sku + "`)'>");
+                        html.AppendLine("      <a href='javascript:;' title='Xem thông tin sản phẩm con' class='btn primary-btn h45-btn btn-blue' onclick='showSubGoodsReceipt($(this), `" + item.sku + "`)'>");
                         html.AppendLine("           <i class='fa fa-chevron-down' aria-hidden='true'></i>");
                         html.AppendLine("      </a>");
+                    }
+                    html.AppendLine("       <a href='javascript:;' title='Download tất cả hình sản phẩm này' class='btn primary-btn h45-btn' onclick='getAllProductImage(`" + item.sku + "`);'><i class='fa fa-file-image-o' aria-hidden='true'></i></a>");
+                    if (acc.RoleID == 0)
+                    {
+                        html.Append("       <a href='javascript:;' title='Đồng bộ sản phẩm' class='up-product-" + item.productID + " btn primary-btn h45-btn " + (item.showHomePage == 1 ? "" : "hide") + "' onclick='ShowUpProductToWeb(`" + item.sku + "`, `" + item.productID + "`, `" + item.categoryID + "`, `false`, `false`, `null`);'><i class='fa fa-refresh' aria-hidden='true'></i></a>");
                     }
                     html.AppendLine("  </td>");
                     html.AppendLine("</tr>");
@@ -208,6 +217,7 @@ namespace IM_PJ
                     foreach (var subItem in productVariables)
                     {
                         html.AppendLine("<tr class='" + item.sku + " child-row hide'>");
+                        html.AppendLine("   <td></td>");
                         html.AppendLine("   <td></td>");
                         html.AppendLine("   <td>");
                         html.AppendLine("      <a href='/xem-san-pham?sku=" + subItem.sku + "'>");

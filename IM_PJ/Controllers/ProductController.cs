@@ -1095,7 +1095,7 @@ namespace IM_PJ.Controllers
 
             if (filter.fromDate.HasValue && filter.toDate.HasValue)
             {
-                sql.AppendLine(String.Format("	AND	(CONVERT(datetime, PRD.CreatedDate, 103) BETWEEN CONVERT(datetime, '{0}', 103) AND CONVERT(datetime, '{1}', 103))", filter.fromDate.ToString(), filter.toDate.ToString()));
+                sql.AppendLine(String.Format("	AND	(CONVERT(datetime, PRD.CreatedDate, 121) BETWEEN CONVERT(datetime, '{0}', 121) AND CONVERT(datetime, '{1}', 121))", filter.fromDate.ToString(), filter.toDate.ToString()));
             }
             #endregion
 

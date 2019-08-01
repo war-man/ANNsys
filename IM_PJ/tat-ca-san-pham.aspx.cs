@@ -772,7 +772,7 @@ namespace IM_PJ
                     html.Append("       <a href=\"javascript:;\" title=\"Download tất cả hình sản phẩm này\" class=\"btn primary-btn h45-btn\" onclick=\"getAllProductImage('" + item.ProductSKU + "');\"><i class=\"fa fa-file-image-o\" aria-hidden=\"true\"></i></a>");
                     html.Append("       <a target=\"_blank\" href=\"https://www.facebook.com/search/posts/?q=" + item.ProductSKU + "&filters_rp_author=%7B%22name%22%3A%22author%22%2C%22args%22%3A%22100012594165130%22%7D&filters_rp_chrono_sort=%7B%22name%22%3A%22chronosort%22%2C%22args%22%3A%22%22%7D\" title=\"Tìm trên facebook\" class=\"btn primary-btn btn-black h45-btn\"><i class=\"fa fa-facebook-official\" aria-hidden=\"true\"></i></a>");
 
-                    if (acc.RoleID == 0 || acc.RoleID == 1)
+                    if (acc.RoleID == 0)
                     {
                         html.Append("       <a href=\"javascript:;\" title=\"Đồng bộ sản phẩm\" class=\"up-product-" + item.ID + " btn primary-btn h45-btn " + (item.ShowHomePage == 1 ? "" : "hide") + "\" onclick=\"ShowUpProductToWeb('" + item.ProductSKU + "', '" + item.ID + "', '" + item.CategoryID + "', 'false', 'false', 'null');\"><i class=\"fa fa-refresh\" aria-hidden=\"true\"></i></a>");
                         html.Append("       <a href=\"javascript:;\" title=\"Up sản phẩm lên đầu trang\" class=\"webupdate-product-" + item.ID + " btn primary-btn btn-blue h45-btn " + (item.WebPublish == true ? "" : "hide") + "\" onclick=\"updateWebUpdate('" + item.ID + "');\"><i class=\"fa fa-upload\" aria-hidden=\"true\"></i></a>");
