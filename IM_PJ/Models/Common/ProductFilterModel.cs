@@ -35,7 +35,8 @@ namespace IM_PJ.Models
         // Lọc nhưng sản phẩm tầng của kệ
         public int floorShelf { get; set; } = 0;
         // Lọc theo thời gian nhập kho
-        public string goodsReceiptDate { get; set; } = String.Empty;
+        public DateTime? fromDate { get; set; }
+        public DateTime? toDate { get; set; }
         // Tên người yêu cầu nhập hàng
         public int createdBy { get; set; }
     }

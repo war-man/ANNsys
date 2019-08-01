@@ -1092,6 +1092,11 @@ namespace IM_PJ.Controllers
                 }
                 sql.AppendLine(String.Format("	AND	(CONVERT(datetime, PRD.CreatedDate, 121) BETWEEN CONVERT(datetime, '{0}', 121) AND CONVERT(datetime, '{1}', 121))", fromdate.ToString(), todate.ToString()));
             }
+
+            if (filter.fromDate.HasValue && filter.toDate.HasValue)
+            {
+                sql.AppendLine(String.Format("	AND	(CONVERT(datetime, PRD.CreatedDate, 103) BETWEEN CONVERT(datetime, '{0}', 103) AND CONVERT(datetime, '{1}', 103))", filter.fromDate.ToString(), filter.toDate.ToString()));
+            }
             #endregion
 
             #region Lọc sản phẩm theo màu
@@ -1279,9 +1284,9 @@ namespace IM_PJ.Controllers
             {
                 sql.AppendLine(String.Empty);
                 sql.AppendLine("DELETE #Product");
-                sql.AppendLine("WHERE NOT EXISTS (");
+                sql.AppendLine("WHERE ID NOT IN (");
                 sql.AppendLine("    SELECT");
-                sql.AppendLine("        NULL AS DUMMY");
+                sql.AppendLine("        p.ID AS ProductID");
                 sql.AppendLine("    FROM");
                 sql.AppendLine("        #Product AS p");
                 sql.AppendLine("    LEFT JOIN #ProductQuantity AS PRQ");
@@ -1291,7 +1296,7 @@ namespace IM_PJ.Controllers
                 if (filter.stockStatus == (int)StockStatus.stocking)
                     sql.AppendLine("    AND PRQ.QuantityLeft > 0");
                 else if (filter.stockStatus == (int)StockStatus.stockOut)
-                    sql.AppendLine("    AND PRQ.QuantityLeft < 0");
+                    sql.AppendLine("    AND PRQ.QuantityLeft <= 0");
                 else if (filter.stockStatus == (int)StockStatus.stockIn)
                     sql.AppendLine("    AND PRQ.QuantityLeft IS NULL");
 

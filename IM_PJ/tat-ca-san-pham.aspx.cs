@@ -80,8 +80,30 @@ namespace IM_PJ
                     ltrAddProduct.Text = "<a href='/tao-san-pham' class='h45-btn btn primary-btn'>Thêm mới</a>";
                 }
 
+                DateTime DateConfig = new DateTime(2018, 6, 22);
+
+                DateTime fromDate = DateConfig;
+                DateTime toDate = DateTime.Now;
+
+                if (!String.IsNullOrEmpty(Request.QueryString["fromdate"]))
+                {
+                    fromDate = Convert.ToDateTime(Request.QueryString["fromdate"]);
+                }
+
+                if (!String.IsNullOrEmpty(Request.QueryString["todate"]))
+                {
+                    toDate = Convert.ToDateTime(Request.QueryString["todate"]).AddDays(1).AddMinutes(-1);
+                }
+
+                rFromDate.SelectedDate = fromDate;
+                rFromDate.MinDate = DateConfig;
+                rFromDate.MaxDate = DateTime.Now;
+
+                rToDate.SelectedDate = toDate;
+                rToDate.MinDate = DateConfig;
+                rToDate.MaxDate = DateTime.Now;
+
                 string TextSearch = "";
-                string CreatedDate = "";
                 int CategoryID = 0;
                 int StockStatus = 0;
                 string ShowHomePage = "";
@@ -100,8 +122,6 @@ namespace IM_PJ
                     StockStatus = Request.QueryString["stockstatus"].ToInt();
                 if (Request.QueryString["categoryid"] != null)
                     CategoryID = Request.QueryString["categoryid"].ToInt();
-                if (Request.QueryString["createddate"] != null)
-                    CreatedDate = Request.QueryString["createddate"];
                 if (Request.QueryString["showhomepage"] != null)
                     ShowHomePage = Request.QueryString["showhomepage"];
                 if (Request.QueryString["webpublish"] != null)
@@ -137,7 +157,6 @@ namespace IM_PJ
 
                 txtSearchProduct.Text = TextSearch;
                 ddlCategory.SelectedValue = CategoryID.ToString();
-                ddlCreatedDate.SelectedValue = CreatedDate.ToString();
                 ddlStockStatus.SelectedValue = StockStatus.ToString();
                 ddlShowHomePage.SelectedValue = ShowHomePage.ToString();
                 ddlWebPublish.SelectedValue = WebPublish.ToString();
@@ -177,7 +196,8 @@ namespace IM_PJ
                     quantity = Quantity,
                     quantityFrom = QuantityFrom,
                     quantityTo = QuantityTo,
-                    productDate = CreatedDate,
+                    fromDate = fromDate,
+                    toDate = toDate,
                     showHomePage = ShowHomePage,
                     webPublish = WebPublish
                 };
@@ -931,9 +951,14 @@ namespace IM_PJ
                 request += "&categoryid=" + ddlCategory.SelectedValue;
             }
 
-            if (ddlCreatedDate.SelectedValue != "")
+            if (rFromDate.SelectedDate.HasValue)
             {
-                request += "&createddate=" + ddlCreatedDate.SelectedValue;
+                request += "&fromdate=" + rFromDate.SelectedDate.ToString();
+            }
+
+            if (rToDate.SelectedDate.HasValue)
+            {
+                request += "&todate=" + rToDate.SelectedDate.ToString();
             }
 
             if (ddlShowHomePage.SelectedValue != "")

@@ -129,8 +129,8 @@ namespace IM_PJ
                 double totalRefundCost = userRefundReport.Sum(x => x.totalCost);
                 double totalRefundFee = userRefundReport.Sum(x => x.totalRefundFee);
                 double totalProfit = (totalRevenue - totalCost) - (totalRefundRevenue - totalRefundCost) + totalRefundFee;
-                // Tổng hệ thống
 
+                // Tổng hệ thống
                 var systemReport = OrderController.getProductReport(SKU, CategoryID, "", fromdate, todate);
                 var systemRefundReport = RefundGoodController.getRefundProductReport(SKU, CategoryID, "", fromdate, todate);
                 double totalRevenueSystem = systemReport.Sum(x => x.totalRevenue);

@@ -116,30 +116,36 @@ h1.invoice-return {
   word-break: break-word;
 }
 
-.hoadon .table-2 table col.stt {
-  width: 10%;
-}
-
-.hoadon .table-2 table col.sanpham {
-  width: 36%;
-}
-
 .hoadon .table-2 table col.soluong {
-  width: 10%;
-}
-
-.hoadon .table-2 table col.gia {
   width: 20%;
 }
 
-.hoadon .table-2 table col.tong {
-  width: 24%;
+.hoadon .table-2 table col.gia {
+  width: 40%;
 }
 
-.hoadon .table-2 table th,
-            .hoadon .table-2 table td {
-  padding: 3px;
-  border: 1px solid black;
+.hoadon .table-2 table col.tong {
+  width: 40%;
+}
+
+.hoadon .table-2 table th {
+  padding: 3px 4px;
+  border: 1px solid #000;
+  border-left: none;
+  border-right: none;
+  text-align: right;
+}
+.hoadon .table-2 table tr:nth-child(even) td {
+  padding: 2px 4px 0 4px;
+  border-bottom: 1px solid #000;
+  border-left: none;
+  border-right: none;
+  text-align: right;
+  font-size: 12px;
+}
+.hoadon .table-2 table tr:nth-child(odd) td {
+  padding: 3px 4px 0 4px;
+  border-bottom: none;
   border-left: none;
   border-right: none;
   text-align: left;
@@ -164,6 +170,50 @@ h1.invoice-return {
 }
 
 .hoadon .table-2 table td.strong {
+  font-weight: 600;
+}
+
+.hoadon .table-3 {
+  margin-bottom: 10px;
+}
+
+.hoadon .table-3 table {
+  border-collapse: collapse;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  color: black;
+  font-size: 12px;
+  word-break: break-word;
+}
+
+.hoadon .table-3 table td {
+  padding: 3px 4px;
+  border-bottom: 1px solid #000;
+  border-left: none;
+  border-right: none;
+  text-align: right;
+}
+
+.hoadon .table-3 table th {
+  background-color: #f8f8f8;
+  color: black;
+  vertical-align: middle;
+}
+
+.hoadon .table-3 table td:nth-child(1) {
+  font-weight: 500;
+}
+
+.hoadon .table-3 table td[colspan="4"] {
+  text-align: right;
+}
+
+.hoadon .table-3 table td[colspan="5"] {
+  text-align: right;
+}
+
+.hoadon .table-3 table td.strong {
   font-weight: 600;
 }
 

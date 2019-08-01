@@ -1,7 +1,41 @@
 ﻿<%@ Page Title="Thông kê nhập kho" Language="C#" MasterPageFile="~/MasterPage.Master" AutoEventWireup="true" CodeBehind="thong-ke-nhap-kho.aspx.cs" Inherits="IM_PJ.thong_ke_nhap_kho" EnableSessionState="ReadOnly" %>
 
+<%@ Register Assembly="Telerik.Web.UI" Namespace="Telerik.Web.UI" TagPrefix="telerik" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
     <style>
+        .all-product-table tr.parent-row td {
+            background-color: #fff!important;
+        }
+        .all-product-table tr.child-row td {
+            background-color: #f8f8f8!important;
+        }
+        .all-product-table tr.parent-row td img {
+            width: 159px;
+        }
+        .all-product-table tr.child-row td img {
+            width: 100px;
+        }
+        .all-product-table .image-column {
+            width: 10%;
+        }
+        .all-product-table .name-column {
+            width: 25%;
+        }
+        .all-product-table .sku-column {
+            width: 13%;
+        }
+        .all-product-table .stock-column {
+            width: 8%;
+        }
+        .all-product-table .category-column {
+            width: 12%;
+        }
+        .all-product-table .date-column {
+            width: 12%;
+        }
+        .all-product-table .action-column {
+            width: 12%;
+        }
         .select2-container .select2-selection--single {
             height: 45px;
         }
@@ -122,7 +156,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
-                    <h3 class="page-title left">Sản phẩm <span>(<asp:Literal ID="ltrNumberOfProduct" runat="server" EnableViewState="false"></asp:Literal>)</span></h3>
+                    <h3 class="page-title left">Thống kê nhập kho <span>(<asp:Literal ID="ltrNumberOfProduct" runat="server" EnableViewState="false"></asp:Literal>)</span></h3>
                 </div>
             </div>
             <div class="row">
@@ -136,20 +170,9 @@
                                 <div class="col-md-2 col-xs-6">
                                     <asp:DropDownList ID="ddlCategory" runat="server" CssClass="form-control"></asp:DropDownList>
                                 </div>
-                                <div class="col-md-2 col-xs-6">
-                                    <asp:DropDownList ID="ddlCreatedDate" runat="server" CssClass="form-control">
-                                        <asp:ListItem Value="today" Text="Hôm nay"></asp:ListItem>
-                                        <asp:ListItem Value="yesterday" Text="Hôm qua"></asp:ListItem>
-                                        <asp:ListItem Value="beforeyesterday" Text="Hôm kia"></asp:ListItem>
-                                        <asp:ListItem Value="week" Text="Tuần này"></asp:ListItem>
-                                        <asp:ListItem Value="month" Text="Tháng này"></asp:ListItem>
-                                        <asp:ListItem Value="7days" Text="7 ngày"></asp:ListItem>
-                                        <asp:ListItem Value="30days" Text="30 ngày"></asp:ListItem>
-                                    </asp:DropDownList>
-                                </div>
-                                <div class="col-md-2 col-xs-6">
+                                <div class="col-md-1 col-xs-6">
                                     <asp:DropDownList ID="ddlColor" runat="server" CssClass="form-control select2" Width="100%">
-                                        <asp:ListItem Value="" Text="Chọn màu"></asp:ListItem>
+                                        <asp:ListItem Value="" Text="Màu"></asp:ListItem>
                                         <asp:ListItem Value="cam" Text="Cam"></asp:ListItem>
                                         <asp:ListItem Value="cam tươi" Text="Cam tươi"></asp:ListItem>
                                         <asp:ListItem Value="cam đất" Text="Cam đất"></asp:ListItem>
@@ -215,10 +238,10 @@
                                         <asp:ListItem Value="xanh rêu" Text="Xanh rêu"></asp:ListItem>
                                     </asp:DropDownList>
                                 </div>
-                                <div class="col-md-2 col-xs-6">
+                                <div class="col-md-1 col-xs-6">
                                     <asp:DropDownList ID="ddlSize" runat="server" CssClass="form-control">
-                                        <asp:ListItem Value="" Text="Chọn size"></asp:ListItem>
-                                        <asp:ListItem Value="m" Text="Size S"></asp:ListItem>
+                                        <asp:ListItem Value="" Text="Size"></asp:ListItem>
+                                        <asp:ListItem Value="s" Text="Size S"></asp:ListItem>
                                         <asp:ListItem Value="m" Text="Size M"></asp:ListItem>
                                         <asp:ListItem Value="l" Text="Size L"></asp:ListItem>
                                         <asp:ListItem Value="xl" Text="Size XL"></asp:ListItem>
@@ -234,6 +257,20 @@
                                         <asp:ListItem Value="36" Text="Size 36"></asp:ListItem>
                                         <asp:ListItem Value="38" Text="Size 38"></asp:ListItem>
                                     </asp:DropDownList>
+                                </div>
+                                <div class="col-md-2 col-xs-6">
+                                    <label>Từ ngày</label>
+                                    <telerik:RadDatePicker RenderMode="Lightweight" ID="rFromDate" ShowPopupOnFocus="true" Width="100%" runat="server" DateInput-CssClass="radPreventDecorate">
+                                        <DateInput DisplayDateFormat="dd/MM/yyyy" runat="server">
+                                        </DateInput>
+                                    </telerik:RadDatePicker>
+                                </div>
+                                <div class="col-md-2 col-xs-6">
+                                    <label>Đến ngày</label>
+                                    <telerik:RadDatePicker RenderMode="Lightweight" ID="rToDate" ShowPopupOnFocus="true" Width="100%" runat="server" DateInput-CssClass="radPreventDecorate">
+                                        <DateInput DisplayDateFormat="dd/MM/yyyy" runat="server">
+                                        </DateInput>
+                                    </telerik:RadDatePicker>
                                 </div>
                                 <div class="col-md-1 col-xs-6 search-button">
                                     <a href="javascript:;" onclick="searchProduct()" class="btn primary-btn h45-btn"><i class="fa fa-search"></i></a>
@@ -281,12 +318,21 @@
                 $("#<%= btnSearch.ClientID%>").click();
             }
 
-            function showSubGoodsReceipt(sku)
+            function showSubGoodsReceipt(obj, sku)
             {
                 let variableDOM = $("." + sku);
                 variableDOM.each((index, element) => {
-                    let display = element.style.display;
-                    element.style.display = display == "none" ? "" : "none";
+                    //let display = element.style.display;
+                    //element.style.display = display == "none" ? "" : "none";
+                    if ($(element).hasClass('hide'))
+                    {
+                        $(element).removeClass('hide');
+                        $(obj).html("<i class='fa fa-chevron-up' aria-hidden='true'></i>");
+                    }
+                    else {
+                        $(element).addClass('hide');
+                        $(obj).html("<i class='fa fa-chevron-down' aria-hidden='true'></i>");
+                    }
                 })
             }
         </script>

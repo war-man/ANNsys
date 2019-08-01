@@ -933,11 +933,13 @@ namespace IM_PJ.Controllers
             }
         }
 
-        public static List<GoodsReceiptReport> getGoodsReceiptReport(ProductFilterModel filter, ref PaginationMetadataModel page)
+        public static List<GoodsReceiptReport> getGoodsReceiptReport(ProductFilterModel filter, 
+                                                                     ref PaginationMetadataModel page,
+                                                                     ref int totalQuantityInput)
         {
             using (var con = new inventorymanagementEntities())
             {
-                var stock = con.tbl_StockManager.Where(x => 1 == 1);
+                var stock = con.tbl_StockManager.Where(x => x.Status == 1);
 
                 #region Thực thi lấy dữ liệu
                 #region Loc theo từ khóa SKU
@@ -971,7 +973,7 @@ namespace IM_PJ.Controllers
                                 x => x.variable.DefaultIfEmpty(),
                                 (parent, child) => new { product = parent.product, variable = child }
                             )
-                            .Where(x => categoryID.Contains(x.product.ID))
+                            .Where(x => categoryID.Contains(x.product.CategoryID.Value))
                             .Select(x => new
                             {
                                 productID = x.product.ID,
@@ -998,13 +1000,9 @@ namespace IM_PJ.Controllers
                 #endregion
 
                 #region Lọc sản phẩm theo ngày nhập hàng
-                if (!String.IsNullOrEmpty(filter.goodsReceiptDate))
+                if (filter.fromDate.HasValue && filter.toDate.HasValue)
                 {
-                    DateTime fromdate = DateTime.Today;
-                    DateTime todate = DateTime.Now;
-
-                    CalDate(filter.goodsReceiptDate, ref fromdate, ref todate);
-                    stock = stock.Where(x => x.CreatedDate >= fromdate && x.CreatedDate <= todate);
+                    stock = stock.Where(x => x.CreatedDate >= filter.fromDate && x.CreatedDate <= filter.toDate);
                 }
                 #endregion
 
@@ -1063,6 +1061,11 @@ namespace IM_PJ.Controllers
                         quantityInput = x.Sum(s => s.Quantity.HasValue ? s.Quantity.Value : 0),
                         goodsReceiptDate = x.Max(m => m.CreatedDate.Value)
                     });
+
+                if (productFilter.Count() > 0)
+                {
+                    totalQuantityInput = Convert.ToInt32(productFilter.Sum(x => x.quantityInput));
+                }
 
                 // Calculate pagination
                 page.totalCount = productFilter.Count();
@@ -1133,6 +1136,7 @@ namespace IM_PJ.Controllers
                             isVariable = x.isVariable
                         };
                     })
+                    .OrderByDescending(x => x.goodsReceiptDate)
                     .ToList();
                 #endregion
 
@@ -1144,16 +1148,14 @@ namespace IM_PJ.Controllers
         {
             using (var con = new inventorymanagementEntities())
             {
-                var stock = con.tbl_StockManager.Where(x => x.ParentID == main.productID);
+                var stock = con.tbl_StockManager
+                    .Where(x => x.ParentID == main.productID)
+                    .Where(x => x.Status == 1);
 
                 #region Lọc sản phẩm theo ngày nhập hàng
-                if (!String.IsNullOrEmpty(filter.goodsReceiptDate))
+                if (filter.fromDate.HasValue && filter.toDate.HasValue)
                 {
-                    DateTime fromdate = DateTime.Today;
-                    DateTime todate = DateTime.Now;
-
-                    CalDate(filter.goodsReceiptDate, ref fromdate, ref todate);
-                    stock = stock.Where(x => x.CreatedDate >= fromdate && x.CreatedDate <= todate);
+                    stock = stock.Where(x => x.CreatedDate >= filter.fromDate && x.CreatedDate <= filter.toDate);
                 }
                 #endregion
 

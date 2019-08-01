@@ -73,7 +73,7 @@ namespace IM_PJ
                     error += "<p>- Đơn hàng này <strong>chưa hoàn tất</strong>!</p>";
                 }
 
-                if (order.ShippingType == 1)
+                if (order.ShippingType == 1 && acc.RoleID != 0)
                 {
                     error += "<p>- Đơn hàng này đang có phương thức giao hàng: <strong>Lấy trực tiếp</strong>. Hãy chuyển sang phương thức khác!</p>";
                 }
@@ -249,6 +249,17 @@ namespace IM_PJ
                 else
                 {
                     rowHtml += Environment.NewLine + String.Format("        <p><span class=\"cod\">Thu hộ: KHÔNG</span></p>");
+                }
+                if (order.ShippingType == 5)
+                {
+                    if (!String.IsNullOrEmpty(order.FeeShipping))
+                    {
+                        rowHtml += Environment.NewLine + String.Format("        <p class=\"shipping-fee\"><span>Phí ship (đã cộng vào thu hộ): {0}</span></p>", string.Format("{0:N0}", Convert.ToDouble(order.FeeShipping)));
+                    }
+                    else
+                    {
+                        rowHtml += Environment.NewLine + String.Format("        <p class=\"shipping-fee\"><span>Phí ship: không</span></p>");
+                    }
                 }
                 rowHtml += Environment.NewLine + String.Format("    </div>");
                 rowHtml += Environment.NewLine + String.Format("    <div class=\"bottom-right\">");

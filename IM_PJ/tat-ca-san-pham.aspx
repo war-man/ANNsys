@@ -1,5 +1,6 @@
 ﻿<%@ Page Title="Tất cả sản phẩm" Language="C#" MasterPageFile="~/MasterPage.Master" AutoEventWireup="true" CodeBehind="tat-ca-san-pham.aspx.cs" Inherits="IM_PJ.tat_ca_san_pham" EnableSessionState="ReadOnly" %>
 
+<%@ Register Assembly="Telerik.Web.UI" Namespace="Telerik.Web.UI" TagPrefix="telerik" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
     <style>
         .select2-container .select2-selection--single {
@@ -137,14 +138,10 @@
                                     <asp:TextBox ID="txtSearchProduct" runat="server" CssClass="form-control" placeholder="Tìm sản phẩm" autocomplete="off"></asp:TextBox>
                                 </div>
                                 <div class="col-md-2 col-xs-6">
-                                    <asp:DropDownList ID="ddlCategory" runat="server" CssClass="form-control"></asp:DropDownList>
-                                </div>
-                                <div class="col-md-2 col-xs-6">
-                                    <asp:DropDownList ID="ddlStockStatus" runat="server" CssClass="form-control">
-                                        <asp:ListItem Value="" Text="Trạng thái kho"></asp:ListItem>
-                                        <asp:ListItem Value="1" Text="Còn hàng"></asp:ListItem>
-                                        <asp:ListItem Value="2" Text="Hết hàng"></asp:ListItem>
-                                        <asp:ListItem Value="3" Text="Nhập hàng"></asp:ListItem>
+                                    <asp:DropDownList ID="ddlWebPublish" runat="server" CssClass="form-control">
+                                        <asp:ListItem Value="" Text="Trang xem hàng"></asp:ListItem>
+                                        <asp:ListItem Value="0" Text="Đang ẩn"></asp:ListItem>
+                                        <asp:ListItem Value="1" Text="Đang hiện"></asp:ListItem>
                                     </asp:DropDownList>
                                 </div>
                                 <div class="col-md-2 col-xs-6">
@@ -155,16 +152,18 @@
                                     </asp:DropDownList>
                                 </div>
                                 <div class="col-md-2 col-xs-6">
-                                    <asp:DropDownList ID="ddlCreatedDate" runat="server" CssClass="form-control">
-                                        <asp:ListItem Value="" Text="Tất cả thời gian"></asp:ListItem>
-                                        <asp:ListItem Value="today" Text="Hôm nay"></asp:ListItem>
-                                        <asp:ListItem Value="yesterday" Text="Hôm qua"></asp:ListItem>
-                                        <asp:ListItem Value="beforeyesterday" Text="Hôm kia"></asp:ListItem>
-                                        <asp:ListItem Value="week" Text="Tuần này"></asp:ListItem>
-                                        <asp:ListItem Value="month" Text="Tháng này"></asp:ListItem>
-                                        <asp:ListItem Value="7days" Text="7 ngày"></asp:ListItem>
-                                        <asp:ListItem Value="30days" Text="30 ngày"></asp:ListItem>
-                                    </asp:DropDownList>
+                                    <label>Từ ngày</label>
+                                    <telerik:RadDatePicker RenderMode="Lightweight" ID="rFromDate" ShowPopupOnFocus="true" Width="100%" runat="server" DateInput-CssClass="radPreventDecorate">
+                                        <DateInput DisplayDateFormat="dd/MM/yyyy" runat="server">
+                                        </DateInput>
+                                    </telerik:RadDatePicker>
+                                </div>
+                                <div class="col-md-2 col-xs-6">
+                                    <label>Đến ngày</label>
+                                    <telerik:RadDatePicker RenderMode="Lightweight" ID="rToDate" ShowPopupOnFocus="true" Width="100%" runat="server" DateInput-CssClass="radPreventDecorate">
+                                        <DateInput DisplayDateFormat="dd/MM/yyyy" runat="server">
+                                        </DateInput>
+                                    </telerik:RadDatePicker>
                                 </div>
                                 <div class="col-md-1 col-xs-6 search-button">
                                     <a href="javascript:;" onclick="searchProduct()" class="btn primary-btn h45-btn"><i class="fa fa-search"></i></a>
@@ -177,11 +176,12 @@
                     <div class="filter-above-wrap clear">
                         <div class="filter-control">
                             <div class="row">
-                                <div class="col-md-1">
+                                <div class="col-md-3 col-xs-6">
+                                    <asp:DropDownList ID="ddlCategory" runat="server" CssClass="form-control"></asp:DropDownList>
                                 </div>
-                                <div class="col-md-2 col-xs-6">
+                                <div class="col-md-1 col-xs-6">
                                     <asp:DropDownList ID="ddlColor" runat="server" CssClass="form-control select2" Width="100%">
-                                        <asp:ListItem Value="" Text="Chọn màu"></asp:ListItem>
+                                        <asp:ListItem Value="" Text="Màu"></asp:ListItem>
                                         <asp:ListItem Value="cam" Text="Cam"></asp:ListItem>
                                         <asp:ListItem Value="cam tươi" Text="Cam tươi"></asp:ListItem>
                                         <asp:ListItem Value="cam đất" Text="Cam đất"></asp:ListItem>
@@ -247,9 +247,9 @@
                                         <asp:ListItem Value="xanh rêu" Text="Xanh rêu"></asp:ListItem>
                                     </asp:DropDownList>
                                 </div>
-                                <div class="col-md-2 col-xs-6">
+                                <div class="col-md-1 col-xs-6">
                                     <asp:DropDownList ID="ddlSize" runat="server" CssClass="form-control">
-                                        <asp:ListItem Value="" Text="Chọn size"></asp:ListItem>
+                                        <asp:ListItem Value="" Text="Size"></asp:ListItem>
                                         <asp:ListItem Value="s" Text="Size S"></asp:ListItem>
                                         <asp:ListItem Value="m" Text="Size M"></asp:ListItem>
                                         <asp:ListItem Value="l" Text="Size L"></asp:ListItem>
@@ -268,10 +268,11 @@
                                     </asp:DropDownList>
                                 </div>
                                 <div class="col-md-2 col-xs-6">
-                                    <asp:DropDownList ID="ddlWebPublish" runat="server" CssClass="form-control">
-                                        <asp:ListItem Value="" Text="Trang xem hàng"></asp:ListItem>
-                                        <asp:ListItem Value="0" Text="Đang ẩn"></asp:ListItem>
-                                        <asp:ListItem Value="1" Text="Đang hiện"></asp:ListItem>
+                                    <asp:DropDownList ID="ddlStockStatus" runat="server" CssClass="form-control">
+                                        <asp:ListItem Value="" Text="Trạng thái kho"></asp:ListItem>
+                                        <asp:ListItem Value="1" Text="Còn hàng"></asp:ListItem>
+                                        <asp:ListItem Value="2" Text="Hết hàng"></asp:ListItem>
+                                        <asp:ListItem Value="3" Text="Nhập hàng"></asp:ListItem>
                                     </asp:DropDownList>
                                 </div>
                                 <div class="col-md-2 col-xs-6">

@@ -19,9 +19,9 @@ namespace IM_PJ
         {
             if (!IsPostBack)
             {
-                if (Request.Cookies["userLoginSystem"] != null)
+                if (Request.Cookies["usernameLoginSystem"] != null)
                 {
-                    string username = Request.Cookies["userLoginSystem"].Value;
+                    string username = Request.Cookies["usernameLoginSystem"].Value;
                     var acc = AccountController.GetByUsername(username);
                     if (acc != null)
                     {
@@ -64,10 +64,39 @@ namespace IM_PJ
         }
         public void LoadData()
         {
-            string username = Request.Cookies["userLoginSystem"].Value;
+            string username = Request.Cookies["usernameLoginSystem"].Value;
             var acc = AccountController.GetByUsername(username);
             if (acc != null)
             {
+                DateTime DateConfig = new DateTime(2019, 2, 15);
+
+                var config = ConfigController.GetByTop1();
+                if (config.ViewAllOrders == 1)
+                {
+                    DateConfig = new DateTime(2018, 6, 22);
+                }
+
+                DateTime fromDate = DateTime.Today.AddDays(1).AddMinutes(-1);
+                DateTime toDate = DateTime.Now;
+
+                if (!String.IsNullOrEmpty(Request.QueryString["fromdate"]))
+                {
+                    fromDate = Convert.ToDateTime(Request.QueryString["fromdate"]);
+                }
+
+                if (!String.IsNullOrEmpty(Request.QueryString["todate"]))
+                {
+                    toDate = Convert.ToDateTime(Request.QueryString["todate"]).AddDays(1).AddMinutes(-1);
+                }
+
+                rFromDate.SelectedDate = fromDate;
+                rFromDate.MinDate = DateConfig;
+                rFromDate.MaxDate = DateTime.Now;
+
+                rToDate.SelectedDate = toDate;
+                rToDate.MinDate = DateConfig;
+                rToDate.MaxDate = DateTime.Now;
+
                 string TextSearch = "";
                 string CreatedDate = "today";
                 int CategoryID = 0;
@@ -93,7 +122,6 @@ namespace IM_PJ
 
                 txtSearchProduct.Text = TextSearch;
                 ddlCategory.SelectedValue = CategoryID.ToString();
-                ddlCreatedDate.SelectedValue = CreatedDate.ToString();
 
                 // Add filter valiable value
                 ddlColor.SelectedValue = strColor;
@@ -104,7 +132,8 @@ namespace IM_PJ
                 {
                     search = TextSearch,
                     category = CategoryID,
-                    goodsReceiptDate = CreatedDate,
+                    fromDate = fromDate,
+                    toDate = toDate,
                     color = strColor,
                     size = strSize
                 };
@@ -114,18 +143,19 @@ namespace IM_PJ
                 {
                     currentPage = Page
                 };
+                int totalQuantityInput = 0;
                 List<GoodsReceiptReport> a = new List<GoodsReceiptReport>();
-                a = StockManagerController.getGoodsReceiptReport(filter, ref page);
+                a = StockManagerController.getGoodsReceiptReport(filter, ref page, ref totalQuantityInput);
 
                 pagingall(filter, a, page);
 
-                ltrNumberOfProduct.Text = page.totalCount.ToString();
+                ltrNumberOfProduct.Text = String.Format("{0} sản phẩm - {1:#,###} cái", page.totalCount.ToString(), totalQuantityInput);
             }
         }
         #region Paging
         public void pagingall(ProductFilterModel filter, List<GoodsReceiptReport> acs, PaginationMetadataModel page)
         {
-            string username = Request.Cookies["userLoginSystem"].Value;
+            string username = Request.Cookies["usernameLoginSystem"].Value;
             var acc = AccountController.GetByUsername(username);
 
             StringBuilder html = new StringBuilder();
@@ -134,10 +164,10 @@ namespace IM_PJ
             html.AppendLine("    <th class='image-column'>Ảnh</th>");
             html.AppendLine("    <th class='name-column'>Sản phẩm</th>");
             html.AppendLine("    <th class='sku-column'>Mã</th>");
-            html.AppendLine("    <th class='quantity-input-column'>Thêm mới</th>");
-            html.AppendLine("    <th class='quantity-stock-column'>Kho</th>");
+            html.AppendLine("    <th class='stock-column'>Nhập mới</th>");
+            html.AppendLine("    <th class='stock-column'>Kho hiện tại</th>");
             html.AppendLine("    <th class='category-column'>Danh mục</th>");
-            html.AppendLine("    <th class='date-column'>Ngày nhập kho</th>");
+            html.AppendLine("    <th class='date-column'>Ngày nhập</th>");
             html.AppendLine("    <th class='action-column'></th>");
             html.AppendLine("</tr>");
             html.AppendLine("</thead>");
@@ -150,7 +180,7 @@ namespace IM_PJ
 
                 foreach (var item in acs)
                 {
-                    html.AppendLine("<tr>");
+                    html.AppendLine("<tr class='parent-row'>");
                     html.AppendLine("   <td>");
                     html.AppendLine("      <a href='/xem-san-pham?sku=" + item.sku + "'>");
                     html.AppendLine("          <img src='" + Thumbnail.getURL(item.image, Thumbnail.Size.Small) + "'/>");
@@ -160,15 +190,15 @@ namespace IM_PJ
                     html.AppendLine("       <a href='/xem-san-pham?sku=" + item.sku + "'>" + item.title + "</a></td>");
                     html.AppendLine("   </td>");
                     html.AppendLine("   <td data-title='Mã' class='customer-name-link'>" + item.sku + "</td>");
-                    html.AppendLine("   <td data-title='Thêm mới'>" + String.Format("{0:N0}", item.quantityInput) + "</td>");
-                    html.AppendLine("   <td data-title='Kho'>" + String.Format("{0:N0}", item.quantityStock) + "</td>");
+                    html.AppendLine("   <td data-title='Nhập mới'>" + String.Format("{0:N0}", item.quantityInput) + "</td>");
+                    html.AppendLine("   <td data-title='Kho hiện tại'><a target='_blank' href='/thong-ke-san-pham?SKU=" + item.sku + "'>" + String.Format("{0:N0}", item.quantityStock) + "</a></td>");
                     html.AppendLine("   <td data-title='Danh mục'>" + item.categoryName + "</td>");
-                    html.AppendLine("   <td data-title='Ngày tạo'>" + String.Format("{0:dd/MM/yyyy}", item.goodsReceiptDate) + "</td>");
+                    html.AppendLine("   <td data-title='Ngày tạo'>" + String.Format("{0:dd/MM/yyyy HH:mm}", item.goodsReceiptDate) + "</td>");
                     html.AppendLine("   <td data-title='Thao tác' class='update-button'>");
                     if (item.isVariable)
                     {
-                        html.AppendLine("      <a href='javascript:;' title='Xem thông tin sản phẩm con' class='btn primary-btn h45-btn' onclick='showSubGoodsReceipt(`" + item.sku + "`)'>");
-                        html.AppendLine("           <i class='fa fa fa-plus' aria-hidden='true'></i>");
+                        html.AppendLine("      <a href='javascript:;' title='Xem thông tin sản phẩm con' class='btn primary-btn h45-btn' onclick='showSubGoodsReceipt($(this), `" + item.sku + "`)'>");
+                        html.AppendLine("           <i class='fa fa-chevron-down' aria-hidden='true'></i>");
                         html.AppendLine("      </a>");
                     }
                     html.AppendLine("  </td>");
@@ -177,7 +207,7 @@ namespace IM_PJ
                     var productVariables = StockManagerController.getSubGoodsReceipt(filter, item);
                     foreach (var subItem in productVariables)
                     {
-                        html.AppendLine("<tr class='" + item.sku + "' style='display: none; '>");
+                        html.AppendLine("<tr class='" + item.sku + " child-row hide'>");
                         html.AppendLine("   <td></td>");
                         html.AppendLine("   <td>");
                         html.AppendLine("      <a href='/xem-san-pham?sku=" + subItem.sku + "'>");
@@ -185,10 +215,10 @@ namespace IM_PJ
                         html.AppendLine("      </a>");
                         html.AppendLine("   </td>");
                         html.AppendLine("   <td data-title='Mã' class='customer-name-link'>" + subItem.sku + "</td>");
-                        html.AppendLine("   <td data-title='Thêm mới'>" + String.Format("{0:N0}", subItem.quantityInput) + "</td>");
-                        html.AppendLine("   <td data-title='Kho'>" + String.Format("{0:N0}", subItem.quantityStock) + "</td>");
-                        html.AppendLine("   <td data-title='Danh mục'>" + subItem.categoryName + "</td>");
-                        html.AppendLine("   <td data-title='Ngày tạo'>" + String.Format("{0:dd/MM/yyyy}", subItem.goodsReceiptDate) + "</td>");
+                        html.AppendLine("   <td data-title='Nhập mới'>" + String.Format("{0:N0}", subItem.quantityInput) + "</td>");
+                        html.AppendLine("   <td data-title='Kho hiện tại'><a target='_blank' href='/thong-ke-san-pham?SKU=" + subItem.sku + "'>" + String.Format("{0:N0}", subItem.quantityStock) + "</a></td>");
+                        html.AppendLine("   <td data-title='Danh mục'></td>");
+                        html.AppendLine("   <td data-title='Ngày nhập'>" + String.Format("{0:dd/MM/yyyy HH:mm}", subItem.goodsReceiptDate) + "</td>");
                         html.AppendLine("   <td data-title='Thao tác' class='update-button'></td>");
                         html.AppendLine("</tr>");
                     }
@@ -341,8 +371,15 @@ namespace IM_PJ
             if (ddlCategory.SelectedValue != "0")
                 request += "&categoryid=" + ddlCategory.SelectedValue;
 
-            if (ddlCreatedDate.SelectedValue != "")
-                request += "&createddate=" + ddlCreatedDate.SelectedValue;
+            if (rFromDate.SelectedDate.HasValue)
+            {
+                request += "&fromdate=" + rFromDate.SelectedDate.ToString();
+            }
+
+            if (rToDate.SelectedDate.HasValue)
+            {
+                request += "&todate=" + rToDate.SelectedDate.ToString();
+            }
 
             // Add filter valiable value
             if (!String.IsNullOrEmpty(ddlColor.SelectedValue))

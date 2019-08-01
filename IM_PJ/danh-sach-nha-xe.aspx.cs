@@ -154,7 +154,7 @@ namespace IM_PJ
                         fromdate = fromdate.AddDays(-days + 1);
                         todate = DateTime.Now;
                         break;
-                    case "month":
+                    case "thismonth":
                         fromdate = new DateTime(fromdate.Year, fromdate.Month, 1);
                         todate = DateTime.Now;
                         break;
