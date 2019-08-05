@@ -30,7 +30,8 @@ namespace IM_PJ.Models
         public decimal OrderCOD { get; set; }
         public decimal Fee { get; set; }
         public decimal OrderFee { get; set; }
-        public int Review { get; set; }
         public string Staff { get; set; }
+        public int Review { get; set; }
+        public int OrderStatus { get; set; }
     }
 }

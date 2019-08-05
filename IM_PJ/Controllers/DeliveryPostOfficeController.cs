@@ -24,18 +24,16 @@ namespace IM_PJ.Controllers
 
                     if (order == null)
                     {
-                        item.Review = (int)DeliveryPostOfficeReview.NoInfor;
+                        item.OrderStatus = (int)OrderStatus.NoExist;
                         continue;
                     }
 
                     // Các đơn có trạng thái hủy buộc phải kiểm tra bằng tay
                     if (item.DeliveryStatus == "Hủy")
                     {
-                        item.Review = (int)DeliveryPostOfficeReview.Cancel;
                         continue;
                     }
 
-                    item.Review = (int)DeliveryPostOfficeReview.NoApprove;
                     // Lấy thông tin của order
                     if (item.OrderID == 0)
                         item.OrderID = order.ID;
@@ -50,6 +48,8 @@ namespace IM_PJ.Controllers
                         item.OrderCOD = Convert.ToDecimal(order.TotalPrice);
                         if (refound != null)
                             item.OrderCOD = item.OrderCOD - Convert.ToDecimal(refound.TotalPrice);
+                        if (item.OrderCOD < 0)
+                            item.OrderCOD = 0;
                     }
                     else
                     {
@@ -60,13 +60,13 @@ namespace IM_PJ.Controllers
 
                     if (order.PaymentType != (int)PaymentType.CashCollection)
                     {
-                        item.Review = 2;
-                        order.PaymentStatus = 4;
+                        item.Review = (int)DeliveryPostOfficeReview.Approve;
+                        order.PaymentStatus = (int)PaymentStatus.Approve;
                     }
                     else if (item.COD == item.OrderCOD)
                     {
-                        item.Review = 2;
-                        order.PaymentStatus = 4;
+                        item.Review = (int)DeliveryPostOfficeReview.Approve;
+                        order.PaymentStatus = (int)PaymentStatus.Approve;
                     }
                 }
 
@@ -91,8 +91,7 @@ namespace IM_PJ.Controllers
         {
             using (var con = new inventorymanagementEntities())
             {
-                var postOffices = con.DeliveryPostOffices
-                    .Where(x => x.Review != (int)DeliveryPostOfficeReview.NoHandle);
+                var postOffices = con.DeliveryPostOffices.Where(x => 1 == 1);
 
                 #region Thực hiện filter dữ liệu
                 #region Filter theo từ khóa
@@ -104,7 +103,21 @@ namespace IM_PJ.Controllers
                     );
                 }
                 #endregion
-                #region Filter theo trạng thái review thông tin bưu điện và thông order
+                #region Filter theo trạng thái đơn hàng
+                if (filter.orderStatus > 0)
+                {
+                    postOffices = postOffices
+                        .Where(x => x.OrderStatus == filter.orderStatus);
+                }
+                #endregion
+                #region Filter theo trạng thái của bưu điện
+                if (!String.IsNullOrEmpty(filter.deliveryStatus))
+                {
+                    postOffices = postOffices
+                        .Where(x => x.DeliveryStatus == filter.deliveryStatus);
+                }
+                #endregion
+                #region Filter theo trạng thái xử lý
                 if (filter.review > 0)
                 {
                     postOffices = postOffices
@@ -155,7 +168,36 @@ namespace IM_PJ.Controllers
                 return postOffices.ToList();
             }
         }
+
+        public static void approve(int postOfficeID, int orderID)
+        {
+            using (var con = new inventorymanagementEntities())
+            {
+                var postOffice = con.DeliveryPostOffices.Where(x => x.ID == postOfficeID).FirstOrDefault();
+                var order = con.tbl_Order.Where(x => x.ID == orderID).FirstOrDefault();
+
+                if (postOffice != null && order != null)
+                {
+                    postOffice.Review = (int)DeliveryPostOfficeReview.Approve;
+                    order.PaymentStatus = (int)PaymentStatus.Approve;
+
+                    con.SaveChanges();
+                }
+            }
+        }
+
+        public static void cancel(int postOfficeID)
+        {
+            using (var con = new inventorymanagementEntities())
+            {
+                var postOffice = con.DeliveryPostOffices.Where(x => x.ID == postOfficeID).FirstOrDefault();
+
+                if (postOffice != null)
+                {
+                    postOffice.OrderStatus = (int)OrderStatus.Spam;
+                    con.SaveChanges();
+                }
+            }
+        }
     }
-
-
 }

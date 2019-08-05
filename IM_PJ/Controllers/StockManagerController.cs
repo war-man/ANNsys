@@ -1006,8 +1006,6 @@ namespace IM_PJ.Controllers
                 }
                 #endregion
 
-                
-
                 #region Lọc sản phẩm theo màu
                 if (!String.IsNullOrEmpty(filter.color))
                 {

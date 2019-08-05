@@ -78,13 +78,19 @@ namespace IM_PJ
                 rOrderToDate.MinDate = DateConfig;
                 rOrderToDate.MaxDate = DateTime.Now;
 
-                string TextSearch = "";
+                string TextSearch = String.Empty;
+                int orderStatus = 0;
+                string deliveryStatus = String.Empty;
                 int review = 0;
                 int feeStatus = 0;
                 int Page = 1;
 
                 if (Request.QueryString["textsearch"] != null)
                     TextSearch = Request.QueryString["textsearch"].Trim();
+                if (Request.QueryString["orderstatus"] != null)
+                    orderStatus = Request.QueryString["orderstatus"].ToInt(0);
+                if (Request.QueryString["deliverystatus"] != null)
+                    deliveryStatus = Request.QueryString["deliverystatus"];
                 if (Request.QueryString["review"] != null)
                     review = Request.QueryString["review"].ToInt(0);
                 if (Request.QueryString["feestatus"] != null)
@@ -93,6 +99,8 @@ namespace IM_PJ
                     Page = Request.QueryString["Page"].ToInt();
 
                 txtSearchOrder.Text = TextSearch;
+                ddlOrderStatus.SelectedValue = orderStatus.ToString();
+                ddlDeliveryStatus.SelectedValue = deliveryStatus.ToString();
                 ddlReview.SelectedValue = review.ToString();
                 ddlFeeStatus.SelectedValue = feeStatus.ToString();
 
@@ -100,6 +108,8 @@ namespace IM_PJ
                 var filter = new DeliveryPostOfficeFilterModel()
                 {
                     search = TextSearch,
+                    orderStatus = orderStatus,
+                    deliveryStatus = deliveryStatus,
                     review = review,
                     feeStatus = feeStatus,
                     orderFromDate = OrderFromDate,
@@ -178,16 +188,23 @@ namespace IM_PJ
                     html.AppendLine("   <td data-title='Phí (Bưu điện)'><strong>" + String.Format("{0:#,###}", item.Fee) + "</strong></td>");
                     html.AppendLine("   <td data-title='Phí (Hệ thống)'><strong>" + String.Format("{0:#,###}", item.OrderFee) + "</strong></td>");
                     html.AppendLine("   <td data-title='Nhân viên tạo đơn'>" + item.Staff + "</td>");
-                    html.AppendLine("   <td data-title='Thao tác' class='update-button' id='updateButton'>");
-                    if (item.Review == (int)DeliveryPostOfficeReview.NoApprove)
+                    html.AppendLine("   <td data-title='Thao tác' class='handle-button'>");
+                    if (!(item.OrderStatus == (int)OrderStatus.Spam || item.Review == (int)DeliveryPostOfficeReview.Approve))
                     {
-                        html.AppendLine("       <button type='button' class='btn primary-btn h45-btn' title='Duyệt đơn hàng' style='background-color: #73a724'>");
+                        html.AppendLine("       <button type='button'");
+                        html.AppendLine("           class='btn primary-btn h45-btn'");
+                        html.AppendLine("           title='Duyệt đơn hàng'");
+                        html.AppendLine("           style='background-color: #73a724'");
+                        html.AppendLine(String.Format("           onclick='approve({0}, {1})'", item.ID, item.OrderID));
+                        html.AppendLine("       >");
                         html.AppendLine("           <span class='glyphicon glyphicon-check'></span>");
                         html.AppendLine("       </button>");
-                    }
-                    if (item.Review !=  (int)DeliveryPostOfficeReview.NoApprove && item.Review != (int)DeliveryPostOfficeReview.Approve)
-                    {
-                        html.AppendLine("       <button type='button' class='btn primary-btn h45-btn' title='Bỏ qua đơn hàng' style='background-color: #FF675B'>");
+                        html.AppendLine("       <button type='button'");
+                        html.AppendLine("           class='btn primary-btn h45-btn'");
+                        html.AppendLine("           title='Bỏ qua đơn hàng'");
+                        html.AppendLine("           style='background-color: #FF675B'");
+                        html.AppendLine(String.Format("           onclick='cancel({0})'", item.ID));
+                        html.AppendLine("       >");
                         html.AppendLine("           <span class='glyphicon glyphicon-trash'></span>");
                         html.AppendLine("       </button>");
                     }
@@ -343,6 +360,10 @@ namespace IM_PJ
             if (search != "")
                 request += "&textsearch=" + search;
 
+            if (ddlOrderStatus.SelectedValue != "0")
+                request += "&orderstatus=" + ddlOrderStatus.SelectedValue;
+            if (!String.IsNullOrEmpty(ddlDeliveryStatus.SelectedValue))
+                request += "&deliverystatus=" + ddlDeliveryStatus.SelectedValue;
             if (ddlReview.SelectedValue != "0")
                 request += "&review=" + ddlReview.SelectedValue;
 
@@ -350,14 +371,10 @@ namespace IM_PJ
                 request += "&feestatus=" + ddlFeeStatus.SelectedValue;
 
             if (rOrderFromDate.SelectedDate.HasValue)
-            {
                 request += "&orderfromdate=" + rOrderFromDate.SelectedDate.ToString();
-            }
 
             if (rOrderToDate.SelectedDate.HasValue)
-            {
                 request += "&ordertodate=" + rOrderToDate.SelectedDate.ToString();
-            }
 
             Response.Redirect(request);
         }
@@ -512,8 +529,9 @@ namespace IM_PJ
                 // Staff
                 item.Staff = String.Empty;
 
-                // Setting trạng thái review với order ( 1: Đang chờ duyệt | 2: Đã  duyệt | 3: Bỏ qua | 4: Không tìm thấy order)
+                // Setting trạng thái review với order
                 item.Review = (int)DeliveryPostOfficeReview.NoApprove;
+                item.OrderStatus = (int)OrderStatus.Exist;
                 postOffices.Add(item);
 
                 // Thưc thi review các order sau khi đoc 100 dòng execl
@@ -537,15 +555,15 @@ namespace IM_PJ
 
 
         [WebMethod]
-        public static void approvePostOffice(int postOfficeID)
+        public static void approve(int postOfficeID, int orderID)
         {
-
+            DeliveryPostOfficeController.approve(postOfficeID, orderID);
         }
 
         [WebMethod]
-        public static void cancelPostOffice(int postOfficeID)
+        public static void cancel(int postOfficeID)
         {
-
+            DeliveryPostOfficeController.cancel(postOfficeID);
         }
     }
 }

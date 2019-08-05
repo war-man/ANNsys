@@ -166,30 +166,21 @@
                                 <div class="col-md-3 col-xs-6">
                                     <asp:TextBox ID="txtSearchOrder" runat="server" CssClass="form-control" placeholder="Tìm đơn hàng" autocomplete="off"></asp:TextBox>
                                 </div>
-                                <div class="col-md-2 col-xs-6">
-                                    <asp:DropDownList ID="ddlReview" runat="server" CssClass="form-control">
-                                        <asp:ListItem Value="0" Text="Trạng thái đơn bưu điện"></asp:ListItem>
-                                        <asp:ListItem Value="1" Text="Đang chờ duyệt"></asp:ListItem>
-                                        <asp:ListItem Value="2" Text="Đã duyệt"></asp:ListItem>
-                                        <asp:ListItem Value="3" Text="Đơn hủy"></asp:ListItem>
-                                        <asp:ListItem Value="4" Text="Không tìm tháy order"></asp:ListItem>
-                                    </asp:DropDownList>
-                                </div>
-                                <div class="col-md-2 col-xs-6">
+                                <div class="col-md-2 col-xs-4">
                                     <asp:DropDownList ID="ddlFeeStatus" runat="server" CssClass="form-control">
                                         <asp:ListItem Value="0" Text="Tình trạng phí vận chuyển"></asp:ListItem>
                                         <asp:ListItem Value="1" Text="Có lời"></asp:ListItem>
                                         <asp:ListItem Value="2" Text="Lỗ vốn"></asp:ListItem>
                                     </asp:DropDownList>
                                 </div>
-                                <div class="col-md-2 col-xs-6">
+                                <div class="col-md-2 col-xs-4">
                                     <label>Từ ngày</label>
                                     <telerik:RadDatePicker RenderMode="Lightweight" ID="rOrderFromDate" ShowPopupOnFocus="true" Width="100%" runat="server" DateInput-CssClass="radPreventDecorate">
                                         <DateInput DisplayDateFormat="dd/MM/yyyy" runat="server">
                                         </DateInput>
                                     </telerik:RadDatePicker>
                                 </div>
-                                <div class="col-md-2 col-xs-6">
+                                <div class="col-md-2 col-xs-4">
                                     <label>Đến ngày</label>
                                     <telerik:RadDatePicker RenderMode="Lightweight" ID="rOrderToDate" ShowPopupOnFocus="true" Width="100%" runat="server" DateInput-CssClass="radPreventDecorate">
                                         <DateInput DisplayDateFormat="dd/MM/yyyy" runat="server">
@@ -200,6 +191,43 @@
                                     <a href="javascript:;" onclick="searchOrder()" class="btn primary-btn h45-btn"><i class="fa fa-search"></i></a>
                                     <asp:Button ID="btnSearch" runat="server" CssClass="btn primary-btn h45-btn" OnClick="btnSearch_Click" Style="display: none" />
                                     <a href="/danh-sach-van-chuyen" class="btn primary-btn h45-btn"><i class="fa fa-times" aria-hidden="true"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="filter-above-wrap clear">
+                        <div class="filter-control">
+                            <div class="row">
+                                <div class="col-md-1 col-xs-2">
+                                </div>
+                                <div class="col-md-2 col-xs-4">
+                                    <asp:DropDownList ID="ddlOrderStatus" runat="server" CssClass="form-control">
+                                        <asp:ListItem Value="0" Text="Trạng thái đơn"></asp:ListItem>
+                                        <asp:ListItem Value="1" Text="Tìm thấy đơn"></asp:ListItem>
+                                        <asp:ListItem Value="2" Text="Không tìm thấy đơn"></asp:ListItem>
+                                        <asp:ListItem Value="3" Text="Đơn rác"></asp:ListItem>
+                                    </asp:DropDownList>
+                                </div>
+                                <div class="col-md-2 col-xs-4">
+                                    <asp:DropDownList ID="ddlDeliveryStatus" runat="server" CssClass="form-control">
+                                        <asp:ListItem Value="" Text="Trạng thái bưu điện"></asp:ListItem>
+                                        <asp:ListItem Value="Chờ chuyển tiền COD" Text="Chờ chuyển tiền COD"></asp:ListItem>
+                                        <asp:ListItem Value="Chờ giao lại" Text="Chờ giao lại"></asp:ListItem>
+                                        <asp:ListItem Value="Đã chuyển tiền COD" Text="Đã chuyển tiền COD"></asp:ListItem>
+                                        <asp:ListItem Value="Đã giao thành công" Text="Đã giao thành công"></asp:ListItem>
+                                        <asp:ListItem Value="Đã lấy hàng" Text="Đã lấy hàng"></asp:ListItem>
+                                        <asp:ListItem Value="Đang giao hàng" Text="Đang giao hàng"></asp:ListItem>
+                                        <asp:ListItem Value="Hủy" Text="Hủy"></asp:ListItem>
+                                        <asp:ListItem Value="Mới tạo" Text="Mới tạo"></asp:ListItem>
+                                        <asp:ListItem Value="Trả hàng thành công" Text="Trả hàng thành công"></asp:ListItem>
+                                    </asp:DropDownList>
+                                </div>
+                                <div class="col-md-2 col-xs-4">
+                                    <asp:DropDownList ID="ddlReview" runat="server" CssClass="form-control">
+                                        <asp:ListItem Value="0" Text="Trạng thái xử lý"></asp:ListItem>
+                                        <asp:ListItem Value="1" Text="Đang chờ duyệt"></asp:ListItem>
+                                        <asp:ListItem Value="2" Text="Đã duyệt"></asp:ListItem>
+                                    </asp:DropDownList>
                                 </div>
                             </div>
                         </div>
@@ -227,6 +255,8 @@
 
         <script type="text/javascript">
             $("#<%=txtSearchOrder.ClientID%>").keyup(function (e) {
+                $("#<%=FileUpload.ClientID%>").val('');
+                $("#<%=UploadStatusLabel.ClientID%>").val('');
                 if (e.keyCode == 13) {
                     $("#<%=btnSearch.ClientID%>").click();
                 }
@@ -234,6 +264,48 @@
 
             function searchOrder() {
                 $("#<%=btnSearch.ClientID%>").click();
+            }
+
+            function approve(postOfficeID, orderID) {
+                if (!postOfficeID || !orderID)
+                    return;
+
+                $.ajax({
+                    type: "POST",
+                    url: "/thong-ke-buu-dien.aspx/approve",
+                    data: JSON.stringify({ 'postOfficeID': postOfficeID, 'orderID': orderID }),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: respon => {
+                        let handleButton = $("tr[data-id='" + postOfficeID + "'").find(".handle-button");
+                        handleButton.html("<span class='bg-blue-hoki'>Đã duyệt</span>");
+                        swal("Thông báo", "Đơn vận chuyển bưu điện đã duyệt", "success");
+                    },
+                    error: (xmlhttprequest, textstatus, errorthrow) => {
+                        swal("Thông báo", "Đã xảy ra lỗi trong quá trình duyệt đơn vận chuyển bưu điện", "error");
+                    }
+                });
+            }
+
+            function cancel(postOfficeID) {
+                if (!postOfficeID)
+                    return;
+
+                $.ajax({
+                    type: "POST",
+                    url: "/thong-ke-buu-dien.aspx/cancel",
+                    data: JSON.stringify({ 'postOfficeID': postOfficeID}),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: respon => {
+                        let handleButton = $("tr[data-id='" + postOfficeID + "'").find(".handle-button");
+                        handleButton.html("<span class='bg-red'>Thùng rác</span>");
+                        swal("Thông báo", "Đơn vận chuyển bưu điện đã chuyển tới dữ liệu rac", "success");
+                    },
+                    error: (xmlhttprequest, textstatus, errorthrow) => {
+                        swal("Thông báo", "Đã xảy ra lỗi trong quá trình chuyện tới dữ liệu rác", "error");
+                    }
+                });
             }
         </script>
     </main>
