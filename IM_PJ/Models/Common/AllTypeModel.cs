@@ -35,8 +35,9 @@ namespace IM_PJ.Models
     public enum PaymentStatus
     {
         Waitting = 1,       // Chưa thanh toán
-        NotEnough = 2,      // Đã hoàn tất
-        Done = 3            // Đã hủy
+        NotEnough = 2,      // Thanh toán thiếu
+        Done = 3,           // Đã hoàn tất
+        Approve = 4         // Đã duyệt (Trạng thái chỉ thể hiện với các đơn hàng bưu điện)
     }
 
     public enum TransferStatus
@@ -95,15 +96,19 @@ namespace IM_PJ.Models
     public enum DeliveryPostOfficeReview
     {
         NoApprove = 1,      // Chưa được duyệt
-        Approve = 2,        // Đã được duyệt
-        Cancel = 3,         // Đơn hủy
-        NoInfor = 4,         // Không tìm thấy thông tin order
-        NoHandle = 5      // Bỏ qua không cần xử lý
+        Approve = 2         // Đã được duyệt
     }
 
     public enum PostOfficeFeeStatus
     {
         Profitable = 1, // Trạng thái tiền phí lơn hơn hoặc bằng phí của bưu điện
         Losses = 2
+    }
+
+    public enum OrderStatus
+    {
+        Exist = 1,      // Tồn tại
+        NoExist = 2,    // Không tồn tại
+        Spam = 3,       // Rac
     }
 }
