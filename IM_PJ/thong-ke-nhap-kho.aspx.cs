@@ -76,7 +76,7 @@ namespace IM_PJ
                     DateConfig = new DateTime(2018, 6, 22);
                 }
 
-                DateTime fromDate = DateTime.Today.AddDays(1).AddMinutes(-1);
+                DateTime fromDate = DateTime.Today;
                 DateTime toDate = DateTime.Now;
 
                 if (!String.IsNullOrEmpty(Request.QueryString["fromdate"]))

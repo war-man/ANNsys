@@ -11,7 +11,9 @@
     <link rel="stylesheet" href="/App_Themes/Ann/css/style.css?v=0110" media="all">
     <link rel="stylesheet" href="/App_Themes/Ann/css/style-P.css?v=0110" media="all">
     <link href="/App_Themes/NewUI/js/select2/select2.css" rel="stylesheet" />
+    <link href="/App_Themes/NewUI/js/sweet/sweet-alert.css" rel="stylesheet" />
     <script type="text/javascript" src="/App_Themes/Ann/js/jquery-2.1.3.min.js"></script>
+
     <style>
         .select2-container {
             box-sizing: border-box;
@@ -360,6 +362,8 @@
             <script src="/App_Themes/Ann/js/bootstrap-table/bootstrap-table.js"></script>
             <script src="/App_Themes/NewUI/js/select2/select2.min.js"></script>
             <script src="/App_Themes/Ann/js/master.js?v=2011"></script>
+            <script src="/App_Themes/NewUI/js/sweet/sweet-alert.js?v=3006" type="text/javascript"></script>
+
             <script src="/App_Themes/Ann/js/copy-product-info.js?v=2011"></script>
             <script src="/App_Themes/Ann/js/sync-product-small.js?v=30052019"></script>
             <script src="/App_Themes/Ann/js/download-product-image.js?v=17072019"></script>
@@ -377,6 +381,7 @@
                         , color
                         , size
                         , quantity
+                        , productType
                     ) {
                         this.customer = customer;
                         this.productID = productID;
@@ -388,6 +393,7 @@
                         this.color = color;
                         this.size = size;
                         this.quantity = quantity;
+                        this.productType = productType;
                     }
                 }
 
@@ -512,16 +518,22 @@
                 }
 
                 function openRegister(item) {
-                    productRegister = new RegisterProduct('', item.productID, item.variableID, item.sku, 1, item.title, item.image, item.color, item.size, 0);
-                    $('#txtCustomerName').focus();
-                    let variableValue = "Đủ màu - Đủ size";
-                    if (item.variableID != 0) {
-                        variableValue = "";
-                        if (item.color) {
-                            variableValue = "Màu: " + item.color;
+                    productRegister = new RegisterProduct('', item.productID, item.variableID, item.sku, 1, item.title, item.image, item.color, item.size, 0, item.productType);
+                    let variableValue = "Không có";
+                    if (item.productType == 2)
+                    {
+                        if (item.productID != 0 && item.variableID != 0) 
+                        {
+                            if (item.color) {
+                                variableValue = "Màu: " + item.color;
+                            }
+                            if (item.size) {
+                                variableValue += " - Size: " + item.size;
+                            }
                         }
-                        if (item.size) {
-                            variableValue += " - Size: " + item.size;
+                        else 
+                        {
+                            variableValue = "Đủ màu - Đủ size";
                         }
                     }
                     $('#txtVariableValue').val(variableValue);
@@ -532,38 +544,64 @@
                     let customer = $("#txtCustomerName").val() || "";
                     let quantity = +$("#txtQuantity").val() || 0;
                     let note = $("#areaNote").val() || "";
+                    let check = true;
 
                     if (!quantity)
                     {
+                        check = false;
                         $("#txtQuantity").focus();
                         $("#txtQuantity").select();
-                        return alert("Số lượng bạn nhập không đúng");
+                        swal("Thông báo", "Chưa nhập số lượng", "error");
                     }
-
-                    // Lấy dữ liệu nhập từ modal
-                    productRegister.customer = customer;
-                    productRegister.quantity = quantity;
-                    productRegister.note = note;
-                    if(productRegister.productID && productRegister.variableID == "")
+                    if (!customer)
                     {
-                        productRegister.color = "Đủ màu";
-                        productRegister.size = "Đủ size";
+                        check = false;
+                        $("#txtCustomerName").focus();
+                        $("#txtCustomerName").select();
+                        swal("Thông báo", "Chưa nhập tên khách hàng", "error");
                     }
 
-                    // Truyền dữ liệu xuống server
-                    $.ajax({
-                        type: "POST",
-                        url: "/dang-ky-nhap-hang.aspx/registerProduct",
-                        data: JSON.stringify({'item': productRegister }),
-                        contentType: "application/json; charset=utf-8",
-                        dataType: "json",
-                        success: (response) => {
-                            $("#registerModal").find("#close").click();
-                        },
-                        error: (xmlhttprequest, textstatus, errorthrow) => {
-                            alert("Có lỗi trong quá trình đang ký nhập hàng");
+                    if (check == true)
+                    {
+                        // Lấy dữ liệu nhập từ modal
+                        productRegister.customer = customer;
+                        productRegister.quantity = quantity;
+                        productRegister.note = note;
+
+                        if (productRegister.productType == 2)
+                        {
+                            if (productRegister.productID && productRegister.variableID == "")
+                            {
+                                productRegister.color = "Đủ màu";
+                                productRegister.size = "Đủ size";
+                            }
                         }
-                    })
+                        else
+                        {
+                            productRegister.color = "";
+                            productRegister.size = "";
+                        }
+
+                        // Truyền dữ liệu xuống server
+                        $.ajax({
+                            type: "POST",
+                            url: "/dang-ky-nhap-hang.aspx/registerProduct",
+                            data: JSON.stringify({ 'item': productRegister }),
+                            contentType: "application/json; charset=utf-8",
+                            dataType: "json",
+                            success: (response) => {
+                                if (response.d == "1")
+                                {
+                                    swal("Thông báo", "Đăng ký thành công!", "success");
+                                }
+                                $("#registerModal").find("#close").click();
+                            },
+                            error: (xmlhttprequest, textstatus, errorthrow) => {
+                                alert("Có lỗi trong quá trình đang ký nhập hàng");
+                            }
+                        });
+                    }
+                    
                 }
             </script>
         </div>

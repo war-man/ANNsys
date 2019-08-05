@@ -105,7 +105,7 @@ namespace IM_PJ
             var page = new PaginationMetadataModel()
             {
                 currentPage = Page,
-                pageSize = 30
+                pageSize = 28
             };
             List<Product> a = new List<Product>();
             a = ProductController.GetAllProduct(filter, ref page);
@@ -345,7 +345,7 @@ namespace IM_PJ
         }
 
         [WebMethod]
-        public static void registerProduct(Models.RegisterProduct item)
+        public static string registerProduct(Models.RegisterProduct item)
         {
             string username = HttpContext.Current.Request.Cookies["loginHiddenPage"].Value;
             var acc = AccountController.GetByUsername(username);
@@ -356,7 +356,7 @@ namespace IM_PJ
             item.ModifiedBy = acc.ID;
             item.ModifiedDate = now;
 
-            RegisterProductController.Inster(item);
+            return RegisterProductController.Inster(item);
         }
     }
 }

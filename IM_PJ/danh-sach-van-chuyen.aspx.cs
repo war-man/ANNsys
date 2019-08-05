@@ -32,7 +32,7 @@ namespace IM_PJ
                     if (acc != null)
                     {
                         
-                        if (acc.RoleID == 0 || acc.Username == "nhom_zalo406")
+                        if (acc.RoleID == 0 || acc.Username == "nhom_zalo406" || acc.Username == "hotline")
                         {
                             LoadShipper();
                             LoadCreatedBy();
@@ -281,7 +281,7 @@ namespace IM_PJ
             html.Append("    <th>Đợt</th>");
             html.Append("    <th>Hoàn tất đơn</th>");
 
-            if (acc.RoleID == 0 || acc.Username == "nhom_zalo406")
+            if (acc.RoleID == 0 || acc.Username == "nhom_zalo406" || acc.Username == "hotline")
             {
                 html.Append("    <th>Nhân viên</th>");
             }

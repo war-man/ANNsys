@@ -2632,18 +2632,45 @@ namespace IM_PJ.Controllers
                         costOfGood = x.variable != null ? x.variable.CostOfGood.Value : x.product.CostOfGood.Value,
                         regularPrice = x.variable != null ? x.variable.Regular_Price.Value : x.product.Regular_Price.Value,
                         retailPrice = x.variable != null ? x.variable.RetailPrice.Value : x.product.Retail_Price.Value,
-                        craeteDate = x.variable != null ? x.variable.CreatedDate.Value : x.product.CreatedDate.Value
+                        craeteDate = x.variable != null ? x.variable.CreatedDate.Value : x.product.CreatedDate.Value,
+                        productType = x.product.ProductStyle,
+                        orderIndex = x.product.ProductStyle == 1? 1 : 2, // Dùng để sắp xếp cho sản phẩm con
                     }
                     );
                 #endregion
 
+                #region Add thêm dòng biến thể cha của các sản phẩm con
+                data = data.Union(
+                    product.Where(x => x.product.ProductStyle == 2)
+                        .Distinct()
+                        .Select(x => new
+                        {
+                            categoryID = x.product.CategoryID.Value,
+                            productID = x.product.ID,
+                            variableID = 0,
+                            sku = x.product.ProductSKU,
+                            title = x.product.ProductTitle,
+                            image = x.product.ProductImage,
+                            materials = x.product.Materials,
+                            content = x.product.ProductContent,
+                            costOfGood = x.product.CostOfGood.Value,
+                            regularPrice = x.product.Regular_Price.Value,
+                            retailPrice = x.product.Retail_Price.Value,
+                            craeteDate = x.product.CreatedDate.Value,
+                            productType = x.product.ProductStyle,
+                            orderIndex = 1
+                        })
+                );
+                #endregion
                 #region Tính toán phân trang
                 // Calculate pagination
                 page.totalCount = data.Count();
                 page.totalPages = (int)Math.Ceiling(page.totalCount / (double)page.pageSize);
 
                 var dataPagination = data
-                   .OrderByDescending(o => new { o.productID, o.variableID })
+                   .OrderByDescending(o => o.productID)
+                   .ThenBy(o => o.orderIndex)
+                   .ThenByDescending(o => o.variableID)
                    .Skip((page.currentPage - 1) * page.pageSize)
                    .Take(page.pageSize);
                 #endregion
@@ -2698,7 +2725,7 @@ namespace IM_PJ.Controllers
                     )
                     .SelectMany(
                         x => x.color.DefaultIfEmpty(),
-                        (parent, child) => new { product = parent.product, color = child != null? child.color: String.Empty}
+                        (parent, child) => new { product = parent.product, color = child != null ? child.color : String.Empty }
                     )
                     .GroupJoin(
                         sizes,
@@ -2708,7 +2735,7 @@ namespace IM_PJ.Controllers
                     )
                     .SelectMany(
                         x => x.size.DefaultIfEmpty(),
-                        (parent, child) => new { product = parent.product, color = parent.color,  size = child != null ? child.size : String.Empty }
+                        (parent, child) => new { product = parent.product, color = parent.color, size = child != null ? child.size : String.Empty }
                     )
                     .Select(x => {
                         var stock = StockManagerController.getStock(x.product.productID, x.product.variableID);
@@ -2736,7 +2763,8 @@ namespace IM_PJ.Controllers
                             costOfGood = x.product.costOfGood,
                             regularPrice = x.product.regularPrice,
                             retailPrice = x.product.retailPrice,
-                            createdDate = x.product.craeteDate
+                            createdDate = x.product.craeteDate,
+                            productType = x.product.productType.Value
                         };
                     })
                     .ToList();
@@ -2770,6 +2798,7 @@ namespace IM_PJ.Controllers
             public int floorShelf { get; set; }
             public string floorShelfName { get; set; }
             public DateTime createdDate { get; set; }
+            public int productType { get; set; }
 
         }
         public class ProductShelf

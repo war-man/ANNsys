@@ -1000,33 +1000,38 @@
                 });
             }
 
+            function handleErrorSubmit() {
+                HoldOn.close();
+                if ($("#<%=hdStatusPage.ClientID%>").val() === "Submit")
+                {
+                    swal({
+                        title: "Lỗi trong qua trình thánh toán",
+                        text: "Xảy ra lỗi khi xác nhận đơn hàng.\nHãy nhấn lại nút thanh toán",
+                        type: "error",
+                        showCancelButton: false,
+                        confirmButtonText: "OK Sếp!!",
+                        closeOnConfirm: true,
+                        html: false
+                    }, function () {
+                        $("#<%=btnOrder.ClientID%>").focus();
+                    });
+                }
+            }
             function clickSubmit() {
                 var totalquantity = $("#<%=hdfTotalQuantity.ClientID%>").val();
                 var inputquantity = $("#SoldQuantity").val();
 
                 if (totalquantity == inputquantity) {
                     closePopup();
-                    try{
-                        HoldOn.open();
-                        $("#<%=hdStatusPage.ClientID%>").val("Submit");
+                    HoldOn.open();
+                    $("#<%=hdStatusPage.ClientID%>").val("Submit");
+                    try
+                    {
                         $("#<%=btnOrder.ClientID%>").click();
                     }
-                    finally {
-                        HoldOn.close();
-                        if ($("#<%=hdStatusPage.ClientID%>").val() === "Submit")
-                        {
-                            swal({
-                                title: "Lỗi trong qua trình thánh toán",
-                                text: "Xảy ra lỗi khi xác nhận đơn hàng.\nHãy nhấn lại nút thanh toán",
-                                type: "error",
-                                showCancelButton: false,
-                                confirmButtonText: "OK Sếp!!",
-                                closeOnConfirm: true,
-                                html: false
-                            }, function () {
-                                $("#<%=btnOrder.ClientID%>").focus();
-                            });
-                        }
+                    finally
+                    {
+                        setTimeout(handleErrorSubmit, 60000);
                     }
                 }
                 else {

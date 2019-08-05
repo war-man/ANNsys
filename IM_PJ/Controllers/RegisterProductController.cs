@@ -8,12 +8,14 @@ namespace IM_PJ.Controllers
 {
     public class RegisterProductController
     {
-        public static void Inster(RegisterProduct item)
+        public static string Inster(RegisterProduct item)
         {
             using (var con = new inventorymanagementEntities())
             {
                 con.RegisterProducts.Add(item);
-                con.SaveChanges();
+                int insert = con.SaveChanges();
+
+                return insert.ToString();
             }
         }
 

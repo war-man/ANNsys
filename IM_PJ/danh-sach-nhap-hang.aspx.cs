@@ -30,7 +30,7 @@ namespace IM_PJ
                     if (acc != null)
                     {
                         
-                        if (acc.RoleID == 0 || acc.Username == "nhom_zalo406")
+                        if (acc.RoleID == 0 || acc.RoleID == 1)
                         {
                             LoadCreatedBy();
                         }

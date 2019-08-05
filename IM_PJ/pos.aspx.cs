@@ -39,7 +39,7 @@ namespace IM_PJ
                         {
                             hdfRoleID.Value = acc.RoleID.ToString();
                         }
-                        else if(acc.RoleID == 2)
+                        else if (acc.RoleID == 2)
                         {
                             hdfRoleID.Value = acc.RoleID.ToString();
                             hdfUsername.Value = acc.Username;
@@ -69,7 +69,7 @@ namespace IM_PJ
                             string listUser = "";
                             foreach (var item in CreateBy)
                             {
-                                if(item.Username != acc.Username)
+                                if (item.Username != acc.Username)
                                 {
                                     listUser += item.Username + "|";
                                 }
@@ -131,7 +131,7 @@ namespace IM_PJ
             else
             {
                 var customer_other = CustomerController.Find(search);
-                if(customer_other.Count > 0)
+                if (customer_other.Count > 0)
                 {
                     JavaScriptSerializer serializer = new JavaScriptSerializer();
                     return serializer.Serialize(new { listCustomer = customer_other, employee = 1 });
@@ -236,162 +236,170 @@ namespace IM_PJ
 
         protected void btnOrder_Click(object sender, EventArgs e)
         {
-            DateTime currentDate = DateTime.Now;
-            string username = Request.Cookies["usernameLoginSystem"].Value;
-            var acc = AccountController.GetByUsername(username);
-            if (acc != null)
+            try
             {
-                if (acc.RoleID == 0 || acc.RoleID == 2)
+                DateTime currentDate = DateTime.Now;
+                string username = Request.Cookies["usernameLoginSystem"].Value;
+                var acc = AccountController.GetByUsername(username);
+                if (acc != null)
                 {
-                    // Change user
-                    string UserHelp = "";
-                    if (username != hdfUsernameCurrent.Value)
+                    if (acc.RoleID == 0 || acc.RoleID == 2)
                     {
-                        UserHelp = username;
-                        username = hdfUsernameCurrent.Value;
-                    }
-
-                    int AgentID = Convert.ToInt32(acc.AgentID);
-                    int OrderType = hdfOrderType.Value.ToInt();
-                    string AdditionFee = "0";
-                    string DisCount = "0";
-                    int CustomerID = 0;
-
-                    string CustomerPhone = Regex.Replace(txtPhone.Text.Trim(), @"[^\d]", "");
-                    string CustomerName = txtFullname.Text.Trim();
-                    string CustomerEmail = "";
-                    string CustomerAddress = txtAddress.Text.Trim();
-
-                    var checkCustomer = CustomerController.GetByPhone(CustomerPhone);
-
-                    if (checkCustomer != null)
-                    {
-                        CustomerID = checkCustomer.ID;
-                        string kq = CustomerController.Update(CustomerID, CustomerName, checkCustomer.CustomerPhone, CustomerAddress, "", Convert.ToInt32(checkCustomer.CustomerLevelID), Convert.ToInt32(checkCustomer.Status), checkCustomer.CreatedBy, currentDate, username, false, checkCustomer.Zalo, checkCustomer.Facebook, checkCustomer.Note, checkCustomer.ProvinceID.ToString(), checkCustomer.Nick, checkCustomer.Avatar, Convert.ToInt32(checkCustomer.ShippingType), Convert.ToInt32(checkCustomer.PaymentType), Convert.ToInt32(checkCustomer.TransportCompanyID), Convert.ToInt32(checkCustomer.TransportCompanySubID), checkCustomer.CustomerPhone2);
-                    }
-                    else
-                    {
-                        string kq = CustomerController.Insert(CustomerName, CustomerPhone, CustomerAddress, CustomerEmail, 0, 0, currentDate, username, false, "", "", "", "", "");
-                        if (kq.ToInt(0) > 0)
+                        // Change user
+                        string UserHelp = "";
+                        if (username != hdfUsernameCurrent.Value)
                         {
-                            CustomerID = kq.ToInt(0);
+                            UserHelp = username;
+                            username = hdfUsernameCurrent.Value;
                         }
-                    }
 
-                    string totalPrice = hdfTotalPrice.Value.ToString();
-                    string totalPriceNotDiscount = hdfTotalPriceNotDiscount.Value;
-                    int PaymentStatus = 3;
-                    int ExcuteStatus = 2;
-                    int PaymentType = 1;
-                    int ShippingType = 1;
-                    bool IsHidden = false;
-                    int WayIn = 1;
+                        int AgentID = Convert.ToInt32(acc.AgentID);
+                        int OrderType = hdfOrderType.Value.ToInt();
+                        string AdditionFee = "0";
+                        string DisCount = "0";
+                        int CustomerID = 0;
 
-                    double DiscountPerProduct = Convert.ToDouble(pDiscount.Value);
+                        string CustomerPhone = Regex.Replace(txtPhone.Text.Trim(), @"[^\d]", "");
+                        string CustomerName = txtFullname.Text.Trim();
+                        string CustomerEmail = "";
+                        string CustomerAddress = txtAddress.Text.Trim();
 
-                    double TotalDiscount = Convert.ToDouble(pDiscount.Value) * Convert.ToDouble(hdfTotalQuantity.Value);
-                    string FeeShipping = pFeeShip.Value.ToString();
-                    double GuestPaid = Convert.ToDouble(pGuestPaid.Value);
-                    double GuestChange = Convert.ToDouble(totalPrice) - GuestPaid;
+                        var checkCustomer = CustomerController.GetByPhone(CustomerPhone);
 
-                    var ret = OrderController.InsertOnSystem(AgentID, OrderType, AdditionFee, DisCount, CustomerID, CustomerName, CustomerPhone, CustomerAddress,
-                        CustomerEmail, totalPrice, totalPriceNotDiscount, PaymentStatus, ExcuteStatus, IsHidden, WayIn, currentDate, username, DiscountPerProduct,
-                        TotalDiscount, FeeShipping, GuestPaid, GuestChange, PaymentType, ShippingType, String.Empty, DateTime.Now, String.Empty, 0, 1, UserHelp);
-
-                    int OrderID = ret.ID;
-
-                    // Insert Other Fee
-                    if (!String.IsNullOrEmpty(hdfOtherFees.Value))
-                    {
-                        JavaScriptSerializer serializer = new JavaScriptSerializer();
-                        var fees = serializer.Deserialize<List<Fee>>(hdfOtherFees.Value);
-                        if (fees != null)
+                        if (checkCustomer != null)
                         {
-                            foreach (var fee in fees)
-                            {
-                                fee.OrderID = ret.ID;
-                                fee.CreatedBy = acc.ID;
-                                fee.CreatedDate = DateTime.Now;
-                                fee.ModifiedBy = acc.ID;
-                                fee.ModifiedDate = DateTime.Now;
-                            }
-
-                            FeeController.Update(ret.ID, fees);
+                            CustomerID = checkCustomer.ID;
+                            string kq = CustomerController.Update(CustomerID, CustomerName, checkCustomer.CustomerPhone, CustomerAddress, "", Convert.ToInt32(checkCustomer.CustomerLevelID), Convert.ToInt32(checkCustomer.Status), checkCustomer.CreatedBy, currentDate, username, false, checkCustomer.Zalo, checkCustomer.Facebook, checkCustomer.Note, checkCustomer.ProvinceID.ToString(), checkCustomer.Nick, checkCustomer.Avatar, Convert.ToInt32(checkCustomer.ShippingType), Convert.ToInt32(checkCustomer.PaymentType), Convert.ToInt32(checkCustomer.TransportCompanyID), Convert.ToInt32(checkCustomer.TransportCompanySubID), checkCustomer.CustomerPhone2);
                         }
-                    }
-
-                    if (OrderID > 0)
-                    {
-                        ProductPOS POS = JsonConvert.DeserializeObject<ProductPOS>(hdfListProduct.Value);
-                        List<tbl_OrderDetail> orderDetails = new List<tbl_OrderDetail>();
-                        List<tbl_StockManager> stockManager = new List<tbl_StockManager>();
-
-                        foreach (ProductGetOut item in POS.productPOS)
+                        else
                         {
-                            orderDetails.Add(
-                                new tbl_OrderDetail()
-                                {
-                                    AgentID = AgentID,
-                                    OrderID = OrderID,
-                                    SKU = item.SKU,
-                                    ProductID = item.ProductType == 1 ? item.ProductID : 0,
-                                    ProductVariableID = item.ProductType == 1 ? 0 : item.ProductVariableID,
-                                    ProductVariableDescrition = item.ProductVariableSave,
-                                    Quantity = item.QuantityInstock,
-                                    Price = item.Giabanle,
-                                    Status = 1,
-                                    DiscountPrice = 0,
-                                    ProductType = item.ProductType,
-                                    CreatedDate = currentDate,
-                                    CreatedBy = username,
-                                    IsCount = true
-                                }
-                            );
-
-                            int parentID = item.ProductID;
-                            var variable = ProductVariableController.GetByID(item.ProductVariableID);
-                            if (variable != null)
+                            string kq = CustomerController.Insert(CustomerName, CustomerPhone, CustomerAddress, CustomerEmail, 0, 0, currentDate, username, false, "", "", "", "", "");
+                            if (kq.ToInt(0) > 0)
                             {
-                                parentID = Convert.ToInt32(variable.ProductID);
+                                CustomerID = kq.ToInt(0);
                             }
+                        }
 
-                            stockManager.Add(
-                                new tbl_StockManager()
+                        string totalPrice = hdfTotalPrice.Value.ToString();
+                        string totalPriceNotDiscount = hdfTotalPriceNotDiscount.Value;
+                        int PaymentStatus = 3;
+                        int ExcuteStatus = 2;
+                        int PaymentType = 1;
+                        int ShippingType = 1;
+                        bool IsHidden = false;
+                        int WayIn = 1;
+
+                        double DiscountPerProduct = Convert.ToDouble(pDiscount.Value);
+
+                        double TotalDiscount = Convert.ToDouble(pDiscount.Value) * Convert.ToDouble(hdfTotalQuantity.Value);
+                        string FeeShipping = pFeeShip.Value.ToString();
+                        double GuestPaid = Convert.ToDouble(pGuestPaid.Value);
+                        double GuestChange = Convert.ToDouble(totalPrice) - GuestPaid;
+
+                        var ret = OrderController.InsertOnSystem(AgentID, OrderType, AdditionFee, DisCount, CustomerID, CustomerName, CustomerPhone, CustomerAddress,
+                            CustomerEmail, totalPrice, totalPriceNotDiscount, PaymentStatus, ExcuteStatus, IsHidden, WayIn, currentDate, username, DiscountPerProduct,
+                            TotalDiscount, FeeShipping, GuestPaid, GuestChange, PaymentType, ShippingType, String.Empty, DateTime.Now, String.Empty, 0, 1, UserHelp);
+
+                        int OrderID = ret.ID;
+
+                        // Insert Other Fee
+                        if (!String.IsNullOrEmpty(hdfOtherFees.Value))
+                        {
+                            JavaScriptSerializer serializer = new JavaScriptSerializer();
+                            var fees = serializer.Deserialize<List<Fee>>(hdfOtherFees.Value);
+                            if (fees != null)
+                            {
+                                foreach (var fee in fees)
                                 {
-                                    AgentID = AgentID,
-                                    ProductID = item.ProductType == 1 ? item.ProductID : 0,
-                                    ProductVariableID = item.ProductType == 1 ? 0 : item.ProductVariableID,
-                                    Quantity = item.QuantityInstock,
-                                    QuantityCurrent = 0,
-                                    Type = 2,
-                                    NoteID = "Xuất kho bán POS",
-                                    OrderID = OrderID,
-                                    Status = 3,
-                                    SKU = item.SKU,
-                                    CreatedDate = currentDate,
-                                    CreatedBy = username,
-                                    MoveProID = 0,
-                                    ParentID = parentID
+                                    fee.OrderID = ret.ID;
+                                    fee.CreatedBy = acc.ID;
+                                    fee.CreatedDate = DateTime.Now;
+                                    fee.ModifiedBy = acc.ID;
+                                    fee.ModifiedDate = DateTime.Now;
                                 }
+
+                                FeeController.Update(ret.ID, fees);
+                            }
+                        }
+
+                        if (OrderID > 0)
+                        {
+                            ProductPOS POS = JsonConvert.DeserializeObject<ProductPOS>(hdfListProduct.Value);
+                            List<tbl_OrderDetail> orderDetails = new List<tbl_OrderDetail>();
+                            List<tbl_StockManager> stockManager = new List<tbl_StockManager>();
+
+                            foreach (ProductGetOut item in POS.productPOS)
+                            {
+                                orderDetails.Add(
+                                    new tbl_OrderDetail()
+                                    {
+                                        AgentID = AgentID,
+                                        OrderID = OrderID,
+                                        SKU = item.SKU,
+                                        ProductID = item.ProductType == 1 ? item.ProductID : 0,
+                                        ProductVariableID = item.ProductType == 1 ? 0 : item.ProductVariableID,
+                                        ProductVariableDescrition = item.ProductVariableSave,
+                                        Quantity = item.QuantityInstock,
+                                        Price = item.Giabanle,
+                                        Status = 1,
+                                        DiscountPrice = 0,
+                                        ProductType = item.ProductType,
+                                        CreatedDate = currentDate,
+                                        CreatedBy = username,
+                                        IsCount = true
+                                    }
                                 );
+
+                                int parentID = item.ProductID;
+                                var variable = ProductVariableController.GetByID(item.ProductVariableID);
+                                if (variable != null)
+                                {
+                                    parentID = Convert.ToInt32(variable.ProductID);
+                                }
+
+                                stockManager.Add(
+                                    new tbl_StockManager()
+                                    {
+                                        AgentID = AgentID,
+                                        ProductID = item.ProductType == 1 ? item.ProductID : 0,
+                                        ProductVariableID = item.ProductType == 1 ? 0 : item.ProductVariableID,
+                                        Quantity = item.QuantityInstock,
+                                        QuantityCurrent = 0,
+                                        Type = 2,
+                                        NoteID = "Xuất kho bán POS",
+                                        OrderID = OrderID,
+                                        Status = 3,
+                                        SKU = item.SKU,
+                                        CreatedDate = currentDate,
+                                        CreatedBy = username,
+                                        MoveProID = 0,
+                                        ParentID = parentID
+                                    }
+                                    );
+                            }
+
+                            OrderDetailController.Insert(orderDetails);
+                            StockManagerController.Insert(stockManager);
+
+                            string refund = hdSession.Value;
+                            if (refund != "1")
+                            {
+                                string[] RefundID = refund.Split('|');
+                                var update = RefundGoodController.UpdateStatus(RefundID[0].ToInt(), username, 2, OrderID);
+                                var updateor = OrderController.UpdateRefund(OrderID, RefundID[0].ToInt(), username);
+                            }
+
+                            // Hoàn thành khởi tạo đơn hàng nên gán lại giá trị trang lúc ban đầu
+                            hdStatusPage.Value = "Create";
+                            ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "script", "$(function () { HoldOn.close(); printInvoice(" + OrderID + ") });", true);
                         }
-
-                        OrderDetailController.Insert(orderDetails);
-                        StockManagerController.Insert(stockManager);
-
-                        string refund = hdSession.Value;
-                        if (refund != "1")
-                        {
-                            string[] RefundID = refund.Split('|');
-                            var update = RefundGoodController.UpdateStatus(RefundID[0].ToInt(), username, 2, OrderID);
-                            var updateor = OrderController.UpdateRefund(OrderID, RefundID[0].ToInt(), username);
-                        }
-
-                        // Hoàn thành khởi tạo đơn hàng nên gán lại giá trị trang lúc ban đầu
-                        hdStatusPage.Value = "Create";
-                        ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "script", "$(function () { printInvoice(" + OrderID + ") });", true);
                     }
                 }
+            }
+            catch (Exception)
+            {
+                
+                ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "script", "$(function () { handleErrorSubmit(); });", true);
             }
         }
     }
