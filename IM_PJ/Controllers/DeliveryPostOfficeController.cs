@@ -123,8 +123,12 @@ namespace IM_PJ.Controllers
                 #region Filter theo trạng thái của bưu điện
                 if (!String.IsNullOrEmpty(filter.deliveryStatus))
                 {
-                    postOffices = postOffices
-                        .Where(x => x.DeliveryStatus == filter.deliveryStatus);
+                    if (filter.deliveryStatus == "Không lấy đơn hủy")
+                        postOffices = postOffices
+                        .Where(x => x.DeliveryStatus != "Hủy");
+                    else
+                        postOffices = postOffices
+                            .Where(x => x.DeliveryStatus == filter.deliveryStatus);
                 }
                 #endregion
                 #region Filter theo trạng thái xử lý
@@ -190,6 +194,13 @@ namespace IM_PJ.Controllers
                 {
                     postOffice.Review = (int)DeliveryPostOfficeReview.Approve;
                     order.PaymentStatus = (int)PaymentStatus.Approve;
+
+                    // Trường hơp không có order và mã vận đơn của hệ thống khác với bưu điện
+                    if (postOffice.OrderID == 0)
+                    {
+                        postOffice.OrderID = orderID;
+                        order.ShippingCode = postOffice.NumberID;
+                    }
 
                     con.SaveChanges();
                 }
