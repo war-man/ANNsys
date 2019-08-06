@@ -112,4 +112,16 @@ namespace IM_PJ.Models
         NoExist = 2,    // Không tồn tại
         Spam = 3,       // Rac
     }
+
+    public enum DeliveryProshipReview
+    {
+        NoApprove = 1,      // Chưa được duyệt
+        Approve = 2         // Đã được duyệt
+    }
+
+    public enum ProshipFeeStatus
+    {
+        Profitable = 1, // Trạng thái tiền phí lơn hơn hoặc bằng phí của bưu điện
+        Losses = 2
+    }
 }
