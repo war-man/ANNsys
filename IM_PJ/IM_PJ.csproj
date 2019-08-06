@@ -471,6 +471,7 @@
       <DependentUpon>IMModel.edmx</DependentUpon>
       <LastGenOutput>IMModel.cs</LastGenOutput>
     </Content>
+    <Content Include="thong-ke-proship.aspx" />
     <Content Include="thong-ke-buu-dien.aspx" />
     <Content Include="nhan-vien-dat-hang.aspx" />
     <Content Include="danh-sach-dang-ky.aspx" />
@@ -848,6 +849,7 @@
       <DependentUpon>bao-cao.aspx</DependentUpon>
     </Compile>
     <Compile Include="Controllers\CategoryController.cs" />
+    <Compile Include="Controllers\DeliveryProshipController.cs" />
     <Compile Include="Controllers\DeliveryPostOfficeController.cs" />
     <Compile Include="Controllers\RegisterController.cs" />
     <Compile Include="Controllers\BankAccountController.cs" />
@@ -871,11 +873,15 @@
     <Compile Include="Models\BankTransfer.cs">
       <DependentUpon>IMModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\Common\DeliveryProshipFilterModel.cs" />
     <Compile Include="Models\Common\DeliveryPostOfficeFilterModel.cs" />
     <Compile Include="Models\Delivery.cs">
       <DependentUpon>IMModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\DeliveryPostOffice.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\DeliveryProship.cs">
       <DependentUpon>IMModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Fee.cs">
@@ -909,6 +915,9 @@
       <DependentUpon>IMModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Shipper.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\sysdiagram.cs">
       <DependentUpon>IMModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\tbl_Account.cs">
@@ -1027,6 +1036,13 @@
     </Compile>
     <Compile Include="Models\tbl_WhiteDomain.cs">
       <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="thong-ke-proship.aspx.cs">
+      <DependentUpon>thong-ke-proship.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="thong-ke-proship.aspx.designer.cs">
+      <DependentUpon>thong-ke-proship.aspx</DependentUpon>
     </Compile>
     <Compile Include="thong-ke-buu-dien.aspx.cs">
       <DependentUpon>thong-ke-buu-dien.aspx</DependentUpon>
@@ -1870,6 +1886,7 @@
     <Folder Include="App_Themes\NewUI\plugins\" />
     <Folder Include="uploads\barcodes\" />
     <Folder Include="uploads\deliveries\post_office\" />
+    <Folder Include="uploads\deliveries\proship\" />
     <Folder Include="uploads\images\" />
   </ItemGroup>
   <ItemGroup>
