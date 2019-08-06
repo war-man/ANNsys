@@ -497,8 +497,6 @@ namespace IM_PJ
                 // OrderID
                 if (isNumber.Success)
                     item.OrderID = Convert.ToInt32(row.GetCell(0).StringCellValue);
-                else if (row.GetCell(0).StringCellValue != row.GetCell(1).StringCellValue)
-                    continue; // Trường hợp này xảy khi (1: Giao lại hàng | 2: Bưu điện tạo một đơn mới rồi tham chiếu qua đó)
                 // NumberID
                 item.NumberID = row.GetCell(1).StringCellValue;
                 // Customer

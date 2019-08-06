@@ -84,7 +84,7 @@ namespace IM_PJ.Controllers
                 foreach (var item in postOffices)
                 {
                     var exist = con.DeliveryPostOffices
-                        .Where(x => x.OrderID == item.OrderID || x.NumberID == item.NumberID);
+                        .Where(x => x.OrderID == item.OrderID && x.NumberID == item.NumberID);
 
                     if (exist.Count() == 0)
                         con.DeliveryPostOffices.Add(item);
