@@ -13,12 +13,13 @@ namespace IM_PJ.Controllers
             using (var con = new inventorymanagementEntities())
             {
                 var toDate = postOffices.Max(x => x.StartDate);
-                var fromDate = postOffices.Min(x => x.StartDate).AddDays(-7); // Trừ cho 7 ngày đề phòng đơn tạo lâu chưa giao đi
+                var fromDate = postOffices.Min(x => x.StartDate).AddDays(-30); // Trừ cho 7 ngày đề phòng đơn tạo lâu chưa giao đi
 
                 foreach (var item in postOffices)
                 {
                     var order = con.tbl_Order
-                        .Where(x => x.ExcuteStatus == (int)ExcuteStatus.Done)
+                        .Where(x => x.CreatedDate >= new DateTime(2019, 2, 15))
+                        .Where(x => x.ExcuteStatus == (int)ExcuteStatus.Done || x.ExcuteStatus == (int)ExcuteStatus.Return)
                         .Where(x => x.ID == item.OrderID || x.ShippingCode == item.NumberID)
                         .FirstOrDefault();
 
@@ -31,8 +32,17 @@ namespace IM_PJ.Controllers
                     // Các đơn có trạng thái hủy buộc phải kiểm tra bằng tay
                     if (item.DeliveryStatus == "Hủy")
                     {
+                        item.OrderStatus = (int)OrderStatus.Spam;
                         continue;
                     }
+
+                    if (item.DeliveryStatus == "Trả hàng thành công")
+                    {
+                        item.Review = (int)DeliveryPostOfficeReview.Approve;
+                        order.PaymentStatus = (int)PaymentStatus.Approve;
+                        continue;
+                    }
+
 
                     // Lấy thông tin của order
                     if (item.OrderID == 0)

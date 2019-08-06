@@ -21,7 +21,8 @@ namespace IM_PJ.Models
     {
         Doing = 1,          // Đang xử lý
         Done = 2,           // Đã hoàn tất
-        Cancel = 3          // Đã hủy
+        Cancel = 3,          // Đã hủy
+        Return = 4
     }
 
     public enum PaymentType
