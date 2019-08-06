@@ -220,6 +220,7 @@
                                         <asp:ListItem Value="Hủy" Text="Hủy"></asp:ListItem>
                                         <asp:ListItem Value="Mới tạo" Text="Mới tạo"></asp:ListItem>
                                         <asp:ListItem Value="Trả hàng thành công" Text="Trả hàng thành công"></asp:ListItem>
+                                        <asp:ListItem Value="Không lấy đơn hủy" Text="Không lấy đơn hủy"></asp:ListItem>
                                     </asp:DropDownList>
                                 </div>
                                 <div class="col-md-2 col-xs-4">
@@ -253,6 +254,29 @@
             </div>
         </div>
 
+        <!-- Check Order Old Modal -->
+        <div class="modal fade" id="approveModal" role="dialog">
+            <div class="modal-dialog">
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Duyệt đơn hàng Bưu Điện</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row form-group">
+                            <asp:TextBox runat="server" ID="txtOrderID" CssClass="form-control" placeholder="Nhập thông tin OrderID"/>
+                            <asp:HiddenField ID="hdfPostOfficeID" runat="server" />
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button id="closeApprove" type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
+                        <button id="commitApprove" type="button" class="btn btn-primary">Duyệt</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <script type="text/javascript">
             $("#<%=txtSearchOrder.ClientID%>").keyup(function (e) {
                 $("#<%=FileUpload.ClientID%>").val('');
@@ -267,7 +291,20 @@
             }
 
             function approve(postOfficeID, orderID) {
-                if (!postOfficeID || !orderID)
+                if (!orderID)
+                {
+                    let modal = $("#approveModal");
+                    let orderIDDOM = modal.find("#<%=txtOrderID.ClientID%>");
+                    let postOfficeIDDOM = modal.find("#<%=hdfPostOfficeID.ClientID%>");
+
+                    // Init giá trị cho modal
+                    orderIDDOM.val('');
+                    postOfficeIDDOM.val(postOfficeID);
+
+                    return modal.modal({ show: 'true', backdrop: 'static' });
+                }
+
+                if (!postOfficeID)
                     return;
 
                 $.ajax({
@@ -307,6 +344,19 @@
                     }
                 });
             }
+
+            $("#approveModal").find("#commitApprove").click(e => {
+                let modal = $("#approveModal");
+                let orderID = modal.find("#<%=txtOrderID.ClientID%>").val();
+                let postOfficeID = modal.find("#<%=hdfPostOfficeID.ClientID%>").val();
+
+                if (!orderID)
+                    return swal("Thông báo", "Vui lòng nhập thông tin Order", "error");
+
+                modal.find("#closeApprove").click();
+
+                return approve(postOfficeID, orderID)
+            })
         </script>
     </main>
 </asp:Content>
