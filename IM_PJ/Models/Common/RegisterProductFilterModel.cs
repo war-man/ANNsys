@@ -10,6 +10,8 @@ namespace IM_PJ.Models
         // Tìm kiếm theo title
         // Tìm kiếm theo tên khách hàng
         public string search { get; set; } = String.Empty;
+        // Danh mục sản phẩm
+        public int category { get; set; } = 0;
         // Trạng thái đơn đăng ký nhập hàng
         public int status { get; set; } = 0;
         // Nhận viên khởi tạo

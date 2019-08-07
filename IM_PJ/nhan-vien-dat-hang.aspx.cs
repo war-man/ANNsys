@@ -94,27 +94,28 @@ namespace IM_PJ
             rToDate.MaxDate = DateTime.Now;
 
             string textSearch = "";
-            int CategoryID = 0;
+            int categoryID = 0;
             int registerStatus = 0;
             int Page = 1;
 
             if (Request.QueryString["textsearch"] != null)
                 textSearch = Request.QueryString["textsearch"].Trim();
             if (Request.QueryString["categoryid"] != null)
-                CategoryID = Request.QueryString["categoryid"].ToInt();
+                categoryID = Request.QueryString["categoryid"].ToInt();
             if (Request.QueryString["registerstatus"] != null)
                 registerStatus = Request.QueryString["registerstatus"].ToInt(0);
             if (Request.QueryString["Page"] != null)
                 Page = Request.QueryString["Page"].ToInt();
 
             txtSearchProduct.Text = textSearch;
-            ddlCategory.SelectedValue = CategoryID.ToString();
+            ddlCategory.SelectedValue = categoryID.ToString();
             ddlRegisterStatus.SelectedValue = registerStatus.ToString();
 
             // Create order fileter
             var filter = new RegisterProductFilterModel()
             {
                 search = textSearch,
+                category = categoryID,
                 status = registerStatus,
                 createdBy = acc.Username,
                 fromDate = fromDate,

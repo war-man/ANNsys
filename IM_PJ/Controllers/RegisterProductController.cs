@@ -118,6 +118,27 @@ namespace IM_PJ.Controllers
                         x.SKU.Contains(filter.search)
                     );
                 }
+                // Filter theo category
+                if (filter.category > 0)
+                {
+                    var parentCatogory = con.tbl_Category.Where(x => x.ID == filter.category).FirstOrDefault();
+                    var catogoryFilter = CategoryController.getCategoryChild(parentCatogory).Select(x => x.ID).ToList();
+
+                    var product = con.tbl_Product
+                        .Where(x =>
+                            catogoryFilter.Contains(
+                                x.CategoryID.HasValue ? x.CategoryID.Value : 0
+                                )
+                        );
+
+                    data = data
+                        .Join(
+                            product,
+                            d => d.ProductID,
+                            p => p.ID,
+                            (d, p) => d
+                        );
+                }
                 // Filter theo trang thái
                 if (filter.status != 0)
                 {
