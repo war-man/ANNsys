@@ -49,40 +49,31 @@ namespace IM_PJ {
         protected global::System.Web.UI.WebControls.DropDownList ddlCategory;
         
         /// <summary>
-        /// ddlStockStatus control.
+        /// ddlRegisterStatus control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlStockStatus;
+        protected global::System.Web.UI.WebControls.DropDownList ddlRegisterStatus;
         
         /// <summary>
-        /// ddlCreatedDate control.
+        /// rFromDate control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlCreatedDate;
+        protected global::Telerik.Web.UI.RadDatePicker rFromDate;
         
         /// <summary>
-        /// ddlColor control.
+        /// rToDate control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlColor;
-        
-        /// <summary>
-        /// ddlSize control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlSize;
+        protected global::Telerik.Web.UI.RadDatePicker rToDate;
         
         /// <summary>
         /// btnSearch control.
