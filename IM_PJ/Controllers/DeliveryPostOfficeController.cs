@@ -183,7 +183,7 @@ namespace IM_PJ.Controllers
             }
         }
 
-        public static void approve(int postOfficeID, int orderID)
+        public static string approve(int postOfficeID, int orderID)
         {
             using (var con = new inventorymanagementEntities())
             {
@@ -193,18 +193,36 @@ namespace IM_PJ.Controllers
                 if (postOffice != null && order != null)
                 {
                     postOffice.Review = (int)DeliveryPostOfficeReview.Approve;
+                    postOffice.OrderStatus = (int)OrderStatus.Exist;
                     order.PaymentStatus = (int)PaymentStatus.Approve;
 
                     // Trường hơp không có order và mã vận đơn của hệ thống khác với bưu điện
                     if (postOffice.OrderID == 0)
                     {
                         postOffice.OrderID = orderID;
+                        postOffice.OrderCOD = Convert.ToDecimal(order.TotalPrice);
+                        if (order.RefundsGoodsID != 0)
+                        {
+                            var refund = con.tbl_RefundGoods.Where(x => x.ID == order.RefundsGoodsID).FirstOrDefault();
+                            if (refund != null)
+                            {
+                                postOffice.OrderCOD = postOffice.OrderCOD - Convert.ToDecimal(refund.TotalPrice);
+                            }
+                        }
+                        postOffice.Fee = Convert.ToDecimal(order.FeeShipping);
                         order.ShippingCode = postOffice.NumberID;
                     }
-
                     con.SaveChanges();
+
+                    return "success";
+                }
+                else if(order == null)
+                {
+                    return "notfoundOrder";
                 }
             }
+
+            return "false";
         }
 
         public static void cancel(int postOfficeID)

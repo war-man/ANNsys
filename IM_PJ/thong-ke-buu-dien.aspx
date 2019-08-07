@@ -310,13 +310,18 @@
                 $.ajax({
                     type: "POST",
                     url: "/thong-ke-buu-dien.aspx/approve",
-                    data: JSON.stringify({ 'postOfficeID': postOfficeID, 'orderID': orderID }),
+                    data: JSON.stringify({ 'postOfficeID': postOfficeID, 'orderID': orderID.trim() }),
                     contentType: "application/json; charset=utf-8",
                     dataType: "json",
-                    success: respon => {
-                        let handleButton = $("tr[data-id='" + postOfficeID + "'").find(".handle-button");
-                        handleButton.html("<span class='bg-blue-hoki'>Đã duyệt</span>");
-                        swal("Thông báo", "Đơn vận chuyển bưu điện đã duyệt", "success");
+                    success: (response) => {
+                        if (response == "success") {
+                            let handleButton = $("tr[data-id='" + postOfficeID + "'").find(".handle-button");
+                            handleButton.append("<span class='bg-blue-hoki'>Đã duyệt</span>");
+                            swal("Thông báo", "Đơn vận chuyển bưu điện đã duyệt", "success");
+                        }
+                        else if (response == "notfoundOrder") {
+                            swal("Thông báo", "Không tìm thấy đơn hàng " + orderID, "error");
+                        }
                     },
                     error: (xmlhttprequest, textstatus, errorthrow) => {
                         swal("Thông báo", "Đã xảy ra lỗi trong quá trình duyệt đơn vận chuyển bưu điện", "error");

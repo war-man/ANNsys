@@ -506,6 +506,11 @@ namespace IM_PJ
                     hdfRoleID.Value = acc.RoleID.ToString();
 
                     #endregion
+                    if (excuteStatus == 2 && paymentStatus == 4)
+                    {
+                        ListItem listitem = new ListItem("Đã duyệt", "4");
+                        ddlPaymentStatus.Items.Insert(3, listitem);
+                    }
                     ddlPaymentStatus.SelectedValue = paymentStatus.ToString();
                     ddlExcuteStatus.SelectedValue = excuteStatus.ToString();
                     ddlPaymentType.SelectedValue = paymenttype.ToString();
