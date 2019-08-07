@@ -41,6 +41,28 @@ namespace IM_PJ.Controllers
             }
         }
 
+        public static RegisterProduct Update(RegisterProduct item)
+        {
+            using (var con = new inventorymanagementEntities())
+            {
+                var register = con.RegisterProducts.Where(x => x.ID == item.ID).FirstOrDefault();
+
+                if (register != null)
+                {
+                    register.Customer = item.Customer;
+                    register.Status = item.Status;
+                    register.Quantity = item.Quantity;
+                    register.ExpectedDate = item.ExpectedDate;
+                    register.Note = item.Note;
+                    register.ModifiedBy = item.ModifiedBy;
+                    register.ModifiedDate = item.ModifiedDate;
+                    con.SaveChanges();
+                }
+
+                return register;
+            }
+        }
+
         public static void Update(List<RegisterProductSession> data, tbl_Account acc)
         {
             using (var con = new inventorymanagementEntities())
@@ -61,6 +83,20 @@ namespace IM_PJ.Controllers
                         register.ModifiedDate = DateTime.Now;
                         con.SaveChanges();
                     }
+                }
+            }
+        }
+
+        public static void Delete(int registerID)
+        {
+            using (var con = new inventorymanagementEntities())
+            {
+                var register = con.RegisterProducts.Where(x => x.ID == registerID).FirstOrDefault();
+
+                if (register != null)
+                {
+                    con.RegisterProducts.Remove(register);
+                    con.SaveChanges();
                 }
             }
         }

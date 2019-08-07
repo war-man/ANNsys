@@ -64,46 +64,61 @@ namespace IM_PJ
             string username = Request.Cookies["loginHiddenPage"].Value;
             var acc = AccountController.GetByUsername(username);
 
-            string TextSearch = "";
-            string CreatedDate = "";
+            DateTime DateConfig = new DateTime(2019, 2, 15);
+
+            var config = ConfigController.GetByTop1();
+            if (config.ViewAllOrders == 1)
+            {
+                DateConfig = new DateTime(2018, 6, 22);
+            }
+
+            DateTime fromDate = DateConfig;
+            DateTime toDate = DateTime.Now;
+
+            if (!String.IsNullOrEmpty(Request.QueryString["orderfromdate"]))
+            {
+                fromDate = Convert.ToDateTime(Request.QueryString["orderfromdate"]);
+            }
+
+            if (!String.IsNullOrEmpty(Request.QueryString["ordertodate"]))
+            {
+                toDate = Convert.ToDateTime(Request.QueryString["ordertodate"]).AddDays(1).AddMinutes(-1);
+            }
+
+            rFromDate.SelectedDate = fromDate;
+            rFromDate.MinDate = DateConfig;
+            rFromDate.MaxDate = DateTime.Now;
+
+            rToDate.SelectedDate = toDate;
+            rToDate.MinDate = DateConfig;
+            rToDate.MaxDate = DateTime.Now;
+
+            string textSearch = "";
             int CategoryID = 0;
-            int StockStatus = 0;
-            string strColor = String.Empty;
-            string strSize = String.Empty;
+            int registerStatus = 0;
             int Page = 1;
 
             if (Request.QueryString["textsearch"] != null)
-                TextSearch = Request.QueryString["textsearch"].Trim();
-            if (Request.QueryString["stockstatus"] != null)
-                StockStatus = Request.QueryString["stockstatus"].ToInt();
+                textSearch = Request.QueryString["textsearch"].Trim();
             if (Request.QueryString["categoryid"] != null)
                 CategoryID = Request.QueryString["categoryid"].ToInt();
-            if (Request.QueryString["createddate"] != null)
-                CreatedDate = Request.QueryString["createddate"];
-            if (Request.QueryString["color"] != null)
-                strColor = Request.QueryString["color"].Trim();
-            if (Request.QueryString["size"] != null)
-                strSize = Request.QueryString["size"].Trim();
+            if (Request.QueryString["registerstatus"] != null)
+                registerStatus = Request.QueryString["registerstatus"].ToInt(0);
             if (Request.QueryString["Page"] != null)
                 Page = Request.QueryString["Page"].ToInt();
 
-            txtSearchProduct.Text = TextSearch;
-            ddlColor.SelectedValue = strColor;
-            ddlSize.SelectedValue = strSize;
+            txtSearchProduct.Text = textSearch;
             ddlCategory.SelectedValue = CategoryID.ToString();
-            ddlCreatedDate.SelectedValue = CreatedDate.ToString();
-            ddlStockStatus.SelectedValue = StockStatus.ToString();
+            ddlRegisterStatus.SelectedValue = registerStatus.ToString();
 
             // Create order fileter
-            var filter = new ProductFilterModel()
+            var filter = new RegisterProductFilterModel()
             {
-                category = CategoryID,
-                search = UnSign.convert(TextSearch),
-                color = strColor,
-                size = strSize,
-                stockStatus = StockStatus,
-                productDate = CreatedDate,
-                createdBy = acc.ID
+                search = textSearch,
+                status = registerStatus,
+                createdBy = acc.Username,
+                fromDate = fromDate,
+                toDate = toDate
             };
             // Create pagination
             var page = new PaginationMetadataModel()
@@ -111,15 +126,15 @@ namespace IM_PJ
                 currentPage = Page,
                 pageSize = 30
             };
-            List<Product> a = new List<Product>();
-            a = ProductController.GetAllProduct(filter, ref page);
+            List<RegisterProductList> rs = new List<RegisterProductList>();
+            rs = RegisterProductController.Filter(filter, ref page);
 
-            pagingall(a, page);
+            pagingall(rs, page);
 
         }
         [WebMethod]
         #region Paging
-        public void pagingall(List<Product> acs, PaginationMetadataModel page)
+        public void pagingall(List<RegisterProductList> acs, PaginationMetadataModel page)
         {
             StringBuilder html = new StringBuilder();
             html.AppendLine("<div class='row'>");
@@ -132,8 +147,15 @@ namespace IM_PJ
 
                 foreach (var item in acs)
                 {
-                    item.content = String.Empty;
-                    html.AppendLine("<div class='col-md-12 item-" + index + " product-item'>");
+                    html.AppendLine("<div id='" + item.id+ "' class='col-md-12 item-" + index + " product-item'");
+                    html.AppendLine("    data-id='" + item.id + "'");
+                    html.AppendLine("    data-customer='" + item.customer + "'");
+                    html.AppendLine("    data-status='" + item.status + "'");
+                    html.AppendLine("    data-color='" + item.color + "'");
+                    html.AppendLine("    data-size='" + item.size + "'");
+                    html.AppendLine("    data-quantity='" + item.quantity + "'");
+                    html.AppendLine("    data-note='" + item.note + "'");
+                    html.AppendLine(">");
                     html.AppendLine("    <div class='row'>");
                     html.AppendLine("        <div class='col-xs-12'>");
                     html.AppendLine("            <h3 class='product-name'><a href='/xem-sp?id=" + item.productID + "'>" + item.sku + " - " + item.title + "</a></h3>");
@@ -143,33 +165,62 @@ namespace IM_PJ
                     html.AppendLine("        <div class='col-xs-4'>");
                     html.AppendLine("            <p><a href='/xem-sp?id=" + item.productID + "'><img src='" + Thumbnail.getURL(item.image, Thumbnail.Size.Large) + "'></a></p>");
                     html.AppendLine("        </div>");
-                    html.AppendLine("        <div class='col-xs-3'>");
-                    html.AppendLine("            <h3 class='product-price'>" + string.Format("{0:N0}", item.regularPrice) + "</h3>");
-                    html.AppendLine("        </div>");
-
-                    html.AppendLine("        <div class='col-xs-3'>");
+                    html.AppendLine("        <div class='col-xs-8'>");
+                    html.AppendLine("            <div class='col-xs-12'>");
+                    html.AppendLine("                <h3 class='customer'>" + item.customer + "</h3>");
+                    html.AppendLine("            </div>");
+                    html.AppendLine("            <div class='col-xs-12'>");
                     if (!string.IsNullOrEmpty(item.color))
                     {
-                        html.AppendLine("            <p>" + item.color + "</p>");
+                        html.AppendLine("                <p>Màu: " + item.color + "</p>");
                     }
-                    html.AppendLine("        </div>");
+                    html.AppendLine("            </div>");
 
-                    html.AppendLine("        <div class='col-xs-2'>");
+                    html.AppendLine("            <div class='col-xs-12'>");
                     if (!string.IsNullOrEmpty(item.size))
                     {
-                        html.AppendLine("            <p>" + item.size + "</p>");
+                        html.AppendLine("                <p>Size: " + item.size + "</p>");
                     }
+                    html.AppendLine("            </div>");
+                    html.AppendLine("            <div class='col-xs-12'>");
+                    html.AppendLine("                <h3 class='quantity'>Số lượng: " + String.Format("{0:#,###}", item.quantity) + "</h3>");
+                    html.AppendLine("            </div>");
+                    html.AppendLine("            <div class='col-xs-3'>");
+                    html.AppendLine("                <h3 class='status'>");
+                    switch (item.status)
+                    {
+                        case (int)RegisterProductStatus.Approve:
+                            html.AppendLine("                    <span class='bg-green'>" + item.statusName + "</span>");
+                            break;
+                        case (int)RegisterProductStatus.Ordering:
+                            html.AppendLine("                    <span class='bg-yellow'>" + item.statusName + "</span>");
+                            break;
+                        case (int)RegisterProductStatus.Done:
+                            html.AppendLine("                    <span class='bg-blue'>" + item.statusName + "</span>");
+                            break;
+                        default:
+                            html.AppendLine("                    <span class='bg-red'>" + item.statusName + "</span>");
+                            break;
+                    }
+                    html.AppendLine("                </h3>");
+                    html.AppendLine("            </div>");
                     html.AppendLine("        </div>");
-
                     html.AppendLine("    </div>");
-                    html.AppendLine("    <div class='row'>");
-                    html.AppendLine("         <div class='col-xs-12'>");
-                    html.AppendLine("              <div class='col-xs-6'>");
-                    html.AppendLine("                   <div class='row'>");
-                    html.AppendLine("                      <a href='javascript:;' class='btn primary-btn copy-btn h45-btn' onclick='openRegister(" + JsonConvert.SerializeObject(item) + ")'><i class='fa fa-cart-plus' aria-hidden='true'></i> Đăng ký</a>");
-                    html.AppendLine("                   </div>");
-                    html.AppendLine("              </div>");
-                    html.AppendLine("         </div>");
+                    html.AppendLine("    <div class='row btn-handle'>");
+                    html.AppendLine("          <div class='col-xs-4'>");
+                    html.AppendLine("              <a href='javascript:;' class='btn primary-btn remove-btn h45-btn' onclick='removeRegister(" + item.id + ")'>");
+                    html.AppendLine("                  <i class='glyphicon glyphicon-trash' aria-hidden='true'></i> Hủy</a>");
+                    html.AppendLine("              </a>");
+                    html.AppendLine("          </div>");
+                    if(item.status == (int)RegisterProductStatus.NoApprove)
+                    {
+                        html.AppendLine("          <div class='col-xs-2'></div>");
+                        html.AppendLine("          <div class='col-xs-4'>");
+                        html.AppendLine("              <a href='javascript:;' class='btn primary-btn h45-btn' onclick='openRegister(" + item.id + ")'>");
+                        html.AppendLine("                  <i class='glyphicon glyphicon-edit' aria-hidden='true'></i> Chỉnh sửa</a>");
+                        html.AppendLine("              </a>");
+                        html.AppendLine("          </div>");
+                    }
                     html.AppendLine("    </div>");
                     html.AppendLine("</div>");
 
@@ -314,25 +365,11 @@ namespace IM_PJ
         protected void btnSearch_Click(object sender, EventArgs e)
         {
             string search = txtSearchProduct.Text;
-            string request = "/dang-ky-nhap-hang?";
+            string request = "/nhan-vien-dat-hang?";
 
-            if (search != "")
+            if (!String.IsNullOrEmpty(search))
             {
                 request += "&textsearch=" + search;
-            }
-
-            if (!String.IsNullOrEmpty(ddlColor.SelectedValue))
-            {
-                request += "&color=" + ddlColor.SelectedValue;
-            }
-            if (!String.IsNullOrEmpty(ddlSize.SelectedValue))
-            {
-                request += "&size=" + ddlSize.SelectedValue;
-            }
-
-            if (ddlStockStatus.SelectedValue != "")
-            {
-                request += "&stockstatus=" + ddlStockStatus.SelectedValue;
             }
 
             if (ddlCategory.SelectedValue != "0")
@@ -340,27 +377,40 @@ namespace IM_PJ
                 request += "&categoryid=" + ddlCategory.SelectedValue;
             }
 
-            if (ddlCreatedDate.SelectedValue != "")
+            // Register Status
+            if (ddlRegisterStatus.SelectedValue != "0")
+                request += "&registerstatus=" + ddlRegisterStatus.SelectedValue;
+
+            // Created Date
+            if (rFromDate.SelectedDate.HasValue)
             {
-                request += "&createddate=" + ddlCreatedDate.SelectedValue;
+                request += "&orderfromdate=" + rFromDate.SelectedDate.ToString();
+            }
+            if (rToDate.SelectedDate.HasValue)
+            {
+                request += "&ordertodate=" + rToDate.SelectedDate.ToString();
             }
 
             Response.Redirect(request);
         }
 
         [WebMethod]
-        public static void registerProduct(Models.RegisterProduct item)
+        public static void updateRegister(Models.RegisterProduct item)
         {
             string username = HttpContext.Current.Request.Cookies["loginHiddenPage"].Value;
             var acc = AccountController.GetByUsername(username);
             var now = DateTime.Now;
 
-            item.CreatedBy = acc.ID;
-            item.CreatedDate = now;
             item.ModifiedBy = acc.ID;
             item.ModifiedDate = now;
 
-            RegisterProductController.Inster(item);
+            RegisterProductController.Update(item);
+        }
+
+        [WebMethod]
+        public static void removeRegister(int registerID)
+        {
+            RegisterProductController.Delete(registerID);
         }
     }
 }
