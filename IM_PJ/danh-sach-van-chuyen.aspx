@@ -229,9 +229,7 @@
                                     </a>
                                 </div>
                                 <div class="col-md-2 col-xs-4">
-                                    <a id="doneDelivery" href="javascript:;" class="btn primary-btn fw-btn width-100" onclick="changeDoneDelivery()">
-                                        <i class="fa fa-check" aria-hidden="true"></i> Cập nhật đã giao
-                                    </a>
+                                    <asp:Literal ID="ltrBtnDoneDelivery" runat="server" EnableViewState="false"></asp:Literal>
                                 </div>
                             </div>
                         </div>

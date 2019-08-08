@@ -254,6 +254,12 @@ namespace IM_PJ
                 pagingall(rs, page);
 
                 ltrNumberOfOrder.Text = page.totalCount.ToString();
+
+                if (acc.RoleID == 0)
+                {
+                    ltrBtnDoneDelivery.Text = "<a id='doneDelivery' href='javascript:;' class='btn primary-btn fw-btn width-100' onclick='changeDoneDelivery()'><i class='fa fa-check' aria-hidden='true'></i> Cập nhật đã giao</a>";
+                }
+                
             }
         }
 
@@ -374,7 +380,12 @@ namespace IM_PJ
                     html.Append("   <td data-title='Hoàn tất đơn'>" + datedone + "</td>");
                     html.Append("   <td data-title='Nhân viên tạo đơn'>" + item.CreatedBy + "</td>");
                     html.Append("   <td data-title='Thao tác' class='update-button' id='updateButton'>");
-                    html.Append("       <button type='button' class='btn primary-btn h45-btn' data-toggle='modal' data-target='#TransferBankModal' data-backdrop='static' data-keyboard='false' title='Cập nhật thông tin chuyển khoản'><span class='glyphicon glyphicon-edit'></span></button>");
+
+                    if (acc.RoleID == 0)
+                    {
+                        html.Append("       <button type='button' class='btn primary-btn h45-btn' data-toggle='modal' data-target='#TransferBankModal' data-backdrop='static' data-keyboard='false' title='Cập nhật thông tin chuyển khoản'><span class='glyphicon glyphicon-edit'></span></button>");
+                    }
+                    
                     if (item.DeliveryStatus == 1 && !string.IsNullOrEmpty(item.InvoiceImage))
                     {
                         html.Append("       <a id='downloadInvoiceImage' href='javascript:;' onclick='openImageInvoice($(this))' data-link='" + item.InvoiceImage + "' title='Biên nhận gửi hàng' class='btn primary-btn btn-blue h45-btn'><i class='fa fa-file-text-o' aria-hidden='true'></i></a>");
