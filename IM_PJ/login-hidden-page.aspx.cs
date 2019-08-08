@@ -29,17 +29,17 @@ namespace IM_PJ
 
             var p = ConfigController.GetByTop1();
             var acc = AccountController.GetByUsername(username);
-            //if (password == p.SecurityCode && acc != null)
-            //{
+            if (password == p.SecurityCode && acc != null)
+            {
                 Response.Cookies["loginHiddenPage"].Value = username;
                 Response.Cookies["loginHiddenPage"].Expires = DateTime.Now.AddDays(90);
                 Response.Redirect("/sp");
-            //}
-            //else
-            //{
-            //    lblError.Text = "Sai thông tin đăng nhập!";
-            //    lblError.Visible = true;
-            //}
+            }
+            else
+            {
+                lblError.Text = "Sai thông tin đăng nhập!";
+                lblError.Visible = true;
+            }
         }
     }
 }

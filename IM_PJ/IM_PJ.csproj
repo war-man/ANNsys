@@ -455,12 +455,14 @@
     <Content Include="App_Themes\NewUI\js\waves\waves.min.js" />
     <Content Include="bao-cao.aspx" />
     <Content Include="bv.aspx" />
+    <Content Include="chuyen-ke.aspx" />
     <Content Include="Content\bootstrap-datetimepicker.css" />
     <Content Include="Content\bootstrap-datetimepicker.min.css" />
     <Content Include="Content\bootstrap-theme.css" />
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="kiem-ke.aspx" />
     <Content Include="Models\IMModel.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>IMModel.edmx</DependentUpon>
@@ -471,6 +473,7 @@
       <DependentUpon>IMModel.edmx</DependentUpon>
       <LastGenOutput>IMModel.cs</LastGenOutput>
     </Content>
+    <Content Include="san-pham-theo-ke.aspx" />
     <Content Include="thong-ke-proship.aspx" />
     <Content Include="thong-ke-buu-dien.aspx" />
     <Content Include="nhan-vien-dat-hang.aspx" />
@@ -848,7 +851,15 @@
     <Compile Include="bao-cao.aspx.designer.cs">
       <DependentUpon>bao-cao.aspx</DependentUpon>
     </Compile>
+    <Compile Include="chuyen-ke.aspx.cs">
+      <DependentUpon>chuyen-ke.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="chuyen-ke.aspx.designer.cs">
+      <DependentUpon>chuyen-ke.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Controllers\CategoryController.cs" />
+    <Compile Include="Controllers\CategoryShelfController.cs" />
     <Compile Include="Controllers\DeliveryProshipController.cs" />
     <Compile Include="Controllers\DeliveryPostOfficeController.cs" />
     <Compile Include="Controllers\RegisterController.cs" />
@@ -864,6 +875,13 @@
     <Compile Include="Controllers\RegisterProductController.cs" />
     <Compile Include="Controllers\SessionController.cs" />
     <Compile Include="Controllers\ShipperController.cs" />
+    <Compile Include="kiem-ke.aspx.cs">
+      <DependentUpon>kiem-ke.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="kiem-ke.aspx.designer.cs">
+      <DependentUpon>kiem-ke.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Models\Bank.cs">
       <DependentUpon>IMModel.tt</DependentUpon>
     </Compile>
@@ -871,6 +889,9 @@
       <DependentUpon>IMModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\BankTransfer.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\CategoryShelf.cs">
       <DependentUpon>IMModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Common\DeliveryProshipFilterModel.cs" />
@@ -912,6 +933,9 @@
       <DependentUpon>IMModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Session.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\ShelfManager.cs">
       <DependentUpon>IMModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Shipper.cs">
@@ -1036,6 +1060,13 @@
     </Compile>
     <Compile Include="Models\tbl_WhiteDomain.cs">
       <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="san-pham-theo-ke.aspx.cs">
+      <DependentUpon>san-pham-theo-ke.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="san-pham-theo-ke.aspx.designer.cs">
+      <DependentUpon>san-pham-theo-ke.aspx</DependentUpon>
     </Compile>
     <Compile Include="thong-ke-proship.aspx.cs">
       <DependentUpon>thong-ke-proship.aspx</DependentUpon>

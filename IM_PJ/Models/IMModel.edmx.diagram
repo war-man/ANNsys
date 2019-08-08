@@ -57,6 +57,8 @@
         <EntityTypeShape EntityType="inventorymanagementModel.tbl_Variable" Width="1.5" PointX="22.75" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="inventorymanagementModel.tbl_VariableValue" Width="1.5" PointX="2.75" PointY="22.75" IsExpanded="true" />
         <EntityTypeShape EntityType="inventorymanagementModel.tbl_WhiteDomain" Width="1.5" PointX="22.75" PointY="4.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="inventorymanagementModel.CategoryShelf" Width="1.5" PointX="17.375" PointY="22.75" />
+        <EntityTypeShape EntityType="inventorymanagementModel.ShelfManager" Width="1.5" PointX="23.375" PointY="8.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
