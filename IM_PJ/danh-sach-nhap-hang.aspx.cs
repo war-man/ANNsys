@@ -242,7 +242,12 @@ namespace IM_PJ
                     html.AppendLine("   <td data-title='Ngày đặt'>" + String.Format("{0:dd/MM}", item.createdDate) + "</td>");
                     html.AppendLine("   <td id='expectedDate' data-title='Ngày về dự kiến'>" + String.Format("{0:dd/MM}", item.expectedDate) + "</td>");
                     html.AppendLine("   <td data-title='Thao tác' class='update-button' id='updateButton'>");
-                    html.AppendLine("       <button type='button' class='btn primary-btn h45-btn' data-toggle='modal' data-target='#RegisterProductModal' data-backdrop='static' data-keyboard='false' title='Cập nhật thông yêu cầu nhập hàng'><span class='glyphicon glyphicon-edit'></span></button>");
+                    html.AppendLine("       <button type='button' class='btn primary-btn h45-btn' data-toggle='modal' data-target='#RegisterProductModal' data-backdrop='static' data-keyboard='false' title='Cập nhật thông yêu cầu nhập hàng'>");
+                    html.AppendLine("           <span class='glyphicon glyphicon-edit'></span>");
+                    html.AppendLine("       </button>");
+                    html.AppendLine("       <button type='button' class='btn primary-btn remove-btn h45-btn' title='Hủy yêu cầu nhập hàng' onclick='removeRegister(" + item.id + ")'>");
+                    html.AppendLine("           <span class='glyphicon glyphicon-trash'></span>");
+                    html.AppendLine("       </button>");
                     html.AppendLine("   </td>");
                     html.AppendLine("</tr>");
                 }
@@ -451,6 +456,12 @@ namespace IM_PJ
             var username = HttpContext.Current.Request.Cookies["usernameLoginSystem"].Value;
             var acc = AccountController.GetByUsername(username);
             SessionController.deleteRegisterProductSession(acc);
+        }
+
+        [WebMethod]
+        public static void removeRegister(int registerID)
+        {
+            RegisterProductController.Delete(registerID);
         }
     }
 }

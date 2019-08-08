@@ -28,6 +28,10 @@
         .select2-container--default .select2-selection--single .select2-selection__arrow {
             height: 43px;
         }
+        .btn.remove-btn {
+            background-color: #FF675B;
+            color: #fff;
+        }
         @media (max-width: 768px) {
             table.shop_table_responsive thead {
                 display: none;
@@ -822,6 +826,36 @@
                 $("#filterChoosed").html(
                         "<i class='fa fa-inbox' aria-hidden='true'></i> Đã chọn " + text
                     );
+            }
+
+            function removeRegister(registerID) {
+                swal({
+                    title: "Hủy",
+                    text: "Bạn muốn hủy yêu cầu nhập hàng?",
+                    showCancelButton: true,
+                    closeOnConfirm: true,
+                    cancelButtonText: "Không",
+                    confirmButtonText: "Đúng",
+                }, function (confirm) {
+                    if (confirm) {
+                        // Truyền dữ liệu xuống server
+                        $.ajax({
+                            type: "POST",
+                            url: "/nhan-vien-dat-hang.aspx/removeRegister",
+                            data: JSON.stringify({ 'registerID': registerID }),
+                            contentType: "application/json; charset=utf-8",
+                            dataType: "json",
+                            success: (response) => {
+                                let strHTML = "<span class='bg-red' style='text-align: center'>Đã hủy</span>"
+                                $("tr[data-registerid='" + registerID + "'").find(".update-button").html(strHTML);
+                            },
+                            error: (xmlhttprequest, textstatus, errorthrow) => {
+                                alert("Có lỗi trong quá trình đang ký nhập hàng");
+                            }
+                        })
+                    }
+                });
+
             }
 
             // Xử lý format số lượng
