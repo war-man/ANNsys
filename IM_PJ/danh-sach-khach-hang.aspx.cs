@@ -250,7 +250,7 @@ namespace IM_PJ
                     }
 
                     html.Append("   <td>");
-                    html.Append("       <a href=\"/danh-sach-don-hang?textsearch=" + item.CustomerPhone + "\" title=\"Xem đơn hàng\" class=\"btn primary-btn h45-btn\"><i class=\"fa fa-shopping-cart\" aria-hidden=\"true\"></i></a>");
+                    html.Append("       <a href=\"/danh-sach-don-hang?searchtype=1&textsearch=" + item.CustomerPhone + "\" title=\"Xem đơn hàng\" class=\"btn primary-btn h45-btn\"><i class=\"fa fa-shopping-cart\" aria-hidden=\"true\"></i></a>");
                     html.Append("   </td>");
                     html.Append("</tr>");
                 }

@@ -105,7 +105,7 @@ namespace IM_PJ
             var page = new PaginationMetadataModel()
             {
                 currentPage = Page,
-                pageSize = 28
+                pageSize = 24
             };
             List<Product> a = new List<Product>();
             a = ProductController.GetAllProduct(filter, ref page);
@@ -162,7 +162,7 @@ namespace IM_PJ
                     html.AppendLine("         <div class='col-xs-12'>");
                     html.AppendLine("              <div class='col-xs-6'>");
                     html.AppendLine("                   <div class='row'>");
-                    html.AppendLine("                      <a href='javascript:;' class='btn primary-btn copy-btn h45-btn' onclick='openRegister(" + JsonConvert.SerializeObject(item) + ")'><i class='fa fa-cart-plus' aria-hidden='true'></i> Đăng ký</a>");
+                    html.AppendLine("                      <a href='javascript:;' class='btn primary-btn copy-btn h45-btn download-btn' onclick='openRegister(" + JsonConvert.SerializeObject(item) + ")'><i class='fa fa-cart-plus' aria-hidden='true'></i> Order</a>");
                     html.AppendLine("                   </div>");
                     html.AppendLine("              </div>");
                     html.AppendLine("         </div>");

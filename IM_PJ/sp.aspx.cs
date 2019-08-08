@@ -107,7 +107,7 @@ namespace IM_PJ
             var page = new PaginationMetadataModel()
             {
                 currentPage = Page,
-                pageSize = 20
+                pageSize = 24
             };
             List<ProductSQL> a = new List<ProductSQL>();
             a = ProductController.GetAllSql(filter, ref page);
@@ -120,11 +120,11 @@ namespace IM_PJ
         public void pagingall(List<ProductSQL> acs, PaginationMetadataModel page)
         {
             var config = ConfigController.GetByTop1();
-            string cssClass = "col-xs-6";
-            if(config.HideProduct == 1)
-            {
-                cssClass = "col-xs-4";
-            }
+            string cssClass = "col-xs-4";
+            //if(config.HideProduct == 1)
+            //{
+            //    cssClass = "col-xs-4";
+            //}
 
             StringBuilder html = new StringBuilder();
             html.Append("<div class='row'>");
@@ -142,7 +142,7 @@ namespace IM_PJ
                     html.Append("     <div class='col-xs-12'>");
                     html.Append("   <p><a href='/xem-sp?id=" + item.ID + "'><img src='" + Thumbnail.getURL(item.ProductImage, Thumbnail.Size.Large) + "'></a></p>");
                     html.Append("   <h3 class='product-name'><a href='/xem-sp?id=" + item.ID + "'>" + item.ProductSKU + " - " + item.ProductTitle + "</a></h3>");
-                    html.Append("   <h3 class='product-price'>📌 " + string.Format("{0:N0}", item.RegularPrice) + "</h3>");
+                    html.Append("   <h3 class='product-price'>" + string.Format("{0:N0}", item.RegularPrice) + "</h3>");
 
                     if (!string.IsNullOrEmpty(item.Materials))
                     {
@@ -170,18 +170,22 @@ namespace IM_PJ
                     html.Append("          </div>");
                     html.Append("          <div class='" + cssClass + "'>");
                     html.Append("               <div class='row'>");
-                    html.Append("                  <a href ='javascript:;' class='btn primary-btn h45-btn' onclick='getAllProductImage(\"" + item.ProductSKU + "\");'><i class='fa fa-cloud-download' aria-hidden='true'></i> Tải hình</a>");
+                    html.Append("                  <a href ='javascript:;' class='btn primary-btn h45-btn' onclick='getAllProductImage(\"" + item.ProductSKU + "\");'><i class='fa fa-cloud-download' aria-hidden='true'></i> Tải</a>");
                     html.Append("               </div>");
                     html.Append("          </div>");
-
-                    if (config.HideProduct == 1)
-                    {
-                        html.Append("          <div class='col-xs-4'>");
-                        html.Append("               <div class='row'>");
-                        html.Append("                  <a href ='javascript:;' class='btn primary-btn h45-btn hidden-" + item.ID + " download-btn' onclick='ShowUpProductToWeb('" + item.ProductSKU + "', '" + item.ID + "', '" + item.CategoryID + "', 'false', 'false', 'hidden');'><i class='fa fa-times' aria-hidden='true'></i> Ẩn</a>");
-                        html.Append("               </div>");
-                        html.Append("          </div>");
-                    }
+                    html.Append("          <div class='" + cssClass + "'>");
+                    html.Append("               <div class='row'>");
+                    html.Append("                  <a target='_blank' href='/dang-ky-nhap-hang?&textsearch=" + item.ProductSKU + "' class='btn primary-btn h45-btn download-btn'><i class='fa fa-cart-plus' aria-hidden='true'></i> Order</a>");
+                    html.Append("               </div>");
+                    html.Append("          </div>");
+                    //if (config.HideProduct == 1)
+                    //{
+                    //    html.Append("          <div class='col-xs-4'>");
+                    //    html.Append("               <div class='row'>");
+                    //    html.Append("                  <a href ='javascript:;' class='btn primary-btn h45-btn hidden-" + item.ID + " download-btn' onclick='ShowUpProductToWeb('" + item.ProductSKU + "', '" + item.ID + "', '" + item.CategoryID + "', 'false', 'false', 'hidden');'><i class='fa fa-times' aria-hidden='true'></i> Ẩn</a>");
+                    //    html.Append("               </div>");
+                    //    html.Append("          </div>");
+                    //}
 
                     html.Append("     </div>");
                     html.Append("</div>");

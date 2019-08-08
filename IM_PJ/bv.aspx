@@ -13,6 +13,57 @@
     <link href="/App_Themes/NewUI/js/select2/select2.css" rel="stylesheet" />
     <script type="text/javascript" src="/App_Themes/Ann/js/jquery-2.1.3.min.js"></script>
     <style>
+        .select2-container {
+            box-sizing: border-box;
+            display: inline-block;
+            margin: 0;
+            position: relative;
+            vertical-align: middle;
+            max-width: 100%;
+        }
+        .select2-container .select2-selection--single {
+            height: 45px;
+            box-sizing: border-box;
+            cursor: pointer;
+            display: block;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+        .select2-container--default .select2-selection--single {
+            background-color: #fff;
+            border: solid 1px #e1e1e1;
+        }
+        .select2-container--default .select2-selection--single .select2-selection__rendered {
+            line-height: 45px;
+            padding-left: 15px;
+            color: #444;
+        }
+        .select2-container .select2-selection--single .select2-selection__rendered {
+            display: block;
+            padding-right: 20px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .select2-container--default .select2-selection--single .select2-selection__arrow {
+            height: 43px;
+            position: absolute;
+            top: 1px;
+            right: 10px;
+            width: 20px;
+        }
+        .select2-container--default .select2-selection--single .select2-selection__arrow b {
+            border-color: #000 transparent transparent transparent;
+            border-style: solid;
+            border-width: 5px 4px 0 4px;
+            height: 0;
+            left: 50%;
+            margin-left: -4px;
+            margin-top: -2px;
+            position: absolute;
+            top: 50%;
+            width: 0;
+        }
         .panel-table .panel-footer {
             padding: 5px 0;
         }
@@ -43,17 +94,18 @@
         .btn.btn-post {
             background-color: #009688;
         }
+        .btn.btn-order {
+            background-color: #000;
+        }
         .btn.download-btn {
             background-color: #000;
             color: #fff;
             border-radius: 0;
-            font-size: 16px;
-            text-transform: uppercase;
+            font-size: 14px;
         }
         .btn.primary-btn {
             border-radius: 0;
-            font-size: 16px;
-            text-transform: uppercase;
+            font-size: 14px;
         }
         .btn.copy-btn {
             background-color: #E91E63;
@@ -79,6 +131,9 @@
             font-size: 20px;
             color: #ff0023;
         }
+        .bg-green, .bg-red, .bg-yellow {
+            display: initial;
+        }
     </style>
 </head>
 <body>
@@ -89,14 +144,19 @@
             <main>
                 <div class="container">
                     <div class="row">
-                        <div class="col-xs-6">
+                        <div class="col-xs-4">
                             <div class="row">
                                 <a href="/sp" class="btn primary-btn h45-btn btn-product"><i class="fa fa-sign-in" aria-hidden="true"></i> Sản phẩm</a>
                             </div>
                         </div>
-                        <div class="col-xs-6">
+                        <div class="col-xs-4">
                             <div class="row">
                                 <a href="/bv" class="btn primary-btn h45-btn btn-post"><i class="fa fa-sign-in" aria-hidden="true"></i> Bài viết</a>
+                            </div>
+                        </div>
+                        <div class="col-xs-4">
+                            <div class="row">
+                                <a href="/dang-ky-nhap-hang" class="btn primary-btn h45-btn btn-order"><i class="fa fa-cart-plus" aria-hidden="true"></i> Nhập hàng</a>
                             </div>
                         </div>
                     </div>

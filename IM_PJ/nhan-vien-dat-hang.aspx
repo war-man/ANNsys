@@ -4,7 +4,7 @@
 <!DOCTYPE html>
 <html>
 <head runat="server">
-    <title>Đăng ký nhập hàng</title>
+    <title>Nhân viên đặt hàng</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=yes">
     <meta name="format-detection" content="telephone=no">
@@ -22,27 +22,23 @@
             vertical-align: middle;
             max-width: 100%;
         }
-
-            .select2-container .select2-selection--single {
-                height: 45px;
-                box-sizing: border-box;
-                cursor: pointer;
-                display: block;
-                user-select: none;
-                -webkit-user-select: none;
-            }
-
+        .select2-container .select2-selection--single {
+            height: 45px;
+            box-sizing: border-box;
+            cursor: pointer;
+            display: block;
+            user-select: none;
+            -webkit-user-select: none;
+        }
         .select2-container--default .select2-selection--single {
             background-color: #fff;
             border: solid 1px #e1e1e1;
         }
-
-            .select2-container--default .select2-selection--single .select2-selection__rendered {
-                line-height: 45px;
-                padding-left: 15px;
-                color: #444;
-            }
-
+        .select2-container--default .select2-selection--single .select2-selection__rendered {
+            line-height: 45px;
+            padding-left: 15px;
+            color: #444;
+        }
         .select2-container .select2-selection--single .select2-selection__rendered {
             display: block;
             padding-right: 20px;
@@ -50,7 +46,6 @@
             text-overflow: ellipsis;
             white-space: nowrap;
         }
-
         .select2-container--default .select2-selection--single .select2-selection__arrow {
             height: 43px;
             position: absolute;
@@ -58,24 +53,21 @@
             right: 10px;
             width: 20px;
         }
-
-            .select2-container--default .select2-selection--single .select2-selection__arrow b {
-                border-color: #000 transparent transparent transparent;
-                border-style: solid;
-                border-width: 5px 4px 0 4px;
-                height: 0;
-                left: 50%;
-                margin-left: -4px;
-                margin-top: -2px;
-                position: absolute;
-                top: 50%;
-                width: 0;
-            }
-
+        .select2-container--default .select2-selection--single .select2-selection__arrow b {
+            border-color: #000 transparent transparent transparent;
+            border-style: solid;
+            border-width: 5px 4px 0 4px;
+            height: 0;
+            left: 50%;
+            margin-left: -4px;
+            margin-top: -2px;
+            position: absolute;
+            top: 50%;
+            width: 0;
+        }
         .panel-table .panel-footer {
             padding: 5px 0;
         }
-
         .pagination li {
             display: inline-block;
             vertical-align: middle;
@@ -86,68 +78,60 @@
             font-size: 15px;
             margin-right: 10px;
         }
-
-            .pagination li a {
-                color: #fff;
-                padding: 8px 11px;
-            }
-
-            .pagination li.current > a, .pagination li:hover > a {
-                color: #000;
-            }
-
+        .pagination li a {
+            color: #fff;
+            padding: 8px 11px;
+        }
+        .pagination li.current > a, .pagination li:hover > a {
+            color: #000;
+        }
+        .btn {
+            width: 100%;
+            margin-bottom: 10px;
+        }
         .btn.btn-product {
             background-color: #F44336;
         }
-
         .btn.btn-post {
             background-color: #009688;
         }
-
+        .btn.btn-order {
+            background-color: #000;
+        }
         .btn.download-btn {
             background-color: #000;
             color: #fff;
             border-radius: 0;
-            font-size: 16px;
-            text-transform: uppercase;
+            font-size: 14px;
         }
-
         .btn.primary-btn {
             border-radius: 0;
-            font-size: 16px;
-            text-transform: uppercase;
+            font-size: 14px;
         }
-
-        .btn.remove-btn {
-            background-color: #FF675B;
+        .btn.copy-btn {
+            background-color: #E91E63;
             color: #fff;
         }
-
         .product-item {
             margin-bottom: 40px;
             background-color: #fff;
             padding: 15px;
         }
-
         h3 {
-            margin-top: 0;
+            margin-top: 10px;
         }
-
         .product-name a {
-            font-size: 14px;
+            font-size: 18px;
             line-height: 1.5;
         }
-
         .product-sku {
             font-size: 18px;
             color: #0289bc;
         }
-
         .product-price {
-            font-size: 14px;
+            font-size: 20px;
             color: #ff0023;
         }
-
         .bg-green, .bg-red, .bg-yellow {
             display: initial;
         }
@@ -161,19 +145,36 @@
             <main>
                 <div class="container">
                     <div class="row">
+                        <div class="col-xs-4">
+                            <div class="row">
+                                <a href="/sp" class="btn primary-btn h45-btn btn-product"><i class="fa fa-sign-in" aria-hidden="true"></i> Sản phẩm</a>
+                            </div>
+                        </div>
+                        <div class="col-xs-4">
+                            <div class="row">
+                                <a href="/bv" class="btn primary-btn h45-btn btn-post"><i class="fa fa-sign-in" aria-hidden="true"></i> Bài viết</a>
+                            </div>
+                        </div>
+                        <div class="col-xs-4">
+                            <div class="row">
+                                <a href="/dang-ky-nhap-hang" class="btn primary-btn h45-btn btn-order"><i class="fa fa-cart-plus" aria-hidden="true"></i> Nhập hàng</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
                         <div class="col-md-12">
                             <div class="filter-above-wrap clear">
                                 <div class="filter-control">
                                     <div class="row">
                                         <div class="col-md-9 col-xs-12">
                                             <div class="row">
-                                                <div class="col-md-3 col-xs-6 margin-bottom-15">
+                                                <div class="col-md-4 col-xs-12 margin-bottom-15">
                                                     <asp:TextBox ID="txtSearchProduct" runat="server" CssClass="form-control sku-input" placeholder="Tìm sản phẩm" autocomplete="off"></asp:TextBox>
                                                 </div>
-                                                <div class="col-md-3 col-xs-6 margin-bottom-15">
+                                                <div class="col-md-2 col-xs-6 margin-bottom-15">
                                                     <asp:DropDownList ID="ddlCategory" runat="server" CssClass="form-control"></asp:DropDownList>
                                                 </div>
-                                                <div class="col-md-3 col-xs-6 margin-bottom-15">
+                                                <div class="col-md-2 col-xs-6 margin-bottom-15">
                                                     <asp:DropDownList ID="ddlRegisterStatus" runat="server" CssClass="form-control">
                                                         <asp:ListItem Value="0" Text="Trạng thái"></asp:ListItem>
                                                         <asp:ListItem Value="1" Text="Chưa duyệt"></asp:ListItem>
@@ -182,18 +183,14 @@
                                                         <asp:ListItem Value="4" Text="Hàng về"></asp:ListItem>
                                                     </asp:DropDownList>
                                                 </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-md-6">
-                                                </div>
-                                                <div class="col-md-2 col-xs-6">
+                                                <div class="col-md-2 col-xs-6 margin-bottom-15">
                                                     <label>Từ ngày</label>
                                                     <telerik:RadDatePicker RenderMode="Lightweight" ID="rFromDate" ShowPopupOnFocus="true" Width="100%" runat="server" DateInput-CssClass="radPreventDecorate">
                                                         <DateInput DisplayDateFormat="dd/MM/yyyy" runat="server">
                                                         </DateInput>
                                                     </telerik:RadDatePicker>
                                                 </div>
-                                                <div class="col-md-2 col-xs-6">
+                                                <div class="col-md-2 col-xs-6 margin-bottom-15">
                                                     <label>Đến ngày</label>
                                                     <telerik:RadDatePicker RenderMode="Lightweight" ID="rToDate" ShowPopupOnFocus="true" Width="100%" runat="server" DateInput-CssClass="radPreventDecorate">
                                                         <DateInput DisplayDateFormat="dd/MM/yyyy" runat="server">

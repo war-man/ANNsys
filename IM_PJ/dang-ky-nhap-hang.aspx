@@ -13,7 +13,6 @@
     <link href="/App_Themes/NewUI/js/select2/select2.css" rel="stylesheet" />
     <link href="/App_Themes/NewUI/js/sweet/sweet-alert.css" rel="stylesheet" />
     <script type="text/javascript" src="/App_Themes/Ann/js/jquery-2.1.3.min.js"></script>
-
     <style>
         .select2-container {
             box-sizing: border-box;
@@ -86,23 +85,28 @@
         .pagination li.current > a, .pagination li:hover > a {
             color: #000;
         }
+        .btn {
+            width: 100%;
+            margin-bottom: 10px;
+        }
         .btn.btn-product {
             background-color: #F44336;
         }
         .btn.btn-post {
             background-color: #009688;
         }
+        .btn.btn-order {
+            background-color: #000;
+        }
         .btn.download-btn {
             background-color: #000;
             color: #fff;
             border-radius: 0;
-            font-size: 16px;
-            text-transform: uppercase;
+            font-size: 14px;
         }
         .btn.primary-btn {
             border-radius: 0;
-            font-size: 16px;
-            text-transform: uppercase;
+            font-size: 14px;
         }
         .btn.copy-btn {
             background-color: #E91E63;
@@ -140,6 +144,23 @@
         <div>
             <main>
                 <div class="container">
+                    <div class="row">
+                        <div class="col-xs-4">
+                            <div class="row">
+                                <a href="/sp" class="btn primary-btn h45-btn btn-product"><i class="fa fa-sign-in" aria-hidden="true"></i> Sản phẩm</a>
+                            </div>
+                        </div>
+                        <div class="col-xs-4">
+                            <div class="row">
+                                <a href="/bv" class="btn primary-btn h45-btn btn-post"><i class="fa fa-sign-in" aria-hidden="true"></i> Bài viết</a>
+                            </div>
+                        </div>
+                        <div class="col-xs-4">
+                            <div class="row">
+                                <a href="/nhan-vien-dat-hang" class="btn primary-btn h45-btn btn-order"><i class="fa fa-cart-plus" aria-hidden="true"></i> DS Nhập hàng</a>
+                            </div>
+                        </div>
+                    </div>
                     <div class="row">
                         <div class="col-md-12">
                             <div class="filter-above-wrap clear">
@@ -273,7 +294,7 @@
                                                     <asp:Button ID="btnSearch" runat="server" CssClass="btn primary-btn h45-btn" OnClick="btnSearch_Click" Style="display: none" />
                                                 </div>
                                                 <div class="col-xs-6">
-                                                    <a href="/san-pham-theo-ke" class="btn primary-btn h45-btn download-btn"><i class="fa fa-times" aria-hidden="true"></i> Làm lại</a>
+                                                    <a href="/dang-ky-nhap-hang" class="btn primary-btn h45-btn download-btn"><i class="fa fa-times" aria-hidden="true"></i> Làm lại</a>
                                                 </div>
                                             </div>
                                         </div>

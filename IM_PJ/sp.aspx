@@ -95,17 +95,18 @@
         .btn.btn-post {
             background-color: #009688;
         }
+        .btn.btn-order {
+            background-color: #000;
+        }
         .btn.download-btn {
             background-color: #000;
             color: #fff;
             border-radius: 0;
-            font-size: 16px;
-            text-transform: uppercase;
+            font-size: 14px;
         }
         .btn.primary-btn {
             border-radius: 0;
-            font-size: 16px;
-            text-transform: uppercase;
+            font-size: 14px;
         }
         .btn.copy-btn {
             background-color: #E91E63;
@@ -144,14 +145,19 @@
             <main>
                 <div class="container">
                     <div class="row">
-                        <div class="col-xs-6">
+                        <div class="col-xs-4">
                             <div class="row">
                                 <a href="/sp" class="btn primary-btn h45-btn btn-product"><i class="fa fa-sign-in" aria-hidden="true"></i> Sản phẩm</a>
                             </div>
                         </div>
-                        <div class="col-xs-6">
+                        <div class="col-xs-4">
                             <div class="row">
                                 <a href="/bv" class="btn primary-btn h45-btn btn-post"><i class="fa fa-sign-in" aria-hidden="true"></i> Bài viết</a>
+                            </div>
+                        </div>
+                        <div class="col-xs-4">
+                            <div class="row">
+                                <a href="/dang-ky-nhap-hang" class="btn primary-btn h45-btn btn-order"><i class="fa fa-cart-plus" aria-hidden="true"></i> Nhập hàng</a>
                             </div>
                         </div>
                     </div>

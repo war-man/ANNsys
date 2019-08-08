@@ -170,22 +170,32 @@ namespace IM_PJ
                     html.AppendLine("            <div class='col-xs-12'>");
                     html.AppendLine("                <h3 class='customer'>" + item.customer + "</h3>");
                     html.AppendLine("            </div>");
-                    html.AppendLine("            <div class='col-xs-12'>");
+                    
                     if (!string.IsNullOrEmpty(item.color))
                     {
+                        html.AppendLine("            <div class='col-xs-12'>");
                         html.AppendLine("                <p>Màu: " + item.color + "</p>");
+                        html.AppendLine("            </div>");
                     }
-                    html.AppendLine("            </div>");
-
-                    html.AppendLine("            <div class='col-xs-12'>");
+                    
                     if (!string.IsNullOrEmpty(item.size))
                     {
+                        html.AppendLine("            <div class='col-xs-12'>");
                         html.AppendLine("                <p>Size: " + item.size + "</p>");
+                        html.AppendLine("            </div>");
                     }
-                    html.AppendLine("            </div>");
+                    
                     html.AppendLine("            <div class='col-xs-12'>");
-                    html.AppendLine("                <h3 class='quantity'>Số lượng: " + String.Format("{0:#,###}", item.quantity) + "</h3>");
+                    html.AppendLine("                <p class='quantity'>Số lượng: " + String.Format("{0:#,###}", item.quantity) + "</p>");
                     html.AppendLine("            </div>");
+
+                    if (!string.IsNullOrEmpty(item.note))
+                    {
+                        html.AppendLine("            <div class='col-xs-12'>");
+                        html.AppendLine("                <p><strong>Ghi chú:</strong> " + item.note + "</p>");
+                        html.AppendLine("            </div>");
+                    }
+
                     html.AppendLine("            <div class='col-xs-3'>");
                     html.AppendLine("                <h3 class='status'>");
                     switch (item.status)
