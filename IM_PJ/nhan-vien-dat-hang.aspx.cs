@@ -208,13 +208,13 @@ namespace IM_PJ
                     html.AppendLine("        </div>");
                     html.AppendLine("    </div>");
                     html.AppendLine("    <div class='row btn-handle'>");
-                    html.AppendLine("          <div class='col-xs-4'>");
-                    html.AppendLine("              <a href='javascript:;' class='btn primary-btn remove-btn h45-btn' onclick='removeRegister(" + item.id + ")'>");
-                    html.AppendLine("                  <i class='glyphicon glyphicon-trash' aria-hidden='true'></i> Hủy</a>");
-                    html.AppendLine("              </a>");
-                    html.AppendLine("          </div>");
-                    if(item.status == (int)RegisterProductStatus.NoApprove)
+                    if (item.status == (int)RegisterProductStatus.NoApprove)
                     {
+                        html.AppendLine("          <div class='col-xs-4'>");
+                        html.AppendLine("              <a href='javascript:;' class='btn primary-btn remove-btn h45-btn' onclick='removeRegister(" + item.id + ")'>");
+                        html.AppendLine("                  <i class='glyphicon glyphicon-trash' aria-hidden='true'></i> Hủy</a>");
+                        html.AppendLine("              </a>");
+                        html.AppendLine("          </div>");
                         html.AppendLine("          <div class='col-xs-2'></div>");
                         html.AppendLine("          <div class='col-xs-4'>");
                         html.AppendLine("              <a href='javascript:;' class='btn primary-btn h45-btn' onclick='openRegister(" + item.id + ")'>");

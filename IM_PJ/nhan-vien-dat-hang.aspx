@@ -11,6 +11,7 @@
     <meta name="robots" content="noindex, nofollow">
     <link rel="stylesheet" href="/App_Themes/Ann/css/style.css?v=0110" media="all">
     <link rel="stylesheet" href="/App_Themes/Ann/css/style-P.css?v=0110" media="all">
+    <link href="/App_Themes/NewUI/js/sweet/sweet-alert.css" rel="stylesheet" />
     <script type="text/javascript" src="/App_Themes/Ann/js/jquery-2.1.3.min.js"></script>
     <style>
         .select2-container {
@@ -304,6 +305,7 @@
             <script src="/App_Themes/Ann/js/bootstrap.min.js"></script>
             <script src="/App_Themes/Ann/js/bootstrap-table/bootstrap-table.js"></script>
             <script src="/App_Themes/Ann/js/master.js?v=2011"></script>
+            <script src="/App_Themes/NewUI/js/sweet/sweet-alert.js?v=3006" type="text/javascript"></script>
 
             <script type="text/javascript">
                 class RegisterProduct {
@@ -401,21 +403,33 @@
                 }
 
                 function removeRegister(registerID) {
-                    // Truyền dữ liệu xuống server
-                    $.ajax({
-                        type: "POST",
-                        url: "/nhan-vien-dat-hang.aspx/removeRegister",
-                        data: JSON.stringify({ 'registerID': registerID }),
-                        contentType: "application/json; charset=utf-8",
-                        dataType: "json",
-                        success: (response) => {
-                            let strHTML = "<div class='col-xs-12'><span class='bg-red'>Đã hủy đơn đăng ký nhập hàng</span><div>"
-                            $("#" + registerID).find(".btn-handle").html(strHTML);
-                        },
-                        error: (xmlhttprequest, textstatus, errorthrow) => {
-                            alert("Có lỗi trong quá trình đang ký nhập hàng");
+                    swal({
+                        title: "Hủy",
+                        text: "Bạn muốn hủy yêu cầu nhập hàng?",
+                        showCancelButton: true,
+                        closeOnConfirm: true,
+                        cancelButtonText: "Không",
+                        confirmButtonText: "Đúng",
+                    }, function (confirm) {
+                        if (confirm) {
+                            // Truyền dữ liệu xuống server
+                            $.ajax({
+                                type: "POST",
+                                url: "/nhan-vien-dat-hang.aspx/removeRegister",
+                                data: JSON.stringify({ 'registerID': registerID }),
+                                contentType: "application/json; charset=utf-8",
+                                dataType: "json",
+                                success: (response) => {
+                                    let strHTML = "<div class='col-xs-12'><span class='bg-red'>Đã hủy đơn đăng ký nhập hàng</span><div>"
+                                    $("#" + registerID).find(".btn-handle").html(strHTML);
+                                },
+                                error: (xmlhttprequest, textstatus, errorthrow) => {
+                                    alert("Có lỗi trong quá trình đang ký nhập hàng");
+                                }
+                            })
                         }
-                    })
+                    });
+                    
                 }
 
                 // Format số lượng
