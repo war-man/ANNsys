@@ -83,6 +83,15 @@ namespace IM_PJ.Controllers
                     )
                     .OrderBy(o => o.ID);
 
+                var delivery = con.Deliveries
+                    .Join(
+                        header.Where(x => x.PaymentType == (int)PaymentType.CashCollection),
+                        d => d.OrderID,
+                        h => h.ID,
+                        (d, h) => d
+                    )
+                    .OrderBy(o => o.OrderID);
+
                 var data = header
                     .GroupJoin(
                         refund,
@@ -114,15 +123,32 @@ namespace IM_PJ.Controllers
                         t => t.OrderID,
                         (tem2, t) => new
                         {
-                            OrderID = tem2.order.ID,
-                            TransportID = t.TransportID,
-                            TransportName = t.TransportName,
-                            CustomerID = tem2.order.CustomerID.Value,
-                            CustomerName = tem2.customer.CustomerName,
+                            order = tem2.order,
+                            customer = tem2.customer,
+                            moneyRefund = tem2.moneyRefund,
+                            transport = t
+                        }
+                    )
+                    .GroupJoin(
+                        delivery,
+                        tem3 => tem3.order.ID,
+                        d => d.OrderID,
+                        (tem3, d) => new {tem3 , d}
+                    )
+                    .SelectMany(
+                        x => x.d.DefaultIfEmpty(),
+                        (parent, child) => new
+                        {
+                            OrderID = parent.tem3.order.ID,
+                            TransportID = parent.tem3.transport.TransportID,
+                            TransportName = parent.tem3.transport.TransportName,
+                            CustomerID = parent.tem3.order.CustomerID.Value,
+                            CustomerName = parent.tem3.customer.CustomerName,
                             Quantity = 1,
-                            Collection = tem2.order.PaymentType == (int)PaymentType.CashCollection ? 1 : 0,
-                            Payment = tem2.order.TotalPrice,
-                            moneyRefund = tem2.moneyRefund
+                            Collection = parent.tem3.order.PaymentType == (int)PaymentType.CashCollection ? 1 : 0,
+                            Payment = parent.tem3.order.TotalPrice,
+                            MoneyRefund = parent.tem3.moneyRefund,
+                            MoneyCollection = child != null ? child.COO : 0 
                         }
                     )
                     .ToList();
@@ -148,7 +174,8 @@ namespace IM_PJ.Controllers
                             TransportName = x.TransportName,
                             CustomerID = x.CustomerID,
                             CustomerName = x.CustomerName,
-                            Collection = Convert.ToDecimal(x.Payment) - Convert.ToDecimal(x.moneyRefund)
+                            Collection = Convert.ToDecimal(x.Payment) - Convert.ToDecimal(x.MoneyRefund),
+                            MoneyReceived = x.MoneyCollection
                         })
                         .OrderByDescending(
                             o =>  o,
@@ -440,6 +467,8 @@ namespace IM_PJ.Controllers
             public string CustomerName { get; set; }
             // Số tiền thu hộ
             public decimal Collection { get; set; }
+            // Số tiền đã nhận
+            public decimal MoneyReceived { get; set; }
         }
 
         public class CollectionInfoComparer : IComparer<CollectionInfo>
