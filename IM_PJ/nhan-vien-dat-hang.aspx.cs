@@ -132,6 +132,8 @@ namespace IM_PJ
 
             pagingall(rs, page);
 
+            ltrAccount.Text = "Tài khoản: <strong>" + acc.Username + "</strong>";
+
         }
         [WebMethod]
         #region Paging
@@ -159,45 +161,34 @@ namespace IM_PJ
                     html.AppendLine(">");
                     html.AppendLine("    <div class='row'>");
                     html.AppendLine("        <div class='col-xs-12'>");
-                    html.AppendLine("            <h3 class='product-name'><a href='/xem-sp?id=" + item.productID + "'>" + item.sku + " - " + item.title + "</a></h3>");
+                    html.AppendLine("            <p class='product-name'><a href='/xem-sp?id=" + item.productID + "'>" + item.sku + " - " + item.title + "</a></p>");
                     html.AppendLine("        </div>");
                     html.AppendLine("    </div>");
                     html.AppendLine("    <div class='row'>");
-                    html.AppendLine("        <div class='col-xs-4'>");
+                    html.AppendLine("        <div class='col-xs-4 col-md-1'>");
                     html.AppendLine("            <p><a href='/xem-sp?id=" + item.productID + "'><img src='" + Thumbnail.getURL(item.image, Thumbnail.Size.Large) + "'></a></p>");
                     html.AppendLine("        </div>");
                     html.AppendLine("        <div class='col-xs-8'>");
-                    html.AppendLine("            <div class='col-xs-12'>");
-                    html.AppendLine("                <h3 class='customer'>" + item.customer + "</h3>");
-                    html.AppendLine("            </div>");
+                    html.AppendLine("                <p class='customer'>" + item.customer.ToTitleCase() + "</p>");
                     
                     if (!string.IsNullOrEmpty(item.color))
                     {
-                        html.AppendLine("            <div class='col-xs-12'>");
                         html.AppendLine("                <p>Màu: " + item.color + "</p>");
-                        html.AppendLine("            </div>");
                     }
                     
                     if (!string.IsNullOrEmpty(item.size))
                     {
-                        html.AppendLine("            <div class='col-xs-12'>");
                         html.AppendLine("                <p>Size: " + item.size + "</p>");
-                        html.AppendLine("            </div>");
                     }
                     
-                    html.AppendLine("            <div class='col-xs-12'>");
                     html.AppendLine("                <p class='quantity'>Số lượng: " + String.Format("{0:#,###}", item.quantity) + "</p>");
-                    html.AppendLine("            </div>");
 
                     if (!string.IsNullOrEmpty(item.note))
                     {
-                        html.AppendLine("            <div class='col-xs-12'>");
                         html.AppendLine("                <p><strong>Ghi chú:</strong> " + item.note + "</p>");
-                        html.AppendLine("            </div>");
                     }
 
-                    html.AppendLine("            <div class='col-xs-3'>");
-                    html.AppendLine("                <h3 class='status'>");
+                    html.AppendLine("                <p class='status'>");
                     switch (item.status)
                     {
                         case (int)RegisterProductStatus.Approve:
@@ -213,21 +204,17 @@ namespace IM_PJ
                             html.AppendLine("                    <span class='bg-red'>" + item.statusName + "</span>");
                             break;
                     }
-                    html.AppendLine("                </h3>");
-                    html.AppendLine("            </div>");
+                    html.AppendLine("                </p>");
                     html.AppendLine("        </div>");
                     html.AppendLine("    </div>");
                     html.AppendLine("    <div class='row btn-handle'>");
                     if (item.status == (int)RegisterProductStatus.NoApprove)
                     {
-                        html.AppendLine("          <div class='col-xs-4'>");
-                        html.AppendLine("              <a href='javascript:;' class='btn primary-btn remove-btn h45-btn' onclick='removeRegister(" + item.id + ")'>");
+                        html.AppendLine("          <div class='col-xs-12'>");
+                        html.AppendLine("              <a href='javascript:;' class='bg-red remove-btn' onclick='removeRegister(" + item.id + ")'>");
                         html.AppendLine("                  <i class='glyphicon glyphicon-trash' aria-hidden='true'></i> Hủy</a>");
                         html.AppendLine("              </a>");
-                        html.AppendLine("          </div>");
-                        html.AppendLine("          <div class='col-xs-2'></div>");
-                        html.AppendLine("          <div class='col-xs-4'>");
-                        html.AppendLine("              <a href='javascript:;' class='btn primary-btn h45-btn' onclick='openRegister(" + item.id + ")'>");
+                        html.AppendLine("              <a href='javascript:;' class='bg-green' onclick='openRegister(" + item.id + ")'>");
                         html.AppendLine("                  <i class='glyphicon glyphicon-edit' aria-hidden='true'></i> Chỉnh sửa</a>");
                         html.AppendLine("              </a>");
                         html.AppendLine("          </div>");

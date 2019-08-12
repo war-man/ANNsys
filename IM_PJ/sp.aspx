@@ -107,6 +107,8 @@
         .btn.primary-btn {
             border-radius: 0;
             font-size: 14px;
+            padding-right: 8px!important;
+            padding-left: 8px!important;
         }
         .btn.copy-btn {
             background-color: #E91E63;
@@ -306,6 +308,7 @@
                     </div>
                     <div class="row">
                         <div class="col-md-12">
+                            <h3>Danh sách sản phẩm</h3>
                             <div class="panel-table clear">
                                 <div class="clear">
                                     <div class="pagination">

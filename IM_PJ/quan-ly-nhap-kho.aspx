@@ -339,7 +339,7 @@
                     if (quantity > 0)
                         list += id + "," + sku + "," + producttype + "," + productnariablename + "," + productvariablevalue + "," + quantity + "," + productname + "," + productimageorigin + "," + productvariable + ";";
                     if ($(this).find(".check-popup").is(':checked')) {
-                        barcode += sku + "," + quantity + ";";
+                        barcode += sku + "," + quantity + "," + id + "," + producttype + ";";
                     }
                 });
                 $("#<%=hdfBarcode.ClientID%>").val(barcode);

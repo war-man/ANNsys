@@ -183,7 +183,7 @@ namespace IM_PJ
             html.AppendLine("    <th>Trạng thái</th>");
             html.AppendLine("    <th>Nhân viên</th>");
             html.AppendLine("    <th>Ngày đặt</th>");
-            html.AppendLine("    <th>Ngày về dự kiến</th>");
+            html.AppendLine("    <th>Ngày về</th>");
             html.AppendLine("    <th></th>");
             html.AppendLine("</tr>");
             html.AppendLine("</thead>");

@@ -107,6 +107,8 @@
         .btn.primary-btn {
             border-radius: 0;
             font-size: 14px;
+            padding-right: 8px!important;
+            padding-left: 8px!important;
         }
         .btn.copy-btn {
             background-color: #E91E63;
@@ -135,6 +137,12 @@
         .bg-green, .bg-red, .bg-yellow {
             display: initial;
         }
+        .btn-modal {
+            width: inherit;
+            margin-bottom: 0;
+            display: inline;
+            float: right;
+        }
     </style>
 </head>
 <body>
@@ -157,7 +165,7 @@
                         </div>
                         <div class="col-xs-4">
                             <div class="row">
-                                <a href="/nhan-vien-dat-hang" class="btn primary-btn h45-btn btn-order"><i class="fa fa-cart-plus" aria-hidden="true"></i> DS Nhập hàng</a>
+                                <a href="/nhan-vien-dat-hang" class="btn primary-btn h45-btn btn-order"><i class="fa fa-cart-plus" aria-hidden="true"></i> DS nhập hàng</a>
                             </div>
                         </div>
                     </div>
@@ -305,6 +313,7 @@
                     </div>
                     <div class="row">
                         <div class="col-md-12">
+                            <h3>Đăng ký nhập hàng</h3>
                             <div class="panel-table clear">
                                 <div class="clear">
                                     <div class="pagination">
@@ -369,8 +378,8 @@
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button id="close" type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
-                            <button id="register" type="button" class="btn btn-primary" onclick="registerProduct()">Đăng ký</button>
+                            <button id="register" type="button" class="btn btn-modal btn-primary" onclick="registerProduct()">Đăng ký</button>
+                            <button id="close" type="button" class="btn btn-modal btn-default" data-dismiss="modal">Đóng</button>
                         </div>
                     </div>
                 </div>

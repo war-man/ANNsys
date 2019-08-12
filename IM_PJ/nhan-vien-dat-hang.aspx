@@ -14,6 +14,10 @@
     <link href="/App_Themes/NewUI/js/sweet/sweet-alert.css" rel="stylesheet" />
     <script type="text/javascript" src="/App_Themes/Ann/js/jquery-2.1.3.min.js"></script>
     <style>
+        .customer {
+            font-size: 16px;
+            font-weight: bold;
+        }
         .select2-container {
             box-sizing: border-box;
             display: inline-block;
@@ -107,6 +111,8 @@
         .btn.primary-btn {
             border-radius: 0;
             font-size: 14px;
+            padding-right: 8px!important;
+            padding-left: 8px!important;
         }
         .btn.copy-btn {
             background-color: #E91E63;
@@ -121,7 +127,8 @@
             margin-top: 10px;
         }
         .product-name a {
-            font-size: 18px;
+            font-size: 14px;
+            font-weight: bold;
             line-height: 1.5;
         }
         .product-sku {
@@ -134,6 +141,12 @@
         }
         .bg-green, .bg-red, .bg-yellow {
             display: initial;
+        }
+        .btn-modal {
+            width: inherit;
+            margin-bottom: 0;
+            display: inline;
+            float: right;
         }
     </style>
 </head>
@@ -202,11 +215,11 @@
                                         <div class="col-md-3 col-xs-12">
                                             <div class="row">
                                                 <div class="col-xs-6">
-                                                    <a href="javascript:;" onclick="searchProduct()" class="btn primary-btn h45-btn"><i class="fa fa-search"></i>Tìm kiếm</a>
+                                                    <a href="javascript:;" onclick="searchProduct()" class="btn primary-btn h45-btn"><i class="fa fa-search"></i> Tìm kiếm</a>
                                                     <asp:Button ID="btnSearch" runat="server" CssClass="btn primary-btn h45-btn" OnClick="btnSearch_Click" Style="display: none" />
                                                 </div>
                                                 <div class="col-xs-6">
-                                                    <a href="/nhan-vien-dat-hang" class="btn primary-btn h45-btn download-btn"><i class="fa fa-times" aria-hidden="true"></i>Làm lại</a>
+                                                    <a href="/nhan-vien-dat-hang" class="btn primary-btn h45-btn download-btn"><i class="fa fa-times" aria-hidden="true"></i> Làm lại</a>
                                                 </div>
                                             </div>
                                         </div>
@@ -217,6 +230,8 @@
                     </div>
                     <div class="row">
                         <div class="col-md-12">
+                            <h3>Danh sách nhập hàng</h3>
+                            <p><asp:Literal ID="ltrAccount" runat="server" EnableViewState="false"></asp:Literal></p>
                             <div class="panel-table clear">
                                 <div class="clear">
                                     <div class="pagination">
@@ -289,8 +304,8 @@
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button id="close" type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
-                            <button id="register" type="button" class="btn btn-primary" onclick="updateRegister()">Đăng ký</button>
+                            <button id="register" type="button" class="btn btn-modal btn-primary" onclick="updateRegister()">Lưu</button>
+                            <button id="close" type="button" class="btn btn-modal btn-default" data-dismiss="modal">Đóng</button>
                         </div>
                     </div>
                 </div>
@@ -417,7 +432,7 @@
                                 contentType: "application/json; charset=utf-8",
                                 dataType: "json",
                                 success: (response) => {
-                                    let strHTML = "<div class='col-xs-12'><span class='bg-red'>Đã hủy đơn đăng ký nhập hàng</span><div>"
+                                    let strHTML = "<div class='col-xs-12'><span class='bg-red'>Đã hủy...</span><div>"
                                     $("#" + registerID).find(".btn-handle").html(strHTML);
                                 },
                                 error: (xmlhttprequest, textstatus, errorthrow) => {

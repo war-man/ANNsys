@@ -362,7 +362,9 @@ namespace IM_PJ
                     if (value.Count() > 1)
                     {
                         var temps = new List<String>();
-                        productPrint += "<div class='qcode'>";
+                        productPrint += "<div class='qcode {0}'>";
+                        int[] categoryIDs = new int[] { 44 };
+                        bool isCol4 = true;
                         for (int i = 0; i < value.Length - 1; i++)
                         {
 
@@ -371,6 +373,17 @@ namespace IM_PJ
 
                             for (int j = 0; j < quantity; j++)
                             {
+                                if (list2[3] == "1")
+                                {
+                                    var product = ProductController.GetByID(list2[2].ToInt(0));
+                                    isCol4 = categoryIDs.Contains(product.CategoryID.Value);
+                                }
+                                else
+                                {
+                                    var variable = ProductVariableController.GetByID(list2[2].ToInt(0));
+                                    var product = ProductController.GetByID(variable.ProductID.Value);
+                                    isCol4 = categoryIDs.Contains(product.CategoryID.Value);
+                                }
                                 barcodeValue = list2[0];
                                 var imageName = String.Format("{0}{1}.png", DateTime.UtcNow.ToString("yyyyMMddHHmmss"), Guid.NewGuid());
                                 barcodeImage = "/uploads/barcodes/" + imageName;
@@ -387,6 +400,7 @@ namespace IM_PJ
                             }
                         }
                         productPrint += "</div>";
+                        productPrint = String.Format(productPrint, isCol4 ? "col-4" : "");
                         string html = "";
                         html += productPrint;
                         ltrprint.Text = html;

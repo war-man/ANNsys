@@ -317,15 +317,25 @@
                     cancelButtonText: "Để em xem lại",
                     confirmButtonText: "OK sếp!!",
                 }, function (discount) {
-                    
+                    if (typeof(discount) == "boolean") {
+                        discount = 0;
+                    }
+                    else if (typeof(discount) == "string") {
+                        discount = discount.replace(/,|\./g, "");
+                        discount = +discount || 0;
+                    }
+                    else {
+                        discount = 0;
+                    }
+
                     $("input.reducedPrice").each(function (index) {
                         oldValue = $(this).val().replace(/,/g, "");
 
-                        if (parseInt(discount) > 0) {
-                            newValue = formatThousands(parseInt(oldValue) - parseInt(discount));
+                        if (discount > 0) {
+                            newValue = formatThousands(parseInt(oldValue) - discount);
                         }
                         else {
-                            newValue = formatThousands(parseInt(oldValue) + parseInt(discount));
+                            newValue = formatThousands(parseInt(oldValue) + discount);
                         }
                         
                         $(this).val(newValue);
@@ -363,8 +373,8 @@
 
             function changeFee() {
                 swal({
-                    title: "Thay đổi phí đổi hàng",
-                    text: "Nhập phí mới cho <strong>sản phẩm đổi mẫu khác</strong> trong đơn hàng này:",
+                    title: "Nhập phí đổi hàng",
+                    text: "Nhập <strong>phí đổi sản phẩm</strong> cho đơn này:",
                     type: "input",
                     showCancelButton: true,
                     closeOnConfirm: true,
@@ -372,18 +382,29 @@
                     confirmButtonText: "Nhập thôi !!!",
                     html: true
                 }, function (newFee) {
-                    if (newFee != "") {
-                        $("input.reducedPrice").each(function (index) {
-                            oldFee = $(this).parent().parent().attr("data-feerefund");
-                            if (oldFee != "") {
-                                $(this).parent().parent().attr("data-feerefund", newFee);
-                                $(this).parent().parent().find(".feeRefund").val(formatThousands(newFee));
-                                changeRow($(this));
-                            }
-                        });
+                    if (typeof(newFee) != "boolean" && newFee != "") {
+                        newFee = newFee.replace(/,|\./g, "");
+                        newFee = +newFee || 0;
 
-                        $(".minus-discount").removeClass("hide");
-                        $(".restore-discount").addClass("hide");
+                        if (newFee > 1000 && newFee < 100000) {
+                            $("input.reducedPrice").each(function (index) {
+                                oldFee = $(this).parent().parent().attr("data-feerefund");
+                                if (oldFee != "") {
+                                    $(this).parent().parent().attr("data-feerefund", newFee);
+                                    $(this).parent().parent().find(".feeRefund").val(formatThousands(newFee));
+                                    changeRow($(this));
+                                }
+                            });
+
+                            $(".minus-discount").removeClass("hide");
+                            $(".restore-discount").addClass("hide");
+                        }
+                        else {
+                            alert("Phải nhập số dương lớn hơn 1000");
+                        }
+                    }
+                    else {
+                        alert("Chưa nhập phí");
                     }
                 });
             }
