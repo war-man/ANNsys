@@ -121,6 +121,15 @@ namespace IM_PJ {
         protected global::System.Web.UI.WebControls.DropDownList ddlStatusModal;
         
         /// <summary>
+        /// txtNumberChild control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtNumberChild;
+        
+        /// <summary>
         /// txtQuantity control.
         /// </summary>
         /// <remarks>
@@ -130,13 +139,22 @@ namespace IM_PJ {
         protected global::System.Web.UI.WebControls.TextBox txtQuantity;
         
         /// <summary>
-        /// txtNote control.
+        /// txtNote1 control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtNote;
+        protected global::System.Web.UI.WebControls.TextBox txtNote1;
+        
+        /// <summary>
+        /// txtNote2 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtNote2;
         
         /// <summary>
         /// hdRegisterProductID control.

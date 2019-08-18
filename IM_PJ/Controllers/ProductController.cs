@@ -2645,9 +2645,15 @@ namespace IM_PJ.Controllers
                         retailPrice = x.variable != null ? x.variable.RetailPrice.Value : x.product.Retail_Price.Value,
                         craeteDate = x.variable != null ? x.variable.CreatedDate.Value : x.product.CreatedDate.Value,
                         productType = x.product.ProductStyle,
-                        orderIndex = x.product.ProductStyle == 1? 1 : 2, // Dùng để sắp xếp cho sản phẩm con
+                        orderIndex = x.product.ProductStyle == 1 ? 1 : 2, // Dùng để sắp xếp cho sản phẩm con
+                        numberChild = 1, // Số lượng biết thể con
                     }
                     );
+
+                var variable = data.Where(x => x.productType == 2)
+                    .Select(x => new { productID = x.productID, numberChild = x.numberChild })
+                    .GroupBy(g => g.productID)
+                    .Select(x => new { productID = x.Key, numberChild = x.Sum(s => s.numberChild) });
                 #endregion
 
                 #region Add thêm dòng biến thể cha của các sản phẩm con
@@ -2669,7 +2675,8 @@ namespace IM_PJ.Controllers
                             retailPrice = x.product.Retail_Price.Value,
                             craeteDate = x.product.CreatedDate.Value,
                             productType = x.product.ProductStyle,
-                            orderIndex = 1
+                            orderIndex = 1,
+                            numberChild = 0
                         })
                 );
                 #endregion
@@ -2684,6 +2691,14 @@ namespace IM_PJ.Controllers
                    .ThenByDescending(o => o.variableID)
                    .Skip((page.currentPage - 1) * page.pageSize)
                    .Take(page.pageSize);
+
+                variable = variable
+                    .Join(
+                        dataPagination.Where(x => x.variableID == 0 && x.productType == 2),
+                        v => v.productID,
+                        d => d.productID,
+                        (v, d) => v
+                    );
                 #endregion
 
                 #region Lấy thông tin của biến thể
@@ -2727,6 +2742,32 @@ namespace IM_PJ.Controllers
                 #endregion
 
                 var result = dataPagination
+                    .GroupJoin(
+                        variable,
+                        d => new { productID = d.productID, variableID = d.variableID, productType = d.productType.Value },
+                        v => new { productID = v.productID, variableID = 0, productType = 2 },
+                        (d, v) => new { d, v}
+                    )
+                    .SelectMany(
+                        x => x.v.DefaultIfEmpty(),
+                        (parent, child) => new {
+                            categoryID = parent.d.categoryID,
+                            productID = parent.d.productID,
+                            variableID = parent.d.variableID,
+                            sku = parent.d.sku,
+                            title = parent.d.title,
+                            image = parent.d.image,
+                            materials = parent.d.materials,
+                            content = parent.d.content,
+                            costOfGood = parent.d.costOfGood,
+                            regularPrice = parent.d.regularPrice,
+                            retailPrice = parent.d.retailPrice,
+                            craeteDate = parent.d.craeteDate,
+                            productType = parent.d.productType,
+                            orderIndex = parent.d.orderIndex,
+                            numberChild = child != null ? child.numberChild : parent.d.numberChild
+                        }
+                    )
                     .ToList()
                     .GroupJoin(
                         colors,
@@ -2775,7 +2816,8 @@ namespace IM_PJ.Controllers
                             regularPrice = x.product.regularPrice,
                             retailPrice = x.product.retailPrice,
                             createdDate = x.product.craeteDate,
-                            productType = x.product.productType.Value
+                            productStyle = x.product.productType.Value,
+                            numberChild = x.product.numberChild
                         };
                     })
                     .ToList();
@@ -2809,7 +2851,9 @@ namespace IM_PJ.Controllers
             public int floorShelf { get; set; }
             public string floorShelfName { get; set; }
             public DateTime createdDate { get; set; }
-            public int productType { get; set; }
+            public int productStyle { get; set; }
+            // Dùng để tính toán tổng sản phẩm dăng ký với ký đủ màu, đủ size
+            public int numberChild { get; set; }
 
         }
         public class ProductShelf
