@@ -12,24 +12,20 @@ namespace IM_PJ.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class RegisterProduct
+    public partial class ReceivedProductHistory
     {
         public int ID { get; set; }
-        public string Customer { get; set; }
+        public int RegisterID { get; set; }
+        public int StockID { get; set; }
         public int ProductID { get; set; }
         public int VariableID { get; set; }
         public string SKU { get; set; }
-        public int ProductStyle { get; set; }
-        public int Status { get; set; }
         public string Title { get; set; }
         public string Image { get; set; }
         public string Color { get; set; }
         public string Size { get; set; }
-        public int NumberChild { get; set; }
         public int Quantity { get; set; }
-        public Nullable<System.DateTime> ExpectedDate { get; set; }
-        public string Note1 { get; set; }
-        public string Note2 { get; set; }
+        public System.DateTime ReceivedDate { get; set; }
         public int CreatedBy { get; set; }
         public System.DateTime CreatedDate { get; set; }
         public int ModifiedBy { get; set; }

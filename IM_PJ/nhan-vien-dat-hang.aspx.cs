@@ -158,7 +158,7 @@ namespace IM_PJ
                     html.AppendLine("    data-color='" + item.color + "'");
                     html.AppendLine("    data-size='" + item.size + "'");
                     html.AppendLine("    data-quantity='" + item.quantity + "'");
-                    html.AppendLine("    data-note='" + item.note + "'");
+                    html.AppendLine("    data-note='" + item.note1 + "'");
                     html.AppendLine(">");
                     html.AppendLine("    <div class='row'>");
                     html.AppendLine("        <div class='col-xs-12'>");
@@ -184,9 +184,9 @@ namespace IM_PJ
                     
                     html.AppendLine("                <p class='quantity'>Số lượng: " + String.Format("{0:#,###}", item.quantity) + "</p>");
 
-                    if (!string.IsNullOrEmpty(item.note))
+                    if (!string.IsNullOrEmpty(item.note1))
                     {
-                        html.AppendLine("                <p><strong>Ghi chú:</strong> " + item.note + "</p>");
+                        html.AppendLine("                <p><strong>Ghi chú:</strong> " + item.note1 + "</p>");
                     }
 
                     html.AppendLine("                <p class='status'>");

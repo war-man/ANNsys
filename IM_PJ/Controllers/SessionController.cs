@@ -390,8 +390,10 @@ namespace IM_PJ.Controllers
         public int id { get; set; }
         public string customer { get; set; }
         public int status { get; set; }
+        public int numberChild { get; set; }
         public int quantity { get; set; }
         public DateTime? expectedDate { get; set; }
-        public string note { get; set; }
+        public string note1 { get; set; }
+        public string note2 { get; set; }
     }
 }

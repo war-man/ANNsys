@@ -928,6 +928,9 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>IMModel.edmx</DependentUpon>
     </Compile>
+    <Compile Include="Models\ReceivedProductHistory.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\Register.cs">
       <DependentUpon>IMModel.tt</DependentUpon>
     </Compile>

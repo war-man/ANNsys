@@ -22,23 +22,27 @@
             vertical-align: middle;
             max-width: 100%;
         }
-        .select2-container .select2-selection--single {
-            height: 45px;
-            box-sizing: border-box;
-            cursor: pointer;
-            display: block;
-            user-select: none;
-            -webkit-user-select: none;
-        }
+
+            .select2-container .select2-selection--single {
+                height: 45px;
+                box-sizing: border-box;
+                cursor: pointer;
+                display: block;
+                user-select: none;
+                -webkit-user-select: none;
+            }
+
         .select2-container--default .select2-selection--single {
             background-color: #fff;
             border: solid 1px #e1e1e1;
         }
-        .select2-container--default .select2-selection--single .select2-selection__rendered {
-            line-height: 45px;
-            padding-left: 15px;
-            color: #444;
-        }
+
+            .select2-container--default .select2-selection--single .select2-selection__rendered {
+                line-height: 45px;
+                padding-left: 15px;
+                color: #444;
+            }
+
         .select2-container .select2-selection--single .select2-selection__rendered {
             display: block;
             padding-right: 20px;
@@ -46,6 +50,7 @@
             text-overflow: ellipsis;
             white-space: nowrap;
         }
+
         .select2-container--default .select2-selection--single .select2-selection__arrow {
             height: 43px;
             position: absolute;
@@ -53,21 +58,24 @@
             right: 10px;
             width: 20px;
         }
-        .select2-container--default .select2-selection--single .select2-selection__arrow b {
-            border-color: #000 transparent transparent transparent;
-            border-style: solid;
-            border-width: 5px 4px 0 4px;
-            height: 0;
-            left: 50%;
-            margin-left: -4px;
-            margin-top: -2px;
-            position: absolute;
-            top: 50%;
-            width: 0;
-        }
+
+            .select2-container--default .select2-selection--single .select2-selection__arrow b {
+                border-color: #000 transparent transparent transparent;
+                border-style: solid;
+                border-width: 5px 4px 0 4px;
+                height: 0;
+                left: 50%;
+                margin-left: -4px;
+                margin-top: -2px;
+                position: absolute;
+                top: 50%;
+                width: 0;
+            }
+
         .panel-table .panel-footer {
             padding: 5px 0;
         }
+
         .pagination li {
             display: inline-block;
             vertical-align: middle;
@@ -78,13 +86,16 @@
             font-size: 15px;
             margin-right: 10px;
         }
-        .pagination li a {
-            color: #fff;
-            padding: 8px 11px;
-        }
-        .pagination li.current > a, .pagination li:hover > a {
-            color: #000;
-        }
+
+            .pagination li a {
+                color: #fff;
+                padding: 8px 11px;
+            }
+
+            .pagination li.current > a, .pagination li:hover > a {
+                color: #000;
+            }
+
         .btn {
             width: 100%;
             margin-bottom: 10px;
@@ -122,24 +133,30 @@
             background-color: #fff;
             padding: 15px;
         }
+
         h3 {
             margin-top: 10px;
         }
+
         .product-name a {
             font-size: 18px;
             line-height: 1.5;
         }
+
         .product-sku {
             font-size: 18px;
             color: #0289bc;
         }
+
         .product-price {
             font-size: 20px;
             color: #ff0023;
         }
+
         .bg-green, .bg-red, .bg-yellow {
             display: initial;
         }
+
         .btn-modal {
             width: inherit;
             margin-bottom: 0;
@@ -158,12 +175,12 @@
                     <div class="row">
                         <div class="col-xs-4">
                             <div class="row">
-                                <a href="/sp" class="btn primary-btn h45-btn btn-product"><i class="fa fa-sign-in" aria-hidden="true"></i> Sản phẩm</a>
+                                <a href="/sp" class="btn primary-btn h45-btn btn-product"><i class="fa fa-sign-in" aria-hidden="true"></i>Sản phẩm</a>
                             </div>
                         </div>
                         <div class="col-xs-4">
                             <div class="row">
-                                <a href="/bv" class="btn primary-btn h45-btn btn-post"><i class="fa fa-sign-in" aria-hidden="true"></i> Bài viết</a>
+                                <a href="/bv" class="btn primary-btn h45-btn btn-post"><i class="fa fa-sign-in" aria-hidden="true"></i>Bài viết</a>
                             </div>
                         </div>
                         <div class="col-xs-4">
@@ -301,11 +318,11 @@
                                         <div class="col-md-3 col-xs-12">
                                             <div class="row">
                                                 <div class="col-xs-6">
-                                                    <a href="javascript:;" onclick="searchProduct()" class="btn primary-btn h45-btn"><i class="fa fa-search"></i> Tìm kiếm</a>
+                                                    <a href="javascript:;" onclick="searchProduct()" class="btn primary-btn h45-btn"><i class="fa fa-search"></i>Tìm kiếm</a>
                                                     <asp:Button ID="btnSearch" runat="server" CssClass="btn primary-btn h45-btn" OnClick="btnSearch_Click" Style="display: none" />
                                                 </div>
                                                 <div class="col-xs-6">
-                                                    <a href="/dang-ky-nhap-hang" class="btn primary-btn h45-btn download-btn"><i class="fa fa-times" aria-hidden="true"></i> Làm lại</a>
+                                                    <a href="/dang-ky-nhap-hang" class="btn primary-btn h45-btn download-btn"><i class="fa fa-times" aria-hidden="true"></i>Làm lại</a>
                                                 </div>
                                             </div>
                                         </div>
@@ -337,7 +354,7 @@
                 </div>
             </main>
 
-            <!-- Đăng ký só lượng đặt hàng Modal -->
+            <!-- Đăng ký số lượng đặt hàng Modal -->
             <div class="modal fade" id="registerModal" role="dialog">
                 <div class="modal-dialog">
                     <!-- Modal content-->
@@ -363,6 +380,14 @@
                                     <input type="text" id="txtVariableValue" class="form-control text-right" disabled />
                                 </div>
                             </div>
+                            <div id="subProductInfo" class="row form-group">
+                                <div class="col-md-3 col-xs-4">
+                                    <p>Sản phẩm con</p>
+                                </div>
+                                <div class="col-md-9 col-xs-8">
+                                    <input type="text" id="txtNumberChild" class="form-control text-right" placeholder="Số sản phẩm con" disabled/>
+                                </div>
+                            </div>
                             <div class="row form-group">
                                 <div class="col-md-3 col-xs-4">
                                     <p>Số lượng</p>
@@ -376,7 +401,7 @@
                                     <p>Ghi chú</p>
                                 </div>
                                 <div class="col-md-9 col-xs-8">
-                                    <textarea id="areaNote" class="form-control" placeholder="Nhập thông tin chú thích" rows="3"></textarea>
+                                    <textarea id="areaNote" class="form-control" placeholder="Nhân viên nhập thông tin ghi chú" rows="3"></textarea>
                                 </div>
                             </div>
                         </div>
@@ -387,10 +412,11 @@
                     </div>
                 </div>
             </div>
+            <!------------------------------------->
 
             <a href="javascript:;" class="scroll-top-link" id="scroll-top"><i class="fa fa-angle-up"></i></a>
             <a href="javascript:;" class="scroll-bottom-link" id="scroll-bottom"><i class="fa fa-angle-down"></i></a>
-            
+
             <script src="/App_Themes/Ann/js/bootstrap.min.js"></script>
             <script src="/App_Themes/Ann/js/bootstrap-table/bootstrap-table.js"></script>
             <script src="/App_Themes/NewUI/js/select2/select2.min.js"></script>
@@ -404,43 +430,43 @@
             <script type="text/javascript">
                 class RegisterProduct {
                     constructor(
-                        customer
-                        , productID
+                        productID
                         , variableID
                         , sku
+                        , productStyle
                         , status
                         , title
                         , image
                         , color
                         , size
+                        , numberChild
                         , quantity
-                        , productType
                     ) {
-                        this.customer = customer;
+                        this.customer = '';
                         this.productID = productID;
                         this.variableID = variableID;
                         this.sku = sku;
+                        this.productStyle = productStyle;
                         this.status = status;
                         this.title = title;
                         this.image = image;
                         this.color = color;
                         this.size = size;
+                        this.numberChild = numberChild;
                         this.quantity = quantity;
-                        this.productType = productType;
+                        this.note1 = '';
                     }
                 }
 
                 var productRegister = null;
 
                 $("#<%=txtSearchProduct.ClientID%>").keyup(function (e) {
-                    if (e.keyCode == 13)
-                    {
+                    if (e.keyCode == 13) {
                         $("#<%= btnSearch.ClientID%>").click();
                     }
                 });
 
-                function searchProduct()
-                {
+                function searchProduct() {
                     $("#<%= btnSearch.ClientID%>").click();
                 }
 
@@ -485,10 +511,7 @@
                         } else {
                             $(this).hide();
                         }
-
-
                     });
-
 
                     /* Clean no-result if exist */
                     /* Prepend no-result */
@@ -551,12 +574,23 @@
                 }
 
                 function openRegister(item) {
-                    productRegister = new RegisterProduct('', item.productID, item.variableID, item.sku, 1, item.title, item.image, item.color, item.size, 0, item.productType);
+                    productRegister = new RegisterProduct(item.productID,
+                                                          item.variableID,
+                                                          item.sku,
+                                                          item.productStyle,
+                                                          1, // Trạng thái chưa duyệt đơn đăng ký
+                                                          item.title,
+                                                          item.image,
+                                                          item.color,
+                                                          item.size,
+                                                          item.numberChild,
+                                                          0); // Số lượng đăng ký cho từng cá thể con
                     let variableValue = "Không có";
-                    if (item.productType == 2)
-                    {
-                        if (item.productID != 0 && item.variableID != 0) 
-                        {
+                    let areaNoteDOM = $("#areaNote");
+
+                    areaNoteDOM.html("");
+                    if (item.productStyle == 2) {
+                        if (item.productID != 0 && item.variableID != 0) {
                             if (item.color) {
                                 variableValue = item.color;
                             }
@@ -564,9 +598,9 @@
                                 variableValue += " - " + item.size;
                             }
                         }
-                        else 
-                        {
+                        else {
                             variableValue = "Đủ màu - Đủ size";
+                            areaNoteDOM.html("Sản phẩm con là " + item.numberChild + " loại.\n");
                         }
                         $('.row-variable').show();
                     }
@@ -574,48 +608,50 @@
                     {
                         $('.row-variable').hide();
                     }
+
+                    // Cài đặt giá trị cho modal
                     $('#txtVariableValue').val(variableValue);
+                    $('#txtNumberChild').val(item.numberChild);
+                    if (item.productStyle == 2 && item.variableID == 0)
+                        $("#registerModal").find("#subProductInfo").css("display", "");
+                    else
+                        $("#registerModal").find("#subProductInfo").css("display", "none");
+                    // Show modal
                     $('#registerModal').modal({ show: 'true', backdrop: 'static' });
                 }
 
                 function registerProduct() {
                     let customer = $("#txtCustomerName").val() || "";
                     let quantity = +$("#txtQuantity").val() || 0;
-                    let note = $("#areaNote").val() || "";
+                    let note1 = $("#areaNote").val() || "";
                     let check = true;
 
-                    if (!quantity)
-                    {
+                    if (!quantity) {
                         check = false;
                         $("#txtQuantity").focus();
                         $("#txtQuantity").select();
                         swal("Thông báo", "Chưa nhập số lượng", "error");
                     }
-                    if (!customer)
-                    {
+                    if (!customer) {
                         check = false;
                         $("#txtCustomerName").focus();
                         $("#txtCustomerName").select();
                         swal("Thông báo", "Chưa nhập tên khách hàng", "error");
                     }
 
-                    if (check == true)
-                    {
+                    if (check == true) {
                         // Lấy dữ liệu nhập từ modal
                         productRegister.customer = customer;
                         productRegister.quantity = quantity;
-                        productRegister.note = note;
+                        productRegister.note1 = note1;
 
-                        if (productRegister.productType == 2)
-                        {
-                            if (productRegister.productID && productRegister.variableID == "")
-                            {
+                        if (productRegister.productStyle == 2) {
+                            if (productRegister.productID && productRegister.variableID == "") {
                                 productRegister.color = "Đủ màu";
                                 productRegister.size = "Đủ size";
                             }
                         }
-                        else
-                        {
+                        else {
                             productRegister.color = "";
                             productRegister.size = "";
                         }
@@ -650,7 +686,7 @@
                             }
                         });
                     }
-                    
+
                 }
             </script>
         </div>
