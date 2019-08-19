@@ -188,6 +188,10 @@ namespace IM_PJ
                     {
                         html.AppendLine("                <p><strong>Ghi chú:</strong> " + item.note1 + "</p>");
                     }
+                    if (!string.IsNullOrEmpty(item.note2))
+                    {
+                        html.AppendLine("                <p><strong>Nội dung duyệt:</strong> " + item.note2 + "</p>");
+                    }
 
                     html.AppendLine("                <p class='status'>");
                     switch (item.status)

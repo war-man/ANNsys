@@ -39,9 +39,11 @@
             background-color: #FF675B;
             color: #fff;
         }
+
         table.shop_table_responsive > tbody > tr:nth-of-type(2n) td {
-            border-top: solid 1px #e1e1e1!important;
+            border-top: solid 1px #e1e1e1 !important;
         }
+
         @media (max-width: 768px) {
             table.shop_table_responsive thead {
                 display: none;
@@ -150,86 +152,86 @@
             width: 100%;
         }
 
-        .my-custom-table img {
-            width: auto;
-        }
-
-        .my-custom-table thead {
-            width: 100%;
-            height: 30px;
-        }
-
-        .my-custom-table tbody {
-            width: 100%;
-            max-height: 500px;
-            overflow-y: auto;
-        }
-
-        .my-custom-table thead,
-        .my-custom-table tbody,
-        .my-custom-table tr,
-        .my-custom-table th,
-        .my-custom-table td {
-            display: block;
-        }
-
-            .my-custom-table thead th,
-            .my-custom-table tbody th,
-            .my-custom-table tbody td {
-                float: left;
+            .my-custom-table img {
+                width: auto;
             }
 
-        .my-custom-table thead {
-            width: 100%;
-            height: 30px;
-        }
+            .my-custom-table thead {
+                width: 100%;
+                height: 30px;
+            }
 
-        .my-custom-table > tbody > tr > th,
-        .my-custom-table > tbody > tr > td {
-            height: 130px;
-        }
+            .my-custom-table tbody {
+                width: 100%;
+                max-height: 500px;
+                overflow-y: auto;
+            }
 
-        .my-custom-table .index {
-            width: 7%;
-        }
+            .my-custom-table thead,
+            .my-custom-table tbody,
+            .my-custom-table tr,
+            .my-custom-table th,
+            .my-custom-table td {
+                display: block;
+            }
 
-        .my-custom-table .image {
-            width: 15%;
-        }
+                .my-custom-table thead th,
+                .my-custom-table tbody th,
+                .my-custom-table tbody td {
+                    float: left;
+                }
 
-        .my-custom-table .code {
-            width: 15%;
-        }
+            .my-custom-table thead {
+                width: 100%;
+                height: 30px;
+            }
 
-        .my-custom-table .title {
-            width: 25%;
-        }
+            .my-custom-table > tbody > tr > th,
+            .my-custom-table > tbody > tr > td {
+                height: 130px;
+            }
 
-        .my-custom-table .color {
-            width: 8%;
-        }
+            .my-custom-table .index {
+                width: 7%;
+            }
 
-        .my-custom-table .size {
-            width: 8%;
-        }
+            .my-custom-table .image {
+                width: 15%;
+            }
 
-        .my-custom-table .quantity {
-            width: 10%;
-        }
+            .my-custom-table .code {
+                width: 15%;
+            }
 
-        .my-custom-table .received-date {
-            width: 12%;
-        }
+            .my-custom-table .title {
+                width: 25%;
+            }
 
-        .my-custom-table th {
-            text-align: left;
-            vertical-align: middle;
-        }
+            .my-custom-table .color {
+                width: 8%;
+            }
 
-        .my-custom-table td {
-            text-align: left;
-            vertical-align: middle;
-        }
+            .my-custom-table .size {
+                width: 8%;
+            }
+
+            .my-custom-table .quantity {
+                width: 10%;
+            }
+
+            .my-custom-table .received-date {
+                width: 12%;
+            }
+
+            .my-custom-table th {
+                text-align: left;
+                vertical-align: middle;
+            }
+
+            .my-custom-table td {
+                text-align: left;
+                vertical-align: middle;
+            }
     </style>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
@@ -568,21 +570,24 @@
                         <h4 class="modal-title">Thông tin lịch sử nhận hàng</h4>
                     </div>
                     <div class="modal-body">
-                        <table class="table my-custom-table">
-                            <thead>
-                                <tr>
-                                    <th class="image" scope="col">Hình ảnh</th>
-                                    <th class="code" scope="col">Mã</th>
-                                    <th class="title" scope="col">Title</th>
-                                    <th class="color" scope="col">Màu</th>
-                                    <th class="size" scope="col">Size</th>
-                                    <th class="quantity" scope="col">Số lượng</th>
-                                    <th class="received-date" scope="col">Ngày nhận</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            </tbody>
-                        </table>
+                        <div class="row">
+                            <table class="table my-custom-table">
+                                <thead>
+                                    <tr>
+                                        <th class="index" scope="col">#</th>
+                                        <th class="image" scope="col">Hình ảnh</th>
+                                        <th class="code" scope="col">Mã</th>
+                                        <th class="title" scope="col">Title</th>
+                                        <th class="color" scope="col">Màu</th>
+                                        <th class="size" scope="col">Size</th>
+                                        <th class="quantity" scope="col">Số lượng</th>
+                                        <th class="received-date" scope="col">Ngày nhận</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button id="closeReceivedProductHistories" type="button" class="btn btn-modal btn-default" data-dismiss="modal">Đóng</button>
@@ -1173,7 +1178,6 @@
                 // Clear table body
                 modalDOM.find("#checkAllReceivedProduct").attr("checked", false);
                 modalDOM.find("tbody").html("");
-                received = [];
 
                 // Lấy dữ liệu từ server
                 $.ajax({
@@ -1186,6 +1190,7 @@
                         let data = response.d;
 
                         if (data) {
+                            received = [];
                             data.forEach(item => {
                                 let regx = item.receivedDate.match(/\d+/g);
                                 let timestamps = 0;
@@ -1209,12 +1214,16 @@
                                 );
                             });
                         }
+                        else {
+                            received = [];
+                        }
 
                         let strHTML = createReceivedProductHTML(received);
                         modalDOM.find("tbody").html(strHTML);
                         modalDOM.modal({ show: "true", backdrop: 'static' });
                     },
                     error: (xmlhttprequest, textstatus, errorthrow) => {
+                        received = [];
                         alert("Có lỗi trong quá trình lấy thông tin nhập kho");
                     }
                 })
@@ -1285,6 +1294,12 @@
             $("#updateReceivedProduct").click(e => {
                 let receivedChecked = received.filter(item => { return item.checked == true });
 
+                if (received.length == 0)
+                    return swal("Thông báo", "Không có dữ liệu", "warning");
+
+                if (receivedChecked.length == 0)
+                    return swal("Thông báo", "Vui lòng chọn sản phẩm đã nhập kho", "warning");
+
                 $.ajax({
                     type: "POST",
                     url: "/danh-sach-nhap-hang.aspx/postReceivedProduct",
@@ -1328,6 +1343,7 @@
                             let maxReceivedDate = "";
 
                             parentDOM.find(".show-sub-product").css('display', '');
+                            parentDOM.find(".show-received-product-histories").css('display', '');
                             childDOM.each((index, element) => {
                                 let receivedQuantityDOM = element.getElementsByClassName('totalReceivedQuantity')[0];
                                 let receivedDateDOM = element.getElementsByClassName('receivedDate')[0];
@@ -1405,10 +1421,9 @@
                 let status = currentDOM.dataset['status'];
                 let registerID = +row.dataset['registerid'] || 0;
                 let childRow = $(".child-row[data-registerid='" + registerID + "']");
-                
+
                 // Update cho button
-                if (status == "false")
-                {
+                if (status == "false") {
                     currentDOM.dataset['status'] = "true";
                     currentDOM.innerHTML = "<span class='glyphicon glyphicon-chevron-up'></span>"
                 }
@@ -1457,6 +1472,7 @@
             // Tạo HTML để thấy lịch sử nhận hàng
             function createReceivedProductHistoriesHTML(data) {
                 let html = "";
+                let index = 1;
 
                 data.forEach(item => {
                     let timestamp = item.ReceivedDate.match(/\d+/g);
@@ -1466,6 +1482,7 @@
                         receivedDate = (new Date(parseInt(timestamp[0]))).format('dd/MM');
 
                     html += "<tr>";
+                    html += "    <td class='index'>" + index + "</td>";
                     html += "    <td class='image'>";
                     html += "        <img src='/uploads/images/85x113/" + item.Image + "' /></td>";
                     html += "    <td class='code'>" + item.SKU + "</td>";
@@ -1475,6 +1492,8 @@
                     html += "    <td class='quantity'>" + formatThousands(+item.Quantity || 0) + "</td>";
                     html += "    <td class='received-date'>" + receivedDate + "</td>";
                     html += "</tr>";
+
+                    index += 1;
                 })
 
                 return html;
