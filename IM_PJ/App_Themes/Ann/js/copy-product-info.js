@@ -8,6 +8,10 @@
 
     function createTextArea(text) {
         textArea = document.createElement('textArea');
+        textArea.style.position = 'fixed';
+        textArea.style.left = '0';
+        textArea.style.top = '0';
+        textArea.style.opacity = '0';
         textArea.value = text;
         document.body.appendChild(textArea);
     }

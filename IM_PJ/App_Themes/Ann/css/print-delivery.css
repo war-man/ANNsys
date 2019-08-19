@@ -2,7 +2,7 @@
     text-transform: capitalize;
 }
 .delivery {
-  font-size: 14px;
+  font-size: 13px;
   color: #000;
   margin-right: 3px;
 }
@@ -166,6 +166,34 @@ h1.invoice-return {
 
 .delivery .table-2 table td.strong {
   font-weight: 600;
+}
+
+.cod-list .table-2 table tr:nth-child(odd) td {
+  border-bottom: 1px solid #fff;
+}
+
+.cod-list .table-2 table th, .cod-list .table-2 table td {
+    text-align: right;
+}
+
+.cod-list .table-2 table th:nth-child(1),
+                .cod-list .table-2 table td:nth-child(1) {
+    text-align: left;
+}
+
+.shipper-list .table-2 table th, .shipper-list .table-2 table td {
+    text-align: right;
+}
+
+.shipper-list .table-2 table th:nth-child(1) {
+    text-align: center;
+}
+.shipper-list .table-2 table th td {
+  text-align: left;
+}
+
+.shipper-list .table-2 table tr:nth-child(odd) td {
+  text-align: left;
 }
 
 .delivery .print-invoice-return table col.sanpham {

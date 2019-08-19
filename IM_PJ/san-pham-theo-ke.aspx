@@ -331,7 +331,7 @@
             <script src="/App_Themes/Ann/js/bootstrap-table/bootstrap-table.js"></script>
             <script src="/App_Themes/NewUI/js/select2/select2.min.js"></script>
             <script src="/App_Themes/Ann/js/master.js?v=2011"></script>
-            <script src="/App_Themes/Ann/js/copy-product-info.js?v=2011"></script>
+            <script src="/App_Themes/Ann/js/copy-product-info.js?v=15082019"></script>
             <script src="/App_Themes/Ann/js/sync-product-small.js?v=30052019"></script>
             <script src="/App_Themes/Ann/js/download-product-image.js?v=17072019"></script>
 

@@ -305,7 +305,7 @@
             </div>
         </div>
 
-        <script src="/App_Themes/Ann/js/copy-product-info.js?v=2011"></script>
+        <script src="/App_Themes/Ann/js/copy-product-info.js?v=15082019"></script>
         <script src="/App_Themes/Ann/js/sync-product.js?v=01082019"></script>
         <script src="/App_Themes/Ann/js/download-product-image.js?v=17072019"></script>
 

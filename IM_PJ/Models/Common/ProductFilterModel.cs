@@ -39,5 +39,6 @@ namespace IM_PJ.Models
         public DateTime? toDate { get; set; }
         // Tên người yêu cầu nhập hàng
         public int createdBy { get; set; }
+        public double price { get; set; }
     }
 }

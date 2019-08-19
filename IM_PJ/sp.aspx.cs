@@ -151,7 +151,7 @@ namespace IM_PJ
 
                     if (!string.IsNullOrEmpty(item.ProductContent))
                     {
-                        string content = Regex.Replace(item.ProductContent, @"<img\s[^>]*>(?:\s*?</img>)?", "").ToString();
+                        string content = Regex.Replace(item.ProductContent, "<.*?>", "").ToString();
                         html.Append("   <p>🔖 " + content.Substring(0, content.Length > 100 ? 100 : content.Length) + "</p>");
                     }
 
@@ -165,17 +165,17 @@ namespace IM_PJ
                     html.Append("     <div class='col-xs-12'>");
                     html.Append("          <div class='" + cssClass + "'>");
                     html.Append("               <div class='row'>");
-                    html.Append("                  <a href='javascript:;' class='btn primary-btn copy-btn h45-btn' onclick='copyProductInfo(" + item.ID + ");'><i class='fa fa-files-o' aria-hidden='true'></i> Copy</a>");
+                    html.Append("                  <a href='javascript:;' class='btn primary-btn copy-btn h45-btn' onclick='copyProductInfo(`" + item.ID + "`);'><i class='fa fa-files-o' aria-hidden='true'></i> Copy</a>");
                     html.Append("               </div>");
                     html.Append("          </div>");
                     html.Append("          <div class='" + cssClass + "'>");
                     html.Append("               <div class='row'>");
-                    html.Append("                  <a href ='javascript:;' class='btn primary-btn h45-btn' onclick='getAllProductImage(\"" + item.ProductSKU + "\");'><i class='fa fa-cloud-download' aria-hidden='true'></i> Tải</a>");
+                    html.Append("                  <a href ='javascript:;' class='btn primary-btn h45-btn' onclick='getAllProductImage(`" + item.ProductSKU + "`);'><i class='fa fa-cloud-download' aria-hidden='true'></i> Tải</a>");
                     html.Append("               </div>");
                     html.Append("          </div>");
                     html.Append("          <div class='" + cssClass + "'>");
                     html.Append("               <div class='row'>");
-                    html.Append("                  <a target='_blank' href='/dang-ky-nhap-hang?&textsearch=" + item.ProductSKU + "' class='btn primary-btn h45-btn download-btn'><i class='fa fa-cart-plus' aria-hidden='true'></i> Order</a>");
+                    html.Append("                  <a href='/dang-ky-nhap-hang?&textsearch=" + item.ProductSKU + "' class='btn primary-btn h45-btn download-btn'><i class='fa fa-cart-plus' aria-hidden='true'></i> Order</a>");
                     html.Append("               </div>");
                     html.Append("          </div>");
                     //if (config.HideProduct == 1)

@@ -159,7 +159,7 @@
                         </div>
                         <div class="col-xs-4">
                             <div class="row">
-                                <a href="/dang-ky-nhap-hang" class="btn primary-btn h45-btn btn-order"><i class="fa fa-cart-plus" aria-hidden="true"></i> Nhập hàng</a>
+                                <a href="/dang-ky-nhap-hang" class="btn primary-btn h45-btn btn-order"><i class="fa fa-cart-plus" aria-hidden="true"></i> Đặt hàng</a>
                             </div>
                         </div>
                     </div>
@@ -337,7 +337,7 @@
             <script src="/App_Themes/NewUI/js/select2/select2.min.js"></script>
             <script src="/App_Themes/Ann/js/master.js?v=2011"></script>
             
-            <script src="/App_Themes/Ann/js/copy-product-info.js?v=2011"></script>
+            <script src="/App_Themes/Ann/js/copy-product-info.js?v=15082019"></script>
             <script src="/App_Themes/Ann/js/sync-product-small.js?v=30052019"></script>
             <script src="/App_Themes/Ann/js/download-product-image.js?v=17072019"></script>
 

@@ -14,20 +14,13 @@ using System.Web.UI.WebControls;
 
 namespace IM_PJ
 {
-    public partial class xem_sp : System.Web.UI.Page
+    public partial class xem_nuoc_hoa : System.Web.UI.Page
     {
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
             {
-                if (Request.Cookies["loginHiddenPage"] != null)
-                {
-                    LoadData();
-                }
-                else
-                {
-                    Response.Redirect("/login-hidden-page");
-                }
+                LoadData();
             }
         }
 
@@ -39,10 +32,15 @@ namespace IM_PJ
                 var p = ProductController.GetByID(id);
                 if (p == null)
                 {
-                    PJUtils.ShowMessageBoxSwAlertError("Không tìm thấy sản phẩm " + id, "e", true, "/sp", Page);
+                    PJUtils.ShowMessageBoxSwAlertError("Không tìm thấy sản phẩm", "e", true, "/", Page);
                 }
                 else
                 {
+                    if (p.CategoryID != 44)
+                    {
+                        PJUtils.ShowMessageBoxSwAlertError("Không tìm thấy sản phẩm", "e", true, "/", Page);
+                    }
+
                     this.Title = String.Format("{0} - {1}", p.ProductTitle.ToTitleCase(), p.ProductSKU);
 
                     ViewState["ID"] = id;
@@ -50,50 +48,23 @@ namespace IM_PJ
                     ViewState["SKU"] = p.ProductSKU;
 
                     ltrProductName.Text = p.ProductSKU + " - " + p.ProductTitle;
-                    // Create order fileter
-                    var filter = new ProductFilterModel() { search = p.ProductSKU };
-                    // Create pagination
-                    var page = new PaginationMetadataModel();
-                    var a = ProductController.GetAllSql(filter, ref page);
-                    if(page.totalCount > 0)
-                    {
-                        foreach (var item in a)
-                        {
-                            string StockStatus = "";
-                            if(item.StockStatus == 1)
-                            {
-                                StockStatus = "Còn hàng";
-                            }
-                            else
-                            {
-                                StockStatus = "Hết hàng";
-                            }
-                            ltrProductStock.Text = "<p><strong>✱ Kho</strong>: " + StockStatus + " (" + item.TotalProductInstockQuantityLeft.ToString() + " cái)</p>";
-                        }
-                    }
-                    else
-                    {
-                        ltrProductStock.Text = "<p><strong>✱ Kho</strong>: Đang nhập hàng</p>";
-                    }
-
                     ltrRegularPrice.Text = "<p><strong>📌 Giá sỉ</strong>: " + (p.Regular_Price/1000).ToString() + "k</p>";
-
-                    ltrRetailPrice.Text = "<p><strong>📌 Giá lẻ</strong>: " + ((p.Retail_Price + 20000)/1000).ToString() + "k</p>";
+                    ltrRetailPrice.Text = "<p><strong>📌 Giá lẻ</strong>: " + (p.Retail_Price/1000).ToString() + "k</p>";
 
                     if (!string.IsNullOrEmpty(p.Materials))
                     {
-                        ltrMaterials.Text = "<p><strong>🔖 Chất liệu</strong>: " + p.Materials + "</p>";
+                        ltrContent.Text += "<p>" + p.Materials + "</p>";
                     }
 
                     if (!string.IsNullOrEmpty(p.ProductContent))
                     {
                         string content = Regex.Replace(p.ProductContent, @"<img\s[^>]*>(?:\s*?</img>)?", "").ToString();
-                        ltrContent.Text = "<p><strong>🔖 Mô tả</strong>: " + content + "</p>";
+                        ltrContent.Text += "<p>" + content + "</p>";
                     }
 
                     if (p.ProductImage != null)
                     {
-                        ProductThumbnail.Text = "<p><img src='" + Thumbnail.getURL(p.ProductImage, Thumbnail.Size.Large) + "'><a href='" + Thumbnail.getURL(p.ProductImage, Thumbnail.Size.Source) + "' download class='btn download-btn download-image h45-btn'><i class='fa fa-cloud-download'></i> Tải hình này</a></p>";
+                        ProductThumbnail.Text = "<p><img src='" + Thumbnail.getURL(p.ProductImage, Thumbnail.Size.Source) + "'><a href='" + Thumbnail.getURL(p.ProductImage, Thumbnail.Size.Source) + "' download class='btn download-btn download-image h45-btn'><i class='fa fa-cloud-download'></i> Tải hình này</a></p>";
                     }
 
                     var image = ProductImageController.GetByProductID(id);
@@ -104,7 +75,7 @@ namespace IM_PJ
                         {
                             if(img.ProductImage != p.ProductImage)
                             {
-                                imageGallery.Text += "<p><img src='" + Thumbnail.getURL(img.ProductImage, Thumbnail.Size.Large) + "'><a href='" + Thumbnail.getURL(img.ProductImage, Thumbnail.Size.Source) + "' download class='btn download-btn download-image h45-btn'><i class='fa fa-cloud-download'></i> Tải hình này</a></p>";
+                                imageGallery.Text += "<p><img src='" + Thumbnail.getURL(img.ProductImage, Thumbnail.Size.Source) + "'><a href='" + Thumbnail.getURL(img.ProductImage, Thumbnail.Size.Source) + "' download class='btn download-btn download-image h45-btn'><i class='fa fa-cloud-download'></i> Tải hình này</a></p>";
                             }
                         }
                     }
@@ -117,9 +88,9 @@ namespace IM_PJ
                     }
 
                     StringBuilder htmlButton = new StringBuilder();
-                    htmlButton.Append("<div class='" + css + "'>");
+                    htmlButton.Append("<div class='" + css +"'>");
                     htmlButton.Append("    <div class='row'>");
-                    htmlButton.Append("        <p><a href='javascript:;' class='btn primary-btn copy-btn h45-btn' onclick='copyProduct(`" + p.ID + "`);'><i class='fa fa-files-o' aria-hidden='true'></i> Copy</a></p>");
+                    htmlButton.Append("        <p><a href='javascript:;' class='btn primary-btn copy-btn h45-btn' onclick='copyProduct(`" + p.ID + "`);'><i class='fa fa-files-o' aria-hidden='true'></i> Copy mô tả</a></p>");
                     htmlButton.Append("    </div>");
                     htmlButton.Append("</div>");
 
@@ -194,7 +165,6 @@ namespace IM_PJ
 
                     html.Append("   <p>Mã: " + item.SKU + "</p>");
                     html.Append("   <p>Giá sỉ: " + string.Format("{0:N0}", item.Regular_Price) + "</p>");
-                    html.Append("   <p>Kho: " + PJUtils.StockStatusBySKU(1, item.SKU) + " (" + PJUtils.TotalProductQuantityInstock(1, item.SKU) + " cái)</p>");
                     html.Append("</div>");
                 }
             }

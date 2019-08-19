@@ -1193,7 +1193,7 @@
                     swal("Thông báo", "Chưa có đơn hàng nào được chọn!", "error");
                 }
                 else {
-                    $("#SettingModal").modal({ show: 'true', backdrop: 'static', keyboard: 'false' })
+                    $("#SettingModal").modal({ show: 'true', backdrop: 'static', keyboard: 'false' });
                 }
             }
 

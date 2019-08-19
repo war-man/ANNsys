@@ -611,7 +611,11 @@ namespace IM_PJ
                             }
                         }
                     }
-                    var vari = variableTemp.GroupBy(x => new { x.VariableName, x.VariableValue }).Select(x => new { VariableName = x.Key.VariableName, VariableValue = x.Key.VariableValue }).OrderBy(x => x.VariableName).ToList();
+                    var vari = variableTemp
+                                .GroupBy(x => new { x.VariableName, x.VariableValue })
+                                .Select(x => new { VariableName = x.Key.VariableName, VariableValue = x.Key.VariableValue })
+                                .OrderBy(x => x.VariableName)
+                                .ToList();
 
                     string stringVariable = vari[0].VariableName;
 

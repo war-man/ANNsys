@@ -10,7 +10,7 @@
 namespace IM_PJ {
     
     
-    public partial class xem_sp {
+    public partial class xem_nuoc_hoa {
         
         /// <summary>
         /// form12 control.

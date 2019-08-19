@@ -3,6 +3,7 @@ using IM_PJ.Models;
 using IM_PJ.Utils;
 using MB.Extensions;
 using Newtonsoft.Json;
+using NHST.Bussiness;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -131,7 +132,7 @@ namespace IM_PJ
             rs = RegisterProductController.Filter(filter, ref page);
 
             pagingall(rs, page);
-
+            ltrHeading.Text = "Danh sách đặt hàng (" + page.totalCount.ToString() + ")";
             ltrAccount.Text = "Tài khoản: <strong>" + acc.Username + "</strong>";
 
         }
@@ -150,7 +151,7 @@ namespace IM_PJ
 
                 foreach (var item in acs)
                 {
-                    html.AppendLine("<div id='" + item.id+ "' class='col-md-12 item-" + index + " product-item'");
+                    html.AppendLine("<div id='" + item.id+ "' class='col-xs-12 item-" + index + " product-item'");
                     html.AppendLine("    data-id='" + item.id + "'");
                     html.AppendLine("    data-customer='" + item.customer + "'");
                     html.AppendLine("    data-status='" + item.status + "'");
@@ -161,14 +162,14 @@ namespace IM_PJ
                     html.AppendLine(">");
                     html.AppendLine("    <div class='row'>");
                     html.AppendLine("        <div class='col-xs-12'>");
-                    html.AppendLine("            <p class='product-name'><a href='/xem-sp?id=" + item.productID + "'>" + item.sku + " - " + item.title + "</a></p>");
+                    html.AppendLine("            <p class='product-name'><a href='/xem-sp?id=" + item.productID + "'>" + item.sku + " - " + PJUtils.Truncate(item.title, 29) + "</a></p>");
                     html.AppendLine("        </div>");
                     html.AppendLine("    </div>");
                     html.AppendLine("    <div class='row'>");
-                    html.AppendLine("        <div class='col-xs-4 col-md-1'>");
+                    html.AppendLine("        <div class='col-xs-5 col-md-3'>");
                     html.AppendLine("            <p><a href='/xem-sp?id=" + item.productID + "'><img src='" + Thumbnail.getURL(item.image, Thumbnail.Size.Large) + "'></a></p>");
                     html.AppendLine("        </div>");
-                    html.AppendLine("        <div class='col-xs-8'>");
+                    html.AppendLine("        <div class='col-xs-7 col-md-9'>");
                     html.AppendLine("                <p class='customer'>" + item.customer.ToTitleCase() + "</p>");
                     
                     if (!string.IsNullOrEmpty(item.color))
@@ -205,11 +206,17 @@ namespace IM_PJ
                             break;
                     }
                     html.AppendLine("                </p>");
+                    html.AppendLine("                <p class='status'>Ngày đặt: " + String.Format("{0:HH:mm dd/MM}", item.createdDate) + "</p>");
+                    if (item.expectedDate != null)
+                    {
+                        html.AppendLine("                <p class='status'>Ngày về dự kiến: " + String.Format("{0:dd/MM}", item.expectedDate) + "</p>");
+                    }
                     html.AppendLine("        </div>");
                     html.AppendLine("    </div>");
-                    html.AppendLine("    <div class='row btn-handle'>");
+                    
                     if (item.status == (int)RegisterProductStatus.NoApprove)
                     {
+                        html.AppendLine("    <div class='row btn-handle'>");
                         html.AppendLine("          <div class='col-xs-12'>");
                         html.AppendLine("              <a href='javascript:;' class='bg-red remove-btn' onclick='removeRegister(" + item.id + ")'>");
                         html.AppendLine("                  <i class='glyphicon glyphicon-trash' aria-hidden='true'></i> Hủy</a>");
@@ -218,8 +225,9 @@ namespace IM_PJ
                         html.AppendLine("                  <i class='glyphicon glyphicon-edit' aria-hidden='true'></i> Chỉnh sửa</a>");
                         html.AppendLine("              </a>");
                         html.AppendLine("          </div>");
+                        html.AppendLine("    </div>");
                     }
-                    html.AppendLine("    </div>");
+                    
                     html.AppendLine("</div>");
 
                     if ((index + 1) % 4 == 0)

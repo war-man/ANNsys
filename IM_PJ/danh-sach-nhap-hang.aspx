@@ -32,6 +32,9 @@
             background-color: #FF675B;
             color: #fff;
         }
+        table.shop_table_responsive > tbody > tr:nth-of-type(2n) td {
+            border-top: solid 1px #e1e1e1!important;
+        }
         @media (max-width: 768px) {
             table.shop_table_responsive thead {
                 display: none;

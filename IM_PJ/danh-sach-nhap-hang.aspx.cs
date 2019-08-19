@@ -33,6 +33,7 @@ namespace IM_PJ
                         if (acc.RoleID == 0 || acc.RoleID == 1)
                         {
                             LoadCreatedBy();
+                            LoadData();
                         }
                         else
                         {
@@ -44,7 +45,6 @@ namespace IM_PJ
                 {
                     Response.Redirect("/dang-nhap");
                 }
-                LoadData();
             }
         }
 
@@ -245,9 +245,14 @@ namespace IM_PJ
                     html.AppendLine("       <button type='button' class='btn primary-btn h45-btn' data-toggle='modal' data-target='#RegisterProductModal' data-backdrop='static' data-keyboard='false' title='Cập nhật thông yêu cầu nhập hàng'>");
                     html.AppendLine("           <span class='glyphicon glyphicon-edit'></span>");
                     html.AppendLine("       </button>");
-                    html.AppendLine("       <button type='button' class='btn primary-btn remove-btn h45-btn' title='Hủy yêu cầu nhập hàng' onclick='removeRegister(" + item.id + ")'>");
-                    html.AppendLine("           <span class='glyphicon glyphicon-trash'></span>");
-                    html.AppendLine("       </button>");
+
+                    if (acc.RoleID == 0)
+                    {
+                        html.AppendLine("       <button type='button' class='btn primary-btn remove-btn h45-btn' title='Hủy yêu cầu nhập hàng' onclick='removeRegister(" + item.id + ")'>");
+                        html.AppendLine("           <span class='glyphicon glyphicon-trash'></span>");
+                        html.AppendLine("       </button>");
+                    }
+                    
                     html.AppendLine("   </td>");
                     html.AppendLine("</tr>");
                 }

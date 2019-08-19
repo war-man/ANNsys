@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="xem-sp.aspx.cs" Inherits="IM_PJ.xem_sp" EnableSessionState="ReadOnly" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="xem-nuoc-hoa.aspx.cs" Inherits="IM_PJ.xem_nuoc_hoa" EnableSessionState="ReadOnly" %>
 
 <!DOCTYPE html>
 <html>
@@ -49,13 +49,12 @@
             background-color: #000;
             color: #fff;
             border-radius: 0;
-            font-size: 16px;
+            font-size: 14px;
             text-transform: uppercase;
         }
         .btn.primary-btn {
             border-radius: 0;
-            font-size: 16px;
-            text-transform: uppercase;
+            font-size: 14px;
         }
         .btn.copy-btn {
             background-color: #E91E63;
@@ -67,6 +66,7 @@
             padding: 15px;
         }
         h3 {
+            font-size: 18px;
             margin-top: 10px;
         }
         .product-name a {
@@ -156,11 +156,89 @@
             <script src="/App_Themes/Ann/js/bootstrap-table/bootstrap-table.js"></script>
             <script src="/App_Themes/NewUI/js/select2/select2.min.js"></script>
             <script src="/App_Themes/Ann/js/master.js?v=2011"></script>
-            <script src="/App_Themes/Ann/js/copy-product-info.js?v=15082019"></script>
             <script src="/App_Themes/Ann/js/download-product-image.js?v=17072019"></script>
-
+            
             <script src="/App_Themes/Ann/js/HoldOn.js?v=2011"></script>
 
+            <script type="text/javascript">
+                window.Clipboard = (function (window, document, navigator) {
+                    var textArea,
+                        copy;
+
+                    function isOS() {
+                        return navigator.userAgent.match(/ipad|iphone/i);
+                    }
+
+                    function createTextArea(text) {
+                        textArea = document.createElement('textArea');
+                        textArea.style.position = 'fixed';
+                        textArea.style.left = '0';
+                        textArea.style.top = '0';
+                        textArea.style.opacity = '0';
+                        textArea.value = text;
+                        document.body.appendChild(textArea);
+                    }
+
+                    function selectText() {
+                        var range,
+                            selection;
+
+                        if (isOS()) {
+                            range = document.createRange();
+                            range.selectNodeContents(textArea);
+                            selection = window.getSelection();
+                            selection.removeAllRanges();
+                            selection.addRange(range);
+                            textArea.setSelectionRange(0, 999999);
+                        } else {
+                            textArea.select();
+                        }
+                    }
+
+                    function copyToClipboard() {
+                        document.execCommand('copy');
+                        document.body.removeChild(textArea);
+                    }
+
+                    copy = function (text) {
+                        createTextArea(text);
+                        selectText();
+                        copyToClipboard();
+                    };
+
+                    return {
+                        copy: copy
+                    };
+                })(window, document, navigator);
+
+
+                function copyProductInfo(id) {
+                    $('body').append($('<div>', {
+                        "class": 'copy-product-info hide'
+                    }));
+
+                    ajaxCopyInfo(id);
+
+                    Clipboard.copy($(".copy-product-info").text());
+
+                    $(".copy-product-info").remove();
+                }
+
+                function ajaxCopyInfo(id) 
+                {
+                    $.ajax({
+                        type: "POST",
+                        url: "nuoc-hoa.aspx/copyProductInfo",
+                        data: "{id: " + id + "}",
+                        contentType: "application/json; charset=utf-8",
+                        dataType: "json",
+                        async: false,
+                        success: function (data) {
+                            $(".copy-product-info").html(data.d);
+                        }
+                    });
+                }
+            </script>
             <script type="text/javascript">
 
                 function copyProduct(id) {

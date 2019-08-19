@@ -98,6 +98,9 @@
         .btn.btn-order {
             background-color: #000;
         }
+        .btn.btn-list-order {
+            background-color: #3eba0d;
+        }
         .btn.download-btn {
             background-color: #000;
             color: #fff;
@@ -165,7 +168,7 @@
                         </div>
                         <div class="col-xs-4">
                             <div class="row">
-                                <a href="/nhan-vien-dat-hang" class="btn primary-btn h45-btn btn-order"><i class="fa fa-cart-plus" aria-hidden="true"></i> DS nhập hàng</a>
+                                <a href="/nhan-vien-dat-hang" class="btn primary-btn h45-btn btn-list-order"><i class="fa fa-cart-plus" aria-hidden="true"></i> DS đặt hàng</a>
                             </div>
                         </div>
                     </div>
@@ -352,7 +355,7 @@
                                     <input type="text" id="txtCustomerName" class="form-control" placeholder="Nhập tên khách hàng" />
                                 </div>
                             </div>
-                            <div class="row form-group">
+                            <div class="row form-group row-variable">
                                 <div class="col-md-3 col-xs-4">
                                     <p>Thuộc tính</p>
                                 </div>
@@ -394,7 +397,7 @@
             <script src="/App_Themes/Ann/js/master.js?v=2011"></script>
             <script src="/App_Themes/NewUI/js/sweet/sweet-alert.js?v=3006" type="text/javascript"></script>
 
-            <script src="/App_Themes/Ann/js/copy-product-info.js?v=2011"></script>
+            <script src="/App_Themes/Ann/js/copy-product-info.js?v=15082019"></script>
             <script src="/App_Themes/Ann/js/sync-product-small.js?v=30052019"></script>
             <script src="/App_Themes/Ann/js/download-product-image.js?v=17072019"></script>
 
@@ -555,16 +558,21 @@
                         if (item.productID != 0 && item.variableID != 0) 
                         {
                             if (item.color) {
-                                variableValue = "Màu: " + item.color;
+                                variableValue = item.color;
                             }
                             if (item.size) {
-                                variableValue += " - Size: " + item.size;
+                                variableValue += " - " + item.size;
                             }
                         }
                         else 
                         {
                             variableValue = "Đủ màu - Đủ size";
                         }
+                        $('.row-variable').show();
+                    }
+                    else
+                    {
+                        $('.row-variable').hide();
                     }
                     $('#txtVariableValue').val(variableValue);
                     $('#registerModal').modal({ show: 'true', backdrop: 'static' });
@@ -622,7 +630,18 @@
                             success: (response) => {
                                 if (response.d == "1")
                                 {
-                                    swal("Thông báo", "Đăng ký thành công!", "success");
+                                    swal({
+                                        title: "Thông báo",
+                                        text: "Đăng ký thành công!",
+                                        showCancelButton: true,
+                                        closeOnConfirm: true,
+                                        cancelButtonText: "Xem danh sách",
+                                        confirmButtonText: "Đóng",
+                                    }, function (confirm) {
+                                        if (!confirm) {
+                                            location.replace("/nhan-vien-dat-hang");
+                                        }
+                                    });
                                 }
                                 $("#registerModal").find("#close").click();
                             },

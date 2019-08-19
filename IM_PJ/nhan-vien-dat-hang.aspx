@@ -14,6 +14,9 @@
     <link href="/App_Themes/NewUI/js/sweet/sweet-alert.css" rel="stylesheet" />
     <script type="text/javascript" src="/App_Themes/Ann/js/jquery-2.1.3.min.js"></script>
     <style>
+        .remove-btn {
+            margin-right: 15px;
+        }
         .customer {
             font-size: 16px;
             font-weight: bold;
@@ -119,7 +122,7 @@
             color: #fff;
         }
         .product-item {
-            margin-bottom: 40px;
+            margin-bottom: 20px;
             background-color: #fff;
             padding: 15px;
         }
@@ -170,7 +173,7 @@
                         </div>
                         <div class="col-xs-4">
                             <div class="row">
-                                <a href="/dang-ky-nhap-hang" class="btn primary-btn h45-btn btn-order"><i class="fa fa-cart-plus" aria-hidden="true"></i> Nhập hàng</a>
+                                <a href="/dang-ky-nhap-hang" class="btn primary-btn h45-btn btn-order"><i class="fa fa-cart-plus" aria-hidden="true"></i> Đặt hàng</a>
                             </div>
                         </div>
                     </div>
@@ -229,8 +232,8 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-12">
-                            <h3>Danh sách nhập hàng</h3>
+                        <div class="col-md-6 col-md-offset-3 col-xs-12">
+                            <h3><asp:Literal ID="ltrHeading" runat="server" EnableViewState="false"></asp:Literal></h3>
                             <p><asp:Literal ID="ltrAccount" runat="server" EnableViewState="false"></asp:Literal></p>
                             <div class="panel-table clear">
                                 <div class="clear">
@@ -270,7 +273,7 @@
                                     <input type="text" id="txtCustomerName" class="form-control" placeholder="Nhập tên khách hàng" />
                                 </div>
                             </div>
-                            <div class="row form-group">
+                            <div class="row form-group row-color">
                                 <div class="col-md-3 col-xs-4">
                                     <p>Màu</p>
                                 </div>
@@ -278,7 +281,7 @@
                                     <input type="text" id="txtColor" class="form-control text-right" disabled />
                                 </div>
                             </div>
-                            <div class="row form-group">
+                            <div class="row form-group row-size">
                                 <div class="col-md-3 col-xs-4">
                                     <p>Size</p>
                                 </div>
@@ -367,8 +370,26 @@
 
                     $('#txtCustomerName').val(register.customer);
                     $('#txtCustomerName').focus();
-                    $('#txtColor').val(register.color);
-                    $('#txtSize').val(register.size);
+                    if (register.color)
+                    {
+                        $('.row-color').show();
+                        $('#txtColor').val(register.color);
+                    }
+                    else
+                    {
+                        $('.row-color').hide();
+                    }
+
+                    if (register.size)
+                    {
+                        $('.row-size').show();
+                        $('#txtSize').val(register.size);
+                    }
+                    else
+                    {
+                        $('.row-size').hide();
+                    }
+                    
                     $('#txtQuantity').val(register.quantity);
                     $('#areaNote').val(register.note);
                     $('#registerModal').modal({ show: 'true', backdrop: 'static' });

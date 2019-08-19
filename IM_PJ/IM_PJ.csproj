@@ -474,6 +474,7 @@
       <LastGenOutput>IMModel.cs</LastGenOutput>
     </Content>
     <Content Include="san-pham-theo-ke.aspx" />
+    <Content Include="nuoc-hoa.aspx" />
     <Content Include="thong-ke-proship.aspx" />
     <Content Include="thong-ke-buu-dien.aspx" />
     <Content Include="nhan-vien-dat-hang.aspx" />
@@ -593,6 +594,7 @@
     <Content Include="xem-don-hang-doi-tra.aspx" />
     <Content Include="xem-bai-viet.aspx" />
     <Content Include="xem-bv.aspx" />
+    <Content Include="xem-nuoc-hoa.aspx" />
     <Content Include="xem-sp.aspx" />
     <Content Include="xem-san-pham.aspx" />
     <Content Include="getImageByLink.aspx" />
@@ -1067,6 +1069,13 @@
     </Compile>
     <Compile Include="san-pham-theo-ke.aspx.designer.cs">
       <DependentUpon>san-pham-theo-ke.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="nuoc-hoa.aspx.cs">
+      <DependentUpon>nuoc-hoa.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="nuoc-hoa.aspx.designer.cs">
+      <DependentUpon>nuoc-hoa.aspx</DependentUpon>
     </Compile>
     <Compile Include="thong-ke-proship.aspx.cs">
       <DependentUpon>thong-ke-proship.aspx</DependentUpon>
@@ -1896,6 +1905,13 @@
     </Compile>
     <Compile Include="xem-bv.aspx.designer.cs">
       <DependentUpon>xem-bv.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="xem-nuoc-hoa.aspx.cs">
+      <DependentUpon>xem-nuoc-hoa.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="xem-nuoc-hoa.aspx.designer.cs">
+      <DependentUpon>xem-nuoc-hoa.aspx</DependentUpon>
     </Compile>
     <Compile Include="xem-sp.aspx.cs">
       <DependentUpon>xem-sp.aspx</DependentUpon>

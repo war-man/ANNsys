@@ -943,7 +943,7 @@ namespace IM_PJ.Controllers
                 sql.AppendLine("FROM category;");
             }
             #endregion
-
+            
             #region Lấy id màu mà có chứa từ khóa
             // Filter by color product
             if (!String.IsNullOrEmpty(filter.color))
@@ -1026,6 +1026,16 @@ namespace IM_PJ.Controllers
                 sql.AppendLine(String.Format("        PRD.ProductSKU like N'%{0}%'", filter.search));
                 sql.AppendLine(String.Format("        OR PRD.ProductTitle like N'%{0}%'", filter.search));
                 sql.AppendLine(String.Format("        OR PRD.UnSignedTitle like N'%{0}%'", filter.search));
+                sql.AppendLine(String.Format("        OR PRD.Materials like N'%{0}%'", filter.search));
+                sql.AppendLine("    )");
+            }
+            #endregion
+
+            #region Tìm sản phẩm có giá bằng ...
+            if (filter.price > 0)
+            {
+                sql.AppendLine("    AND (");
+                sql.AppendLine(String.Format("        PRD.Regular_Price = {0}", filter.price));
                 sql.AppendLine("    )");
             }
             #endregion
