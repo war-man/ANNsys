@@ -197,7 +197,7 @@ namespace IM_PJ
 
                 foreach (var item in acs)
                 {
-                    var subProduct = RegisterProductController.GetReceivedProductHistory(item.id)
+                    var receivedProduct = RegisterProductController.GetReceivedProductHistory(item.id)
                         .GroupBy(g => new
                         {
                             registerID = g.RegisterID,
@@ -238,8 +238,8 @@ namespace IM_PJ
                     html.AppendLine("   <td><input type='checkbox' onchange='checkRegister($(this))'/></td>");
                     html.AppendLine("   <td data-title='Ảnh'><a target='_blank' href='/xem-san-pham?sku=" + item.sku + "'><img src='" + Thumbnail.getURL(item.image, Thumbnail.Size.Small) + "'></a></td>");
                     html.AppendLine("   <td data-title='Khách hàng' class='customer-td'><span class='name'>" + item.customer.ToTitleCase() + "</span>");
-                    html.AppendLine(String.Format("      <br><span class='note1'>{0}</span>", String.IsNullOrEmpty(item.note1) ? String.Empty: "Ghi chú: " + item.note1));
-                    html.AppendLine(String.Format("      <br><span class='note2'>{0}</span>", String.IsNullOrEmpty(item.note2) ? String.Empty : "Nội dung duyệt: " + item.note2));
+                    html.AppendLine(String.Format("      <br><span class='note1'>{0}</span>", String.IsNullOrEmpty(item.note1) ? String.Empty: "<strong>Ghi chú</strong>: " + item.note1));
+                    html.AppendLine(String.Format("      <br><span class='note2'>{0}</span>", String.IsNullOrEmpty(item.note2) ? String.Empty : "<strong>Nội dung duyệt</strong>: " + item.note2));
                     html.AppendLine("   </td>");
                     html.AppendLine("   <td data-title='Mã'>" + item.sku + "</td>");
                     html.AppendLine("   <td data-title='Sản phẩm'><a target='_blank' href='/xem-san-pham?sku=" + item.sku + "'>" + item.title + "</a></td>");
@@ -266,7 +266,10 @@ namespace IM_PJ
                     html.AppendLine("   </td>");
                     html.AppendLine("   <td data-title='Nhân viên'>" + item.staffName + "</td>");
                     html.AppendLine("   <td data-title='Ngày đặt'>" + String.Format("{0:dd/MM}", item.createdDate) + "</td>");
-                    html.AppendLine("   <td id='expectedDate' data-title='Ngày về dự kiến'>" + String.Format("{0:dd/MM}", item.expectedDate) + "</td>");
+                    if (receivedProduct.Count > 0)
+                        html.AppendLine("   <td id='expectedDate' data-title='Ngày về dự kiến'>" + String.Format("{0:dd/MM}", receivedProduct.Max(m => m.receivedDate)) + "</td>");
+                    else
+                        html.AppendLine("   <td id='expectedDate' data-title='Ngày về dự kiến'>" + String.Format("{0:dd/MM}", item.expectedDate) + "</td>");
                     html.AppendLine("   <td data-title='Thao tác' class='update-button' id='updateButton'>");
                     html.AppendLine("       <button type='button' class='btn primary-btn h45-btn' data-toggle='modal' data-target='#RegisterProductModal' data-backdrop='static' data-keyboard='false' title='Cập nhật thông yêu cầu nhập hàng'>");
                     html.AppendLine("           <span class='glyphicon glyphicon-edit'></span>");
@@ -285,7 +288,7 @@ namespace IM_PJ
                         html.AppendLine("               class='btn primary-btn btn-blue h45-btn show-sub-product'");
                         html.AppendLine("               title='Xem thông tin sản phẩm con'");
                         html.AppendLine("               data-status='false'");
-                        if (subProduct.Count == 0)
+                        if (receivedProduct.Count == 0)
                             html.AppendLine("               style='display:none;'");
                         html.AppendLine("               >");
                         html.AppendLine("           <span class='glyphicon glyphicon-chevron-down'></span>");
@@ -294,9 +297,11 @@ namespace IM_PJ
                     else
                     {
                         html.AppendLine("       <button type='button'");
-                        html.AppendLine("               class='btn primary-btn btn-blue h45-btn'");
+                        html.AppendLine("               class='btn primary-btn btn-blue h45-btn show-received-product-histories'");
                         html.AppendLine("               title='Xem thông tin nhận hàng'");
                         html.AppendLine(String.Format("               onclick='showReceivedProductHistories({0}, `{1}`)'", item.id, item.sku));
+                        if (receivedProduct.Count == 0)
+                            html.AppendLine("               style='display:none;'");
                         html.AppendLine("       >");
                         html.AppendLine("           <span class='glyphicon glyphicon-list-alt'></span>");
                         html.AppendLine("       </button>");
@@ -312,7 +317,7 @@ namespace IM_PJ
                     html.AppendLine("</tr>");
 
                     var subHTML = new StringBuilder();
-                    foreach (var subItem in subProduct)
+                    foreach (var subItem in receivedProduct)
                     {
                         subHTML.AppendLine("<tr class='child-row'");
                         subHTML.AppendLine("    data-registerid='" + subItem.registerID + "'");
@@ -348,7 +353,7 @@ namespace IM_PJ
                         subHTML.AppendLine("</tr>");
                     }
 
-                    if (!String.IsNullOrEmpty(subHTML.ToString()))
+                    if (item.productStyle == 2 && item.variableID == 0 && !String.IsNullOrEmpty(subHTML.ToString()))
                         html.AppendLine(subHTML.ToString());
                 }
 
