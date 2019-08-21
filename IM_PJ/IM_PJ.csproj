@@ -196,6 +196,7 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Data.Entity" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Net.Http.Formatting, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.3\lib\net45\System.Net.Http.Formatting.dll</HintPath>
@@ -475,6 +476,7 @@
     </Content>
     <Content Include="san-pham-theo-ke.aspx" />
     <Content Include="nuoc-hoa.aspx" />
+    <Content Include="thong-ke-doanh-thu-khach-hang.aspx" />
     <Content Include="thong-ke-proship.aspx" />
     <Content Include="thong-ke-buu-dien.aspx" />
     <Content Include="nhan-vien-dat-hang.aspx" />
@@ -928,6 +930,9 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>IMModel.edmx</DependentUpon>
     </Compile>
+    <Compile Include="Models\Pages\thong-ke-doanh-thu-khach-hang\CustomerModel.cs" />
+    <Compile Include="Models\Pages\thong-ke-doanh-thu-khach-hang\OrderInfoModel.cs" />
+    <Compile Include="Models\Pages\thong-ke-doanh-thu-khach-hang\ReportProfitCustomerModel.cs" />
     <Compile Include="Models\ReceivedProductHistory.cs">
       <DependentUpon>IMModel.tt</DependentUpon>
     </Compile>
@@ -1079,6 +1084,13 @@
     </Compile>
     <Compile Include="nuoc-hoa.aspx.designer.cs">
       <DependentUpon>nuoc-hoa.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="thong-ke-doanh-thu-khach-hang.aspx.cs">
+      <DependentUpon>thong-ke-doanh-thu-khach-hang.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="thong-ke-doanh-thu-khach-hang.aspx.designer.cs">
+      <DependentUpon>thong-ke-doanh-thu-khach-hang.aspx</DependentUpon>
     </Compile>
     <Compile Include="thong-ke-proship.aspx.cs">
       <DependentUpon>thong-ke-proship.aspx</DependentUpon>

@@ -1,9 +1,11 @@
 ﻿using IM_PJ.Models;
+using IM_PJ.Models.Pages.thong_ke_doanh_thu_khach_hang;
 using Newtonsoft.Json;
 using NHST.Bussiness;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.Entity.SqlServer;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
@@ -418,7 +420,7 @@ namespace IM_PJ.Controllers
                 {
                     year = new DateTime(2018, 6, 22);
                 }
-                
+
                 var orders = con.tbl_Order
                     .Select(x => new
                     {
@@ -483,7 +485,7 @@ namespace IM_PJ.Controllers
                 if (filter.shippingType.Count() > 0)
                 {
                     orders = orders.Where(x =>
-                       filter.shippingType.Contains(x.ShippingType.HasValue ? x.ShippingType.Value : 0) 
+                       filter.shippingType.Contains(x.ShippingType.HasValue ? x.ShippingType.Value : 0)
                     );
                 }
                 // Filter Transport Company
@@ -554,7 +556,8 @@ namespace IM_PJ.Controllers
                 #endregion
 
                 #region Lấy dữ liệu cần thiết cho việc filter liên kết bảng
-                var orderFilter = orders.Select(x => new {
+                var orderFilter = orders.Select(x => new
+                {
                     ID = x.ID,
                     CustomerID = x.CustomerID,
                     RefundsGoodsID = x.RefundsGoodsID
@@ -581,7 +584,8 @@ namespace IM_PJ.Controllers
                                     .Where(x =>
                                         x.ID.ToString() == search
                                     )
-                                    .Select(x => new {
+                                    .Select(x => new
+                                    {
                                         ID = x.ID,
                                         CustomerID = x.CustomerID,
                                         RefundsGoodsID = x.RefundsGoodsID
@@ -612,7 +616,8 @@ namespace IM_PJ.Controllers
                                         x.Zalo == search ||
                                         x.ShippingCode == search
                                     )
-                                    .Select(x => new {
+                                    .Select(x => new
+                                    {
                                         ID = x.ID,
                                         CustomerID = x.CustomerID,
                                         RefundsGoodsID = x.RefundsGoodsID
@@ -642,13 +647,14 @@ namespace IM_PJ.Controllers
                                     x.UnSignedNick.ToLower().Contains(search) ||
                                     x.ShippingCode.ToLower() == search
                                 )
-                                .Select(x => new {
+                                .Select(x => new
+                                {
                                     ID = x.ID,
                                     CustomerID = x.CustomerID,
                                     RefundsGoodsID = x.RefundsGoodsID
                                 });
                         }
-                        
+
                     }
                     else if (filter.searchType == (int)SearchType.Product)
                     {
@@ -670,7 +676,8 @@ namespace IM_PJ.Controllers
                             .Where(x =>
                                 x.SKU.ToUpper().StartsWith(search)
                             )
-                            .Select(x => new {
+                            .Select(x => new
+                            {
                                 ID = x.ID,
                                 CustomerID = x.CustomerID,
                                 RefundsGoodsID = x.RefundsGoodsID
@@ -709,7 +716,8 @@ namespace IM_PJ.Controllers
                             x.DelStartAt >= fromdate &&
                             x.DelStartAt <= todate
                         )
-                        .Select(x => new {
+                        .Select(x => new
+                        {
                             ID = x.ID,
                             CustomerID = x.CustomerID,
                             RefundsGoodsID = x.RefundsGoodsID
@@ -764,7 +772,8 @@ namespace IM_PJ.Controllers
                         );
                     }
 
-                    orderFilter = tempTrans.Select(x => new {
+                    orderFilter = tempTrans.Select(x => new
+                    {
                         ID = x.ID,
                         CustomerID = x.CustomerID,
                         RefundsGoodsID = x.RefundsGoodsID
@@ -795,7 +804,8 @@ namespace IM_PJ.Controllers
                             }
                         )
                         .Where(x => x.DeliveryTimes == filter.deliveryTimes)
-                        .Select(x => new {
+                        .Select(x => new
+                        {
                             ID = x.ID,
                             CustomerID = x.CustomerID,
                             RefundsGoodsID = x.RefundsGoodsID
@@ -825,7 +835,8 @@ namespace IM_PJ.Controllers
                             }
                         )
                         .Where(x => x.ShipperID == filter.shipper)
-                        .Select(x => new {
+                        .Select(x => new
+                        {
                             ID = x.ID,
                             CustomerID = x.CustomerID,
                             RefundsGoodsID = x.RefundsGoodsID
@@ -1325,7 +1336,8 @@ namespace IM_PJ.Controllers
                     )
                     .SelectMany(
                         x => x.t.DefaultIfEmpty(),
-                        (parent, child) => {
+                        (parent, child) =>
+                        {
                             var result = new OrderList()
                             {
                                 ID = parent.h.ID,
@@ -1385,7 +1397,8 @@ namespace IM_PJ.Controllers
                     )
                     .SelectMany(
                         x => x.d.DefaultIfEmpty(),
-                        (parent, child) => {
+                        (parent, child) =>
+                        {
                             var result = new OrderList()
                             {
                                 ID = parent.h.ID,
@@ -2517,7 +2530,7 @@ namespace IM_PJ.Controllers
                         SoldQuantity = Convert.ToInt32(x.Quantity),
                         SalePrice = x.Quantity * Convert.ToDouble(x.Price.HasValue ? x.Price.Value : 0),
                         SaleCost = x.Quantity * Convert.ToDouble(x.CostOfGood),
-                        TotalDiscount = Convert.ToDouble(x.TotalDiscount.HasValue? x.TotalDiscount.Value : 0),
+                        TotalDiscount = Convert.ToDouble(x.TotalDiscount.HasValue ? x.TotalDiscount.Value : 0),
                         TotalOtherFee = Convert.ToDouble(x.TotalOtherFee.HasValue ? x.TotalOtherFee.Value : 0),
                         TotalShippingFee = Convert.ToDouble(String.IsNullOrEmpty(x.TotalShippingFee) ? "0" : x.TotalShippingFee),
                     }
@@ -2803,7 +2816,8 @@ namespace IM_PJ.Controllers
             reader.Close();
 
             var result = list.GroupBy(g => g.DateDone)
-                .Select(x => new ProductReportModel() {
+                .Select(x => new ProductReportModel()
+                {
                     reportDate = x.Key,
                     totalOrder = x.Count(),
                     totalSold = x.Sum(s => s.Quantity),
@@ -2920,6 +2934,398 @@ namespace IM_PJ.Controllers
             public int tranSubID { get; set; }
             public string tranSubName { get; set; }
             public string shippingFee { get; set; }
+        }
+
+        public static ReportProfitCustomerModel reportProfitByCustomer(string phone, DateTime fromDate, DateTime toDate)
+        {
+            using (var con = new inventorymanagementEntities())
+            {
+                #region Trích xuất dữ liệu cần dùng
+
+                #region Lọc ra khách hàng đang cần xem
+                if (String.IsNullOrEmpty(phone))
+                    return null;
+
+                var customer = con.tbl_Customer
+                    .Where(x =>
+                        x.CustomerPhone.Equals(phone) ||
+                        x.CustomerPhone2.Equals(phone) ||
+                        x.CustomerPhoneBackup.Equals(phone)
+                    );
+
+                if (customer.Count() == 0)
+                    return null;
+                #endregion
+
+                #region Kiếm những hóa đơn mà khách hàng đã mua trong khoảng thời gian
+                var orders = con.tbl_Order
+                    .Join(
+                        customer,
+                        ord => ord.CustomerID,
+                        cus => cus.ID,
+                        (ord, cus) => ord
+                    )
+                    .Where(x => x.ExcuteStatus == (int)ExcuteStatus.Done)
+                    .Where(x => x.DateDone >= fromDate)
+                    .Where(x => x.DateDone <= toDate)
+                    .OrderByDescending(o => o.ID);
+                #endregion
+
+                #endregion
+
+                #region Lấy các thông tin cho xuất báo cáo
+
+                #region Lấy các sản phẩm mà khách hàng đã mua
+                var orderDetials = con.tbl_OrderDetail
+                    .Join(
+                        orders,
+                        det => det.OrderID,
+                        ord => ord.ID,
+                        (det, ord) => det
+                    )
+                    .OrderByDescending(o => o.OrderID)
+                    .ThenByDescending(o => o.ID)
+                    .ThenByDescending(o => o.ProductID)
+                    .ThenByDescending(o => o.ProductVariableID);
+
+                var productOrdered = con.tbl_Product
+                    .Join(
+                        orderDetials.Where(x => x.ProductVariableID == 0),
+                        p => p.ID,
+                        det => det.ProductID.Value,
+                        (p, det) => new { orderDetial = det, product = p }
+                    )
+                    .GroupBy(g => g.orderDetial.OrderID.Value)
+                    .Select(x => new
+                    {
+                        orderID = x.Key,
+                        quantity = x.Count(),
+                        totalCostOfGoods = x.Sum(s => s.product.CostOfGood.HasValue ? s.product.CostOfGood.Value : 0),
+                        totalPrice = x.Sum(s => s.orderDetial.Price.HasValue ? s.orderDetial.Price.Value : 0)
+                    })
+                    .OrderByDescending(o => o.orderID);
+
+                var variableOrdered = con.tbl_ProductVariable
+                    .Join(
+                        orderDetials.Where(x => x.ProductVariableID != 0),
+                        v => v.ID,
+                        det => det.ProductVariableID.Value,
+                        (v, det) => new { orderDetial = det, variable = v }
+                    )
+                    .GroupBy(g => g.orderDetial.OrderID.Value)
+                    .Select(x => new
+                    {
+                        orderID = x.Key,
+                        quantity = x.Count(),
+                        totalCostOfGoods = x.Sum(s => s.variable.CostOfGood.HasValue ? s.variable.CostOfGood.Value : 0),
+                        totalPrice = x.Sum(s => s.orderDetial.Price.HasValue ? s.orderDetial.Price.Value : 0)
+                    })
+                    .OrderByDescending(o => o.orderID);
+                #endregion
+
+                #region Lấy thông tin các sản phẩm khách hàng đổi trả
+                var refunds = con.tbl_RefundGoods
+                    .Join(
+                        orders.Where(x => x.RefundsGoodsID.HasValue),
+                        r => r.ID,
+                        o => o.RefundsGoodsID.Value,
+                        (r, o) => r
+                    )
+                    .Where(x => x.Status == 2) // Đã trừ tiền
+                    .OrderByDescending(o => o.ID);
+                #endregion
+
+                #region Lấy thông tin các loại phí khác
+                var feeOthers = con.Fees
+                    .Join(
+                        orders,
+                        f => f.OrderID,
+                        o => o.ID,
+                        (f, o) => f
+                    )
+                    .GroupBy(g => g.OrderID)
+                    .Select(x => new { orderID = x.Key, feePrice = x.Sum(s => s.FeePrice) })
+                    .OrderByDescending(o => o.orderID); ;
+                #endregion
+
+                #endregion
+
+                #region Dữ liệu tính toán xuất ra báo cáo
+
+                #region Lấy thông tin cho việc tính toán lợi nhuận trên từng đơn hàng
+                var profitInfo = orders
+                    .GroupJoin(
+                        productOrdered,
+                        o => o.ID,
+                        po => po.orderID,
+                        (o, po) => new
+                        {
+                            order = o,
+                            productOrdered = po
+                        }
+                    )
+                    .SelectMany(
+                        x => x.productOrdered.DefaultIfEmpty(),
+                        (parent, child) => new
+                        {
+                            order = parent.order,
+                            quantity = child != null ? child.quantity : 0,
+                            totalCostOfGoods = child != null ? child.totalCostOfGoods : 0,
+                            totalPrice = child != null ? child.totalPrice : 0
+                        }
+                    )
+                    .GroupJoin(
+                        variableOrdered,
+                        temp => temp.order.ID,
+                        vo => vo.orderID,
+                        (temp, vo) => new
+                        {
+                            order = temp.order,
+                            quantity = temp.quantity,
+                            totalCostOfGoods = temp.totalCostOfGoods,
+                            totalPrice = temp.totalPrice,
+                            variableOrdered = vo
+                        }
+                    )
+                    .SelectMany(
+                        x => x.variableOrdered.DefaultIfEmpty(),
+                        (parent, child) => new
+                        {
+                            orderID = parent.order.ID,
+                            quantity = parent.quantity + (child != null ? child.quantity : 0),
+                            totalCostOfGoods = parent.totalCostOfGoods + (child != null ? child.totalCostOfGoods : 0),
+                            totalPrice = parent.totalPrice + (child != null ? child.totalPrice : 0),
+                            totalDiscount = parent.order.TotalDiscount.HasValue ? parent.order.TotalDiscount.Value : 0
+                        }
+                    );
+                #endregion
+
+                #region Lấy thông tin các loại phí trên từng đơn hàng
+                var feeInfo = orders
+                    .GroupJoin(
+                        feeOthers,
+                        o => o.ID,
+                        f => f.orderID,
+                        (o, f) => new
+                        {
+                            order = o,
+                            feeOther = f
+                        }
+                    )
+                    .SelectMany(
+                        x => x.feeOther.DefaultIfEmpty(),
+                        (parent, child) => new
+                        {
+                            orderID = parent.order.ID,
+                            feeShipping = parent.order.FeeShipping,
+                            feeOther = child != null ? child.feePrice : 0
+                        }
+                    );
+                #endregion
+
+                #region Lấy thông tin các hàng đổi trả
+                var refundDetail = refunds
+                    .Join(
+                        con.tbl_RefundGoodsDetails,
+                        h => h.ID,
+                        b => b.RefundGoodsID,
+                        (h, b) => b
+                    );
+
+                var productRefund = con.tbl_Product
+                    .Join(
+                        refundDetail.Where(x => x.ProductType == 1),
+                        p => p.ProductSKU,
+                        rfd => rfd.SKU,
+                        (p, rfd) => new { refundDetail = rfd, product = p }
+                    )
+                    .GroupBy(g => g.refundDetail.RefundGoodsID.Value)
+                    .ToList()
+                    .Select(x => new
+                    {
+                        refundID = x.Key,
+                        quantity = x.Count(),
+                        totalRefundCapital = x.Sum(s => s.product.CostOfGood.HasValue ? s.product.CostOfGood.Value : 0),
+                        totalRefundMoney = x.Sum(s => Convert.ToInt32(s.refundDetail.TotalPriceRow))
+                    })
+                    .OrderByDescending(o => o.refundID);
+
+                var variableRefund = con.tbl_ProductVariable
+                    .Join(
+                        refundDetail.Where(x => x.ProductType == 2),
+                        v => v.SKU,
+                        rfd => rfd.SKU,
+                        (v, rfd) => new { refundDetail = rfd, variable = v }
+                    )
+                    .GroupBy(g => g.refundDetail.RefundGoodsID.Value)
+                    .ToList()
+                    .Select(x => new
+                    {
+                        refundID = x.Key,
+                        quantity = x.Count(),
+                        totalRefundCapital = x.Sum(s => s.variable.CostOfGood.HasValue ? s.variable.CostOfGood.Value : 0),
+                        totalRefundMoney = x.Sum(s => Convert.ToInt32(s.refundDetail.TotalPriceRow))
+                    })
+                    .OrderByDescending(o => o.refundID);
+                #endregion
+
+                #endregion
+
+                #region Thực thi lấy dữ liệu từ dưới database lên
+                var customerFilter = customer.FirstOrDefault();
+                var orderFilter = orders.ToList();
+                var refundFilter = refunds.ToList();
+                var profitInfoFilter = profitInfo.ToList();
+                var feeInfoFilter = feeInfo.ToList();
+
+                #region Thực thi lấy thông tin dữ liệu đỗi trả
+                var refundInfo = orderFilter
+                    .GroupJoin(
+                        refundFilter,
+                        o => o.RefundsGoodsID,
+                        r => r.ID,
+                        (o, r) => new { order = o, refund = r }
+                    )
+                    .SelectMany(
+                        x => x.refund.DefaultIfEmpty(),
+                        (parent, child) => new
+                        {
+                            order = parent.order,
+                            refund = child
+                        }
+                    )
+                    .GroupJoin(
+                        productRefund,
+                        temp => temp.order.RefundsGoodsID,
+                        p => p.refundID,
+                        (temp, p) => new
+                        {
+                            order = temp.order,
+                            refund = temp.refund,
+                            productRefund = p
+                        }
+                    )
+                    .SelectMany(
+                        x => x.productRefund.DefaultIfEmpty(),
+                        (parent, child) => new
+                        {
+                            order = parent.order,
+                            refund = parent.refund,
+                            productRefund = child
+                        }
+                    )
+                    .GroupJoin(
+                        variableRefund,
+                        temp => temp.order.RefundsGoodsID,
+                        v => v.refundID,
+                        (temp, v) => new
+                        {
+                            order = temp.order,
+                            refund = temp.refund,
+                            productRefund = temp.productRefund,
+                            variableRefund = v
+                        }
+                    )
+                    .SelectMany(
+                        x => x.variableRefund.DefaultIfEmpty(),
+                        (parent, child) => new
+                        {
+                            order = parent.order,
+                            refund = parent.refund,
+                            productRefund = parent.productRefund,
+                            variableRefund = child
+                        }
+                    )
+                    .Select(x => new {
+                        orderID = x.order.ID,
+                        quantity = x.refund != null ? 1 : 0,
+                        quantityProduct = (x.productRefund != null ? x.productRefund.quantity : 0) + (x.variableRefund != null ? x.variableRefund.quantity : 0),
+                        totalRefundCapital = (x.productRefund != null ? x.productRefund.totalRefundCapital : 0) + (x.variableRefund != null ? x.variableRefund.totalRefundCapital : 0),
+                        totalRefundMoney = (x.productRefund != null ? x.productRefund.totalRefundMoney : 0) + (x.variableRefund != null ? x.variableRefund.totalRefundMoney : 0),
+                        totalRefundFee = x.refund != null ? Convert.ToInt32(x.refund.TotalRefundFee) : 0,
+                    });
+                #endregion
+
+                #region Tổng hợp các dữ liệu cần lấy
+                var orderInfo = orderFilter
+                    .Join(
+                        profitInfo,
+                        o => o.ID,
+                        p => p.orderID,
+                        (o, p) => new
+                        {
+                            order = o,
+                            profit = p
+                        }
+                    )
+                    .Join(
+                        feeInfo,
+                        temp => temp.order.ID,
+                        f => f.orderID,
+                        (tem, f) => new
+                        {
+                            order = tem.order,
+                            profit = tem.profit,
+                            fee = f
+                        }
+                    )
+                    .Join(
+                        refundInfo,
+                        temp => temp.order.ID,
+                        rf => rf.orderID,
+                        (tem, rf) => new
+                        {
+                            order = tem.order,
+                            profit = tem.profit,
+                            fee = tem.fee,
+                            refund = rf
+                        }
+                    )
+                    .ToList();
+                #endregion
+
+                #endregion
+
+                #region Xuất data cho báo cáo
+                var result = new ReportProfitCustomerModel()
+                {
+                    customer = new CustomerModel()
+                    {
+                        id = customerFilter.ID,
+                        name = customerFilter.CustomerName,
+                        nick = customerFilter.Nick,
+                        phone = !String.IsNullOrEmpty(customerFilter.CustomerPhone) ? customerFilter.CustomerPhone :
+                            !String.IsNullOrEmpty(customerFilter.CustomerPhone2) ? customerFilter.CustomerPhone2 : customerFilter.CustomerPhoneBackup,
+                        address = customerFilter.CustomerAddress,
+                        zalo = customerFilter.Zalo,
+                        facebook = customerFilter.Facebook
+                    },
+
+                    data = orderInfo
+                        .GroupBy(g => g.order.DateDone.Value.ToString("yyyy-MM-dd"))
+                        .Select(x => new OrderInfoModel()
+                        {
+                            dateDone = DateTime.Parse(x.Key),
+                            quantityOrder = x.Count(),
+                            quantityProduct = x.Sum(s => s.profit.quantity),
+                            costOfGoods = x.Sum(s => s.profit.totalCostOfGoods),
+                            price = x.Sum(s => s.profit.totalPrice),
+                            discount = x.Sum(s => s.profit.totalDiscount),
+                            feeShipping = x.Sum(s => !String.IsNullOrEmpty(s.fee.feeShipping) ? Convert.ToDouble(s.fee.feeShipping) : 0),
+                            feeOther = x.Sum(s => Convert.ToDouble(s.fee.feeOther)),
+                            quantityRefund = x.Sum(s => s.refund.quantity),
+                            quantityProductRefund = x.Sum(s => s.refund.quantityProduct),
+                            refundCapital = x.Sum(s => s.refund.totalRefundCapital),
+                            refundMoney = x.Sum(s => s.refund.totalRefundMoney),
+                            refundFee = x.Sum(s => s.refund.totalRefundFee)
+                        })
+                        .OrderBy(o => o.dateDone)
+                        .ToList()
+                };
+                #endregion
+
+                return result;
+            }
         }
     }
 }
