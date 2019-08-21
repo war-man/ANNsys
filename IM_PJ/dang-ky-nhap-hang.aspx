@@ -175,12 +175,12 @@
                     <div class="row">
                         <div class="col-xs-4">
                             <div class="row">
-                                <a href="/sp" class="btn primary-btn h45-btn btn-product"><i class="fa fa-sign-in" aria-hidden="true"></i>Sản phẩm</a>
+                                <a href="/sp" class="btn primary-btn h45-btn btn-product"><i class="fa fa-sign-in" aria-hidden="true"></i> Sản phẩm</a>
                             </div>
                         </div>
                         <div class="col-xs-4">
                             <div class="row">
-                                <a href="/bv" class="btn primary-btn h45-btn btn-post"><i class="fa fa-sign-in" aria-hidden="true"></i>Bài viết</a>
+                                <a href="/bv" class="btn primary-btn h45-btn btn-post"><i class="fa fa-sign-in" aria-hidden="true"></i> Bài viết</a>
                             </div>
                         </div>
                         <div class="col-xs-4">
@@ -586,9 +586,7 @@
                                                           item.numberChild,
                                                           0); // Số lượng đăng ký cho từng cá thể con
                     let variableValue = "Không có";
-                    let areaNoteDOM = $("#areaNote");
-
-                    areaNoteDOM.html("");
+                    
                     if (item.productStyle == 2) {
                         if (item.productID != 0 && item.variableID != 0) {
                             if (item.color) {
@@ -600,7 +598,6 @@
                         }
                         else {
                             variableValue = "Đủ màu - Đủ size";
-                            areaNoteDOM.html("Sản phẩm con là " + item.numberChild + " loại.\n");
                         }
                         $('.row-variable').show();
                     }
@@ -616,6 +613,7 @@
                         $("#registerModal").find("#subProductInfo").css("display", "");
                     else
                         $("#registerModal").find("#subProductInfo").css("display", "none");
+                    $("#areaNote").html("");
                     // Show modal
                     $('#registerModal').modal({ show: 'true', backdrop: 'static' });
                 }
@@ -649,6 +647,7 @@
                             if (productRegister.productID && productRegister.variableID == "") {
                                 productRegister.color = "Đủ màu";
                                 productRegister.size = "Đủ size";
+                                productRegister.note1 = "Đặt đủ màu đủ size " + productRegister.quantity + " cái.\n" + productRegister.note1
                             }
                         }
                         else {

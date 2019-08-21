@@ -96,10 +96,32 @@ namespace IM_PJ
             var acc = AccountController.GetByUsername(username);
             if (acc != null)
             {
+                DateTime DateConfig = new DateTime(2018, 6, 21);
+
+                DateTime FromDate = DateConfig;
+                DateTime ToDate = DateTime.Now;
+
+                if (!String.IsNullOrEmpty(Request.QueryString["fromdate"]))
+                {
+                    FromDate = Convert.ToDateTime(Request.QueryString["fromdate"]);
+                }
+
+                if (!String.IsNullOrEmpty(Request.QueryString["todate"]))
+                {
+                    ToDate = Convert.ToDateTime(Request.QueryString["todate"]).AddDays(1).AddMinutes(-1);
+                }
+
+                rFromDate.SelectedDate = FromDate;
+                rFromDate.MinDate = DateConfig;
+                rFromDate.MaxDate = DateTime.Now;
+
+                rToDate.SelectedDate = ToDate;
+                rToDate.MinDate = DateConfig;
+                rToDate.MaxDate = DateTime.Now;
+
                 string TextSearch = "";
                 int Province = 0;
                 string CreatedBy = "";
-                string CreatedDate = "";
                 string Sort = "";
 
                 if (Request.QueryString["textsearch"] != null)
@@ -114,10 +136,6 @@ namespace IM_PJ
                 {
                     Province = Request.QueryString["province"].ToInt();
                 }
-                if (Request.QueryString["createddate"] != null)
-                {
-                    CreatedDate = Request.QueryString["createddate"];
-                }
                 if (Request.QueryString["sort"] != null)
                 {
                     Sort = Request.QueryString["sort"];
@@ -126,12 +144,11 @@ namespace IM_PJ
                 txtTextSearch.Text = TextSearch;
                 ddlProvince.SelectedValue = Province.ToString();
                 ddlCreatedBy.SelectedValue = CreatedBy.ToString();
-                ddlCreatedDate.SelectedValue = CreatedDate.ToString();
                 ddlSort.SelectedValue = Sort.ToString();
 
                 List<CustomerOut> rs = new List<CustomerOut>();
 
-                rs = CustomerController.Filter(TextSearch, CreatedBy, Province, CreatedDate, Sort);
+                rs = CustomerController.Filter(TextSearch, CreatedBy, Province, Sort, FromDate, ToDate);
 
                 if (acc.RoleID != 0)
                 {
@@ -428,9 +445,14 @@ namespace IM_PJ
                 request += "&createdby=" + ddlCreatedBy.SelectedValue;
             }
 
-            if (ddlCreatedDate.SelectedValue != "")
+            if (rFromDate.SelectedDate.HasValue)
             {
-                request += "&createddate=" + ddlCreatedDate.SelectedValue;
+                request += "&fromdate=" + rFromDate.SelectedDate.ToString();
+            }
+
+            if (rToDate.SelectedDate.HasValue)
+            {
+                request += "&todate=" + rToDate.SelectedDate.ToString();
             }
 
             if (ddlSort.SelectedValue != "")

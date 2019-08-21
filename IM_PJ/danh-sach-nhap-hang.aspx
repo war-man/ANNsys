@@ -6,10 +6,45 @@
     <script src="/Scripts/moment-with-locales.min.js"></script>
     <script src="/Scripts/bootstrap-datetimepicker.min.js"></script>
     <style>
-        .table-new-product .img-product {
+        .table-new-product .col-checkbox {
+            width: 2%;
+        }
+        .table-new-product .col-image {
             width: 7%;
         }
-
+        .table-new-product .col-customer {
+            width: 23%;
+        }
+        .table-new-product .col-product {
+            width: 13%;
+        }
+        .table-new-product .col-color {
+            width: 8%;
+        }
+        .table-new-product .col-size {
+            width: 5%;
+        }
+        .table-new-product .col-quantity-request {
+            width: 4%;
+        }
+        .table-new-product .col-quantity-in {
+            width: 4%;
+        }
+        .table-new-product .col-status {
+            width: 7%;
+        }
+        .table-new-product .col-createdby {
+            width: 9%;
+        }
+        .table-new-product .col-createddate {
+            width: 5%;
+        }
+        .table-new-product .col-datein {
+            width: 5%;
+        }
+        .table-new-product .col-action {
+            width: 8%;
+        }
         .table-new-product .customer-td span.name {
             font-weight: bold;
             font-size: 16px;
@@ -387,27 +422,27 @@
                             <div class="row">
                                 <div class="col-md-2 col-xs-4">
                                     <a id="filterChoosed" href="javascript:;" class="btn primary-btn fw-btn width-100" onclick="getRegisterProductSession()">
-                                        <i class="fa fa-inbox" aria-hidden="true"></i>Đã chọn
+                                        <i class="fa fa-inbox" aria-hidden="true"></i> Đã chọn
                                     </a>
                                 </div>
                                 <div class="col-md-2 col-xs-4">
                                     <a href="javascript:;" class="btn primary-btn fw-btn width-100" onclick="removeChoosed()">
-                                        <i class="fa fa-remove" aria-hidden="true"></i>Bỏ chọn
+                                        <i class="fa fa-remove" aria-hidden="true"></i> Bỏ chọn
                                     </a>
                                 </div>
                                 <div class="col-md-2 col-xs-4">
                                     <a id="approveChoosed" href="javascript:;" class="btn primary-btn fw-btn width-100" onclick="approveChoosed()">
-                                        <i class="fa fa-check" aria-hidden="true"></i>Duyệt
+                                        <i class="fa fa-check" aria-hidden="true"></i> Duyệt
                                     </a>
                                 </div>
                                 <div class="col-md-2 col-xs-4">
                                     <a id="orderingChoosed" href="javascript:;" class="btn primary-btn fw-btn width-100" onclick="orderingChoosed()">
-                                        <i class="fa fa-cubes" aria-hidden="true"></i>Đặt hàng
+                                        <i class="fa fa-cubes" aria-hidden="true"></i> Đặt hàng
                                     </a>
                                 </div>
                                 <div class="col-md-2 col-xs-4">
                                     <a id="doneChoosed" href="javascript:;" class="btn primary-btn fw-btn width-100" onclick="doneChoosed()">
-                                        <i class="fa fa-truck" aria-hidden="true"></i>Hàng đã về
+                                        <i class="fa fa-truck" aria-hidden="true"></i> Hàng về
                                     </a>
                                 </div>
                             </div>
@@ -494,17 +529,17 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row">
+                        <div class="row form-group">
                             <div class="col-md-3 col-xs-4">
-                                <p>Ghi chú 1</p>
+                                <p>Nhân viên</p>
                             </div>
                             <div class="col-md-9 col-xs-8">
                                 <asp:TextBox ID="txtNote1" runat="server" CssClass="form-control text-left" placeholder="Ghi chú khi đặt hàng" Rows="3"></asp:TextBox>
                             </div>
                         </div>
-                        <div class="row">
+                        <div class="row form-group">
                             <div class="col-md-3 col-xs-4">
-                                <p>Ghi chú 2</p>
+                                <p>Quản lý</p>
                             </div>
                             <div class="col-md-9 col-xs-8">
                                 <asp:TextBox ID="txtNote2" runat="server" CssClass="form-control text-left" placeholder="Ghi chú khi duyệt đặt hàng" Rows="3"></asp:TextBox>
@@ -794,12 +829,12 @@
 
                         let note1DOM = row.find(".note1");
                         if (note1)
-                            note1DOM.html("Ghi chú: " + note1);
+                            note1DOM.html("<strong>Nhân viên:</strong> " + note1);
                         else
                             note1DOM.html("");
                         let note2DOM = row.find(".note2");
                         if (note2)
-                            note2DOM.html("Nội dung duyệt: " + note2);
+                            note2DOM.html("<strong>Quản lý:</strong> " + note2);
                         else
                             note2DOM.html("");
 
@@ -1012,12 +1047,12 @@
 
                             let note1DOM = row.find(".note1");
                             if (item.note1)
-                                note1DOM.html("Ghi chú: " + item.note1);
+                                note1DOM.html("<strong>Nhân viên:</strong> " + item.note1);
                             else
                                 note1DOM.html("");
                             let note2DOM = row.find(".note2");
                             if (item.note2)
-                                note2DOM.html("Nội dung duyệt: " + item.note2);
+                                note2DOM.html("<strong>Quản lý:</strong> " + item.note2);
                             else
                                 note2DOM.html("");
 

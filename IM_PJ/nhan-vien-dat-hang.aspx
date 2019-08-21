@@ -142,7 +142,7 @@
             font-size: 20px;
             color: #ff0023;
         }
-        .bg-green, .bg-red, .bg-yellow {
+        .bg-green, .bg-red, .bg-yellow, .bg-blue {
             display: initial;
         }
         .btn-modal {
@@ -331,7 +331,7 @@
                         , color
                         , size
                         , quantity
-                        , note
+                        , note1
                     ) {
                         this.id = id;
                         this.customer = customer;
@@ -339,7 +339,7 @@
                         this.color = color;
                         this.size = size;
                         this.quantity = quantity;
-                        this.note = note;
+                        this.note1 = note1;
                     }
                 }
 
@@ -365,7 +365,7 @@
                         registerDOM.data('color'),
                         registerDOM.data('size'),
                         registerDOM.data('quantity'),
-                        registerDOM.data('note')
+                        registerDOM.data('note1')
                     );
 
                     $('#txtCustomerName').val(register.customer);
@@ -391,14 +391,14 @@
                     }
                     
                     $('#txtQuantity').val(register.quantity);
-                    $('#areaNote').val(register.note);
+                    $('#areaNote').val(register.note1);
                     $('#registerModal').modal({ show: 'true', backdrop: 'static' });
                 }
 
                 function updateRegister() {
                     let customer = $("#txtCustomerName").val() || "";
                     let quantity = +$("#txtQuantity").val() || 0;
-                    let note = $("#areaNote").val() || "";
+                    let note1 = $("#areaNote").val() || "";
 
                     if (!quantity) {
                         $("#txtQuantity").focus();
@@ -406,10 +406,15 @@
                         return alert("Số lượng bạn nhập không đúng");
                     }
 
+                    if (!customer) {
+                        $("#txtCustomerName").focus();
+                        return alert("Chưa nhập tên khách hàng");
+                    }
+
                     // Lấy dữ liệu nhập từ modal
                     register.customer = customer;
                     register.quantity = quantity;
-                    register.note = note;
+                    register.note1 = note1;
 
                     // Truyền dữ liệu xuống server
                     $.ajax({
@@ -422,11 +427,11 @@
                             let registerDOM = $("#" + register.id);
                             registerDOM.attr('data-customer', register.customer),
                             registerDOM.attr('data-quantity', register.quantity),
-                            registerDOM.attr('data-note', register.note)
+                            registerDOM.attr('data-note1', register.note1)
 
                             registerDOM.find(".customer").html(register.customer);
                             registerDOM.find(".quantity").html("Số lượng: " + formatThousands(register.quantity));
-
+                            registerDOM.find(".note1").html("<strong>Nhân viên:</strong> " + register.note1);
                             $("#registerModal").find("#close").click();
                         },
                         error: (xmlhttprequest, textstatus, errorthrow) => {

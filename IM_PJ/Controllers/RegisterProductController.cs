@@ -227,7 +227,7 @@ namespace IM_PJ.Controllers
                                 statusName = "Đã đặt hàng";
                                 break;
                             case (int)RegisterProductStatus.Done:
-                                statusName = "Hàng đã về";
+                                statusName = "Hàng về";
                                 break;
                             default:
                                 statusName = "Chưa duyệt";

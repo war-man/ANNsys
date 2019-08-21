@@ -281,48 +281,12 @@ namespace IM_PJ.Controllers
             return list;
         }
 
-        public static List<CustomerOut> Filter(string text, string by, int Province, string CreatedDate, string Sort)
+        public static List<CustomerOut> Filter(string text, string by, int Province, string Sort, DateTime FromDate, DateTime ToDate)
         {
             var result = new List<CustomerOut>();
 
             using (var dbe = new inventorymanagementEntities())
             {
-                DateTime fromdate = DateTime.Today;
-                DateTime todate = DateTime.Now;
-
-                switch (CreatedDate)
-                {
-                    case "today":
-                        fromdate = DateTime.Today;
-                        todate = DateTime.Now;
-                        break;
-                    case "yesterday":
-                        fromdate = fromdate.AddDays(-1);
-                        todate = DateTime.Today;
-                        break;
-                    case "beforeyesterday":
-                        fromdate = DateTime.Today.AddDays(-2);
-                        todate = DateTime.Today.AddDays(-1);
-                        break;
-                    case "week":
-                        int days = DateTime.Today.DayOfWeek == DayOfWeek.Sunday ? 7 : (int)DateTime.Today.DayOfWeek;
-                        fromdate = fromdate.AddDays(-days + 1);
-                        todate = DateTime.Now;
-                        break;
-                    case "thismonth":
-                        fromdate = new DateTime(fromdate.Year, fromdate.Month, 1);
-                        todate = DateTime.Now;
-                        break;
-                    case "7days":
-                        fromdate = DateTime.Today.AddDays(-6);
-                        todate = DateTime.Now;
-                        break;
-                    case "30days":
-                        fromdate = DateTime.Today.AddDays(-29);
-                        todate = DateTime.Now;
-                        break;
-                }
-
                 var customers = dbe.tbl_Customer
                     .Where(
                         x =>
@@ -342,7 +306,7 @@ namespace IM_PJ.Controllers
                     )
                     .Where(x => Province <= 0 || (Province > 0 && x.ProvinceID == Province))
                     .Where(x => string.IsNullOrEmpty(by) || (!string.IsNullOrEmpty(by) && x.CreatedBy == by))
-                    .Where(x => string.IsNullOrEmpty(CreatedDate) || (!string.IsNullOrEmpty(CreatedDate) && x.CreatedDate >= fromdate && x.CreatedDate <= todate))
+                    .Where(x => (string.IsNullOrEmpty(FromDate.ToString()) && string.IsNullOrEmpty(ToDate.ToString())) || (!string.IsNullOrEmpty(FromDate.ToString()) && !string.IsNullOrEmpty(ToDate.ToString()) && x.CreatedDate >= FromDate && x.CreatedDate <= ToDate))
                     .OrderBy(x => x.ID);
 
                 // Get customer of province

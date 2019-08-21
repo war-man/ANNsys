@@ -172,20 +172,19 @@ namespace IM_PJ
             StringBuilder html = new StringBuilder();
             html.AppendLine("<thead>");
             html.AppendLine("<tr>");
-            html.AppendLine("    <th><input id='checkRegisterAll' type='checkbox'/></th>");
-            html.AppendLine("    <th class='img-product'>Ảnh</th>");
+            html.AppendLine("    <th class='col-checkbox'><input id='checkRegisterAll' type='checkbox'/></th>");
+            html.AppendLine("    <th class='col-image'>Ảnh</th>");
             html.AppendLine("    <th class='col-customer'>Khách hàng</th>");
-            html.AppendLine("    <th>Mã</th>");
-            html.AppendLine("    <th>Sản phẩm</th>");
-            html.AppendLine("    <th>Màu</th>");
-            html.AppendLine("    <th>Size</th>");
-            html.AppendLine("    <th>Đặt</th>");
-            html.AppendLine("    <th>Về</th>");
-            html.AppendLine("    <th>Trạng thái</th>");
-            html.AppendLine("    <th>Nhân viên</th>");
-            html.AppendLine("    <th>Ngày đặt</th>");
-            html.AppendLine("    <th>Ngày về</th>");
-            html.AppendLine("    <th></th>");
+            html.AppendLine("    <th class='col-product'>Sản phẩm</th>");
+            html.AppendLine("    <th class='col-color'>Màu</th>");
+            html.AppendLine("    <th class='col-size'>Size</th>");
+            html.AppendLine("    <th class='col-quantity-request'>Đặt</th>");
+            html.AppendLine("    <th class='col-quantity-in'>Về</th>");
+            html.AppendLine("    <th class='col-status'>Trạng thái</th>");
+            html.AppendLine("    <th class='col-createdby'>Nhân viên</th>");
+            html.AppendLine("    <th class='col-createddate'>Ngày đặt</th>");
+            html.AppendLine("    <th class='col-datein'>Ngày về</th>");
+            html.AppendLine("    <th class='col-action'></th>");
             html.AppendLine("</tr>");
             html.AppendLine("</thead>");
 
@@ -238,15 +237,17 @@ namespace IM_PJ
                     html.AppendLine("   <td><input type='checkbox' onchange='checkRegister($(this))'/></td>");
                     html.AppendLine("   <td data-title='Ảnh'><a target='_blank' href='/xem-san-pham?sku=" + item.sku + "'><img src='" + Thumbnail.getURL(item.image, Thumbnail.Size.Small) + "'></a></td>");
                     html.AppendLine("   <td data-title='Khách hàng' class='customer-td'><span class='name'>" + item.customer.ToTitleCase() + "</span>");
-                    html.AppendLine(String.Format("      <br><span class='note1'>{0}</span>", String.IsNullOrEmpty(item.note1) ? String.Empty: "<strong>Ghi chú</strong>: " + item.note1));
-                    html.AppendLine(String.Format("      <br><span class='note2'>{0}</span>", String.IsNullOrEmpty(item.note2) ? String.Empty : "<strong>Nội dung duyệt</strong>: " + item.note2));
+                    html.AppendLine(String.Format("      <br><span class='note1'>{0}</span>", String.IsNullOrEmpty(item.note1) ? String.Empty: "<strong>Nhân viên</strong>: " + item.note1));
+                    html.AppendLine(String.Format("      <br><span class='note2'>{0}</span>", String.IsNullOrEmpty(item.note2) ? String.Empty : "<strong>Quản lý</strong>: " + item.note2));
                     html.AppendLine("   </td>");
-                    html.AppendLine("   <td data-title='Mã'>" + item.sku + "</td>");
-                    html.AppendLine("   <td data-title='Sản phẩm'><a target='_blank' href='/xem-san-pham?sku=" + item.sku + "'>" + item.title + "</a></td>");
+                    html.AppendLine("   <td data-title='Sản phẩm'>" + item.sku + "<br/><a target='_blank' href='/xem-san-pham?sku=" + item.sku + "'>" + item.title + "</a></td>");
                     html.AppendLine("   <td data-title='Màu'>" + item.color + "</td>");
                     html.AppendLine("   <td data-title='Size'>" + item.size + "</td>");
-                    html.AppendLine("   <td class='totalQuantity' data-title='Số lượng hàng đặt'>" + String.Format("{0:#,###}", item.quantity) + "</td>");
-                    html.AppendLine("   <td class='totalReceivedQuantity' data-title='Số lượng hàng về'></td>");
+                    if (item.productStyle == 2 && item.variableID == 0)
+                        html.AppendLine(String.Format("   <td class='totalQuantity' data-title='Số lượng hàng đặt'>{0:#,###}<br/>({1})</td>", item.numberchild * item.quantity, item.quantity));
+                    else
+                        html.AppendLine("   <td class='totalQuantity' data-title='Số lượng hàng đặt'>" + String.Format("{0:#,###}", item.quantity) + "</td>");
+                    html.AppendLine("   <td class='totalReceivedQuantity' data-title='Số lượng hàng về'>" + String.Format("{0:#,###}", receivedProduct.Sum(s => s.quantity)) + "</td>");
                     html.AppendLine("   <td id='status' data-title='Trạng thái'>");
                     switch (item.status)
                     {
@@ -323,8 +324,7 @@ namespace IM_PJ
                         subHTML.AppendLine("    data-registerid='" + subItem.registerID + "'");
                         subHTML.AppendLine("    data-sku='" + subItem.sku + "'");
                         subHTML.AppendLine("    style='display: none;'");
-                        subHTML.AppendLine("    >'");
-                        subHTML.AppendLine("    <td></td>");
+                        subHTML.AppendLine("    >");
                         subHTML.AppendLine("    <td></td>");
                         subHTML.AppendLine("    <td data-title='Ảnh'>");
                         subHTML.AppendLine("        <a target='_blank' href='/xem-san-pham?sku=" + subItem.sku + "'>");

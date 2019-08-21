@@ -91,7 +91,7 @@ namespace IM_PJ.Models
         NoApprove = 1,      // Chưa được duyệt
         Approve = 2,        // Đã được duyệt
         Ordering = 3,       // Đã đặt hàng
-        Done = 4            // Hàng đã về
+        Done = 4            // Hàng về
     }
 
     public enum DeliveryPostOfficeReview

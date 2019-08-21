@@ -158,7 +158,7 @@ namespace IM_PJ
                     html.AppendLine("    data-color='" + item.color + "'");
                     html.AppendLine("    data-size='" + item.size + "'");
                     html.AppendLine("    data-quantity='" + item.quantity + "'");
-                    html.AppendLine("    data-note='" + item.note1 + "'");
+                    html.AppendLine("    data-note1='" + item.note1 + "'");
                     html.AppendLine(">");
                     html.AppendLine("    <div class='row'>");
                     html.AppendLine("        <div class='col-xs-12'>");
@@ -186,11 +186,11 @@ namespace IM_PJ
 
                     if (!string.IsNullOrEmpty(item.note1))
                     {
-                        html.AppendLine("                <p><strong>Ghi chú:</strong> " + item.note1 + "</p>");
+                        html.AppendLine("                <p class='note1'><strong>Nhân viên:</strong> " + item.note1 + "</p>");
                     }
                     if (!string.IsNullOrEmpty(item.note2))
                     {
-                        html.AppendLine("                <p><strong>Nội dung duyệt:</strong> " + item.note2 + "</p>");
+                        html.AppendLine("                <p><strong>Quản lý:</strong> " + item.note2 + "</p>");
                     }
 
                     html.AppendLine("                <p class='status'>");
