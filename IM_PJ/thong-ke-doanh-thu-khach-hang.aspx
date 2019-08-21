@@ -234,8 +234,8 @@
                                         beginAtZero: true,
                                         callback: function (label, index, labels) {
                                             return label.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-                                        },
-                                    },
+                                        }
+                                    }
                                 }],
                             },
                             tooltips: {
