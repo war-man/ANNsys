@@ -247,7 +247,10 @@
                                     position: 'left',
                                     id: 'y-axis-1',
                                     ticks: {
-                                        beginAtZero: true
+                                        beginAtZero: true,
+                                        callback: function (label, index, labels) {
+                                            return label.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                                        }
                                     }
                                 }, {
                                     type: 'linear', // only linear but allow scale type registration. This allows extensions to exist solely for log scale for instance
@@ -255,13 +258,26 @@
                                     position: 'right',
                                     id: 'y-axis-2',
                                     ticks: {
-                                        beginAtZero: true
+                                        beginAtZero: true,
+                                        callback: function (label, index, labels) {
+                                            return label.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                                        }
                                     },
                                     // grid line settings
                                     gridLines: {
                                         drawOnChartArea: false, // only want the grid lines for one axis to show up
                                     },
                                 }],
+                            },
+                            tooltips: {
+                                callbacks: {
+                                    label: function (tooltipItems, data) {
+                                        let label = data.datasets[tooltipItems.datasetIndex].label;
+                                        let value = tooltipItems.yLabel.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+                                        return label + ' : ' + value;
+                                    }
+                                }
                             }
                         }
                     });
