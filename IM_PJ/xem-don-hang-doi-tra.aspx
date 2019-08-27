@@ -118,13 +118,7 @@
                                 </table>
                             </div>
                             <div class="post-row clear">
-                                <div class="left">Tổng cộng</div>
-                                <div class="right totalpriceorder">
-                                    <asp:Literal ID="ltrTotal" runat="server"></asp:Literal>
-                                </div>
-                            </div>
-                            <div class="post-row clear">
-                                <div class="left">Tổng số lượng sản phẩm</div>
+                                <div class="left">Số lượng</div>
                                 <div class="right totalproductQuantity">
                                     <asp:Literal ID="ltrQuantity" runat="server"></asp:Literal>
                                 </div>
@@ -135,6 +129,12 @@
                                     <asp:Literal ID="ltrRefund" runat="server"></asp:Literal>
                                 </div>
                             </div>
+                            <div class="post-row clear">
+                                <div class="left">Tổng tiền (đã trừ phí)</div>
+                                <div class="right totalpriceorder">
+                                    <asp:Literal ID="ltrTotal" runat="server"></asp:Literal>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -142,7 +142,7 @@
                     <div class="col-md-12">
                         <div class="panel panelborderheading">
                             <div class="panel-heading clear">
-                                <h3 class="page-title left not-margin-bot">Thông tin trạng thái đơn hàng đổi trả</h3>
+                                <h3 class="page-title left not-margin-bot">Trạng thái đơn hàng</h3>
                             </div>
                             <div class="panel-body">
                                 <div class="form-row">

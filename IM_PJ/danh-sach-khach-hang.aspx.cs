@@ -206,14 +206,14 @@ namespace IM_PJ
                     var item = acs[i];
                     html.Append("<tr>");
 
-                    html.Append("   <td class=\"customer-name-link\"><a href=\"/chi-tiet-khach-hang?id=" + item.ID + "\">" + item.CustomerName.ToTitleCase() + "</a></td>");
-                    html.Append("   <td class=\"customer-name-link\">" + item.Nick.ToTitleCase() + "</td>");
+                    html.Append("   <td class='customer-name-link'><a href='/chi-tiet-khach-hang?id=" + item.ID + "'>" + item.CustomerName.ToTitleCase() + "</a></td>");
+                    html.Append("   <td class='customer-name-link'>" + item.Nick.ToTitleCase() + "</td>");
                     html.Append("   <td>" + item.CustomerPhone + "</td>");
                     html.Append("   <td>" + item.Zalo + "</td>");
 
                     if (!string.IsNullOrEmpty(item.Facebook))
                     {
-                        html.Append("   <td><a class=\"link\" href=\"" + item.Facebook + "\" target=\"_blank\">Xem</a></td>");
+                        html.Append("   <td><a class='link' href='" + item.Facebook + "' target='_blank'>Xem</a></td>");
                     }
                     else
                     {
@@ -267,7 +267,8 @@ namespace IM_PJ
                     }
 
                     html.Append("   <td>");
-                    html.Append("       <a href=\"/danh-sach-don-hang?searchtype=1&textsearch=" + item.CustomerPhone + "\" title=\"Xem đơn hàng\" class=\"btn primary-btn h45-btn\"><i class=\"fa fa-shopping-cart\" aria-hidden=\"true\"></i></a>");
+                    html.Append("       <a href='/danh-sach-don-hang?searchtype=1&textsearch=" + item.CustomerPhone + "' title='Xem đơn hàng' class='btn primary-btn h45-btn'><i class='fa fa-shopping-cart' aria-hidden='true'></i></a>");
+                    html.Append("       <a href='/thong-ke-khach-hang?textsearch=" + item.CustomerPhone + "' title='Xem thống kê khách hàng' class='btn primary-btn btn-blue h45-btn' target='_blank'><i class='fa fa-line-chart' aria-hidden='true'></i></a>");
                     html.Append("   </td>");
                     html.Append("</tr>");
                 }
@@ -276,11 +277,11 @@ namespace IM_PJ
             {
                 if (acc.RoleID == 0)
                 {
-                    html.Append("<tr><td colspan=\"12\">Không tìm thấy khách hàng...</td></tr>");
+                    html.Append("<tr><td colspan='12'>Không tìm thấy khách hàng...</td></tr>");
                 }
                 else
                 {
-                    html.Append("<tr><td colspan=\"11\">Không tìm thấy khách hàng...</td></tr>");
+                    html.Append("<tr><td colspan='11'>Không tìm thấy khách hàng...</td></tr>");
                 }
             }
 

@@ -22,45 +22,43 @@
                             </div>
                             <div class="panel-body">
                                 <div class="row">
-                                    <div class="col-md-6">
+                                    <div class="col-md-4">
                                         <div class="form-group">
                                             <label>Họ tên</label>
                                             <asp:RequiredFieldValidator ID="RequiredFieldValidator1" runat="server" ControlToValidate="txtFullname" ErrorMessage="(*)" ForeColor="Red" Display="Dynamic"></asp:RequiredFieldValidator>
                                             <asp:TextBox ID="txtFullname" CssClass="form-control capitalize" runat="server" autocomplete="off" placeholder="Họ tên thật của khách"></asp:TextBox>
                                         </div>
                                     </div>
-                                    <div class="col-md-6">
+                                    <div class="col-md-5">
                                         <div class="form-group">
                                             <label>Điện thoại</label>
                                             <asp:RequiredFieldValidator ID="re" runat="server" ControlToValidate="txtPhone" ErrorMessage="(*)" ForeColor="Red" Display="Dynamic"></asp:RequiredFieldValidator>
                                             <asp:TextBox ID="txtPhone" CssClass="form-control" runat="server" autocomplete="off" placeholder="Số điện thoại khách hàng"></asp:TextBox>
                                         </div>
                                     </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label>Zalo</label>
+                                            <asp:TextBox ID="txtZalo" CssClass="form-control" runat="server" autocomplete="off" placeholder="Số điện thoại Zalo"></asp:TextBox>
+                                        </div>
+                                    </div>
                                 </div> 
                                 <div class="row">
-                                    <div class="col-md-6">
+                                    <div class="col-md-4">
                                         <div class="form-group">
                                             <label>Nick đặt hàng</label>
                                             <asp:RequiredFieldValidator ID="RequiredFieldValidator2" runat="server" ControlToValidate="txtNick" ErrorMessage="(*)" ForeColor="Red" Display="Dynamic"></asp:RequiredFieldValidator>
                                             <asp:TextBox ID="txtNick" CssClass="form-control capitalize" runat="server" autocomplete="off" placeholder="Tên nick đặt hàng"></asp:TextBox>
                                         </div>
                                     </div>
-                                    <div class="col-md-6">
+                                    <div class="col-md-5">
                                         <div class="form-group">
                                             <label>Địa chỉ</label>
                                             <asp:RequiredFieldValidator ID="RequiredFieldValidator3" runat="server" ControlToValidate="txtAddress" ErrorMessage="(*)" ForeColor="Red" Display="Dynamic"></asp:RequiredFieldValidator>
                                             <asp:TextBox ID="txtAddress" CssClass="form-control capitalize" runat="server" autocomplete="off" placeholder="Địa chỉ khách hàng"></asp:TextBox>
                                         </div>
                                     </div>
-                                </div> 
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label>Zalo</label>
-                                            <asp:TextBox ID="txtZalo" CssClass="form-control" runat="server" autocomplete="off" placeholder="Số điện thoại Zalo"></asp:TextBox>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
+                                    <div class="col-md-3">
                                         <div class="form-group">
                                             <label>Facebook</label>
                                             <div class="row">
@@ -117,18 +115,17 @@
                                 </table>
                             </div>
                             <div class="post-row clear">
-                                <div class="left">Tổng cộng</div>
-                                <div class="right totalPriceOrder"></div>
-                            </div>
-                            <div class="post-row clear">
-                                <div class="left">Tổng số lượng sản phẩm</div>
+                                <div class="left">Số lượng</div>
                                 <div class="right totalProductQuantity"></div>
                             </div>
                             <div class="post-row clear">
                                 <div class="left">Phí đổi hàng</div>
                                 <div class="right totalRefund"></div>
                             </div>
-
+                            <div class="post-row clear">
+                                <div class="left">Tổng tiền (đã trừ phí)</div>
+                                <div class="right totalPriceOrder"></div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -136,7 +133,7 @@
                     <div class="col-md-12">
                         <div class="panel panelborderheading">
                             <div class="panel-heading clear">
-                                <h3 class="page-title left not-margin-bot">Thông tin trạng thái đơn hàng đổi trả</h3>
+                                <h3 class="page-title left not-margin-bot">Trạng thái đơn hàng</h3>
                             </div>
                             <div class="panel-body">
                                 <div class="form-row">
@@ -963,6 +960,7 @@
                         swal("Thông báo", "Hãy nhập số điện thoại khách hàng!", "error");
                     }
                     else if (nick == "") {
+                        $("#<%= txtNick.ClientID%>").prop('readonly', false);
                         $("#<%= txtNick.ClientID%>").focus();
                         swal("Thông báo", "Hãy nhập Nick đặt hàng của khách hàng!", "error");
                     }

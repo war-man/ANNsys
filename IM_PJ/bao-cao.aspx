@@ -27,10 +27,6 @@
                                         <td><a href="thong-ke-doanh-thu" class="btn primary-btn h45-btn">Chi tiết</a></td>
                                     </tr>
                                     <tr>
-                                        <td><a href="thong-ke-doanh-thu-khach-hang">Doanh thu theo khách hàng</a></td>
-                                        <td><a href="thong-ke-doanh-thu-khach-hang" class="btn primary-btn h45-btn">Chi tiết</a></td>
-                                    </tr>
-                                    <tr>
                                         <td><a href="thong-ke-san-luong">Sản lượng</a></td>
                                         <td><a href="thong-ke-san-luong" class="btn primary-btn h45-btn">Chi tiết</a></td>
                                     </tr>
@@ -49,6 +45,10 @@
                                      <tr>
                                         <td><a href="thong-ke-buu-dien">Thống kê bưu điện</a></td>
                                         <td><a href="thong-ke-buu-dien" class="btn primary-btn h45-btn">Chi tiết</a></td>
+                                    </tr>
+                                    <tr>
+                                        <td><a href="thong-ke-khach-hang">Thống kê khách hàng</a></td>
+                                        <td><a href="thong-ke-khach-hang" class="btn primary-btn h45-btn">Chi tiết</a></td>
                                     </tr>
                                 </tbody>
                             </table>

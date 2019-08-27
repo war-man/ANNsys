@@ -265,6 +265,10 @@ namespace IM_PJ
                     {
                         status = "<span class='bg-green'>Đã tiếp nhận</span>";
                     }
+                    else if (item.Status == 5)
+                    {
+                        status = "<span class='bg-green'>Khách hàng</span>";
+                    }
                     html.Append("   <td id='status' data-title='Trạng thái'>" + status + "</td>");
 
                     html.Append("   <td id='user' data-title='Phụ trách'>" + item.User + "</td>");

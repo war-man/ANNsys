@@ -192,15 +192,15 @@ namespace IM_PJ
 
                         productPrint += "<div class=\"body\">";
                         productPrint += "<div class=\"table-1\">";
-                        productPrint += "<h1>ĐƠN HÀNG ĐỔI TRẢ #" + order.ID + "</h1>";
+                        productPrint += "<h1>ĐƠN ĐỔI TRẢ #" + order.ID + "</h1>";
                         productPrint += "<div class=\"note\">";
-                        productPrint += "<p>- Miễn phí đổi size hoặc đổi hàng lỗi (cùng mẫu và cùng màu như lúc đầu).</p>";
-                        productPrint += "<p>- Tính phí 15.000đ/cái nếu đổi sang sản phẩm khác bất kỳ.</p>";
-                        productPrint += "<p>- Giá đã bán nếu nhỏ hơn giá niêm yết là do lúc bán ra có trừ chiết khấu.</p>";
-                        productPrint += "<p>- Chúng tôi chỉ đổi hàng mà không hoàn tiền đơn hàng trả.</p>";
-                        productPrint += "<p>- Đơn hàng đổi trả sẽ được trừ tiền vào đơn hàng mua sau đó.</p>";
-                        productPrint += "<p>- Lưu ý hình ảnh sản phẩm trên đơn hàng có thể hiển thị không đúng.</p>";
-                        productPrint += "<p>- Nếu có sai sót, quý khách có thể gọi điện thoại để thông báo cho nhân viên.</p>";
+                        productPrint += "<p>- Miễn phí đổi size/màu hoặc đổi hàng lỗi cùng mẫu.</p>";
+                        productPrint += "<p>- Tính phí 15.000đ/cái nếu đổi sang sản phẩm khác.</p>";
+                        productPrint += "<p>- Giá đã bán nếu nhỏ hơn giá niêm yết là do có trừ chiết khấu.</p>";
+                        productPrint += "<p>- Đơn đổi trả sẽ được trừ vào đơn mua hàng kế tiếp.</p>";
+                        productPrint += "<p>- Chúng tôi chỉ hoàn tiền mặt nếu đơn đổi trả dưới 50.000đ.</p>";
+                        productPrint += "<p>- Lưu ý, hình ảnh sản phẩm có thể hiển thị không đúng màu.</p>";
+                        productPrint += "<p>- Nếu có sai sót, quý khách vui lòng thông báo cho nhân viên.</p>";
                         productPrint += "</div>";
                         productPrint += "<table>";
                         productPrint += "<colgroup >";
@@ -267,10 +267,6 @@ namespace IM_PJ
                         productPrint += "<td colspan=\"7\" class=\"align-right\">Số lượng</td>";
                         productPrint += "<td>" + TotalQuantity + "</td>";
                         productPrint += "</tr>";
-                        productPrint += "<tr>";
-                        productPrint += "<td colspan=\"7\" class=\"align-right\">Thành tiền</td>";
-                        productPrint += "<td>" + string.Format("{0:N0}", TotalOrder) + "</td>";
-                        productPrint += "</tr>";
                         productPrint += "<td colspan=\"7\" class=\"align-right\">Phí đổi hàng</td>";
                         productPrint += "<td>" + string.Format("{0:N0}", TotalFee) + "</td>";
                         productPrint += "</tr>";
@@ -283,10 +279,9 @@ namespace IM_PJ
                         }
 
                         productPrint += "<tr>";
-                        productPrint += "<td class=\"strong align-right\" colspan=\"7\">TỔNG CỘNG (Đã trừ phí đổi hàng)</td>";
+                        productPrint += "<td class=\"strong align-right\" colspan=\"7\">TỔNG TIỀN (Đã trừ phí)</td>";
                         productPrint += "<td class=\"strong\">" + string.Format("{0:N0}", TotalOrder) + "</td>";
                         productPrint += "</tr>";
-                        
                         
                         productPrint += "</tbody>";
                         productPrint += "</table>";

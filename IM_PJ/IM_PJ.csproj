@@ -476,7 +476,7 @@
     </Content>
     <Content Include="san-pham-theo-ke.aspx" />
     <Content Include="nuoc-hoa.aspx" />
-    <Content Include="thong-ke-doanh-thu-khach-hang.aspx" />
+    <Content Include="thong-ke-khach-hang.aspx" />
     <Content Include="thong-ke-proship.aspx" />
     <Content Include="thong-ke-buu-dien.aspx" />
     <Content Include="nhan-vien-dat-hang.aspx" />
@@ -1085,12 +1085,12 @@
     <Compile Include="nuoc-hoa.aspx.designer.cs">
       <DependentUpon>nuoc-hoa.aspx</DependentUpon>
     </Compile>
-    <Compile Include="thong-ke-doanh-thu-khach-hang.aspx.cs">
-      <DependentUpon>thong-ke-doanh-thu-khach-hang.aspx</DependentUpon>
+    <Compile Include="thong-ke-khach-hang.aspx.cs">
+      <DependentUpon>thong-ke-khach-hang.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="thong-ke-doanh-thu-khach-hang.aspx.designer.cs">
-      <DependentUpon>thong-ke-doanh-thu-khach-hang.aspx</DependentUpon>
+    <Compile Include="thong-ke-khach-hang.aspx.designer.cs">
+      <DependentUpon>thong-ke-khach-hang.aspx</DependentUpon>
     </Compile>
     <Compile Include="thong-ke-proship.aspx.cs">
       <DependentUpon>thong-ke-proship.aspx</DependentUpon>

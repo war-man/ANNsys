@@ -10,7 +10,7 @@
 namespace IM_PJ {
     
     
-    public partial class thong_ke_doanh_thu_khach_hang {
+    public partial class thong_ke_khach_hang {
         
         /// <summary>
         /// txtTextSearch control.
@@ -112,15 +112,6 @@ namespace IM_PJ {
         protected global::System.Web.UI.WebControls.Literal ltrAverageProduct;
         
         /// <summary>
-        /// ltrTotalCostOfGoods control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Literal ltrTotalCostOfGoods;
-        
-        /// <summary>
         /// ltrTotalPrice control.
         /// </summary>
         /// <remarks>
@@ -148,15 +139,6 @@ namespace IM_PJ {
         protected global::System.Web.UI.WebControls.Literal ltrTotalFeeShipping;
         
         /// <summary>
-        /// ltrTotalFeeOther control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Literal ltrTotalFeeOther;
-        
-        /// <summary>
         /// ltrTotalRefundMoney control.
         /// </summary>
         /// <remarks>
@@ -173,6 +155,15 @@ namespace IM_PJ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Literal ltrTotalRefundFee;
+        
+        /// <summary>
+        /// ltrTotalProfit control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Literal ltrTotalProfit;
         
         /// <summary>
         /// ltrChartData control.

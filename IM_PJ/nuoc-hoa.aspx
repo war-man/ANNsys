@@ -8,8 +8,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=yes">
     <meta name="format-detection" content="telephone=no">
     <meta name="robots" content="noindex, nofollow">
-    <link rel="stylesheet" href="/App_Themes/Ann/css/style.css?v=0110" media="all">
-    <link rel="stylesheet" href="/App_Themes/Ann/css/style-P.css?v=0110" media="all">
+    <link rel="stylesheet" href="/App_Themes/Ann/css/style.css?v=15052019" media="all">
+    <link rel="stylesheet" href="/App_Themes/Ann/css/style-P.css?v=23082019" media="all">
     <link href="/App_Themes/Ann/css/HoldOn.css?v=17042019" rel="stylesheet" type="text/css" />
     <link href="/App_Themes/NewUI/js/select2/select2.css" rel="stylesheet" />
     <script type="text/javascript" src="/App_Themes/Ann/js/jquery-2.1.3.min.js"></script>

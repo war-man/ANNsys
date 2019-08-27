@@ -53,7 +53,6 @@ namespace IM_PJ
             var orderdetails = RefundGoodDetailController.GetByRefundGoodsID(ID);
             if (orderdetails.Count > 0)
             {
-
                 foreach (var item in orderdetails)
                 {
                     TotalQuantity += Convert.ToDouble(item.Quantity);
@@ -65,14 +64,13 @@ namespace IM_PJ
                     int SubTotal = (Convert.ToInt32(ItemPrice) - Convert.ToInt32(item.RefundFeePerProduct)) * Convert.ToInt32(item.Quantity);
 
                     Print += "<tr>";
-
                     if (ProductType == 1)
                     {
                         var product = ProductController.GetBySKU(SKU);
                         if (product != null)
                         {
                             ProductName = product.ProductTitle;
-                            Print += "<td><strong>" + SKU + "</strong> - " + PJUtils.Truncate(ProductName, 20) + "</td>";
+                            Print += "<td colspan='4'><strong>" + SKU + "</strong> - " + PJUtils.Truncate(ProductName, 30) + "</td>";
                         }
                     }
                     else
@@ -85,10 +83,11 @@ namespace IM_PJ
                             {
                                 ProductName = parent_product.ProductTitle;
                             }
-                            Print += "<td><strong>" + SKU + "</strong> - " + PJUtils.Truncate(ProductName, 20) + "</td>";
+                            Print += "<td colspan='4'><strong>" + SKU + "</strong> - " + PJUtils.Truncate(ProductName, 30) + "</td>";
                         }
                     }
-
+                    Print += "</tr>";
+                    Print += "<tr>";
                     Print += "<td>" + item.Quantity + "</td>";
                     Print += "<td>" + string.Format("{0:N0}", ItemPrice) + "</td>";
                     Print += "<td>" + string.Format("{0:N0}", Convert.ToDouble(item.RefundFeePerProduct)) + "</td>";
@@ -124,14 +123,14 @@ namespace IM_PJ
                         string productPrint = "";
                         string shtml = "";
 
-                        productPrint += "<div class=\"body\">";
-                        productPrint += "<div class=\"table-1\">";
-                        productPrint += "<h1 class=\"invoice-return\">HÓA ĐƠN ĐỔI TRẢ HÀNG #" + order.ID + "</h1>";
+                        productPrint += "<div class='body'>";
+                        productPrint += "<div class='table-1'>";
+                        productPrint += "<h1 class='invoice-return'>HÓA ĐƠN ĐỔI TRẢ #" + order.ID + "</h1>";
                         
                         productPrint += "<table>";
-                        productPrint += "<colgroup >";
-                        productPrint += "<col class=\"col-left\"/>";
-                        productPrint += "<col class=\"col-right\"/>";
+                        productPrint += "<colgroup>";
+                        productPrint += "<col class='col-left' />";
+                        productPrint += "<col class='col-right' />";
                         productPrint += "</colgroup>";
                         productPrint += "<tbody>";
                         productPrint += "<tr>";
@@ -177,17 +176,15 @@ namespace IM_PJ
                         productPrint += "</table>";
                         productPrint += "</div>";
 
-                        productPrint += "<div class=\"table-2 print-invoice-return\">";
+                        productPrint += "<div class='table-2 print-invoice-return'>";
                         productPrint += "<table>";
                         productPrint += "<colgroup>";
-                        productPrint += "<col class=\"sanpham\" />";
-                        productPrint += "<col class=\"soluong\" />";
-                        productPrint += "<col class=\"gia\" />";
-                        productPrint += "<col class=\"gia\" />";
-                        productPrint += "<col class=\"tong\"/>";
+                        productPrint += "<col class='soluong' />";
+                        productPrint += "<col class='gia' />";
+                        productPrint += "<col class='gia' />";
+                        productPrint += "<col class='tong' />";
                         productPrint += "</colgroup>";
                         productPrint += "<thead>";
-                        productPrint += "<th>Sản phẩm</th>";
                         productPrint += "<th>SL</th>";
                         productPrint += "<th>Giá</th>";
                         productPrint += "<th>Phí</th>";
@@ -195,8 +192,13 @@ namespace IM_PJ
                         productPrint += "</thead>";
                         productPrint += "<tbody>";
                         productPrint += Print;
+                        productPrint += "</tbody>";
+                        productPrint += "</table>";
+                        productPrint += "</div>";
+                        productPrint += "<div class='table-3'>";
+                        productPrint += "<table>";
                         productPrint += "<tr>";
-                        productPrint += "<td colspan=\"4\">Số lượng</td>";
+                        productPrint += "<td colspan='2'>Số lượng</td>";
                         productPrint += "<td>" + TotalQuantity + "</td>";
                         productPrint += "</tr>";
 
@@ -206,13 +208,13 @@ namespace IM_PJ
                         }
 
                         productPrint += "<tr>";
-                        productPrint += "<td class=\"strong\" colspan=\"4\">Tổng tiền</td>";
-                        productPrint += "<td class=\"strong\">" + string.Format("{0:N0}", TotalOrder) + "</td>";
+                        productPrint += "<td colspan='2'>Phí đổi hàng</td>";
+                        productPrint += "<td>" + string.Format("{0:N0}", Convert.ToDouble(order.TotalRefundFee)) + "</td>";
                         productPrint += "</tr>";
 
                         productPrint += "<tr>";
-                        productPrint += "<td colspan=\"4\">Phí đổi hàng</td>";
-                        productPrint += "<td>" + string.Format("{0:N0}", Convert.ToDouble(order.TotalRefundFee)) + "</td>";
+                        productPrint += "<td class='strong' colspan='2'>Tổng tiền (đã trừ phí)</td>";
+                        productPrint += "<td class='strong'>" + string.Format("{0:N0}", TotalOrder) + "</td>";
                         productPrint += "</tr>";
 
                         productPrint += "</tbody>";
@@ -220,22 +222,21 @@ namespace IM_PJ
                         productPrint += "</div>";
                         productPrint += "</div>";
 
-                        shtml += "<div class=\"hoadon\">";
-                        shtml += "<div class=\"all\">";
+                        shtml += "<div class='hoadon'>";
+                        shtml += "<div class='all'>";
 
                         shtml += productPrint;
 
-                        shtml += "<div class=\"footer\"><h3>CẢM ƠN QUÝ KHÁCH !!!</h3>";
-                        shtml += "<p>Lưu ý:</p>";
-                        shtml += "<p>- Chúng tôi chỉ trả lại tiền mặt khi tổng tiền dưới 50.000đ.</p>";
-                        shtml += "<p>- Đơn hàng đổi trả trên 50.000đ dùng để trừ tiền khi mua sản phẩm khác.</p>";
-                        shtml += "<p>- Giá trên hóa đơn là giá bán ra đã trừ chiết khấu (nếu có).</p>";
-                        shtml += "<p>- Phí đổi hàng áp dụng khi đổi hàng tồn hoặc đổi sang màu/mẫu khác.</p>";
-                        shtml += "<p>- Miễn phí đổi size hoặc hàng lỗi cùng màu/mẫu như lúc đầu.</p>";
+                        shtml += "<div class='footer'>";
+                        shtml += "<p>Quý khách lưu ý:</p>";
+                        shtml += "<p>- Miễn phí đổi hàng lỗi hoặc đổi size/màu cùng mẫu.</p>";
+                        shtml += "<p>- Tính phí đổi hàng tồn hoặc đổi sang mẫu khác.</p>";
+                        shtml += "<p>- ANN chỉ hoàn lại tiền mặt khi tổng tiền dưới 50.000.</p>";
+                        shtml += "<p>- Đơn trên 50.000 được trừ vào đơn mua hàng kế tiếp.</p>";
+                        shtml += "<p>- Giá trên này là giá bán ra đã trừ chiết khấu nếu có.</p>";
                         shtml += "</div>";
                         shtml += "</div>";
                         shtml += "</div>";
-
 
                         if (error != "")
                         {
@@ -245,7 +246,7 @@ namespace IM_PJ
                         else
                         {
                             ltrPrintInvoice.Text = shtml;
-                            ltrPrintEnable.Text = "<div class=\"print-enable true\"></div>";
+                            ltrPrintEnable.Text = "<div class='print-enable true'></div>";
                         }
                     }
                 }

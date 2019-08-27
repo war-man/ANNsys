@@ -39,9 +39,6 @@ table.shop_table_responsive > tbody > tr:nth-of-type(2n + 1) td {
     border-top: none!important;
     border-bottom: none!important;
 }
-table.shop_table_responsive > tbody > tr > td {
-    vertical-align: top;
-}
 table.shop_table_responsive > thead > tr > th {
     border-bottom: none;
 }
@@ -368,7 +365,7 @@ a.bg-button:hover {
     width: 5%;
 }
 .table-sale-order .image-item {
-    width: 12%;
+    width: 10%;
     text-align: left!important;
 }
 .table-sale-order .image-item img {
@@ -399,7 +396,7 @@ a.bg-button:hover {
     text-align: left!important;
 }
 .table-sale-order .trash-item {
-    width: 5%;
+    width: 7%;
     text-align: left!important;
 }
 .table-sale-order .trash-item a {
@@ -536,10 +533,10 @@ ul.image-gallery li {
     width:10%;
 }
 .table-customer .name-column {
-    width:14%;
+    width:13%;
 }
 .table-customer .nick-column {
-    width:12%;
+    width:11%;
 }
 .table-customer .phone-column {
     width:8%;
@@ -566,7 +563,7 @@ ul.image-gallery li {
     width:7%;
 }
 .table-customer .action-column {
-    width:5%;
+    width:7%;
 }
 .report-column {
     background: #fff;

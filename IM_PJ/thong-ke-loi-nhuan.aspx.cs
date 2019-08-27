@@ -73,7 +73,8 @@ namespace IM_PJ
 
             double TotalSaleDiscount = reportModel.Sum(x => x.TotalSaleDiscount);
             double TotalRefundFee = reportModel.Sum(x => x.TotalRefundFee);
-            double TotalProfit = TotalRevenue - TotalCost - TotalSaleDiscount + TotalRefundFee;
+            //double TotalProfit = TotalRevenue - TotalCost - TotalSaleDiscount + TotalRefundFee;
+            double TotalProfit = (TotalSalePrice - TotalSaleCost) - TotalSaleDiscount - (TotalRefundPrice - TotalRefundCost) + TotalRefundFee;
             double TotalProfitPerDay = TotalProfit / day;
             double TotalProfitPerOrder = 0;
 

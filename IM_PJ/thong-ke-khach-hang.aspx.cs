@@ -10,7 +10,7 @@ using System.Web.UI.WebControls;
 
 namespace IM_PJ
 {
-    public partial class thong_ke_doanh_thu_khach_hang : System.Web.UI.Page
+    public partial class thong_ke_khach_hang : System.Web.UI.Page
     {
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -28,7 +28,7 @@ namespace IM_PJ
                     var acc = AccountController.GetByUsername(username);
                     if (acc != null)
                     {
-                        if (acc.RoleID != 0)
+                        if (acc.RoleID != 0 || acc.RoleID == 2)
                         {
                             Response.Redirect("/trang-chu");
                         }
@@ -44,6 +44,7 @@ namespace IM_PJ
 
         public void LoadData()
         {
+            
             DateTime fromDate = DateTime.Today;
             DateTime toDate = fromDate.AddDays(1).AddMinutes(-1);
             string phoneNumber = String.Empty;
@@ -51,6 +52,15 @@ namespace IM_PJ
             if (!String.IsNullOrEmpty(Request.QueryString["textsearch"]))
             {
                 phoneNumber = Request.QueryString["textsearch"].Trim();
+            }
+
+            if (phoneNumber != String.Empty)
+            {
+                var customer = CustomerController.GetByPhone(phoneNumber);
+                if (customer != null)
+                {
+                    fromDate = Convert.ToDateTime(customer.CreatedDate);
+                }
             }
 
             if (!String.IsNullOrEmpty(Request.QueryString["fromdate"]))
@@ -75,6 +85,7 @@ namespace IM_PJ
                 initCustomer(reportModel.customer);
                 initReport(reportModel.data, fromDate, toDate);
                 initChart(reportModel.data, fromDate, toDate);
+                txtTextSearch.Text = phoneNumber;
             }
         }
 
@@ -110,20 +121,6 @@ namespace IM_PJ
             html.AppendLine("        </div>");
             html.AppendLine("    </div>");
             html.AppendLine("</div>");
-            html.AppendLine("<div class='row'>");
-            html.AppendLine("    <div class='col-md-6'>");
-            html.AppendLine("        <div class='form-group'>");
-            html.AppendLine("            <label>Zalo</label>");
-            html.AppendLine("            <span class='form-control input-disabled'>" + customer.zalo + "</span>");
-            html.AppendLine("        </div>");
-            html.AppendLine("    </div>");
-            html.AppendLine("    <div class='col-md-6'>");
-            html.AppendLine("        <div class='form-group'>");
-            html.AppendLine("            <label>Facebook</label>");
-            html.AppendLine("            <span class='form-control input-disabled'>" + customer.facebook + "</span>");
-            html.AppendLine("        </div>");
-            html.AppendLine("    </div>");
-            html.AppendLine("</div>");
 
             ltrInfo.Text = html.ToString();
         }
@@ -146,8 +143,9 @@ namespace IM_PJ
                         totalQuantityRefund = x.Sum(s => s.quantityRefund),
                         totalQuantityProductRefund = x.Sum(s => s.quantityProductRefund),
                         totalRefundMoney = x.Sum(s => s.refundMoney),
-                        totalRefundFee = x.Sum(s => s.refundFee)
-                    }
+                        totalRefundFee = x.Sum(s => s.refundFee),
+                        totalRefundCapital = x.Sum(s => s.refundCapital)
+                }
                 )
                 .FirstOrDefault();
 
@@ -158,17 +156,15 @@ namespace IM_PJ
                 ltrTotalQuantityProduct.Text = String.Format("{0:N0} cái", report.totalQuantityProduct);
                 ltrTotalQuantityRefund.Text = String.Format("{0:N0} đơn", report.totalQuantityRefund);
                 ltrTotalQuantityProductRefund.Text = String.Format("{0:N0} cái", report.totalQuantityProductRefund);
-                ltrTotalProductLeft.Text = String.Format("{0:N0} cái", report.totalQuantityProduct - report.totalQuantityProductRefund);
-                ltrAverageProduct.Text = String.Format("{0:#,##0.##} cái / ngày", Math.Round((report.totalQuantityProduct - report.totalQuantityProductRefund) / (day * 1.0), 2));
+                ltrTotalProductLeft.Text = String.Format("{0:N0} cái ({1:N0} cái/đơn)", report.totalQuantityProduct - report.totalQuantityProductRefund, (report.totalQuantityProduct - report.totalQuantityProductRefund)/report.totalQuantityOrder);
+                ltrAverageProduct.Text = String.Format("{0:#,##0.##} cái/ngày", Math.Round((report.totalQuantityProduct - report.totalQuantityProductRefund) / (day * 1.0), 2));
                 // Dòng 2
-                ltrTotalCostOfGoods.Text = String.Format("{0:N0} đ", report.totalCostOfGoods);
                 ltrTotalPrice.Text = String.Format("{0:N0} đ", report.totalPrice);
                 ltrTotalDiscount.Text = String.Format("{0:N0} đ", report.totalDiscount);
                 ltrTotalFeeShipping.Text = String.Format("{0:N0} đ", report.totalFeeShipping);
-                ltrTotalFeeOther.Text = String.Format("{0:N0} đ", report.totalFeeOther);
-                // Dòng 3
                 ltrTotalRefundMoney.Text = String.Format("{0:N0} đ", report.totalRefundMoney);
                 ltrTotalRefundFee.Text = String.Format("{0:N0} đ", report.totalRefundFee);
+                ltrTotalProfit.Text = String.Format("{0:N0} đ", (report.totalPrice - report.totalCostOfGoods - report.totalDiscount) - (report.totalRefundMoney - report.totalRefundCapital));
             }
         }
 
@@ -191,10 +187,10 @@ namespace IM_PJ
 
                     // Tính số tiền lời dựa trên các sản phẩm đã bán
                     // Tiền lời bằng tiền bán - tiền vốn - tiền triết khấu + phí shipping + phí khác
-                    profit += item.price - item.costOfGoods - item.discount + item.feeShipping + item.feeOther;
+                    profit += item.price - item.costOfGoods - item.discount;
                     // Tính số tiền lời sau khi sản phẩn được đổi trả
                     // Tiền lời bằng tiền lời đã bán - số liền lời của sản phẩn đổi trả + phí đổi trả
-                    profit += -(item.refundMoney - item.refundCapital)  + item.refundFee;
+                    profit += -(item.refundMoney - item.refundCapital);
                     dataDays.Add(date);
                     dataProfit.Add(profit.ToString());
                 }
@@ -223,7 +219,7 @@ namespace IM_PJ
 
         protected void btnSearch_Click(object sender, EventArgs e)
         {
-            string request = "/thong-ke-doanh-thu-khach-hang?";
+            string request = "/thong-ke-khach-hang?";
 
             if (txtTextSearch.Text != "")
             {

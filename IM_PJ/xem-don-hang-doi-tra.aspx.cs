@@ -123,189 +123,200 @@ namespace IM_PJ
                         ltrTotalRefundFee.Text = string.Format("{0:N0}", (Convert.ToDouble(r.TotalRefundFee)));
                         ltrRefundNote.Text = r.RefundNote;
 
-                        ltrInfo.Text += "<div class=\"row\">";
-                        ltrInfo.Text += "<div class=\"col-md-6\">";
-                        ltrInfo.Text += "<div class=\"form-group\">";
-                        ltrInfo.Text += "<label>Họ tên</label>";
-                        ltrInfo.Text += "<span class=\"form-control input-disabled\">" + r.CustomerName + "</span>";
-                        ltrInfo.Text += "</div>";
-                        ltrInfo.Text += "</div>";
-                        ltrInfo.Text += "<div class=\"col-md-6\">";
-                        ltrInfo.Text += "<div class=\"form-group\">";
-                        ltrInfo.Text += "<label>Điện thoại</label>";
-                        ltrInfo.Text += "<span class=\"form-control input-disabled\">" + r.CustomerPhone + "</span>";
-                        ltrInfo.Text += "</div>";
-                        ltrInfo.Text += "</div>";
-                        ltrInfo.Text += "</div>";
-
+                        int cusID = 0;
+                        string zalo = "";
+                        string nick = "";
+                        string address = "";
+                        string facebook = "";
                         var cus = CustomerController.GetByID(r.CustomerID.Value);
                         if (cus != null)
                         {
-                            ltrInfo.Text += "<div class=\"row\">";
-                            ltrInfo.Text += "<div class=\"col-md-6\">";
-                            ltrInfo.Text += "<div class=\"form-group\">";
-                            ltrInfo.Text += "<label>Nick đặt hàng</label>";
-                            ltrInfo.Text += "<span class=\"form-control input-disabled\">" + cus.Nick + "</span>";
-                            ltrInfo.Text += "</div>";
-                            ltrInfo.Text += "</div>";
-                            ltrInfo.Text += "<div class=\"col-md-6\">";
-                            ltrInfo.Text += "<div class=\"form-group\">";
-                            ltrInfo.Text += "<label>Địa chỉ</label>";
-                            ltrInfo.Text += "<span class=\"form-control input-disabled\">" + cus.CustomerAddress + "</span>";
-                            ltrInfo.Text += "</div>";
-                            ltrInfo.Text += "</div>";
-                            ltrInfo.Text += "</div>";
-
-                            ltrInfo.Text += "<div class=\"row\">";
-                            ltrInfo.Text += "<div class=\"col-md-6\">";
-                            ltrInfo.Text += "<div class=\"form-group\">";
-                            ltrInfo.Text += "<label>Zalo</label>";
-                            ltrInfo.Text += "<span class=\"form-control input-disabled\">" + cus.Zalo + "</span>";
-                            ltrInfo.Text += "</div>";
-                            ltrInfo.Text += "</div>";
-                            ltrInfo.Text += "<div class=\"col-md-6\">";
-                            ltrInfo.Text += "<div class=\"form-group\">";
-                            ltrInfo.Text += "<label>Facebook</label>";
-                            ltrInfo.Text += "<span class=\"form-control input-disabled\">" + cus.Facebook + "</span>";
-                            ltrInfo.Text += "</div>";
-                            ltrInfo.Text += "</div>";
-                            ltrInfo.Text += "</div>";
-                            ltrInfo.Text += "<div class=\"form-row view-detail\">";
-                            ltrInfo.Text += "    <a href=\"javascript:;\" class=\"btn primary-btn fw-btn not-fullwidth\" onclick=\"viewCustomerDetail('" + cus.ID + "')\"><i class=\"fa fa-address-card-o\" aria-hidden=\"true\"></i> Xem chi tiết</a>";
-                            ltrInfo.Text += "</div>";
-
-                            var discount = DiscountCustomerController.getbyCustID(cus.ID).FirstOrDefault();
-                            if (discount != null)
-                            {
-
-                                ltrInfo.Text += "<div class='form-row discount-info'>";
-                                ltrInfo.Text += String.Format("<strong>* Chiết khấu của khách: {0:0,0}đ/cái.</strong>", discount.DiscountAmount);
-                                ltrInfo.Text += "</div>";
-                                ltrInfo.Text += "<div class='form-row refund-info'>";
-                                if (discount.FeeRefund == 0)
-                                {
-                                    ltrInfo.Text += "<strong>* Miễn phí đổi hàng</strong>";
-                                }
-                                else
-                                {
-                                    ltrInfo.Text += String.Format("<strong>* Phí đổi hàng của khách: {0:0,0}đ/cái.</strong>", discount.FeeRefund);
-                                }
-                                ltrInfo.Text += "</div>";
-                            }
-
-                            // Title
-                            this.Title = String.Format("{0} - Đổi trả", string.IsNullOrEmpty(cus.Nick) ? cus.Nick.ToTitleCase() : cus.CustomerName.ToTitleCase());
-                            ltrHeading.Text = "Đơn đổi trả #" + ID.ToString() + " - " + (cus.Nick != "" ? cus.Nick.ToTitleCase() : cus.CustomerName.ToTitleCase()) + (!String.IsNullOrEmpty(r.UserHelp) ? " (được tạo giúp bởi " + r.UserHelp + ")" : "");
-
-                            ltrTotal.Text = string.Format("{0:N0}", Convert.ToDouble(r.TotalPrice));
-                            ltrQuantity.Text = string.Format("{0:N0}", Convert.ToDouble(r.TotalQuantity));
-                            ltrRefund.Text = string.Format("{0:N0}", Convert.ToDouble(r.TotalRefundFee));
-
-                            // get info tranfor page tao-don-hang-doi-tra.aspx
-                            _refundGood.RefundGoodsID = ID;
-                            _refundGood.CustomerID = r.CustomerID.Value;
-                            _refundGood.CustomerName = r.CustomerName;
-                            _refundGood.CustomerPhone = r.CustomerPhone;
-                            _refundGood.CustomerNick = cus != null ? cus.Nick : String.Empty;
-                            _refundGood.CustomerAddress = cus != null ? cus.CustomerAddress : String.Empty;
-                            _refundGood.CustomerZalo = cus != null ? cus.Zalo : String.Empty;
-                            _refundGood.CustomerFacebook = cus != null ? cus.Facebook : String.Empty;
-                            _refundGood.RefundDetails = RefundGoodDetailController.GetInfoShowRefundDetail(ID);
-                            _refundGood.TotalPrice = Convert.ToDouble(r.TotalPrice);
-                            _refundGood.TotalQuantity = Convert.ToDouble(r.TotalQuantity);
-                            _refundGood.TotalFreeRefund = Convert.ToDouble(r.TotalRefundFee);
-                            _refundGood.Status = r.Status.Value;
-                            _refundGood.Note = txtRefundsNote.Text;
-                            _refundGood.CreateBy = r.CreatedBy;
-
-                            var rds = RefundGoodDetailController.GetByRefundGoodsID(ID);
-
-                            var product = _refundGood.RefundDetails
-                                .Join(
-                                    rds,
-                                    p1 => new {
-                                        RefundGoodsID = p1.RefundGoodsID,
-                                        RefundDetailID = p1.RefundDetailID
-                                    },
-                                    p2 => new {
-                                        RefundGoodsID = p2.RefundGoodsID.Value,
-                                        RefundDetailID = p2.ID
-                                    },
-                                    (p1, p2) => new { p1, p2 })
-                                .Select(x => new {
-                                    SKU = x.p2.SKU,
-                                    OrderID = x.p2.OrderID,
-                                    ProductName = x.p2.ProductName,
-                                    ProductType = x.p2.ProductType,
-                                    GiavonPerProduct = x.p2.GiavonPerProduct,
-                                    SoldPricePerProduct = x.p2.SoldPricePerProduct,
-                                    DiscountPricePerProduct = x.p2.DiscountPricePerProduct,
-                                    Quantity = x.p2.Quantity,
-                                    QuantityMax = x.p2.QuantityMax,
-                                    RefundType = x.p2.RefundType,
-                                    RefundFeePerProduct = x.p2.RefundFeePerProduct,
-                                    TotalPriceRow = x.p2.TotalPriceRow,
-                                    ProductImage = x.p1.ProductImage
-                                })
-                                .ToList();
-
-                            if (product.Count > 0)
-                            {
-                                string html = "";
-                                int t = 0;
-                                foreach (var item in product)
-                                {
-
-                                    var variables = ProductVariableValueController.GetByProductVariableSKU(item.SKU);
-                                    string variable = "";
-                                    if (variables.Count > 0)
-                                    {
-                                        variable += "<br><br>";
-                                        foreach (var v in variables)
-                                        {
-                                            variable += v.VariableName.Trim() + ": " + v.VariableValue.Trim() + "<br>";
-                                        }
-                                    }
-                                    t++;
-                                    html += "<tr ondblclick=\"clickrow($(this))\" class=\"product-result\" data-sku=\"" + item.SKU + "\" data-orderID=\"" + item.OrderID
-                                                        + "\" data-ProductName=\"" + item.ProductName
-                                                        + "\" data-ProductType=\"" + item.ProductType + "\" data-Giagoc=\"" + item.GiavonPerProduct
-                                                        + "\" data-Giadaban=\"" + item.SoldPricePerProduct
-                                                        + "\" data-TienGiam=\"" + item.DiscountPricePerProduct
-                                                        + "\" data-Soluongtoida=\"" + item.QuantityMax + "\" data-RefundFee=\"" + item.RefundFeePerProduct + "\"  >";
-                                    html += "   <td>" + t + "</td>";
-                                    html += "   <td class='image-item'><img src='" + Thumbnail.getURL(item.ProductImage, Thumbnail.Size.Small) + "'></td>";
-                                    html += "   <td class='name-item'><a href='/xem-san-pham?sku=" + item.SKU + "' target='_blank'>" + item.ProductName + "</a>" + variable + "</td>";
-                                    html += "   <td class='sku-item'>" + item.SKU + "</td>";
-                                    html += "   <td class='price-item giagoc' data-giagoc=\"" + item.GiavonPerProduct + "\">" + string.Format("{0:N0}", Convert.ToDouble(item.GiavonPerProduct)) + "</td>";
-                                    html += "   <td class='giadaban' data-giadaban=\"" + item.SoldPricePerProduct + "\"><strong>" + string.Format("{0:N0}", Convert.ToDouble(item.SoldPricePerProduct)) + "</strong><br>(CK: " + string.Format("{0:N0}", Convert.ToDouble(item.DiscountPricePerProduct)) + ")</td>";
-                                    html += "   <td class='slcandoi'>" + item.Quantity + "</td>";
-                                    html += "   <td>";
-                                    int refundType = Convert.ToInt32(item.RefundType);
-                                    string refuntTypeName = "";
-                                    if (item.RefundType == 1)
-                                        refuntTypeName = "Đổi size";
-                                    else if (item.RefundType == 2)
-                                        refuntTypeName = "Đổi sản phẩm khác";
-                                    else
-                                        refuntTypeName = "Đổi hàng lỗi";
-                                    html += refuntTypeName;
-                                    html += "    </td>";
-                                    html += "   <td class=\"phidoihang\">" + string.Format("{0:N0}", Convert.ToDouble(item.RefundFeePerProduct)) + "</td>";
-                                    html += "   <td class=\"thanhtien\">" + string.Format("{0:N0}", Convert.ToDouble(item.TotalPriceRow)) + "</td>";
-                                    html += "</tr>";
-
-                                }
-
-                                ddlRefundStatus.SelectedValue = r.Status.ToString();
-                                txtRefundsNote.Text = r.RefundNote;
-                                ltrList.Text = html;
-                            }
-
-                            ltrPrint.Text = "<a href=\"/print-invoice-return?id=" + ID + "\" target=\"_blank\" class=\"btn primary-btn fw-btn not-fullwidth\"><i class=\"fa fa-print\" aria-hidden=\"true\"></i> In hóa đơn</a>";
-                            ltrPrint.Text += "<a href=\"/print-return-order-image?id=" + ID + "\" target=\"_blank\" class=\"btn primary-btn fw-btn not-fullwidth print-invoice-merged\"><i class=\"fa fa-picture-o\" aria-hidden=\"true\"></i> Lấy ảnh đơn hàng</a>";
-
+                            cusID = cus.ID;
+                            zalo = cus.Zalo;
+                            nick = cus.Nick;
+                            address = cus.CustomerAddress;
+                            facebook = cus.Facebook;
                         }
+
+                        // Title
+                        this.Title = String.Format("{0} - Đổi trả", string.IsNullOrEmpty(nick) ? nick.ToTitleCase() : r.CustomerName.ToTitleCase());
+                        ltrHeading.Text = "Đơn đổi trả #" + ID.ToString() + " - " + (string.IsNullOrEmpty(nick) ? nick.ToTitleCase() : r.CustomerName.ToTitleCase()) + (!string.IsNullOrEmpty(r.UserHelp) ? " (được tạo giúp bởi " + r.UserHelp + ")" : "");
+
+                        ltrInfo.Text += "<div class='row'>";
+                        ltrInfo.Text += "<div class='col-md-4'>";
+                        ltrInfo.Text += "<div class='form-group'>";
+                        ltrInfo.Text += "<label>Họ tên</label>";
+                        ltrInfo.Text += "<span class='form-control input-disabled'>" + r.CustomerName + "</span>";
+                        ltrInfo.Text += "</div>";
+                        ltrInfo.Text += "</div>";
+                        ltrInfo.Text += "<div class='col-md-5'>";
+                        ltrInfo.Text += "<div class='form-group'>";
+                        ltrInfo.Text += "<label>Điện thoại</label>";
+                        ltrInfo.Text += "<span class='form-control input-disabled'>" + r.CustomerPhone + "</span>";
+                        ltrInfo.Text += "</div>";
+                        ltrInfo.Text += "</div>";
+                        ltrInfo.Text += "<div class='col-md-3'>";
+                        ltrInfo.Text += "<div class='form-group'>";
+                        ltrInfo.Text += "<label>Zalo</label>";
+                        ltrInfo.Text += "<span class='form-control input-disabled'>" + zalo + "</span>";
+                        ltrInfo.Text += "</div>";
+                        ltrInfo.Text += "</div>";
+                        ltrInfo.Text += "</div>";
+                        ltrInfo.Text += "<div class='row'>";
+                        ltrInfo.Text += "<div class='col-md-4'>";
+                        ltrInfo.Text += "<div class='form-group'>";
+                        ltrInfo.Text += "<label>Nick đặt hàng</label>";
+                        ltrInfo.Text += "<span class='form-control input-disabled'>" + nick + "</span>";
+                        ltrInfo.Text += "</div>";
+                        ltrInfo.Text += "</div>";
+                        ltrInfo.Text += "<div class='col-md-5'>";
+                        ltrInfo.Text += "<div class='form-group'>";
+                        ltrInfo.Text += "<label>Địa chỉ</label>";
+                        ltrInfo.Text += "<span class='form-control input-disabled'>" + address + "</span>";
+                        ltrInfo.Text += "</div>";
+                        ltrInfo.Text += "</div>";
+                        ltrInfo.Text += "<div class='col-md-3'>";
+                        ltrInfo.Text += "<div class='form-group'>";
+                        ltrInfo.Text += "<label>Facebook</label>";
+                        ltrInfo.Text += "<span class='form-control input-disabled'>" + facebook + "</span>";
+                        ltrInfo.Text += "</div>";
+                        ltrInfo.Text += "</div>";
+                        ltrInfo.Text += "</div>";
+
+                        ltrInfo.Text += "<div class='form-row view-detail'>";
+                        ltrInfo.Text += "    <a href='javascript:;' class='btn primary-btn fw-btn not-fullwidth' onclick='viewCustomerDetail(`" + cusID + "`)'><i class='fa fa-address-card-o' aria-hidden='true'></i> Xem chi tiết</a>";
+                        ltrInfo.Text += "</div>";
+
+                        var discount = DiscountCustomerController.getbyCustID(cusID).FirstOrDefault();
+                        if (discount != null)
+                        {
+
+                            ltrInfo.Text += "<div class='form-row discount-info'>";
+                            ltrInfo.Text += String.Format("<strong>* Chiết khấu của khách: {0:0,0}đ/cái.</strong>", discount.DiscountAmount);
+                            ltrInfo.Text += "</div>";
+                            ltrInfo.Text += "<div class='form-row refund-info'>";
+                            if (discount.FeeRefund == 0)
+                            {
+                                ltrInfo.Text += "<strong>* Miễn phí đổi hàng</strong>";
+                            }
+                            else
+                            {
+                                ltrInfo.Text += String.Format("<strong>* Phí đổi hàng của khách: {0:0,0}đ/cái.</strong>", discount.FeeRefund);
+                            }
+                            ltrInfo.Text += "</div>";
+                        }
+                        
+                        ltrTotal.Text = string.Format("{0:N0}", Convert.ToDouble(r.TotalPrice));
+                        ltrQuantity.Text = string.Format("{0:N0}", Convert.ToDouble(r.TotalQuantity));
+                        ltrRefund.Text = string.Format("{0:N0}", Convert.ToDouble(r.TotalRefundFee));
+
+                        // get info tranfor page tao-don-hang-doi-tra.aspx
+                        _refundGood.RefundGoodsID = ID;
+                        _refundGood.CustomerID = r.CustomerID.Value;
+                        _refundGood.CustomerName = r.CustomerName;
+                        _refundGood.CustomerPhone = r.CustomerPhone;
+                        _refundGood.CustomerNick = cus != null ? cus.Nick : String.Empty;
+                        _refundGood.CustomerAddress = cus != null ? cus.CustomerAddress : String.Empty;
+                        _refundGood.CustomerZalo = cus != null ? cus.Zalo : String.Empty;
+                        _refundGood.CustomerFacebook = cus != null ? cus.Facebook : String.Empty;
+                        _refundGood.RefundDetails = RefundGoodDetailController.GetInfoShowRefundDetail(ID);
+                        _refundGood.TotalPrice = Convert.ToDouble(r.TotalPrice);
+                        _refundGood.TotalQuantity = Convert.ToDouble(r.TotalQuantity);
+                        _refundGood.TotalFreeRefund = Convert.ToDouble(r.TotalRefundFee);
+                        _refundGood.Status = r.Status.Value;
+                        _refundGood.Note = txtRefundsNote.Text;
+                        _refundGood.CreateBy = r.CreatedBy;
+
+                        var rds = RefundGoodDetailController.GetByRefundGoodsID(ID);
+
+                        var product = _refundGood.RefundDetails
+                            .Join(
+                                rds,
+                                p1 => new {
+                                    RefundGoodsID = p1.RefundGoodsID,
+                                    RefundDetailID = p1.RefundDetailID
+                                },
+                                p2 => new {
+                                    RefundGoodsID = p2.RefundGoodsID.Value,
+                                    RefundDetailID = p2.ID
+                                },
+                                (p1, p2) => new { p1, p2 })
+                            .Select(x => new {
+                                SKU = x.p2.SKU,
+                                OrderID = x.p2.OrderID,
+                                ProductName = x.p2.ProductName,
+                                ProductType = x.p2.ProductType,
+                                GiavonPerProduct = x.p2.GiavonPerProduct,
+                                SoldPricePerProduct = x.p2.SoldPricePerProduct,
+                                DiscountPricePerProduct = x.p2.DiscountPricePerProduct,
+                                Quantity = x.p2.Quantity,
+                                QuantityMax = x.p2.QuantityMax,
+                                RefundType = x.p2.RefundType,
+                                RefundFeePerProduct = x.p2.RefundFeePerProduct,
+                                TotalPriceRow = x.p2.TotalPriceRow,
+                                ProductImage = x.p1.ProductImage
+                            })
+                            .ToList();
+
+                        if (product.Count > 0)
+                        {
+                            string html = "";
+                            int t = 0;
+                            foreach (var item in product)
+                            {
+
+                                var variables = ProductVariableValueController.GetByProductVariableSKU(item.SKU);
+                                string variable = "";
+                                if (variables.Count > 0)
+                                {
+                                    variable += "<br><br>";
+                                    foreach (var v in variables)
+                                    {
+                                        variable += v.VariableName.Trim() + ": " + v.VariableValue.Trim() + "<br>";
+                                    }
+                                }
+                                t++;
+                                html += "<tr ondblclick='clickrow($(this))' class='product-result' data-sku='" + item.SKU 
+                                                    + "' data-orderID='" + item.OrderID
+                                                    + "' data-ProductName='" + item.ProductName
+                                                    + "' data-ProductType='" + item.ProductType 
+                                                    + "' data-Giagoc='" + item.GiavonPerProduct
+                                                    + "' data-Giadaban='" + item.SoldPricePerProduct
+                                                    + "' data-TienGiam='" + item.DiscountPricePerProduct
+                                                    + "' data-Soluongtoida='" + item.QuantityMax 
+                                                    + "' data-RefundFee='" + item.RefundFeePerProduct 
+                                                    + "'>";
+                                html += "   <td>" + t + "</td>";
+                                html += "   <td class='image-item'><img src='" + Thumbnail.getURL(item.ProductImage, Thumbnail.Size.Small) + "'></td>";
+                                html += "   <td class='name-item'><a href='/xem-san-pham?sku=" + item.SKU + "' target='_blank'>" + item.ProductName + "</a>" + variable + "</td>";
+                                html += "   <td class='sku-item'>" + item.SKU + "</td>";
+                                html += "   <td class='price-item giagoc' data-giagoc='" + item.GiavonPerProduct + "'>" + string.Format("{0:N0}", Convert.ToDouble(item.GiavonPerProduct)) + "</td>";
+                                html += "   <td class='giadaban' data-giadaban='" + item.SoldPricePerProduct + "'><strong>" + string.Format("{0:N0}", Convert.ToDouble(item.SoldPricePerProduct)) + "</strong><br>(CK: " + string.Format("{0:N0}", Convert.ToDouble(item.DiscountPricePerProduct)) + ")</td>";
+                                html += "   <td class='slcandoi'>" + item.Quantity + "</td>";
+                                html += "   <td>";
+                                int refundType = Convert.ToInt32(item.RefundType);
+                                string refuntTypeName = "";
+                                if (item.RefundType == 1)
+                                    refuntTypeName = "Đổi size";
+                                else if (item.RefundType == 2)
+                                    refuntTypeName = "Đổi sản phẩm khác";
+                                else
+                                    refuntTypeName = "Đổi hàng lỗi";
+                                html += refuntTypeName;
+                                html += "    </td>";
+                                html += "   <td class='phidoihang'>" + string.Format("{0:N0}", Convert.ToDouble(item.RefundFeePerProduct)) + "</td>";
+                                html += "   <td class='thanhtien'>" + string.Format("{0:N0}", Convert.ToDouble(item.TotalPriceRow)) + "</td>";
+                                html += "</tr>";
+
+                            }
+
+                            ddlRefundStatus.SelectedValue = r.Status.ToString();
+                            txtRefundsNote.Text = r.RefundNote;
+                            ltrList.Text = html;
+                        }
+
+                        ltrPrint.Text = "<a href='/print-invoice-return?id=" + ID + "' target='_blank' class='btn primary-btn fw-btn not-fullwidth'><i class='fa fa-print' aria-hidden='true'></i> In hóa đơn</a>";
+                        ltrPrint.Text += "<a href='/print-return-order-image?id=" + ID + "' target='_blank' class='btn primary-btn fw-btn not-fullwidth print-invoice-merged'><i class='fa fa-picture-o' aria-hidden='true'></i> Lấy ảnh đơn hàng</a>";
 
                     }
                 }

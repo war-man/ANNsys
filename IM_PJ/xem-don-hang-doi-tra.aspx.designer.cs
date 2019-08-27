@@ -139,15 +139,6 @@ namespace IM_PJ {
         protected global::System.Web.UI.WebControls.Literal ltrList;
         
         /// <summary>
-        /// ltrTotal control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Literal ltrTotal;
-        
-        /// <summary>
         /// ltrQuantity control.
         /// </summary>
         /// <remarks>
@@ -164,6 +155,15 @@ namespace IM_PJ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Literal ltrRefund;
+        
+        /// <summary>
+        /// ltrTotal control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Literal ltrTotal;
         
         /// <summary>
         /// ddlRefundStatus control.

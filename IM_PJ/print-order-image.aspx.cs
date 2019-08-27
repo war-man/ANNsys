@@ -328,9 +328,9 @@ namespace IM_PJ
                         productPrint += "<div class=\"table-1\">";
                         productPrint += "<h1>XÁC NHẬN ĐƠN HÀNG #" + order.ID + "</h1>";
                         productPrint += "<div class=\"note\">";
-                        productPrint += "<p>- Lưu ý hình ảnh sản phẩm trên đơn hàng có thể hiển thị không đúng màu.</p>";
+                        productPrint += "<p>- Lưu ý, hình ảnh sản phẩm có thể hiển thị không đúng màu.</p>";
                         productPrint += "<p>- Quý khách vui lòng kiểm tra thuộc tính sản phẩm (Màu, Size).</p>";
-                        productPrint += "<p>- Nếu có sai sót, quý khách hãy gọi điện thoại thông báo cho nhân viên.</p>";
+                        productPrint += "<p>- Nếu có sai sót, quý khách vui lòng thông báo cho nhân viên.</p>";
                         productPrint += "</div>";
                         productPrint += "<table>";
                         productPrint += "<colgroup >";

@@ -209,7 +209,7 @@ namespace IM_PJ.Controllers
                     )
                     .Where(x => ProvinceID <= 0 || (ProvinceID > 0 && x.ProvinceID == ProvinceID))
                     .Where(x => UserID <= 0 || (UserID > 0  && x.UserID == UserID))
-                    .Where(x => Status <= 0 || (Status > 0 && x.Status == Status))
+                    .Where(x => Status <= 0 || (Status > 0 && Status < 5 && x.Status == Status) || Status >= 5)
                     .Where(x => string.IsNullOrEmpty(Referer) || (!string.IsNullOrEmpty(Referer) && x.Referer == Referer))
                     .Where(x => string.IsNullOrEmpty(Category) || (!string.IsNullOrEmpty(Category) && x.ProductCategory == Category))
                     .Where(x => string.IsNullOrEmpty(CreatedDate) || (!string.IsNullOrEmpty(CreatedDate) && x.CreatedDate >= fromdate && x.CreatedDate <= todate))
@@ -262,6 +262,31 @@ namespace IM_PJ.Controllers
                     )
                     .OrderByDescending(x => x.CreatedDate)
                     .ToList();
+
+                // Kiểm tra xe đã trở thành khách hàng thân thân thiết chưa
+                result
+                    .Except(result.Where(x => x.Phone.Trim().Replace(" ", String.Empty).Length < 6))
+                    .GroupJoin(
+                        con.tbl_Customer.Where(x => x.CustomerPhone.Length > 6),
+                        reg => reg.Phone.Trim().Replace(" ", String.Empty).Substring(reg.Phone.Length - 6),
+                        cus => cus.CustomerPhone.Substring(cus.CustomerPhone.Length - 6),
+                        (reg, cus) => new { reg, cus }
+                    )
+                    .SelectMany(
+                        x => x.cus.DefaultIfEmpty(),
+                        (parent, child) => {
+                            parent.reg.Status = child != null ? 5 : parent.reg.Status;
+
+                            return parent.reg;
+                        }
+                    )
+                    .ToList();
+
+                // Trở thành khách hàng thân thiết
+                if (Status == 5)
+                {
+                    result = result.Where(x => x.Status == Status).ToList();
+                }
             }
 
             return result;

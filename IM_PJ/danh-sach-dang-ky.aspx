@@ -124,6 +124,7 @@
                                         <asp:ListItem Value="2" Text="Đã xem"></asp:ListItem>
                                         <asp:ListItem Value="3" Text="Đã bàn giao"></asp:ListItem>
                                         <asp:ListItem Value="4" Text="Đã tiếp nhận"></asp:ListItem>
+                                        <asp:ListItem Value="5" Text="Khách hàng"></asp:ListItem>
                                     </asp:DropDownList>
                                 </div>
                                 <div class="col-md-2 col-xs-6">

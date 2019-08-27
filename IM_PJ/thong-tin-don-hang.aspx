@@ -102,7 +102,7 @@
                 padding-bottom: 0;
             }
             table.shop_table_responsive > tbody > tr > td:nth-of-type(2) img {
-                width: 50%;
+                width: 30%;
             }
             
             table.shop_table_responsive > tbody > tr:nth-of-type(2n) td {
@@ -280,45 +280,43 @@
                             </div>
                             <div class="panel-body">
                                 <div class="row">
-                                    <div class="col-md-6">
+                                    <div class="col-md-4">
                                         <div class="form-group">
                                             <label>Họ tên</label>
                                             <asp:RequiredFieldValidator ID="RequiredFieldValidator1" runat="server" ControlToValidate="txtFullname" ErrorMessage="(*)" ForeColor="Red" Display="Dynamic"></asp:RequiredFieldValidator>
                                             <asp:TextBox ID="txtFullname" CssClass="form-control capitalize" runat="server" Enabled="false" placeholder="Họ tên thật của khách (F2)" autocomplete="off"></asp:TextBox>
                                         </div>
                                     </div>
-                                    <div class="col-md-6">
+                                    <div class="col-md-5">
                                         <div class="form-group">
                                             <label>Điện thoại</label>
                                             <asp:RequiredFieldValidator ID="re" runat="server" ControlToValidate="txtPhone" ErrorMessage="(*)" ForeColor="Red" Display="Dynamic"></asp:RequiredFieldValidator>
                                             <asp:TextBox ID="txtPhone" CssClass="form-control" onblur="ajaxCheckCustomer()" runat="server" Enabled="false" placeholder="Số điện thoại khách hàng" autocomplete="off"></asp:TextBox>
                                         </div>
                                     </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label>Zalo</label>
+                                            <asp:TextBox ID="txtZalo" CssClass="form-control" runat="server" Enabled="false" placeholder="Số điện thoại Zalo" autocomplete="off"></asp:TextBox>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-md-6">
+                                    <div class="col-md-4">
                                         <div class="form-group">
                                             <label>Nick đặt hàng</label>
                                             <asp:RequiredFieldValidator ID="RequiredFieldValidator2" runat="server" ControlToValidate="txtNick" ErrorMessage="(*)" ForeColor="Red" Display="Dynamic"></asp:RequiredFieldValidator>
                                             <asp:TextBox ID="txtNick" CssClass="form-control capitalize" runat="server" Enabled="false" placeholder="Tên nick đặt hàng" autocomplete="off"></asp:TextBox>
                                         </div>
                                     </div>
-                                    <div class="col-md-6">
+                                    <div class="col-md-5">
                                         <div class="form-group">
                                             <label>Địa chỉ</label>
                                             <asp:RequiredFieldValidator ID="RequiredFieldValidator3" runat="server" ControlToValidate="txtAddress" ErrorMessage="(*)" ForeColor="Red" Display="Dynamic"></asp:RequiredFieldValidator>
                                             <asp:TextBox ID="txtAddress" CssClass="form-control capitalize" runat="server" Enabled="false" placeholder="Địa chỉ khách hàng" autocomplete="off"></asp:TextBox>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label>Zalo</label>
-                                            <asp:TextBox ID="txtZalo" CssClass="form-control" runat="server" Enabled="false" placeholder="Số điện thoại Zalo" autocomplete="off"></asp:TextBox>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
+                                    <div class="col-md-3">
                                         <div class="form-group">
                                             <label>Facebook</label>
                                             <div class="row">

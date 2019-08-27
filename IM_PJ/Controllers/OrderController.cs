@@ -3025,27 +3025,21 @@ namespace IM_PJ.Controllers
 
                 #region Lấy thông tin các sản phẩm khách hàng đổi trả
                 var refunds = con.tbl_RefundGoods
-                    .Join(
-                        orders.Where(x => x.RefundsGoodsID.HasValue),
-                        r => r.ID,
-                        o => o.RefundsGoodsID.Value,
-                        (r, o) => r
-                    )
-                    .Where(x => x.Status == 2) // Đã trừ tiền
+                    .Where(x => x.CustomerPhone == phone)
                     .OrderByDescending(o => o.ID);
                 #endregion
 
                 #region Lấy thông tin các loại phí khác
-                var feeOthers = con.Fees
-                    .Join(
-                        orders,
-                        f => f.OrderID,
-                        o => o.ID,
-                        (f, o) => f
-                    )
-                    .GroupBy(g => g.OrderID)
-                    .Select(x => new { orderID = x.Key, feePrice = x.Sum(s => s.FeePrice) })
-                    .OrderByDescending(o => o.orderID); ;
+                //var feeOthers = con.Fees
+                //    .Join(
+                //        orders,
+                //        f => f.OrderID,
+                //        o => o.ID,
+                //        (f, o) => f
+                //    )
+                //    .GroupBy(g => g.OrderID)
+                //    .Select(x => new { orderID = x.Key, feePrice = x.Sum(s => s.FeePrice) })
+                //    .OrderByDescending(o => o.orderID);
                 #endregion
 
                 #endregion
@@ -3095,33 +3089,34 @@ namespace IM_PJ.Controllers
                             quantity = parent.quantity + (child != null ? child.quantity : 0),
                             totalCostOfGoods = parent.totalCostOfGoods + (child != null ? child.totalCostOfGoods : 0),
                             totalPrice = parent.totalPrice + (child != null ? child.totalPrice : 0),
-                            totalDiscount = parent.order.TotalDiscount.HasValue ? parent.order.TotalDiscount.Value : 0
+                            totalDiscount = parent.order.TotalDiscount.HasValue ? parent.order.TotalDiscount.Value : 0,
+                            feeShipping = parent.order.FeeShipping
                         }
                     );
                 #endregion
 
-                #region Lấy thông tin các loại phí trên từng đơn hàng
-                var feeInfo = orders
-                    .GroupJoin(
-                        feeOthers,
-                        o => o.ID,
-                        f => f.orderID,
-                        (o, f) => new
-                        {
-                            order = o,
-                            feeOther = f
-                        }
-                    )
-                    .SelectMany(
-                        x => x.feeOther.DefaultIfEmpty(),
-                        (parent, child) => new
-                        {
-                            orderID = parent.order.ID,
-                            feeShipping = parent.order.FeeShipping,
-                            feeOther = child != null ? child.feePrice : 0
-                        }
-                    );
-                #endregion
+                //#region Lấy thông tin các loại phí trên từng đơn hàng
+                //var feeInfo = orders
+                //    .GroupJoin(
+                //        feeOthers,
+                //        o => o.ID,
+                //        f => f.orderID,
+                //        (o, f) => new
+                //        {
+                //            order = o,
+                //            feeOther = f
+                //        }
+                //    )
+                //    .SelectMany(
+                //        x => x.feeOther.DefaultIfEmpty(),
+                //        (parent, child) => new
+                //        {
+                //            orderID = parent.order.ID,
+                //            feeShipping = parent.order.FeeShipping,
+                //            feeOther = child != null ? child.feePrice : 0
+                //        }
+                //    );
+                //#endregion
 
                 #region Lấy thông tin các hàng đổi trả
                 var refundDetail = refunds
@@ -3176,7 +3171,7 @@ namespace IM_PJ.Controllers
                 var orderFilter = orders.ToList();
                 var refundFilter = refunds.ToList();
                 var profitInfoFilter = profitInfo.ToList();
-                var feeInfoFilter = feeInfo.ToList();
+                //var feeInfoFilter = feeInfo.ToList();
 
                 #region Thực thi lấy thông tin dữ liệu đỗi trả
                 var refundInfo = orderFilter
@@ -3258,17 +3253,17 @@ namespace IM_PJ.Controllers
                             profit = p
                         }
                     )
-                    .Join(
-                        feeInfo,
-                        temp => temp.order.ID,
-                        f => f.orderID,
-                        (tem, f) => new
-                        {
-                            order = tem.order,
-                            profit = tem.profit,
-                            fee = f
-                        }
-                    )
+                    //.Join(
+                    //    feeInfo,
+                    //    temp => temp.order.ID,
+                    //    f => f.orderID,
+                    //    (tem, f) => new
+                    //    {
+                    //        order = tem.order,
+                    //        profit = tem.profit,
+                    //        fee = f
+                    //    }
+                    //)
                     .Join(
                         refundInfo,
                         temp => temp.order.ID,
@@ -3277,7 +3272,7 @@ namespace IM_PJ.Controllers
                         {
                             order = tem.order,
                             profit = tem.profit,
-                            fee = tem.fee,
+                            //fee = tem.fee,
                             refund = rf
                         }
                     )
@@ -3311,8 +3306,8 @@ namespace IM_PJ.Controllers
                             costOfGoods = x.Sum(s => s.profit.totalCostOfGoods),
                             price = x.Sum(s => s.profit.totalPrice),
                             discount = x.Sum(s => s.profit.totalDiscount),
-                            feeShipping = x.Sum(s => !String.IsNullOrEmpty(s.fee.feeShipping) ? Convert.ToDouble(s.fee.feeShipping) : 0),
-                            feeOther = x.Sum(s => Convert.ToDouble(s.fee.feeOther)),
+                            feeShipping = x.Sum(s => !String.IsNullOrEmpty(s.profit.feeShipping) ? Convert.ToDouble(s.profit.feeShipping) : 0),
+                            //feeOther = x.Sum(s => Convert.ToDouble(s.fee.feeOther)),
                             quantityRefund = x.Sum(s => s.refund.quantity),
                             quantityProductRefund = x.Sum(s => s.refund.quantityProduct),
                             refundCapital = x.Sum(s => s.refund.totalRefundCapital),
