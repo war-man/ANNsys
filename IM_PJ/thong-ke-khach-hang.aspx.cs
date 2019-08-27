@@ -139,7 +139,6 @@ namespace IM_PJ
                         totalPrice = x.Sum(s => s.price),
                         totalDiscount = x.Sum(s => s.discount),
                         totalFeeShipping = x.Sum(s => s.feeShipping),
-                        totalFeeOther = x.Sum(s => s.feeOther),
                         totalQuantityRefund = x.Sum(s => s.quantityRefund),
                         totalQuantityProductRefund = x.Sum(s => s.quantityProductRefund),
                         totalRefundMoney = x.Sum(s => s.refundMoney),
@@ -176,9 +175,15 @@ namespace IM_PJ
             {
                 string chartDays = "";
                 string chartProfit = "";
+                string chartProduct = "";
+                string chartSaleProduct = "";
+                string chartRefundProduct = "";
 
                 List<string> dataDays = new List<string>();
                 List<string> dataProfit = new List<string>();
+                List<string> dataSaleProduct = new List<string>();
+                List<string> dataRefundProduct = new List<string>();
+                List<string> dataProduct = new List<string>();
 
                 foreach (var item in data)
                 {
@@ -191,29 +196,72 @@ namespace IM_PJ
                     // Tính số tiền lời sau khi sản phẩn được đổi trả
                     // Tiền lời bằng tiền lời đã bán - số liền lời của sản phẩn đổi trả + phí đổi trả
                     profit += -(item.refundMoney - item.refundCapital);
+
                     dataDays.Add(date);
                     dataProfit.Add(profit.ToString());
+                    dataSaleProduct.Add(item.quantityProduct.ToString());
+                    dataRefundProduct.Add(item.quantityProductRefund.ToString());
+                    dataProduct.Add((item.quantityProduct - item.quantityProductRefund).ToString());
                 }
 
+                #region Tạo dữ liệu cho sale chart
                 chartDays = String.Join(", ", dataDays);
                 chartProfit = String.Join(", ", dataProfit);
 
-                StringBuilder html = new StringBuilder();
-                html.Append("<script>");
-                html.Append("var lineChartData = {");
-                html.Append("    labels: [" + chartDays + "],");
-                html.Append("    datasets: [{");
-                html.Append("        label: 'Lợi nhuận',");
-                html.Append("        borderColor: 'rgb(255, 99, 132)',");
-                html.Append("        backgroundColor: 'rgb(255, 99, 132)',");
-                html.Append("        fill: false,");
-                html.Append("        data: [" + chartProfit + "],");
-                html.Append("        yAxisID: 'y-axis-1',");
-                html.Append("    }]");
-                html.Append("};");
-                html.Append("</script>");
+                StringBuilder html1 = new StringBuilder();
+                html1.Append("<script>");
+                html1.Append("var lineSaleData = {");
+                html1.Append("    labels: [" + chartDays + "],");
+                html1.Append("    datasets: [{");
+                html1.Append("        label: 'Lợi nhuận',");
+                html1.Append("        borderColor: 'rgb(255, 99, 132)',");
+                html1.Append("        backgroundColor: 'rgb(255, 99, 132)',");
+                html1.Append("        fill: false,");
+                html1.Append("        data: [" + chartProfit + "],");
+                html1.Append("        yAxisID: 'y-axis-1',");
+                html1.Append("    }]");
+                html1.Append("};");
+                html1.Append("</script>");
 
-                ltrChartData.Text = html.ToString();
+                ltrSaleData.Text = html1.ToString();
+                #endregion
+
+                #region Tạo dữ liệu cho product chart
+                chartSaleProduct = String.Join(", ", dataSaleProduct);
+                chartRefundProduct = String.Join(", ", dataRefundProduct);
+                chartProduct = String.Join(", ", dataProduct);
+
+                StringBuilder html2 = new StringBuilder();
+                html2.Append("<script>");
+                html2.Append("var lineProductData = {");
+                html2.Append("   labels: [" + chartDays + "],");
+                html2.Append("   datasets: [{");
+                html2.Append("       label: 'Số lượng còn lại',");
+                html2.Append("       borderColor: 'rgb(255, 99, 132)',");
+                html2.Append("       backgroundColor: 'rgb(255, 99, 132)',");
+                html2.Append("       fill: false,");
+                html2.Append("       data: [" + chartProduct + "],");
+                html2.Append("       yAxisID: 'y-axis-1',");
+                html2.Append("   }, {");
+                html2.Append("       label: 'Số lượng bán ra',");
+                html2.Append("       borderColor: 'rgb(54, 162, 235)',");
+                html2.Append("       backgroundColor: 'rgb(54, 162, 235)',");
+                html2.Append("       fill: false,");
+                html2.Append("       data: [" + chartSaleProduct + "],");
+                html2.Append("       yAxisID: 'y-axis-1'");
+                html2.Append("   }, {");
+                html2.Append("       label: 'Số lượng đổi trả',");
+                html2.Append("       borderColor: 'rgb(255, 205, 86)',");
+                html2.Append("       backgroundColor: 'rgb(255, 205, 86)',");
+                html2.Append("       fill: false,");
+                html2.Append("       data: [" + chartRefundProduct + "],");
+                html2.Append("       yAxisID: 'y-axis-1'");
+                html2.Append("   }]");
+                html2.Append("};");
+                html2.Append("</script>");
+
+                ltrProductData.Text = html2.ToString();
+                #endregion
             }
         }
 
