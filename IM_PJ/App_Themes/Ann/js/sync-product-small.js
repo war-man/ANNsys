@@ -10,23 +10,30 @@
         web = web.concat(web_vaydam);
     }
 
-    if ($(".hidden-" + id).hasClass("product-hidden")) {
-        for (var i = 0; i < web.length; i++) {
+    if ($(".hidden-" + id).hasClass("product-hidden"))
+    {
+        for (var i = 0; i < web.length; i++)
+        {
             upProductToWeb(web[i], sku, id, up, renew, i, "visible");
         }
     }
-    else {
-        for (var i = 0; i < web.length; i++) {
+    else
+    {
+        for (var i = 0; i < web.length; i++)
+        {
             upProductToWeb(web[i], sku, id, up, renew, i, visibility);
         }
     }
-    
 }
 
 function upProductToWeb(web, sku, id, up, renew, i, visibility) {
+    var url_web = "https://" + web + "/up-product";
+    if (web == "panpan.vn") {
+        url_web = url_web + ".html";
+    }
     $.ajax({
         type: "POST",
-        url: "https://" + web + "/up-product",
+        url: url_web,
         data: {
             sku: sku,
             systemid: id,
