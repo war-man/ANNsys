@@ -14,7 +14,6 @@ namespace IM_PJ.Models.Pages.thong_ke_doanh_thu_khach_hang
         public Double price { get; set; }
         public Double discount { get; set; }
         public Double feeShipping { get; set; }
-        public Double feeOther { get; set; }
         public int quantityRefund { get; set; }
         public int quantityProductRefund { get; set; }
         public Double refundCapital { get; set; }

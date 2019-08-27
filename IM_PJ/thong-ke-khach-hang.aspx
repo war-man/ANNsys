@@ -183,7 +183,12 @@
                         </div>
                         <div class="row margin-bottom-15">
                             <div class="col-md-12">
-                                <canvas id="canvas"></canvas>
+                                <canvas id="saleChart"></canvas>
+                            </div>
+                        </div>
+                        <div class="row margin-bottom-15">
+                            <div class="col-md-12">
+                                <canvas id="productChart"></canvas>
                             </div>
                         </div>
                     </div>
@@ -195,13 +200,16 @@
                 $("#<%= btnSearch.ClientID%>").click();
             }
         </script>
-        <asp:Literal ID="ltrChartData" runat="server" EnableViewState="false"></asp:Literal>
+        <asp:Literal ID="ltrSaleData" runat="server" EnableViewState="false"></asp:Literal>
+        <asp:Literal ID="ltrProductData" runat="server" EnableViewState="false"></asp:Literal>
         <script>
             window.onload = function () {
-                if (typeof lineChartData !== 'undefined') {
-                    var ctx = document.getElementById('canvas').getContext('2d');
+
+                // Sale chart 
+                if (typeof lineSaleData !== 'undefined') {
+                    var ctx = document.getElementById('saleChart').getContext('2d');
                     window.myLine = Chart.Line(ctx, {
-                        data: lineChartData,
+                        data: lineSaleData,
                         options: {
                             responsive: true,
                             aspectRatio: 3.5,
@@ -210,6 +218,48 @@
                             title: {
                                 display: true,
                                 text: 'Biểu đồ doanh thu theo khách hàng'
+                            },
+                            scales: {
+                                yAxes: [{
+                                    type: 'linear', // only linear but allow scale type registration. This allows extensions to exist solely for log scale for instance
+                                    display: true,
+                                    position: 'left',
+                                    id: 'y-axis-1',
+                                    ticks: {
+                                        beginAtZero: true,
+                                        callback: function (label, index, labels) {
+                                            return label.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                                        }
+                                    }
+                                }],
+                            },
+                            tooltips: {
+                                callbacks: {
+                                    label: function (tooltipItems, data) {
+                                        let label = data.datasets[tooltipItems.datasetIndex].label;
+                                        let value = tooltipItems.yLabel.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+                                        return label + ' : ' + value;
+                                    }
+                                }
+                            }
+                        }
+                    });
+                }
+
+                // Product chart
+                if (typeof lineProductData !== 'undefined') {
+                    var ctx = document.getElementById('productChart').getContext('2d');
+                    window.myLine = Chart.Line(ctx, {
+                        data: lineProductData,
+                        options: {
+                            responsive: true,
+                            aspectRatio: 3.5,
+                            hoverMode: 'index',
+                            stacked: false,
+                            title: {
+                                display: true,
+                                text: 'Biểu đồ số lượng khách hàng mua - trả hàng'
                             },
                             scales: {
                                 yAxes: [{
