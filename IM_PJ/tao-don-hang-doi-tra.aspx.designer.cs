@@ -256,6 +256,33 @@ namespace IM_PJ {
         protected global::System.Web.UI.WebControls.HiddenField hdfCustomerID;
         
         /// <summary>
+        /// hdfDaysExchange control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField hdfDaysExchange;
+        
+        /// <summary>
+        /// hdfRefundQuantityNoFee control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField hdfRefundQuantityNoFee;
+        
+        /// <summary>
+        /// hdfRefundQuantityFee control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField hdfRefundQuantityFee;
+        
+        /// <summary>
         /// rAjax control.
         /// </summary>
         /// <remarks>

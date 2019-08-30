@@ -50,10 +50,10 @@ namespace IM_PJ
             if (acc != null)
             {
                 int agentID = Convert.ToInt32(acc.AgentID);
-                var orders = DiscountGroupController.GetAll(s);
-                if (orders.Count > 0)
+                var discounts = DiscountGroupController.GetAll(s);
+                if (discounts.Count > 0)
                 {
-                    pagingall(orders);
+                    pagingall(discounts);
                 }
             }
         }
@@ -83,6 +83,7 @@ namespace IM_PJ
                     html.Append("<tr>");
                     html.Append("   <td>" + item.DiscountName + "</td>");
                     html.Append("   <td>" + string.Format("{0:N0}", Convert.ToDouble(item.DiscountAmount)) + "</td>");
+                    html.Append("   <td>" + string.Format("{0:N0}", Convert.ToDouble(item.QuantityProduct)) + "</td>");
                     html.Append("   <td>" + string.Format("{0:N0}", Convert.ToDouble(item.FeeRefund)) + "</td>");
                     html.Append("   <td>" + item.NumOfDateToChangeProduct + " ngày</td>");
                     html.Append("   <td>" + item.NumOfProductCanChange + " cái/" + item.NumOfDateToChangeProduct + " ngày</td>");
@@ -237,18 +238,6 @@ namespace IM_PJ
         }
         #endregion
 
-        //protected void btnSearch_Click(object sender, EventArgs e)
-        //{
-        //    string search = txtAgentName.Text;
-        //    if (!string.IsNullOrEmpty(search))
-        //    {
-        //        Response.Redirect("/danh-sach-nhom-khach-hang?s=" + search + "");
-        //    }
-        //    else
-        //    {
-        //        Response.Redirect("/danh-sach-nhom-khach-hang");
-        //    }
-        //}
         public class danhmuccon1
         {
             public tbl_Category cate1 { get; set; }

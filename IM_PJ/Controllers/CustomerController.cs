@@ -9,6 +9,7 @@ using System.Web;
 using WebUI.Business;
 using System.Text.RegularExpressions;
 using System.Data.Entity.Validation;
+using System.Data.Entity;
 
 namespace IM_PJ.Controllers
 {
@@ -592,6 +593,34 @@ namespace IM_PJ.Controllers
                 return or;
             }
         }
+
+        public static List<RefundInfo> getRefundQuantity(int? customerID, DateTime? fromDate, DateTime? toDate)
+        {
+            using (var con = new inventorymanagementEntities())
+            {
+                var refund = con.tbl_RefundGoodsDetails.Where(x => 1 == 1);
+
+                if(customerID.HasValue)
+                    refund = refund.Where(x => x.CustomerID == customerID);
+
+                if (fromDate.HasValue)
+                    refund = refund.Where(x => DbFunctions.TruncateTime(x.CreatedDate) >= fromDate);
+
+                if (toDate.HasValue)
+                    refund = refund.Where(x => DbFunctions.TruncateTime(x.CreatedDate) <= toDate);
+
+                return refund.GroupBy(g => g.CustomerID.Value)
+                    .Select(x => new RefundInfo()
+                    {
+                        customerID = x.Key,
+                        refundNoFeeQuantity = x.Sum(s => s.TotalRefundFee == "0" ? (s.Quantity.HasValue ? s.Quantity.Value : 0) : 0),
+                        refundFeeQuantity = x.Sum(s => s.TotalRefundFee != "0" ? (s.Quantity.HasValue ? s.Quantity.Value : 0) : 0)
+                    })
+                    .OrderBy(o => o.customerID)
+                    .ToList();
+            }
+        }
+
         #endregion
         #region Class
         public class CustomerGet
@@ -628,6 +657,13 @@ namespace IM_PJ.Controllers
             public int TotalOrder { get; set; }
             public double TotalQuantity { get; set; }
             public string ProvinceName { get; set; }
+        }
+
+        public class RefundInfo
+        {
+            public int customerID { get; set; }
+            public double refundNoFeeQuantity { get; set; }
+            public double refundFeeQuantity { get; set; }
         }
         #endregion
     }

@@ -2,7 +2,7 @@
 
 <%@ Register Assembly="Telerik.Web.UI" Namespace="Telerik.Web.UI" TagPrefix="telerik" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
-    <script src="/App_Themes/Ann/js/search-customer.js?v=13072019"></script>
+    <script src="/App_Themes/Ann/js/search-customer.js?v=28082019"></script>
     <script src="/App_Themes/Ann/js/search-product.js?v=15052021"></script>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
@@ -162,6 +162,7 @@
             <asp:HiddenField ID="hdfListProduct" runat="server" />
             <asp:HiddenField ID="hdfIsDiscount" runat="server" />
             <asp:HiddenField ID="hdfDiscountAmount" runat="server" />
+            <asp:HiddenField ID="hdfQuantityRequirement" runat="server" />
             <asp:HiddenField ID="hdfTotalPriceNotDiscountNotFee" runat="server" />
             <asp:HiddenField ID="hdfListSearch" runat="server" />
             <asp:HiddenField ID="hdfTotalQuantity" runat="server" />
@@ -1122,7 +1123,6 @@
                 }
 
                 // check discount
-
                 var ds = $("#<%=pDiscount.ClientID%>").val();
                 var discount = parseFloat(ds.replace(/\,/g, ''));
 
@@ -1278,8 +1278,9 @@
                     var totalleft = 0;
                     var totalck = 0;
                     var amount = 0;
+                    let isDiscount = +$("#<%=hdfIsDiscount.ClientID%>").val() || 0;
                     var amountdiscount = parseFloat($("#<%=hdfDiscountAmount.ClientID%>").val());
-
+                    let quantityRequirement = +$("#<%=hdfQuantityRequirement.ClientID%>").val() || 0;;
                     var ChietKhau = document.getElementById('<%= hdfChietKhau.ClientID%>').defaultValue;
 
                     var listck = ChietKhau.split('|');
@@ -1297,10 +1298,9 @@
                         }
                     }
 
-                    if (amountdiscount > 0) {
-                        if (amount < amountdiscount) {
-                            amount = amountdiscount;
-                        }
+                    // Nếu khách hàng năm trong nhóm triết khấu và đạt số lượng yêu cầu không
+                    if (isDiscount && productquantity >= quantityRequirement) {
+                        amount = amount >= amountdiscount ? amount : amountdiscount;
                     }
 
                     if (amount > 0) {

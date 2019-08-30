@@ -47,11 +47,29 @@ namespace IM_PJ
             {
                 if (acc.RoleID == 0)
                 {
-                    DiscountGroupController.Insert(txtDiscountName.Text, Convert.ToDouble(pDiscountAmount.Value),
-                        Convert.ToDouble(pDiscountAmountPercent.Value), pDiscountNote.Content, chkIsHidden.Checked, DateTime.Now, username, 
-                        Convert.ToDouble(rRefundGoods.Value), Convert.ToDouble(pNumOfDateToChangeProduct.Value), Convert.ToDouble(pNumOfProductCanChange.Value));
+                    var now = DateTime.Now;
+                    var data = new tbl_DiscountGroup()
+                    {
+                        DiscountName = txtDiscountName.Text,
+                        DiscountAmount = pDiscountAmount.Value.HasValue ? pDiscountAmount.Value.Value : 0,
+                        DiscountAmountPercent = pDiscountAmountPercent.Value.HasValue ? pDiscountAmountPercent.Value.Value : 0,
+                        QuantityProduct = pQuantityProduct.Value.HasValue ? Convert.ToInt32(pQuantityProduct.Value.Value) : 0,
+                        FeeRefund = rRefundGoods.Value.HasValue ? rRefundGoods.Value.Value : 0,
+                        NumOfDateToChangeProduct = pNumOfDateToChangeProduct.Value.HasValue ? pNumOfDateToChangeProduct.Value.Value : 0,
+                        NumOfProductCanChange = pNumOfProductCanChange.Value.HasValue ? pNumOfProductCanChange.Value.Value : 0,
+                        RefundQuantityNoFee = pRefundQuantityNoFee.Value.HasValue ? Convert.ToInt32(pRefundQuantityNoFee.Value.Value) : 0,
+                        DiscountNote = pDiscountNote.Content,
+                        IsHidden = chkIsHidden.Checked,
+                        CreatedBy = username,
+                        CreatedDate = now,
+                        ModifiedBy = username,
+                        ModifiedDate = now
+                    };
+
+                    DiscountGroupController.Insert(data);
+
                     Response.Redirect("/danh-sach-nhom-khach-hang.aspx");
-                    //PJUtils.ShowMessageBoxSwAlert("Tạo mới thành công", "s", true, Page);
+                    PJUtils.ShowMessageBoxSwAlert("Tạo mới thành công", "s", true, Page);
                 }
             }
         }

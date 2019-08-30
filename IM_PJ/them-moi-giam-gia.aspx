@@ -1,4 +1,5 @@
 ﻿<%@ Page Title="Thêm nhóm khách hàng" Language="C#" MasterPageFile="~/MasterPage.Master" AutoEventWireup="true" CodeBehind="them-moi-giam-gia.aspx.cs" Inherits="IM_PJ.them_moi_giam_gia" %>
+
 <%@ Register Assembly="Telerik.Web.UI" Namespace="Telerik.Web.UI" TagPrefix="telerik" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
 </asp:Content>
@@ -33,11 +34,23 @@
                                 </div>
                                 <div class="row-right">
                                     <telerik:RadNumericTextBox runat="server" CssClass="form-control width-notfull" Skin="MetroTouch"
-                                        ID="pDiscountAmount" MinValue="0"  Width="100%" Value="0" NumberFormat-DecimalDigits="0" IncrementSettings-InterceptMouseWheel="false" IncrementSettings-InterceptArrowKeys="false">
+                                        ID="pDiscountAmount" MinValue="0" Width="100%" Value="0" NumberFormat-DecimalDigits="0" IncrementSettings-InterceptMouseWheel="false" IncrementSettings-InterceptArrowKeys="false">
                                     </telerik:RadNumericTextBox>
                                 </div>
                             </div>
-                            <div class="form-row" style="display:none">
+                            <div class="form-row">
+                                <div class="row-left">
+                                    Số lượng
+                                    <asp:RequiredFieldValidator ID="RequiredFieldValidator6" runat="server" ControlToValidate="pQuantityProduct" ForeColor="Red"
+                                        ErrorMessage="(*)" Display="Dynamic" SetFocusOnError="true"></asp:RequiredFieldValidator>
+                                </div>
+                                <div class="row-right">
+                                    <telerik:RadNumericTextBox runat="server" CssClass="form-control width-notfull" Skin="MetroTouch"
+                                        ID="pQuantityProduct" MinValue="0" Width="100%" Value="0" NumberFormat-DecimalDigits="0" IncrementSettings-InterceptMouseWheel="false" IncrementSettings-InterceptArrowKeys="false" placeholder="Số lượng để đạt chiết khấu">
+                                    </telerik:RadNumericTextBox>
+                                </div>
+                            </div>
+                            <div class="form-row" style="display: none">
                                 <div class="row-left">
                                     Phần trăm chiết khấu
                                     <asp:RequiredFieldValidator ID="RequiredFieldValidator1" runat="server" ControlToValidate="pDiscountAmountPercent" ForeColor="Red"
@@ -87,6 +100,18 @@
                             </div>
                             <div class="form-row">
                                 <div class="row-left">
+                                    Số lượng sản phẩm được đổi trả không tốn phí
+                                    <asp:RequiredFieldValidator ID="RequiredFieldValidator7" runat="server" ControlToValidate="pRefundQuantityNoFee" ForeColor="Red"
+                                        ErrorMessage="(*)" Display="Dynamic" SetFocusOnError="true"></asp:RequiredFieldValidator>
+                                </div>
+                                <div class="row-right">
+                                    <telerik:RadNumericTextBox runat="server" CssClass="form-control width-notfull" Skin="MetroTouch"
+                                        ID="pRefundQuantityNoFee" MinValue="0" NumberFormat-GroupSizes="3" Width="100%" Value="0" NumberFormat-DecimalDigits="0" IncrementSettings-InterceptMouseWheel="false" IncrementSettings-InterceptArrowKeys="false" placeholder="Số lượng để đạt chiết khấu">
+                                    </telerik:RadNumericTextBox>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="row-left">
                                     Mô tả
                                 </div>
                                 <div class="row-right">
@@ -105,7 +130,7 @@
                                     <asp:CheckBox ID="chkIsHidden" runat="server" />
                                 </div>
                             </div>
-                            <div class="form-row">                                
+                            <div class="form-row">
                                 <asp:Button ID="btnLogin" runat="server" CssClass="btn primary-btn fw-btn not-fullwidth" Text="Tạo mới" OnClick="btnLogin_Click" />
                                 <a href="/danh-sach-nhom-khach-hang" class="btn primary-btn fw-btn not-fullwidth">Trở về</a>
                             </div>
@@ -113,6 +138,6 @@
                     </div>
                 </div>
             </div>
-        </div>        
-    </main>    
+        </div>
+    </main>
 </asp:Content>

@@ -45,18 +45,20 @@ namespace IM_PJ
             int id = Request.QueryString["id"].ToInt(0);
             if (id > 0)
             {
-                var d = DiscountGroupController.GetByID(id);
-                if (d != null)
+                var discountGroup = DiscountGroupController.GetByID(id);
+                if (discountGroup != null)
                 {
                     ViewState["ID"] = id;
-                    txtDiscountName.Text = d.DiscountName;
-                    pDiscountAmount.Value = d.DiscountAmount;
-                    pDiscountAmountPercent.Value = d.DiscountAmountPercent;
-                    pDiscountNote.Content = d.DiscountNote;
-                    chkIsHidden.Checked = Convert.ToBoolean(d.IsHidden);
-                    rRefundGoods.Value = Convert.ToDouble(d.FeeRefund);
-                    pNumOfDateToChangeProduct.Value = Convert.ToDouble(d.NumOfDateToChangeProduct);
-                    pNumOfProductCanChange.Value = Convert.ToDouble(d.NumOfProductCanChange);
+                    txtDiscountName.Text = discountGroup.DiscountName;
+                    pDiscountAmount.Value = discountGroup.DiscountAmount;
+                    pQuantityProduct.Value = discountGroup.QuantityProduct;
+                    pDiscountAmountPercent.Value = discountGroup.DiscountAmountPercent;
+                    rRefundGoods.Value = discountGroup.FeeRefund;
+                    pNumOfDateToChangeProduct.Value = discountGroup.NumOfDateToChangeProduct;
+                    pNumOfProductCanChange.Value = discountGroup.NumOfProductCanChange;
+                    pRefundQuantityNoFee.Value = discountGroup.RefundQuantityNoFee;
+                    pDiscountNote.Content = discountGroup.DiscountNote;
+                    chkIsHidden.Checked = discountGroup.IsHidden.HasValue ? discountGroup.IsHidden.Value : false;
                 }
             }
         }
@@ -72,12 +74,30 @@ namespace IM_PJ
                     int id = ViewState["ID"].ToString().ToInt(0);
                     if (id > 0)
                     {
-                        var d = DiscountGroupController.GetByID(id);
-                        if (d != null)
+                        var now = DateTime.Now;
+
+                        var data = new tbl_DiscountGroup()
                         {
-                            DiscountGroupController.Update(id, txtDiscountName.Text, Convert.ToDouble(pDiscountAmount.Value), Convert.ToDouble(pDiscountAmountPercent.Value), pDiscountNote.Content, chkIsHidden.Checked, DateTime.Now, username, Convert.ToDouble(rRefundGoods.Value), Convert.ToDouble(pNumOfDateToChangeProduct.Value), Convert.ToDouble(pNumOfProductCanChange.Value));
+                            ID = id,
+                            DiscountName = txtDiscountName.Text,
+                            DiscountAmount = pDiscountAmount.Value.HasValue ? pDiscountAmount.Value.Value : 0,
+                            DiscountAmountPercent = pDiscountAmountPercent.Value.HasValue ? pDiscountAmountPercent.Value.Value : 0,
+                            QuantityProduct = pQuantityProduct.Value.HasValue ? Convert.ToInt32(pQuantityProduct.Value.Value) : 0,
+                            FeeRefund = rRefundGoods.Value.HasValue ? rRefundGoods.Value.Value : 0,
+                            NumOfDateToChangeProduct = pNumOfDateToChangeProduct.Value.HasValue ? pNumOfDateToChangeProduct.Value.Value : 0,
+                            NumOfProductCanChange = pNumOfProductCanChange.Value.HasValue ? pNumOfProductCanChange.Value.Value : 0,
+                            RefundQuantityNoFee = pRefundQuantityNoFee.Value.HasValue ? Convert.ToInt32(pRefundQuantityNoFee.Value.Value) : 0,
+                            DiscountNote = pDiscountNote.Content,
+                            IsHidden = chkIsHidden.Checked,
+                            ModifiedBy = username,
+                            ModifiedDate = now
+                        };
+
+
+                        var result = DiscountGroupController.Update(data);
+
+                        if (!String.IsNullOrEmpty(result))
                             PJUtils.ShowMessageBoxSwAlert("Cập nhật nhóm khách hàng thành công", "s", true, Page);
-                        }
                     }
                 }
             }

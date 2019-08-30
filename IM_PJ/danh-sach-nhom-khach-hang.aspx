@@ -20,6 +20,7 @@
                                     <tr>
                                         <th>Tên nhóm</th>
                                         <th>Chiết khấu</th>
+                                        <th>Số lượng</th>
                                         <th>Phí đổi hàng</th>
                                         <th>Số ngày đổi hàng tối đa</th>
                                         <th>Số lượng đổi tối đa/số ngày</th>

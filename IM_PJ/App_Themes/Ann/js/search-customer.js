@@ -12,25 +12,40 @@ function getCustomerDiscount(custID) {
             if (msg.d !== "null") {
                 var data = JSON.parse(msg.d);
 
-                $(".discount-info").html("<strong>* Chiết khấu của khách: " + formatThousands(data.Discount, ",") + "đ/cái.</strong>").show();
+                $(".discount-info").html("<strong>* Chiết khấu của khách: " + formatThousands(data.Discount, ",") + "đ/cái. (" + data.QuantityProduct + " cái)</strong>").show();
 
                 if (data.FeeRefund == "0") {
                     $(".refund-info").html("<strong>* Miễn phí đổi hàng</strong>").show();
                 }
                 else {
-                    $(".refund-info").html("<strong>* Phí đổi hàng của khách: " + formatThousands(data.FeeRefund, ",") + "đ/cái.</strong>").show();
+                    let strHTML = "";
+                    strHTML += "<strong>* Phí đổi hàng của khách: " + formatThousands(data.FeeRefund, ",") + "đ/cái.</strong>";
+                    strHTML += "<br><span>Số lượng đổi trả miển phí: " + formatThousands(data.RefundQuantityNoFee, ",") + " cái.</span>"
+                    strHTML += "<br><span>Số lượng đổi trả có phí: " + formatThousands(data.RefundQuantityFee, ",") + " cái.</span>"
+                    
+                    $(".refund-info").html(strHTML).show();
                 }
                 
-                $("input[id$='_hdfIsDiscount']").val("1");
+                if (data.Discount > 0)
+                    $("input[id$='_hdfIsDiscount']").val("1");
+                else
+                    $("input[id$='_hdfIsDiscount']").val(0);
                 $("input[id$='_hdfDiscountAmount']").val(data.Discount);
+                $("input[id$='_hdfQuantityRequirement']").val(data.QuantityProduct);
                 $("input[id$='_hdfCustomerFeeChange']").val(data.FeeRefund);
-
+                $("input[id$='_hdfDaysExchange']").val(data.DaysExchange);
+                $("input[id$='_hdfRefundQuantityNoFee']").val(data.RefundQuantityNoFee);
+                $("input[id$='_hdfRefundQuantityFee']").val(data.RefundQuantityFee);
             }
             else
             {
                 $("input[id$='_hdfIsDiscount']").val(0);
                 $("input[id$='_hdfDiscountAmount']").val(0);
+                $("input[id$='_hdfQuantityProduct']").val(0);
                 $("input[id$='_hdfCustomerFeeChange']").val(0);
+                $("input[id$='_hdfDaysExchange']").val(0);
+                $("input[id$='_hdfRefundQuantityNoFee']").val(0);
+                $("input[id$='_hdfRefundQuantityFee']").val(0);
             }
             getAllPrice();
         },

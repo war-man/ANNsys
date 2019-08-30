@@ -37,6 +37,18 @@
                                     </telerik:RadNumericTextBox>
                                 </div>
                             </div>
+                            <div class="form-row">
+                                <div class="row-left">
+                                    Số lượng
+                                    <asp:RequiredFieldValidator ID="RequiredFieldValidator6" runat="server" ControlToValidate="pQuantityProduct" ForeColor="Red"
+                                        ErrorMessage="(*)" Display="Dynamic" SetFocusOnError="true"></asp:RequiredFieldValidator>
+                                </div>
+                                <div class="row-right">
+                                    <telerik:RadNumericTextBox runat="server" CssClass="form-control width-notfull" Skin="MetroTouch"
+                                        ID="pQuantityProduct" MinValue="0" NumberFormat-GroupSizes="3" Width="100%" Value="0" NumberFormat-DecimalDigits="0" IncrementSettings-InterceptMouseWheel="false" IncrementSettings-InterceptArrowKeys="false" placeholder="Số lượng để đạt chiết khấu">
+                                    </telerik:RadNumericTextBox>
+                                </div>
+                            </div>
                             <div class="form-row" style="display:none">
                                 <div class="row-left">
                                     Phần trăm chiết khấu
@@ -82,6 +94,18 @@
                                 <div class="row-right">
                                     <telerik:RadNumericTextBox runat="server" CssClass="form-control width-notfull" Skin="MetroTouch"
                                         ID="pNumOfProductCanChange" MinValue="0" NumberFormat-GroupSizes="3" Width="100%" NumberFormat-DecimalDigits="0" IncrementSettings-InterceptMouseWheel="false" IncrementSettings-InterceptArrowKeys="false">
+                                    </telerik:RadNumericTextBox>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="row-left">
+                                    Số lượng sản phẩm được đổi trả không tốn phí
+                                    <asp:RequiredFieldValidator ID="RequiredFieldValidator7" runat="server" ControlToValidate="pRefundQuantityNoFee" ForeColor="Red"
+                                        ErrorMessage="(*)" Display="Dynamic" SetFocusOnError="true"></asp:RequiredFieldValidator>
+                                </div>
+                                <div class="row-right">
+                                    <telerik:RadNumericTextBox runat="server" CssClass="form-control width-notfull" Skin="MetroTouch"
+                                        ID="pRefundQuantityNoFee" MinValue="0" NumberFormat-GroupSizes="3" Width="100%" NumberFormat-DecimalDigits="0" IncrementSettings-InterceptMouseWheel="false" IncrementSettings-InterceptArrowKeys="false" placeholder="Số lượng để đạt chiết khấu">
                                     </telerik:RadNumericTextBox>
                                 </div>
                             </div>

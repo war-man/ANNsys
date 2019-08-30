@@ -2,7 +2,7 @@
 
 <%@ Register Assembly="Telerik.Web.UI" Namespace="Telerik.Web.UI" TagPrefix="telerik" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
-    <script src="/App_Themes/Ann/js/search-customer.js?v=13072019"></script>
+    <script src="/App_Themes/Ann/js/search-customer.js?v=28082019"></script>
     <script src="/App_Themes/Ann/js/search-product.js?v=15052021"></script>
     <style>
         .panel-post {
@@ -609,6 +609,7 @@
             <asp:HiddenField ID="hdfExcuteStatus" runat="server" />
             <asp:HiddenField ID="hdfIsDiscount" runat="server" />
             <asp:HiddenField ID="hdfDiscountAmount" runat="server" />
+            <asp:HiddenField ID="hdfQuantityRequirement" runat="server" />
             <asp:HiddenField ID="hdfIsMain" runat="server" />
             <asp:HiddenField ID="hdfTotalPriceNotDiscountNotFee" runat="server" />
             <asp:HiddenField ID="hdfListSearch" runat="server" />
@@ -1903,11 +1904,12 @@
                     $(".totalpriceorder").html(formatThousands(totalprice, ','));
                     $("#<%=hdfTotalPriceNotDiscountNotFee.ClientID%>").val(totalprice);
                     $("#<%=hdfTotalQuantity.ClientID%>").val(productquantity);
-                    var isDiscount = $("#<%=hdfIsDiscount.ClientID%>").val();
+                    var isDiscount = +$("#<%=hdfIsDiscount.ClientID%>").val() || 0;
                     var totalDiscount = 0;
                     var totalleft = 0;
                     var amount = 0;
                     var amountdiscount = 0;
+                    let quantityRequirement = +$("#<%=hdfQuantityRequirement.ClientID%>").val() || 0;
 
                     // Kiểm tra khách hàng có được chiết khấu trong nhóm ko?
                     if (isDiscount == 1) {
@@ -1937,13 +1939,9 @@
                         amount = parseInt($("#<%=pDiscount.ClientID%>").val().replace(/\,/g, ''));
                     }
                     else {
-                        // Nếu chiết khấu của khách hàng lớn hơn 0
-                        if (amountdiscount > 0) {
-                            // Nếu <chiết khấu nhóm> của khách hàng lớn hơn mức được <chiết khấu của đơn hàng> thì lấy <chiết khấu nhóm> để tính
-                            if (amount < amountdiscount) {
-                                amount = amountdiscount;
-                            }
-                        }
+                        // Nếu khách hàng năm trong nhóm triết khấu và đạt số lượng yêu cầu không
+                        if (isDiscount && productquantity >= quantityRequirement)
+                            amount = amount >= amountdiscount ? amount : amountdiscount;
                     }
 
                     // Nếu đơn hàng được chiết khấu sau khi tính toán
