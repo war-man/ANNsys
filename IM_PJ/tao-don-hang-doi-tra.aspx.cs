@@ -112,19 +112,19 @@ namespace IM_PJ
         }
 
         [WebMethod]
-        public static string getProduct(string sku)
+        public static string getProduct(int customerID, string sku)
         {
             try
             {
-
                 var feeChange = ConfigController.GetByTop1().FeeChangeProduct.Value;
 
                 using (var con = new inventorymanagementEntities())
                 {
 
                     var productTarget = con.tbl_Product
+                        .Where(x => sku.Trim().ToUpper().Contains(x.ProductSKU))
                         .GroupJoin(
-                            con.tbl_ProductVariable,
+                            con.tbl_ProductVariable.Where(x => x.SKU.Contains(sku.Trim().ToUpper())),
                             product => new
                             {
                                 ProductStyle = product.ProductStyle.Value,
@@ -139,23 +139,25 @@ namespace IM_PJ
                                 product,
                                 productVariable
                             })
-                        .SelectMany(x => x.productVariable.DefaultIfEmpty(),
-                                    (parent, child) => new RefundDetailModel
-                                    {
-                                        ProductID = parent.product.ID,
-                                        ProductVariableID = parent.product.ProductStyle == 2 ? child.ID : 0,
-                                        ProductStyle = parent.product.ProductStyle.Value,
-                                        ProductImage = parent.product.ProductStyle == 2 ? child.Image : parent.product.ProductImage,
-                                        ProductTitle = parent.product.ProductTitle,
-                                        ParentSKU = parent.product.ProductSKU,
-                                        ChildSKU = parent.product.ProductStyle == 2 ? child.SKU : String.Empty,
-                                        Price = parent.product.ProductStyle == 2 ? child.Regular_Price.Value : parent.product.Regular_Price.Value,
-                                        ReducedPrice = parent.product.ProductStyle == 2 ? child.Regular_Price.Value : parent.product.Regular_Price.Value,
-                                        QuantityRefund = 1,
-                                        ChangeType = 2,
-                                        FeeRefund = feeChange,
-                                        TotalFeeRefund = parent.product.ProductStyle == 2 ? child.Regular_Price.Value : parent.product.Regular_Price.Value
-                                    })
+                        .SelectMany(x => 
+                            x.productVariable.DefaultIfEmpty(),
+                            (parent, child) => new RefundDetailModel
+                            {
+                                ProductID = parent.product.ID,
+                                ProductVariableID = parent.product.ProductStyle == 2 ? child.ID : 0,
+                                ProductStyle = parent.product.ProductStyle.Value,
+                                ProductImage = parent.product.ProductStyle == 2 ? child.Image : parent.product.ProductImage,
+                                ProductTitle = parent.product.ProductTitle,
+                                ParentSKU = parent.product.ProductSKU,
+                                ChildSKU = parent.product.ProductStyle == 2 ? child.SKU : String.Empty,
+                                Price = parent.product.ProductStyle == 2 ? child.Regular_Price.Value : parent.product.Regular_Price.Value,
+                                ReducedPrice = parent.product.ProductStyle == 2 ? child.Regular_Price.Value : parent.product.Regular_Price.Value,
+                                QuantityRefund = 1,
+                                ChangeType = 2,
+                                FeeRefund = feeChange,
+                                TotalFeeRefund = parent.product.ProductStyle == 2 ? child.Regular_Price.Value : parent.product.Regular_Price.Value
+                            }
+                        )
                         .Where(x => x.ParentSKU == sku.Trim().ToUpper() || x.ChildSKU == sku.Trim().ToUpper())
                         .OrderBy(x => x.ProductID)
                         .ThenBy(x => x.ProductVariableID)
@@ -166,6 +168,25 @@ namespace IM_PJ
                         .Where(x => x.ProductvariableSKU.Contains(sku.Trim().ToUpper()))
                         .OrderBy(x => x.ProductVariableID)
                         .ThenBy(x => x.ID)
+                        .ToList();
+
+                    var order = con.tbl_OrderDetail
+                        .Join(
+                            con.tbl_Order.Where(x => x.CustomerID == customerID),
+                            od => od.OrderID,
+                            o => o.ID,
+                            (od, o) => od
+                        )
+                        .Where(x => x.SKU.Contains(sku.Trim().ToUpper()))
+                        .Select(x => new
+                        {
+                            sku = x.SKU,
+                            orderID = x.OrderID.Value,
+                            saleDate = x.CreatedDate.Value
+                        })
+                        .Distinct()
+                        .OrderByDescending(o => o.sku)
+                        .ThenByDescending(o => o.saleDate)
                         .ToList();
 
                     productTarget = productTarget.Select(x => {
@@ -179,7 +200,11 @@ namespace IM_PJ
                             })
                             .ToList();
 
-                        return new RefundDetailModel
+                        var orderFilter = order
+                            .Where(y => (x.ProductStyle == 1 && y.sku == x.ParentSKU) || (x.ProductStyle == 2 && y.sku == x.ChildSKU))
+                            .FirstOrDefault();
+
+                        return new RefundDetailModel()
                         {
 
                             ProductID = x.ProductID,
@@ -195,7 +220,9 @@ namespace IM_PJ
                             QuantityRefund = x.QuantityRefund,
                             ChangeType = x.ChangeType,
                             FeeRefund = x.FeeRefund,
-                            TotalFeeRefund = x.TotalFeeRefund
+                            TotalFeeRefund = x.TotalFeeRefund,
+                            SaleDate = orderFilter != null ? orderFilter.saleDate.ToString("yyyy-MM-dd") : DateTime.Now.ToString("yyyy-MM-dd"),
+                            OrderID = orderFilter != null ? orderFilter.orderID : 0
                         };
                     })
                     .ToList();

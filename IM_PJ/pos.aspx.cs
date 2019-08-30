@@ -176,19 +176,59 @@ namespace IM_PJ
         [WebMethod]
         public static string getCustomerDiscount(int ID)
         {
-            var d = DiscountCustomerController.getbyCustID(ID);
-            if (d.Count > 0)
-            {
-                var ci = new CustomerGroup();
+            var now = DateTime.Now;
+            var discount = DiscountCustomerController.getbyCustID(ID).FirstOrDefault();
+            var config = ConfigController.GetByTop1();
+            // Khởi tao object json
+            var ci = new CustomerGroup();
 
-                ci.Discount = d[0].DiscountAmount.ToString();
-                ci.FeeRefund = d[0].FeeRefund.ToString();
+            if (discount != null)
+            {
+                // Tính số lượng hàng trã có phí
+                var refundQuantityFee = Convert.ToInt32(discount.NumOfProductCanChange - discount.RefundQuantityNoFee);
+                // Tính số lượng hàng đổi trả trong 30 ngày
+                var fromDate = now.AddDays(-discount.NumOfDateToChangeProduct).Date;
+                var toDate = now.Date;
+                var customer = CustomerController.getRefundQuantity(ID, fromDate, toDate).FirstOrDefault();
+                var quantityNoFree = discount.RefundQuantityNoFee - (customer != null ? Convert.ToInt32(customer.refundNoFeeQuantity) : 0);
+                var quantityFree = refundQuantityFee - (customer != null ? Convert.ToInt32(customer.refundFeeQuantity) : 0);
+
+                ci.Discount = discount.DiscountAmount.ToString();
+                ci.QuantityProduct = discount.QuantityProduct;
+                ci.FeeRefund = discount.FeeRefund.ToString();
+                ci.DaysExchange = Convert.ToInt32(discount.NumOfDateToChangeProduct);
+                ci.RefundQuantityNoFee = quantityNoFree > 0 ? quantityNoFree : 0;
+                ci.RefundQuantityFee = quantityFree > 0 ? quantityFree : 0;
+
+
+                JavaScriptSerializer serializer = new JavaScriptSerializer();
+                return serializer.Serialize(ci);
+            }
+            else if (config != null)
+            {
+                // Tính số lượng hàng trã có phí
+                var refundQuantityFee = config.NumOfProductCanChange.HasValue ? Convert.ToInt32(config.NumOfProductCanChange.Value) : 0;
+                // Tính số lượng hàng đổi trả trong 30 ngày
+                var days = config.NumOfDateToChangeProduct.HasValue ? config.NumOfDateToChangeProduct.Value : 0;
+                var fromDate = now.AddDays(-days).Date;
+                var toDate = now.Date;
+                var customer = CustomerController.getRefundQuantity(ID, fromDate, toDate).FirstOrDefault();
+                var quantityFree = refundQuantityFee - (customer != null ? Convert.ToInt32(customer.refundNoFeeQuantity) : 0) - (customer != null ? Convert.ToInt32(customer.refundFeeQuantity) : 0);
+                
+
+                ci.Discount = discount.DiscountAmount.ToString();
+                ci.QuantityProduct = discount.QuantityProduct;
+                ci.FeeRefund = discount.FeeRefund.ToString();
+                ci.DaysExchange = Convert.ToInt32(discount.NumOfDateToChangeProduct);
+                ci.RefundQuantityNoFee = 0;
+                ci.RefundQuantityFee = quantityFree > 0 ? refundQuantityFee : 0;
 
                 JavaScriptSerializer serializer = new JavaScriptSerializer();
                 return serializer.Serialize(ci);
             }
             else
             {
+
                 return "null";
             }
 
@@ -223,7 +263,11 @@ namespace IM_PJ
         public class CustomerGroup
         {
             public string Discount { get; set; }
+            public int QuantityProduct { get; set; }
             public string FeeRefund { get; set; }
+            public int DaysExchange { get; set; }
+            public int RefundQuantityNoFee { get; set; }
+            public int RefundQuantityFee { get; set; }
         }
 
         public class CustomerInfoWithDiscount

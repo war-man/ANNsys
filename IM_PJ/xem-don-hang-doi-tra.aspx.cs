@@ -192,7 +192,7 @@ namespace IM_PJ
                         {
 
                             ltrInfo.Text += "<div class='form-row discount-info'>";
-                            ltrInfo.Text += String.Format("<strong>* Chiết khấu của khách: {0:0,0}đ/cái.</strong>", discount.DiscountAmount);
+                            ltrInfo.Text += String.Format("<strong>* Chiết khấu của khách: {0:0,0}đ/cái. ({1:N0} cái)</strong>", discount.DiscountAmount, discount.QuantityProduct);
                             ltrInfo.Text += "</div>";
                             ltrInfo.Text += "<div class='form-row refund-info'>";
                             if (discount.FeeRefund == 0)

@@ -19,7 +19,7 @@
                             <div class="form-row">
                                 <div class="row-left">
                                     Số lượng sản phẩm
-                                                                    </div>
+                                </div>
                                 <div class="row-right">
                                     <asp:TextBox ID="txtQuantity" runat="server" CssClass="form-control" placeholder="Số lượng sản phẩm"></asp:TextBox>
                                 </div>
@@ -33,13 +33,12 @@
                                     <asp:TextBox ID="txtDiscountPerProduct" runat="server" CssClass="form-control" placeholder="Số tiền chiết khấu mỗi sản phẩm"></asp:TextBox>
                                 </div>
                             </div>
-                         
-                          
+
+
                             <div class="form-row">
                                 <asp:Button ID="btnLogin" runat="server" CssClass="btn primary-btn fw-btn not-fullwidth" Text="Cập nhật" OnClick="btnLogin_Click" />
                                 <a href="/danh-sach-chiet-khau" class="btn primary-btn fw-btn not-fullwidth">Trở về</a>
                             </div>
-                            <input />
                         </div>
                     </div>
                 </div>

@@ -24,5 +24,6 @@ namespace IM_PJ.Models
         public int ChangeType { get; set; }
         public double FeeRefund { get; set; }
         public double TotalFeeRefund { get; set; }
+        public string SaleDate { get; set; }
     }
 }
