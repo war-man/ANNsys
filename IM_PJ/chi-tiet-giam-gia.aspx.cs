@@ -52,7 +52,6 @@ namespace IM_PJ
                     txtDiscountName.Text = discountGroup.DiscountName;
                     pDiscountAmount.Value = discountGroup.DiscountAmount;
                     pQuantityProduct.Value = discountGroup.QuantityProduct;
-                    pDiscountAmountPercent.Value = discountGroup.DiscountAmountPercent;
                     rRefundGoods.Value = discountGroup.FeeRefund;
                     pNumOfDateToChangeProduct.Value = discountGroup.NumOfDateToChangeProduct;
                     pNumOfProductCanChange.Value = discountGroup.NumOfProductCanChange;
@@ -81,7 +80,7 @@ namespace IM_PJ
                             ID = id,
                             DiscountName = txtDiscountName.Text,
                             DiscountAmount = pDiscountAmount.Value.HasValue ? pDiscountAmount.Value.Value : 0,
-                            DiscountAmountPercent = pDiscountAmountPercent.Value.HasValue ? pDiscountAmountPercent.Value.Value : 0,
+                            DiscountAmountPercent = 0,
                             QuantityProduct = pQuantityProduct.Value.HasValue ? Convert.ToInt32(pQuantityProduct.Value.Value) : 0,
                             FeeRefund = rRefundGoods.Value.HasValue ? rRefundGoods.Value.Value : 0,
                             NumOfDateToChangeProduct = pNumOfDateToChangeProduct.Value.HasValue ? pNumOfDateToChangeProduct.Value.Value : 0,

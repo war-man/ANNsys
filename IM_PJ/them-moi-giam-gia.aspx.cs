@@ -52,7 +52,7 @@ namespace IM_PJ
                     {
                         DiscountName = txtDiscountName.Text,
                         DiscountAmount = pDiscountAmount.Value.HasValue ? pDiscountAmount.Value.Value : 0,
-                        DiscountAmountPercent = pDiscountAmountPercent.Value.HasValue ? pDiscountAmountPercent.Value.Value : 0,
+                        DiscountAmountPercent = 0,
                         QuantityProduct = pQuantityProduct.Value.HasValue ? Convert.ToInt32(pQuantityProduct.Value.Value) : 0,
                         FeeRefund = rRefundGoods.Value.HasValue ? rRefundGoods.Value.Value : 0,
                         NumOfDateToChangeProduct = pNumOfDateToChangeProduct.Value.HasValue ? pNumOfDateToChangeProduct.Value.Value : 0,

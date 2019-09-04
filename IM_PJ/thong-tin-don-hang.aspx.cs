@@ -201,7 +201,7 @@ namespace IM_PJ
                     // Title
                     this.Title = String.Format("{0} - Đơn hàng", cus.Nick != "" ? cus.Nick.ToTitleCase() : cus.CustomerName.ToTitleCase());
                     ltrHeading.Text = "Đơn hàng #" + ID.ToString() + " - " + (cus.Nick != "" ? cus.Nick.ToTitleCase() : cus.CustomerName.ToTitleCase()) + (!String.IsNullOrEmpty(order.UserHelp) ? " (được tạo giúp bởi " + order.UserHelp + ")" : "");
-
+                    ltrOrderID.Text = ID.ToString();
                     int customerID = Convert.ToInt32(order.CustomerID);
                     ltrViewDetail.Text = "<a href=\"javascript:;\" class=\"btn primary-btn fw-btn not-fullwidth\" onclick=\"viewCustomerDetail('" + customerID + "')\"><i class=\"fa fa-address-card-o\" aria-hidden=\"true\"></i> Xem</a>";
                     ltrViewDetail.Text += "<a href=\"javascript:;\" class=\"btn primary-btn fw-btn not-fullwidth edit-customer-btn\" onclick=\"refreshCustomerInfo('" + customerID + "')\"><i class=\"fa fa-refresh\" aria-hidden=\"true\"></i> Làm mới</a>";
@@ -214,12 +214,14 @@ namespace IM_PJ
                         var da = d[0].DiscountAmount;
                         hdfIsDiscount.Value = "1";
                         hdfDiscountAmount.Value = da.ToString();
-                        ltrDiscountInfo.Text = "<strong>* Chiết khấu của khách: " + string.Format("{0:N0}", Convert.ToDouble(da)) + " đ/cái.</strong>";
+                        hdfQuantityRequirement.Value = d[0].QuantityProduct.ToString();
+                        ltrDiscountInfo.Text = "<strong>* Chiết khấu của khách: " + string.Format("{0:N0}", Convert.ToDouble(da)) + " đ/cái (đơn từ " + d[0].QuantityProduct.ToString() + " cái).</strong>";
                     }
                     else
                     {
                         hdfIsDiscount.Value = "0";
                         hdfDiscountAmount.Value = "0";
+                        hdfQuantityRequirement.Value = "0";
                     }
                     int customerType = Convert.ToInt32(order.OrderType);
                     ltrCustomerType.Text = "";

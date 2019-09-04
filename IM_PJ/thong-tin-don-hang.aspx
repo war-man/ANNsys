@@ -340,7 +340,7 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-md-12 discount-info">
-                                        <asp:Literal ID="ltrDiscountInfo" runat="server"></asp:Literal>
+                                        <br /><asp:Literal ID="ltrDiscountInfo" runat="server"></asp:Literal>
                                     </div>
                                 </div>
                             </div>
@@ -392,7 +392,7 @@
                                 </div>
                             </div>
                             <div class="post-row clear">
-                                <div class="left">Chiết khấu</div>
+                                <div class="left">Chiết khấu <a href="javascript:;" class="btn btn-feeship link-btn" onclick="refreshDiscount()"><i class="fa fa-refresh" aria-hidden="true"></i> Tính lại</a></div>
                                 <div class="right totalDiscount">
                                     <telerik:RadNumericTextBox runat="server" CssClass="form-control width-notfull" Skin="MetroTouch"
                                         ID="pDiscount" MinValue="0" NumberFormat-GroupSizes="3" Value="0" NumberFormat-DecimalDigits="0"
@@ -418,7 +418,7 @@
                             </div>
                             <div id="fee-list"></div>
                             <div class="post-row clear">
-                                <div class="left">Tổng tiền</div>
+                                <div class="left"><strong>TỔNG TIỀN</strong> (đơn hàng <strong><asp:Literal ID="ltrOrderID" runat="server"></asp:Literal></strong>)</div>
                                 <div class="right totalpriceorderall price-red">
                                     <asp:Literal ID="ltrTotalprice" runat="server"></asp:Literal>
                                 </div>
@@ -435,7 +435,7 @@
                                 </div>
                             </div>
                             <div class="post-row clear refund hide">
-                                <div class="left">Tổng tiền còn lại</div>
+                                <div class="left"><strong>TỔNG TIỀN CÒN LẠI</strong></div>
                                 <div class="right totalpricedetail">
                                     <asp:Literal runat="server" ID="ltrtotalpricedetail"></asp:Literal>
                                 </div>
@@ -1879,6 +1879,11 @@
                     }
                 }
             };
+
+            function refreshDiscount() {
+                $("#<%=hdfDiscountInOrder.ClientID%>").val(0);
+                getAllPrice();
+            }
 
             // get all price
             function getAllPrice(is_payAll_call) {

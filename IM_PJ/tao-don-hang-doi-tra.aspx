@@ -230,7 +230,8 @@
 
             function redirectTo(ID, username) {
                 HoldOn.open();
-                $("#payall").addClass("payall-clicked");
+                window.onbeforeunload = null;
+
                 let usernameString = "";
                 if (username != "")
                 {
@@ -240,20 +241,10 @@
             }
 
             // check data before close page or refresh page
-            function stopNavigate(event) {
-                $(window).off('beforeunload');
-            }
-
-            $(window).bind('beforeunload', function(e) {
-                if ($("#payall").hasClass("payall-clicked")) {
-                    e = null;
-                } else {
-                    if ($(".product-result").length > 0 || $("#<%=txtPhone.ClientID%>").val() != "" || $("#<%= txtFullname.ClientID%>").val() != "")
-                        return true;
-                    else
-                        e = null;
-                }
-            });
+            window.onbeforeunload = function () {
+                if ($(".product-result").length > 0 || $("#<%=txtPhone.ClientID%>").val() != "" || $("#<%= txtFullname.ClientID%>").val() != "")
+                        return "You're leaving the site.";
+            };
 
             //disable input
             $("#<%= txtPhone.ClientID%>").prop('readonly', true);
@@ -574,14 +565,14 @@
 
                 if ((totalRefundNow + Quantity - refundFilter[0].QuantityRefund) > (refundNoFee + refundFee))
                 {
-                    let result = window.confirm("Số lượng đổi hàng đang vợt quá quy định \n(Nhấp OK để tiếp tục)");
+                    let result = window.confirm("Số lượng đổi trả vượt quá quy định \n(Nhấp OK để tiếp tục)");
                     if (!result) return;
                 }
 
                 if (ChangeType == "2" && FeeRefund == 0)
                 {
                     if ((totalRefundNoFeeNow + Quantity - refundFilter[0].QuantityRefund) > refundNoFee) {
-                        window.alert("Bạn đã nhập quá số lượng đổi tra không tính phí");
+                        //window.alert("Bạn đã nhập quá số lượng đổi trả miễn phí");
                         row.find(".quantityRefund").val(refundFilter[0].QuantityRefund);
                         row.find(".quantityRefund").html(formatThousands(refundFilter[0].QuantityRefund, ","));
                         row.find(".quantityRefund").focus();
@@ -741,7 +732,7 @@
 
                     if (productExpired.length > 0)
                     {
-                        message += '<h3><span class="label label-danger" style="text-align: left">Các sản phẩm sau đã quá ngày đổi trả</span></h3><br/>';
+                        message += '<h3><span class="label label-danger" style="text-align: left">Các sản phẩm sau đã hết hạn đổi trả</span></h3><br/>';
                         productExpired.forEach(item => {
                             message += '<p><a href="/thong-tin-don-hang?id=' + item.OrderID + '" target="_blank">' + item.ChildSKU + ' - ' + item.ProductTitle + '</a></p><br/>';
                         });
@@ -765,7 +756,7 @@
                         showConfirmButton: productNoOrder.length > 0,
                         closeOnConfirm: true,
                         cancelButtonText: "Để xem lại",
-                        confirmButtonText: "Thêm SP chưa từng mua",
+                        confirmButtonText: "Vẫn thêm vào đơn",
                         html: true,
                     }, function (confirm) {
                         if (confirm) {
@@ -778,7 +769,7 @@
 
                             if (totalRefundNow > (refundNoFee + refundFee))
                             {
-                                let result = window.confirm("Số lượng đổi hàng đang vợt quá quy định \n(Nhấp OK để tiếp tục)");
+                                let result = window.confirm("Số lượng đổi trả vượt quá quy định \n(Nhấp OK để tiếp tục)");
                                 if (!result) return;
                             }
 
@@ -996,22 +987,22 @@
                                         );
 
                                         if (product.OrderID == 0) {
-                                            let message = 'Khách hàng chưa từng mua sản phẩm ' + product.ParentSKU + ' - ' + product.ProductTitle;
+                                            let message = 'Khách hàng chưa từng mua sản phẩm <strong>' + product.ParentSKU + ' - ' + product.ProductTitle + '</strong>';
 
                                             return swal({
-                                                title: "Thông báo",
+                                                title: "Không tìm thấy sản phẩm",
                                                 text: message,
                                                 type: "warning",
                                                 showCancelButton: true,
                                                 closeOnConfirm: true,
                                                 cancelButtonText: "Để xem lại",
-                                                confirmButtonText: "Thêm vào trả hàng",
+                                                confirmButtonText: "Vẫn thêm vào đơn",
                                             }, function (confirm) {
                                                 if (confirm) {
                                                     // Check xem số lượng đổi trả đã quá quy định chưa
                                                     if ((totalRefundNow + product.QuantityRefund) > (refundNoFee + refundFee))
                                                     {
-                                                        let result = window.confirm("Số lượng đổi hàng đang vợt quá quy định \n(Nhấp OK để tiếp tục)");
+                                                        let result = window.confirm("Số lượng đổi trả hàng đang vợt quá quy định \n(Nhấp OK để tiếp tục)");
                                                         if (!result) return;
                                                     }
 
@@ -1025,13 +1016,13 @@
                                         else if (!checkSaleDate(product))
                                         {
                                             return swal({
-                                                title: "Thông báo",
-                                                text: "Sản phẩm đã quá ngày đổi trả",
+                                                title: "Hết hạn đổi trả",
+                                                text: "Sản phẩm này đã quá ngày đổi trả",
                                                 type: "warning",
                                                 showCancelButton: true,
                                                 closeOnConfirm: true,
                                                 cancelButtonText: "Bỏ qua",
-                                                confirmButtonText: "Xem thông đơn hàng",
+                                                confirmButtonText: "Xem đơn hàng mua",
                                             }, function (confirm) {
                                                 if (confirm) {
                                                     var win = window.open('/thong-tin-don-hang?id=' + product.OrderID, '_blank');
@@ -1123,7 +1114,7 @@
             }
 
             function payall() {
-                $("#payall").addClass("payall-clicked");
+                window.onbeforeunload = null;
 
                 var phone = $("#<%=txtPhone.ClientID%>").val();
                 var name = $("#<%= txtFullname.ClientID%>").val();

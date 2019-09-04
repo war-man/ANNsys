@@ -83,15 +83,15 @@ namespace IM_PJ
                     html.Append("<tr>");
                     html.Append("   <td>" + item.DiscountName + "</td>");
                     html.Append("   <td>" + string.Format("{0:N0}", Convert.ToDouble(item.DiscountAmount)) + "</td>");
-                    html.Append("   <td>" + string.Format("{0:N0}", Convert.ToDouble(item.QuantityProduct)) + "</td>");
+                    html.Append("   <td>" + string.Format("{0:N0}", Convert.ToDouble(item.QuantityProduct)) + " cái</td>");
                     html.Append("   <td>" + string.Format("{0:N0}", Convert.ToDouble(item.FeeRefund)) + "</td>");
                     html.Append("   <td>" + item.NumOfDateToChangeProduct + " ngày</td>");
                     html.Append("   <td>" + item.NumOfProductCanChange + " cái/" + item.NumOfDateToChangeProduct + " ngày</td>");
                     string date = string.Format("{0:dd/MM/yyyy}", item.CreatedDate);
                     html.Append("   <td>" + date + "</td>");
                     html.Append("   <td>");
-                    html.Append("       <a href=\"/chi-tiet-giam-gia?id=" + item.ID + "\" class=\"btn primary-btn h45-btn\">Chi tiết</a>");
-                    html.Append("       <a href=\"/danh-sach-khach-giam-gia?id=" + item.ID + "\" class=\"btn primary-btn h45-btn\">Danh sách khách hàng</a>");
+                    html.Append("       <a href='/chi-tiet-giam-gia?id=" + item.ID + "' class='btn primary-btn h45-btn'>Chỉnh sửa</a>");
+                    html.Append("       <a href='/danh-sach-khach-giam-gia?id=" + item.ID + "' class='btn primary-btn h45-btn'>Danh sách khách hàng</a>");
                     html.Append("   </td>");
                     html.Append("</tr>");
                 }

@@ -20,10 +20,10 @@
                                     <tr>
                                         <th>Tên nhóm</th>
                                         <th>Chiết khấu</th>
-                                        <th>Số lượng</th>
-                                        <th>Phí đổi hàng</th>
-                                        <th>Số ngày đổi hàng tối đa</th>
-                                        <th>Số lượng đổi tối đa/số ngày</th>
+                                        <th>SL tối thiểu</th>
+                                        <th>Phí đổi trả</th>
+                                        <th>Số ngày tối đa</th>
+                                        <th>Số lượng đổi/số ngày</th>
                                         <th>Ngày tạo</th>
                                         <th>Thao tác</th>
                                     </tr>

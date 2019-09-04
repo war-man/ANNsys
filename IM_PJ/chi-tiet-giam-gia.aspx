@@ -39,7 +39,7 @@
                             </div>
                             <div class="form-row">
                                 <div class="row-left">
-                                    Số lượng
+                                    Số lượng tối thiểu để chiết khấu
                                     <asp:RequiredFieldValidator ID="RequiredFieldValidator6" runat="server" ControlToValidate="pQuantityProduct" ForeColor="Red"
                                         ErrorMessage="(*)" Display="Dynamic" SetFocusOnError="true"></asp:RequiredFieldValidator>
                                 </div>
@@ -49,22 +49,10 @@
                                     </telerik:RadNumericTextBox>
                                 </div>
                             </div>
-                            <div class="form-row" style="display:none">
-                                <div class="row-left">
-                                    Phần trăm chiết khấu
-                                    <asp:RequiredFieldValidator ID="RequiredFieldValidator1" runat="server" ControlToValidate="pDiscountAmountPercent" ForeColor="Red"
-                                        ErrorMessage="(*)" Display="Dynamic" SetFocusOnError="true"></asp:RequiredFieldValidator>
-                                </div>
-                                <div class="row-right">
-                                    <telerik:RadNumericTextBox runat="server" CssClass="form-control width-notfull" Skin="MetroTouch"
-                                        ID="pDiscountAmountPercent" MinValue="0" Width="100%" Value="0" NumberFormat-DecimalDigits="0" IncrementSettings-InterceptMouseWheel="false" IncrementSettings-InterceptArrowKeys="false">
-                                    </telerik:RadNumericTextBox>
-                                </div>
-                            </div>
                             <div class="form-row" >
                                 <div class="row-left">
-                                    Phí đổi hàng mỗi cái
-                                    <asp:RequiredFieldValidator ID="RequiredFieldValidator2" runat="server" ControlToValidate="pDiscountAmountPercent" ForeColor="Red"
+                                    Phí đổi trả mỗi cái
+                                    <asp:RequiredFieldValidator ID="RequiredFieldValidator2" runat="server" ControlToValidate="rRefundGoods" ForeColor="Red"
                                         ErrorMessage="(*)" Display="Dynamic" SetFocusOnError="true"></asp:RequiredFieldValidator>
                                 </div>
                                 <div class="row-right">
@@ -99,7 +87,7 @@
                             </div>
                             <div class="form-row">
                                 <div class="row-left">
-                                    Số lượng sản phẩm được đổi trả không tốn phí
+                                    Số lượng sản phẩm đổi trả miễn phí
                                     <asp:RequiredFieldValidator ID="RequiredFieldValidator7" runat="server" ControlToValidate="pRefundQuantityNoFee" ForeColor="Red"
                                         ErrorMessage="(*)" Display="Dynamic" SetFocusOnError="true"></asp:RequiredFieldValidator>
                                 </div>

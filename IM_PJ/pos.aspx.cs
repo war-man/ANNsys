@@ -216,10 +216,10 @@ namespace IM_PJ
                 var quantityFree = refundQuantityFee - (customer != null ? Convert.ToInt32(customer.refundNoFeeQuantity) : 0) - (customer != null ? Convert.ToInt32(customer.refundFeeQuantity) : 0);
                 
 
-                ci.Discount = discount.DiscountAmount.ToString();
-                ci.QuantityProduct = discount.QuantityProduct;
-                ci.FeeRefund = discount.FeeRefund.ToString();
-                ci.DaysExchange = Convert.ToInt32(discount.NumOfDateToChangeProduct);
+                ci.Discount = config.FeeDiscountPerProduct.ToString();
+                ci.QuantityProduct = 0;
+                ci.FeeRefund = config.FeeChangeProduct.ToString();
+                ci.DaysExchange = Convert.ToInt32(config.NumOfDateToChangeProduct);
                 ci.RefundQuantityNoFee = 0;
                 ci.RefundQuantityFee = quantityFree > 0 ? refundQuantityFee : 0;
 

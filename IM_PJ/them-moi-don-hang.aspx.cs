@@ -171,9 +171,9 @@ namespace IM_PJ
         public static string checkPrepayTransport(int ID, int SubID)
         {
             var a = TransportCompanyController.GetReceivePlaceByID(ID, SubID);
-            if(a != null)
+            if (a != null)
             {
-                if(a.Prepay == true)
+                if (a.Prepay == true)
                 {
                     return "yes";
                 }

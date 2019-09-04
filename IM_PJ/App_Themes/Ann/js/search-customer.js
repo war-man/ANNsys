@@ -12,16 +12,16 @@ function getCustomerDiscount(custID) {
             if (msg.d !== "null") {
                 var data = JSON.parse(msg.d);
 
-                $(".discount-info").html("<strong>* Chiết khấu của khách: " + formatThousands(data.Discount, ",") + "đ/cái. (" + data.QuantityProduct + " cái)</strong>").show();
+                $(".discount-info").html("<strong>* Chiết khấu của khách: " + formatThousands(data.Discount, ",") + "đ/cái (đơn từ " + data.QuantityProduct + " cái).</strong>").show();
 
                 if (data.FeeRefund == "0") {
                     $(".refund-info").html("<strong>* Miễn phí đổi hàng</strong>").show();
                 }
                 else {
                     let strHTML = "";
-                    strHTML += "<strong>* Phí đổi hàng của khách: " + formatThousands(data.FeeRefund, ",") + "đ/cái.</strong>";
-                    strHTML += "<br><span>Số lượng đổi trả miển phí: " + formatThousands(data.RefundQuantityNoFee, ",") + " cái.</span>"
-                    strHTML += "<br><span>Số lượng đổi trả có phí: " + formatThousands(data.RefundQuantityFee, ",") + " cái.</span>"
+                    strHTML += "<strong>* Phí đổi trả hàng: " + formatThousands(data.FeeRefund, ",") + "đ/cái.</strong>";
+                    strHTML += "<br><strong>* Số lượng đổi trả miển phí: " + data.RefundQuantityNoFee + " cái.</strong>"
+                    strHTML += "<br><strong>* Số lượng đổi trả có phí: " + data.RefundQuantityFee + " cái.</strong>"
                     
                     $(".refund-info").html(strHTML).show();
                 }
@@ -640,8 +640,9 @@ function selectCustomerDetail(data) {
 }
 
 function ajaxCheckCustomer() {
-    var phone = $("input[id$='_txtPhone']").val();
-    if (phone != "") {
+    var txtPhone = $("input[id$='_txtPhone']");
+    var phone = txtPhone.val();
+    if (phone != "" && !txtPhone.is('[readonly]')) {
         $.ajax({
             type: "POST",
             url: "/pos.aspx/searchCustomerByPhone",

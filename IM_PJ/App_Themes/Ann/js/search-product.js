@@ -375,7 +375,7 @@ function searchProductMaster(textsearch, isStock) {
     var regex = /^[\x20-\x7E]*$/;
     if (!regex.test(textsearch)) {
         $("#txtSearch").val(textsearch).select();
-        swal("Thông báo", "Hãy tắt bộ gõ tiếng việt", "error");
+        swal("Tắt bộ gõ Tiếng Việt", "Hãy tắt bộ gõ Tiếng Việt có dấu:<br><br>Nhấn phím <strong>Ctrl và Shirt</strong> cùng lúc", "error");
     }
     else {
         _productVariable = [];
@@ -405,7 +405,7 @@ function searchProductMaster(textsearch, isStock) {
                     }
                     else {
                         $("#txtSearch").val(textsearch).select();
-                        swal("Thông báo", "Không tìm thấy sản phẩm", "error");
+                        swal("Không tìm thấy", "Không tìm thấy sản phẩm", "error");
                     }
                 },
                 error: function (xmlhttprequest, textstatus, errorthrow) {
@@ -415,7 +415,7 @@ function searchProductMaster(textsearch, isStock) {
             });
         } else {
             $("#txtSearch").focus();
-            swal("Thông báo", "Hãy nhập mã sản phẩm", "error");
+            swal("Hãy nhập sản phẩm", "Hãy nhập mã sản phẩm", "error");
         }
     }
 }

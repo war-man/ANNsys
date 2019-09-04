@@ -50,7 +50,7 @@
                                 <div class="right totalpriceorder"></div>
                             </div>
                             <div class="post-row clear discount hide">
-                                <div class="left">Chiết khấu</div>
+                                <div class="left">Chiết khấu <a href="javascript:;" class="btn btn-feeship link-btn" onclick="refreshDiscount()"><i class="fa fa-refresh" aria-hidden="true"></i> Tính lại</a></div>
                                 <div class="right totalDiscount">
                                     <telerik:RadNumericTextBox runat="server" CssClass="form-control width-notfull" Skin="MetroTouch"
                                         ID="pDiscount" MinValue="0" NumberFormat-GroupSizes="3" Width="100%" Value="0" NumberFormat-DecimalDigits="0"
@@ -680,17 +680,11 @@
                 }
             });
 
-            
-
             // check data before close page or refresh page
-            function stopNavigate(event) {
-                $(window).off('beforeunload');
-            }
-
-            $(window).bind('beforeunload', function(e) {
-                if ($(".product-result").length > 0 || $("#<%=txtPhone.ClientID%>").val() != "" || $("#<%= txtFullname.ClientID%>").val() != "") return true;
-                else e = null;
-            });
+            window.onbeforeunload = function () {
+                if ($(".product-result").length > 0 || $("#<%=txtPhone.ClientID%>").val() != "" || $("#<%= txtFullname.ClientID%>").val() != "")
+                        return "You're leaving the site.";
+            };
 
             // key press F1 - F4
             $(document).keydown(function(e) {
@@ -1254,8 +1248,13 @@
                 searchProductMaster(textsearch, false);
             }
 
+            function refreshDiscount() {
+                $("#<%=hdfcheck.ClientID%>").val(0);
+                getAllPrice();
+            }
+
             // get all price
-            function getAllPrice() {
+            function getAllPrice(refresh_discount) {
                 if ($(".product-result").length > 0) {
 
                     var totalprice = 0;
@@ -1279,7 +1278,7 @@
                     var totalck = 0;
                     var amount = 0;
                     let isDiscount = +$("#<%=hdfIsDiscount.ClientID%>").val() || 0;
-                    var amountdiscount = parseFloat($("#<%=hdfDiscountAmount.ClientID%>").val());
+                    var amountdiscount = +$("#<%=hdfDiscountAmount.ClientID%>").val() || 0;
                     let quantityRequirement = +$("#<%=hdfQuantityRequirement.ClientID%>").val() || 0;;
                     var ChietKhau = document.getElementById('<%= hdfChietKhau.ClientID%>').defaultValue;
 

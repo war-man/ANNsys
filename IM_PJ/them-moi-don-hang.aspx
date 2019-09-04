@@ -121,7 +121,7 @@
                                 <div class="right totalpriceorder"></div>
                             </div>
                             <div class="post-row clear">
-                                <div class="left">Chiết khấu</div>
+                                <div class="left">Chiết khấu <a href="javascript:;" class="btn btn-feeship link-btn" onclick="refreshDiscount()"><i class="fa fa-refresh" aria-hidden="true"></i> Tính lại</a></div>
                                 <div class="right totalDiscount">
                                     <telerik:RadNumericTextBox runat="server" CssClass="form-control width-notfull" Skin="MetroTouch"
                                         ID="pDiscount" MinValue="0" NumberFormat-GroupSizes="3" Value="0" NumberFormat-DecimalDigits="0"
@@ -145,7 +145,7 @@
                             </div>
                             <div id="fee-list"></div>
                             <div class="post-row clear">
-                                <div class="left">Tổng tiền</div>
+                                <div class="left"><strong>TỔNG TIỀN</strong></div>
                                 <div class="right totalpriceorderall price-red"></div>
                             </div>
                             <div class="post-row clear returnorder hide">
@@ -158,7 +158,7 @@
                                 <div class="right totalpriceorderrefund"></div>
                             </div>
                             <div class="post-row clear refund hide">
-                                <div class="left">Tổng tiền còn lại</div>
+                                <div class="left"><strong>TỔNG TIỀN CÒN LẠI</strong></div>
                                 <div class="right totalpricedetail"></div>
                             </div>
                             <div class="post-table-links clear">
@@ -423,6 +423,19 @@
     <telerik:RadScriptBlock ID="sc" runat="server">
         <script type="text/javascript">
             "use strict";
+
+            function redirectTo(ID) {
+                HoldOn.open();
+                window.onbeforeunload = null;
+                window.location.href = "/thong-tin-don-hang?id=" + ID;
+            }
+
+            // check data before close page or refresh page
+            window.onbeforeunload = function () {
+                if ($(".product-result").length > 0 || $("#<%=txtPhone.ClientID%>").val() != "" || $("#<%= txtFullname.ClientID%>").val() != "")
+                        return "You're leaving the site.";
+            };
+
             var feetype = [];
             var fees = [];
 
@@ -663,7 +676,8 @@
             }
 
             $(document).ready(() => {
-                init()
+                
+                init();
 
                 // search Product by SKU
                 $("#txtSearch").keydown(function (event) {
@@ -779,37 +793,16 @@
                 $("#<%=txtShippingFeeModal.ClientID%>").change(e => {
                     let value = e.target.value;
 
-                    if (value == "")
-                    {
+                    if (value == "") {
                         e.target.value = 0;
                     }
-                })
+                });
             });
 
             // order of item list
             var orderItem = 0;
 
-            function redirectTo(ID) {
-                HoldOn.open();
-                $("#payall").addClass("payall-clicked");
-                window.location.href = "/thong-tin-don-hang?id=" + ID;
-            }
-
-            // check data before close page or refresh page
-            function stopNavigate(event) {
-                $(window).off('beforeunload');
-            }
-
-            $(window).bind('beforeunload', function(e) {
-                if ($("#payall").hasClass("payall-clicked")) {
-                    e = null;
-                } else {
-                    if ($(".product-result").length > 0 || $("#<%=txtPhone.ClientID%>").val() != "" || $("#<%= txtFullname.ClientID%>").val() != "")
-                        return true;
-                    else
-                        e = null;
-                }
-            });
+            
 
             // key press F1 - F4
             $(document).keydown(function(e) {
@@ -1112,13 +1105,13 @@
                             $("#<%=txtShippingFeeModal.ClientID%>").select();
                             swal({
                                 title: "Có vấn đề:",
-                                text: "Chưa nhập phí vận chuyển!<br><br>Hỏng lẻ miễn phí vận chuyển luôn hở?",
+                                text: "Chưa nhập phí vận chuyển!<br><br>Hỏng lẻ miễn phí vận chuyển luôn?",
                                 type: "warning",
                                 showCancelButton: true,
                                 confirmButtonColor: "#DD6B55",
                                 confirmButtonText: "Để em tính phí!!",
                                 closeOnConfirm: false,
-                                cancelButtonText: "Để em bấm nút miễn phí",
+                                cancelButtonText: "Để em bấm nút miễn phí (cẩn thận)",
                                 html: true
                             });
                             checkAllValue = false;
@@ -1132,7 +1125,7 @@
                                     $("#<%=txtShippingFeeModal.ClientID%>").select();
                                     swal({
                                         title: "Coi nè:",
-                                        text: "Chưa nhập phí vận chuyển do nhà xe này <strong>trả cước trước</strong> nè!<br><br>Hay là miễn phí vận chuyển luôn hở?",
+                                        text: "Chưa nhập phí vận chuyển do nhà xe này <strong>trả cước trước</strong>!<br><br>Hay là miễn phí vận chuyển luôn?",
                                         type: "warning",
                                         showCancelButton: true,
                                         confirmButtonColor: "#DD6B55",
@@ -1184,8 +1177,8 @@
                 }
 
                 if (checkAllValue == true) {
+                    window.onbeforeunload = null;
 
-                    $("#payall").addClass("payall-clicked");
                     $("#<%=hdfTransportCompanySubID.ClientID%>").val(transSub);
 
                     $("#closeOrderInfo").click();
@@ -1267,9 +1260,14 @@
                 getAllPrice();
             }
 
+            function refreshDiscount() {
+                $("#<%=hdfcheck.ClientID%>").val(0);
+                getAllPrice();
+            }
+
             // get all price
             function getAllPrice(is_payAll_call) {
-                if(is_payAll_call === undefined)
+                if (is_payAll_call === undefined)
                     is_payAll_call = false;
                 if ($(".product-result").length > 0)
                 {
