@@ -35,7 +35,7 @@
     }
     .top-right {
         position: absolute;
-        top: 0;
+        top: 2mm;
         right: 3mm;
         width: 130mm;
         text-align: right;
@@ -128,12 +128,22 @@
         padding: 3px!important;
         margin-top: 0;
     }
+    .rotated {
+        transform: rotate(-90deg);
+        width: 79mm;
+        position: relative;
+        text-align: center;
+        top: 35mm;
+        left: 168mm;
+        font-size: 30px;
+        font-weight: bold;
+    }
     @media print { 
         body {
             -ms-transform:rotate(-90deg);
             -o-transform:rotate(-90deg);
             transform:rotate(-90deg);
-            margin-top: 125mm;
+            margin-top: 136mm;
             margin-left: 0;
         }
     }
@@ -189,7 +199,7 @@
             $(".sweet-alert").hide().empty();
             $(".sweet-overlay").hide().empty();
             window.print();
-            window.close();
+            //window.close();
         }
         function showTransportInfo() {
             $("#previewImage").html("");

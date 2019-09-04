@@ -750,6 +750,58 @@ namespace NHST.Bussiness
             return myImage;
         }
 
+        public static System.Drawing.Image MakeShippingBarcode(string inputData, int barWeight, bool addQuietZone)
+        {
+            // get the Code128 codes to represent the message
+            var content = new Code128Content(inputData);
+            var codes = content.Codes;
+
+            var width = (((codes.Length - 3) * 11) + 35) * barWeight;
+            var height = Convert.ToInt32(Math.Ceiling(Convert.ToSingle(width) * .15F));
+
+            if (addQuietZone)
+            {
+                width += 2 * CQuietWidth * barWeight; // on both sides
+            }
+
+            // get surface to draw on
+            System.Drawing.Image myImage = new Bitmap(width, height);
+            using (var gr = Graphics.FromImage(myImage))
+            {
+                // set to white so we don't have to fill the spaces with white
+                gr.FillRectangle(Brushes.White, 0, 0, width, height);
+
+                // skip quiet zone
+                var cursor = addQuietZone ? CQuietWidth * barWeight : 0;
+
+                for (var codeIdx = 0; codeIdx < codes.Length; codeIdx++)
+                {
+                    var code = codes[codeIdx];
+
+                    // take the bars two at a time: a black and a white
+                    for (var bar = 0; bar < 8; bar += 2)
+                    {
+                        var barWidth = CPatterns[code, bar] * barWeight;
+                        var spcWidth = CPatterns[code, bar + 1] * barWeight;
+
+                        // if width is zero, don't try to draw it
+                        if (barWidth > 0)
+                        {
+                            gr.FillRectangle(Brushes.Black, cursor, 0, barWidth, height);
+                        }
+
+                        // note that we never need to draw the space, since we 
+                        // initialized the graphics to all white
+
+                        // advance cursor beyond this pair
+                        cursor += barWidth + spcWidth;
+                    }
+                }
+            }
+
+            return myImage;
+        }
+
         public static string GenQRCode(string code)
         {
             string IMG = "/uploads/QRCode/" + code + ".jpg";
