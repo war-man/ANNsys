@@ -387,8 +387,9 @@
 
                         if (newFee > 1000 && newFee < 100000) {
                             $("input.reducedPrice").each(function (index) {
-                                oldFee = $(this).parent().parent().attr("data-feerefund");
-                                if (oldFee != "") {
+                                oldFee = +$(this).parent().parent().attr("data-feerefund") || 0;
+
+                                if (oldFee > 0) {
                                     $(this).parent().parent().attr("data-feerefund", newFee);
                                     $(this).parent().parent().find(".feeRefund").val(formatThousands(newFee));
                                     changeRow($(this));
@@ -464,11 +465,13 @@
                         }
 
                         if (item.ChangeType == 2) {
-                            item.FeeRefund = refundNoFee > productQuantityNoFee + item.QuantityRefund ? 0 : item.FeeRefund;
+                            item.FeeRefund = refundNoFee >= productQuantityNoFee + item.QuantityRefund ? 0 : item.FeeRefund;
                         }
 
-                        row.data("sold-price", item.ReducedPrice);
-                        row.data("feerefund", item.FeeRefund);
+                        row.attr("data-sold-price", item.ReducedPrice);
+                        row.attr("data-feerefund", item.FeeRefund);
+                        row.find(".feeRefund").val(formatThousands(item.FeeRefund))
+                        row.find(".feeRefund").attr('value', formatThousands(item.FeeRefund));
                     }
 
                     // Ruler Price - ReducedPrice >= 10,000 VND
@@ -544,7 +547,7 @@
                 let ProductVariableID = parseInt(row.attr("data-productVariableID"));
                 let ReducedPrice = +row.find(".reducedPrice").val().replace(/,/g, "") || 0;
                 let Quantity = +row.find(".quantityRefund").val().replace(/,/g, "") || 0;
-                let ChangeType = row.find(".changeType").val();
+                let ChangeType = +row.find(".changeType").val() || 0;
                 let FeeRefund = +row.find(".feeRefund").val().replace(/,/g, "") || 0;
 
                 if (Quantity == 0)
@@ -555,41 +558,115 @@
                 }
 
                 // Check xem số lượng đổi trả đã quá quy định chưa
-                let refundFilter = productRefunds.filter(item => {
-                    return item.isTarget(RowIndex, ProductID, ProductVariableID)
-                });
+                let error = false;
+                let message = ""
+
                 let refundNoFee = +$("#<%=hdfRefundQuantityNoFee.ClientID%>").val() || 0;
                 let refundFee = +$("#<%=hdfRefundQuantityFee.ClientID%>").val() || 0;
                 let totalRefundNow = +$(".totalProductQuantity").html().replace(/,/g, "") || 0;
                 let totalRefundNoFeeNow = +$(".totalProductQuantityNoFee").html().replace(/,/g, "") || 0;
 
-                if ((totalRefundNow + Quantity - refundFilter[0].QuantityRefund) > (refundNoFee + refundFee))
-                {
-                    let result = window.confirm("Số lượng đổi trả vượt quá quy định \n(Nhấp OK để tiếp tục)");
-                    if (!result) return;
-                }
-
-                if (ChangeType == "2" && FeeRefund == 0)
-                {
-                    if ((totalRefundNoFeeNow + Quantity - refundFilter[0].QuantityRefund) > refundNoFee) {
-                        //window.alert("Bạn đã nhập quá số lượng đổi trả miễn phí");
-                        row.find(".quantityRefund").val(refundFilter[0].QuantityRefund);
-                        row.find(".quantityRefund").html(formatThousands(refundFilter[0].QuantityRefund, ","));
-                        row.find(".quantityRefund").focus();
-                        Quantity = refundFilter[0].QuantityRefund;
-                    }
-                }
-
-                productRefunds.forEach(function(item){
-                    if (item.isTarget(RowIndex, ProductID, ProductVariableID)) {
-                        item.ReducedPrice = ReducedPrice;
-                        item.QuantityRefund = Quantity;
-                        item.ChangeType = ChangeType;
-                        item.FeeRefund = FeeRefund;
-                    }
+                let refundFilter = productRefunds.filter(item => {
+                    return item.isTarget(RowIndex, ProductID, ProductVariableID)
                 });
+                let quantityRefundOld = +refundFilter[0].QuantityRefund || 0;
 
-                getAllPrice(update_by_hand=true);
+                // Tính toán tổng số lượng đổi trả
+                totalRefundNow = totalRefundNow + Quantity - quantityRefundOld;
+                totalRefundNoFeeNow = totalRefundNoFeeNow + Quantity - quantityRefundOld;
+
+                // setup message
+                message += "<div class='row' style='max-height:300px; overflow: auto;'>";
+                message += "Đã phát sinh một số lỗi sau đây.<br/>";
+                message += "<h4>Vui lòng đọc kỷ trước khi xác nhận!<h4><br/>";
+
+                // Nếu số lượng mới thêm vượt quá quy định đổi trả thì thông báo lên
+                if (totalRefundNow > (refundNoFee + refundFee))
+                {
+                    error = true;
+                    message += '<h3><span class="label label-warning" style="text-align: left">Số lượng đổi trả</span></h3><br/>';
+                    message += 'Theo quy định là <strong>' + formatThousands(refundNoFee + refundFee, ",") + '</strong> cái<br/>';
+                    message += 'Hiện tại đang là <strong>' + formatThousands(totalRefundNow, ',') + '</strong> cái<br/>';
+                }
+
+                // Kiểm tra nhưng sản phâm nào thuộc đổi 2: Đổi trả sản phẩm khác và có fee là 0 đồng
+                // và số lượng nhập đổi trả miển phí lớn hơn sô lượng quy định thì thông báo
+                if (ChangeType == 2 && FeeRefund == 0 && totalRefundNoFeeNow > refundNoFee)
+                {
+                    error = true;
+                    message += '<h3><span class="label label-warning" style="text-align: left">Số lượng đổi trả miển phí</span></h3><br/>';
+                    message += 'Theo quy định là <strong>' + formatThousands(refundNoFee, ",") + '</strong> cái<br/>';
+                    message += 'Hiện tại đang là <strong>' + formatThousands(totalRefundNoFeeNow, ',') + '</strong> cái<br/>';
+                }
+
+                // kết thúc message
+                message += "</div>";
+
+                if (error)
+                {
+                    let quantityRecommend = 0;
+                    let confirmButtonText = "Vẫn thêm vào đơn";
+
+                    if (ChangeType == 2 && FeeRefund == 0 && totalRefundNoFeeNow > refundNoFee)
+                    {
+                        quantityRecommend = Quantity - (totalRefundNoFeeNow - refundNoFee);
+                        confirmButtonText = "Vẫn thêm vào đơn (" + quantityRecommend + " cái)";
+                    }
+
+                    swal({
+                        title: "Thông báo",
+                        text: message,
+                        type: "warning",
+                        showCancelButton: true,
+                        closeOnConfirm: true,
+                        cancelButtonText: "Để xem lại",
+                        confirmButtonText: confirmButtonText,
+                        html: true
+                    }, function (confirm) {
+                        if (confirm) {
+
+                            if (ChangeType == 2 && FeeRefund == 0 && totalRefundNoFeeNow > refundNoFee)
+                            {
+                                row.find(".quantityRefund").val(quantityRecommend);
+                                row.find(".quantityRefund").html(formatThousands(quantityRecommend, ","));
+                                row.find(".quantityRefund").focus();
+                                Quantity = quantityRecommend;
+                            }
+
+                            // Cập nhật lại thông tin dòng đã edit
+                            productRefunds.forEach(function (item) {
+                                if (item.isTarget(RowIndex, ProductID, ProductVariableID)) {
+                                    item.ReducedPrice = ReducedPrice;
+                                    item.QuantityRefund = Quantity;
+                                    item.ChangeType = ChangeType;
+                                    item.FeeRefund = FeeRefund;
+                                }
+                            });
+
+                            getAllPrice();
+                        }
+                        else {
+                            if (ChangeType == 2 && FeeRefund == 0 && totalRefundNoFeeNow > refundNoFee) {
+                                row.find(".quantityRefund").val(quantityRefundOld);
+                                row.find(".quantityRefund").html(formatThousands(quantityRefundOld, ","));
+                                row.find(".quantityRefund").focus();
+                            }
+                        }
+                    });
+                }
+                else {
+                    // Cập nhật lại thông tin dòng đã edit
+                    productRefunds.forEach(function (item) {
+                        if (item.isTarget(RowIndex, ProductID, ProductVariableID)) {
+                            item.ReducedPrice = ReducedPrice;
+                            item.QuantityRefund = Quantity;
+                            item.ChangeType = ChangeType;
+                            item.FeeRefund = FeeRefund;
+                        }
+                    });
+
+                    getAllPrice(update_by_hand = true);
+                }
             }
 
             function clickrow(obj) {
@@ -687,8 +764,7 @@
 
             // select a variable product
             function selectProduct() {
-                let productNoOrder = [];
-                let productExpired = [];
+                let products = [];
 
                 $(".search-popup").each(function (index, element) {
                     if ($(this).find(".check-popup").is(':checked')) {
@@ -706,81 +782,18 @@
                         // update total price
                         productTarget.TotalFeeRefund = (productTarget.ReducedPrice - productTarget.FeeRefund) * productTarget.QuantityRefund;
 
-                        if (productTarget.OrderID == 0)
-                        {
-                            productNoOrder.push(productTarget);
-                        }
-                        else if (!checkSaleDate(productTarget))
-                        {
-                            productExpired.push(productTarget);
-                        }
-                        else {
-                            productRefunds.push(productTarget);
-                            addHtmlProductResult(productTarget);
-                        }
+                        // Filter ra những product được chọn
+                        products.push(productTarget);
                     }
                 });
 
-                getAllPrice();
+                // Kiểm tra chính sách trả hàng
+                // Nếu thỏa thì sẽ thêm product vào table
+                // Ngược lại sẽ lên thông báo warning
+                checkPolicy(products);
+
                 closePopup();
-                $("#txtSearch").focus();
-
-                // Xử lý riêng với trường hợp chưa từng mua
-                if (productNoOrder.length > 0 || productExpired.length > 0)
-                {
-                    let message = "<div class='row' style='max-height:300px; overflow: auto;'>"
-
-                    if (productExpired.length > 0)
-                    {
-                        message += '<h3><span class="label label-danger" style="text-align: left">Các sản phẩm sau đã hết hạn đổi trả</span></h3><br/>';
-                        productExpired.forEach(item => {
-                            message += '<p><a href="/thong-tin-don-hang?id=' + item.OrderID + '" target="_blank">' + item.ChildSKU + ' - ' + item.ProductTitle + '</a></p><br/>';
-                        });
-                    }
-                   
-                    if (productNoOrder.length > 0)
-                    {
-                        message += '<h3><span class="label label-warning" style="text-align: left">Các sản phẩm sau chưa từng mua</span></h3><br/>';
-                        productNoOrder.forEach(item => {
-                            message += '<p>' + item.ChildSKU + ' - ' + item.ProductTitle + '</p><br/>';
-                        });
-                    }
-
-                    message += "</div>";
-
-                    return swal({
-                        title: "Thông báo",
-                        text: message,
-                        type: "warning",
-                        showCancelButton: true,
-                        showConfirmButton: productNoOrder.length > 0,
-                        closeOnConfirm: true,
-                        cancelButtonText: "Để xem lại",
-                        confirmButtonText: "Vẫn thêm vào đơn",
-                        html: true,
-                    }, function (confirm) {
-                        if (confirm) {
-                            // Check xem số lượng đổi trả đã quá quy định chưa
-                            let refundNoFee = +$("#<%=hdfRefundQuantityNoFee.ClientID%>").val() || 0;
-                            let refundFee = +$("#<%=hdfRefundQuantityFee.ClientID%>").val() || 0;
-                            let totalRefundNow = +$(".totalProductQuantity").html().replace(/,/g, "") || 0;
-                            // Cộng số lượng sản phẩn đổi trả được chọn
-                            productNoOrder.forEach(item => totalRefundNow += item.QuantityRefund);
-
-                            if (totalRefundNow > (refundNoFee + refundFee))
-                            {
-                                let result = window.confirm("Số lượng đổi trả vượt quá quy định \n(Nhấp OK để tiếp tục)");
-                                if (!result) return;
-                            }
-
-                            productNoOrder.forEach(item => {
-                                productRefunds.push(item);
-                                addHtmlProductResult(item);
-                            });
-                            getAllPrice();
-                        }
-                    })
-                }
+                $("#txtSearch").val("");
             }
 
             // select all variable product
@@ -913,12 +926,12 @@
                             return !(item.ParentSKU == product.ParentSKU && item.ChildSKU == product.ChildSKU)
                         });
 
-                        productRefunds.push(product);
-
-                        addHtmlProductResult(product);
+                        // Kiểm tra chính sách trả hàng
+                        // Nếu thỏa thì sẽ thêm product vào table
+                        // Ngược lại sẽ lên thông báo warning
+                        checkPolicy(product);
 
                         $("#txtSearch").val("");
-                        getAllPrice();
                     }
                     else {
                         let customerID = $("#<%=hdfCustomerID.ClientID%>").val();
@@ -986,69 +999,12 @@
                                             , OrderID = data[0].OrderID
                                         );
 
-                                        if (product.OrderID == 0) {
-                                            let message = 'Khách hàng chưa từng mua sản phẩm <strong>' + product.ParentSKU + ' - ' + product.ProductTitle + '</strong>';
+                                        // Kiểm tra chính sách trả hàng
+                                        // Nếu thỏa thì sẽ thêm product vào table
+                                        // Ngược lại sẽ lên thông báo warning
+                                        checkPolicy(product);
 
-                                            return swal({
-                                                title: "Không tìm thấy sản phẩm",
-                                                text: message,
-                                                type: "warning",
-                                                showCancelButton: true,
-                                                closeOnConfirm: true,
-                                                cancelButtonText: "Để xem lại",
-                                                confirmButtonText: "Vẫn thêm vào đơn",
-                                            }, function (confirm) {
-                                                if (confirm) {
-                                                    // Check xem số lượng đổi trả đã quá quy định chưa
-                                                    if ((totalRefundNow + product.QuantityRefund) > (refundNoFee + refundFee))
-                                                    {
-                                                        let result = window.confirm("Số lượng đổi trả hàng đang vợt quá quy định \n(Nhấp OK để tiếp tục)");
-                                                        if (!result) return;
-                                                    }
-
-                                                    productRefunds.push(product);
-                                                    addHtmlProductResult(product);
-                                                    $("#txtSearch").val("");
-                                                    getAllPrice();
-                                                }
-                                            });
-                                        }
-                                        else if (!checkSaleDate(product))
-                                        {
-                                            return swal({
-                                                title: "Hết hạn đổi trả",
-                                                text: "Sản phẩm này đã quá ngày đổi trả",
-                                                type: "warning",
-                                                showCancelButton: true,
-                                                closeOnConfirm: true,
-                                                cancelButtonText: "Bỏ qua",
-                                                confirmButtonText: "Xem đơn hàng mua",
-                                            }, function (confirm) {
-                                                if (confirm) {
-                                                    var win = window.open('/thong-tin-don-hang?id=' + product.OrderID, '_blank');
-
-                                                    if (win) {
-                                                        //Browser has allowed it to be opened
-                                                        win.focus();
-                                                    } else {
-                                                        //Browser has blocked it
-                                                        swal("Thông báo", "Vui lòng cho phép cửa sổ bật lên cho trang web này", "error");
-                                                    }
-                                                }
-                                            });
-                                        }
-
-                                        // Check xem số lượng đổi trả đã quá quy định chưa
-                                        if ((totalRefundNow + product.QuantityRefund) > (refundNoFee + refundFee))
-                                        {
-                                            let result = window.confirm("Số lượng đổi hàng đang vợt quá quy định \n(Nhấp OK để tiếp tục)");
-                                            if (!result) return;
-                                        }
-
-                                        productRefunds.push(product);
-                                        addHtmlProductResult(product);
                                         $("#txtSearch").val("");
-                                        getAllPrice();
                                     }
                                 }
                                 else {
@@ -1085,8 +1041,8 @@
                     productRefunds.forEach(function (product) {
                         if (product.isTarget(RowIndex, ProductID, ProductVariableID)) {
                             product.QuantityRefund = 1; // return default
-                            product.ChangeType = 1; // return default
-                            product.TotalFeeRefund = product.Price; // return default
+                            product.ChangeType = 2; // return default: Đổi sản phẩm khác
+                            product.TotalFeeRefund = product.Price - product.FeeRefund; // return default
                             productDeleteRefunds.push(product);
                         }
                     });
@@ -1266,6 +1222,135 @@
                     return false;
 
                 return true;
+            }
+
+            // Kiểm tra sản phẩm khi thêm vào bảng
+            function checkPolicy(product) {
+                // Phân loại product
+                let productNoOrder = [];
+                let productExpired = [];
+                let quantityRefund = 0;
+
+                if (Array.isArray(product))
+                {
+                    product.forEach(item => {
+                        quantityRefund += item.QuantityRefund;
+
+                        // Lọc ra sản phẩm chưa từng mua
+                        if (!item.OrderID)
+                            productNoOrder.push(item);
+
+                        // Lọc ra sản phẩm hết hạn đổi tra
+                        if (!checkSaleDate(item))
+                            productExpired.push(item);
+                    });
+                }
+                else
+                {
+                    quantityRefund += product.QuantityRefund;
+
+                    // Lọc ra sản phẩm chưa từng mua
+                    if (!product.OrderID)
+                        productNoOrder.push(product);
+
+                    // Lọc ra sản phẩm hết hạn đổi tra
+                    if (!checkSaleDate(product))
+                        productExpired.push(product);
+                }
+
+                let message = "";
+                let error = false;
+
+                // Check xem số lượng đổi trả đã quá quy định chưa
+                let refundNoFee = +$("#<%=hdfRefundQuantityNoFee.ClientID%>").val() || 0;
+                let refundFee = +$("#<%=hdfRefundQuantityFee.ClientID%>").val() || 0;
+                let totalRefundNow = +$(".totalProductQuantity").html().replace(/,/g, "") || 0;
+
+                // setup message
+                message += "<div class='row' style='max-height:300px; overflow: auto;'>";
+                message += "Đã phát sinh một số lỗi sau đây.<br/>";
+                message += "<h4>Vui lòng đọc kỷ trước khi xác nhận!<h4><br/>";
+
+                // Check xem số lượng đổi trả đã quá quy định chưa
+                if ((totalRefundNow + quantityRefund) > (refundNoFee + refundFee)) {
+                    error = true;
+                    message += '<h3><span class="label label-warning" style="text-align: left">Số lượng đổi trả</span></h3><br/>';
+                    message += 'Theo quy định là <strong>' + formatThousands(refundNoFee + refundFee, ",") + '</strong> cái<br/>';
+                    message += 'Hiện tại đang là <strong>' + formatThousands(totalRefundNow + quantityRefund, ',') + '</strong> cái<br/>';
+                }
+
+                // Thông báo những sản phẩm này khách hàng chưa từng mua
+                if (productNoOrder.length > 0) {
+                    error = true;
+                    message += '<h3><span class="label label-warning" style="text-align: left">Sản phẩm chưa từng mua</span></h3><br/>';
+                    productNoOrder.forEach(item => {
+                        if (item.ProductStyle == 2)
+                            message += '<strong>' + item.ChildSKU + ' - ' + item.ProductTitle + '</strong><br/>';
+                        else
+                            message += '<strong>' + item.ParentSKU + ' - ' + item.ProductTitle + '</strong><br/>';
+                    });
+                }
+
+                // Thông báo những sản phẩm này đã hết hạng đổi trả
+                if (productExpired.length > 0) {
+                    error = true;
+                    message += '<h3><span class="label label-danger" style="text-align: left">Hết hạn đổi trả</span></h3><br/>';
+                    productExpired.forEach(item => {
+                        if (item.ProductStyle == 2)
+                            message += '<a href="/thong-tin-don-hang?id=' + item.OrderID + '" target="_blank">' + item.ChildSKU + ' - ' + item.ProductTitle + '</a><br/>';
+                        else
+                            message += '<a href="/thong-tin-don-hang?id=' + item.OrderID + '" target="_blank">' + item.ParentSKU + ' - ' + item.ProductTitle + '</a><br/>';
+                    });
+                }
+
+                // kết thúc message
+                message += "</div>";
+
+                if (error)
+                {
+                    swal({
+                        title: "Thông báo",
+                        text: message,
+                        type: "warning",
+                        showCancelButton: true,
+                        closeOnConfirm: true,
+                        cancelButtonText: "Để xem lại",
+                        confirmButtonText: "Vẫn thêm vào đơn",
+                        html: true
+                    }, function (confirm) {
+                        if (confirm) {
+                            if (Array.isArray(product))
+                            {
+                                product.forEach(item => {
+                                    productRefunds.push(item);
+                                    addHtmlProductResult(item);
+                                });
+                            }
+                            else
+                            {
+                                productRefunds.push(product);
+                                addHtmlProductResult(product);
+                            }
+
+                            getAllPrice();
+                        }
+                    });
+                }
+                else
+                {
+                    if (Array.isArray(product)) {
+                        product.forEach(item => {
+                            productRefunds.push(item);
+                            addHtmlProductResult(item);
+                        });
+                    }
+                    else {
+                        productRefunds.push(product);
+                        addHtmlProductResult(product);
+                    }
+
+                    getAllPrice();
+                }
             }
         </script>
     </telerik:RadScriptBlock>
