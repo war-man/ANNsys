@@ -613,8 +613,12 @@ namespace IM_PJ.Controllers
                     .Select(x => new RefundInfo()
                     {
                         customerID = x.Key,
-                        refundNoFeeQuantity = x.Sum(s => s.TotalRefundFee == "0" ? (s.Quantity.HasValue ? s.Quantity.Value : 0) : 0),
-                        refundFeeQuantity = x.Sum(s => s.TotalRefundFee != "0" ? (s.Quantity.HasValue ? s.Quantity.Value : 0) : 0)
+                        refundNoFeeQuantity = x.Sum(s => 
+                            (s.TotalRefundFee == "0" && s.RefundType == 2) ? (s.Quantity.HasValue ? s.Quantity.Value : 0) : 0
+                        ),
+                        refundFeeQuantity = x.Sum(s => 
+                            !(s.TotalRefundFee == "0" && s.RefundType == 2) ? (s.Quantity.HasValue ? s.Quantity.Value : 0) : 0
+                        )
                     })
                     .OrderBy(o => o.customerID)
                     .ToList();
