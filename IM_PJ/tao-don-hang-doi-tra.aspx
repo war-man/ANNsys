@@ -577,14 +577,14 @@
 
                 // setup message
                 message += "<div class='row' style='max-height:300px; overflow: auto;'>";
-                message += "Đã phát sinh một số lỗi sau đây.<br/>";
-                message += "<h4>Vui lòng đọc kỷ trước khi xác nhận!<h4><br/>";
+                message += "Có vấn đề khi thêm sản phẩm này!<br/>";
+                message += "<h4>Hãy xem lại trước khi xác nhận!<h4>";
 
                 // Nếu số lượng mới thêm vượt quá quy định đổi trả thì thông báo lên
                 if (totalRefundNow > (refundNoFee + refundFee))
                 {
                     error = true;
-                    message += '<h3><span class="label label-warning" style="text-align: left">Số lượng đổi trả</span></h3><br/>';
+                    message += '<h3><span class="label label-warning" style="text-align: left">Vượt quá tổng số lượng được đổi trả:</span></h3><br/>';
                     message += 'Theo quy định là <strong>' + formatThousands(refundNoFee + refundFee, ",") + '</strong> cái<br/>';
                     message += 'Hiện tại đang là <strong>' + formatThousands(totalRefundNow, ',') + '</strong> cái<br/>';
                 }
@@ -594,7 +594,7 @@
                 if (ChangeType == 2 && FeeRefund == 0 && totalRefundNoFeeNow > refundNoFee)
                 {
                     error = true;
-                    message += '<h3><span class="label label-warning" style="text-align: left">Số lượng đổi trả miển phí</span></h3><br/>';
+                    message += '<h3><span class="label label-warning" style="text-align: left">Vượt quá số lượng đổi trả miễn phí:</span></h3><br/>';
                     message += 'Theo quy định là <strong>' + formatThousands(refundNoFee, ",") + '</strong> cái<br/>';
                     message += 'Hiện tại đang là <strong>' + formatThousands(totalRefundNoFeeNow, ',') + '</strong> cái<br/>';
                 }
@@ -643,7 +643,7 @@
                                 }
                             });
 
-                            getAllPrice();
+                            getAllPrice(update_by_hand = true);
                         }
                         else {
                             if (ChangeType == 2 && FeeRefund == 0 && totalRefundNoFeeNow > refundNoFee) {
@@ -1268,13 +1268,13 @@
 
                 // setup message
                 message += "<div class='row' style='max-height:300px; overflow: auto;'>";
-                message += "Đã phát sinh một số lỗi sau đây.<br/>";
-                message += "<h4>Vui lòng đọc kỷ trước khi xác nhận!<h4><br/>";
+                message += "Có vấn đề khi thêm sản phẩm này!<br/>";
+                message += "<h4>Hãy xem lại trước khi xác nhận!<h4>";
 
                 // Check xem số lượng đổi trả đã quá quy định chưa
                 if ((totalRefundNow + quantityRefund) > (refundNoFee + refundFee)) {
                     error = true;
-                    message += '<h3><span class="label label-warning" style="text-align: left">Số lượng đổi trả</span></h3><br/>';
+                    message += '<h3><span class="label label-warning" style="text-align: left">Vượt quá tổng số lượng được đổi trả:</span></h3><br/>';
                     message += 'Theo quy định là <strong>' + formatThousands(refundNoFee + refundFee, ",") + '</strong> cái<br/>';
                     message += 'Hiện tại đang là <strong>' + formatThousands(totalRefundNow + quantityRefund, ',') + '</strong> cái<br/>';
                 }
@@ -1282,7 +1282,7 @@
                 // Thông báo những sản phẩm này khách hàng chưa từng mua
                 if (productNoOrder.length > 0) {
                     error = true;
-                    message += '<h3><span class="label label-warning" style="text-align: left">Sản phẩm chưa từng mua</span></h3><br/>';
+                    message += '<h3><span class="label label-warning" style="text-align: left">Sản phẩm chưa từng mua:</span></h3><br/>';
                     productNoOrder.forEach(item => {
                         if (item.ProductStyle == 2)
                             message += '<strong>' + item.ChildSKU + ' - ' + item.ProductTitle + '</strong><br/>';
@@ -1294,7 +1294,7 @@
                 // Thông báo những sản phẩm này đã hết hạng đổi trả
                 if (productExpired.length > 0) {
                     error = true;
-                    message += '<h3><span class="label label-danger" style="text-align: left">Hết hạn đổi trả</span></h3><br/>';
+                    message += '<h3><span class="label label-danger" style="text-align: left">Sản phẩm hết hạn đổi trả:</span></h3><br/>';
                     productExpired.forEach(item => {
                         if (item.ProductStyle == 2)
                             message += '<a href="/thong-tin-don-hang?id=' + item.OrderID + '" target="_blank">' + item.ChildSKU + ' - ' + item.ProductTitle + '</a><br/>';
