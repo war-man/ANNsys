@@ -387,12 +387,13 @@
 
                         if (newFee > 1000 && newFee < 100000) {
                             $("input.reducedPrice").each(function (index) {
-                                oldFee = +$(this).parent().parent().attr("data-feerefund") || 0;
+                                let feeRefundDOM = $(this).parent().parent().find(".feeRefund");
+                                let oldFee = +feeRefundDOM.val().replace(/,/g, "") || 0;
 
                                 if (oldFee > 0) {
-                                    $(this).parent().parent().attr("data-feerefund", newFee);
-                                    $(this).parent().parent().find(".feeRefund").val(formatThousands(newFee));
-                                    changeRow($(this));
+                                    feeRefundDOM.val(formatThousands(newFee));
+                                    feeRefundDOM.attr('value', formatThousands(newFee));
+                                    changeRow($(this), { 'isChangeFeeOther': true });
                                 }
                             });
 
@@ -451,7 +452,7 @@
 
                 productRefunds.forEach(function(item){
                     let row = $("tr[data-rowIndex='" + item.RowIndex + "']");
-                    if (update_by_hand == false)
+                    if (update_by_hand == false && item.ChangeType == 2)
                     {
                         if (isDiscount == 1)
                         {
@@ -464,14 +465,10 @@
                             item.FeeRefund = item.FeeRefundDefault;
                         }
 
-                        if (item.ChangeType == 2) {
-                            item.FeeRefund = refundNoFee >= productQuantityNoFee + item.QuantityRefund ? 0 : item.FeeRefund;
-                        }
+                        item.FeeRefund = refundNoFee >= productQuantityNoFee + item.QuantityRefund ? 0 : item.FeeRefund;
 
                         row.attr("data-sold-price", item.ReducedPrice);
                         row.attr("data-feerefund", item.FeeRefund);
-                        row.find(".feeRefund").val(formatThousands(item.FeeRefund))
-                        row.find(".feeRefund").attr('value', formatThousands(item.FeeRefund));
                     }
 
                     // Ruler Price - ReducedPrice >= 10,000 VND
@@ -524,11 +521,13 @@
                 let feeRefundDom = row.find(".feeRefund");
                 if (RefundType == 2){
                     row.find(".feeRefund").val(formatThousands(row.data("feerefund"), ","))
+                    feeRefundDom.attr('value', formatThousands(row.data("feerefund")));
                     feeRefundDom.prop('disabled', false);
                 }
                 else
                 {
                     feeRefundDom.val(0);
+                    feeRefundDom.attr('value', 0);
                     feeRefundDom.prop('disabled', true);
                 }
                 changeRow(obj);
@@ -539,7 +538,7 @@
                 changeRow(obj);
             }
 
-            function changeRow(obj)
+            function changeRow(obj, opts)
             {
                 let row = obj.parent().parent();
                 let RowIndex = row.attr("data-rowIndex");
@@ -555,6 +554,24 @@
                     row.find(".quantityRefund").val(1);
                     row.find(".quantityRefund").html(1);
                     row.find(".quantityRefund").focus();
+                }
+
+                // nếu là nhấp thây đổi phí khác thì không cần check chính sách đổi hàng
+                if (opts && opts['isChangeFeeOther'])
+                {
+                    // Cập nhật lại thông tin dòng đã edit
+                    productRefunds.forEach(function (item) {
+                        if (item.isTarget(RowIndex, ProductID, ProductVariableID)) {
+                            item.ReducedPrice = ReducedPrice;
+                            item.QuantityRefund = Quantity;
+                            item.ChangeType = ChangeType;
+                            item.FeeRefund = FeeRefund;
+                        }
+                    });
+
+                    getAllPrice(update_by_hand = true);
+
+                    return;
                 }
 
                 // Check xem số lượng đổi trả đã quá quy định chưa
