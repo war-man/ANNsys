@@ -37,7 +37,7 @@
         position: absolute;
         top: 2mm;
         right: 3mm;
-        width: 130mm;
+        width: 120mm;
         text-align: right;
     }
     .bottom-left {
@@ -78,7 +78,7 @@
     .img {
         margin-top: 5px;
         margin-bottom: 5px;
-        width: 30%;
+        width: 27%;
     }
     .btn {
         display: inline-block;
@@ -129,14 +129,14 @@
         margin-top: 0;
     }
     .rotated {
-        transform: rotate(-90deg);
-        width: 79mm;
-        position: relative;
-        text-align: center;
-        top: 35mm;
-        left: 168mm;
-        font-size: 30px;
-        font-weight: bold;
+            transform: rotate(-90deg);
+    width: 79mm;
+    position: absolute;
+    text-align: center;
+    top: 35mm;
+    left: 168mm;
+    font-size: 30px;
+    font-weight: bold;
     }
     @media print { 
         body {
@@ -160,7 +160,7 @@
     <script src="/App_Themes/NewUI/js/sweet/sweet-alert.js" type="text/javascript"></script>
     <script src="/App_Themes/Ann/js/html2canvas.js"></script>
     <script type="text/javascript">
-        $(document).ready(printImage());
+        // $(document).ready(printImage());
 
         function printImage () {
             html2canvas(document.querySelector(".table"), {

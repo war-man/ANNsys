@@ -20,7 +20,7 @@ function getCustomerDiscount(custID) {
                 else {
                     let strHTML = "";
                     strHTML += "<strong>* Phí đổi trả hàng: " + formatThousands(data.FeeRefund, ",") + "đ/cái.</strong>";
-                    strHTML += "<br><strong>* Số lượng đổi trả miển phí: " + data.RefundQuantityNoFee + " cái.</strong>"
+                    strHTML += "<br><strong>* Số lượng đổi trả miễn phí: " + data.RefundQuantityNoFee + " cái.</strong>"
                     strHTML += "<br><strong>* Số lượng đổi trả có phí: " + data.RefundQuantityFee + " cái.</strong>"
                     
                     $(".refund-info").html(strHTML).show();

@@ -178,7 +178,7 @@ namespace IM_PJ
 
                     if (company.Note != "")
                     {
-                        transportCompanyNote = "<span class='transport-info'> - " + company.Note.ToTitleCase() + "</span>";
+                        transportCompanyNote = "<span class='transport-info capitalize'> - " + company.Note.ToTitleCase() + "</span>";
                     }
 
                     var subID = Convert.ToInt32(order.TransportCompanySubID);
@@ -189,7 +189,7 @@ namespace IM_PJ
                     }
                     else
                     {
-                        error += "<p>- Đơn hàng này gửi chành xe " + transportCompany + " nhưng <strong>chưa chọn Nơi nhận</strong>!</p>";
+                        error += "<p>- Đơn hàng này gửi xe " + transportCompany + " nhưng <strong>chưa chọn Nơi nhận</strong>!</p>";
                     }
                 }
                 // BƯU ĐIỆN
@@ -314,9 +314,9 @@ namespace IM_PJ
                 rowHtml += Environment.NewLine + String.Format("        <p><span>Điện thoại: <span class='phone'>{0}{1}</span></span></p>", order.CustomerPhone, CustomerPhone2);
                 rowHtml += Environment.NewLine + String.Format("        <p><span>Địa chỉ: <span class='address'>{0}</span></span></p>", CustomerAddress);
                 rowHtml += Environment.NewLine + String.Format("    </div>");
-                rowHtml += Environment.NewLine + String.Format("<div class='rotated'>");
-                rowHtml += Environment.NewLine + String.Format("    KHO HÀNG SỈ ANN");
-                rowHtml += Environment.NewLine + String.Format("</div>");
+                rowHtml += Environment.NewLine + String.Format("    <div class='rotated'>");
+                rowHtml += Environment.NewLine + String.Format("        KHO HÀNG SỈ ANN");
+                rowHtml += Environment.NewLine + String.Format("    </div>");
                 rowHtml += Environment.NewLine + String.Format("</div>");
                 
             }

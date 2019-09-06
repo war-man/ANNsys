@@ -2,7 +2,7 @@
 
 <%@ Register Assembly="Telerik.Web.UI" Namespace="Telerik.Web.UI" TagPrefix="telerik" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
-    <script src="/App_Themes/Ann/js/search-customer.js?v=28082019"></script>
+    <script src="/App_Themes/Ann/js/search-customer.js?v=05092019"></script>
     <script src="/Scripts/moment.min.js"></script>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
@@ -387,8 +387,14 @@
 
                         if (newFee > 1000 && newFee < 100000) {
                             $("input.reducedPrice").each(function (index) {
-                                let feeRefundDOM = $(this).parent().parent().find(".feeRefund");
+                                let row = $(this).parent().parent();
+                                let feeRefundDOM = row.find(".feeRefund");
                                 let oldFee = +feeRefundDOM.val().replace(/,/g, "") || 0;
+
+                                row.attr('data-feerefund', newFee);
+                                row.data('feerefund', newFee);
+                                row.attr('data-is-fee-refund-other', 1);
+                                row.data('is-fee-refund-other', 1);
 
                                 if (oldFee > 0) {
                                     feeRefundDOM.val(formatThousands(newFee));
@@ -452,17 +458,19 @@
 
                 productRefunds.forEach(function(item){
                     let row = $("tr[data-rowIndex='" + item.RowIndex + "']");
+                    let isFeeOther = +row.attr('data-is-fee-refund-other') || 0;
+
                     if (update_by_hand == false && item.ChangeType == 2)
                     {
                         if (isDiscount == 1)
                         {
                             item.ReducedPrice = item.Price - discount;
-                            item.FeeRefund = feerefund;
+                            item.FeeRefund = isFeeOther ? item.FeeRefund : feerefund;
                         }
                         else
                         {
                             item.ReducedPrice = item.Price;
-                            item.FeeRefund = item.FeeRefundDefault;
+                            item.FeeRefund = isFeeOther || item.FeeRefund > 0 ? item.FeeRefund : item.FeeRefundDefault;
                         }
 
                         item.FeeRefund = refundNoFee >= productQuantityNoFee + item.QuantityRefund ? 0 : item.FeeRefund;
@@ -602,8 +610,8 @@
                 {
                     error = true;
                     message += '<h3><span class="label label-warning" style="text-align: left">Vượt quá tổng số lượng được đổi trả:</span></h3><br/>';
-                    message += 'Theo quy định là <strong>' + formatThousands(refundNoFee + refundFee, ",") + '</strong> cái<br/>';
-                    message += 'Hiện tại đang là <strong>' + formatThousands(totalRefundNow, ',') + '</strong> cái<br/>';
+                    message += 'Số lượng được đổi: <strong>' + formatThousands(refundNoFee + refundFee, ",") + '</strong> cái<br/>';
+                    message += 'Hiện tại: <strong>' + formatThousands(totalRefundNow, ',') + '</strong> cái<br/>';
                 }
 
                 // Kiểm tra nhưng sản phâm nào thuộc đổi 2: Đổi trả sản phẩm khác và có fee là 0 đồng
@@ -612,8 +620,8 @@
                 {
                     error = true;
                     message += '<h3><span class="label label-warning" style="text-align: left">Vượt quá số lượng đổi trả miễn phí:</span></h3><br/>';
-                    message += 'Theo quy định là <strong>' + formatThousands(refundNoFee, ",") + '</strong> cái<br/>';
-                    message += 'Hiện tại đang là <strong>' + formatThousands(totalRefundNoFeeNow, ',') + '</strong> cái<br/>';
+                    message += 'Số lượng được đổi: <strong>' + formatThousands(refundNoFee, ",") + '</strong> cái<br/>';
+                    message += 'Hiện tại: <strong>' + formatThousands(totalRefundNoFeeNow, ',') + '</strong> cái<br/>';
                 }
 
                 // kết thúc message
@@ -713,7 +721,7 @@
                                 + "data-variableValue='" + item.VariableValue + "' "
                                 + "data-price='" + item.Price + "' "
                                 + "data-sold-price='" + item.ReducedPrice + "' "
-                                + "data-feeRefund='" + item.FeeRefund + "' >\n";
+                                + "data-feeRefund='" + item.FeeRefundDefault + "' >\n";
                 html += "    <td class='image-item'><img onclick='openImage($(this))' src='/uploads/images/159x212/" + item.ProductImage + "''></td>\n";
                 html += "    <td class='name-item'><a href='/xem-san-pham?id=" + item.ProductID + "&variableid=" + item.ProductVariableID + "' target='_blank'>" + item.ProductTitle + "</a>"  + variable + "</td>\n";
                 if (item.ProductStyle == 1) {
@@ -1197,7 +1205,7 @@
                                         , QuantityRefund = item.QuantityRefund
                                         , ChangeType = item.ChangeType
                                         , FeeRefund = item.FeeRefund
-                                        , FeeRefundDefault = item.FeeRefund
+                                        , FeeRefundDefault = item.FeeRefundDefault
                                         , TotalFeeRefund = item.TotalFeeRefund
                                         , SaleDate = item.SaleDate
                                         , OrderID = item.OrderID
@@ -1292,8 +1300,8 @@
                 if ((totalRefundNow + quantityRefund) > (refundNoFee + refundFee)) {
                     error = true;
                     message += '<h3><span class="label label-warning" style="text-align: left">Vượt quá tổng số lượng được đổi trả:</span></h3><br/>';
-                    message += 'Theo quy định là <strong>' + formatThousands(refundNoFee + refundFee, ",") + '</strong> cái<br/>';
-                    message += 'Hiện tại đang là <strong>' + formatThousands(totalRefundNow + quantityRefund, ',') + '</strong> cái<br/>';
+                    message += 'Số lượng được đổi: <strong>' + formatThousands(refundNoFee + refundFee, ",") + '</strong> cái<br/>';
+                    message += 'Hiện tại: <strong>' + formatThousands(totalRefundNow + quantityRefund, ',') + '</strong> cái<br/>';
                 }
 
                 // Thông báo những sản phẩm này khách hàng chưa từng mua

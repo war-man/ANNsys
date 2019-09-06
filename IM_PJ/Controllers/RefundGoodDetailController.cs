@@ -96,7 +96,7 @@ namespace IM_PJ.Controllers
             }
         }
 
-        public static List<RefundDetailModel> GetInfoShowRefundDetail(int RefundGoodsID)
+        public static List<RefundDetailModel> GetInfoShowRefundDetail(int RefundGoodsID, double FeeRefundDefault)
         {
             using (var con = new inventorymanagementEntities())
             {
@@ -165,6 +165,7 @@ namespace IM_PJ.Controllers
                                 QuantityRefund = x.QuantityRefund,
                                 ChangeType = x.ChangeType,
                                 FeeRefund = Convert.ToDouble(x.FeeRefund),
+                                FeeRefundDefault = FeeRefundDefault,
                                 TotalFeeRefund = Convert.ToDouble(x.TotalFeeRefund)
                             })
                             .ToList();

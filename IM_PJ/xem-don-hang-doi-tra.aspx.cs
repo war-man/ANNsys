@@ -187,9 +187,11 @@ namespace IM_PJ
                         ltrInfo.Text += "    <a href='javascript:;' class='btn primary-btn fw-btn not-fullwidth' onclick='viewCustomerDetail(`" + cusID + "`)'><i class='fa fa-address-card-o' aria-hidden='true'></i> Xem chi tiết</a>";
                         ltrInfo.Text += "</div>";
 
+                        double feeRefundDefault = 0;
                         var discount = DiscountCustomerController.getbyCustID(cusID).FirstOrDefault();
                         if (discount != null)
                         {
+                            feeRefundDefault = discount.FeeRefund;
 
                             ltrInfo.Text += "<div class='form-row discount-info'>";
                             ltrInfo.Text += String.Format("<strong>* Chiết khấu của khách: {0:0,0}đ/cái. ({1:N0} cái)</strong>", discount.DiscountAmount, discount.QuantityProduct);
@@ -205,6 +207,11 @@ namespace IM_PJ
                             }
                             ltrInfo.Text += "</div>";
                         }
+                        else
+                        {
+                            var config = ConfigController.GetByTop1();
+                            feeRefundDefault = config.FeeChangeProduct.Value;
+                        }
                         
                         ltrTotal.Text = string.Format("{0:N0}", Convert.ToDouble(r.TotalPrice));
                         ltrQuantity.Text = string.Format("{0:N0}", Convert.ToDouble(r.TotalQuantity));
@@ -219,7 +226,7 @@ namespace IM_PJ
                         _refundGood.CustomerAddress = cus != null ? cus.CustomerAddress : String.Empty;
                         _refundGood.CustomerZalo = cus != null ? cus.Zalo : String.Empty;
                         _refundGood.CustomerFacebook = cus != null ? cus.Facebook : String.Empty;
-                        _refundGood.RefundDetails = RefundGoodDetailController.GetInfoShowRefundDetail(ID);
+                        _refundGood.RefundDetails = RefundGoodDetailController.GetInfoShowRefundDetail(ID, feeRefundDefault);
                         _refundGood.TotalPrice = Convert.ToDouble(r.TotalPrice);
                         _refundGood.TotalQuantity = Convert.ToDouble(r.TotalQuantity);
                         _refundGood.TotalFreeRefund = Convert.ToDouble(r.TotalRefundFee);
