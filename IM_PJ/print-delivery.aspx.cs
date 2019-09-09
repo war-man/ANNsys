@@ -392,7 +392,7 @@ namespace IM_PJ
             var html = new StringBuilder();
 
             html.AppendLine("<h1>TỔNG KẾT</h1>");
-            html.AppendLine("<div class='delivery'>");
+            html.AppendLine("<div class='delivery summary'>");
             html.AppendLine("    <div class='all'>");
             html.AppendLine("        <div class='body'>");
             html.AppendLine("            <div class='table-2'>");

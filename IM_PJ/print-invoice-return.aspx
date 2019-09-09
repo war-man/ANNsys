@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="/App_Themes/Ann/barcode/style.css" type="text/css"/>
     <link rel="stylesheet" href="/App_Themes/Ann/css/responsive.css" type="text/css"/>
     <script src="/App_Themes/Ann/js/jquery-2.1.3.min.js"></script>
-    <title></title>    
+    <title>Hóa đơn đổi trả</title>    
 </head>
 <body>
     <asp:Literal ID="ltrPrintInvoice" runat="server"></asp:Literal>

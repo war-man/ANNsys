@@ -55,6 +55,8 @@ namespace IM_PJ.Controllers
 
                     if (deliverySession.Count > 0)
                     {
+                        var now = DateTime.Now;
+
                         oldDdeliveries.AddRange(deliverySession);
                         oldDdeliveries = oldDdeliveries.OrderByDescending(o => o.OrderID).ToList();
                         session.Value = JsonConvert.SerializeObject(oldDdeliveries);
@@ -383,6 +385,7 @@ namespace IM_PJ.Controllers
         public int DeliveryStatus { get; set; }
         public decimal COD { get; set; }
         public decimal ShippingFee { get; set; }
+        public DateTime ModifiedDate { get; set; } = DateTime.Now;
     }
 
     public class RegisterProductSession

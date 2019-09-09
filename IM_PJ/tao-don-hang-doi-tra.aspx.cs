@@ -72,6 +72,8 @@ namespace IM_PJ
                     var serializer = new JavaScriptSerializer();
                     var script = "$(document).ready(() => { selectCustomerDetail(" + serializer.Serialize(customer) + "); });";
                     ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "script", script, true);
+                    // Fix bug khi truyền dữ liệu customer từ màn hình khách san
+                    hdfCustomerID.Value = customer.ID.ToString();
                 }
             }
 

@@ -233,7 +233,7 @@
                                                     <a href="javascript:;" onclick="searchProduct()" class="btn primary-btn h45-btn"><i class="fa fa-search"></i> Tìm kiếm</a>
                                                 </div>
                                                 <div class="col-xs-6">
-                                                    <a href="/" class="btn primary-btn h45-btn download-btn"><i class="fa fa-times" aria-hidden="true"></i> Làm lại</a>
+                                                    <a href="/" class="btn primary-btn h45-btn download-btn"><i class="fa fa-times" aria-hidden="true"></i> Trang chủ</a>
                                                 </div>
                                             </div>
                                         </div>

@@ -27,11 +27,7 @@ namespace IM_PJ
                     var acc = AccountController.GetByUsername(username);
                     if (acc != null)
                     {
-                        if (acc.RoleID == 0)
-                        {
-
-                        }
-                        else if (acc.RoleID == 2)
+                        if (acc.RoleID == 0 || acc.RoleID == 2)
                         {
 
                         }
@@ -176,7 +172,7 @@ namespace IM_PJ
         {
             int ID = Request.QueryString["id"].ToInt(0);
             int mergeprint = 0;
-            if(Request.QueryString["merge"] != null)
+            if (Request.QueryString["merge"] != null)
             {
                 mergeprint = Request.QueryString["merge"].ToInt(0);
             }
@@ -225,25 +221,20 @@ namespace IM_PJ
                         productPrint += "<td>Khách hàng</td>";
                         productPrint += "<td>" + order.CustomerName.ToTitleCase() + "</td>";
                         productPrint += "</tr>";
-                        productPrint += "<tr>";
-                        productPrint += "<td>Nick</td>";
-                        productPrint += "<td>" + customer.Nick.ToTitleCase() + "</td>";
-                        productPrint += "</tr>";
+
+                        if (!string.IsNullOrEmpty(customer.Nick))
+                        {
+                            productPrint += "<tr>";
+                            productPrint += "<td>Nick</td>";
+                            productPrint += "<td>" + customer.Nick.ToTitleCase() + "</td>";
+                            productPrint += "</tr>";
+                        }
+                        
                         productPrint += "<tr>";
                         productPrint += "<td>Điện thoại</td>";
                         productPrint += "<td>" + order.CustomerPhone + "</td>";
                         productPrint += "</tr>";
 
-                        productPrint += "<tr>";
-                        if (numberOfOrders.Count < 4)
-                        {
-                            productPrint += "<td>Loại đơn</td>";
-                            if (order.OrderType == 1)
-                                productPrint += "<td>Mua lẻ</td>";
-                            if (order.OrderType == 2)
-                                productPrint += "<td>Mua sỉ</td>";
-                            productPrint += "</tr>";
-                        }
                         if (!string.IsNullOrEmpty(order.DateDone.ToString()))
                         {
                             productPrint += "<tr>";
@@ -398,19 +389,28 @@ namespace IM_PJ
                             facebook = agent.AgentFacebook;
                         }
 
+                        var acc = AccountController.GetByUsername(order.CreatedBy);
+                        if (acc != null)
+                        {
+                            var accountInfo = AccountInfoController.GetByUserID(acc.ID);
+                            if (accountInfo != null)
+                            {
+                                if (!string.IsNullOrEmpty(accountInfo.Phone))
+                                {
+                                    phone = accountInfo.Phone;
+                                }
+                            }
+                        }
+
                         string dateOrder = string.Format("{0:dd/MM/yyyy HH:mm}", order.DateDone);
 
                         shtml += "<div class='hoadon'>";
                         shtml += "<div class='all'>";
-                        shtml += "<div class='head'>";
-
-                        if (numberOfOrders.Count < 5)
-                        {
-                            shtml += "<div class='logo'><div class='img'><img src='App_Themes/Ann/image/logo.png' /></div></div>";
-                        }
 
                         if (numberOfOrders.Count < 4)
                         {
+                            shtml += "<div class='head'>";
+                            shtml += "<div class='logo'><div class='img'><img src='App_Themes/Ann/image/logo.png' /></div></div>";
                             shtml += "<div class='info'>";
 
                             shtml += "<div class='ct'>";
@@ -429,30 +429,25 @@ namespace IM_PJ
                             shtml += "</div>";
 
                             shtml += "</div>";
+                            shtml += "</div>";
                         }
-
-                        shtml += "</div>";
 
                         shtml += productPrint;
-
-                        if (numberOfOrders.Count < 5)
-                        {
-                            shtml += "<div class='footer'><h3>CẢM ƠN QUÝ KHÁCH! HẸN GẶP LẠI !</h3></div> ";
-                        }
-
-                        var config = ConfigController.GetByTop1();
-                        string rule = "";
-                        if(order.OrderType == 2)
-                        {
-                            rule = config.ChangeGoodsRule;
-                        }
-                        else
-                        {
-                            rule = config.RetailReturnRule;
-                        }
                         
                         if (numberOfOrders.Count < 4)
                         {
+                            var config = ConfigController.GetByTop1();
+                            string rule = "";
+                            if (order.OrderType == 2)
+                            {
+                                rule = config.ChangeGoodsRule;
+                            }
+                            else
+                            {
+                                rule = config.RetailReturnRule;
+                            }
+
+                            shtml += "<div class='footer'><h3>CẢM ƠN QUÝ KHÁCH! HẸN GẶP LẠI !</h3></div> ";
                             shtml += "<div class='footer'>" + rule +"</div> ";
                         }
                         else

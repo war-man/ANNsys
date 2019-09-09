@@ -107,7 +107,7 @@ namespace IM_PJ
                 }
 
                 string address = "";
-                string phone = "0914615408 - 0918567409";
+                string phone = "";
                 string leader = "";
                 var agent = AgentController.GetByID(Convert.ToInt32(order.AgentID));
 
@@ -115,6 +115,7 @@ namespace IM_PJ
                 {
                     address = agent.AgentAddress;
                     leader = agent.AgentLeader;
+                    phone = agent.AgentPhone;
                 }
 
                 double TotalOrder = Convert.ToDouble(order.TotalPrice);
@@ -136,7 +137,7 @@ namespace IM_PJ
                 rowHtml += Environment.NewLine + String.Format("    <div class='top-left'>");
                 rowHtml += Environment.NewLine + String.Format("        <p><span>Người gửi: <span class='name'>{0}</span></span></p>", leader);
                 rowHtml += Environment.NewLine + String.Format("        <p><span>{0}</span></p>", phone);
-                rowHtml += Environment.NewLine + String.Format("        <p><span>{0}</span></p>", address);
+                rowHtml += Environment.NewLine + String.Format("        <p><span class='agent-address'>{0}</span></p>", address);
                 rowHtml += Environment.NewLine + String.Format("        <p><span class='web'>ANN.COM.VN</span></p>");
                 rowHtml += Environment.NewLine + String.Format("    </div>");
                 rowHtml += Environment.NewLine + String.Format("    <div class='bottom-left'>");

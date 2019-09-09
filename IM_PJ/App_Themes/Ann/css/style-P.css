@@ -473,10 +473,16 @@ a.bg-button:hover {
     background-color: #F44336!important;
 }
 .btn-black {
-    background-color: #686868!important;
+    background-color: #2A2A2A!important;
 }
 .btn-blue {
-    background-color: #428bca!important;
+    background-color: #2ea2cc!important;
+}
+.btn-green {
+    background-color: #73a724!important;
+}
+.btn-yellow {
+    background-color: #ffba00!important;
 }
 .sku-input {
     text-transform: uppercase;
@@ -712,7 +718,7 @@ ul.image-gallery li {
 }
 .edit-customer-btn {
     margin-left: 15px;
-    background-color: #686868!important;
+    background-color: #2A2A2A!important;
 }
 .change-user {
     float: right;
@@ -800,7 +806,7 @@ img {
     margin-top: 50px;
 }
 .bg-red {
-    background: #FF675B;
+    background: #F44336;
     color: #fff;
     display: block;
     padding: 5px 6px;

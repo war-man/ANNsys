@@ -1227,6 +1227,7 @@
                     $("#<%=txtRefundsNote.ClientID%>").val(refundGoodModel.Note);
 
                     // Init hiden footer
+                    $("#<%=hdfCustomerID.ClientID%>").val(refundGoodModel.CustomerID);
                     $("#<%=hdfPhone.ClientID%>").val(refundGoodModel.CustomerPhone);
                     $("#<%=hdfTotalPrice.ClientID%>").val(refundGoodModel.TotalPrice);
                     $("#<%=hdfTotalQuantity.ClientID%>").val(refundGoodModel.TotalQuantity);

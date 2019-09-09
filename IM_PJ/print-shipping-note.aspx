@@ -3,14 +3,14 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>ann</title>
+  <title>Phiếu gửi hàng</title>
     <script src="/App_Themes/Ann/js/jquery-2.1.3.min.js"></script>
     <link href="/App_Themes/NewUI/js/sweet/sweet-alert.css" rel="stylesheet" type="text/css" />
   <style>
     
     body {
         font-size: 17px;
-        font-family: sans-serif;
+        font-family: Tahoma,sans-serif;
         margin-left: 0;
         margin-top: 0;
     }
@@ -21,22 +21,21 @@
     }
     .table {
         display: block;
-        width: 200mm;
+        width: 220mm;
         height: 79mm;
         position: relative;
-        border-right: dashed 2px #000;
         border-left: dashed 2px #000;
     }
     .top-left {
         position: absolute;
-        top: 0;
+        top: 1mm;
         left: 3mm;
-        width: 105mm;
+        width: 90mm;
     }
     .top-right {
         position: absolute;
-        top: 2mm;
-        right: 3mm;
+        top: 2.5mm;
+        right: 16mm;
         width: 120mm;
         text-align: right;
     }
@@ -49,8 +48,8 @@
     .bottom-right {
         position: absolute;
         bottom: 0;
-        right: 3mm;
-        width: 120mm;
+        right: 16mm;
+        width: 130mm;
     }
     .cod {
         font-size: 19px;
@@ -58,6 +57,9 @@
     }
     .address {
         text-transform: capitalize;
+    }
+    .agent-address {
+        font-size: 16px;
     }
     .web {
         text-decoration: underline;
@@ -129,21 +131,25 @@
         margin-top: 0;
     }
     .rotated {
-            transform: rotate(-90deg);
-    width: 79mm;
-    position: absolute;
-    text-align: center;
-    top: 35mm;
-    left: 168mm;
-    font-size: 30px;
-    font-weight: bold;
+        transform: rotate(-90deg);
+        width: 79mm;
+        position: absolute;
+        text-align: left;
+        top: 33.7mm;
+        left: 173mm;
+        font-size: 26.8px;
+        font-weight: bold;
+        border-top: dashed 2px #000;
+        padding-top: 2mm;
+        padding-left: 2.5mm;
+        letter-spacing: 2px;
     }
     @media print { 
         body {
             -ms-transform:rotate(-90deg);
             -o-transform:rotate(-90deg);
             transform:rotate(-90deg);
-            margin-top: 136mm;
+            margin-top: 142mm;
             margin-left: 0;
         }
     }
@@ -160,7 +166,8 @@
     <script src="/App_Themes/NewUI/js/sweet/sweet-alert.js" type="text/javascript"></script>
     <script src="/App_Themes/Ann/js/html2canvas.js"></script>
     <script type="text/javascript">
-        // $(document).ready(printImage());
+
+        $(document).ready(printImage());
 
         function printImage () {
             html2canvas(document.querySelector(".table"), {
@@ -199,7 +206,7 @@
             $(".sweet-alert").hide().empty();
             $(".sweet-overlay").hide().empty();
             window.print();
-            //window.close();
+            window.close();
         }
         function showTransportInfo() {
             $("#previewImage").html("");

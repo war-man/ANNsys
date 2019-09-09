@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="/App_Themes/Ann/css/responsive.css" type="text/css"/>
     <script src="/App_Themes/Ann/js/jquery-2.1.3.min.js"></script>
     <script src="/App_Themes/Ann/js/html2canvas.js"></script>
-    <title></title>    
+    <title>Lấy ảnh đơn đổi trả</title>    
 </head>
 <body>
     <h2 class="guide">Click chuột phải vào ảnh -> Chọn Sao chép hình ảnh -> Dán vào Zalo hoặc Facebook (làm từng ảnh)</h2>

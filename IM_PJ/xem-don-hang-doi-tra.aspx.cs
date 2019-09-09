@@ -184,7 +184,7 @@ namespace IM_PJ
                         ltrInfo.Text += "</div>";
 
                         ltrInfo.Text += "<div class='form-row view-detail'>";
-                        ltrInfo.Text += "    <a href='javascript:;' class='btn primary-btn fw-btn not-fullwidth' onclick='viewCustomerDetail(`" + cusID + "`)'><i class='fa fa-address-card-o' aria-hidden='true'></i> Xem chi tiết</a>";
+                        ltrInfo.Text += "    <a href='javascript:;' class='btn primary-btn fw-btn not-fullwidth' onclick='viewCustomerDetail(`" + cusID + "`)'><i class='fa fa-address-card-o' aria-hidden='true'></i> Xem</a>";
                         ltrInfo.Text += "</div>";
 
                         double feeRefundDefault = 0;
@@ -194,7 +194,7 @@ namespace IM_PJ
                             feeRefundDefault = discount.FeeRefund;
 
                             ltrInfo.Text += "<div class='form-row discount-info'>";
-                            ltrInfo.Text += String.Format("<strong>* Chiết khấu của khách: {0:0,0}đ/cái. ({1:N0} cái)</strong>", discount.DiscountAmount, discount.QuantityProduct);
+                            ltrInfo.Text += String.Format("<strong>* Chiết khấu của khách: {0:0,0}đ/cái. (đơn từ {1:N0} cái)</strong>", discount.DiscountAmount, discount.QuantityProduct);
                             ltrInfo.Text += "</div>";
                             ltrInfo.Text += "<div class='form-row refund-info'>";
                             if (discount.FeeRefund == 0)
@@ -203,7 +203,7 @@ namespace IM_PJ
                             }
                             else
                             {
-                                ltrInfo.Text += String.Format("<strong>* Phí đổi hàng của khách: {0:0,0}đ/cái.</strong>", discount.FeeRefund);
+                                ltrInfo.Text += String.Format("<strong>* Phí đổi trả hàng: {0:0,0}đ/cái.</strong>", discount.FeeRefund);
                             }
                             ltrInfo.Text += "</div>";
                         }
@@ -323,7 +323,7 @@ namespace IM_PJ
                         }
 
                         ltrPrint.Text = "<a href='/print-invoice-return?id=" + ID + "' target='_blank' class='btn primary-btn fw-btn not-fullwidth'><i class='fa fa-print' aria-hidden='true'></i> In hóa đơn</a>";
-                        ltrPrint.Text += "<a href='/print-return-order-image?id=" + ID + "' target='_blank' class='btn primary-btn fw-btn not-fullwidth print-invoice-merged'><i class='fa fa-picture-o' aria-hidden='true'></i> Lấy ảnh đơn hàng</a>";
+                        ltrPrint.Text += "<a href='/print-return-order-image?id=" + ID + "' target='_blank' class='btn primary-btn btn-blue fw-btn not-fullwidth print-invoice-merged'><i class='fa fa-picture-o' aria-hidden='true'></i> Lấy ảnh đơn hàng</a>";
 
                     }
                 }

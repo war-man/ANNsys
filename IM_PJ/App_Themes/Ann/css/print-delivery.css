@@ -139,7 +139,7 @@ h1.invoice-return {
 
 .delivery .table-2 table th,
             .delivery .table-2 table td {
-  padding: 3px;
+  padding: 3px 6px 3px 3px;
   border: 1px solid black;
   border-left: none;
   border-right: none;
@@ -213,4 +213,7 @@ h1.invoice-return {
 
 .delivery .print-invoice-return table col.tong {
   width: 24%;
+}
+.summary {
+    margin-bottom: 10mm;
 }

@@ -1468,6 +1468,26 @@ namespace IM_PJ.Controllers
                     .ToList();
                 #endregion
 
+                #region Sắp xếp lại đơn hàng theo thứ tự đã chọn
+                if (filter.selected && filter.account != null)
+                {
+                    var deliverySession = SessionController.getDeliverySession(filter.account);
+                    var orderSelected = deliverySession
+                        .OrderByDescending(o => o.ModifiedDate)
+                        .Select(x => new { orderID = x.OrderID })
+                        .ToList();
+                    // Chỉ lấy những order đã check
+                    data = orderSelected
+                        .Join(
+                            data,
+                            s => s.orderID,
+                            d => d.ID,
+                            (s, d) => d
+                        )
+                        .ToList();
+                }
+                #endregion
+
                 return data;
             }
         }
