@@ -1,9 +1,6 @@
 ﻿using IM_PJ.Models;
-using NHST.Bussiness;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 
 namespace IM_PJ.Controllers
 {
@@ -42,6 +39,7 @@ namespace IM_PJ.Controllers
                     discount.IsHidden = data.IsHidden;
                     discount.ModifiedBy = data.ModifiedBy;
                     discount.ModifiedDate = data.ModifiedDate;
+                    discount.PermittedRead = data.PermittedRead;
                     int kq = con.SaveChanges();
 
                     return kq.ToString();
@@ -78,7 +76,25 @@ namespace IM_PJ.Controllers
             }
         }
 
-     
+        public static List<tbl_DiscountGroup> getByAccount(tbl_Account acc)
+        {
+            using (var con = new inventorymanagementEntities())
+            {
+                var discountGroup = con.tbl_DiscountGroup
+                    .Where(x =>
+                        x.PermittedRead.Trim() == acc.ID.ToString() ||
+                        x.PermittedRead.StartsWith(acc.ID.ToString() + ",") ||
+                        x.PermittedRead.Contains("," + acc.ID.ToString() + ",") ||
+                        x.PermittedRead.EndsWith("," + acc.ID.ToString())
+                    )
+                    .OrderByDescending(x => x.DiscountAmount)
+                    .ThenByDescending(x => x.QuantityProduct)
+                    .ThenByDescending(x => x.FeeRefund)
+                    .ToList();
+
+                return discountGroup;
+            }
+        }
         #endregion
     }
 }

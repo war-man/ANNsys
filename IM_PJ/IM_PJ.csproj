@@ -315,6 +315,8 @@
     <Content Include="App_Themes\Ann\css\bootstrap.css" />
     <Content Include="App_Themes\Ann\css\bootstrap\glyphicons-halflings-regular.svg" />
     <Content Include="App_Themes\Ann\css\HoldOn.css" />
+    <Content Include="App_Themes\Ann\css\pages\chi-tiet-giam-gia\chi-tiet-giam-gia.css" />
+    <Content Include="App_Themes\Ann\css\pages\them-moi-giam-gia\them-moi-giam-gia.css" />
     <Content Include="App_Themes\Ann\css\print-delivery.css" />
     <Content Include="App_Themes\Ann\css\print-return-order-image.css" />
     <Content Include="App_Themes\Ann\css\print-order-image.css" />
@@ -363,10 +365,16 @@
     <Content Include="App_Themes\Ann\js\bootstrap.min.js" />
     <Content Include="App_Themes\Ann\js\Chart.min.js" />
     <Content Include="App_Themes\Ann\js\chartjs.min.js" />
+    <Content Include="App_Themes\Ann\js\controllers\chi-tiet-giam-gia\chi-tiet-giam-gia-controller.js" />
+    <Content Include="App_Themes\Ann\js\controllers\danh-sach-nhom-khach-hang\danh-sach-nhom-khach-hang-controller.js" />
+    <Content Include="App_Themes\Ann\js\controllers\them-moi-giam-gia\them-moi-giam-gia-controller.js" />
     <Content Include="App_Themes\Ann\js\copy-post-info.js" />
     <Content Include="App_Themes\Ann\js\download-post-image.js" />
     <Content Include="App_Themes\Ann\js\download-product-image.js" />
     <Content Include="App_Themes\Ann\js\jquery.cookie.js" />
+    <Content Include="App_Themes\Ann\js\pages\chi-tiet-giam-gia\chi-tiet-giam-gia.js" />
+    <Content Include="App_Themes\Ann\js\pages\danh-sach-nhom-khach-hang\danh-sach-nhom-khach-hang.js" />
+    <Content Include="App_Themes\Ann\js\pages\them-moi-giam-gia\them-moi-giam-gia.js" />
     <Content Include="App_Themes\Ann\js\sync-product-small.js" />
     <Content Include="App_Themes\Ann\js\sync-product.js" />
     <Content Include="App_Themes\Ann\js\HoldOn.js" />
@@ -940,6 +948,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>IMModel.edmx</DependentUpon>
     </Compile>
+    <Compile Include="Models\Pages\danh-sach-nhom-khach-hang\DiscountGroupModel.cs" />
     <Compile Include="Models\Pages\thong-ke-doanh-thu-khach-hang\CustomerModel.cs" />
     <Compile Include="Models\Pages\thong-ke-doanh-thu-khach-hang\OrderInfoModel.cs" />
     <Compile Include="Models\Pages\thong-ke-doanh-thu-khach-hang\ReportProfitCustomerModel.cs" />

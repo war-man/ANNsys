@@ -514,6 +514,7 @@
           <Property Name="NumOfProductCanChange" Type="float" />
           <Property Name="QuantityProduct" Type="int" />
           <Property Name="RefundQuantityNoFee" Type="int" />
+          <Property Name="PermittedRead" Type="nvarchar" MaxLength="255" />
         </EntityType>
         <EntityType Name="tbl_LinkImnage">
           <Key>
@@ -1532,6 +1533,7 @@
           <Property Name="NumOfProductCanChange" Type="Double" />
           <Property Name="QuantityProduct" Type="Int32" />
           <Property Name="RefundQuantityNoFee" Type="Int32" />
+          <Property Name="PermittedRead" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="tbl_LinkImnage">
           <Key>
@@ -2579,6 +2581,7 @@
           <EntitySetMapping Name="tbl_DiscountGroup">
             <EntityTypeMapping TypeName="inventorymanagementModel.tbl_DiscountGroup">
               <MappingFragment StoreEntitySet="tbl_DiscountGroup">
+                <ScalarProperty Name="PermittedRead" ColumnName="PermittedRead" />
                 <ScalarProperty Name="RefundQuantityNoFee" ColumnName="RefundQuantityNoFee" />
                 <ScalarProperty Name="QuantityProduct" ColumnName="QuantityProduct" />
                 <ScalarProperty Name="ID" ColumnName="ID" />

@@ -178,5 +178,20 @@ namespace IM_PJ.Controllers
             public double NumOfProductCanChange { get; set; }
             public int RefundQuantityNoFee { get; set; }
         }
+
+        public static List<tbl_DiscountCustomer> getByDiscountGroup(List<tbl_DiscountGroup> groups)
+        {
+            using (var con = new inventorymanagementEntities())
+            {
+                var groupIDs = groups.Select(x => x.ID).ToList();
+
+                var customers = con.tbl_DiscountCustomer
+                    .Where(x => x.DiscountGroupID.HasValue)
+                    .Where(x => groupIDs.Contains(x.DiscountGroupID.Value))
+                    .ToList();
+
+                return customers;
+            }
+        }
     }
 }

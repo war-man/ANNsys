@@ -148,6 +148,15 @@ namespace IM_PJ {
         protected global::Telerik.Web.UI.RadNumericTextBox pRefundQuantityNoFee;
         
         /// <summary>
+        /// ddlAccount control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList ddlAccount;
+        
+        /// <summary>
         /// pDiscountNote control.
         /// </summary>
         /// <remarks>
@@ -173,5 +182,14 @@ namespace IM_PJ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnLogin;
+        
+        /// <summary>
+        /// hdfPermittedRead control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField hdfPermittedRead;
     }
 }

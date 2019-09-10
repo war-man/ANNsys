@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Web;
+using System.Web.UI.WebControls;
 using WebUI.Business;
 
 namespace IM_PJ.Controllers
@@ -359,6 +360,47 @@ namespace IM_PJ.Controllers
             public int RoleID { get; set; }
             public int Status { get; set; }
             public DateTime CreatedDate { get; set; }
+        }
+
+        public static bool isPermittedLoading(tbl_Account acc, string pageName)
+        {
+            var result = false;
+
+            switch (pageName)
+            {
+                case "danh-sach-nhom-khach-hang":
+                    if (acc != null)
+                        result = true;
+                    else
+                        result = false;
+                    break;
+                case "them-moi-giam-gia":
+                case "chi-tiet-giam-gia":
+                    if (acc != null && acc.ID == 1)
+                        result = true;
+                    else
+                        result = false;
+                    break;
+                default:
+                    break;
+            }
+
+            return result;
+        }
+
+        public static List<ListItem> getDropDownList()
+        {
+            var data = new List<ListItem>();
+            data.Add(new ListItem(String.Empty, "0"));
+            using (var con = new inventorymanagementEntities())
+            {
+                foreach (var acc in con.tbl_Account.ToList())
+                {
+                    data.Add(new ListItem(acc.Username, acc.ID.ToString()));
+                }
+            }
+
+            return data;
         }
     }
 }

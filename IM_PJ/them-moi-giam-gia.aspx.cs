@@ -1,6 +1,7 @@
 ﻿using IM_PJ.Controllers;
 using IM_PJ.Models;
 using MB.Extensions;
+using Newtonsoft.Json;
 using NHST.Bussiness;
 using System;
 using System.Collections.Generic;
@@ -16,6 +17,8 @@ namespace IM_PJ
 {
     public partial class them_moi_giam_gia : System.Web.UI.Page
     {
+        private tbl_Account acc;
+
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
@@ -23,20 +26,44 @@ namespace IM_PJ
                 if (Request.Cookies["usernameLoginSystem"] != null)
                 {
                     string username = Request.Cookies["usernameLoginSystem"].Value;
-                    var acc = AccountController.GetByUsername(username);
-                    if (acc != null)
-                    {
-                        if (acc.RoleID != 0)
-                        {
-                            Response.Redirect("/trang-chu");
-                        }
-                    }
+                    acc = AccountController.GetByUsername(username);
+
+                    if (!AccountController.isPermittedLoading(acc, "them-moi-giam-gia"))
+                        Response.Redirect("/trang-chu");
                 }
                 else
                 {
                     Response.Redirect("/dang-nhap");
                 }
+
+                LoadData();
             }
+        }
+
+        private void LoadAccount()
+        {
+            var accounts = AccountController.getDropDownList();
+
+            if (acc != null)
+                accounts = accounts
+                    .Where(x => x.Value != acc.ID.ToString())
+                    .ToList();
+
+            accounts[0].Text = "Danh sách Accout để cấp quyền truy cập";
+            ddlAccount.Items.Clear();
+            ddlAccount.Items.AddRange(accounts.ToArray());
+            ddlAccount.DataBind();
+        }
+
+        private void LoadData()
+        {
+            // Init drop down list accout
+            LoadAccount();
+            // Create tag Owner
+            var owner = new { value = acc.ID, text = acc.Username };
+            hdfPermittedRead.Value = owner.value.ToString();
+            var script = "$(function () { addOwner(" + JsonConvert.SerializeObject(owner) + ") });";
+            ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "script", script, true);
         }
 
         protected void btnLogin_Click(object sender, EventArgs e)
@@ -63,7 +90,8 @@ namespace IM_PJ
                         CreatedBy = username,
                         CreatedDate = now,
                         ModifiedBy = username,
-                        ModifiedDate = now
+                        ModifiedDate = now,
+                        PermittedRead = hdfPermittedRead.Value
                     };
 
                     DiscountGroupController.Insert(data);
