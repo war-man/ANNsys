@@ -324,6 +324,7 @@
     <Content Include="App_Themes\Ann\css\style-P.css" />
     <Content Include="App_Themes\Ann\css\style.css" />
     <Content Include="App_Themes\Ann\css\style.min.css" />
+    <Content Include="App_Themes\Ann\css\style-sp.css" />
     <Content Include="App_Themes\Ann\fonts\font-awesome-4.7\css\font-awesome.min.css" />
     <Content Include="App_Themes\Ann\fonts\font-awesome-4.7\fonts\fontawesome-webfont.svg" />
     <Content Include="App_Themes\Ann\fonts\SFUIText\font.css" />
@@ -454,6 +455,7 @@
     <Content Include="App_Themes\NewUI\js\uniform\jquery.uniform.min.js" />
     <Content Include="App_Themes\NewUI\js\waves\waves.js" />
     <Content Include="App_Themes\NewUI\js\waves\waves.min.js" />
+    <Content Include="bc.aspx" />
     <Content Include="bao-cao.aspx" />
     <Content Include="bv.aspx" />
     <Content Include="chuyen-ke.aspx" />
@@ -474,6 +476,7 @@
       <DependentUpon>IMModel.edmx</DependentUpon>
       <LastGenOutput>IMModel.cs</LastGenOutput>
     </Content>
+    <Content Include="kh.aspx" />
     <Content Include="san-pham-theo-ke.aspx" />
     <Content Include="nuoc-hoa.aspx" />
     <Content Include="thong-ke-khach-hang.aspx" />
@@ -848,6 +851,13 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="bc.aspx.cs">
+      <DependentUpon>bc.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="bc.aspx.designer.cs">
+      <DependentUpon>bc.aspx</DependentUpon>
+    </Compile>
     <Compile Include="bao-cao.aspx.cs">
       <DependentUpon>bao-cao.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -1070,6 +1080,13 @@
     </Compile>
     <Compile Include="Models\tbl_WhiteDomain.cs">
       <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="kh.aspx.cs">
+      <DependentUpon>kh.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="kh.aspx.designer.cs">
+      <DependentUpon>kh.aspx</DependentUpon>
     </Compile>
     <Compile Include="san-pham-theo-ke.aspx.cs">
       <DependentUpon>san-pham-theo-ke.aspx</DependentUpon>

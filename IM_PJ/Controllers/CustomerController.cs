@@ -326,6 +326,7 @@ namespace IM_PJ.Controllers
                             CustomerName = parent.customer.CustomerName,
                             CustomerPhone = parent.customer.CustomerPhone,
                             CustomerPhone2 = parent.customer.CustomerPhone2,
+                            CustomerAddress = parent.customer.CustomerAddress,
                             Zalo = parent.customer.Zalo,
                             Facebook = parent.customer.Facebook,
                             CreatedDate = parent.customer.CreatedDate.HasValue ? parent.customer.CreatedDate.Value : DateTime.Now,

@@ -206,8 +206,8 @@ namespace IM_PJ
                     var item = acs[i];
                     html.Append("<tr>");
 
-                    html.Append("   <td class='customer-name-link'><a href='/chi-tiet-khach-hang?id=" + item.ID + "'>" + item.CustomerName.ToTitleCase() + "</a></td>");
-                    html.Append("   <td class='customer-name-link'>" + item.Nick.ToTitleCase() + "</td>");
+                    html.Append("   <td class='customer-name-link'><a href='/chi-tiet-khach-hang?id=" + item.ID + "'>" + item.CustomerName.ToLower().ToTitleCase() + "</a></td>");
+                    html.Append("   <td class='customer-name-link'>" + item.Nick + "</td>");
                     html.Append("   <td>" + item.CustomerPhone + "</td>");
                     html.Append("   <td>" + item.Zalo + "</td>");
 
@@ -252,8 +252,7 @@ namespace IM_PJ
                         html.Append("   <td>" + item.CreatedBy + "</td>");
                     }
 
-                    string date = string.Format("{0:dd/MM/yyyy}", item.CreatedDate);
-                    html.Append("   <td>" + date + "</td>");
+                    html.Append("   <td>" + string.Format("{0:dd/MM/yyyy}", item.CreatedDate) + "</td>");
 
                     string ishidden = "";
                     if (item.IsHidden != null)

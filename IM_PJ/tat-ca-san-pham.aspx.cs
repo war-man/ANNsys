@@ -567,7 +567,7 @@ namespace IM_PJ
             StringBuilder html = new StringBuilder();
             if (product != null)
             {
-                html.Append("<p>" + product.ProductSKU + " - Sỉ " + (product.Regular_Price / 1000).ToString() + "k - " + product.ProductTitle + "</p>\r\n");
+                html.Append("<p>" + product.ProductSKU + " - " + product.ProductTitle + "</p>\r\n");
                 html.Append("<p></p>\r\n");
                 html.Append("<p>📌 Giá sỉ: " + (product.Regular_Price / 1000).ToString() + "k</p>\r\n");
                 html.Append("<p></p>\r\n");
@@ -576,7 +576,7 @@ namespace IM_PJ
 
                 if (!string.IsNullOrEmpty(product.Materials))
                 {
-                    html.Append("<p>🔖 Chất liệu: " + product.Materials + "</p>\r\n");
+                    html.Append("<p>🔖 " + (product.CategoryID == 44 ? "" : "Chất liệu: ")  + product.Materials + "</p>\r\n");
                     html.Append("<p></p>\r\n");
                 }
 
@@ -657,6 +657,12 @@ namespace IM_PJ
                     html.Append(Variable);
                 }
 
+                if (product.CategoryID == 44)
+                {
+                    html.Append("<p></p>\r\n");
+                    html.Append("<p>⭐ Web xem mẫu nước hoa: http://nuochoaANN.com </p>\r\n");
+                }
+
                 html.Append("<p></p>\r\n");
                 html.Append("<p></p>\r\n");
 
@@ -668,19 +674,23 @@ namespace IM_PJ
                     html.Append("<p></p>\r\n");
                     html.Append("<p>⚡⚡ Hàng có sẵn tại KHO HÀNG SỈ ANN ⚡⚡</p>\r\n");
                     html.Append("<p></p>\r\n");
-                    html.Append("<p>🏭 68 Đường C12, P.13, Tân Bình, TP.HCM</p>\r\n");
+                    html.Append("<p>🏭 68 Đường C12, Tân Bình, TP.HCM</p>\r\n");
                     html.Append("<p></p>\r\n");
                     html.Append("<p>⭐ Web: ANN.COM.VN</p>\r\n");
                     html.Append("<p></p>\r\n");
-                    html.Append("<p>⭐ Zalo đặt hàng: 0936786404 - 0913268406 - 0918567409</p>\r\n");
+                    html.Append("<p>⭐ Zalo đặt hàng: 0918569400 - 0936786404 - 0913268406 - 0918567409</p>\r\n");
                     html.Append("<p></p>\r\n");
                     html.Append("<p>⭐ Facebook: https://facebook.com/bosiquanao.net </p>\r\n");
                     html.Append("<p></p>\r\n");
-                    html.Append("<p>⭐ Zalo xem Quần Áo Nam: 0977399405 (Zalo này không trả lời tin nhắn)</p>\r\n");
+                    html.Append("<p>⭐ Zalo Xem Hàng (các Zalo này không nhận đơn hàng)</p>\r\n");
                     html.Append("<p></p>\r\n");
-                    html.Append("<p>⭐ Zalo xem Đồ Bộ Nữ: 0975442402 (Zalo này không trả lời tin nhắn)</p>\r\n");
+                    html.Append("<p>⭐ Quần Áo Nam: 0977399405</p>\r\n");
                     html.Append("<p></p>\r\n");
-                    html.Append("<p>⭐ Zalo xem Váy Đầm - Áo Nữ - Quần Nữ: 0987409403 (Zalo này không trả lời tin nhắn)</p>\r\n");
+                    html.Append("<p>⭐ Đồ Bộ Nữ: 0967702402</p>\r\n");
+                    html.Append("<p></p>\r\n");
+                    html.Append("<p>⭐ Váy Đầm - Quần Áo Nữ: 0987409403</p>\r\n");
+                    html.Append("<p></p>\r\n");
+                    html.Append("<p>⭐ Hàng Sale: 0971406402</p>\r\n");
                     html.Append("<p></p>\r\n");
                 }
             }

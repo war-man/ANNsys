@@ -224,10 +224,13 @@ namespace IM_PJ
 
                         if (!string.IsNullOrEmpty(customer.Nick))
                         {
-                            productPrint += "<tr>";
-                            productPrint += "<td>Nick</td>";
-                            productPrint += "<td>" + customer.Nick.ToTitleCase() + "</td>";
-                            productPrint += "</tr>";
+                            if (order.ShippingType != 1)
+                            {
+                                productPrint += "<tr>";
+                                productPrint += "<td>Nick</td>";
+                                productPrint += "<td>" + customer.Nick.ToTitleCase() + "</td>";
+                                productPrint += "</tr>";
+                            }
                         }
                         
                         productPrint += "<tr>";
@@ -367,7 +370,7 @@ namespace IM_PJ
                         }
 
                         productPrint += "<tr>";
-                        productPrint += "<td class='strong' colspan='2'>TỔNG CỘNG</td>";
+                        productPrint += "<td class='strong' colspan='2'>TỔNG TIỀN</td>";
                         productPrint += "<td class='strong'>" + string.Format("{0:N0}", TotalOrder) + "</td>";
                         productPrint += "</tr>";
                         

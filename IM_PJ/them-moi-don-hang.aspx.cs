@@ -228,7 +228,7 @@ namespace IM_PJ
                     int CustomerID = 0;
 
                     string CustomerPhone = Regex.Replace(txtPhone.Text.Trim(), @"[^\d]", "");
-                    string CustomerName = txtFullname.Text.Trim();
+                    string CustomerName = txtFullname.Text.Trim().ToLower().ToTitleCase();
                     string Nick = txtNick.Text.Trim();
                     string CustomerAddress = txtAddress.Text.Trim();
                     string Zalo = txtZalo.Text.Trim();

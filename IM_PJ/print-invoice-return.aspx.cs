@@ -115,6 +115,7 @@ namespace IM_PJ
                     double TotalOrder = 0;
 
                     var orderdetails = RefundGoodDetailController.GetByRefundGoodsID(ID);
+                    var numberOfOrders = RefundGoodController.GetByCustomerID(Convert.ToInt32(order.CustomerID));
 
                     if (orderdetails.Count > 0)
                     {
@@ -125,7 +126,7 @@ namespace IM_PJ
 
                         productPrint += "<div class='body'>";
                         productPrint += "<div class='table-1'>";
-                        productPrint += "<h1 class='invoice-return'>HÓA ĐƠN ĐỔI TRẢ #" + order.ID + "</h1>";
+                        productPrint += "<h1>ĐƠN ĐỔI HÀNG #" + order.ID + "</h1>";
                         
                         productPrint += "<table>";
                         productPrint += "<colgroup>";
@@ -155,7 +156,7 @@ namespace IM_PJ
 
                         productPrint += "<tr>";
                         productPrint += "<td>Trạng thái</td>";
-                        if (order.Status == 0)
+                        if (order.Status == 1)
                         {
                             productPrint += "<td>Chưa trừ tiền</td>";
                         }
@@ -213,7 +214,7 @@ namespace IM_PJ
                         productPrint += "</tr>";
 
                         productPrint += "<tr>";
-                        productPrint += "<td class='strong' colspan='2'>Tổng tiền (đã trừ phí)</td>";
+                        productPrint += "<td class='strong' colspan='2'>TỔNG TIỀN (đã trừ phí)</td>";
                         productPrint += "<td class='strong'>" + string.Format("{0:N0}", TotalOrder) + "</td>";
                         productPrint += "</tr>";
 
@@ -227,14 +228,18 @@ namespace IM_PJ
 
                         shtml += productPrint;
 
-                        shtml += "<div class='footer'>";
-                        shtml += "<p>Quý khách lưu ý:</p>";
-                        shtml += "<p>- Miễn phí đổi hàng lỗi hoặc đổi size/màu cùng mẫu.</p>";
-                        shtml += "<p>- Tính phí đổi hàng tồn hoặc đổi sang mẫu khác.</p>";
-                        shtml += "<p>- ANN chỉ hoàn lại tiền mặt khi tổng tiền dưới 50.000.</p>";
-                        shtml += "<p>- Đơn trên 50.000 được trừ vào đơn mua hàng kế tiếp.</p>";
-                        shtml += "<p>- Giá trên này là giá bán ra đã trừ chiết khấu nếu có.</p>";
-                        shtml += "</div>";
+                        if (numberOfOrders.Count < 4)
+                        {
+                            shtml += "<div class='footer'>";
+                            shtml += "<p>Quý khách lưu ý:</p>";
+                            shtml += "<p>- Miễn phí đổi hàng lỗi hoặc đổi size/màu cùng mẫu.</p>";
+                            shtml += "<p>- Tính phí đổi hàng tồn hoặc đổi sang mẫu khác.</p>";
+                            shtml += "<p>- ANN chỉ hoàn lại tiền mặt khi tổng tiền dưới 50.000.</p>";
+                            shtml += "<p>- Đơn trên 50.000 được trừ vào đơn mua hàng kế tiếp.</p>";
+                            shtml += "<p>- Giá trên này là giá bán ra đã trừ chiết khấu nếu có.</p>";
+                            shtml += "</div>";
+                        }
+
                         shtml += "</div>";
                         shtml += "</div>";
 
