@@ -13,22 +13,20 @@ namespace IM_PJ.Controllers
     public class DiscountCustomerController
     {
         #region CRUD
-        public static string Insert(int DiscountGroupID, int UID, string CustomerName, string customerPhone, bool IsHidden, DateTime CreatedDate, string CreatedBy)
+        public static void Insert(tbl_DiscountCustomer data)
         {
-            using (var dbe = new inventorymanagementEntities())
+            using (var con = new inventorymanagementEntities())
             {
-                tbl_DiscountCustomer ui = new tbl_DiscountCustomer();
-                ui.DiscountGroupID = DiscountGroupID;
-                ui.UID = UID;
-                ui.CustomerName = CustomerName;
-                ui.CustomerPhone = customerPhone;
-                ui.IsHidden = IsHidden;
-                ui.CreatedDate = CreatedDate;
-                ui.CreatedBy = CreatedBy;
-                dbe.tbl_DiscountCustomer.Add(ui);
-                dbe.SaveChanges();
-                int kq = ui.ID;
-                return kq.ToString();
+                var dataOld = con.tbl_DiscountCustomer
+                    .Where(x => x.UID == data.UID)
+                    .FirstOrDefault();
+
+                // Kiểm tra nếu khách hàng ở nhóm khác thì xóa khách ở nhóm đó đi để chuyển qua nhóm mới
+                if (dataOld != null)
+                    con.tbl_DiscountCustomer.Remove(dataOld);
+
+                con.tbl_DiscountCustomer.Add(data);
+                con.SaveChanges();
             }
         }
         public static string UpdateIsHidden(int ID, bool IsHidden, DateTime ModifiedDate, string ModifiedBy)
@@ -48,11 +46,11 @@ namespace IM_PJ.Controllers
                     return null;
             }
         }
-        public static string Delete(int ID)
+        public static string Delete(int customerID)
         {
             using (var dbe = new inventorymanagementEntities())
             {
-                tbl_DiscountCustomer ui = dbe.tbl_DiscountCustomer.Where(a => a.UID == ID).SingleOrDefault();
+                tbl_DiscountCustomer ui = dbe.tbl_DiscountCustomer.Where(a => a.UID == customerID).SingleOrDefault();
                 if (ui != null)
                 {
                     dbe.tbl_DiscountCustomer.Remove(ui);

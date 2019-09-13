@@ -81,6 +81,7 @@ namespace IM_PJ
                     // Create tag orther
                     var accountOther = AccountController.GetAllUser()
                         .Where(x =>
+                            x.ID.ToString() == hdfPermittedRead.Value ||
                             hdfPermittedRead.Value.StartsWith(x.ID.ToString() + ",") ||
                             hdfPermittedRead.Value.Contains("," + x.ID.ToString() + ",") ||
                             hdfPermittedRead.Value.EndsWith("," + x.ID.ToString())
@@ -99,7 +100,7 @@ namespace IM_PJ
             }
         }
 
-        protected void btnLogin_Click(object sender, EventArgs e)
+        protected void btnUpdateDiscountGroup_Click(object sender, EventArgs e)
         {
             string username = Request.Cookies["usernameLoginSystem"].Value;
             var acc = AccountController.GetByUsername(username);

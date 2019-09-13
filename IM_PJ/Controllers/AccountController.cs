@@ -362,7 +362,7 @@ namespace IM_PJ.Controllers
             public DateTime CreatedDate { get; set; }
         }
 
-        public static bool isPermittedLoading(tbl_Account acc, string pageName)
+        public static bool isPermittedLoading(tbl_Account acc, string pageName, int discountGroupID = 0)
         {
             var result = false;
 
@@ -380,6 +380,32 @@ namespace IM_PJ.Controllers
                         result = true;
                     else
                         result = false;
+                    break;
+                case "danh-sach-khach-giam-gia":
+                    if (acc != null && discountGroupID > 0)
+                    {
+                        var discount = DiscountGroupController.getByAccount(acc)
+                            .Where(x => 
+                                (discountGroupID == 0) || 
+                                (discountGroupID != 0 && x.ID == discountGroupID)
+                            )
+                            .Where(x =>
+                                x.PermittedRead == acc.ID.ToString() ||
+                                x.PermittedRead.StartsWith(acc.ID.ToString() + ",") ||
+                                x.PermittedRead.Contains("," + acc.ID.ToString() + ",") ||
+                                x.PermittedRead.EndsWith("," + acc.ID.ToString())
+                            )
+                            .FirstOrDefault();
+
+                        if (discount != null)
+                            result = true;
+                        else
+                            result = false;
+                    }
+                    else
+                    {
+                        result = false;
+                    }
                     break;
                 default:
                     break;

@@ -1,15 +1,14 @@
 ﻿using IM_PJ.Models;
 using MB.Extensions;
-using NHST.Bussiness;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using System.Web;
 using WebUI.Business;
 using System.Text.RegularExpressions;
 using System.Data.Entity.Validation;
 using System.Data.Entity;
+using IM_PJ.Models.Common;
 
 namespace IM_PJ.Controllers
 {
@@ -492,58 +491,151 @@ namespace IM_PJ.Controllers
             }
             return result;
         }
-        public static List<CustomerGet> GetNotInGroupByGroupID(int GroupID)
+        public static List<CustomerModel> GetPotentialCustomers(int discountGroupID, string staffName = "")
         {
-            var list = new List<CustomerGet>();
-            var sql = @"SELECT  l.ID, l.CustomerName, l.CustomerPhone, l.CreatedBy FROM tbl_Customer l";
-            sql += " LEFT JOIN (Select UID, CustomerName from tbl_DiscountCustomer where DiscountGroupID = " + GroupID + " ) as r ON  r.UID = l.ID";
-            sql += " WHERE r.UID IS NULL";
-
-            var reader = (IDataReader)SqlHelper.ExecuteDataReader(sql);
-            while (reader.Read())
+            using (var con = new inventorymanagementEntities())
             {
-                var entity = new CustomerGet();
-                if (reader["ID"] != DBNull.Value)
-                    entity.ID = reader["ID"].ToString().ToInt(0);
-                if (reader["CustomerName"] != DBNull.Value)
-                    entity.CustomerName = reader["CustomerName"].ToString();
-                if (reader["CustomerPhone"] != DBNull.Value)
-                    entity.CustomerPhone = reader["CustomerPhone"].ToString();
-                if (reader["CreatedBy"] != DBNull.Value)
-                    entity.CreatedBy = reader["CreatedBy"].ToString();
-                list.Add(entity);
+                #region Lọc ra các khách hàng tìm năng do nhân viên đó khởi tạo
+                var customerInGroup = con.tbl_Customer
+                    .Join(
+                        con.tbl_DiscountCustomer.Where(x => x.DiscountGroupID.Value == discountGroupID),
+                        c => c.ID,
+                        dc => dc.UID,
+                        (c, dc) => c
+                    );
+                var potentialCustomer = con.tbl_Customer
+                    .Except(customerInGroup)
+                    .OrderByDescending(o => o.ID)
+                    .ToList();
+
+                if (!String.IsNullOrEmpty(staffName) && staffName != "admin")
+                {
+                    potentialCustomer = potentialCustomer.Where(x => x.CreatedBy == staffName).ToList();
+                }
+                #endregion
+
+                #region Lấy ra những đơn hàng mà khách hạng đạt tiêu chuẩn để join vô group
+                var quanlityOrder = OrderController.getOrderQualifiedOfDiscountGroup(discountGroupID);
+                if (quanlityOrder == null)
+                    return null;
+
+                var customerOrdered = quanlityOrder
+                    .GroupBy(g => g.CustomerID)
+                    .Select(x => new { customerID = x.Key })
+                    .OrderByDescending(o => o.customerID)
+                    .ToList();
+                #endregion
+
+                var discount = con.tbl_DiscountCustomer
+                    .Join(
+                        con.tbl_DiscountGroup,
+                        dc => dc.DiscountGroupID,
+                        dg => dg.ID,
+                        (dc, dg) => new
+                        {
+                            customerID = dc.UID,
+                            discountGroupID = dg.ID,
+                            discountGroupName = dg.DiscountName
+                        }
+                    )
+                    .ToList();
+
+                var data = potentialCustomer
+                    .Join(
+                        customerOrdered,
+                        pc => pc.ID,
+                        co => co.customerID,
+                        (pc, co) => pc
+                    )
+                    .GroupJoin(
+                        discount,
+                        c => c.ID,
+                        d => d.customerID,
+                        (c, d) => new { customer = c, discount = d}
+                    )
+                    .SelectMany(
+                        x => x.discount.DefaultIfEmpty(),
+                        (parent, child) => new CustomerModel()
+                        {
+                            ID = parent.customer.ID,
+                            FullName = parent.customer.CustomerName,
+                            Nick = parent.customer.Nick,
+                            Phone = !String.IsNullOrEmpty(parent.customer.CustomerPhone) ?
+                                parent.customer.CustomerPhone :
+                                !String.IsNullOrEmpty(parent.customer.CustomerPhone2) ? parent.customer.CustomerPhone2 : parent.customer.CustomerPhoneBackup,
+                            Address = parent.customer.CustomerAddress,
+                            Zalo = parent.customer.Zalo,
+                            Facebook = parent.customer.Facebook,
+                            StaffName = parent.customer.CreatedBy,
+                            DiscountGroup = child != null ?
+                                new DiscountGroupModel() { ID = child.discountGroupID, Name = child.discountGroupName } : null
+                        }
+                    )
+                    .OrderByDescending(o => o.ID)
+                    .ToList();
+
+                return data;
             }
-            reader.Close();
-            return list;
         }
-        public static List<tbl_Customer> GetInGroupByGroupID(int GroupID)
+        public static List<CustomerModel> getByDiscountGroupID(int discountGroupID)
         {
-            var list = new List<tbl_Customer>();
-            var sql = @"SELECT  l.ID, l.CustomerName, l.CustomerPhone, l.Nick, l.CreatedBy, r.CreatedDate as CreatedDate FROM tbl_Customer l";
-            sql += " LEFT JOIN (Select UID, CustomerName, CreatedDate from tbl_DiscountCustomer where DiscountGroupID = " + GroupID + " ) as r ON  r.UID = l.ID";
-            sql += " WHERE r.UID IS NOT NULL";
-
-            var reader = (IDataReader)SqlHelper.ExecuteDataReader(sql);
-            while (reader.Read())
+            using (var con = new inventorymanagementEntities())
             {
-                var entity = new tbl_Customer();
-                if (reader["ID"] != DBNull.Value)
-                    entity.ID = reader["ID"].ToString().ToInt(0);
-                if (reader["Nick"] != DBNull.Value)
-                    entity.Nick = reader["Nick"].ToString();
-                if (reader["CustomerName"] != DBNull.Value)
-                    entity.CustomerName = reader["CustomerName"].ToString();
-                if (reader["CustomerPhone"] != DBNull.Value)
-                    entity.CustomerPhone = reader["CustomerPhone"].ToString();
-                if (reader["CreatedBy"] != DBNull.Value)
-                    entity.CreatedBy = reader["CreatedBy"].ToString();
-                if (reader["CreatedDate"] != DBNull.Value)
-                    entity.CreatedDate = Convert.ToDateTime(reader["CreatedDate"]);
-                list.Add(entity);
+                #region Lọc ra khách hàng trong group
+                var customerInGroup = con.tbl_Customer
+                    .Join(
+                        con.tbl_DiscountCustomer.Where(x => x.DiscountGroupID.Value == discountGroupID),
+                        c => c.ID,
+                        dc => dc.UID,
+                        (c, dc) => c
+                    );
+                #endregion
+
+                #region Lấy thông tin nhóm triết khấu
+                var discount = con.tbl_DiscountGroup.Where(x => x.ID == discountGroupID);
+                #endregion
+
+                var data = con.tbl_DiscountCustomer
+                    .Where(x => x.DiscountGroupID.Value == discountGroupID)
+                    .Join(
+                        customerInGroup,
+                        dc => dc.UID,
+                        c => c.ID,
+                        (dc, c) => new { customer = c, disCustomer = dc }
+                    )
+                    .Join(
+                        discount,
+                        tem => tem.disCustomer.DiscountGroupID.Value,
+                        d => d.ID,
+                        (tem, d) => new { customer = tem.customer, discount = d, disCustomer = tem.disCustomer }
+                    )
+                    .Select(x => new CustomerModel()
+                    {
+                        ID = x.customer.ID,
+                        FullName = x.customer.CustomerName,
+                        Nick = x.customer.Nick,
+                        Phone = !String.IsNullOrEmpty(x.customer.CustomerPhone) ?
+                                x.customer.CustomerPhone :
+                                !String.IsNullOrEmpty(x.customer.CustomerPhone2) ? x.customer.CustomerPhone2 : x.customer.CustomerPhoneBackup,
+                        Address = x.customer.CustomerAddress,
+                        Zalo = x.customer.Zalo,
+                        Facebook = x.customer.Facebook,
+                        StaffName = x.customer.CreatedBy,
+                        DiscountGroup = new DiscountGroupModel()
+                        {
+                            ID = x.discount.ID,
+                            Name = x.discount.DiscountName,
+                            DateJoined = x.disCustomer.CreatedDate.Value,
+                            StaffName = x.disCustomer.CreatedBy,
+                            VerifyOrder = x.disCustomer.VerifyOrder.HasValue ? x.disCustomer.VerifyOrder.Value : 0
+                        }
+                    })
+                    .ToList();
+
+                return data;
             }
-            reader.Close();
-            return list;
         }
+
         public static List<tbl_Customer> GetBylevelID(int LevelID)
         {
             using (var dbe = new inventorymanagementEntities())
@@ -627,15 +719,8 @@ namespace IM_PJ.Controllers
         }
 
         #endregion
+        
         #region Class
-        public class CustomerGet
-        {
-            public int ID { get; set; }
-            public string CustomerName { get; set; }
-            public string CustomerPhone { get; set; }
-            public string CreatedBy { get; set; }
-        }
-
         public class CustomerOut
         {
             public int ID { get; set; }

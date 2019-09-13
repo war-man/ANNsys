@@ -66,7 +66,7 @@ namespace IM_PJ
             ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "script", script, true);
         }
 
-        protected void btnLogin_Click(object sender, EventArgs e)
+        protected void btnCreateDiscountGroup_Click(object sender, EventArgs e)
         {
             string username = Request.Cookies["usernameLoginSystem"].Value;
             var acc = AccountController.GetByUsername(username);

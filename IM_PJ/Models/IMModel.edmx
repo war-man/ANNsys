@@ -494,6 +494,7 @@
           <Property Name="CreatedBy" Type="nvarchar(max)" />
           <Property Name="ModifiedDate" Type="datetime" />
           <Property Name="ModifiedBy" Type="nvarchar(max)" />
+          <Property Name="VerifyOrder" Type="int" />
         </EntityType>
         <EntityType Name="tbl_DiscountGroup">
           <Key>
@@ -2068,6 +2069,7 @@
           <Property Name="CreatedBy" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
           <Property Name="ModifiedBy" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="VerifyOrder" Type="Int32" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -3089,6 +3091,7 @@
           <EntitySetMapping Name="tbl_DiscountCustomer">
             <EntityTypeMapping TypeName="inventorymanagementModel.tbl_DiscountCustomer">
               <MappingFragment StoreEntitySet="tbl_DiscountCustomer">
+                <ScalarProperty Name="VerifyOrder" ColumnName="VerifyOrder" />
                 <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
                 <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
                 <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />

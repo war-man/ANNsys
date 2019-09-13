@@ -314,8 +314,10 @@
     <Content Include="App_Themes\Ann\css\Barcode.css" />
     <Content Include="App_Themes\Ann\css\bootstrap.css" />
     <Content Include="App_Themes\Ann\css\bootstrap\glyphicons-halflings-regular.svg" />
+    <Content Include="App_Themes\Ann\css\common\search-customer.css" />
     <Content Include="App_Themes\Ann\css\HoldOn.css" />
     <Content Include="App_Themes\Ann\css\pages\chi-tiet-giam-gia\chi-tiet-giam-gia.css" />
+    <Content Include="App_Themes\Ann\css\pages\danh-sach-khach-giam-gia\danh-sach-khach-giam-gia.css" />
     <Content Include="App_Themes\Ann\css\pages\them-moi-giam-gia\them-moi-giam-gia.css" />
     <Content Include="App_Themes\Ann\css\print-delivery.css" />
     <Content Include="App_Themes\Ann\css\print-return-order-image.css" />
@@ -366,15 +368,24 @@
     <Content Include="App_Themes\Ann\js\Chart.min.js" />
     <Content Include="App_Themes\Ann\js\chartjs.min.js" />
     <Content Include="App_Themes\Ann\js\controllers\chi-tiet-giam-gia\chi-tiet-giam-gia-controller.js" />
+    <Content Include="App_Themes\Ann\js\controllers\common\search-customer-controller.js" />
+    <Content Include="App_Themes\Ann\js\controllers\danh-sach-khach-giam-gia\danh-sach-khach-giam-gia-controller.js" />
     <Content Include="App_Themes\Ann\js\controllers\danh-sach-nhom-khach-hang\danh-sach-nhom-khach-hang-controller.js" />
     <Content Include="App_Themes\Ann\js\controllers\them-moi-giam-gia\them-moi-giam-gia-controller.js" />
     <Content Include="App_Themes\Ann\js\copy-post-info.js" />
     <Content Include="App_Themes\Ann\js\download-post-image.js" />
     <Content Include="App_Themes\Ann\js\download-product-image.js" />
     <Content Include="App_Themes\Ann\js\jquery.cookie.js" />
+    <Content Include="App_Themes\Ann\js\models\common\customer-model.js" />
+    <Content Include="App_Themes\Ann\js\models\common\discount-group-model.js" />
+    <Content Include="App_Themes\Ann\js\models\common\order-model.js" />
     <Content Include="App_Themes\Ann\js\pages\chi-tiet-giam-gia\chi-tiet-giam-gia.js" />
+    <Content Include="App_Themes\Ann\js\pages\danh-sach-khach-giam-gia\danh-sach-khach-giam-gia.js" />
     <Content Include="App_Themes\Ann\js\pages\danh-sach-nhom-khach-hang\danh-sach-nhom-khach-hang.js" />
     <Content Include="App_Themes\Ann\js\pages\them-moi-giam-gia\them-moi-giam-gia.js" />
+    <Content Include="App_Themes\Ann\js\services\common\search-customer-service.js" />
+    <Content Include="App_Themes\Ann\js\services\common\utils-service.js" />
+    <Content Include="App_Themes\Ann\js\services\danh-sach-khach-giam-gia\danh-sach-khach-giam-gia-service.js" />
     <Content Include="App_Themes\Ann\js\sync-product-small.js" />
     <Content Include="App_Themes\Ann\js\sync-product.js" />
     <Content Include="App_Themes\Ann\js\HoldOn.js" />
@@ -916,8 +927,11 @@
     <Compile Include="Models\CategoryShelf.cs">
       <DependentUpon>IMModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\Common\CustomerModel.cs" />
     <Compile Include="Models\Common\DeliveryProshipFilterModel.cs" />
     <Compile Include="Models\Common\DeliveryPostOfficeFilterModel.cs" />
+    <Compile Include="Models\Common\DiscountGroupModel.cs" />
+    <Compile Include="Models\Common\OrderModel.cs" />
     <Compile Include="Models\Delivery.cs">
       <DependentUpon>IMModel.tt</DependentUpon>
     </Compile>

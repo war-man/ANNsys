@@ -1,0 +1,32 @@
+﻿.form-row > .search-box {
+    display: flex;
+}
+
+#modal-order thead {
+  width: 98%;
+}
+#modal-order tbody {
+  max-height: 450px;
+  overflow-y: auto;
+  width: 100%;
+}
+#modal-order thead, #modal-order tbody, #modal-order tr, #modal-order td, #modal-order th {
+  display: block;
+}
+
+#modal-order tbody td, #modal-order thead > tr> th {
+  float: left;
+  border-bottom-width: 0;
+}
+
+#modal-order tbody tr {
+    cursor: pointer;
+}
+
+#modal-order tbody tr:hover {
+    background-color: #87CEEB;
+}
+
+#modal-order tbody tr:hover td {
+    background-color: #87CEEB;
+}
