@@ -1,6 +1,8 @@
 ﻿<%@ Page Title="Chi tiết nhóm khách hàng" Language="C#" MasterPageFile="~/MasterPage.Master" AutoEventWireup="true" CodeBehind="chi-tiet-giam-gia.aspx.cs" Inherits="IM_PJ.chi_tiet_giam_gia" %>
+
 <%@ Register Assembly="Telerik.Web.UI" Namespace="Telerik.Web.UI" TagPrefix="telerik" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
+    <link rel="stylesheet" href="App_Themes/Ann/css/pages/chi-tiet-giam-gia/chi-tiet-giam-gia.css?v=20190910023042" />
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <main id="main-wrap">
@@ -49,7 +51,7 @@
                                     </telerik:RadNumericTextBox>
                                 </div>
                             </div>
-                            <div class="form-row" >
+                            <div class="form-row">
                                 <div class="row-left">
                                     Phí đổi trả mỗi cái
                                     <asp:RequiredFieldValidator ID="RequiredFieldValidator2" runat="server" ControlToValidate="rRefundGoods" ForeColor="Red"
@@ -99,6 +101,20 @@
                             </div>
                             <div class="form-row">
                                 <div class="row-left">
+                                    Nhóm có quyền truy cập
+                                </div>
+                                <div class="row-right">
+                                    <div class="form-row input-group">
+                                        <asp:DropDownList ID="ddlAccount" runat="server" CssClass="form-control custom-select"></asp:DropDownList>
+                                        <div class="input-group-append">
+                                            <button type="button" class="btn primary-btn btn-outline-secondary" onclick="addAccoutPermittedAccess()">Thêm</button>
+                                        </div>
+                                    </div>
+                                    <div id="added-account" class="form-row"></div>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="row-left">
                                     Mô tả
                                 </div>
                                 <div class="row-right">
@@ -111,14 +127,14 @@
                             </div>
                             <div class="form-row">
                                 <div class="row-left">
-                                    Ẩn                   
+                                    Ẩn
                                 </div>
                                 <div class="row-right">
                                     <asp:CheckBox ID="chkIsHidden" runat="server" />
                                 </div>
                             </div>
                             <div class="form-row">
-                                <asp:Button ID="btnLogin" runat="server" CssClass="btn primary-btn fw-btn not-fullwidth" Text="Cập nhật" OnClick="btnLogin_Click" />
+                                <asp:Button ID="btnLogin" runat="server" CssClass="btn primary-btn fw-btn not-fullwidth" Text="Cập nhật" OnClick="btnUpdateDiscountGroup_Click" />
                                 <a href="/danh-sach-nhom-khach-hang" class="btn primary-btn fw-btn not-fullwidth">Trở về</a>
                             </div>
                         </div>
@@ -126,5 +142,9 @@
                 </div>
             </div>
         </div>
+
+        <asp:HiddenField ID="hdfPermittedRead" runat="server" />
+        <script type="text/javascript" src="App_Themes/Ann/js/controllers/chi-tiet-giam-gia/chi-tiet-giam-gia-controller.js?v=20190910023042"></script>
+        <script type="text/javascript" src="App_Themes/Ann/js/pages/chi-tiet-giam-gia/chi-tiet-giam-gia.js?v=20190910023042"></script>
     </main>
 </asp:Content>

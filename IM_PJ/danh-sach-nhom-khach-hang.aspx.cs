@@ -1,15 +1,12 @@
 ﻿using IM_PJ.Controllers;
 using IM_PJ.Models;
-using MB.Extensions;
-using NHST.Bussiness;
+using IM_PJ.Models.Pages.danh_sach_nhom_khach_hang;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
-using System.Web.UI;
-using System.Web.UI.WebControls;
 
 namespace IM_PJ
 {
@@ -23,13 +20,9 @@ namespace IM_PJ
                 {
                     string username = Request.Cookies["usernameLoginSystem"].Value;
                     var acc = AccountController.GetByUsername(username);
-                    if (acc != null)
-                    {
-                        if (acc.RoleID != 0)
-                        {
-                            Response.Redirect("/trang-chu");
-                        }
-                    }
+
+                    if (!AccountController.isPermittedLoading(acc, "danh-sach-nhom-khach-hang"))
+                        Response.Redirect("/trang-chu");
                 }
                 else
                 {
@@ -40,17 +33,59 @@ namespace IM_PJ
         }
         public void LoadData()
         {
-            string s = "";
-            if (Request.QueryString["s"] != null)
-                s = Request.QueryString["s"];
-            //txtAgentName.Text = s;
-
             string username = Request.Cookies["usernameLoginSystem"].Value;
             var acc = AccountController.GetByUsername(username);
+
             if (acc != null)
             {
-                int agentID = Convert.ToInt32(acc.AgentID);
-                var discounts = DiscountGroupController.GetAll(s);
+                if (acc.ID == 1)
+                    hdfPermittedEdit.Value = "1";
+                else
+                    hdfPermittedEdit.Value = "0";
+
+                var groups = DiscountGroupController.getByAccount(acc);
+                var customerGroups = DiscountCustomerController.getByDiscountGroup(groups)
+                    .Where(x => x.DiscountGroupID.HasValue)
+                    .GroupBy(g => g.DiscountGroupID.Value)
+                    .Select(x => new
+                    {
+                        DiscountGroupID = x.Key,
+                        NumberCustomer = x.Count()
+                    })
+                    .ToList();
+
+                var discounts = groups
+                    .GroupJoin(
+                        customerGroups,
+                        g => g.ID,
+                        c => c.DiscountGroupID,
+                        (g, c) => new { group = g, customer = c }
+                    )
+                    .SelectMany(
+                        x => x.customer.DefaultIfEmpty(),
+                        (parent, child) => new DiscountGroupModel()
+                        {
+                            ID = parent.group.ID,
+                            DiscountName = parent.group.DiscountName,
+                            NumberCustomer = child != null ? child.NumberCustomer : 0,
+                            DiscountAmount = parent.group.DiscountAmount,
+                            DiscountAmountPercent = parent.group.DiscountAmountPercent,
+                            DiscountNote = parent.group.DiscountNote,
+                            IsHidden = parent.group.IsHidden,
+                            CreatedDate = parent.group.CreatedDate,
+                            CreatedBy = parent.group.CreatedBy,
+                            ModifiedDate = parent.group.ModifiedDate,
+                            ModifiedBy = parent.group.ModifiedBy,
+                            FeeRefund = parent.group.FeeRefund,
+                            NumOfDateToChangeProduct = parent.group.NumOfDateToChangeProduct,
+                            NumOfProductCanChange = parent.group.NumOfProductCanChange,
+                            QuantityProduct = parent.group.QuantityProduct,
+                            RefundQuantityNoFee = parent.group.RefundQuantityNoFee,
+                            PermittedRead = parent.group.PermittedRead
+                        }
+                    )
+                    .ToList();
+
                 if (discounts.Count > 0)
                 {
                     pagingall(discounts);
@@ -58,7 +93,7 @@ namespace IM_PJ
             }
         }
         #region Paging
-        public void pagingall(List<tbl_DiscountGroup> acs)
+        public void pagingall(List<DiscountGroupModel> acs)
         {
             int PageSize = 15;
             StringBuilder html = new StringBuilder();
@@ -80,20 +115,22 @@ namespace IM_PJ
                 for (int i = FromRow; i < ToRow + 1; i++)
                 {
                     var item = acs[i];
-                    html.Append("<tr>");
-                    html.Append("   <td>" + item.DiscountName + "</td>");
-                    html.Append("   <td>" + string.Format("{0:N0}", Convert.ToDouble(item.DiscountAmount)) + "</td>");
-                    html.Append("   <td>" + string.Format("{0:N0}", Convert.ToDouble(item.QuantityProduct)) + " cái</td>");
-                    html.Append("   <td>" + string.Format("{0:N0}", Convert.ToDouble(item.FeeRefund)) + "</td>");
-                    html.Append("   <td>" + item.NumOfDateToChangeProduct + " ngày</td>");
-                    html.Append("   <td>" + item.NumOfProductCanChange + " cái/" + item.NumOfDateToChangeProduct + " ngày</td>");
+                    html.AppendLine("<tr>");
+                    html.AppendLine("   <td>" + item.DiscountName + "</td>");
+                    html.AppendLine("   <td>" + String.Format("{0:N0}", item.NumberCustomer) + "</td>");
+                    html.AppendLine("   <td>" + string.Format("{0:N0}", Convert.ToDouble(item.DiscountAmount)) + "</td>");
+                    html.AppendLine("   <td>" + string.Format("{0:N0}", Convert.ToDouble(item.QuantityProduct)) + " cái</td>");
+                    html.AppendLine("   <td>" + string.Format("{0:N0}", Convert.ToDouble(item.FeeRefund)) + "</td>");
+                    html.AppendLine("   <td>" + item.NumOfDateToChangeProduct + " ngày</td>");
+                    html.AppendLine("   <td>" + item.NumOfProductCanChange + " cái/" + item.NumOfDateToChangeProduct + " ngày</td>");
                     string date = string.Format("{0:dd/MM/yyyy}", item.CreatedDate);
-                    html.Append("   <td>" + date + "</td>");
-                    html.Append("   <td>");
-                    html.Append("       <a href='/chi-tiet-giam-gia?id=" + item.ID + "' class='btn primary-btn h45-btn'>Chỉnh sửa</a>");
-                    html.Append("       <a href='/danh-sach-khach-giam-gia?id=" + item.ID + "' class='btn primary-btn h45-btn'>Danh sách khách hàng</a>");
-                    html.Append("   </td>");
-                    html.Append("</tr>");
+                    html.AppendLine("   <td>" + date + "</td>");
+                    html.AppendLine("   <td>");
+                    if (hdfPermittedEdit.Value == "1")
+                        html.AppendLine("       <a href='/chi-tiet-giam-gia?id=" + item.ID + "' class='btn primary-btn h45-btn'>Chỉnh sửa</a>");
+                    html.AppendLine("       <a href='/danh-sach-khach-giam-gia?id=" + item.ID + "' class='btn primary-btn h45-btn'>Danh sách khách hàng</a>");
+                    html.AppendLine("   </td>");
+                    html.AppendLine("</tr>");
                 }
             }
             ltrList.Text = html.ToString();

@@ -2,6 +2,7 @@
 
 <%@ Register Assembly="Telerik.Web.UI" Namespace="Telerik.Web.UI" TagPrefix="telerik" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
+    <link rel="stylesheet" href="App_Themes/Ann/css/pages/them-moi-giam-gia/them-moi-giam-gia.css?v=20190910023042" />
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <main id="main-wrap">
@@ -100,6 +101,20 @@
                             </div>
                             <div class="form-row">
                                 <div class="row-left">
+                                    Nhóm có quyền truy cập
+                                </div>
+                                <div class="row-right">
+                                    <div class="form-row input-group">
+                                        <asp:DropDownList ID="ddlAccount" runat="server" CssClass="form-control custom-select"></asp:DropDownList>
+                                        <div class="input-group-append">
+                                            <button type="button" class="btn primary-btn btn-outline-secondary" onclick="addAccoutPermittedAccess()">Thêm</button>
+                                        </div>
+                                    </div>
+                                    <div id="added-account" class="form-row"></div>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="row-left">
                                     Mô tả
                                 </div>
                                 <div class="row-right">
@@ -112,14 +127,14 @@
                             </div>
                             <div class="form-row">
                                 <div class="row-left">
-                                    Ẩn                   
+                                    Ẩn
                                 </div>
                                 <div class="row-right">
                                     <asp:CheckBox ID="chkIsHidden" runat="server" />
                                 </div>
                             </div>
                             <div class="form-row">
-                                <asp:Button ID="btnLogin" runat="server" CssClass="btn primary-btn fw-btn not-fullwidth" Text="Tạo mới" OnClick="btnLogin_Click" />
+                                <asp:Button ID="btnLogin" runat="server" CssClass="btn primary-btn fw-btn not-fullwidth" Text="Tạo mới" OnClick="btnCreateDiscountGroup_Click" />
                                 <a href="/danh-sach-nhom-khach-hang" class="btn primary-btn fw-btn not-fullwidth">Trở về</a>
                             </div>
                         </div>
@@ -127,5 +142,9 @@
                 </div>
             </div>
         </div>
+
+        <asp:HiddenField ID="hdfPermittedRead" runat="server" />
+        <script type="text/javascript" src="App_Themes/Ann/js/controllers/them-moi-giam-gia/them-moi-giam-gia-controller.js?v=20190910023042"></script>
+        <script type="text/javascript" src="App_Themes/Ann/js/pages/them-moi-giam-gia/them-moi-giam-gia.js?v=20190910023042"></script>
     </main>
 </asp:Content>

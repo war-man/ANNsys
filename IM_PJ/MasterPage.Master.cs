@@ -101,6 +101,7 @@ namespace IM_PJ
                         ltrMenu.Text += "<li><a href='/nhan-vien-dat-hang' target='_blank'><span class='icon-menu icon-lib'></span>DS đặt hàng</a></li>";
                         ltrMenu.Text += "<li><a href='/bv' target='_blank'><span class='icon-menu icon-lib'></span>Bài viết</a></li>";
                         ltrMenu.Text += "<li><a href='/danh-sach-khach-hang'><span class='icon-menu icon-product'></span>Khách hàng</a></li>";
+                        ltrMenu.Text += "<li><a href='/danh-sach-nhom-khach-hang'><span class='icon-menu icon-product'></span>Nhóm KH</a></li>";
                         ltrMenu.Text += "<li><a href='/danh-sach-nha-xe'><span class='icon-menu icon-product'></span>Nhà xe</a></li>";
                         ltrMenu.Text += "<li><a href='/danh-sach-dang-ky'><span class='icon-menu icon-order'></span>Đăng ký</a></li>";
                         ltrMenu.Text += "<li><a href='/thong-ke-nhap-kho'><span class='icon-menu icon-product'></span>TK nhập kho</a></li>";

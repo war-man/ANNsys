@@ -1,6 +1,7 @@
 ﻿using IM_PJ.Controllers;
 using IM_PJ.Models;
 using MB.Extensions;
+using Newtonsoft.Json;
 using NHST.Bussiness;
 using System;
 using System.Collections.Generic;
@@ -16,6 +17,8 @@ namespace IM_PJ
 {
     public partial class chi_tiet_giam_gia : System.Web.UI.Page
     {
+        private tbl_Account acc;
+
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
@@ -23,14 +26,9 @@ namespace IM_PJ
                 if (Request.Cookies["usernameLoginSystem"] != null)
                 {
                     string username = Request.Cookies["usernameLoginSystem"].Value;
-                    var acc = AccountController.GetByUsername(username);
-                    if (acc != null)
-                    {
-                        if (acc.RoleID != 0)
-                        {
-                            Response.Redirect("/trang-chu");
-                        }
-                    }
+                    acc = AccountController.GetByUsername(username);
+                    if (!AccountController.isPermittedLoading(acc, "chi-tiet-giam-gia"))
+                        Response.Redirect("/trang-chu");
                 }
                 else
                 {
@@ -40,8 +38,25 @@ namespace IM_PJ
             }
         }
 
+        private void LoadAccount()
+        {
+            var accounts = AccountController.getDropDownList();
+
+            if (acc != null)
+                accounts = accounts
+                    .Where(x => x.Value != acc.ID.ToString())
+                    .ToList();
+
+            accounts[0].Text = "Danh sách Accout để cấp quyền truy cập";
+            ddlAccount.Items.Clear();
+            ddlAccount.Items.AddRange(accounts.ToArray());
+            ddlAccount.DataBind();
+        }
+
         public void LoadData()
         {
+            LoadAccount();
+
             int id = Request.QueryString["id"].ToInt(0);
             if (id > 0)
             {
@@ -58,11 +73,34 @@ namespace IM_PJ
                     pRefundQuantityNoFee.Value = discountGroup.RefundQuantityNoFee;
                     pDiscountNote.Content = discountGroup.DiscountNote;
                     chkIsHidden.Checked = discountGroup.IsHidden.HasValue ? discountGroup.IsHidden.Value : false;
+                    hdfPermittedRead.Value = discountGroup.PermittedRead;
+
+                    // Create tag Owner
+                    var owner = new { value = acc.ID, text = acc.Username };
+
+                    // Create tag orther
+                    var accountOther = AccountController.GetAllUser()
+                        .Where(x =>
+                            x.ID.ToString() == hdfPermittedRead.Value ||
+                            hdfPermittedRead.Value.StartsWith(x.ID.ToString() + ",") ||
+                            hdfPermittedRead.Value.Contains("," + x.ID.ToString() + ",") ||
+                            hdfPermittedRead.Value.EndsWith("," + x.ID.ToString())
+                        )
+                        .Where(x => x.ID != owner.value)
+                        .Select(x => new
+                        {
+                            value = x.ID,
+                            text = x.Username
+                        })
+                        .ToList();
+
+                    var script = "$(function () { showOwner(" + JsonConvert.SerializeObject(owner) + "); showAccoutPermittedAccess(" + JsonConvert.SerializeObject(accountOther) + "); });";
+                    ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "script", script, true);
                 }
             }
         }
 
-        protected void btnLogin_Click(object sender, EventArgs e)
+        protected void btnUpdateDiscountGroup_Click(object sender, EventArgs e)
         {
             string username = Request.Cookies["usernameLoginSystem"].Value;
             var acc = AccountController.GetByUsername(username);
@@ -89,7 +127,8 @@ namespace IM_PJ
                             DiscountNote = pDiscountNote.Content,
                             IsHidden = chkIsHidden.Checked,
                             ModifiedBy = username,
-                            ModifiedDate = now
+                            ModifiedDate = now,
+                            PermittedRead = hdfPermittedRead.Value
                         };
 
 

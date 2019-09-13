@@ -3320,5 +3320,66 @@ namespace IM_PJ.Controllers
                 return result;
             }
         }
+
+        public static List<Models.Common.OrderModel> getOrderQualifiedOfDiscountGroup(int discountGroupID, int customerID = 0)
+        {
+            using (var con = new inventorymanagementEntities())
+            {
+                #region Lọc ra đơn khác hàng đã mua và tính số lượng mua
+                var order = con.tbl_Order.Where(x => x.ExcuteStatus == (int)ExcuteStatus.Done);
+
+                if (customerID > 0)
+                    order = order
+                        .Where(x => x.CustomerID.HasValue)
+                        .Where(x => x.CustomerID == customerID);
+                var orderDetail = order
+                    .Join(
+                        con.tbl_OrderDetail,
+                        o => o.ID,
+                        d => d.OrderID.Value,
+                        (o, d) => new { order = o, detail = d }
+                    )
+                    .GroupBy(g => new { customerID = g.order.CustomerID.Value, orderID = g.order.ID })
+                    .Select(x => new
+                    {
+                        customerID = x.Key.customerID,
+                        orderID = x.Key.orderID,
+                        quantityProduct = x.Sum(s => s.detail.Quantity.HasValue ? s.detail.Quantity.Value : 0)
+                    });
+                #endregion
+
+                #region Lọc những đơn hàng đủ điều kiện để join vào discount group
+                var discount = DiscountGroupController.GetByID(discountGroupID);
+                if (discount == null)
+                    return null;
+
+                orderDetail = orderDetail.Where(x => x.quantityProduct >= discount.QuantityProduct);
+
+                var data = order
+                    .Join(
+                        orderDetail,
+                        o => o.ID,
+                        d => d.orderID,
+                        (o, d) => new { order = o, orderDetail = d }
+                    )
+                    .OrderByDescending(o => o.order.ID)
+                    .ToList();
+                #endregion
+
+                var result = data.Select(x => new Models.Common.OrderModel() {
+                    ID = x.order.ID,
+                    CustomerID = x.order.CustomerID.HasValue ? x.order.CustomerID.Value : 0,
+                    QuantityProduct = Convert.ToInt32(x.orderDetail.quantityProduct),
+                    Price = Convert.ToDouble(x.order.TotalPrice),
+                    Discount = Convert.ToDouble(x.order.TotalDiscount),
+                    FeeShipping = Convert.ToDouble(x.order.FeeShipping),
+                    StaffName = x.order.CreatedBy,
+                    DateDone = x.order.DateDone
+                })
+                .ToList();
+
+                return result;
+            }
+        }
     }
 }

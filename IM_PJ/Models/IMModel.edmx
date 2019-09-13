@@ -494,6 +494,7 @@
           <Property Name="CreatedBy" Type="nvarchar(max)" />
           <Property Name="ModifiedDate" Type="datetime" />
           <Property Name="ModifiedBy" Type="nvarchar(max)" />
+          <Property Name="VerifyOrder" Type="int" />
         </EntityType>
         <EntityType Name="tbl_DiscountGroup">
           <Key>
@@ -514,6 +515,7 @@
           <Property Name="NumOfProductCanChange" Type="float" />
           <Property Name="QuantityProduct" Type="int" />
           <Property Name="RefundQuantityNoFee" Type="int" />
+          <Property Name="PermittedRead" Type="nvarchar" MaxLength="255" />
         </EntityType>
         <EntityType Name="tbl_LinkImnage">
           <Key>
@@ -1532,6 +1534,7 @@
           <Property Name="NumOfProductCanChange" Type="Double" />
           <Property Name="QuantityProduct" Type="Int32" />
           <Property Name="RefundQuantityNoFee" Type="Int32" />
+          <Property Name="PermittedRead" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="tbl_LinkImnage">
           <Key>
@@ -2066,6 +2069,7 @@
           <Property Name="CreatedBy" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
           <Property Name="ModifiedBy" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="VerifyOrder" Type="Int32" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -2579,6 +2583,7 @@
           <EntitySetMapping Name="tbl_DiscountGroup">
             <EntityTypeMapping TypeName="inventorymanagementModel.tbl_DiscountGroup">
               <MappingFragment StoreEntitySet="tbl_DiscountGroup">
+                <ScalarProperty Name="PermittedRead" ColumnName="PermittedRead" />
                 <ScalarProperty Name="RefundQuantityNoFee" ColumnName="RefundQuantityNoFee" />
                 <ScalarProperty Name="QuantityProduct" ColumnName="QuantityProduct" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
@@ -3086,6 +3091,7 @@
           <EntitySetMapping Name="tbl_DiscountCustomer">
             <EntityTypeMapping TypeName="inventorymanagementModel.tbl_DiscountCustomer">
               <MappingFragment StoreEntitySet="tbl_DiscountCustomer">
+                <ScalarProperty Name="VerifyOrder" ColumnName="VerifyOrder" />
                 <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
                 <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
                 <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />

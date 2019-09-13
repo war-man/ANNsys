@@ -1,6 +1,8 @@
 ﻿using IM_PJ.Controllers;
 using IM_PJ.Models;
+using IM_PJ.Models.Common;
 using MB.Extensions;
+using Newtonsoft.Json;
 using NHST.Bussiness;
 using System;
 using System.Collections.Generic;
@@ -8,28 +10,32 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
+using System.Web.Services;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Telerik.Web.UI;
+using static IM_PJ.Controllers.CustomerController;
 
 namespace IM_PJ
 {
     public partial class danh_sach_khach_giam_gia : System.Web.UI.Page
     {
+        private static int discountGroupID = 0;
+        private static tbl_Account acc;
+
         protected void Page_Load(object sender, EventArgs e)
         {
+            discountGroupID = Request.QueryString["id"].ToInt(0);
+
             if (!IsPostBack)
             {
                 if (Request.Cookies["usernameLoginSystem"] != null)
                 {
                     string username = Request.Cookies["usernameLoginSystem"].Value;
-                    var acc = AccountController.GetByUsername(username);
-                    if (acc != null)
+                    acc = AccountController.GetByUsername(username);
+                    if (!AccountController.isPermittedLoading(acc, "danh-sach-khach-giam-gia", discountGroupID))
                     {
-                        if (acc.RoleID != 0)
-                        {
-                            Response.Redirect("/trang-chu");
-                        }
+                        Response.Redirect("/trang-chu");
                     }
                 }
                 else
@@ -40,47 +46,44 @@ namespace IM_PJ
             }
         }
 
-        public void LoadCustomerNotIn(int groupID)
-        {
-            var customer = CustomerController.GetNotInGroupByGroupID(groupID);
-            ddlCustomer.Items.Clear();
-            ddlCustomer.Items.Insert(0, new ListItem("Chọn khách hàng", "0"));
-            if (customer.Count > 0)
-            {
-                customer = customer.OrderBy(o => o.CustomerName).ToList();
-                foreach (var p in customer)
-                {
-                    ListItem listitem = new ListItem(p.CustomerName + " - " + p.CustomerPhone + " - " + p.CreatedBy, p.ID.ToString());
-                    ddlCustomer.Items.Add(listitem);
-                }
-                ddlCustomer.DataBind();
-            }
-        }
-        public void LoadCustomerIn(int groupID)
-        {
-            var c = CustomerController.GetInGroupByGroupID(groupID);
-            if (c.Count > 0)
-            {
-                pagingall(c.OrderBy(o => o.CustomerName).ToList());
-            }
-        }
         public void LoadData()
         {
-            int id = Request.QueryString["id"].ToInt(0);
-            if (id > 0)
+            if (discountGroupID > 0)
             {
-                var d = DiscountGroupController.GetByID(id);
-                if (d != null)
+                var discount = DiscountGroupController.GetByID(discountGroupID);
+                if (discount != null)
                 {
-                    ViewState["ID"] = id;
-                    LoadCustomerIn(id);
-                    LoadCustomerNotIn(id);
-                    ltrGroupName.Text = d.DiscountName;
+                    hdfDiscountGroupID.Value = discountGroupID.ToString();
+                    
+
+                    // Hiển thị thông tin của discount group
+                    ltrGroupName.Text = discount.DiscountName;
+                    var numberCustomer = DiscountCustomerController.GetByGroupID(discount.ID).Count;
+                    if(numberCustomer > 0)
+                        ltrNumberCustomer.Text = String.Format("{0:N0} người", numberCustomer);
+                    if(discount.DiscountAmount.HasValue && discount.DiscountAmount.Value > 0)
+                        ltrDiscount.Text = String.Format("{0:N0} VND", discount.DiscountAmount);
+                    if (discount.QuantityProduct.HasValue && discount.QuantityProduct.Value > 0)
+                        ltrQuantityProduct.Text = String.Format("{0:N0} cái", discount.QuantityProduct);
+                    if (discount.FeeRefund.HasValue && discount.FeeRefund.Value > 0)
+                        ltrFeeRefund.Text = String.Format("{0:N0} VND", discount.FeeRefund);
+                    if (discount.NumOfDateToChangeProduct.HasValue && discount.NumOfDateToChangeProduct.Value > 0)
+                        ltrNumberOfDateToChnageProduct.Text = String.Format("{0:N0} ngày", discount.NumOfDateToChangeProduct);
+                    if (discount.NumOfProductCanChange.HasValue && discount.NumOfProductCanChange.Value > 0)
+                        ltrNumberOfProductCanChange.Text = String.Format("{0:N0} cái/ngày", discount.NumOfProductCanChange);
+
+                    // Hiển thị thông tin khách hàng được hưởng triết khấu
+                    var customer = CustomerController.getByDiscountGroupID(discountGroupID)
+                        .OrderBy(o => o.FullName)
+                        .ToList();
+
+                    if (customer.Count > 0)
+                        pagingall(customer);
                 }
             }
         }
         #region Paging
-        public void pagingall(List<tbl_Customer> acs)
+        public void pagingall(List<CustomerModel> acs)
         {
             int PageSize = 15;
             StringBuilder html = new StringBuilder();
@@ -103,18 +106,17 @@ namespace IM_PJ
                 {
                     var item = acs[i];
                     html.Append("<tr data-id=\"" + item.ID + "\">");
-                    html.Append("   <td class=\"customer-name-link\"><a href=\"/chi-tiet-khach-hang?id=" + item.ID + "\">" + item.CustomerName.ToTitleCase() + "</a></td>");
+                    html.Append("   <td class=\"customer-name-link\"><a href=\"/chi-tiet-khach-hang?id=" + item.ID + "\">" + item.FullName.ToTitleCase() + "</a></td>");
                     html.Append("   <td class=\"customer-name-link\">" + item.Nick.ToTitleCase() + "</td>");
-                    html.Append("   <td>" + item.CustomerPhone + "</td>");
-                    html.Append("   <td>" + item.CreatedBy + "</td>");
-
-                    string date = "";
-                    if (item.CreatedDate != null)
-                        date = string.Format("{0:dd/MM/yyyy}", item.CreatedDate);
-                    html.Append("   <td>" + date + "</td>");
+                    html.Append("   <td>" + item.Phone + "</td>");
+                    html.Append("   <td>" + item.StaffName + "</td>");
+                    html.Append("   <td>" + String.Format("{0:dd/MM/yyyy}", item.DiscountGroup.DateJoined) + "</td>");
 
                     html.Append("   <td>");
-                    html.Append("       <a href=\"javascript:;\" onclick=\"deletecustomer($(this))\" class=\"btn primary-btn fw-btn not-fullwidth\">Xóa</a>");
+                    if (acc.Username == "admin" )
+                        html.Append("       <a href='javascript:;' onclick='deletecustomer(" + JsonConvert.SerializeObject(item) + ")' class='btn primary-btn fw-btn not-fullwidth'>Xóa</a>");
+                    if (item.DiscountGroup.VerifyOrder > 0)
+                        html.Append(String.Format("       <a href='/thong-tin-don-hang?id={0}' class='btn btn-blue' target='_blank'>Đơn hàng</a>", item.DiscountGroup.VerifyOrder));
                     html.Append("   </td>");
                     html.Append("</tr>");
                 }
@@ -260,54 +262,84 @@ namespace IM_PJ
             return output.ToString();
         }
         #endregion
-        protected void btnLogin_Click(object sender, EventArgs e)
+        protected void btnAddCustomer_Click(object sender, EventArgs e)
         {
-            int groupID = Convert.ToInt32(ViewState["ID"]);
-            string username = Request.Cookies["usernameLoginSystem"].Value;
-            DateTime currentDate = DateTime.Now;
-            var acc = AccountController.GetByUsername(username);
-            if (acc != null)
+            if (discountGroupID != 0 && acc != null)
             {
-                if (acc.RoleID == 0)
+                var customer = JsonConvert.DeserializeObject<CustomerModel>(hdfCustomer.Value);
+                var order = JsonConvert.DeserializeObject<OrderModel>(hdfOrder.Value);
+
+                if (customer != null)
                 {
-                    int custID = ddlCustomer.SelectedValue.ToInt(0);
-                    if (custID > 0)
+                    var now = DateTime.Now;
+                    var data = new tbl_DiscountCustomer()
                     {
-                        var cus = CustomerController.GetByID(custID);
-                        if (cus != null)
-                        {
-                            DiscountCustomerController.Insert(groupID, cus.ID, cus.CustomerName, cus.CustomerPhone, false, currentDate, username);
-                            PJUtils.ShowMessageBoxSwAlert("Thêm khách hàng vào nhóm thành công", "s", true, Page);
-                        }
-                    }
-                    else
-                    {
-                        PJUtils.ShowMessageBoxSwAlert("Vui lòng chọn khách hàng cần thêm", "e", true, Page);
-                    }
+                        DiscountGroupID = discountGroupID,
+                        UID = customer.ID,
+                        CustomerName = customer.FullName,
+                        CustomerPhone = customer.Phone,
+                        CreatedDate = now,
+                        CreatedBy = acc.Username,
+                        ModifiedDate = now,
+                        ModifiedBy = acc.Username,
+                        VerifyOrder = order != null ? order.ID : 0
+                    };
+
+                    DiscountCustomerController.Insert(data);
+                    PJUtils.ShowMessageBoxSwAlert("Thêm khách hàng vào nhóm thành công", "s", true, Page);
+                }
+                else
+                {
+                    PJUtils.ShowMessageBoxSwAlert("Vui lòng chọn khách hàng cần thêm", "e", true, Page);
                 }
             }
         }
 
         protected void btnDelete_Click(object sender, EventArgs e)
         {
-            string username = Request.Cookies["usernameLoginSystem"].Value;
-            var acc = AccountController.GetByUsername(username);
-            if (acc != null)
+            if (acc != null && acc.RoleID == 0)
             {
-                if (acc.RoleID == 0)
+                var customer = JsonConvert.DeserializeObject<CustomerModel>(hdfCustomer.Value);
+
+                if (customer != null)
                 {
-                    int ID = hdfCustomerID.Value.ToInt(0);
-                    if (ID > 0)
-                    {
-                        var c = DiscountCustomerController.GetByID(ID);
-                        if (c != null)
-                        {
-                            DiscountCustomerController.Delete(ID);
-                            PJUtils.ShowMessageBoxSwAlert("Xóa khách hàng ra khỏi nhóm thành công", "s", true, Page);
-                        }
-                    }
+                    DiscountCustomerController.Delete(customer.ID);
+                    PJUtils.ShowMessageBoxSwAlert("Xóa khách hàng ra khỏi nhóm thành công", "s", true, Page);
                 }
             }
+        }
+
+        [WebMethod]
+        public static List<CustomerModel> getPotentialCustomer(int discountGroupID, string search)
+        {
+            // Trường hợp là admin thì không cần filter theo người khởi tạo
+            // chỉ cần khách hàng đạt chuẩn của mức triết khấu là đc
+            var staffName = HttpContext.Current.Request.Cookies["usernameLoginSystem"].Value;
+            if (String.IsNullOrEmpty(staffName))
+                return null;
+
+            // Lấy ra danh sách các khách hàng tìm năng
+            var data = CustomerController.GetPotentialCustomers(discountGroupID, staffName);
+
+            // Lọc lại khách hàng theo bộ lọc
+            var result = data;
+            search = search.Trim().ToUpper();
+
+            if (!String.IsNullOrEmpty(search))
+                result = result.Where(x =>
+                    x.FullName.Trim().ToUpper().Contains(search) ||
+                    x.Nick.Trim().ToUpper().Contains(search) ||
+                    x.Phone.Trim().ToUpper().Contains(search)
+                ).ToList();
+
+            return result;
+        }
+
+        [WebMethod]
+        public static List<OrderModel> getOrderQualifiedOfDiscountGroup(int discountGroupID, int customerID)
+        {
+            // Lấy ra đơn đủ điều kiện để khách hàng có thể join vô group
+            return OrderController.getOrderQualifiedOfDiscountGroup(discountGroupID, customerID);
         }
     }
 }
