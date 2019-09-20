@@ -332,7 +332,7 @@ namespace IM_PJ.Controllers
                         todate = DateTime.Now;
                         break;
                 }
-                sql.AppendLine(String.Format("	AND	(CONVERT(datetime, Ord.CreatedDate, 121) BETWEEN CONVERT(datetime, '{0}', 121) AND CONVERT(datetime, '{1}', 121))", fromdate.ToString(), todate.ToString()));
+                sql.AppendLine(String.Format("	AND	(CONVERT(NVARCHAR(10), Ord.CreatedDate, 121) BETWEEN CONVERT(NVARCHAR(10), '{0:yyyy-MM-dd}', 121) AND CONVERT(NVARCHAR(10), '{1:yyyy-MM-dd}', 121))", fromdate, todate));
             }
 
             sql.AppendLine(String.Format("GROUP BY Ord.ID, Ord.CustomerName, Ord.CustomerPhone, Customer.Nick, Ord.CustomerID, Ord.Status, Ord.TotalPrice, Ord.TotalRefundFee, Ord.CreatedBy, Ord.CreatedDate, Ord.RefundNote, Ord.OrderSaleID"));
@@ -384,7 +384,7 @@ namespace IM_PJ.Controllers
             {
                 sql.AppendLine(String.Format("    AND Ord.CreatedBy = '{0}'", CreatedBy));
             }
-            sql.AppendLine(String.Format("	AND	(CONVERT(datetime, Ord.CreatedDate, 121) BETWEEN CONVERT(datetime, '{0}', 121) AND CONVERT(datetime, '{1}', 121))", fromDate.ToString(), toDate.ToString()));
+            sql.AppendLine(String.Format("	AND	(CONVERT(NVARCHAR(10), Ord.CreatedDate, 121) BETWEEN CONVERT(NVARCHAR(10), '{0:yyyy-MM-dd}', 121) AND CONVERT(NVARCHAR(10), '{1:yyyy-MM-dd}', 121))", fromDate, toDate));
             sql.AppendLine(String.Format("GROUP BY Ord.ID, OrdDetail.RefundFeePerProduct"));
 
             var reader = (IDataReader)SqlHelper.ExecuteDataReader(sql.ToString());
@@ -481,7 +481,7 @@ namespace IM_PJ.Controllers
                 sql.AppendLine(String.Format("    AND OrdDetail.SKU LIKE '{0}%'", SKU));
             }
 
-            sql.AppendLine(String.Format("    AND    CONVERT(datetime, Ord.CreatedDate, 121) BETWEEN CONVERT(datetime, '{0}', 121) AND CONVERT(datetime, '{1}', 121)", fromDate.ToString(), toDate.ToString()));
+            sql.AppendLine(String.Format("    AND    CONVERT(NVARCHAR(10), Ord.CreatedDate, 121) BETWEEN CONVERT(NVARCHAR(10), '{0:yyyy-MM-dd}', 121) AND CONVERT(NVARCHAR(10), '{1:yyyy-MM-dd}', 121)", fromDate, toDate));
 
             sql.AppendLine("SELECT");
             sql.AppendLine("    DAT.CreatedDate,");

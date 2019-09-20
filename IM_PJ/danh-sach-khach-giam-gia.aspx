@@ -48,6 +48,10 @@
                                     <label class="text-left">Số lượng đổi/số ngày: </label>
                                     <asp:Literal ID="ltrNumberOfProductCanChange" runat="server"></asp:Literal>
                                 </div>
+                                <div class="col-xs-3">
+                                    <label class="text-left">Số lượng đổi miễn phí: </label>
+                                    <asp:Literal ID="ltrRefundQuantityNoFee" runat="server"></asp:Literal>
+                                </div>
                             </div>
                         </div>
                         <div class="panel-body">

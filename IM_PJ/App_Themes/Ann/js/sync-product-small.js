@@ -24,7 +24,7 @@
             .then(() => {
                 swal({
                     title: "Xác nhận",
-                    text: "Bạn muốn phục hồi lại xã kho?",
+                    text: "Bạn muốn phục hồi lại kho?",
                     type: "warning",
                     showCancelButton: true,
                     closeOnConfirm: true,
@@ -72,7 +72,7 @@
             .then(() => {
                 swal({
                     title: "Xác nhận",
-                    text: "Bạn muốn xả hàng sản phẩm này không?",
+                    text: "Bạn muốn xả kho sản phẩm này không?",
                     type: "warning",
                     showCancelButton: true,
                     closeOnConfirm: true,
@@ -93,7 +93,7 @@
                             })
                             .catch(err => {
                                 setTimeout(function () {
-                                    swal("Thông báo", "Có lỗi trong qua trình xã hàng", "error");
+                                    swal("Thông báo", "Có lỗi trong qua trình xã kho", "error");
                                 }, 500);
                             })
                             .finally(() => { HoldOn.close(); });

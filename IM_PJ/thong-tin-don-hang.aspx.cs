@@ -85,7 +85,7 @@ namespace IM_PJ
                 {
                     foreach (var p in CreateBy)
                     {
-                        if (p.RoleID == 2)
+                        if (p.RoleID == 2 || p.RoleID == 0)
                         {
                             ListItem listitem = new ListItem(p.Username, p.Username);
                             ddlCreatedBy.Items.Add(listitem);

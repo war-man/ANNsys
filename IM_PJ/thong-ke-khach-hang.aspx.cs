@@ -76,8 +76,6 @@ namespace IM_PJ
             rFromDate.SelectedDate = fromDate;
             rToDate.SelectedDate = toDate;
 
-            int day = Convert.ToInt32((toDate - fromDate).TotalDays);
-
             var reportModel = OrderController.reportProfitByCustomer(phoneNumber, fromDate, toDate);
 
             if (reportModel != null)
@@ -148,13 +146,13 @@ namespace IM_PJ
                 )
                 .FirstOrDefault();
 
-            if (report != null && day > 0)
+            if (report != null)
             {
                 // Dòng 1
                 ltrTotalQuantityOrder.Text = String.Format("{0:N0} đơn", report.totalQuantityOrder);
                 ltrTotalQuantityProduct.Text = String.Format("{0:N0} cái", report.totalQuantityProduct);
                 ltrTotalQuantityRefund.Text = String.Format("{0:N0} đơn", report.totalQuantityRefund);
-                ltrTotalQuantityProductRefund.Text = String.Format("{0:N0} cái", report.totalQuantityProductRefund);
+                ltrTotalQuantityProductRefund.Text = String.Format("{0:N0} cái ({1}%)", report.totalQuantityProductRefund, report.totalQuantityProductRefund * 100/ report.totalQuantityProduct);
                 ltrTotalProductLeft.Text = String.Format("{0:N0} cái ({1:N0} cái/đơn)", report.totalQuantityProduct - report.totalQuantityProductRefund, (report.totalQuantityProduct - report.totalQuantityProductRefund)/report.totalQuantityOrder);
                 ltrAverageProduct.Text = String.Format("{0:#,##0.##} cái/ngày", Math.Round((report.totalQuantityProduct - report.totalQuantityProductRefund) / (day * 1.0), 2));
                 // Dòng 2

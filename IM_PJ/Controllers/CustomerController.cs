@@ -514,17 +514,29 @@ namespace IM_PJ.Controllers
                 }
                 #endregion
 
-                #region Lấy ra những đơn hàng mà khách hạng đạt tiêu chuẩn để join vô group
-                var quanlityOrder = OrderController.getOrderQualifiedOfDiscountGroup(discountGroupID);
-                if (quanlityOrder == null)
-                    return null;
+                if (!String.IsNullOrEmpty(staffName) && staffName != "admin")
+                {
+                    #region Lấy ra những đơn hàng mà khách hạng đạt tiêu chuẩn để join vô group
+                    var quanlityOrder = OrderController.getOrderQualifiedOfDiscountGroup(discountGroupID);
+                    if (quanlityOrder == null)
+                        return null;
 
-                var customerOrdered = quanlityOrder
-                    .GroupBy(g => g.CustomerID)
-                    .Select(x => new { customerID = x.Key })
-                    .OrderByDescending(o => o.customerID)
-                    .ToList();
-                #endregion
+                    var customerOrdered = quanlityOrder
+                        .GroupBy(g => g.CustomerID)
+                        .Select(x => new { customerID = x.Key })
+                        .OrderByDescending(o => o.customerID)
+                        .ToList();
+                    #endregion
+
+                    potentialCustomer = potentialCustomer
+                        .Join(
+                            customerOrdered,
+                            pc => pc.ID,
+                            co => co.customerID,
+                            (pc, co) => pc
+                        )
+                        .ToList();
+                }
 
                 var discount = con.tbl_DiscountCustomer
                     .Join(
@@ -541,12 +553,6 @@ namespace IM_PJ.Controllers
                     .ToList();
 
                 var data = potentialCustomer
-                    .Join(
-                        customerOrdered,
-                        pc => pc.ID,
-                        co => co.customerID,
-                        (pc, co) => pc
-                    )
                     .GroupJoin(
                         discount,
                         c => c.ID,

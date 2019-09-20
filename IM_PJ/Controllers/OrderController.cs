@@ -2679,7 +2679,7 @@ namespace IM_PJ.Controllers
             }
             sql.AppendLine(String.Format("    AND Ord.ExcuteStatus = 2"));
             sql.AppendLine(String.Format("    AND (Ord.PaymentStatus = 2 OR Ord.PaymentStatus = 3)"));
-            sql.AppendLine(String.Format("    AND    CONVERT(datetime, Ord.DateDone, 121) BETWEEN CONVERT(datetime, '{0}', 121) AND CONVERT(datetime, '{1}', 121)", fromDate.ToString(), toDate.ToString()));
+            sql.AppendLine(String.Format("    AND    CONVERT(NVARCHAR(10), Ord.DateDone, 121) BETWEEN CONVERT(NVARCHAR(10), '{0:yyyy-MM-dd}', 121) AND CONVERT(NVARCHAR(10), '{1:yyyy-MM-dd}', 121)", fromDate, toDate));
             sql.AppendLine(String.Format("GROUP BY Ord.ID"));
 
             var reader = (IDataReader)SqlHelper.ExecuteDataReader(sql.ToString());
@@ -2775,7 +2775,7 @@ namespace IM_PJ.Controllers
                 sql.AppendLine(String.Format("    AND OrdDetail.SKU LIKE '{0}%'", SKU));
             }
 
-            sql.AppendLine(String.Format("    AND    CONVERT(datetime, Ord.DateDone, 121) BETWEEN CONVERT(datetime, '{0}', 121) AND CONVERT(datetime, '{1}', 121);", fromDate.ToString(), toDate.ToString()));
+            sql.AppendLine(String.Format("    AND    CONVERT(NVARCHAR(10), Ord.DateDone, 121) BETWEEN CONVERT(NVARCHAR(10), '{0:yyyy-MM-dd}', 121) AND CONVERT(NVARCHAR(10), '{1:yyyy-MM-dd}', 121);", fromDate, toDate));
 
             sql.AppendLine("SELECT");
             sql.AppendLine("    DAT.DateDone");
@@ -3367,6 +3367,59 @@ namespace IM_PJ.Controllers
                 #endregion
 
                 var result = data.Select(x => new Models.Common.OrderModel() {
+                    ID = x.order.ID,
+                    CustomerID = x.order.CustomerID.HasValue ? x.order.CustomerID.Value : 0,
+                    QuantityProduct = Convert.ToInt32(x.orderDetail.quantityProduct),
+                    Price = Convert.ToDouble(x.order.TotalPrice),
+                    Discount = Convert.ToDouble(x.order.TotalDiscount),
+                    FeeShipping = Convert.ToDouble(x.order.FeeShipping),
+                    StaffName = x.order.CreatedBy,
+                    DateDone = x.order.DateDone
+                })
+                .ToList();
+
+                return result;
+            }
+        }
+
+        public static List<Models.Common.OrderModel> get(int customerID)
+        {
+            using (var con = new inventorymanagementEntities())
+            {
+                #region Lọc ra đơn khác hàng đã mua và tính số lượng mua
+                var order = con.tbl_Order
+                    .Where(x => x.ExcuteStatus == (int)ExcuteStatus.Done)
+                    .Where(x => x.CustomerID.HasValue)
+                    .Where(x => x.CustomerID == customerID);
+
+                var orderDetail = order
+                    .Join(
+                        con.tbl_OrderDetail,
+                        o => o.ID,
+                        d => d.OrderID.Value,
+                        (o, d) => new { order = o, detail = d }
+                    )
+                    .GroupBy(g => new { customerID = g.order.CustomerID.Value, orderID = g.order.ID })
+                    .Select(x => new
+                    {
+                        customerID = x.Key.customerID,
+                        orderID = x.Key.orderID,
+                        quantityProduct = x.Sum(s => s.detail.Quantity.HasValue ? s.detail.Quantity.Value : 0)
+                    });
+                #endregion
+
+                var data = order
+                    .Join(
+                        orderDetail,
+                        o => o.ID,
+                        d => d.orderID,
+                        (o, d) => new { order = o, orderDetail = d }
+                    )
+                    .OrderByDescending(o => o.order.ID)
+                    .ToList();
+
+                var result = data.Select(x => new Models.Common.OrderModel()
+                {
                     ID = x.order.ID,
                     CustomerID = x.order.CustomerID.HasValue ? x.order.CustomerID.Value : 0,
                     QuantityProduct = Convert.ToInt32(x.orderDetail.quantityProduct),

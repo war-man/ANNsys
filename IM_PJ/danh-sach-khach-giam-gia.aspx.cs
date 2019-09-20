@@ -78,6 +78,8 @@ namespace IM_PJ
                         ltrNumberOfDateToChnageProduct.Text = String.Format("{0:N0} ngày", discount.NumOfDateToChangeProduct);
                     if (discount.NumOfProductCanChange.HasValue && discount.NumOfProductCanChange.Value > 0)
                         ltrNumberOfProductCanChange.Text = String.Format("{0:N0} cái/{1} ngày", discount.NumOfProductCanChange, discount.NumOfDateToChangeProduct);
+                    if (discount.RefundQuantityNoFee.HasValue && discount.RefundQuantityNoFee.Value > 0)
+                        ltrRefundQuantityNoFee.Text = String.Format("{0:N0} cái", discount.RefundQuantityNoFee);
 
                     string createdBy = "";
                     if (acc.RoleID == 2)
@@ -352,8 +354,18 @@ namespace IM_PJ
         [WebMethod]
         public static List<OrderModel> getOrderQualifiedOfDiscountGroup(int discountGroupID, int customerID)
         {
-            // Lấy ra đơn đủ điều kiện để khách hàng có thể join vô group
-            return OrderController.getOrderQualifiedOfDiscountGroup(discountGroupID, customerID);
+            // Trường hợp là admin thì không cần filter theo người khởi tạo
+            // chỉ cần khách hàng đạt chuẩn của mức chiết khấu là đc
+            var staffName = HttpContext.Current.Request.Cookies["usernameLoginSystem"].Value;
+            if (String.IsNullOrEmpty(staffName))
+                return null;
+
+            if (staffName == "admin")
+                // Lấy những đơn khách đã mua
+                return OrderController.get(customerID);
+            else
+                // Lấy ra đơn đủ điều kiện để khách hàng có thể join vô group
+                return OrderController.getOrderQualifiedOfDiscountGroup(discountGroupID, customerID);
         }
     }
 }

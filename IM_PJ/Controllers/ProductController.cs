@@ -1131,12 +1131,12 @@ namespace IM_PJ.Controllers
                         todate = DateTime.Now;
                         break;
                 }
-                sql.AppendLine(String.Format("	AND	(CONVERT(datetime, PRD.CreatedDate, 121) BETWEEN CONVERT(datetime, '{0:yyyy-MM-dd hh:mm:ss}', 121) AND CONVERT(datetime, '{1:yyyy-MM-dd hh:mm:ss}', 121))", fromdate, todate));
+                sql.AppendLine(String.Format("	AND	(CONVERT(NVARCHAR(10), PRD.CreatedDate, 121) BETWEEN CONVERT(NVARCHAR(10), '{0:yyyy-MM-dd}', 121) AND CONVERT(NVARCHAR(10), '{1:yyyy-MM-dd}', 121))", fromdate, todate));
             }
 
             if (filter.fromDate.HasValue && filter.toDate.HasValue)
             {
-                sql.AppendLine(String.Format("	AND	(CONVERT(datetime, PRD.CreatedDate, 121) BETWEEN CONVERT(datetime, '{0:yyyy-MM-dd hh:mm:ss}', 121) AND CONVERT(datetime, '{1:yyyy-MM-dd hh:mm:ss}', 121))", filter.fromDate, filter.toDate));
+                sql.AppendLine(String.Format("	AND	(CONVERT(NVARCHAR(10), PRD.CreatedDate, 121) BETWEEN CONVERT(NVARCHAR(10), '{0:yyyy-MM-dd}', 121) AND CONVERT(NVARCHAR(10), '{1:yyyy-MM-dd}', 121))", filter.fromDate, filter.toDate));
             }
             #endregion
 

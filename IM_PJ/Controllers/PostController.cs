@@ -245,7 +245,7 @@ namespace IM_PJ.Controllers
                         todate = DateTime.Now;
                         break;
                 }
-                sql.AppendLine(String.Format("	AND	(CONVERT(datetime, POS.CreatedDate, 121) BETWEEN CONVERT(datetime, '{0}', 121) AND CONVERT(datetime, '{1}', 121))", fromdate.ToString(), todate.ToString()));
+                sql.AppendLine(String.Format("	AND	(CONVERT(NVARCHAR(10), POS.CreatedDate, 121) BETWEEN CONVERT(NVARCHAR(10), '{0:yyyy-MM-dd}', 121) AND CONVERT(NVARCHAR(10), '{1:yyyy-MM-dd}', 121))", fromdate, todate));
             }
 
             if (categoryID > 0)

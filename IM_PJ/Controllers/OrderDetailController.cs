@@ -242,7 +242,7 @@ namespace IM_PJ.Controllers
             sql.AppendLine(String.Format("INNER JOIN tbl_OrderDetail AS ODD"));
             sql.AppendLine(String.Format("	ON 	ORD.ID = ODD.OrderID"));
             sql.AppendLine(String.Format("WHERE"));
-            sql.AppendLine(String.Format("		CONVERT(datetime, ORD.DateDone, 121) BETWEEN CONVERT(datetime, '{0}', 121) AND CONVERT(datetime, '{1}', 121)", fromdate, todate));
+            sql.AppendLine(String.Format("		CONVERT(NVARCHAR(10), ORD.DateDone, 121) BETWEEN CONVERT(NVARCHAR(10), '{0:yyyy-MM-dd}', 121) AND CONVERT(NVARCHAR(10), '{1:yyyy-MM-dd}', 121)", fromdate, todate));
             sql.AppendLine(String.Format("	AND ORD.ExcuteStatus = 2"));
             sql.AppendLine(String.Format("	AND (ORD.PaymentStatus = 2 OR ORD.PaymentStatus = 3)"));
             sql.AppendLine(String.Format("GROUP BY"));

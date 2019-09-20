@@ -878,7 +878,7 @@
                     addHTML += "        <a href='javascript:;' class='btn btn-feeship link-btn' onclick='removeOtherFee(`" + fee.UUID + "`)'>";
                     addHTML += "            <i class='fa fa-times' aria-hidden='true'></i> Xóa";
                     addHTML += "        </a>";
-                    addHTML += "        <a href='javascript:;' class='btn btn-feeship link-btn btn-edit-fee' onclick='editOtherFee()'>";
+                    addHTML += "        <a href='javascript:;' class='btn btn-feeship link-btn btn-edit-fee' onclick='editOtherFee(`" + fee.UUID + "`)'>";
                     addHTML += "            <i class='fa fa-pencil-square-o' aria-hidden='true'></i> Sửa";
                     addHTML += "        </a>";
                     addHTML += "    </div>";
@@ -978,8 +978,8 @@
                 //getAllPrice();
             }
             // edit other fee by click button
-            function editOtherFee() {
-                $(".otherfee-value").click();
+            function editOtherFee(uuid) {
+                $("#" + uuid).find(".otherfee-value").click();
                 //getAllPrice();
             }
 
@@ -1792,12 +1792,12 @@
                 var ds = $("#<%=pDiscount.ClientID%>").val();
                 var discount = parseFloat(ds.replace(/\,/g, ''));
 
-                if (discount > 11000 && $("#<%=hdfRoleID.ClientID%>").val() != 0) {
+                if (discount > 15000 && $("#<%=hdfRoleID.ClientID%>").val() != 0) {
                     checkAllValue = false;
                     $("#<%=pDiscount.ClientID%>").focus();
                     swal({
                         title: "Lạ vậy:",
-                        text: "Sao chiết khấu lại lớn hơn <strong>11.000đ</strong> nè?<br><br>Nếu có lý do thì báo chị Ngọc nha!",
+                        text: "Sao chiết khấu lại lớn hơn <strong>15.000đ</strong> nè?<br><br>Nếu có lý do thì báo chị Ngọc nha!",
                         type: "warning",
                         showCancelButton: false,
                         confirmButtonColor: "#DD6B55",
