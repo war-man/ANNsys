@@ -228,6 +228,37 @@ namespace IM_PJ.Controllers
                     return null;
             }
         }
+
+        /// <summary>
+        /// Thực hiện update trạng thái product được nhìn thấy
+        /// hoặc không nhìn tháy trên trang quảng cáo
+        /// </summary>
+        /// <param name="productID"></param>
+        /// <returns></returns>
+        public static bool updateHidden(tbl_Account acc, int productID, bool isHidden)
+        {
+            using (var con = new inventorymanagementEntities())
+            {
+                var product = con.tbl_Product.Where(x => x.ID == productID).FirstOrDefault();
+
+                if (product != null)
+                {
+                    var now = DateTime.Now;
+
+                    product.IsHidden = isHidden;
+                    product.ModifiedBy = acc.Username;
+                    product.ModifiedDate = now;
+                    con.SaveChanges();
+
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+        }
+
         public static string deleteProduct(int id)
         {
             using (var dbe = new inventorymanagementEntities())
@@ -1171,6 +1202,7 @@ namespace IM_PJ.Controllers
             sql.AppendLine("     ,       STM.Quantity");
             sql.AppendLine("     ,       STM.QuantityCurrent");
             sql.AppendLine("     ,       STM.Type");
+            sql.AppendLine("     ,       STM.Status");
             sql.AppendLine("     ,       STM.CreatedDate");
             sql.AppendLine("     ,       STM.ParentID");
             sql.AppendLine("     INTO #StockProduct");
@@ -1197,6 +1229,7 @@ namespace IM_PJ.Controllers
             sql.AppendLine("     ,       STM.Quantity");
             sql.AppendLine("     ,       STM.QuantityCurrent");
             sql.AppendLine("     ,       STM.Type");
+            sql.AppendLine("     ,       STM.Status");
             sql.AppendLine("     ,       STM.CreatedDate");
             sql.AppendLine("     ,       STM.ParentID");
             sql.AppendLine("     INTO #StockProductVariable");
@@ -1222,6 +1255,7 @@ namespace IM_PJ.Controllers
             sql.AppendLine("             PRQ.ProductStyle");
             sql.AppendLine("     ,       PRQ.ParentID");
             sql.AppendLine("     ,       SUM(ISNULL(PRQ.QuantityLeft, 0)) AS QuantityLeft");
+            sql.AppendLine("     ,       MIN(ISNULL(PRQ.Liquidated, 0)) AS Liquidated");
             sql.AppendLine("     INTO #ProductQuantity");
             sql.AppendLine("     FROM (");
             sql.AppendLine("         SELECT");
@@ -1237,6 +1271,14 @@ namespace IM_PJ.Controllers
             sql.AppendLine("                             0");
             sql.AppendLine("                     END");
             sql.AppendLine("                 ) AS QuantityLeft");
+            sql.AppendLine("         ,       (");
+            sql.AppendLine("                     CASE STP.Status");
+            sql.AppendLine("                         WHEN 14");
+            sql.AppendLine("                             THEN 1");
+            sql.AppendLine("                         ELSE");
+            sql.AppendLine("                             0");
+            sql.AppendLine("                     END");
+            sql.AppendLine("                 ) AS Liquidated");
             sql.AppendLine("         FROM ");
             sql.AppendLine("                 #StockProduct AS STP");
             sql.AppendLine("         INNER JOIN (");
@@ -1266,6 +1308,14 @@ namespace IM_PJ.Controllers
             sql.AppendLine("                             0");
             sql.AppendLine("                     END");
             sql.AppendLine("                 ) AS QuantityLeft");
+            sql.AppendLine("         ,       (");
+            sql.AppendLine("                     CASE STP.Status");
+            sql.AppendLine("                         WHEN 14");
+            sql.AppendLine("                             THEN 1");
+            sql.AppendLine("                         ELSE");
+            sql.AppendLine("                             0");
+            sql.AppendLine("                     END");
+            sql.AppendLine("                 ) AS Liquidated");
             sql.AppendLine("         FROM ");
             sql.AppendLine("                 #StockProductVariable AS STP");
             sql.AppendLine("         INNER JOIN (");
@@ -1348,6 +1398,7 @@ namespace IM_PJ.Controllers
             sql.AppendLine("     ,       c.CategoryName");
             sql.AppendLine("     ,       p.*");
             sql.AppendLine("     ,       PRQ.QuantityLeft");
+            sql.AppendLine("     ,       PRQ.Liquidated");
             sql.AppendLine("     FROM");
             sql.AppendLine("             #Product AS p");
             sql.AppendLine("     LEFT JOIN #ProductQuantity AS PRQ");
@@ -1441,6 +1492,10 @@ namespace IM_PJ.Controllers
                     entity.WebPublish = reader["WebPublish"].ToString().ToBool();
                 if (reader["WebUpdate"] != DBNull.Value)
                     entity.WebUpdate = Convert.ToDateTime(reader["WebUpdate"]);
+                if (reader["Liquidated"] != DBNull.Value)
+                    entity.Liquidated = Convert.ToBoolean(reader["Liquidated"]);
+                if (reader["IsHidden"] != DBNull.Value)
+                    entity.IsHidden = Convert.ToBoolean(reader["IsHidden"]);
                 // get infe page header
                 if (reader["TotalCount"] != DBNull.Value)
                     page.totalCount = reader["TotalCount"].ToString().ToInt(0);
@@ -2825,6 +2880,7 @@ namespace IM_PJ.Controllers
                 return result;
             }
         }
+
         #endregion
         #region Class
         public class Product
@@ -2929,6 +2985,8 @@ namespace IM_PJ.Controllers
             public string ProductImageClean { get; set; }
             public bool WebPublish { get; set; }
             public DateTime WebUpdate { get; set; }
+            public bool Liquidated { get; set; }
+            public bool IsHidden { get; set; }
         }
 
         public class ProductStockReport

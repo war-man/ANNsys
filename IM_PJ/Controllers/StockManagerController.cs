@@ -1228,5 +1228,136 @@ namespace IM_PJ.Controllers
             }
         }
         #endregion
+
+        #region Thực hiện xả kho với các sản phẩm tồn
+        public static bool liquidateProduct(tbl_Account acc, int productID)
+        {
+            using (var con = new inventorymanagementEntities())
+            {
+                var now = DateTime.Now;
+                var stocks = getStock(productID, 0);
+                var index = 0;
+                var dataInsert = new List<tbl_StockManager>();
+
+                foreach (var item in stocks)
+                {
+                    // Trường hợp bằng 1 làm nhập kho nên số lượng hiện tại là Số lượng có sản + số lượng thêm vào
+                    if (item.Type == 1)
+                        item.Quantity = item.QuantityCurrent + item.Quantity;
+                    else
+                        item.Quantity = item.QuantityCurrent - item.Quantity;
+
+                    item.QuantityCurrent = item.Quantity;
+                    // Xã hàng ra khỏi kho
+                    item.Type = 2;
+                    item.Status = 14;
+                    item.NoteID = "Xuất hết kho";
+                    item.CreatedBy = acc.Username;
+                    item.CreatedDate = now;
+                    item.ModifiedBy = acc.Username;
+                    item.ModifiedDate = now;
+
+                    index += 1;
+                    dataInsert.Add(item);
+
+                    if (dataInsert.Count >= 100)
+                    {
+                        try
+                        {
+                            con.tbl_StockManager.AddRange(dataInsert);
+                            con.SaveChanges();
+                            // Sau khi commit xong clear
+                            dataInsert.Clear();
+                        }
+                        catch (Exception)
+                        {
+                            return false;
+                        }
+                    }
+                }
+
+                if (dataInsert.Count >= 0)
+                {
+                    try
+                    {
+                        con.tbl_StockManager.AddRange(dataInsert);
+                        con.SaveChanges();
+                        // Sau khi commit xong clear
+                        dataInsert.Clear();
+                    }
+                    catch (Exception)
+                    {
+                        return false;
+                    }
+                }
+                return true;
+            }
+        }
+        #endregion
+
+        #region Phục hồi lại các sản phẩm đã xã hàng
+        public static bool recoverLiquidatedProduct(tbl_Account acc, int productID)
+        {
+            using (var con = new inventorymanagementEntities())
+            {
+                var now = DateTime.Now;
+                // Lấy dòng mới nhất của sản phẩn trong stock ra
+                // Nếu mà không phải là status 14 thì không thực thi phục hồi lại với sản phẩm đó
+                var stocks = getStock(productID, 0).Where(x => x.Status == 14);
+                var index = 0;
+                var dataInsert = new List<tbl_StockManager>();
+
+                if (stocks.Count() == 0)
+                    throw new Exception("Sản phẩn không thể phục hồi xả hàng.");
+
+                foreach (var item in stocks)
+                {
+                    item.Type = 1;
+                    item.QuantityCurrent = 0;
+                    item.Status = 15;
+                    item.NoteID = "Phục hồi xuất hết kho";
+                    item.CreatedBy = acc.Username;
+                    item.CreatedDate = now;
+                    item.ModifiedBy = acc.Username;
+                    item.ModifiedDate = now;
+
+                    index += 1;
+                    dataInsert.Add(item);
+
+                    if (dataInsert.Count >= 100)
+                    {
+                        try
+                        {
+                            con.tbl_StockManager.AddRange(dataInsert);
+                            con.SaveChanges();
+                            // Sau khi commit xong clear
+                            dataInsert.Clear();
+                        }
+                        catch (Exception)
+                        {
+                            return false;
+                        }
+                    }
+                }
+
+                if (dataInsert.Count >= 0)
+                {
+                    try
+                    {
+                        con.tbl_StockManager.AddRange(dataInsert);
+                        con.SaveChanges();
+                        // Sau khi commit xong clear
+                        dataInsert.Clear();
+                    }
+                    catch (Exception)
+                    {
+                        return false;
+                    }
+                }
+
+                return true;
+            }
+        }
+        #endregion
     }
 }

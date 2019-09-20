@@ -14,6 +14,8 @@
     <link href="/App_Themes/NewUI/js/select2/select2.css" rel="stylesheet" />
     <link rel="stylesheet" href="/App_Themes/Ann/css/style-sp.css?v=11092019" media="all">
     <script type="text/javascript" src="/App_Themes/Ann/js/jquery-2.1.3.min.js"></script>
+    <link href="/App_Themes/NewUI/js/sweet/sweet-alert.css" rel="stylesheet" />
+    <script src="/App_Themes/NewUI/js/select2/select2.min.js"></script>
 </head>
 <body>
     <form id="form12" runat="server" enctype="multipart/form-data">
@@ -227,13 +229,12 @@
             
             <script src="/App_Themes/Ann/js/bootstrap.min.js"></script>
             <script src="/App_Themes/Ann/js/bootstrap-table/bootstrap-table.js"></script>
-            <script src="/App_Themes/NewUI/js/select2/select2.min.js"></script>
+            <script src="App_Themes/NewUI/js/sweet/sweet-alert.min.js"></script>
             <script src="/App_Themes/Ann/js/master.js?v=2011"></script>
-            
             <script src="/App_Themes/Ann/js/copy-product-info.js?v=15082019"></script>
-            <script src="/App_Themes/Ann/js/sync-product-small.js?v=30052019"></script>
+            <script src="App_Themes/Ann/js/services/common/product-service.js?v=2019816122020"></script>
+            <script src="/App_Themes/Ann/js/sync-product-small.js?v=20190918111357"></script>
             <script src="/App_Themes/Ann/js/download-product-image.js?v=17072019"></script>
-
             <script src="/App_Themes/Ann/js/HoldOn.js?v=2011"></script>
 
             <script type="text/javascript">
