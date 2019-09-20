@@ -502,7 +502,7 @@
                 });
             }
 
-            function liquidateProduct(productID, sku)
+            function liquidateProduct(categoryID, productID, sku)
             {
                 swal({
                     title: "Xác nhận",
@@ -526,12 +526,18 @@
 
                                     // Cập nhật trạng thái xã kho
                                     btnLiquidateDOM.remove();
-                                    rowDOM.querySelector("[data-title='Thao tác']").innerHTML += btnRecoverLiquidatedHTML(productID, sku);
+                                    rowDOM.querySelector("[data-title='Thao tác']").innerHTML += btnRecoverLiquidatedHTML(categoryID, productID, sku);
                                     quantityDOM.innerHTML = '<a target="_blank" href="/thong-ke-san-pham?SKU=' + skuDOM.innerText + '">0</a>'
                                     stockDOM.innerHTML = '<span class="bg-red">Hết hàng</span>';
 
                                     setTimeout(function () {
-                                        swal("Thông báo", "Xã hàng thành công!", "success");
+                                        swal({
+                                            title: "Thông báo",
+                                            text: "Xã hàng thành công!",
+                                            type: "success"
+                                        }, function () {
+                                            hiddenProduct(categoryID, productID, sku);
+                                        });
                                     }, 500);
                                 }
                                 else {
@@ -550,7 +556,7 @@
                 });
             }
 
-            function recoverLiquidatedProduct(productID, sku) {
+            function recoverLiquidatedProduct(categoryID, productID, sku) {
                 swal({
                     title: "Xác nhận",
                     text: "Bạn muốn phục hồi lại xã kho?",
@@ -573,12 +579,18 @@
 
                                     // Cập nhật trạng thái xã kho
                                     btnRecoverLiquidatedDOM.remove();
-                                    rowDOM.querySelector("[data-title='Thao tác']").innerHTML += btnLiquidateHTML(productID, sku);
+                                    rowDOM.querySelector("[data-title='Thao tác']").innerHTML += btnLiquidateHTML(categoryID, productID, sku);
                                     quantityDOM.innerHTML = '<a target="_blank" href="/thong-ke-san-pham?SKU=' + skuDOM.innerText + '">' + data.TotalProductInstockQuantityLeft  + '</a>'
                                     stockDOM.innerHTML = '<span class="bg-green">Còn hàng</span>';
 
                                     setTimeout(function () {
-                                        swal("Thông báo", "Phục hồi xã hàng thành công!", "success");
+                                        swal({
+                                            title: "Thông báo", 
+                                            text: "Phục hồi xã hàng thành công!", 
+                                            type: "success"
+                                        }, function () {
+                                            unhiddenProduct(categoryID, productID, sku);
+                                        });
                                     }, 500);
                                 }
                                 else {
@@ -597,32 +609,116 @@
                 });
             }
 
-            function btnLiquidateHTML(productID, sku)
+            function btnLiquidateHTML(categoryID, productID, sku)
             {
                 let strHTML = "";
 
                 strHTML += "<a href='javascript:;' ";
                 strHTML += "       title='Xả hàng' ";
                 strHTML += "       class='liquidation-product-" + productID + " btn primary-btn btn-red h45-btn' ";
-                strHTML += "       onclick='liquidateProduct(" + productID + ", `" + sku + "`);'>";
+                strHTML += "       onclick='liquidateProduct(" + categoryID + ", " + productID + ", `" + sku + "`);'>";
                 strHTML += "   <i class='glyphicon glyphicon-trash' aria-hidden='true'></i>";
                 strHTML += "</a>";
 
                 return strHTML;
             };
 
-            function btnRecoverLiquidatedHTML(productID, sku)
+            function btnRecoverLiquidatedHTML(categoryID, productID, sku)
             {
                 let strHTML = "";
 
                 strHTML += "<a href='javascript:;' ";
                 strHTML += "       title='Phục hồi lại xả hàng' ";
                 strHTML += "       class='recover-liquidation-product-" + productID + " btn primary-btn btn-green h45-btn' ";
-                strHTML += "       onclick='recoverLiquidatedProduct(" + productID + ", `" + sku + "`);'>";
+                strHTML += "       onclick='recoverLiquidatedProduct(" + categoryID + ", " + productID + ", `" + sku + "`);'>";
                 strHTML += "   <i class='glyphicon glyphicon-repeat' aria-hidden='true'></i>";
                 strHTML += "</a>";
 
                 return strHTML;
+            };
+
+            function hiddenProduct(categoryID, productID, sku) {
+                setTimeout(() => {
+                    swal({
+                        title: "Xác nhận",
+                        text: "Bạn đang muốn ẩn sản phẩm đúng không?",
+                        type: "warning",
+                        showCancelButton: true,
+                        closeOnConfirm: true,
+                        cancelButtonText: "Để em xem lại...",
+                        confirmButtonText: "Đúng rồi sếp!",
+                    }, (confirm) => {
+                        if (confirm) {
+                            // Thực hiện update giá trị trong database
+                            HoldOn.open();
+                            ProductService.updateHidden(productID, true)
+                                .then(() => {
+                                    // Thực hiện ẩn sản phẩm trên các trang quảng cáo
+                                    HoldOn.open();
+                                    ProductService.handleSyncProduct(categoryID, productID, sku, false, false, true)
+                                        .then(() => {
+                                            setTimeout(() => {
+                                                swal("Thông báo", "Ẩn sản phẩm trên trang quảng cáo thành công!", "success");
+                                            }, 500);
+                                        })
+                                        .catch(err => {
+                                            setTimeout(() => {
+                                                swal("Thông báo", "Có lỗi trong qua trình ẩn sản phẩm trên các trang quảng cáo", "error");
+                                            }, 500);
+                                        })
+                                        .finally(() => { HoldOn.close(); });
+                                })
+                                .catch(err => {
+                                    setTimeout(() => {
+                                        swal("Thông báo", "Có lỗi trong qua trình ẩn sản phẩm", "error");
+                                    }, 500);
+                                })
+                                .finally(() => { HoldOn.close(); });
+                        }
+                    });
+                }, 1000);
+            };
+
+            function unhiddenProduct(categoryID, productID, sku, up, renew) {
+                setTimeout(() => {
+                    swal({
+                        title: "Xác nhận",
+                        text: "Bạn đang muốn hiện sản phẩm đúng không?",
+                        type: "warning",
+                        showCancelButton: true,
+                        closeOnConfirm: true,
+                        cancelButtonText: "Để em xem lại...",
+                        confirmButtonText: "Đúng rồi sếp!",
+                    }, (confirm) => {
+                        if (confirm) {
+                            // Thực hiện update giá trị trong database
+                            HoldOn.open();
+                            ProductService.updateHidden(productID, false)
+                                .then(() => {
+                                    // Thực hiện hiển thị sản phẩm trên các trang quảng cáo
+                                    HoldOn.open();
+                                    ProductService.handleSyncProduct(categoryID, productID, sku, false, false, false)
+                                        .then(() => {
+                                            setTimeout(()  => {
+                                                swal("Thông báo", "Hiện sản phẩm trên trang quảng cáo thành công!", "success");
+                                            }, 500);
+                                        })
+                                        .catch(err => {
+                                            setTimeout(() => {
+                                                swal("Thông báo", "Có lỗi trong qua trình hiện sản phẩm trên các trang quảng cáo", "error");
+                                            }, 500);
+                                        })
+                                        .finally(() => { HoldOn.close(); });
+                                })
+                                .catch(err => {
+                                    setTimeout(() => {
+                                        swal("Thông báo", "Có lỗi trong qua trình hiển sản phẩm", "error");
+                                    }, 500);
+                                })
+                                .finally(() => { HoldOn.close(); });
+                        }
+                    });
+                }, 1000);
             };
         </script>
     </main>
