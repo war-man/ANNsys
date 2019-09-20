@@ -382,8 +382,16 @@ namespace IM_PJ
         [WebMethod]
         public static bool updateHidden(int productID, bool isHidden)
         {
-            var username = HttpContext.Current.Request.Cookies["loginHiddenPage"].Value;
-            var acc = AccountController.GetByUsername(username);
+            var loginHiddenPage = HttpContext.Current.Request.Cookies["loginHiddenPage"];
+            var usernameLoginSystem = HttpContext.Current.Request.Cookies["usernameLoginSystem"];
+            tbl_Account acc;
+
+            if (loginHiddenPage != null)
+                acc = AccountController.GetByUsername(loginHiddenPage.Value);
+            else if (usernameLoginSystem != null)
+                acc = AccountController.GetByUsername(usernameLoginSystem.Value);
+            else
+                throw new Exception("Có vấn đề trong việc lấy thông tin User");
 
             return ProductController.updateHidden(acc, productID, isHidden);
         }

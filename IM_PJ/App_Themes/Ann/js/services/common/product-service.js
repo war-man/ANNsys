@@ -15,7 +15,7 @@
                 }
             });
         });
-    }
+    };
 
     static recoverLiquidated(productID, sku) {
         return new Promise((resolve, reject) => {
@@ -33,7 +33,7 @@
                 }
             });
         });
-    }
+    };
 
     static updateHidden(productID, isHidden) {
         return new Promise((resolve, reject) => {
@@ -51,5 +51,40 @@
                 }
             });
         });
-    }
-}
+    };
+
+    static handleSyncProduct(categoryID, productID, sku, up, renew, isHidden) {
+        return new Promise((resolve, reject) => {
+            try {
+                let web = [
+                    "ann.com.vn",
+                    "khohangsiann.com",
+                    "bosiquanao.net",
+                    "quanaogiaxuong.com",
+                    "bansithoitrang.net",
+                    "quanaoxuongmay.com",
+                    "annshop.vn",
+                    "panpan.vn"
+                ];
+                let web_dobo = ["chuyensidobo.com"];
+                let web_vaydam = ["damgiasi.vn"];
+
+                if (categoryID == 18)
+                    web = web.concat(web_dobo);
+                if (categoryID == 17)
+                    web = web.concat(web_vaydam);
+
+                web.forEach((page, index) => {
+                    if (page)
+                        return false;
+                    let visibility = isHidden ? 'hidden' : 'visible';
+                    upProductToWeb(upProductToWeb(page, sku, productID, up, renew, index, visibility));
+                });
+
+                resolve(true);
+            } catch (e) {
+                reject(e);
+            }
+        });
+    };
+};
