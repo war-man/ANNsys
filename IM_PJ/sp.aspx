@@ -233,7 +233,7 @@
             <script src="/App_Themes/Ann/js/master.js?v=2011"></script>
             <script src="/App_Themes/Ann/js/copy-product-info.js?v=15082019"></script>
             <script src="App_Themes/Ann/js/services/common/product-service.js?v=2019816122020"></script>
-            <script src="/App_Themes/Ann/js/sync-product-small.js?v=20190918111357"></script>
+            <script src="/App_Themes/Ann/js/sync-product-small.js?v=20190920121238"></script>
             <script src="/App_Themes/Ann/js/download-product-image.js?v=17072019"></script>
             <script src="/App_Themes/Ann/js/HoldOn.js?v=2011"></script>
 

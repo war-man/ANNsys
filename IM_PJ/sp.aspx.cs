@@ -147,7 +147,7 @@ namespace IM_PJ
                         html.Append("   <p>🔖 Chất liệu: " + item.Materials + "</p>");
                     }
 
-                    string content = Regex.Replace(item.ProductContent, "<.*?>", "").ToString();
+                    string content = Regex.Replace(item.ProductContent != null ? item.ProductContent : "", "<.*?>", "").ToString();
                     if (content.Trim() != "")
                     {
                         html.Append("   <p>🔖 " + content.Substring(0, content.Length > 100 ? 100 : content.Length) + "</p>");

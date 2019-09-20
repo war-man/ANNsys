@@ -350,7 +350,7 @@
             <script src="/App_Themes/Ann/js/master.js?v=2011"></script>
             
             
-            <script src="/App_Themes/Ann/js/sync-product-small.js?v=20190918094149"></script>
+            <script src="/App_Themes/Ann/js/sync-product-small.js?v=20190920121238"></script>
             <script src="/App_Themes/Ann/js/download-product-image.js?v=17072019"></script>
 
             <script src="/App_Themes/Ann/js/HoldOn.js?v=2011"></script>

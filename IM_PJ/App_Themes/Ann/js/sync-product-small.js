@@ -13,10 +13,10 @@
     HoldOn.open();
     if ($(".hidden-" + id).hasClass("product-hidden"))
     {
-        //for (var i = 0; i < web.length; i++)
-        //{
-        //    upProductToWeb(web[i], sku, id, up, renew, i, "visible");
-        //}
+        for (var i = 0; i < web.length; i++)
+        {
+            upProductToWeb(web[i], sku, id, up, renew, i, "visible");
+        }
 
         HoldOn.close();
         HoldOn.open();
@@ -61,10 +61,10 @@
     }
     else
     {
-        //for (var i = 0; i < web.length; i++)
-        //{
-        //    upProductToWeb(web[i], sku, id, up, renew, i, visibility);
-        //}
+        for (var i = 0; i < web.length; i++)
+        {
+            upProductToWeb(web[i], sku, id, up, renew, i, visibility);
+        }
 
         HoldOn.close();
         HoldOn.open();
