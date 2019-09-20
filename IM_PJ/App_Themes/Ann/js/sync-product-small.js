@@ -10,19 +10,102 @@
         web = web.concat(web_vaydam);
     }
 
+    HoldOn.open();
     if ($(".hidden-" + id).hasClass("product-hidden"))
     {
-        for (var i = 0; i < web.length; i++)
-        {
-            upProductToWeb(web[i], sku, id, up, renew, i, "visible");
-        }
+        //for (var i = 0; i < web.length; i++)
+        //{
+        //    upProductToWeb(web[i], sku, id, up, renew, i, "visible");
+        //}
+
+        HoldOn.close();
+        HoldOn.open();
+        ProductService.updateHidden(id, false)
+            .then(() => {
+                swal({
+                    title: "Xác nhận",
+                    text: "Bạn muốn phục hồi lại xã kho?",
+                    type: "warning",
+                    showCancelButton: true,
+                    closeOnConfirm: true,
+                    cancelButtonText: "Để em xem lại...",
+                    confirmButtonText: "Đúng rồi sếp!",
+                }, function (confirm) {
+                    if (confirm) {
+                        HoldOn.open();
+                        ProductService.recoverLiquidated(id, sku)
+                            .then(data => {
+                                if (data) {
+                                    $(".hidden-" + id).html("<i class=\"fa fa-times\" aria-hidden=\"true\"></i> Ẩn");
+                                    $(".hidden-" + id).removeClass("product-hidden");
+
+                                    let quantityDOM = document.querySelector(".product-number[data-product-id='" + id + "']");
+                                    quantityDOM.innerHTML = '<p>🔖 <span class="bg-green">Còn hàng</span> (' + data.TotalProductInstockQuantityLeft + ' cái)</p>';
+                                }
+                            })
+                            .catch(err => {
+                                setTimeout(function () {
+                                    swal("Thông báo", "Sản phẩn này không thể phục hồi xã kho được nhe!", "error");
+                                }, 500);
+                            })
+                            .finally(() => { HoldOn.close(); });
+                    }
+                });
+            })
+            .catch(err => {
+                setTimeout(function () {
+                    swal("Thông báo", "Có lỗi trong qua trình ẩn sản phẩm", "error");
+                }, 500);
+            })
+            .finally(() => { HoldOn.close(); });
     }
     else
     {
-        for (var i = 0; i < web.length; i++)
-        {
-            upProductToWeb(web[i], sku, id, up, renew, i, visibility);
-        }
+        //for (var i = 0; i < web.length; i++)
+        //{
+        //    upProductToWeb(web[i], sku, id, up, renew, i, visibility);
+        //}
+
+        HoldOn.close();
+        HoldOn.open();
+        ProductService.updateHidden(id, true)
+            .then(() => {
+                swal({
+                    title: "Xác nhận",
+                    text: "Bạn muốn xả hàng sản phẩm này không?",
+                    type: "warning",
+                    showCancelButton: true,
+                    closeOnConfirm: true,
+                    cancelButtonText: "Để em xem lại...",
+                    confirmButtonText: "Đúng rồi sếp!",
+                }, function (confirm) {
+                    if (confirm) {
+                        HoldOn.open();
+                        ProductService.liquidate(id)
+                            .then(data => {
+                                if (data) {
+                                    $(".hidden-" + id).html("<i class=\"fa fa-check\" aria-hidden=\"true\"></i> Hiện");
+                                    $(".hidden-" + id).addClass("product-hidden");
+
+                                    let quantityDOM = document.querySelector(".product-number[data-product-id='" + id + "']");
+                                    quantityDOM.innerHTML = '<p>🔖 <span class="bg-red">Hết hàng</span> (0 cái)</p>';
+                                }
+                            })
+                            .catch(err => {
+                                setTimeout(function () {
+                                    swal("Thông báo", "Có lỗi trong qua trình xã hàng", "error");
+                                }, 500);
+                            })
+                            .finally(() => { HoldOn.close(); });
+                    }
+                });
+            })
+            .catch(err => {
+                setTimeout(function () {
+                    swal("Thông báo", "Có lỗi trong qua trình ẩn sản phẩm", "error");
+                }, 500);
+            })
+            .finally(() => { HoldOn.close(); });
     }
 }
 
@@ -49,11 +132,11 @@ function upProductToWeb(web, sku, id, up, renew, i, visibility) {
         success: function (data) {
             if (data.success === "true") {
                 if(visibility == "hidden") {
-                    $(".hidden-" + id).html("<i class=\"fa fa-check\" aria-hidden=\"true\"></i> Đã ẩn");
+                    $(".hidden-" + id).html("<i class=\"fa fa-times\" aria-hidden=\"true\"></i> Ẩn");
                     $(".hidden-" +id).addClass("product-hidden");
                 }
                 else {
-                    $(".hidden-" + id).html("<i class=\"fa fa-check\" aria-hidden=\"true\"></i> Đã hiện");
+                    $(".hidden-" + id).html("<i class=\"fa fa-check\" aria-hidden=\"true\"></i> Hiện");
                     $(".hidden-" +id).removeClass("product-hidden");
                 }
             }

@@ -327,6 +327,7 @@
         <script src="/App_Themes/Ann/js/copy-product-info.js?v=15082019"></script>
         <script src="/App_Themes/Ann/js/sync-product.js?v=01082019"></script>
         <script src="/App_Themes/Ann/js/download-product-image.js?v=17072019"></script>
+        <script src="App_Themes/Ann/js/services/common/product-service.js?v=2019816122020"></script>
         
         <script type="text/javascript">
             $("#<%=txtSearchProduct.ClientID%>").keyup(function (e) {
@@ -501,6 +502,128 @@
                 });
             }
 
+            function liquidateProduct(productID, sku)
+            {
+                swal({
+                    title: "Xác nhận",
+                    text: "Bạn muốn xả hàng sản phẩm này không?",
+                    type: "warning",
+                    showCancelButton: true,
+                    closeOnConfirm: true,
+                    cancelButtonText: "Để em xem lại...",
+                    confirmButtonText: "Đúng rồi sếp!",
+                }, function (confirm) {
+                    if (confirm) {
+                        HoldOn.open();
+                        ProductService.liquidate(productID)
+                            .then(data => {
+                                if (data) {
+                                    let btnLiquidateDOM = document.querySelector(".liquidation-product-" + productID);
+                                    let rowDOM = btnLiquidateDOM.parentElement.parentElement;
+                                    let skuDOM = rowDOM.querySelector("[data-title='Mã']");
+                                    let quantityDOM = rowDOM.querySelector("[data-title='Số lượng']");
+                                    let stockDOM = rowDOM.querySelector("[data-title='Kho']");
+
+                                    // Cập nhật trạng thái xã kho
+                                    btnLiquidateDOM.remove();
+                                    rowDOM.querySelector("[data-title='Thao tác']").innerHTML += btnRecoverLiquidatedHTML(productID, sku);
+                                    quantityDOM.innerHTML = '<a target="_blank" href="/thong-ke-san-pham?SKU=' + skuDOM.innerText + '">0</a>'
+                                    stockDOM.innerHTML = '<span class="bg-red">Hết hàng</span>';
+
+                                    setTimeout(function () {
+                                        swal("Thông báo", "Xã hàng thành công!", "success");
+                                    }, 500);
+                                }
+                                else {
+                                    setTimeout(function () {
+                                        swal("Thông báo", "Có lỗi trong qua trình xã hàng", "error");
+                                    }, 500);
+                                }
+                            })
+                            .catch(err => {
+                                setTimeout(function () {
+                                    swal("Thông báo", "Có lỗi trong qua trình xã hàng", "error");
+                                }, 500);
+                            })
+                            .finally(() => { HoldOn.close(); });
+                    }
+                });
+            }
+
+            function recoverLiquidatedProduct(productID, sku) {
+                swal({
+                    title: "Xác nhận",
+                    text: "Bạn muốn phục hồi lại xã kho?",
+                    type: "warning",
+                    showCancelButton: true,
+                    closeOnConfirm: true,
+                    cancelButtonText: "Để em xem lại...",
+                    confirmButtonText: "Đúng rồi sếp!",
+                }, function (confirm) {
+                    if (confirm) {
+                        HoldOn.open();
+                        ProductService.recoverLiquidated(productID, sku)
+                            .then(data => {
+                                if (data) {
+                                    let btnRecoverLiquidatedDOM = document.querySelector(".recover-liquidation-product-" + productID);
+                                    let rowDOM = btnRecoverLiquidatedDOM.parentElement.parentElement;
+                                    let skuDOM = rowDOM.querySelector("[data-title='Mã']");
+                                    let quantityDOM = rowDOM.querySelector("[data-title='Số lượng']");
+                                    let stockDOM = rowDOM.querySelector("[data-title='Kho']");
+
+                                    // Cập nhật trạng thái xã kho
+                                    btnRecoverLiquidatedDOM.remove();
+                                    rowDOM.querySelector("[data-title='Thao tác']").innerHTML += btnLiquidateHTML(productID, sku);
+                                    quantityDOM.innerHTML = '<a target="_blank" href="/thong-ke-san-pham?SKU=' + skuDOM.innerText + '">' + data.TotalProductInstockQuantityLeft  + '</a>'
+                                    stockDOM.innerHTML = '<span class="bg-green">Còn hàng</span>';
+
+                                    setTimeout(function () {
+                                        swal("Thông báo", "Phục hồi xã hàng thành công!", "success");
+                                    }, 500);
+                                }
+                                else {
+                                    setTimeout(function () {
+                                        swal("Thông báo", "Có lỗi trong qua trình phục hồi lại xã hàng", "error");
+                                    }, 500);
+                                }
+                            })
+                            .catch(err => {
+                                setTimeout(function () {
+                                    swal("Thông báo", "Có lỗi trong qua trình phục hồi lại xã hàng", "error");
+                                }, 500);
+                            })
+                            .finally(() => { HoldOn.close(); });
+                    }
+                });
+            }
+
+            function btnLiquidateHTML(productID, sku)
+            {
+                let strHTML = "";
+
+                strHTML += "<a href='javascript:;' ";
+                strHTML += "       title='Xả hàng' ";
+                strHTML += "       class='liquidation-product-" + productID + " btn primary-btn btn-red h45-btn' ";
+                strHTML += "       onclick='liquidateProduct(" + productID + ", `" + sku + "`);'>";
+                strHTML += "   <i class='glyphicon glyphicon-trash' aria-hidden='true'></i>";
+                strHTML += "</a>";
+
+                return strHTML;
+            };
+
+            function btnRecoverLiquidatedHTML(productID, sku)
+            {
+                let strHTML = "";
+
+                strHTML += "<a href='javascript:;' ";
+                strHTML += "       title='Phục hồi lại xả hàng' ";
+                strHTML += "       class='recover-liquidation-product-" + productID + " btn primary-btn btn-green h45-btn' ";
+                strHTML += "       onclick='recoverLiquidatedProduct(" + productID + ", `" + sku + "`);'>";
+                strHTML += "   <i class='glyphicon glyphicon-repeat' aria-hidden='true'></i>";
+                strHTML += "</a>";
+
+                return strHTML;
+            };
         </script>
     </main>
 </asp:Content>
