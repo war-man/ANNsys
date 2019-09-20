@@ -485,6 +485,7 @@
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="kiem-ke.aspx" />
+    <Content Include="kh.aspx" />
     <Content Include="Models\IMModel.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>IMModel.edmx</DependentUpon>
@@ -495,7 +496,6 @@
       <DependentUpon>IMModel.edmx</DependentUpon>
       <LastGenOutput>IMModel.cs</LastGenOutput>
     </Content>
-    <Content Include="kh.aspx" />
     <Content Include="san-pham-theo-ke.aspx" />
     <Content Include="nuoc-hoa.aspx" />
     <Content Include="thong-ke-khach-hang.aspx" />
@@ -966,6 +966,13 @@
     <Compile Include="Models\Pages\thong-ke-doanh-thu-khach-hang\CustomerModel.cs" />
     <Compile Include="Models\Pages\thong-ke-doanh-thu-khach-hang\OrderInfoModel.cs" />
     <Compile Include="Models\Pages\thong-ke-doanh-thu-khach-hang\ReportProfitCustomerModel.cs" />
+    <Compile Include="kh.aspx.cs">
+      <DependentUpon>kh.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="kh.aspx.designer.cs">
+      <DependentUpon>kh.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Models\ReceivedProductHistory.cs">
       <DependentUpon>IMModel.tt</DependentUpon>
     </Compile>
@@ -982,9 +989,6 @@
       <DependentUpon>IMModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Shipper.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\sysdiagram.cs">
       <DependentUpon>IMModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\tbl_Account.cs">
@@ -1103,13 +1107,6 @@
     </Compile>
     <Compile Include="Models\tbl_WhiteDomain.cs">
       <DependentUpon>IMModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="kh.aspx.cs">
-      <DependentUpon>kh.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="kh.aspx.designer.cs">
-      <DependentUpon>kh.aspx</DependentUpon>
     </Compile>
     <Compile Include="san-pham-theo-ke.aspx.cs">
       <DependentUpon>san-pham-theo-ke.aspx</DependentUpon>

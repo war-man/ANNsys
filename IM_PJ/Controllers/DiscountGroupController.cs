@@ -40,6 +40,7 @@ namespace IM_PJ.Controllers
                     discount.ModifiedBy = data.ModifiedBy;
                     discount.ModifiedDate = data.ModifiedDate;
                     discount.PermittedRead = data.PermittedRead;
+                    discount.QuantityRequired = data.QuantityRequired;
                     int kq = con.SaveChanges();
 
                     return kq.ToString();

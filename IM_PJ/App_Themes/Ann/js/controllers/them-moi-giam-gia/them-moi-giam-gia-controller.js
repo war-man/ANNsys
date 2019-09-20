@@ -4,7 +4,7 @@
         this._createAccountTag(item, true);
     };
 
-    // Sự kiện handle khi thêm account cho phép nhìn thấy group triết khấu
+    // Sự kiện handle khi thêm account cho phép nhìn thấy group chiết khấu
     addAccoutPermittedAccess() {
         let accountDOM = document.querySelector("[id$='_ddlAccount']");
         let permittedReadDOM = document.querySelector("[id$='_hdfPermittedRead']");
@@ -70,7 +70,7 @@
             accountDOM.innerHTML += strHTML;
     };
 
-    //  Sự kiện handle khi xóa account được phép nhìn thấy group triết khấu
+    //  Sự kiện handle khi xóa account được phép nhìn thấy group chiết khấu
     removeAccoutPermittedAccess(item) {
         this._removeAccountTag(item);
         this._createAccountOption(item);

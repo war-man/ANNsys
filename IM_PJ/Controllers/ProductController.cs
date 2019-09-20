@@ -2418,7 +2418,7 @@ namespace IM_PJ.Controllers
                         }
                     );
 
-                #region Thực thi triết xuất dữ liệu
+                #region Thực thi chiết xuất dữ liệu
                 #region Lọc với text search
                 if (!String.IsNullOrEmpty(filter.search))
                 {

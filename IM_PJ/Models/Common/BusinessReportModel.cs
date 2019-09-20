@@ -27,7 +27,7 @@ namespace IM_PJ.Models
         public double totalMoney { get; set; }
         // Tổng số tiền nhận được
         public double totalTransferMoney { get; set; }
-        // Tổng số tiền triết khấu sản phẩm
+        // Tổng số tiền chiết khấu sản phẩm
         public double totalDiscount { get; set; }
         // Tổng tiền trả cho dịch vụ giao hàng
         public double totalFeeShipping { get; set; }

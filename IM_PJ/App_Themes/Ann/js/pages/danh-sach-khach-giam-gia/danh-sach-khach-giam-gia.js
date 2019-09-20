@@ -59,7 +59,7 @@ function selectedCustomer(customer) {
     window.controller.showOrderQualifiedOfDiscountGroup(opts);
 }
 
-// Xóa khách hàng khỏi nhóm triết khấu
+// Xóa khách hàng khỏi nhóm chiết khấu
 function deletecustomer(customer) {
     let c = confirm("Bạn muốn xóa khách hàng này ra khỏi nhóm?");
     if (c == true) {

@@ -3353,7 +3353,7 @@ namespace IM_PJ.Controllers
                 if (discount == null)
                     return null;
 
-                orderDetail = orderDetail.Where(x => x.quantityProduct >= discount.QuantityProduct);
+                orderDetail = orderDetail.Where(x => x.quantityProduct >= discount.QuantityRequired);
 
                 var data = order
                     .Join(

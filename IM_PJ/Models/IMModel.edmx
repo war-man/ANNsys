@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-    <Schema Namespace="inventorymanagementModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+      <Schema Namespace="inventorymanagementModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="Bank">
           <Key>
             <PropertyRef Name="ID" />
@@ -264,16 +264,6 @@
           <Property Name="ModifiedBy" Type="int" Nullable="false" />
           <Property Name="ModifiedDate" Type="datetime" Nullable="false" />
         </EntityType>
-        <EntityType Name="sysdiagrams">
-          <Key>
-            <PropertyRef Name="diagram_id" />
-          </Key>
-          <Property Name="name" Type="nvarchar" MaxLength="128" Nullable="false" />
-          <Property Name="principal_id" Type="int" Nullable="false" />
-          <Property Name="diagram_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="version" Type="int" />
-          <Property Name="definition" Type="varbinary(max)" />
-        </EntityType>
         <EntityType Name="tbl_Account">
           <Key>
             <PropertyRef Name="ID" />
@@ -516,6 +506,7 @@
           <Property Name="QuantityProduct" Type="int" />
           <Property Name="RefundQuantityNoFee" Type="int" />
           <Property Name="PermittedRead" Type="nvarchar" MaxLength="255" />
+          <Property Name="QuantityRequired" Type="int" />
         </EntityType>
         <EntityType Name="tbl_LinkImnage">
           <Key>
@@ -995,7 +986,6 @@
           <EntitySet Name="Session" EntityType="Self.Session" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ShelfManager" EntityType="Self.ShelfManager" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Shipper" EntityType="Self.Shipper" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_Account" EntityType="Self.tbl_Account" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_AccountInfo" EntityType="Self.tbl_AccountInfo" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_Agent" EntityType="Self.tbl_Agent" Schema="dbo" store:Type="Tables" />
@@ -1036,7 +1026,8 @@
           <EntitySet Name="tbl_VariableValue" EntityType="Self.tbl_VariableValue" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_WhiteDomain" EntityType="Self.tbl_WhiteDomain" Schema="dbo" store:Type="Tables" />
         </EntityContainer>
-      </Schema></edmx:StorageModels>
+      </Schema>
+    </edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="inventorymanagementModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -1299,16 +1290,6 @@
           <Property Name="ModifiedBy" Type="Int32" Nullable="false" />
           <Property Name="ModifiedDate" Type="DateTime" Nullable="false" Precision="3" />
         </EntityType>
-        <EntityType Name="sysdiagram">
-          <Key>
-            <PropertyRef Name="diagram_id" />
-          </Key>
-          <Property Name="name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="principal_id" Type="Int32" Nullable="false" />
-          <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="version" Type="Int32" />
-          <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
-        </EntityType>
         <EntityType Name="tbl_Account">
           <Key>
             <PropertyRef Name="ID" />
@@ -1515,6 +1496,22 @@
           <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
           <Property Name="ModifiedBy" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
+        <EntityType Name="tbl_DiscountCustomer">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="DiscountGroupID" Type="Int32" />
+          <Property Name="UID" Type="Int32" />
+          <Property Name="CustomerName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="CustomerPhone" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="IsHidden" Type="Boolean" />
+          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+          <Property Name="CreatedBy" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
+          <Property Name="ModifiedBy" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="VerifyOrder" Type="Int32" />
+        </EntityType>
         <EntityType Name="tbl_DiscountGroup">
           <Key>
             <PropertyRef Name="ID" />
@@ -1535,6 +1532,7 @@
           <Property Name="QuantityProduct" Type="Int32" />
           <Property Name="RefundQuantityNoFee" Type="Int32" />
           <Property Name="PermittedRead" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="QuantityRequired" Type="Int32" />
         </EntityType>
         <EntityType Name="tbl_LinkImnage">
           <Key>
@@ -1998,7 +1996,7 @@
           <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
           <Property Name="ModifiedBy" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
-        <EntityContainer Name="inventorymanagementEntities" annotation:LazyLoadingEnabled="true">
+        <EntityContainer Name="inventorymanagementEntities1" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="Banks" EntityType="Self.Bank" />
           <EntitySet Name="BankAccounts" EntityType="Self.BankAccount" />
           <EntitySet Name="BankTransfers" EntityType="Self.BankTransfer" />
@@ -2014,7 +2012,6 @@
           <EntitySet Name="Sessions" EntityType="Self.Session" />
           <EntitySet Name="ShelfManagers" EntityType="Self.ShelfManager" />
           <EntitySet Name="Shippers" EntityType="Self.Shipper" />
-          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagram" />
           <EntitySet Name="tbl_Account" EntityType="Self.tbl_Account" />
           <EntitySet Name="tbl_AccountInfo" EntityType="Self.tbl_AccountInfo" />
           <EntitySet Name="tbl_Agent" EntityType="Self.tbl_Agent" />
@@ -2027,6 +2024,7 @@
           <EntitySet Name="tbl_Customer" EntityType="Self.tbl_Customer" />
           <EntitySet Name="tbl_CustomerLevel" EntityType="Self.tbl_CustomerLevel" />
           <EntitySet Name="tbl_Discount" EntityType="Self.tbl_Discount" />
+          <EntitySet Name="tbl_DiscountCustomer" EntityType="Self.tbl_DiscountCustomer" />
           <EntitySet Name="tbl_DiscountGroup" EntityType="Self.tbl_DiscountGroup" />
           <EntitySet Name="tbl_LinkImnage" EntityType="Self.tbl_LinkImnage" />
           <EntitySet Name="tbl_MovePro" EntityType="Self.tbl_MovePro" />
@@ -2053,30 +2051,13 @@
           <EntitySet Name="tbl_Variable" EntityType="Self.tbl_Variable" />
           <EntitySet Name="tbl_VariableValue" EntityType="Self.tbl_VariableValue" />
           <EntitySet Name="tbl_WhiteDomain" EntityType="Self.tbl_WhiteDomain" />
-          <EntitySet Name="tbl_DiscountCustomer" EntityType="inventorymanagementModel.tbl_DiscountCustomer" />
         </EntityContainer>
-        <EntityType Name="tbl_DiscountCustomer">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="DiscountGroupID" Type="Int32" />
-          <Property Name="UID" Type="Int32" />
-          <Property Name="CustomerName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="CustomerPhone" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="IsHidden" Type="Boolean" />
-          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
-          <Property Name="CreatedBy" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
-          <Property Name="ModifiedBy" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="VerifyOrder" Type="Int32" />
-        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
-        <EntityContainerMapping StorageEntityContainer="inventorymanagementModelStoreContainer" CdmEntityContainer="inventorymanagementEntities">
+        <EntityContainerMapping StorageEntityContainer="inventorymanagementModelStoreContainer" CdmEntityContainer="inventorymanagementEntities1">
           <EntitySetMapping Name="Banks">
             <EntityTypeMapping TypeName="inventorymanagementModel.Bank">
               <MappingFragment StoreEntitySet="Bank">
@@ -2351,17 +2332,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="sysdiagrams">
-            <EntityTypeMapping TypeName="inventorymanagementModel.sysdiagram">
-              <MappingFragment StoreEntitySet="sysdiagrams">
-                <ScalarProperty Name="name" ColumnName="name" />
-                <ScalarProperty Name="principal_id" ColumnName="principal_id" />
-                <ScalarProperty Name="diagram_id" ColumnName="diagram_id" />
-                <ScalarProperty Name="version" ColumnName="version" />
-                <ScalarProperty Name="definition" ColumnName="definition" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="tbl_Account">
             <EntityTypeMapping TypeName="inventorymanagementModel.tbl_Account">
               <MappingFragment StoreEntitySet="tbl_Account">
@@ -2580,12 +2550,26 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="tbl_DiscountCustomer">
+            <EntityTypeMapping TypeName="inventorymanagementModel.tbl_DiscountCustomer">
+              <MappingFragment StoreEntitySet="tbl_DiscountCustomer">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="DiscountGroupID" ColumnName="DiscountGroupID" />
+                <ScalarProperty Name="UID" ColumnName="UID" />
+                <ScalarProperty Name="CustomerName" ColumnName="CustomerName" />
+                <ScalarProperty Name="CustomerPhone" ColumnName="CustomerPhone" />
+                <ScalarProperty Name="IsHidden" ColumnName="IsHidden" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="VerifyOrder" ColumnName="VerifyOrder" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="tbl_DiscountGroup">
             <EntityTypeMapping TypeName="inventorymanagementModel.tbl_DiscountGroup">
               <MappingFragment StoreEntitySet="tbl_DiscountGroup">
-                <ScalarProperty Name="PermittedRead" ColumnName="PermittedRead" />
-                <ScalarProperty Name="RefundQuantityNoFee" ColumnName="RefundQuantityNoFee" />
-                <ScalarProperty Name="QuantityProduct" ColumnName="QuantityProduct" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="DiscountName" ColumnName="DiscountName" />
                 <ScalarProperty Name="DiscountAmount" ColumnName="DiscountAmount" />
@@ -2599,6 +2583,10 @@
                 <ScalarProperty Name="FeeRefund" ColumnName="FeeRefund" />
                 <ScalarProperty Name="NumOfDateToChangeProduct" ColumnName="NumOfDateToChangeProduct" />
                 <ScalarProperty Name="NumOfProductCanChange" ColumnName="NumOfProductCanChange" />
+                <ScalarProperty Name="QuantityProduct" ColumnName="QuantityProduct" />
+                <ScalarProperty Name="RefundQuantityNoFee" ColumnName="RefundQuantityNoFee" />
+                <ScalarProperty Name="PermittedRead" ColumnName="PermittedRead" />
+                <ScalarProperty Name="QuantityRequired" ColumnName="QuantityRequired" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -3085,23 +3073,6 @@
                 <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
                 <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
                 <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="tbl_DiscountCustomer">
-            <EntityTypeMapping TypeName="inventorymanagementModel.tbl_DiscountCustomer">
-              <MappingFragment StoreEntitySet="tbl_DiscountCustomer">
-                <ScalarProperty Name="VerifyOrder" ColumnName="VerifyOrder" />
-                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
-                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
-                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
-                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
-                <ScalarProperty Name="IsHidden" ColumnName="IsHidden" />
-                <ScalarProperty Name="CustomerPhone" ColumnName="CustomerPhone" />
-                <ScalarProperty Name="CustomerName" ColumnName="CustomerName" />
-                <ScalarProperty Name="UID" ColumnName="UID" />
-                <ScalarProperty Name="DiscountGroupID" ColumnName="DiscountGroupID" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

@@ -55,9 +55,9 @@
             let discountGroupID = +opts.discountGroupID || 0;
             let search = opts.search || "";
 
-            // Kiểm tra xe có nhập thông tin nhóm triết khấu không
+            // Kiểm tra xe có nhập thông tin nhóm chiết khấu không
             if (!discountGroupID)
-                return swal("Thông báo", "Không có mã nhóm triết khấu", "error");
+                return swal("Thông báo", "Không có mã nhóm chiết khấu", "error");
 
             window.HoldOn.open();
             SearchCustomerService.potentialCustomerDiscount(discountGroupID, search)
@@ -66,12 +66,12 @@
                         this.showPotentialCustomerDiscount(data, search, discountGroupID);
                     }
                     else {
-                        return swal("Thông báo", "Không tìm thấy", "warning");
+                        return swal("Thông báo", "Không tìm thấy khách (có thể chưa đủ điều kiện) hoặc đã được thêm vào nhóm", "warning");
                     };
                 })
                 .catch(err => {
                     console.log(err);
-                    let message = "Lỗi trong quá trình lấy danh sách khách hàng có thể được nhập vào nhóm triết khấu";
+                    let message = "Lỗi trong quá trình lấy danh sách khách hàng có thể được nhập vào nhóm chiết khấu";
                     return swal("Thông báo", message, "error");
                 })
                 .finally(() => { window.HoldOn.close(); });
@@ -93,48 +93,30 @@
         strModalHTML += '        <div class="modal-content">';
         strModalHTML += '            <div class="modal-header">';
         strModalHTML += '                <button type="button" class="close" data-dismiss="modal" >&times;</button>';
-        strModalHTML += '                <h4 class="modal-title">Danh sách khách hàng</h4>';
+        strModalHTML += '                <h4 class="modal-title">Danh sách khách hàng đạt yêu cầu</h4>';
         strModalHTML += '            </div>';
         strModalHTML += '            <div class="modal-body">';
-        strModalHTML += '                <div class="row form-group" style="display: flex;">';
+        strModalHTML += '                <div class="form-group" style="display: flex;">';
         strModalHTML += '                    <input type="text" id="modal-search-customer" class="form-control" value="' + search + '" placeholder="Nhập thông tin khách hàng (F1)" />';
-        strModalHTML += '                    <button type="button" id="modal-btn-search-customer" class="btn btn-primary" onclick="window.searchCustomer.searchPotentialCustomerDiscount(' + discountGroupID + ')">Tìm kiếm</button>';
+        strModalHTML += '                    <a href="javascript:;" id="modal-btn-search-customer" class="btn btn-primary" onclick="window.searchCustomer.searchPotentialCustomerDiscount(' + discountGroupID + ')">Tìm kiếm</a>';
         strModalHTML += '                </div>';
-        strModalHTML += '                <div class="row form-group">';
+        strModalHTML += '                <div class="form-group">';
         strModalHTML += '                    <table class="table table-striped table-fixed">';
         strModalHTML += '                        <thead style="' + theadCSS + '">';
         strModalHTML += '                            <tr>';
-        if (accountName == "admin") {
-            strModalHTML += '                                <th class="col-xs-2">Nick</th>';
-            strModalHTML += '                                <th class="col-xs-2">Họ tên</th>';
-            strModalHTML += '                                <th class="col-xs-2">Điện thoại</th>';
-            strModalHTML += '                                <th class="col-xs-2">Nhân viên</th>';
-            strModalHTML += '                                <th class="col-xs-4">Địa chỉ</th>';
-        }
-        else {
-            strModalHTML += '                                <th class="col-xs-3">Nick</th>';
-            strModalHTML += '                                <th class="col-xs-3">Họ tên</th>';
-            strModalHTML += '                                <th class="col-xs-2">Điện thoại</th>';
-            strModalHTML += '                                <th class="col-xs-4">Địa chỉ</th>';
-        };
+        strModalHTML += '                                <th class="col-xs-4">Họ tên</th>';
+        strModalHTML += '                                <th class="col-xs-4">Nick</th>';
+        strModalHTML += '                                <th class="col-xs-2">Điện thoại</th>';
+        strModalHTML += '                                <th class="col-xs-2">Nhân viên</th>';
         strModalHTML += '                            </tr>';
         strModalHTML += '                        </thead>';
         strModalHTML += '                        <tbody>';
         data.forEach(item => {
             strModalHTML += "                            <tr onclick='window.searchCustomer.selectCustomer(" + item.stringJSON() + ")'>";
-            if (accountName == "admin") {
-                strModalHTML += '                                <td class="col-xs-2">' + item.Nick + '</td>';
-                strModalHTML += '                                <td class="col-xs-2">' + item.FullName + '</td>';
-                strModalHTML += '                                <td class="col-xs-2">' + item.Phone + '</td>';
-                strModalHTML += '                                <td class="col-xs-2">' + item.StaffName + '</td>';
-                strModalHTML += '                                <td class="col-xs-4" style="display: inline-table;">' + item.Address + '</td>';
-            }
-            else {
-                strModalHTML += '                                <td class="col-xs-3">' + item.Nick + '</td>';
-                strModalHTML += '                                <td class="col-xs-3">' + item.FullName + '</td>';
-                strModalHTML += '                                <td class="col-xs-2">' + item.Phone + '</td>';
-                strModalHTML += '                                <td class="col-xs-4" style="display: inline-table;">' + item.Address + '</td>';
-            };
+            strModalHTML += '                                <td class="col-xs-4">' + item.FullName + '</td>';
+            strModalHTML += '                                <td class="col-xs-4">' + item.Nick + '</td>';
+            strModalHTML += '                                <td class="col-xs-2">' + item.Phone + '</td>';
+            strModalHTML += '                                <td class="col-xs-2">' + item.StaffName + '</td>';
             strModalHTML += '                            </tr>';
         });
         strModalHTML += '                        </tbody>';
@@ -169,7 +151,7 @@
             })
             .catch(err => {
                 console.log(err);
-                let message = "Lỗi trong quá trình lấy danh sách khách hàng có thể được nhập vào nhóm triết khấu";
+                let message = "Lỗi trong quá trình lấy danh sách khách hàng có thể được nhập vào nhóm chiết khấu";
                 return swal("Thông báo", message, "error");
             })
             .finally(() => { window.HoldOn.close(); });
@@ -184,19 +166,10 @@
 
         data.forEach(item => {
             strModalHTML += "                            <tr onclick='window.searchCustomer.selectCustomer(" + item.stringJSON() + ")'>";
-            if (accountName == "admin") {
-                strModalHTML += '                                <td class="col-xs-2">' + item.Nick + '</td>';
-                strModalHTML += '                                <td class="col-xs-2">' + item.FullName + '</td>';
-                strModalHTML += '                                <td class="col-xs-2">' + item.Phone + '</td>';
-                strModalHTML += '                                <td class="col-xs-2">' + item.StaffName + '</td>';
-                strModalHTML += '                                <td class="col-xs-4" style="display: inline-table;">' + item.Address + '</td>';
-            }
-            else {
-                strModalHTML += '                                <td class="col-xs-3">' + item.Nick + '</td>';
-                strModalHTML += '                                <td class="col-xs-3">' + item.FullName + '</td>';
-                strModalHTML += '                                <td class="col-xs-2">' + item.Phone + '</td>';
-                strModalHTML += '                                <td class="col-xs-4" style="display: inline-table;">' + item.Address + '</td>';
-            };
+            strModalHTML += '                                <td class="col-xs-4">' + item.FullName + '</td>';
+            strModalHTML += '                                <td class="col-xs-4">' + item.Nick + '</td>';
+            strModalHTML += '                                <td class="col-xs-2">' + item.Phone + '</td>';
+            strModalHTML += '                                <td class="col-xs-2">' + item.StaffName + '</td>';
             strModalHTML += '                            </tr>';
         });
 

@@ -30,5 +30,6 @@ namespace IM_PJ.Models
         public Nullable<int> QuantityProduct { get; set; }
         public Nullable<int> RefundQuantityNoFee { get; set; }
         public string PermittedRead { get; set; }
+        public Nullable<int> QuantityRequired { get; set; }
     }
 }

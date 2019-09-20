@@ -1321,7 +1321,7 @@
                         amount = parseInt($("#<%=pDiscount.ClientID%>").val().replace(/\,/g,''));
                     else
                     {
-                        // Nếu khách hàng năm trong nhóm triết khấu và đạt số lượng yêu cầu không
+                        // Nếu khách hàng năm trong nhóm chiết khấu và đạt số lượng yêu cầu không
                         if (isDiscount && productquantity >= quantityRequirement)
                             amount = amount >= amountdiscount ? amount : amountdiscount;
                     }

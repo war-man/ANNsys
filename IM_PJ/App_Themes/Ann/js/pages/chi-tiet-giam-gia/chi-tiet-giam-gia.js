@@ -10,11 +10,11 @@ function showAccoutPermittedAccess(item) {
     controller.showAccoutPermittedAccess(item);
 };
 
-// Sự kiện handle khi thêm account cho phép nhìn thấy group triết khấu
+// Sự kiện handle khi thêm account cho phép nhìn thấy group chiết khấu
 function addAccoutPermittedAccess() {
     controller.addAccoutPermittedAccess();
 };
-//  Sự kiện handle khi xóa account được phép nhìn thấy group triết khấu
+//  Sự kiện handle khi xóa account được phép nhìn thấy group chiết khấu
 function removeAccoutPermittedAccess(item) {
     controller.removeAccoutPermittedAccess(item);
 };

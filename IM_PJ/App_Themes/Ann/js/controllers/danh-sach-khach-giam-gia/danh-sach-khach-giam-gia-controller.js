@@ -22,13 +22,13 @@
         }
     }
 
-    // Hiện thị danh sách order khách hàng đạt tiêu chuẩn của nhóm triết khấu
+    // Hiện thị danh sách order khách hàng đạt tiêu chuẩn của nhóm chiết khấu
     showOrderQualifiedOfDiscountGroup(opts) {
         let discountGroupID = +opts.discountGroupID || 0;
         let customer = opts.customer;
 
         if (!discountGroupID)
-            return swal("Thông báo", "Mã nhóm triết khấu không tìm thấy", "error");
+            return swal("Thông báo", "Mã nhóm chiết khấu không tìm thấy", "error");
 
         if (!customer)
             return swal("Thông báo", "Không thấy thông tin khách hàng", "error");
@@ -69,13 +69,13 @@
         let tbodyDOM = modalDOM.querySelector("tbody");
         let strModalHTML = '';
 
-        titleDOM.innerText = 'Danh sách đơn hàng (' + customer.FullName + ')';
-        nickDOM.innerHTML = '<label>Nick: </label>' + customer.Nick;
-        phoneDOM.innerHTML = '<label>Phone: </label>' + customer.Phone;
-        addressDOM.innerHTML = '<label>Địa chỉ: </label>' + customer.Address;
+        titleDOM.innerText = 'Danh sách đơn hàng đạt yêu cầu (' + customer.FullName + ')';
+        nickDOM.innerHTML = '<label>Nick: </label> ' + customer.Nick;
+        phoneDOM.innerHTML = '<label>Điện thoại: </label> ' + customer.Phone;
+        addressDOM.innerHTML = '<label>Địa chỉ: </label> ' + customer.Address;
         if (customer.DiscountGroup) {
             discountDOM.style.display = '';
-            discountDOM.innerHTML = '<label>Nhóm triết khấu hiện tại: </label>' + customer.DiscountGroup.Name;
+            discountDOM.innerHTML = '<label>Nhóm chiết khấu hiện tại: </label>' + customer.DiscountGroup.Name;
         }
         else {
             discountDOM.style.display = 'none';
@@ -110,12 +110,12 @@
         let message = "";
 
         if (customer.DiscountGroup) {
-            message += "Bạn muốn khách hàng <strong>" + customer.FullName + "</strong> sẽ rời khỏi nhóm ";
+            message += "Bạn có muốn khách hàng <strong>" + customer.FullName + "</strong> sẽ rời khỏi nhóm ";
             message += "<a class='customer-name-link' href='/danh-sach-khach-giam-gia?id=" + customer.DiscountGroup.ID + "' target='_blank'>" + customer.DiscountGroup.Name + "</a> ";
-            message += "để vô nhóm này.";
+            message += "để vào nhóm này?";
         }
         else {
-            message = "Bạn muốn khách hàng <strong>" + customer.FullName + "</strong> vào nhóm triết khấu";
+            message = "Bạn có muốn khách hàng <strong>" + customer.FullName + "</strong> vào nhóm này?";
         };
 
         return swal({

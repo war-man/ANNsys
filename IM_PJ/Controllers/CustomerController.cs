@@ -577,12 +577,17 @@ namespace IM_PJ.Controllers
                 return data;
             }
         }
-        public static List<CustomerModel> getByDiscountGroupID(int discountGroupID)
+        public static List<CustomerModel> getByDiscountGroupID(int discountGroupID, string CreatedBy)
         {
             using (var con = new inventorymanagementEntities())
             {
                 #region Lọc ra khách hàng trong group
-                var customerInGroup = con.tbl_Customer
+                var customer = con.tbl_Customer.Where(x => 1 == 1);
+                if (!string.IsNullOrEmpty(CreatedBy))
+                {
+                    customer = customer.Where(x => x.CreatedBy == CreatedBy);
+                }
+                var customerInGroup = customer
                     .Join(
                         con.tbl_DiscountCustomer.Where(x => x.DiscountGroupID.Value == discountGroupID),
                         c => c.ID,
@@ -591,7 +596,7 @@ namespace IM_PJ.Controllers
                     );
                 #endregion
 
-                #region Lấy thông tin nhóm triết khấu
+                #region Lấy thông tin nhóm chiết khấu
                 var discount = con.tbl_DiscountGroup.Where(x => x.ID == discountGroupID);
                 #endregion
 

@@ -50,7 +50,7 @@
     };
     //#endregion Giá đã bán
 
-    //#region Số tiền triết khấu
+    //#region Số tiền chiết khấu
     get Discount() {
         return this._discount;
     };
@@ -58,7 +58,7 @@
     set Discount(value) {
         this._discount = +value || 0;
     };
-    //#endregion Số tiền triết khấu
+    //#endregion Số tiền chiết khấu
 
     //#region Số tiền shipping
     get FeeShipping() {

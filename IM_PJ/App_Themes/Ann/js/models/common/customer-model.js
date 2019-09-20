@@ -99,7 +99,7 @@
     };
     //#endregion Tên nhân viên khởi tạo khách hàng
 
-    //#region Thông tin nhóm triết khấu
+    //#region Thông tin nhóm chiết khấu
     get DiscountGroup() {
         return this._discout_group;
     };
@@ -107,7 +107,7 @@
     set DiscountGroup(value) {
         this._discout_group = value;
     };
-    //#endregion Thông tin nhóm triết khấu
+    //#endregion Thông tin nhóm chiết khấu
 
     stringJSON() {
         return JSON.stringify({

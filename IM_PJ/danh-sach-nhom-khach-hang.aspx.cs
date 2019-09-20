@@ -117,7 +117,7 @@ namespace IM_PJ
                     var item = acs[i];
                     html.AppendLine("<tr>");
                     html.AppendLine("   <td>" + item.DiscountName + "</td>");
-                    html.AppendLine("   <td>" + String.Format("{0:N0}", item.NumberCustomer) + "</td>");
+                    html.AppendLine("   <td>" + String.Format("{0:N0}", item.NumberCustomer) + " khách </td>");
                     html.AppendLine("   <td>" + string.Format("{0:N0}", Convert.ToDouble(item.DiscountAmount)) + "</td>");
                     html.AppendLine("   <td>" + string.Format("{0:N0}", Convert.ToDouble(item.QuantityProduct)) + " cái</td>");
                     html.AppendLine("   <td>" + string.Format("{0:N0}", Convert.ToDouble(item.FeeRefund)) + "</td>");
@@ -127,8 +127,8 @@ namespace IM_PJ
                     html.AppendLine("   <td>" + date + "</td>");
                     html.AppendLine("   <td>");
                     if (hdfPermittedEdit.Value == "1")
-                        html.AppendLine("       <a href='/chi-tiet-giam-gia?id=" + item.ID + "' class='btn primary-btn h45-btn'>Chỉnh sửa</a>");
-                    html.AppendLine("       <a href='/danh-sach-khach-giam-gia?id=" + item.ID + "' class='btn primary-btn h45-btn'>Danh sách khách hàng</a>");
+                        html.AppendLine("       <a href='/chi-tiet-giam-gia?id=" + item.ID + "' class='btn primary-btn h45-btn'><i class='fa fa-pencil-square-o' aria-hidden='true'></i> Sửa</a>");
+                    html.AppendLine("       <a href='/danh-sach-khach-giam-gia?id=" + item.ID + "' class='btn primary-btn h45-btn btn-blue'><i class='fa fa-list' aria-hidden='true'></i> Khách hàng</a>");
                     html.AppendLine("   </td>");
                     html.AppendLine("</tr>");
                 }

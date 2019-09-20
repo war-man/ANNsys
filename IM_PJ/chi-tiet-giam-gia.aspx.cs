@@ -47,7 +47,7 @@ namespace IM_PJ
                     .Where(x => x.Value != acc.ID.ToString())
                     .ToList();
 
-            accounts[0].Text = "Danh sách Accout để cấp quyền truy cập";
+            accounts[0].Text = "Chọn nhân viên để cấp quyền truy cập nhóm này";
             ddlAccount.Items.Clear();
             ddlAccount.Items.AddRange(accounts.ToArray());
             ddlAccount.DataBind();
@@ -65,6 +65,7 @@ namespace IM_PJ
                 {
                     ViewState["ID"] = id;
                     txtDiscountName.Text = discountGroup.DiscountName;
+                    pQuantityRequired.Value = discountGroup.QuantityRequired;
                     pDiscountAmount.Value = discountGroup.DiscountAmount;
                     pQuantityProduct.Value = discountGroup.QuantityProduct;
                     rRefundGoods.Value = discountGroup.FeeRefund;
@@ -128,7 +129,8 @@ namespace IM_PJ
                             IsHidden = chkIsHidden.Checked,
                             ModifiedBy = username,
                             ModifiedDate = now,
-                            PermittedRead = hdfPermittedRead.Value
+                            PermittedRead = hdfPermittedRead.Value,
+                            QuantityRequired = pQuantityRequired.Value.HasValue ? Convert.ToInt32(pQuantityRequired.Value.Value) : 0,
                         };
 
 

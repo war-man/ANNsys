@@ -30,3 +30,12 @@
 #modal-order tbody tr:hover td {
     background-color: #87CEEB;
 }
+.btn-primary {
+    background-color: #ff8400!important;
+}
+.btn {
+    color: #fff;
+}
+.table > thead > tr > th:first-child {
+    padding: 15px 15px;
+}

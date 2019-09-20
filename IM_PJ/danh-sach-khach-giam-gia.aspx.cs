@@ -50,6 +50,9 @@ namespace IM_PJ
         {
             if (discountGroupID > 0)
             {
+                string username = Request.Cookies["usernameLoginSystem"].Value;
+                acc = AccountController.GetByUsername(username);
+
                 var discount = DiscountGroupController.GetByID(discountGroupID);
                 if (discount != null)
                 {
@@ -60,20 +63,29 @@ namespace IM_PJ
                     ltrGroupName.Text = discount.DiscountName;
                     var numberCustomer = DiscountCustomerController.GetByGroupID(discount.ID).Count;
                     if(numberCustomer > 0)
-                        ltrNumberCustomer.Text = String.Format("{0:N0} người", numberCustomer);
+                        ltrNumberCustomer.Text = String.Format("{0:N0} khách", numberCustomer);
                     if(discount.DiscountAmount.HasValue && discount.DiscountAmount.Value > 0)
-                        ltrDiscount.Text = String.Format("{0:N0} VND", discount.DiscountAmount);
+                        ltrDiscount.Text = String.Format("{0:N0}đ/cái", discount.DiscountAmount);
+                    if (discount.QuantityRequired.HasValue && discount.QuantityRequired.Value > 0)
+                        ltrQuantityRequired.Text = String.Format("{0:N0} cái", discount.QuantityRequired);
                     if (discount.QuantityProduct.HasValue && discount.QuantityProduct.Value > 0)
                         ltrQuantityProduct.Text = String.Format("{0:N0} cái", discount.QuantityProduct);
                     if (discount.FeeRefund.HasValue && discount.FeeRefund.Value > 0)
-                        ltrFeeRefund.Text = String.Format("{0:N0} VND", discount.FeeRefund);
+                        ltrFeeRefund.Text = String.Format("{0:N0}đ/cái", discount.FeeRefund);
+                    else
+                        ltrFeeRefund.Text = "miễn phí";
                     if (discount.NumOfDateToChangeProduct.HasValue && discount.NumOfDateToChangeProduct.Value > 0)
                         ltrNumberOfDateToChnageProduct.Text = String.Format("{0:N0} ngày", discount.NumOfDateToChangeProduct);
                     if (discount.NumOfProductCanChange.HasValue && discount.NumOfProductCanChange.Value > 0)
-                        ltrNumberOfProductCanChange.Text = String.Format("{0:N0} cái/ngày", discount.NumOfProductCanChange);
+                        ltrNumberOfProductCanChange.Text = String.Format("{0:N0} cái/{1} ngày", discount.NumOfProductCanChange, discount.NumOfDateToChangeProduct);
 
-                    // Hiển thị thông tin khách hàng được hưởng triết khấu
-                    var customer = CustomerController.getByDiscountGroupID(discountGroupID)
+                    string createdBy = "";
+                    if (acc.RoleID == 2)
+                    {
+                        createdBy = acc.Username;
+                    }
+                    // Hiển thị thông tin khách hàng được hưởng chiết khấu
+                    var customer = CustomerController.getByDiscountGroupID(discountGroupID, createdBy)
                         .OrderBy(o => o.FullName)
                         .ToList();
 
@@ -105,18 +117,19 @@ namespace IM_PJ
                 for (int i = FromRow; i < ToRow + 1; i++)
                 {
                     var item = acs[i];
-                    html.Append("<tr data-id=\"" + item.ID + "\">");
-                    html.Append("   <td class=\"customer-name-link\"><a href=\"/chi-tiet-khach-hang?id=" + item.ID + "\">" + item.FullName.ToTitleCase() + "</a></td>");
-                    html.Append("   <td class=\"customer-name-link\">" + item.Nick.ToTitleCase() + "</td>");
+                    html.Append("<tr data-id='" + item.ID + "'>");
+                    html.Append("   <td class='customer-name-link'><a href='/chi-tiet-khach-hang?id=" + item.ID + "'>" + item.FullName.ToTitleCase() + "</a></td>");
+                    html.Append("   <td class='customer-name-link'>" + item.Nick.ToTitleCase() + "</td>");
                     html.Append("   <td>" + item.Phone + "</td>");
                     html.Append("   <td>" + item.StaffName + "</td>");
                     html.Append("   <td>" + String.Format("{0:dd/MM/yyyy}", item.DiscountGroup.DateJoined) + "</td>");
 
                     html.Append("   <td>");
                     if (acc.Username == "admin" )
-                        html.Append("       <a href='javascript:;' onclick='deletecustomer(" + JsonConvert.SerializeObject(item) + ")' class='btn primary-btn fw-btn not-fullwidth'>Xóa</a>");
+                        html.Append("       <a href='javascript:;' onclick='deletecustomer(" + JsonConvert.SerializeObject(item) + ")' class='btn primary-btn btn-red h45-btn'><i class='fa fa-times' aria-hidden='true'></i> Xóa</a>");
                     if (item.DiscountGroup.VerifyOrder > 0)
-                        html.Append(String.Format("       <a href='/thong-tin-don-hang?id={0}' class='btn btn-blue' target='_blank'>Đơn hàng</a>", item.DiscountGroup.VerifyOrder));
+                        html.Append(String.Format("       <a href='/thong-tin-don-hang?id={0}' class='btn primary-btn h45-btn' target='_blank'><i class='fa fa-file-text-o' aria-hidden='true'></i> Đơn xác nhận</a>", item.DiscountGroup.VerifyOrder));
+                    html.Append("       <a href='/thong-ke-khach-hang?textsearch=" + item.Phone + "' title='Xem thống kê khách hàng' class='btn primary-btn btn-blue h45-btn' target='_blank'><i class='fa fa-line-chart' aria-hidden='true'></i> Thống kê</a>");
                     html.Append("   </td>");
                     html.Append("</tr>");
                 }
@@ -278,6 +291,7 @@ namespace IM_PJ
                         UID = customer.ID,
                         CustomerName = customer.FullName,
                         CustomerPhone = customer.Phone,
+                        IsHidden = false,
                         CreatedDate = now,
                         CreatedBy = acc.Username,
                         ModifiedDate = now,
@@ -313,7 +327,7 @@ namespace IM_PJ
         public static List<CustomerModel> getPotentialCustomer(int discountGroupID, string search)
         {
             // Trường hợp là admin thì không cần filter theo người khởi tạo
-            // chỉ cần khách hàng đạt chuẩn của mức triết khấu là đc
+            // chỉ cần khách hàng đạt chuẩn của mức chiết khấu là đc
             var staffName = HttpContext.Current.Request.Cookies["usernameLoginSystem"].Value;
             if (String.IsNullOrEmpty(staffName))
                 return null;

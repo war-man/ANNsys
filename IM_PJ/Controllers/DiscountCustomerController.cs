@@ -96,7 +96,7 @@ namespace IM_PJ.Controllers
                     .OrderBy(o => o.DiscountGroupID);
                 #endregion
 
-                #region Lấy thông tin nhóm triết khấu
+                #region Lấy thông tin nhóm chiết khấu
                 var discount = con.tbl_DiscountGroup
                     .Join(
                         customer.Where(x => x.DiscountGroupID.HasValue),

@@ -28,7 +28,7 @@ namespace IM_PJ
                     var acc = AccountController.GetByUsername(username);
                     if (acc != null)
                     {
-                        if (acc.RoleID != 0 || acc.RoleID == 2)
+                        if (acc.RoleID == 1)
                         {
                             Response.Redirect("/trang-chu");
                         }
@@ -191,7 +191,7 @@ namespace IM_PJ
                     double profit = 0;
 
                     // Tính số tiền lời dựa trên các sản phẩm đã bán
-                    // Tiền lời bằng tiền bán - tiền vốn - tiền triết khấu + phí shipping + phí khác
+                    // Tiền lời bằng tiền bán - tiền vốn - tiền chiết khấu + phí shipping + phí khác
                     profit += item.price - item.costOfGoods - item.discount;
                     // Tính số tiền lời sau khi sản phẩn được đổi trả
                     // Tiền lời bằng tiền lời đã bán - số liền lời của sản phẩn đổi trả + phí đổi trả

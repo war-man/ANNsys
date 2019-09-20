@@ -105,6 +105,9 @@
         margin-right: 30px;
         float: left;
     }
+    .btn-black {
+        background-color: #000;
+    }
     .transport-info {
         display: none;
         font-size: 15px;
@@ -154,6 +157,7 @@
         }
     }
   </style>
+    <asp:Literal ID="ltrDisablePrint"  runat="server"></asp:Literal>
 </head>
 
 <body class="receipt">
@@ -188,12 +192,24 @@
                 type: "warning",
                 showCancelButton: true,
                 confirmButtonColor: "#DD6B55",
-                confirmButtonText: "Đúng rồi sếp! In ếp ơi..",
+                confirmButtonText: "Đúng rồi sếp! In sếp ơi..",
                 cancelButtonText: "Để em coi lại lần nữa..",
                 closeOnConfirm: true,
                 html: false
             }, function () {
                 removeDiv();
+            });
+        }
+
+        function printError(shippingType) {
+            swal({
+                title: "Không in được",
+                text: "Đơn này gửi <strong>" + shippingType + "</strong> nhưng <strong>Không thu hộ</strong>.<br><br>Nếu khách đã chuyển khoản thì nhờ chị Ngọc in nhé!",
+                type: "warning",
+                confirmButtonColor: "#000000",
+                confirmButtonText: "OK sếp ơi..",
+                closeOnConfirm: true,
+                html: true
             });
         }
         function removeDiv() {

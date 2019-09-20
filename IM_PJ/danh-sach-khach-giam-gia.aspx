@@ -18,29 +18,33 @@
                         </div>
                         <div class="panel-body">
                             <div class="form-row">
-                                <div class="col-xs-4">
+                                <div class="col-xs-3">
                                     <label class="text-left">Số lượng khách: </label>
                                     <asp:Literal ID="ltrNumberCustomer" runat="server"></asp:Literal>
                                 </div>
-                                <div class="col-xs-4">
+                                <div class="col-xs-3">
                                     <label class="text-left">Chiết khấu: </label>
                                     <asp:Literal ID="ltrDiscount" runat="server"></asp:Literal>
                                 </div>
-                                <div class="col-xs-4">
+                                <div class="col-xs-3">
+                                    <label class="text-left">Số lượng yêu cầu: </label>
+                                    <asp:Literal ID="ltrQuantityRequired" runat="server"></asp:Literal>
+                                </div>
+                                <div class="col-xs-3">
                                     <label class="text-left">Số lượng tối thiểu: </label>
                                     <asp:Literal ID="ltrQuantityProduct" runat="server"></asp:Literal>
                                 </div>
                             </div>
                             <div class="form-row">
-                                <div class="col-xs-4">
-                                    <label class="text-left">Phí đổi trả: </label>
+                                <div class="col-xs-3">
+                                    <label class="text-left">Phí đổi trả hàng: </label>
                                     <asp:Literal ID="ltrFeeRefund" runat="server"></asp:Literal>
                                 </div>
-                                <div class="col-xs-4">
-                                    <label class="text-left">Số ngày tối đa: </label>
+                                <div class="col-xs-3">
+                                    <label class="text-left">Số ngày đổi trả: </label>
                                     <asp:Literal ID="ltrNumberOfDateToChnageProduct" runat="server"></asp:Literal>
                                 </div>
-                                <div class="col-xs-4">
+                                <div class="col-xs-3">
                                     <label class="text-left">Số lượng đổi/số ngày: </label>
                                     <asp:Literal ID="ltrNumberOfProductCanChange" runat="server"></asp:Literal>
                                 </div>
@@ -91,13 +95,11 @@
                         <h4 class="modal-title" data-id="custom-name">Danh sách đơn hàng</h4>
                     </div>
                     <div class="modal-body">
-                        <div class="row form-group">
-                            <div class="col-xs-6" data-id="nick"></div>
-                            <div class="col-xs-6" data-id="phone"></div>
-                        </div>
-                        <div class="row form-group" data-id="address"></div>
-                        <div class="row form-group" data-id="discount" style="display: none;"></div>
-                        <div class="row form-group">
+                        <div class="form-group" data-id="nick"></div>
+                        <div class="form-group" data-id="phone"></div>
+                        <div class="form-group" data-id="address"></div>
+                        <div class="form-group" data-id="discount" style="display: none;"></div>
+                        <div class="form-group">
                             <table class="table table-striped">
                                 <thead style="width: 100%;">
                                     <tr>

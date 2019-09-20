@@ -40,7 +40,6 @@ namespace IM_PJ.Models
         public virtual DbSet<Session> Sessions { get; set; }
         public virtual DbSet<ShelfManager> ShelfManagers { get; set; }
         public virtual DbSet<Shipper> Shippers { get; set; }
-        public virtual DbSet<sysdiagram> sysdiagrams { get; set; }
         public virtual DbSet<tbl_Account> tbl_Account { get; set; }
         public virtual DbSet<tbl_AccountInfo> tbl_AccountInfo { get; set; }
         public virtual DbSet<tbl_Agent> tbl_Agent { get; set; }
@@ -53,6 +52,7 @@ namespace IM_PJ.Models
         public virtual DbSet<tbl_Customer> tbl_Customer { get; set; }
         public virtual DbSet<tbl_CustomerLevel> tbl_CustomerLevel { get; set; }
         public virtual DbSet<tbl_Discount> tbl_Discount { get; set; }
+        public virtual DbSet<tbl_DiscountCustomer> tbl_DiscountCustomer { get; set; }
         public virtual DbSet<tbl_DiscountGroup> tbl_DiscountGroup { get; set; }
         public virtual DbSet<tbl_LinkImnage> tbl_LinkImnage { get; set; }
         public virtual DbSet<tbl_MovePro> tbl_MovePro { get; set; }
@@ -79,6 +79,5 @@ namespace IM_PJ.Models
         public virtual DbSet<tbl_Variable> tbl_Variable { get; set; }
         public virtual DbSet<tbl_VariableValue> tbl_VariableValue { get; set; }
         public virtual DbSet<tbl_WhiteDomain> tbl_WhiteDomain { get; set; }
-        public virtual DbSet<tbl_DiscountCustomer> tbl_DiscountCustomer { get; set; }
     }
 }

@@ -24,7 +24,19 @@
                                         SetFocusOnError="true" ErrorMessage="(*)" Display="Dynamic"></asp:RequiredFieldValidator>
                                 </div>
                                 <div class="row-right">
-                                    <asp:TextBox ID="txtDiscountName" runat="server" CssClass="form-control" placeholder="Tên nhóm"></asp:TextBox>
+                                    <asp:TextBox ID="txtDiscountName" runat="server" CssClass="form-control"></asp:TextBox>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="row-left">
+                                    Số lượng yêu cầu
+                                    <asp:RequiredFieldValidator ID="RequiredFieldValidator1" runat="server" ControlToValidate="pQuantityRequired" ForeColor="Red"
+                                        ErrorMessage="(*)" Display="Dynamic" SetFocusOnError="true"></asp:RequiredFieldValidator>
+                                </div>
+                                <div class="row-right">
+                                    <telerik:RadNumericTextBox runat="server" CssClass="form-control width-notfull" Skin="MetroTouch"
+                                        ID="pQuantityRequired" MinValue="0" Width="100%" Value="0" NumberFormat-DecimalDigits="0" IncrementSettings-InterceptMouseWheel="false" IncrementSettings-InterceptArrowKeys="false">
+                                    </telerik:RadNumericTextBox>
                                 </div>
                             </div>
                             <div class="form-row">
@@ -41,13 +53,13 @@
                             </div>
                             <div class="form-row">
                                 <div class="row-left">
-                                    Số lượng tối thiểu để chiết khấu
+                                    Số lượng để chiết khấu đơn sau
                                     <asp:RequiredFieldValidator ID="RequiredFieldValidator6" runat="server" ControlToValidate="pQuantityProduct" ForeColor="Red"
                                         ErrorMessage="(*)" Display="Dynamic" SetFocusOnError="true"></asp:RequiredFieldValidator>
                                 </div>
                                 <div class="row-right">
                                     <telerik:RadNumericTextBox runat="server" CssClass="form-control width-notfull" Skin="MetroTouch"
-                                        ID="pQuantityProduct" MinValue="0" Width="100%" Value="0" NumberFormat-DecimalDigits="0" IncrementSettings-InterceptMouseWheel="false" IncrementSettings-InterceptArrowKeys="false" placeholder="Số lượng để đạt chiết khấu">
+                                        ID="pQuantityProduct" MinValue="0" Width="100%" Value="0" NumberFormat-DecimalDigits="0" IncrementSettings-InterceptMouseWheel="false" IncrementSettings-InterceptArrowKeys="false">
                                     </telerik:RadNumericTextBox>
                                 </div>
                             </div>
@@ -95,18 +107,20 @@
                                 </div>
                                 <div class="row-right">
                                     <telerik:RadNumericTextBox runat="server" CssClass="form-control width-notfull" Skin="MetroTouch"
-                                        ID="pRefundQuantityNoFee" MinValue="0" NumberFormat-GroupSizes="3" Width="100%" Value="0" NumberFormat-DecimalDigits="0" IncrementSettings-InterceptMouseWheel="false" IncrementSettings-InterceptArrowKeys="false" placeholder="Số lượng để đạt chiết khấu">
+                                        ID="pRefundQuantityNoFee" MinValue="0" NumberFormat-GroupSizes="3" Width="100%" Value="0" NumberFormat-DecimalDigits="0" IncrementSettings-InterceptMouseWheel="false" IncrementSettings-InterceptArrowKeys="false">
                                     </telerik:RadNumericTextBox>
                                 </div>
                             </div>
                             <div class="form-row">
                                 <div class="row-left">
-                                    Nhóm có quyền truy cập
+                                    Nhân viên có quyền truy cập
                                 </div>
                                 <div class="row-right">
-                                    <div class="form-row input-group">
-                                        <asp:DropDownList ID="ddlAccount" runat="server" CssClass="form-control custom-select"></asp:DropDownList>
-                                        <div class="input-group-append">
+                                    <div class="row form-row input-group">
+                                        <div class="col-md-6">
+                                            <asp:DropDownList ID="ddlAccount" runat="server" CssClass="form-control custom-select"></asp:DropDownList>
+                                        </div>
+                                        <div class="col-md-6 input-group-append">
                                             <button type="button" class="btn primary-btn btn-outline-secondary" onclick="addAccoutPermittedAccess()">Thêm</button>
                                         </div>
                                     </div>
