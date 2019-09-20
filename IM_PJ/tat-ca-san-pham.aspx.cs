@@ -22,6 +22,8 @@ namespace IM_PJ
 {
     public partial class tat_ca_san_pham : System.Web.UI.Page
     {
+        private static tbl_Account acc;
+
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
@@ -29,7 +31,7 @@ namespace IM_PJ
                 if (Request.Cookies["usernameLoginSystem"] != null)
                 {
                     string username = Request.Cookies["usernameLoginSystem"].Value;
-                    var acc = AccountController.GetByUsername(username);
+                    acc = AccountController.GetByUsername(username);
                     if (acc != null)
                     {
                         LoadData();
@@ -71,8 +73,6 @@ namespace IM_PJ
         }
         public void LoadData()
         {
-            string username = Request.Cookies["usernameLoginSystem"].Value;
-            var acc = AccountController.GetByUsername(username);
             if (acc != null)
             {
                 if (acc.RoleID == 0 || acc.RoleID == 1)
@@ -705,9 +705,6 @@ namespace IM_PJ
         #region Paging
         public void pagingall(List<ProductSQL> acs, PaginationMetadataModel page)
         {
-            string username = Request.Cookies["usernameLoginSystem"].Value;
-            var acc = AccountController.GetByUsername(username);
-
             StringBuilder html = new StringBuilder();
             html.Append("<thead>");
             html.Append("<tr>");
@@ -790,6 +787,10 @@ namespace IM_PJ
                     {
                         html.Append("       <a href=\"javascript:;\" title=\"Đồng bộ sản phẩm\" class=\"up-product-" + item.ID + " btn primary-btn h45-btn " + (item.ShowHomePage == 1 ? "" : "hide") + "\" onclick=\"ShowUpProductToWeb('" + item.ProductSKU + "', '" + item.ID + "', '" + item.CategoryID + "', 'false', 'false', 'null');\"><i class=\"fa fa-refresh\" aria-hidden=\"true\"></i></a>");
                         html.Append("       <a href=\"javascript:;\" title=\"Up sản phẩm lên đầu trang\" class=\"webupdate-product-" + item.ID + " btn primary-btn btn-blue h45-btn " + (item.WebPublish == true ? "" : "hide") + "\" onclick=\"updateWebUpdate('" + item.ID + "');\"><i class=\"fa fa-upload\" aria-hidden=\"true\"></i></a>");
+                        if (item.TotalProductInstockQuantityLeft > 0)
+                            html.Append("       <a href='javascript:;' title='Xả hàng' class='liquidation-product-" + item.ID + " btn primary-btn btn-red h45-btn' onclick='liquidateProduct(" + item.ID + ", `" + item.ProductSKU + "`);'><i class='glyphicon glyphicon-trash' aria-hidden='true'></i></a>");
+                        else if(item.Liquidated)
+                            html.Append("       <a href='javascript:;' title='Phục hồi lại xả hàng' class='recover-liquidation-product-" + item.ID + " btn primary-btn btn-green h45-btn' onclick='recoverLiquidatedProduct(" + item.ID + ", `" + item.ProductSKU + "`);'><i class='glyphicon glyphicon-repeat' aria-hidden='true'></i></a>");
                     }
 
                     html.Append("  </td>");
@@ -1014,6 +1015,35 @@ namespace IM_PJ
         {
             public tbl_Category cate1 { get; set; }
             public string parentName { get; set; }
+        }
+
+        [WebMethod]
+        public static bool liquidateProduct(int productID)
+        {
+            var username = HttpContext.Current.Request.Cookies["usernameLoginSystem"].Value;
+            acc = AccountController.GetByUsername(username);
+            return StockManagerController.liquidateProduct(acc, productID);
+        }
+
+        [WebMethod]
+        public static ProductSQL recoverLiquidatedProduct(int productID, string sku)
+        {
+            var username = HttpContext.Current.Request.Cookies["usernameLoginSystem"].Value;
+            acc = AccountController.GetByUsername(username);
+
+            var recover = StockManagerController.recoverLiquidatedProduct(acc, productID);
+
+            if (!recover)
+                throw new Exception("Lỗi phục hồi lại sản phẩm xả hàng");
+
+            var filter = new ProductFilterModel() { search = sku };
+            var page = new PaginationMetadataModel() { currentPage = 1 };
+
+            var result = ProductController.GetAllSql(filter, ref page)
+                .Where(x => x.ID == productID)
+                .FirstOrDefault();
+
+            return result;
         }
     }
 }

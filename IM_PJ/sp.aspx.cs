@@ -153,7 +153,7 @@ namespace IM_PJ
                         html.Append("   <p>🔖 " + content.Substring(0, content.Length > 100 ? 100 : content.Length) + "</p>");
                     }
 
-                    html.Append("   <p>🔖 " + item.ProductInstockStatus + " (" + string.Format("{0:N0}", item.TotalProductInstockQuantityLeft) + " cái)</p>");
+                    html.Append(String.Format("   <p class='product-number' data-sku='{0}' data-product-id='{1}'>🔖 {2} ({3:N0} cái)</p>", item.ProductSKU, item.ID, item.ProductInstockStatus, item.TotalProductInstockQuantityLeft));
                     html.Append("   <p>🔖 " + string.Format("{0:dd/MM/yyyy}", item.CreatedDate) + "</p>");
                     html.Append("     </div>");
                     html.Append("</div>");
@@ -186,7 +186,10 @@ namespace IM_PJ
                             html.Append("     <div class='col-xs-12'>");
                             html.Append("          <div class='col-xs-12'>");
                             html.Append("               <div class='row'>");
-                            html.Append("                  <a href ='javascript:;' class='btn primary-btn h45-btn hidden-" + item.ID + " download-btn' onclick='ShowUpProductToWeb(`" + item.ProductSKU + "`, `" + item.ID + "`, `" + item.CategoryID + "`, `false`, `false`, `hidden`);'><i class='fa fa-times' aria-hidden='true'></i> Ẩn</a>");
+                            if (item.IsHidden)
+                                html.Append("                  <a href ='javascript:;' class='btn primary-btn h45-btn hidden-" + item.ID + " download-btn product-hidden' onclick='ShowUpProductToWeb(`" + item.ProductSKU + "`, `" + item.ID + "`, `" + item.CategoryID + "`, `false`, `false`, `visible`);'><i class='fa fa-check' aria-hidden='true'></i> Hiện</a>");
+                            else
+                                html.Append("                  <a href ='javascript:;' class='btn primary-btn h45-btn hidden-" + item.ID + " download-btn' onclick='ShowUpProductToWeb(`" + item.ProductSKU + "`, `" + item.ID + "`, `" + item.CategoryID + "`, `false`, `false`, `hidden`);'><i class='fa fa-times' aria-hidden='true'></i> Ẩn</a>");
                             html.Append("               </div>");
                             html.Append("          </div>");
                             html.Append("     </div>");
@@ -374,6 +377,15 @@ namespace IM_PJ
         {
             public tbl_Category cate1 { get; set; }
             public string parentName { get; set; }
+        }
+
+        [WebMethod]
+        public static bool updateHidden(int productID, bool isHidden)
+        {
+            var username = HttpContext.Current.Request.Cookies["loginHiddenPage"].Value;
+            var acc = AccountController.GetByUsername(username);
+
+            return ProductController.updateHidden(acc, productID, isHidden);
         }
     }
 }
