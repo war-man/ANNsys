@@ -124,4 +124,13 @@ namespace IM_PJ.Models
         Profitable = 1, // Trạng thái tiền phí lơn hơn hoặc bằng phí của bưu điện
         Losses = 2
     }
+
+    public enum CronJobStatus
+    {
+        Scheduled = 1, // Trạng thái chờ đợi để chạy
+        Start = 2, // Trạng thái đang thao tác
+        Pause = 3, // Trạng thái dự lại đợi chờ j đó
+        Done = 4, // Trạng thái hoàn thành
+        Fail = 5 // Trạng thái thất bại
+    }
 }
