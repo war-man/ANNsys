@@ -64,6 +64,10 @@
       <HintPath>..\packages\AspNet.ScriptManager.jQuery.1.10.2\lib\net45\AspNet.ScriptManager.jQuery.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="CronNET, Version=1.1.4939.24773, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\CronNET.1.1.4939.24773\lib\net40\CronNET.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
       <Private>True</Private>
@@ -369,6 +373,7 @@
     <Content Include="App_Themes\Ann\js\chartjs.min.js" />
     <Content Include="App_Themes\Ann\js\controllers\chi-tiet-giam-gia\chi-tiet-giam-gia-controller.js" />
     <Content Include="App_Themes\Ann\js\controllers\common\search-customer-controller.js" />
+    <Content Include="App_Themes\Ann\js\controllers\cron-job-product-status\cron-job-product-status-controller.js" />
     <Content Include="App_Themes\Ann\js\controllers\danh-sach-khach-giam-gia\danh-sach-khach-giam-gia-controller.js" />
     <Content Include="App_Themes\Ann\js\controllers\danh-sach-nhom-khach-hang\danh-sach-nhom-khach-hang-controller.js" />
     <Content Include="App_Themes\Ann\js\controllers\them-moi-giam-gia\them-moi-giam-gia-controller.js" />
@@ -380,12 +385,14 @@
     <Content Include="App_Themes\Ann\js\models\common\discount-group-model.js" />
     <Content Include="App_Themes\Ann\js\models\common\order-model.js" />
     <Content Include="App_Themes\Ann\js\pages\chi-tiet-giam-gia\chi-tiet-giam-gia.js" />
+    <Content Include="App_Themes\Ann\js\pages\cron-job-product-status\cron-job-product-status.js" />
     <Content Include="App_Themes\Ann\js\pages\danh-sach-khach-giam-gia\danh-sach-khach-giam-gia.js" />
     <Content Include="App_Themes\Ann\js\pages\danh-sach-nhom-khach-hang\danh-sach-nhom-khach-hang.js" />
     <Content Include="App_Themes\Ann\js\pages\them-moi-giam-gia\them-moi-giam-gia.js" />
     <Content Include="App_Themes\Ann\js\services\common\product-service.js" />
     <Content Include="App_Themes\Ann\js\services\common\search-customer-service.js" />
     <Content Include="App_Themes\Ann\js\services\common\utils-service.js" />
+    <Content Include="App_Themes\Ann\js\services\cron-job-product-status\cron-job-product-status-service.js" />
     <Content Include="App_Themes\Ann\js\services\danh-sach-khach-giam-gia\danh-sach-khach-giam-gia-service.js" />
     <Content Include="App_Themes\Ann\js\sync-product-small.js" />
     <Content Include="App_Themes\Ann\js\sync-product.js" />
@@ -499,6 +506,7 @@
     </Content>
     <Content Include="san-pham-theo-ke.aspx" />
     <Content Include="nuoc-hoa.aspx" />
+    <Content Include="cron-job-product-status.aspx" />
     <Content Include="thong-ke-khach-hang.aspx" />
     <Content Include="thong-ke-proship.aspx" />
     <Content Include="thong-ke-buu-dien.aspx" />
@@ -870,6 +878,7 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\IdentityConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="App_Start\Start.CronJob.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="bc.aspx.cs">
@@ -895,6 +904,7 @@
     </Compile>
     <Compile Include="Controllers\CategoryController.cs" />
     <Compile Include="Controllers\CategoryShelfController.cs" />
+    <Compile Include="Controllers\CronJobController.cs" />
     <Compile Include="Controllers\DeliveryProshipController.cs" />
     <Compile Include="Controllers\DeliveryPostOfficeController.cs" />
     <Compile Include="Controllers\RegisterController.cs" />
@@ -910,6 +920,7 @@
     <Compile Include="Controllers\RegisterProductController.cs" />
     <Compile Include="Controllers\SessionController.cs" />
     <Compile Include="Controllers\ShipperController.cs" />
+    <Compile Include="CronJob\ProductStatus.cs" />
     <Compile Include="kiem-ke.aspx.cs">
       <DependentUpon>kiem-ke.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -934,6 +945,12 @@
     <Compile Include="Models\Common\DeliveryPostOfficeFilterModel.cs" />
     <Compile Include="Models\Common\DiscountGroupModel.cs" />
     <Compile Include="Models\Common\OrderModel.cs" />
+    <Compile Include="Models\CronJob.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\CronJobProductStatu.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\Delivery.cs">
       <DependentUpon>IMModel.tt</DependentUpon>
     </Compile>
@@ -964,6 +981,8 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>IMModel.edmx</DependentUpon>
     </Compile>
+    <Compile Include="Models\Pages\cron-job-product-status\FilterModel.cs" />
+    <Compile Include="Models\Pages\cron-job-product-status\ProductModel.cs" />
     <Compile Include="Models\Pages\danh-sach-nhom-khach-hang\DiscountGroupModel.cs" />
     <Compile Include="Models\Pages\thong-ke-doanh-thu-khach-hang\CustomerModel.cs" />
     <Compile Include="Models\Pages\thong-ke-doanh-thu-khach-hang\OrderInfoModel.cs" />
@@ -991,6 +1010,9 @@
       <DependentUpon>IMModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Shipper.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\sysdiagram.cs">
       <DependentUpon>IMModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\tbl_Account.cs">
@@ -1123,6 +1145,13 @@
     </Compile>
     <Compile Include="nuoc-hoa.aspx.designer.cs">
       <DependentUpon>nuoc-hoa.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="cron-job-product-status.aspx.cs">
+      <DependentUpon>cron-job-product-status.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="cron-job-product-status.aspx.designer.cs">
+      <DependentUpon>cron-job-product-status.aspx</DependentUpon>
     </Compile>
     <Compile Include="thong-ke-khach-hang.aspx.cs">
       <DependentUpon>thong-ke-khach-hang.aspx</DependentUpon>
