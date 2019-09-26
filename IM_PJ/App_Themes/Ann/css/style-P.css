@@ -1,4 +1,30 @@
-﻿
+﻿.font-green {
+    background: #73a724;
+    color: #fff;
+    padding: 5px 6px;
+    white-space: nowrap;
+    font-size: 12px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+.font-red {
+    background: #F44336;
+    color: #fff;
+    padding: 5px 6px;
+    white-space: nowrap;
+    font-size: 12px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+.font-blue {
+    background: #2ea2cc;
+    color: #fff;
+    padding: 5px 6px;
+    white-space: nowrap;
+    font-size: 12px;
+    border-radius: 6px;
+    cursor: pointer;
+}
 .search-button a {
     padding: 10px 10px!important;
 }

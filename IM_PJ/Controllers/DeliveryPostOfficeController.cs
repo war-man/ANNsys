@@ -188,7 +188,7 @@ namespace IM_PJ.Controllers
             using (var con = new inventorymanagementEntities())
             {
                 var postOffice = con.DeliveryPostOffices.Where(x => x.ID == postOfficeID).FirstOrDefault();
-                var order = con.tbl_Order.Where(x => x.ID == orderID).FirstOrDefault();
+                var order = con.tbl_Order.Where(x => x.ID == orderID).Where(x => x.ShippingType == 2).FirstOrDefault();
 
                 if (postOffice != null && order != null)
                 {
@@ -216,7 +216,7 @@ namespace IM_PJ.Controllers
 
                     return "success";
                 }
-                else if(order == null)
+                else if (order == null)
                 {
                     return "notfoundOrder";
                 }

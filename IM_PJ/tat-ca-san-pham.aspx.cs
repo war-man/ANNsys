@@ -212,6 +212,12 @@ namespace IM_PJ
                 pagingall(a, page);
 
                 ltrNumberOfProduct.Text = page.totalCount.ToString();
+
+                if (acc.RoleID != 0)
+                {
+                    ddlShowHomePage.Enabled = false;
+                    ddlWebPublish.Enabled = false;
+                }
             }
         }
         [WebMethod]
@@ -324,7 +330,7 @@ namespace IM_PJ
         public static string updateShowHomePage(int id, int value)
         {
             // Kiểm tra hành động đang cho ẩn hay hiện
-            if(value == 0)
+            if (value == 0)
             {
                 // Đang cho ẩn thì thực hiện luôn (không cần kiểm tra sản phẩm)
                 string update = ProductController.updateShowHomePage(id, value);
@@ -741,19 +747,19 @@ namespace IM_PJ
                     html.Append("<tr>");
 
                     html.Append("<td>");
-                    html.Append("   <a href=\"/xem-san-pham?id=" + item.ID + "\"><img src=\"" + Thumbnail.getURL(item.ProductImage, Thumbnail.Size.Small) + "\"/></a>");
-                    html.Append("   <a href=\"javascript:;\" onclick=\"copyProductInfo(" + item.ID + ")\" class=\"btn download-btn h45-btn\"><i class=\"fa fa-files-o\"></i> Copy</a>");
+                    html.Append("   <a href='/xem-san-pham?id=" + item.ID + "'><img src='" + Thumbnail.getURL(item.ProductImage, Thumbnail.Size.Small) + "\'></a>");
+                    html.Append("   <a href='javascript:;' onclick='copyProductInfo(" + item.ID + ")' class='btn download-btn h45-btn'><i class='fa fa-files-o'></i> Copy</a>");
                     html.Append("</td>");
 
-                    html.Append("   <td class=\"customer-name-link\"><a href=\"/xem-san-pham?id=" + item.ID + "\">" + item.ProductTitle + "</a></td>");
-                    html.Append("   <td data-title='Mã' class=\"customer-name-link\">" + item.ProductSKU + "</td>");
+                    html.Append("   <td class='customer-name-link'><a href='/xem-san-pham?id=" + item.ID + "'>" + item.ProductTitle + "</a></td>");
+                    html.Append("   <td data-title='Mã' class='customer-name-link'>" + item.ProductSKU + "</td>");
                     html.Append("   <td data-title='Giá sỉ'>" + string.Format("{0:N0}", item.RegularPrice) + "</td>");
                     if (acc.RoleID == 0)
                     {
                         html.Append("   <td data-title='Giá vốn'>" + string.Format("{0:N0}", item.CostOfGood) + "</td>");
                     }
                     html.Append("   <td data-title='Giá lẻ'>" + string.Format("{0:N0}", item.RetailPrice) + "</td>");
-                    html.Append("   <td data-title='Số lượng'><a target=\"_blank\" href=\"/thong-ke-san-pham?SKU=" + item.ProductSKU + "\">" + string.Format("{0:N0}", item.TotalProductInstockQuantityLeft) + "</a></td>");
+                    html.Append("   <td data-title='Số lượng'><a target='_blank' title='Xem thống kê sản phẩm' href='/thong-ke-san-pham?SKU=" + item.ProductSKU + "'>" + string.Format("{0:N0}", item.TotalProductInstockQuantityLeft) + "</a></td>");
                     html.Append("   <td data-title='Kho'>" + item.ProductInstockStatus + "</td>");
                     html.Append("   <td data-title='Danh mục'>" + item.CategoryName + "</td>");
                     string date = string.Format("{0:dd/MM/yyyy}", item.CreatedDate);
@@ -769,7 +775,8 @@ namespace IM_PJ
                         {
                             html.Append("   <td data-title='Trang chủ'><span id='showHomePage_" + item.ID + "'><a href='javascript:;' data-product-id='" + item.ID + "' data-update='0' class='bg-green bg-button' onclick='updateShowHomePage($(this))'>Đang hiện</a></span></td>");
                         }
-                        if(item.WebPublish == false)
+
+                        if (item.WebPublish == false)
                         {
                             html.Append("   <td data-title='Trang xem hàng'><span id='showWebPublish_" + item.ID + "'><a href='javascript:;' data-product-id='" + item.ID + "' data-update='true' class='bg-black bg-button' onclick='updateShowWebPublish($(this))'>Đang ẩn</a></span></td>");
                         }
@@ -780,17 +787,17 @@ namespace IM_PJ
                     }
 
                     html.Append("   <td data-title='Thao tác' class='update-button'>");
-                    html.Append("       <a href=\"javascript:;\" title=\"Download tất cả hình sản phẩm này\" class=\"btn primary-btn h45-btn\" onclick=\"getAllProductImage('" + item.ProductSKU + "');\"><i class=\"fa fa-file-image-o\" aria-hidden=\"true\"></i></a>");
-                    html.Append("       <a target=\"_blank\" href=\"https://www.facebook.com/search/posts/?q=" + item.ProductSKU + "&filters_rp_author=%7B%22name%22%3A%22author%22%2C%22args%22%3A%22100012594165130%22%7D&filters_rp_chrono_sort=%7B%22name%22%3A%22chronosort%22%2C%22args%22%3A%22%22%7D\" title=\"Tìm trên facebook\" class=\"btn primary-btn btn-black h45-btn\"><i class=\"fa fa-facebook-official\" aria-hidden=\"true\"></i></a>");
+                    html.Append("       <a href='javascript:;' title='Download tất cả hình sản phẩm này' class='btn primary-btn h45-btn' onclick='getAllProductImage(`" + item.ProductSKU + "`);'><i class='fa fa-file-image-o' aria-hidden='true'></i></a>");
+                    html.Append("       <a target='_blank' href='https://www.facebook.com/search/posts/?q=" + item.ProductSKU + "&filters_rp_author=%7B%22name%22%3A%22author%22%2C%22args%22%3A%22100012594165130%22%7D&filters_rp_chrono_sort=%7B%22name%22%3A%22chronosort%22%2C%22args%22%3A%22%22%7D' title='Tìm trên facebook' class='btn primary-btn btn-black h45-btn'><i class='fa fa-facebook-official' aria-hidden='true'></i></a>");
 
                     if (acc.RoleID == 0)
                     {
-                        html.Append("       <a href='javascript:;' title='Đồng bộ sản phẩm' class='up-product-" + item.ID + " btn primary-btn h45-btn " + (item.ShowHomePage == 1 ? "" : "hide") + "' onclick='ShowUpProductToWeb('" + item.ProductSKU + "', '" + item.ID + "', '" + item.CategoryID + "', 'false', 'false', 'null');'><i class='fa fa-refresh' aria-hidden='true'></i></a>");
-                        html.Append("       <a href='javascript:;' title='Up sản phẩm lên đầu trang' class='webupdate-product-" + item.ID + " btn primary-btn btn-blue h45-btn " + (item.WebPublish == true ? "" : "hide") + "' onclick='updateWebUpdate('" + item.ID + "');'><i class='fa fa-upload' aria-hidden='true'></i></a>");
+                        html.Append("       <a href='javascript:;' title='Đồng bộ sản phẩm' class='up-product-" + item.ID + " btn primary-btn h45-btn " + (item.ShowHomePage == 1 ? "" : "hide") + "' onclick='ShowUpProductToWeb(`" + item.ProductSKU + "`, `" + item.ID + "`, `" + item.CategoryID + "`, `false`, `false`, `null`);'><i class='fa fa-refresh' aria-hidden='true'></i></a>");
+                        html.Append("       <a href='javascript:;' title='Up sản phẩm lên đầu trang' class='webupdate-product-" + item.ID + " btn primary-btn btn-blue h45-btn " + (item.WebPublish == true ? "" : "hide") + "' onclick='updateWebUpdate(`" + item.ID + "`);'><i class='fa fa-upload' aria-hidden='true'></i></a>");
                         if (item.TotalProductInstockQuantityLeft > 0)
-                            html.Append("       <a href='javascript:;' title='Xả hàng' class='liquidation-product-" + item.ID + " btn primary-btn btn-red h45-btn' onclick='liquidateProduct(" + item.CategoryID + ", " + item.ID + ", `" + item.ProductSKU + "`);'><i class='glyphicon glyphicon-trash' aria-hidden='true'></i></a>");
+                            html.Append("       <a href='javascript:;' title='Xả hết kho' class='liquidation-product-" + item.ID + " btn primary-btn btn-red h45-btn' onclick='liquidateProduct(" + item.CategoryID + ", " + item.ID + ", `" + item.ProductSKU + "`);'><i class='glyphicon glyphicon-trash' aria-hidden='true'></i></a>");
                         else if(item.Liquidated)
-                            html.Append("       <a href='javascript:;' title='Phục hồi lại xả hàng' class='recover-liquidation-product-" + item.ID + " btn primary-btn btn-green h45-btn' onclick='recoverLiquidatedProduct(" + item.CategoryID + ", " + item.ID + ", `" + item.ProductSKU + "`);'><i class='glyphicon glyphicon-repeat' aria-hidden='true'></i></a>");
+                            html.Append("       <a href='javascript:;' title='Phục hồi xả kho' class='recover-liquidation-product-" + item.ID + " btn primary-btn btn-green h45-btn' onclick='recoverLiquidatedProduct(" + item.CategoryID + ", " + item.ID + ", `" + item.ProductSKU + "`);'><i class='glyphicon glyphicon-repeat' aria-hidden='true'></i></a>");
                     }
 
                     html.Append("  </td>");
@@ -1020,16 +1027,31 @@ namespace IM_PJ
         [WebMethod]
         public static bool liquidateProduct(int productID)
         {
-            var username = HttpContext.Current.Request.Cookies["usernameLoginSystem"].Value;
-            acc = AccountController.GetByUsername(username);
+            var loginHiddenPage = HttpContext.Current.Request.Cookies["loginHiddenPage"];
+            var usernameLoginSystem = HttpContext.Current.Request.Cookies["usernameLoginSystem"];
+
+            if (loginHiddenPage != null)
+                acc = AccountController.GetByUsername(loginHiddenPage.Value);
+            else if (usernameLoginSystem != null)
+                acc = AccountController.GetByUsername(usernameLoginSystem.Value);
+            else
+                throw new Exception("Có vấn đề trong việc lấy thông tin User");
+
             return StockManagerController.liquidateProduct(acc, productID);
         }
 
         [WebMethod]
         public static ProductSQL recoverLiquidatedProduct(int productID, string sku)
         {
-            var username = HttpContext.Current.Request.Cookies["usernameLoginSystem"].Value;
-            acc = AccountController.GetByUsername(username);
+            var loginHiddenPage = HttpContext.Current.Request.Cookies["loginHiddenPage"];
+            var usernameLoginSystem = HttpContext.Current.Request.Cookies["usernameLoginSystem"];
+
+            if (loginHiddenPage != null)
+                acc = AccountController.GetByUsername(loginHiddenPage.Value);
+            else if (usernameLoginSystem != null)
+                acc = AccountController.GetByUsername(usernameLoginSystem.Value);
+            else
+                throw new Exception("Có vấn đề trong việc lấy thông tin User");
 
             var recover = StockManagerController.recoverLiquidatedProduct(acc, productID);
 

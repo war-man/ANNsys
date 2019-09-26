@@ -272,6 +272,7 @@ namespace IM_PJ
                 if (acc.RoleID != 0)
                 {
                     CreatedBy = acc.Username;
+                    ddlCreatedBy.Enabled = false;
                 }
 
                 // Create order fileter

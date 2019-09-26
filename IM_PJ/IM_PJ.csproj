@@ -616,6 +616,7 @@
     <Content Include="thong-ke-nhan-vien.aspx" />
     <Content Include="thong-tin-don-hang-chuyen-hoan.aspx" />
     <Content Include="sua-bai-viet.aspx" />
+    <Content Include="uploads\avatars\no-avatar.png" />
     <Content Include="xem-don-hang-doi-tra.aspx" />
     <Content Include="xem-bai-viet.aspx" />
     <Content Include="xem-bv.aspx" />

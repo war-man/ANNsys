@@ -270,7 +270,7 @@ namespace NHST.Bussiness
                 ret = "<span class='bg-blue'>Đã thanh toán</span>";
 
             }
-            else
+            else if (PaymentStatus == 4)
             {
                 ret = "<span class='bg-blue-hoki'>Đã duyệt</span>";
 

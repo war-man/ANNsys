@@ -135,7 +135,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
-                    <h3 class="page-title left">Giao hàng  <span>(<asp:Literal ID="ltrNumberOfOrder" runat="server" EnableViewState="false"></asp:Literal>)
+                    <h3 class="page-title left">Duyệt đơn hàng bưu điện  <span>(<asp:Literal ID="ltrNumberOfOrder" runat="server" EnableViewState="false"></asp:Literal>)
                     </span>
                     </h3>
                 </div>
@@ -150,7 +150,7 @@
                                 </div>
                                 <div class="col-md-2 col-xs-4">
                                     <a href="javascript:;" class="btn primary-btn fw-btn width-100" onclick="getElementById('ContentPlaceHolder1_btUpload').click()">
-                                        <i class="fa fa-cloud-upload" aria-hidden="true"></i>Upload
+                                        <i class="fa fa-cloud-upload" aria-hidden="true"></i> Upload
                                     </a>
                                     <asp:Button ID="btUpload" OnClick="UploadButton_Click" runat="server" Style="display: none"></asp:Button>
                                 </div>
@@ -166,21 +166,21 @@
                                 <div class="col-md-3 col-xs-6">
                                     <asp:TextBox ID="txtSearchOrder" runat="server" CssClass="form-control" placeholder="Tìm đơn hàng" autocomplete="off"></asp:TextBox>
                                 </div>
-                                <div class="col-md-2 col-xs-4">
+                                <div class="col-md-2 col-xs-6">
                                     <asp:DropDownList ID="ddlFeeStatus" runat="server" CssClass="form-control">
                                         <asp:ListItem Value="0" Text="Tình trạng phí vận chuyển"></asp:ListItem>
                                         <asp:ListItem Value="1" Text="Có lời"></asp:ListItem>
                                         <asp:ListItem Value="2" Text="Lỗ vốn"></asp:ListItem>
                                     </asp:DropDownList>
                                 </div>
-                                <div class="col-md-2 col-xs-4">
+                                <div class="col-md-2 col-xs-6">
                                     <label>Từ ngày</label>
                                     <telerik:RadDatePicker RenderMode="Lightweight" ID="rOrderFromDate" ShowPopupOnFocus="true" Width="100%" runat="server" DateInput-CssClass="radPreventDecorate">
                                         <DateInput DisplayDateFormat="dd/MM/yyyy" runat="server">
                                         </DateInput>
                                     </telerik:RadDatePicker>
                                 </div>
-                                <div class="col-md-2 col-xs-4">
+                                <div class="col-md-2 col-xs-6">
                                     <label>Đến ngày</label>
                                     <telerik:RadDatePicker RenderMode="Lightweight" ID="rOrderToDate" ShowPopupOnFocus="true" Width="100%" runat="server" DateInput-CssClass="radPreventDecorate">
                                         <DateInput DisplayDateFormat="dd/MM/yyyy" runat="server">
@@ -190,7 +190,7 @@
                                 <div class="col-md-1 col-xs-6 search-button">
                                     <a href="javascript:;" onclick="searchOrder()" class="btn primary-btn h45-btn"><i class="fa fa-search"></i></a>
                                     <asp:Button ID="btnSearch" runat="server" CssClass="btn primary-btn h45-btn" OnClick="btnSearch_Click" Style="display: none" />
-                                    <a href="/danh-sach-van-chuyen" class="btn primary-btn h45-btn"><i class="fa fa-times" aria-hidden="true"></i></a>
+                                    <a href="/thong-ke-buu-dien" class="btn primary-btn h45-btn"><i class="fa fa-times" aria-hidden="true"></i></a>
                                 </div>
                             </div>
                         </div>
@@ -198,17 +198,17 @@
                     <div class="filter-above-wrap clear">
                         <div class="filter-control">
                             <div class="row">
-                                <div class="col-md-1 col-xs-2">
+                                <div class="col-md-3">
                                 </div>
-                                <div class="col-md-2 col-xs-4">
+                                <div class="col-md-2 col-xs-6">
                                     <asp:DropDownList ID="ddlOrderStatus" runat="server" CssClass="form-control">
-                                        <asp:ListItem Value="0" Text="Trạng thái đơn"></asp:ListItem>
+                                        <asp:ListItem Value="0" Text="Trạng thái tìm đơn"></asp:ListItem>
                                         <asp:ListItem Value="1" Text="Tìm thấy đơn"></asp:ListItem>
                                         <asp:ListItem Value="2" Text="Không tìm thấy đơn"></asp:ListItem>
                                         <asp:ListItem Value="3" Text="Đơn rác"></asp:ListItem>
                                     </asp:DropDownList>
                                 </div>
-                                <div class="col-md-2 col-xs-4">
+                                <div class="col-md-2 col-xs-6">
                                     <asp:DropDownList ID="ddlDeliveryStatus" runat="server" CssClass="form-control">
                                         <asp:ListItem Value="" Text="Trạng thái bưu điện"></asp:ListItem>
                                         <asp:ListItem Value="Chờ chuyển tiền COD" Text="Chờ chuyển tiền COD"></asp:ListItem>
@@ -220,13 +220,13 @@
                                         <asp:ListItem Value="Hủy" Text="Hủy"></asp:ListItem>
                                         <asp:ListItem Value="Mới tạo" Text="Mới tạo"></asp:ListItem>
                                         <asp:ListItem Value="Trả hàng thành công" Text="Trả hàng thành công"></asp:ListItem>
-                                        <asp:ListItem Value="Không lấy đơn hủy" Text="Không lấy đơn hủy"></asp:ListItem>
+                                        <asp:ListItem Value="Không lấy đơn hủy" Text="Tất cả (trừ trạng thái hủy)"></asp:ListItem>
                                     </asp:DropDownList>
                                 </div>
-                                <div class="col-md-2 col-xs-4">
+                                <div class="col-md-2 col-xs-6">
                                     <asp:DropDownList ID="ddlReview" runat="server" CssClass="form-control">
-                                        <asp:ListItem Value="0" Text="Trạng thái xử lý"></asp:ListItem>
-                                        <asp:ListItem Value="1" Text="Đang chờ duyệt"></asp:ListItem>
+                                        <asp:ListItem Value="0" Text="Trạng thái duyệt"></asp:ListItem>
+                                        <asp:ListItem Value="1" Text="Chưa duyệt"></asp:ListItem>
                                         <asp:ListItem Value="2" Text="Đã duyệt"></asp:ListItem>
                                     </asp:DropDownList>
                                 </div>
@@ -264,14 +264,14 @@
                         <h4 class="modal-title">Duyệt đơn hàng Bưu Điện</h4>
                     </div>
                     <div class="modal-body">
-                        <div class="row form-group">
-                            <asp:TextBox runat="server" ID="txtOrderID" CssClass="form-control" placeholder="Nhập thông tin OrderID"/>
+                        <div class="form-group">
+                            <asp:TextBox runat="server" ID="txtOrderID" CssClass="form-control" placeholder="Nhập mã đơn hàng cần duyệt"/>
                             <asp:HiddenField ID="hdfPostOfficeID" runat="server" />
                         </div>
                     </div>
                     <div class="modal-footer">
                         <button id="closeApprove" type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
-                        <button id="commitApprove" type="button" class="btn btn-primary">Duyệt</button>
+                        <button id="commitApprove" type="button" class="btn btn-primary">Duyệt đơn</button>
                     </div>
                 </div>
             </div>
@@ -290,43 +290,48 @@
                 $("#<%=btnSearch.ClientID%>").click();
             }
 
-            function approve(postOfficeID, orderID) {
-                if (!orderID)
-                {
+            function approve(postOfficeID, orderID, showModal) {
+                if (!postOfficeID)
+                    return;
+
+                if (showModal == true) {
                     let modal = $("#approveModal");
                     let orderIDDOM = modal.find("#<%=txtOrderID.ClientID%>");
                     let postOfficeIDDOM = modal.find("#<%=hdfPostOfficeID.ClientID%>");
 
                     // Init giá trị cho modal
-                    orderIDDOM.val('');
+                    if (orderID) {
+                        orderIDDOM.val(orderID);
+                    }
+                    else {
+                        orderIDDOM.val('');
+                    }
                     postOfficeIDDOM.val(postOfficeID);
 
-                    return modal.modal({ show: 'true', backdrop: 'static' });
+                    modal.modal({ show: 'true', backdrop: 'static' });
                 }
-
-                if (!postOfficeID)
-                    return;
-
-                $.ajax({
-                    type: "POST",
-                    url: "/thong-ke-buu-dien.aspx/approve",
-                    data: JSON.stringify({ 'postOfficeID': postOfficeID, 'orderID': orderID.trim() }),
-                    contentType: "application/json; charset=utf-8",
-                    dataType: "json",
-                    success: (response) => {
-                        if (response == "success") {
-                            let handleButton = $("tr[data-id='" + postOfficeID + "'").find(".handle-button");
-                            handleButton.append("<span class='bg-blue-hoki'>Đã duyệt</span>");
-                            swal("Thông báo", "Đơn vận chuyển bưu điện đã duyệt", "success");
+                else {
+                    $.ajax({
+                        type: "POST",
+                        url: "/thong-ke-buu-dien.aspx/approve",
+                        data: JSON.stringify({ 'postOfficeID': postOfficeID, 'orderID': orderID.trim() }),
+                        contentType: "application/json; charset=utf-8",
+                        dataType: "json",
+                        success: (response) => {
+                            if (response.d == "success") {
+                                let handleButton = $("tr[data-id='" + postOfficeID + "'").find(".handle-button");
+                                handleButton.append("<span class='bg-blue-hoki'>Đã duyệt</span>");
+                                swal("Thông báo", "Đã duyệt thành công!", "success");
+                            }
+                            else if (response.d == "notfoundOrder") {
+                                swal("Thông báo", "Không tìm thấy đơn hàng " + orderID + " (có thể không phải đơn gửi bưu điện)", "error");
+                            }
+                        },
+                        error: (xmlhttprequest, textstatus, errorthrow) => {
+                            swal("Thông báo", "Đã xảy ra lỗi trong quá trình duyệt đơn vận chuyển bưu điện", "error");
                         }
-                        else if (response == "notfoundOrder") {
-                            swal("Thông báo", "Không tìm thấy đơn hàng " + orderID, "error");
-                        }
-                    },
-                    error: (xmlhttprequest, textstatus, errorthrow) => {
-                        swal("Thông báo", "Đã xảy ra lỗi trong quá trình duyệt đơn vận chuyển bưu điện", "error");
-                    }
-                });
+                    });
+                }
             }
 
             function cancel(postOfficeID) {
@@ -356,11 +361,11 @@
                 let postOfficeID = modal.find("#<%=hdfPostOfficeID.ClientID%>").val();
 
                 if (!orderID)
-                    return swal("Thông báo", "Vui lòng nhập thông tin Order", "error");
+                    return swal("Thông báo", "Vui lòng nhập mã đơn hàng!", "error");
 
                 modal.find("#closeApprove").click();
 
-                return approve(postOfficeID, orderID)
+                return approve(postOfficeID, orderID, false);
             })
         </script>
     </main>

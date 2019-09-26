@@ -2213,7 +2213,7 @@ namespace IM_PJ.Controllers
                 var orderInfo = con.tbl_Order
                     .Where(x => (x.DateDone >= fromDate && x.DateDone <= toDate)
                                 && x.ExcuteStatus == 2
-                                && (x.PaymentStatus == 2 || x.PaymentStatus == 3))
+                                && x.PaymentStatus != 1)
                     .Join(
                         customers,
                         order => order.CustomerID,
@@ -2288,7 +2288,7 @@ namespace IM_PJ.Controllers
                         or = db.tbl_Order
                             .Where(r => r.DateDone >= fd && r.DateDone <= td)
                             .Where(r => r.ExcuteStatus == 2)
-                            .Where(r => (r.PaymentStatus == 3 || r.PaymentStatus == 2))
+                            .Where(r => r.PaymentStatus != 1)
                             .ToList();
                     }
                     else
@@ -2297,7 +2297,7 @@ namespace IM_PJ.Controllers
                         or = db.tbl_Order
                             .Where(r => r.CreatedDate >= fd)
                             .Where(r => r.ExcuteStatus == 2)
-                            .Where(r => (r.PaymentStatus == 3 || r.PaymentStatus == 2))
+                            .Where(r => r.PaymentStatus != 1)
                             .ToList();
                     }
                 }
@@ -2309,14 +2309,14 @@ namespace IM_PJ.Controllers
                         or = db.tbl_Order
                             .Where(r => r.CreatedDate <= td)
                             .Where(r => r.ExcuteStatus == 2)
-                            .Where(r => (r.PaymentStatus == 3 || r.PaymentStatus == 2))
+                            .Where(r => r.PaymentStatus != 1)
                             .ToList();
                     }
                     else
                     {
                         or = db.tbl_Order
                             .Where(r => r.ExcuteStatus == 2)
-                            .Where(r => (r.PaymentStatus == 3 || r.PaymentStatus == 2))
+                            .Where(r => r.PaymentStatus != 1)
                             .ToList();
                     }
                 }
@@ -2450,7 +2450,7 @@ namespace IM_PJ.Controllers
                 var orderTarget = con.tbl_Order
                     .Where(x => (x.DateDone >= fromDate && x.DateDone <= toDate)
                                 && x.ExcuteStatus == 2
-                                && (x.PaymentStatus == 2 || x.PaymentStatus == 3))
+                                && x.PaymentStatus != 1)
                     .OrderBy(x => x.ID);
 
                 var orderDetailTarget = con.tbl_OrderDetail.OrderBy(x => x.OrderID).ThenBy(x => x.ID);
@@ -2678,7 +2678,7 @@ namespace IM_PJ.Controllers
                 sql.AppendLine(String.Format("    AND Ord.CreatedBy = '{0}'", CreatedBy));
             }
             sql.AppendLine(String.Format("    AND Ord.ExcuteStatus = 2"));
-            sql.AppendLine(String.Format("    AND (Ord.PaymentStatus = 2 OR Ord.PaymentStatus = 3)"));
+            sql.AppendLine(String.Format("    AND (Ord.PaymentStatus = 2 OR Ord.PaymentStatus = 3 OR Ord.PaymentStatus = 4)"));
             sql.AppendLine(String.Format("    AND    CONVERT(NVARCHAR(10), Ord.DateDone, 121) BETWEEN CONVERT(NVARCHAR(10), '{0:yyyy-MM-dd}', 121) AND CONVERT(NVARCHAR(10), '{1:yyyy-MM-dd}', 121)", fromDate, toDate));
             sql.AppendLine(String.Format("GROUP BY Ord.ID"));
 
@@ -2763,7 +2763,7 @@ namespace IM_PJ.Controllers
             sql.AppendLine("ON     Ord.ID = OrdDetail.OrderID");
             sql.AppendLine("WHERE 1 = 1");
             sql.AppendLine("    AND Ord.ExcuteStatus = 2");
-            sql.AppendLine("    AND (Ord.PaymentStatus = 2 OR Ord.PaymentStatus = 3)");
+            sql.AppendLine("    AND (Ord.PaymentStatus = 2 OR Ord.PaymentStatus = 3 OR Ord.PaymentStatus = 4)");
 
             if (!String.IsNullOrEmpty(CreatedBy))
             {
@@ -2849,7 +2849,59 @@ namespace IM_PJ.Controllers
 
             return result;
         }
+        public static ReportModel getReport(string SKU, int CategoryID, string user, DateTime fromdate, DateTime todate)
+        {
+            int day = Convert.ToInt32((todate - fromdate).TotalDays);
 
+            var userReport = OrderController.getProductReport(SKU, CategoryID, user, fromdate, todate);
+
+            int totalSoldQuantity = userReport.Sum(x => x.totalSold);
+            int averageSoldQuantity = totalSoldQuantity / day;
+
+            var userRefundReport = RefundGoodController.getRefundProductReport(SKU, CategoryID, user, fromdate, todate);
+
+            int totalRefundQuantity = userRefundReport.Sum(x => x.totalRefund);
+            int averageRefundQuantity = totalRefundQuantity / day;
+
+            double totalRevenue = userReport.Sum(x => x.totalRevenue);
+            double totalCost = userReport.Sum(x => x.totalCost);
+            double totalRefundRevenue = userRefundReport.Sum(x => x.totalRevenue);
+            double totalRefundCost = userRefundReport.Sum(x => x.totalCost);
+            double totalRefundFee = userRefundReport.Sum(x => x.totalRefundFee);
+            double totalProfit = (totalRevenue - totalCost) - (totalRefundRevenue - totalRefundCost) + totalRefundFee;
+
+            int totalSaleOrder = userReport.Sum(x => x.totalOrder);
+            int averageSaleOrder = totalSaleOrder / day;
+
+            var newCustomer = CustomerController.Report(user, fromdate, todate);
+
+            return new ReportModel()
+            {
+                totalSaleOrder = totalSaleOrder,
+                averageSaleOrder = averageSaleOrder,
+                totalSoldQuantity = totalSoldQuantity,
+                averageSoldQuantity = averageSoldQuantity,
+                totalRefundQuantity = totalRefundQuantity,
+                averageRefundQuantity = averageRefundQuantity,
+                totalRemainQuantity = totalSoldQuantity - totalRefundQuantity,
+                averageRemainQuantity = (totalSoldQuantity - totalRefundQuantity) / day,
+                totalNewCustomer = newCustomer.Count(),
+                totalProfit = totalProfit
+            };
+        }
+        public class ReportModel
+        {
+            public int totalSaleOrder { get; set; }
+            public int averageSaleOrder { get; set; }
+            public int totalSoldQuantity { get; set; }
+            public int averageSoldQuantity { get; set; }
+            public int totalRefundQuantity { get; set; }
+            public int averageRefundQuantity { get; set; }
+            public int totalRemainQuantity { get; set; }
+            public int averageRemainQuantity { get; set; }
+            public int totalNewCustomer { get; set; }
+            public double totalProfit { get; set; }
+        }
         public class ProductReportModel
         {
             public DateTime reportDate { get; set; }

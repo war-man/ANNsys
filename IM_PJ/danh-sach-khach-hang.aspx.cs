@@ -153,6 +153,8 @@ namespace IM_PJ
                 if (acc.RoleID != 0)
                 {
                     rs = rs.Where(x => x.CreatedBy == acc.Username).ToList();
+                    ddlCreatedBy.Enabled = false;
+                    ddlCreatedBy.Visible = false;
                 }
 
                 pagingall(rs);

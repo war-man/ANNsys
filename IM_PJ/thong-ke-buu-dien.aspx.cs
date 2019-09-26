@@ -169,12 +169,12 @@ namespace IM_PJ
 
                     html.AppendLine(TrTag.ToString());
                     html.AppendLine("   <td data-title='Mã hóa đơn'>");
-                    html.AppendLine("       <a href='/thong-tin-don-hang?id=" + item.OrderID + "'>" + String.Format("{0:#}", item.OrderID) + "</a>");
+                    html.AppendLine("       <a target='_blank' href='/thong-tin-don-hang?id=" + item.OrderID + "'>" + String.Format("{0:#}", item.OrderID) + "</a>");
                     html.AppendLine("   </td>");
                     html.AppendLine("   <td data-title='Khách hàng' class='customer-td'>");
-                    html.AppendLine("       <a class='col-customer-name-link' href='/thong-tin-don-hang?id=" + item.OrderID + "'>" + item.Customer.ToTitleCase() + "</a>");
+                    html.AppendLine("       <a target='_blank' class='col-customer-name-link' href='/thong-tin-don-hang?id=" + item.OrderID + "'>" + item.Customer.ToTitleCase() + "</a>");
                     html.AppendLine("   </td>");
-                    html.AppendLine("   <td data-title='Điện Thoại'><a target='_blank' href='/danh-sach-don-hang?&searchtype=1&textsearch=" + item.Phone + "'>" + item.Phone + "</a></td>");
+                    html.AppendLine("   <td data-title='Điện Thoại'><a target='_blank' href='/danh-sach-don-hang?&searchtype=1&textsearch=" + item.Phone + "&shippingtype=2'>" + item.Phone + "</a></td>");
                     html.AppendLine("   <td data-title='Trạng thái'>");
                     if (item.DeliveryStatus == "Hủy")
                         html.AppendLine("      <span class='bg-red'>Hủy</span>");
@@ -189,14 +189,17 @@ namespace IM_PJ
                     html.AppendLine("   <td data-title='Phí (Hệ thống)'><strong>" + String.Format("{0:#,###}", item.OrderFee) + "</strong></td>");
                     html.AppendLine("   <td data-title='Nhân viên tạo đơn'>" + item.Staff + "</td>");
                     html.AppendLine("   <td data-title='Thao tác' class='handle-button'>");
-                    html.AppendLine("       <button type='button'");
-                    html.AppendLine("           class='btn primary-btn h45-btn'");
-                    html.AppendLine("           title='Duyệt đơn hàng'");
-                    html.AppendLine("           style='background-color: #73a724'");
-                    html.AppendLine(String.Format("           onclick='approve({0}, {1})'", item.ID, item.OrderID));
-                    html.AppendLine("       >");
-                    html.AppendLine("           <span class='glyphicon glyphicon-check'></span>");
-                    html.AppendLine("       </button>");
+                    if (item.Review != (int)DeliveryPostOfficeReview.Approve)
+                    {
+                        html.AppendLine("       <button type='button'");
+                        html.AppendLine("           class='btn primary-btn h45-btn'");
+                        html.AppendLine("           title='Duyệt đơn hàng'");
+                        html.AppendLine("           style='background-color: #73a724'");
+                        html.AppendLine(String.Format("           onclick='approve({0}, {1}, true)'", item.ID, item.OrderID));
+                        html.AppendLine("       >");
+                        html.AppendLine("           <span class='glyphicon glyphicon-check'></span>");
+                        html.AppendLine("       </button>");
+                    }
                     if (!(item.OrderStatus == (int)OrderStatus.Spam || item.Review == (int)DeliveryPostOfficeReview.Approve))
                     {
                         
@@ -554,9 +557,9 @@ namespace IM_PJ
 
 
         [WebMethod]
-        public static void approve(int postOfficeID, int orderID)
+        public static string approve(int postOfficeID, int orderID)
         {
-            DeliveryPostOfficeController.approve(postOfficeID, orderID);
+            return DeliveryPostOfficeController.approve(postOfficeID, orderID);
         }
 
         [WebMethod]

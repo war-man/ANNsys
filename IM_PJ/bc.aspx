@@ -4,7 +4,7 @@
 <!DOCTYPE html>
 <html>
 <head runat="server">
-    <title>Khách hàng</title>
+    <title>Báo cáo</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=yes">
     <meta name="format-detection" content="telephone=no">
@@ -235,7 +235,7 @@
                                 stacked: false,
                                 title: {
                                     display: true,
-                                    text: 'Biểu đồ sản lượng'
+                                    text: 'Biểu đồ sản lượng còn lại'
                                 },
                                 scales: {
                                     yAxes: [{
@@ -264,34 +264,6 @@
                                 title: {
                                     display: true,
                                     text: 'Biểu đồ khách mới'
-                                },
-                                scales: {
-                                    yAxes: [{
-                                        type: 'linear', // only linear but allow scale type registration. This allows extensions to exist solely for log scale for instance
-                                        display: true,
-                                        position: 'left',
-                                        id: 'y-axis-1',
-                                        ticks: {
-                                            beginAtZero: true
-                                        }
-                                    }],
-                                }
-                            }
-                        });
-                    }
-
-                    if (typeof lineChartData3 !== 'undefined') {
-                        var ctx = document.getElementById('canvas3').getContext('2d');
-                        window.myLine = Chart.Line(ctx, {
-                            data: lineChartData3,
-                            options: {
-                                responsive: true,
-                                aspectRatio: 3,
-                                hoverMode: 'index',
-                                stacked: false,
-                                title: {
-                                    display: true,
-                                    text: 'Biểu đồ phần trăm'
                                 },
                                 scales: {
                                     yAxes: [{

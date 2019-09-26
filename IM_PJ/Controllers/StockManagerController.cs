@@ -1295,7 +1295,7 @@ namespace IM_PJ.Controllers
         }
         #endregion
 
-        #region Phục hồi lại các sản phẩm đã xã hàng
+        #region Phục hồi lại các sản phẩm đã xã kho
         public static bool recoverLiquidatedProduct(tbl_Account acc, int productID)
         {
             using (var con = new inventorymanagementEntities())

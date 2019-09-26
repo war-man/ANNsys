@@ -244,7 +244,7 @@ namespace IM_PJ.Controllers
             sql.AppendLine(String.Format("WHERE"));
             sql.AppendLine(String.Format("		CONVERT(NVARCHAR(10), ORD.DateDone, 121) BETWEEN CONVERT(NVARCHAR(10), '{0:yyyy-MM-dd}', 121) AND CONVERT(NVARCHAR(10), '{1:yyyy-MM-dd}', 121)", fromdate, todate));
             sql.AppendLine(String.Format("	AND ORD.ExcuteStatus = 2"));
-            sql.AppendLine(String.Format("	AND (ORD.PaymentStatus = 2 OR ORD.PaymentStatus = 3)"));
+            sql.AppendLine(String.Format("	AND (ORD.PaymentStatus = 2 OR ORD.PaymentStatus = 3 OR Ord.PaymentStatus = 4)"));
             sql.AppendLine(String.Format("GROUP BY"));
             sql.AppendLine(String.Format("		ODD.ID"));
             sql.AppendLine(String.Format(",		ODD.SKU"));

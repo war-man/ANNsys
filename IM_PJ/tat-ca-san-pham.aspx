@@ -397,7 +397,7 @@
                 $.ajax({
                     type: "POST",
                     url: "/tat-ca-san-pham.aspx/updateShowHomePage",
-                    data: "{id: '" + ID + "', value: '" + update + "'}",
+                    data: "{id: " + ID + ", value: " + update + "}",
                     contentType: "application/json; charset=utf-8",
                     dataType: "json",
                     beforeSend: function () {
@@ -444,7 +444,7 @@
                 $.ajax({
                     type: "POST",
                     url: "/tat-ca-san-pham.aspx/updateWebPublish",
-                    data: "{id: '" + ID + "', value: " + update + "}",
+                    data: "{id: " + ID + ", value: " + update + "}",
                     contentType: "application/json; charset=utf-8",
                     dataType: "json",
                     beforeSend: function () {
@@ -506,7 +506,7 @@
             {
                 swal({
                     title: "Xác nhận",
-                    text: "Bạn muốn xả hàng sản phẩm này không?",
+                    text: "Bạn muốn xả kho sản phẩm này?",
                     type: "warning",
                     showCancelButton: true,
                     closeOnConfirm: true,
@@ -533,7 +533,7 @@
                                     setTimeout(function () {
                                         swal({
                                             title: "Thông báo",
-                                            text: "Xã hàng thành công!",
+                                            text: "Xã kho thành công!",
                                             type: "success"
                                         }, function () {
                                             hiddenProduct(categoryID, productID, sku);
@@ -542,13 +542,13 @@
                                 }
                                 else {
                                     setTimeout(function () {
-                                        swal("Thông báo", "Có lỗi trong qua trình xã hàng", "error");
+                                        swal("Thông báo", "Có lỗi trong qua trình xã kho", "error");
                                     }, 500);
                                 }
                             })
                             .catch(err => {
                                 setTimeout(function () {
-                                    swal("Thông báo", "Có lỗi trong qua trình xã hàng", "error");
+                                    swal("Thông báo", "Có lỗi trong qua trình xã kho", "error");
                                 }, 500);
                             })
                             .finally(() => { HoldOn.close(); });
@@ -559,7 +559,7 @@
             function recoverLiquidatedProduct(categoryID, productID, sku) {
                 swal({
                     title: "Xác nhận",
-                    text: "Bạn muốn phục hồi lại xã kho?",
+                    text: "Bạn muốn phục hồi xã kho?",
                     type: "warning",
                     showCancelButton: true,
                     closeOnConfirm: true,
@@ -586,7 +586,7 @@
                                     setTimeout(function () {
                                         swal({
                                             title: "Thông báo", 
-                                            text: "Phục hồi xã hàng thành công!", 
+                                            text: "Phục hồi xã kho thành công!", 
                                             type: "success"
                                         }, function () {
                                             unhiddenProduct(categoryID, productID, sku);
@@ -595,13 +595,13 @@
                                 }
                                 else {
                                     setTimeout(function () {
-                                        swal("Thông báo", "Có lỗi trong qua trình phục hồi lại xã hàng", "error");
+                                        swal("Thông báo", "Có lỗi trong qua trình phục hồi lại xã kho", "error");
                                     }, 500);
                                 }
                             })
                             .catch(err => {
                                 setTimeout(function () {
-                                    swal("Thông báo", "Có lỗi trong qua trình phục hồi lại xã hàng", "error");
+                                    swal("Thông báo", "Có lỗi trong qua trình phục hồi lại xã kho", "error");
                                 }, 500);
                             })
                             .finally(() => { HoldOn.close(); });
@@ -614,7 +614,7 @@
                 let strHTML = "";
 
                 strHTML += "<a href='javascript:;' ";
-                strHTML += "       title='Xả hàng' ";
+                strHTML += "       title='Xả kho' ";
                 strHTML += "       class='liquidation-product-" + productID + " btn primary-btn btn-red h45-btn' ";
                 strHTML += "       onclick='liquidateProduct(" + categoryID + ", " + productID + ", `" + sku + "`);'>";
                 strHTML += "   <i class='glyphicon glyphicon-trash' aria-hidden='true'></i>";
@@ -628,7 +628,7 @@
                 let strHTML = "";
 
                 strHTML += "<a href='javascript:;' ";
-                strHTML += "       title='Phục hồi lại xả hàng' ";
+                strHTML += "       title='Phục hồi xả kho' ";
                 strHTML += "       class='recover-liquidation-product-" + productID + " btn primary-btn btn-green h45-btn' ";
                 strHTML += "       onclick='recoverLiquidatedProduct(" + categoryID + ", " + productID + ", `" + sku + "`);'>";
                 strHTML += "   <i class='glyphicon glyphicon-repeat' aria-hidden='true'></i>";
