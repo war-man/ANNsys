@@ -1,6 +1,7 @@
 ﻿using CronNET;
 using IM_PJ.Controllers;
 using IM_PJ.Models;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,6 +29,7 @@ namespace IM_PJ.CronJob
         }
         public override void Execute()
         {
+            runSchedule();
             createSchedule();
             runSchedule();
         }
@@ -40,19 +42,19 @@ namespace IM_PJ.CronJob
         private static List<string> getWebAdvertisements(int categoryID)
         {
             var web = new List<string>();
-            web.Add("https://ann.com.vn");
-            web.Add("https://khohangsiann.com");
-            web.Add("https://bosiquanao.net");
-            web.Add("https://quanaogiaxuong.com");
-            web.Add("https://bansithoitrang.net");
-            web.Add("https://quanaoxuongmay.com");
-            web.Add("https://annshop.vn");
+            //web.Add("https://ann.com.vn");
+            //web.Add("https://khohangsiann.com");
+            //web.Add("https://bosiquanao.net");
+            //web.Add("https://quanaogiaxuong.com");
+            //web.Add("https://bansithoitrang.net");
+            //web.Add("https://quanaoxuongmay.com");
+            //web.Add("https://annshop.vn");
             web.Add("https://panpan.vn");
 
-            if (categoryID == 18)
-                web.Add("https://chuyensidobo.com");
-            if (categoryID == 17)
-                web.Add("https://damgiasi.vn");
+            //if (categoryID == 18)
+            //    web.Add("https://chuyensidobo.com");
+            //if (categoryID == 17)
+            //    web.Add("https://damgiasi.vn");
 
             return web;
         }
@@ -64,10 +66,10 @@ namespace IM_PJ.CronJob
         /// <returns></returns>
         private static string getAPIName(string web)
         {
-            if (web == "panpan.vn")
-                return "up-product.html";
+            if (web == "https://panpan.vn")
+                return "sync-product.html";
             else
-                return "up-product";
+                return "sync-product";
         }
 
         private static bool isPause()
@@ -174,34 +176,18 @@ namespace IM_PJ.CronJob
 
                     foreach (var web in webs)
                     {
-                        var cron = con.CronJobProductStatus
-                            .Where(x => x.Web == web)
-                            .Where(x => x.ProductID == item.productID)
-                            .Where(x => x.Status == (int)CronJobStatus.Scheduled)
-                            .FirstOrDefault();
-
-                        if (cron != null)
+                        con.CronJobProductStatus.Add(new CronJobProductStatu()
                         {
-                            cron.IsHidden = item.quantity == 0;
-                            cron.CreatedDate = now;
-                            cron.ModifiedDate = now;
-                            con.SaveChanges();
-                        }
-                        else
-                        {
-                            con.CronJobProductStatus.Add(new CronJobProductStatu()
-                            {
-                                Web = web,
-                                API = getAPIName(web),
-                                ProductID = item.productID,
-                                SKU = item.sku,
-                                IsHidden = item.quantity == 0,
-                                Status = (int)CronJobStatus.Scheduled,
-                                CreatedDate = now,
-                                ModifiedDate = now
-                            });
-                            con.SaveChanges();
-                        }
+                            Web = web,
+                            API = getAPIName(web),
+                            ProductID = item.productID,
+                            SKU = item.sku,
+                            IsHidden = item.quantity == 0,
+                            Status = (int)CronJobStatus.Scheduled,
+                            CreatedDate = now,
+                            ModifiedDate = now
+                        });
+                        con.SaveChanges();
                     }
                 }
                 #endregion
@@ -238,30 +224,43 @@ namespace IM_PJ.CronJob
 
                         // HTTP POST
                         var content = new FormUrlEncodedContent(new[] {
-                            new KeyValuePair<string, string>("sku", item.SKU),
-                            new KeyValuePair<string, string>("systemid", item.ProductID.ToString()),
-                            new KeyValuePair<string, string>("up", "false"),
-                            new KeyValuePair<string, string>("renew", "false"),
-                            new KeyValuePair<string, string>("visibility", item.IsHidden ? "hidden" : "visible"),
                             new KeyValuePair<string, string>("key", "828327"),
+                            new KeyValuePair<string, string>("sku", item.SKU),
+                            new KeyValuePair<string, string>("visibility", item.IsHidden ? "hidden" : "visible")
                         });
 
-                        System.Diagnostics.Debug.WriteLine("API: " + item.ToString());
-                        var response = client.PostAsync(item.API, content).Result;
-
-                        if (response.IsSuccessStatusCode)
+                        try
                         {
-                            item.Status = (int)CronJobStatus.Done;
-                            item.ModifiedDate = DateTime.Now;
-                            item.Note = response.Content.ReadAsStringAsync().Result;
-                            con.SaveChanges();
-                        }
+                            System.Diagnostics.Debug.WriteLine("API: " + JsonConvert.SerializeObject(item));
+                            var response = client.PostAsync(item.API, content).Result;
+
+                            if (response.IsSuccessStatusCode)
+                            {
+                                item.Status = (int)CronJobStatus.Done;
+                                item.ModifiedDate = DateTime.Now;
+                                item.Note = response.Content.ReadAsStringAsync().Result;
+                                con.SaveChanges();
+                            }
                             else
                             {
+                                item.Status = (int)CronJobStatus.Fail;
+                                item.ModifiedDate = DateTime.Now;
+                                con.SaveChanges();
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            System.Diagnostics.Debug.WriteLine("Error: " + ex.Message);
                             item.Status = (int)CronJobStatus.Fail;
                             item.ModifiedDate = DateTime.Now;
+                            if (ex.Message.Length > 255)
+                                item.Note = ex.Message.Substring(0, 254);
+                            else
+                                item.Note = ex.Message;
                             con.SaveChanges();
+                            continue;
                         }
+                        
                     }
                 }
             }

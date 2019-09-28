@@ -321,6 +321,7 @@
     <Content Include="App_Themes\Ann\css\common\search-customer.css" />
     <Content Include="App_Themes\Ann\css\HoldOn.css" />
     <Content Include="App_Themes\Ann\css\pages\chi-tiet-giam-gia\chi-tiet-giam-gia.css" />
+    <Content Include="App_Themes\Ann\css\pages\cron-job-product-status\cron-job-product-status.css" />
     <Content Include="App_Themes\Ann\css\pages\danh-sach-khach-giam-gia\danh-sach-khach-giam-gia.css" />
     <Content Include="App_Themes\Ann\css\pages\them-moi-giam-gia\them-moi-giam-gia.css" />
     <Content Include="App_Themes\Ann\css\print-delivery.css" />

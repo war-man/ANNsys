@@ -142,7 +142,7 @@ namespace IM_PJ.Controllers
                         web = x.schedule.Web,
                         isHidden = x.schedule.IsHidden,
                         cronJobStatus = x.schedule.Status,
-                        startDate = x.schedule.CreatedDate,
+                        startDate = x.schedule.ModifiedDate,
                         note = x.schedule.Note
                     });
 
