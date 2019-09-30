@@ -48,6 +48,7 @@
                                         <asp:ListItem Value="3" Text="Tạm dừng"></asp:ListItem>
                                         <asp:ListItem Value="4" Text="Hoàn thành"></asp:ListItem>
                                         <asp:ListItem Value="5" Text="Thất bại"></asp:ListItem>
+                                        <asp:ListItem Value="6" Text="Bỏ qua"></asp:ListItem>
                                     </asp:DropDownList>
                                 </div>
                                 <div class="col-md-2 col-xs-6">

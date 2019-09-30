@@ -162,6 +162,8 @@ namespace IM_PJ
                         html.AppendLine("      <span class='bg-brown'>Tạm dừng</span>");
                     else if (item.cronJobStatus == 4)
                         html.AppendLine("      <span class='bg-green'>Thành công</span>");
+                    else if (item.cronJobStatus == 6)
+                        html.AppendLine("      <span class='bg-black'>Bỏ qua</span>");
                     else
                         html.AppendLine("      <span class='bg-red'>Thất bại</span>");
                     html.AppendLine("   </td>");

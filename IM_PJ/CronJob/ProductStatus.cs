@@ -1,15 +1,12 @@
 ﻿using CronNET;
 using IM_PJ.Controllers;
 using IM_PJ.Models;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Web;
 using System.Threading;
-using System.Security.Permissions;
+using IM_PJ.Models.Pages.ExecuteAPI;
 
 namespace IM_PJ.CronJob
 {
@@ -31,7 +28,6 @@ namespace IM_PJ.CronJob
         }
         public override void Execute()
         {
-            runSchedule();
             createSchedule();
             runSchedule();
         }
@@ -44,19 +40,19 @@ namespace IM_PJ.CronJob
         private static List<string> getWebAdvertisements(int categoryID)
         {
             var web = new List<string>();
-            //web.Add("https://ann.com.vn");
-            //web.Add("https://khohangsiann.com");
-            //web.Add("https://bosiquanao.net");
-            //web.Add("https://quanaogiaxuong.com");
-            //web.Add("https://bansithoitrang.net");
-            //web.Add("https://quanaoxuongmay.com");
-            //web.Add("https://annshop.vn");
+            web.Add("https://ann.com.vn");
+            web.Add("https://khohangsiann.com");
+            web.Add("https://bosiquanao.net");
+            web.Add("https://quanaogiaxuong.com");
+            web.Add("https://bansithoitrang.net");
+            web.Add("https://quanaoxuongmay.com");
+            web.Add("https://annshop.vn");
             web.Add("https://panpan.vn");
 
-            //if (categoryID == 18)
-            //    web.Add("https://chuyensidobo.com");
-            //if (categoryID == 17)
-            //    web.Add("https://damgiasi.vn");
+            if (categoryID == 18)
+                web.Add("https://chuyensidobo.com");
+            if (categoryID == 17)
+                web.Add("https://damgiasi.vn");
 
             return web;
         }
@@ -218,53 +214,52 @@ namespace IM_PJ.CronJob
 
                     item.Status = (int)CronJobStatus.Start;
 
-                    using (var client = new HttpClient())
+                    
+                    var executeAPI = new ExecuteAPI();
+
+                    ResponseProductStatusModel response = null; 
+                    var thread = new Thread(() => { response = executeAPI.postSync(item); });
+                    thread.Start();
+                    thread.Join();
+
+                    if (response == null)
                     {
-                        client.BaseAddress = new Uri(item.Web);
-                        client.DefaultRequestHeaders.Accept.Clear();
-                        client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
-                        // HTTP POST
-                        var content = new FormUrlEncodedContent(new[] {
-                            new KeyValuePair<string, string>("key", "828327"),
-                            new KeyValuePair<string, string>("sku", item.SKU),
-                            new KeyValuePair<string, string>("visibility", item.IsHidden ? "hidden" : "visible")
-                        });
-
-                        try
-                        {
-                            System.Diagnostics.Debug.WriteLine("API: " + JsonConvert.SerializeObject(item));
-                            var response = client.PostAsync(item.API, content).Result;
-
-                            if (response.IsSuccessStatusCode)
-                            {
-                                item.Status = (int)CronJobStatus.Done;
-                                item.ModifiedDate = DateTime.Now;
-                                item.Note = response.Content.ReadAsStringAsync().Result;
-                                con.SaveChanges();
-                            }
-                            else
-                            {
-                                item.Status = (int)CronJobStatus.Fail;
-                                item.ModifiedDate = DateTime.Now;
-                                con.SaveChanges();
-                            }
-                            Thread.Sleep(100);
-                        }
-                        catch (ThreadAbortException ex)
-                        {
-                            System.Diagnostics.Debug.WriteLine("Error: " + ex.Message);
-                            item.Status = (int)CronJobStatus.Fail;
-                            item.ModifiedDate = DateTime.Now;
-                            if (ex.Message.Length > 255)
-                                item.Note = ex.Message.Substring(0, 254);
-                            else
-                                item.Note = ex.Message;
-                            con.SaveChanges();
-                            Thread.ResetAbort();
-                            continue;
-                        }
-                        
+                        item.Status = (int)CronJobStatus.Fail;
+                        item.Note = "Đã xãy ra lỗi khi gọi thực thi api";
+                        item.ModifiedDate = DateTime.Now;
+                        con.SaveChanges();
+                    }
+                    else if (response.response == "done")
+                    {
+                        item.Status = (int)CronJobStatus.Done;
+                        item.Note = response.response;
+                        item.ModifiedDate = DateTime.Now;
+                        con.SaveChanges();
+                    }
+                    else if (response.response == "notfound")
+                    {
+                        item.Status = (int)CronJobStatus.Continue;
+                        item.Note = response.response;
+                        item.ModifiedDate = DateTime.Now;
+                        con.SaveChanges();
+                    }
+                    else if (response.response == "error")
+                    {
+                        item.Status = (int)CronJobStatus.Fail;
+                        item.Note = response.response;
+                        item.ModifiedDate = DateTime.Now;
+                        con.SaveChanges();
+                    }
+                    else
+                    {
+                        item.Status = (int)CronJobStatus.Fail;
+                        response.content = "Trường hợp success không có trong định nghĩa. " + response.content;
+                        if (response.content.Length > 255)
+                            item.Note = response.content.Substring(0, 254);
+                        else
+                            item.Note = response.content;
+                        item.ModifiedDate = DateTime.Now;
+                        con.SaveChanges();
                     }
                 }
             }
