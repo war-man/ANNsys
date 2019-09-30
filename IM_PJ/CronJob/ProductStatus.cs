@@ -8,6 +8,8 @@ using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Web;
+using System.Threading;
+using System.Security.Permissions;
 
 namespace IM_PJ.CronJob
 {
@@ -167,7 +169,7 @@ namespace IM_PJ.CronJob
 
                     if (product != null)
                     {
-                        product.IsHidden = item.quantity == 0;
+                        product.IsHidden = item.quantity <= 5;
                         product.ModifiedBy = "CronJob";
                         product.ModifiedDate = now;
                     }
@@ -182,7 +184,7 @@ namespace IM_PJ.CronJob
                             API = getAPIName(web),
                             ProductID = item.productID,
                             SKU = item.sku,
-                            IsHidden = item.quantity == 0,
+                            IsHidden = item.quantity <= 5,
                             Status = (int)CronJobStatus.Scheduled,
                             CreatedDate = now,
                             ModifiedDate = now
@@ -247,8 +249,9 @@ namespace IM_PJ.CronJob
                                 item.ModifiedDate = DateTime.Now;
                                 con.SaveChanges();
                             }
+                            Thread.Sleep(100);
                         }
-                        catch (Exception ex)
+                        catch (ThreadAbortException ex)
                         {
                             System.Diagnostics.Debug.WriteLine("Error: " + ex.Message);
                             item.Status = (int)CronJobStatus.Fail;
@@ -258,6 +261,7 @@ namespace IM_PJ.CronJob
                             else
                                 item.Note = ex.Message;
                             con.SaveChanges();
+                            Thread.ResetAbort();
                             continue;
                         }
                         
