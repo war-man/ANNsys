@@ -40,19 +40,19 @@ namespace IM_PJ.CronJob
         private static List<string> getWebAdvertisements(int categoryID)
         {
             var web = new List<string>();
-            //web.Add("https://ann.com.vn");
-            //web.Add("https://khohangsiann.com");
-            //web.Add("https://bosiquanao.net");
-            //web.Add("https://quanaogiaxuong.com");
-            //web.Add("https://bansithoitrang.net");
-            //web.Add("https://quanaoxuongmay.com");
-            //web.Add("https://annshop.vn");
+            web.Add("https://ann.com.vn");
+            web.Add("https://khohangsiann.com");
+            web.Add("https://bosiquanao.net");
+            web.Add("https://quanaogiaxuong.com");
+            web.Add("https://bansithoitrang.net");
+            web.Add("https://quanaoxuongmay.com");
+            web.Add("https://annshop.vn");
             web.Add("https://panpan.vn");
 
-            //if (categoryID == 18)
-            //    web.Add("https://chuyensidobo.com");
-            //if (categoryID == 17)
-            //    web.Add("https://damgiasi.vn");
+            if (categoryID == 18)
+                web.Add("https://chuyensidobo.com");
+            if (categoryID == 17)
+                web.Add("https://damgiasi.vn");
 
             return web;
         }
