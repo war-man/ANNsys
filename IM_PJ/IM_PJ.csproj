@@ -921,6 +921,7 @@
     <Compile Include="Controllers\RegisterProductController.cs" />
     <Compile Include="Controllers\SessionController.cs" />
     <Compile Include="Controllers\ShipperController.cs" />
+    <Compile Include="CronJob\ExecuteAPI.cs" />
     <Compile Include="CronJob\ProductStatus.cs" />
     <Compile Include="kiem-ke.aspx.cs">
       <DependentUpon>kiem-ke.aspx</DependentUpon>
@@ -985,6 +986,7 @@
     <Compile Include="Models\Pages\cron-job-product-status\FilterModel.cs" />
     <Compile Include="Models\Pages\cron-job-product-status\ProductModel.cs" />
     <Compile Include="Models\Pages\danh-sach-nhom-khach-hang\DiscountGroupModel.cs" />
+    <Compile Include="Models\Pages\ExecuteAPI\ResponseProductStatusModel.cs" />
     <Compile Include="Models\Pages\thong-ke-doanh-thu-khach-hang\CustomerModel.cs" />
     <Compile Include="Models\Pages\thong-ke-doanh-thu-khach-hang\OrderInfoModel.cs" />
     <Compile Include="Models\Pages\thong-ke-doanh-thu-khach-hang\ReportProfitCustomerModel.cs" />

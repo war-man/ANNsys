@@ -131,6 +131,7 @@ namespace IM_PJ.Models
         Start = 2, // Trạng thái đang thao tác
         Pause = 3, // Trạng thái dự lại đợi chờ j đó
         Done = 4, // Trạng thái hoàn thành
-        Fail = 5 // Trạng thái thất bại
+        Fail = 5, // Trạng thái thất bại
+        Continue = 6 // Trạng thái bỏ qua khi không có sản phẩm
     }
 }
