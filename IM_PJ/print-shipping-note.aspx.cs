@@ -110,6 +110,11 @@ namespace IM_PJ
                     error += "<p>- Đơn hàng này <strong>Lấy trực tiếp</strong>. Hãy chuyển sang phương thức khác hoặc nhờ chị Ngọc in phiếu!</p>";
                 }
 
+                if (order.PaymentType == 1 && acc.RoleID != 0)
+                {
+                    error += "<p>- Đơn hàng này <strong>Thanh toán tiền mặt</strong>. Hãy chuyển sang phương thức khác hoặc nhờ chị Ngọc in phiếu!</p>";
+                }
+
                 string address = "";
                 string phone = "";
                 string leader = "";

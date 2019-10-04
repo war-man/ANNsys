@@ -1,4 +1,7 @@
-﻿.capitalize {
+﻿.all {
+    width: 600px!important;
+}
+.capitalize {
     text-transform: capitalize;
 }
 .delivery {

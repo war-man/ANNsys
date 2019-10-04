@@ -252,6 +252,10 @@ namespace IM_PJ
                 {
                     products = products.Where(p => p.Regular_Price == productPrice).ToList();
                 }
+                else if (productPrice == -1)
+                {
+                    products = products.Where(p => p.Regular_Price != 30000 && p.Regular_Price != 35000 && p.Regular_Price != 49000 && p.Regular_Price != 135000).ToList();
+                }
 
                 if (products != null)
                 {

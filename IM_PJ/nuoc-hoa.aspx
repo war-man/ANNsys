@@ -137,9 +137,7 @@
         .btn.btn-order {
             background-color: #000;
         }
-        .btn.btn-135k {
-            background-color: #f87703;
-        }
+        
         .btn.download-btn {
             background-color: #000;
             color: #fff;
@@ -182,6 +180,18 @@
         .bg-green, .bg-red, .bg-yellow {
             display: initial;
         }
+        .margin-bottom-0 {
+            margin-bottom: 0!important;
+        }
+        .btn.btn-menu-2 {
+            background-color: #31708f;
+        }
+        .btn.btn-menu-3 {
+            background-color: #683b8a;
+        }
+        .btn.btn-menu-4 {
+            background-color: #f87703;
+        }
     </style>
 </head>
 <body>
@@ -192,24 +202,36 @@
             <main>
                 <div class="container">
                     <div class="row">
-                        <div class="col-xs-3">
+                        <div class="col-xs-4">
                             <div class="row">
-                                <a href="?price=30000" class="btn primary-btn h45-btn btn-product">Loại 30k</a>
+                                <a href="http://nuochoaann.com" class="btn primary-btn h45-btn btn-order margin-bottom-0">Tất cả</a>
                             </div>
                         </div>
-                        <div class="col-xs-3">
+                        <div class="col-xs-4">
                             <div class="row">
-                                <a href="?price=35000" class="btn primary-btn h45-btn btn-post">Loại 35k</a>
+                                <a href="?price=30000" class="btn primary-btn h45-btn btn-product margin-bottom-0">Loại 30k</a>
                             </div>
                         </div>
-                        <div class="col-xs-3">
+                        <div class="col-xs-4">
                             <div class="row">
-                                <a href="?price=49000" class="btn primary-btn h45-btn btn-order">Loại 49k</a>
+                                <a href="?price=35000" class="btn primary-btn h45-btn btn-post margin-bottom-0">Loại 35k</a>
                             </div>
                         </div>
-                        <div class="col-xs-3">
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-4">
                             <div class="row">
-                                <a href="?price=135000" class="btn primary-btn h45-btn btn-135k">Loại 135k</a>
+                                <a href="?price=49000" class="btn primary-btn h45-btn btn-menu-2">Loại 49k</a>
+                            </div>
+                        </div>
+                        <div class="col-xs-4">
+                            <div class="row">
+                                <a href="?price=135000" class="btn primary-btn h45-btn btn-menu-3">Loại 135k</a>
+                            </div>
+                        </div>
+                        <div class="col-xs-4">
+                            <div class="row">
+                                <a href="?price=-1" class="btn primary-btn h45-btn btn-menu-4">Loại chai lớn</a>
                             </div>
                         </div>
                     </div>
@@ -233,7 +255,7 @@
                                                     <a href="javascript:;" onclick="searchProduct()" class="btn primary-btn h45-btn"><i class="fa fa-search"></i> Tìm kiếm</a>
                                                 </div>
                                                 <div class="col-xs-6">
-                                                    <a href="/" class="btn primary-btn h45-btn download-btn"><i class="fa fa-times" aria-hidden="true"></i> Trang chủ</a>
+                                                    <a href="http://nuochoaann.com" class="btn primary-btn h45-btn download-btn"><i class="fa fa-home" aria-hidden="true"></i> Trang chủ</a>
                                                 </div>
                                             </div>
                                         </div>
@@ -244,10 +266,10 @@
                     </div>
                     <div class="row">
                         <div class="col-md-4 col-md-offset-4 col-xs-12">
-                            <a href="javascript:;" onclick="showContent()" class="btn primary-btn h45-btn btn-post"><i class="fa fa-quote-left" aria-hidden="true"></i> Chính sách bỏ sỉ nước hoa</a>
+                            <a href="javascript:;" onclick="showContent()" class="btn primary-btn h45-btn btn-post"><i class="fa fa-quote-left" aria-hidden="true"></i> Chính sách bán sỉ</a>
                         </div>
                         <div class="col-md-4 col-md-offset-4 col-xs-12">
-                            <a href="javascript:;" onclick="getAllCategoryImage()" class="btn primary-btn h45-btn btn-135k"><i class="fa fa-download" aria-hidden="true"></i> Tải tất cả hình (chỉ điện thoại Android)</a>
+                            <a href="javascript:;" onclick="getAllCategoryImage(0)" class="btn primary-btn h45-btn btn-135k"><i class="fa fa-download" aria-hidden="true"></i> Tải tất cả hình</a>
                         </div>
                     </div>
                     <div class="row">
@@ -286,13 +308,13 @@
                                     <div class="div-text div-1">
                                         <h3>Đối với khách mới:</h3>
                                         <p> - Sỉ đơn đầu 10 chai bất kỳ (lựa mẫu thoải mái).</p>
-                                        <p> - Được tính chung số lượng với quần áo (ví dụ: 5 áo thun + 5 nước hoa).</p>
-                                        <h3>Đối với khách sỉ quần áo (chưa từng lấy nước hoa):</h3>
-                                        <p> - Chỉ cần 5 chai được tính giá sỉ (lựa mẫu thoải mái).</p>
+                                        <p> - Được tính chung số lượng với quần áo (ví dụ: 6 áo + 4 nước hoa).</p>
+                                        <h3>Đối với khách đã nhập sỉ quần áo:</h3>
+                                        <p> - Sỉ đơn đầu 5 chai bất kỳ (lựa mẫu thoải mái).</p>
                                     </div>
                                     <div class="div-text div-2">
                                         <h3>Đối với khách cũ:</h3>
-                                        <p> - 1 chai nếu đến kho lấy (ship từ 3 sản phẩm).</p>
+                                        <p> - Sỉ 1 chai nếu đến kho lấy (ship từ 3 sản phẩm).</p>
                                     </div>
                                     <div class="div-text div-3">
                                         <h3>Quy định đổi trả:</h3>
@@ -303,10 +325,11 @@
                                         <h3>Chiết khấu:</h3>
                                         <p> - Từ 30 sản phẩm: giảm 3.000/sp.</p>
                                         <p> - Từ 50 sản phẩm: giảm 5.000/sp.</p>
-                                        <p> - Từ 100 sản phẩm: giảm 7.000/sp.</p>
-                                        <p> - Từ 300 sản phẩm: giảm 8.000/sp.</p>
-                                        <p> - Từ 500 sản phẩm: giảm 10.000/sp.</p>
-                                        <p> - Từ 1.000 sản phẩm: liên hệ.</p>
+                                        <p> - Từ 70 sản phẩm: giảm 7.000/sp.</p>
+                                        <p> - Từ 100 sản phẩm: giảm 10.000/sp.</p>
+                                        <p> - Từ 200 sản phẩm: giảm 12.000/sp.</p>
+                                        <p> - Từ 300 sản phẩm: giảm 13.000/sp.</p>
+                                        <p> - Từ 500 sản phẩm: giảm 15.000/sp.</p>
                                     </div>
                                 </div>
                             </div>
@@ -325,15 +348,16 @@
                     <div class="modal-content">
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal">&times;</button>
-                            <h4 class="modal-title">Chọn sản phẩm cần tải hình</h4>
+                            <h4 class="modal-title">Chọn loại sản phẩm cần tải hình</h4>
                         </div>
                         <div class="modal-body">
                             <div id="setting-shipper" class="row form-group">
                                 <div class="col-xs-12">
                                     <a href="javascript:;" class="btn primary-btn h45-btn btn-product" onclick="getAllCategoryImage(30000)">Tải hình loại 30k</a>
                                     <a href="javascript:;" class="btn primary-btn h45-btn btn-post" onclick="getAllCategoryImage(35000)">Tải hình loại 35k</a>
-                                    <a href="javascript:;" class="btn primary-btn h45-btn btn-order" onclick="getAllCategoryImage(49000)">Tải hình loại 49k</a>
-                                    <a href="javascript:;" class="btn primary-btn h45-btn btn-135k" onclick="getAllCategoryImage(135000)">Tải hình loại 135k</a>
+                                    <a href="javascript:;" class="btn primary-btn h45-btn btn-menu-2" onclick="getAllCategoryImage(49000)">Tải hình loại 49k</a>
+                                    <a href="javascript:;" class="btn primary-btn h45-btn btn-menu-3" onclick="getAllCategoryImage(135000)">Tải hình loại 135k</a>
+                                    <a href="javascript:;" class="btn primary-btn h45-btn btn-menu-4" onclick="getAllCategoryImage(-1)">Tải hình loại chai lớn</a>
                                 </div>
                             </div>
                         </div>
@@ -440,24 +464,13 @@
                 {
                     $("#ContentModal").modal({ show: 'true', backdrop: 'static', keyboard: 'false' });
                 }
-                function getAllCategoryImage(productPrice = 0)
+                function getAllCategoryImage(productPrice)
                 {
                     if (productPrice == 0) 
                     {
-                        let url = window.location.href;
-                        let currentURL = new URL(url);
-                        productPrice = currentURL.searchParams.get("price");
-                        if (!productPrice)
-                        {
-                            $("#DownloadModal").modal({ show: 'true', backdrop: 'static', keyboard: 'false' });
-                        }
+                        $("#DownloadModal").modal({ show: 'true', backdrop: 'static', keyboard: 'false' });
                     }
                     else {
-                        $("#closeDownloadModal").click();
-                    }
-
-                    if (productPrice > 0) 
-                    {
                         $.ajax({
                             type: "POST",
                             url: "/nuoc-hoa.aspx/getAllCategoryImage",

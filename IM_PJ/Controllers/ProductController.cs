@@ -1069,6 +1069,12 @@ namespace IM_PJ.Controllers
                 sql.AppendLine(String.Format("        PRD.Regular_Price = {0}", filter.price));
                 sql.AppendLine("    )");
             }
+            else if (filter.price == -1)
+            {
+                sql.AppendLine("    AND (");
+                sql.AppendLine(String.Format("        PRD.Regular_Price <> 30000 AND PRD.Regular_Price <> 35000 AND PRD.Regular_Price <> 49000 AND PRD.Regular_Price <> 135000 ", filter.price));
+                sql.AppendLine("    )");
+            }
             #endregion
 
             #region Lọc sản phẩm show lên home page

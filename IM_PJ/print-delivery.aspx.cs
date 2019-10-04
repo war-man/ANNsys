@@ -168,7 +168,7 @@ namespace IM_PJ
                 totalCollection += item.Collection;
 
                 html.AppendLine("                        <tr>");
-                html.AppendLine(String.Format("                            <td><strong>{0}</strong></td>", item.TransportName.ToTitleCase()));
+                html.AppendLine(String.Format("                            <td><strong>{0}</strong></td>", item.TransportName.ToLower().ToTitleCase()));
                 html.AppendLine(String.Format("                            <td>{0:#,###}</td>", item.Quantity));
                 if (item.Collection > 0)
                 {
@@ -225,7 +225,7 @@ namespace IM_PJ
                     html.AppendLine(String.Format("                            <td colspan='3'><strong>{0}</strong> - {1}</td>", item.OrderID, item.CustomerName.ToTitleCase()));
                     html.AppendLine("                        </tr>");
                     html.AppendLine("                        <tr>");
-                    html.AppendLine(String.Format("                            <td>{0}</td>", item.TransportName.ToTitleCase()));
+                    html.AppendLine(String.Format("                            <td>{0}</td>", item.TransportName.ToLower().ToTitleCase()));
                     html.AppendLine(String.Format("                            <td>{0:#,###}</td>", item.Collection));
                     html.AppendLine(String.Format("                            <td>{0:#,###}</td>", item.MoneyReceived));
                     html.AppendLine("                        </tr>");
