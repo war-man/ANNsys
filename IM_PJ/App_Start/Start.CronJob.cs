@@ -13,11 +13,18 @@ namespace IM_PJ
         public void ConfigureCron()
         {
             CronManager.Start();
-            var taskProductStatus = CronManager.GetJobs().FirstOrDefault();
-            
-            // Cập nhât JobID
-            if (taskProductStatus != null)
-                CronJobController.update("Product Status", taskProductStatus.JobID);
+            var jobs = CronManager.GetJobs();
+
+            foreach (var job in jobs)
+                CronManager.RemoveJob(job.JobID);
+
+            var productStatus = new CreateScheduleProductStatus();
+            CronManager.AddJob(productStatus);
+            CronJobController.update("Product Status", productStatus.JobID);
+
+            var websites = productStatus.getWebAdvertisements();
+            foreach (var website in websites)
+                CronManager.AddJob(new RunScheduleProductStatus(website));
         }
     }
 }

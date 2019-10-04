@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.Web.UI.WebControls;
 
 namespace IM_PJ.Controllers
 {
@@ -181,6 +182,36 @@ namespace IM_PJ.Controllers
 
                 return result;
             }
+        }
+        #endregion
+
+        #region Trả về danh sách drop downlist
+        public static List<ListItem> getDropDownList()
+        {
+            var dropDownList = new List<ListItem>();
+            var categories = GetByLevel(0);
+
+            foreach (var item in categories)
+            {
+                dropDownList.AddRange(createListItem(item));
+            }
+
+            return dropDownList;
+        }
+
+        private static List<ListItem> createListItem(tbl_Category parents, string strLevel = "")
+        {
+            var result = new List<ListItem>();
+            var categories = CategoryController.GetByParentID("", parents.ID);
+
+            result.Add(new ListItem(strLevel + parents.CategoryName, parents.ID.ToString()));
+
+            foreach (var item in categories)
+            {
+                result.AddRange(createListItem(item, strLevel + "---"));
+            }
+
+            return result;
         }
         #endregion
     }

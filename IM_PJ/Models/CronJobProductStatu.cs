@@ -24,5 +24,7 @@ namespace IM_PJ.Models
         public System.DateTime CreatedDate { get; set; }
         public System.DateTime ModifiedDate { get; set; }
         public string Note { get; set; }
+        public int CategoryID { get; set; }
+        public int Quantity { get; set; }
     }
 }

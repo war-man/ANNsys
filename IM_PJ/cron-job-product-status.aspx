@@ -2,7 +2,7 @@
 
 <%@ Register Assembly="Telerik.Web.UI" Namespace="Telerik.Web.UI" TagPrefix="telerik" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
-    <link type="text/css" rel="stylesheet" href="App_Themes/Ann/css/pages/cron-job-product-status/cron-job-product-status.css?v=20190926120003"/>
+    <link type="text/css" rel="stylesheet" href="App_Themes/Ann/css/pages/cron-job-product-status/cron-job-product-status.css?v=20190926120003" />
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <main id="main-wrap">
@@ -12,7 +12,7 @@
                     <h3 class="page-title left">Lịch Trình <span>(<asp:Literal ID="ltrNumberOfSchedule" runat="server" EnableViewState="false"></asp:Literal>)</span></h3>
                     <div class="right above-list-btn cron-job">
                         <button type='button' class='h45-btn btn primary-btn' onclick='onClick_btnCronJob()'>
-                            <i class="glyphicon glyphicon-cog"></i> Setting
+                            <i class="glyphicon glyphicon-cog"></i>Setting
                         </button>
                     </div>
                 </div>
@@ -69,6 +69,22 @@
                                     <a href="javascript:;" onclick="onClick_btnSearchProduct()" class="btn primary-btn h45-btn"><i class="fa fa-search"></i></a>
                                     <asp:Button ID="btnSearch" runat="server" CssClass="btn primary-btn h45-btn" OnClick="btnSearch_Click" Style="display: none" />
                                     <a href="/cron-job-product-status" class="btn primary-btn h45-btn"><i class="fa fa-times" aria-hidden="true"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="filter-above-wrap clear">
+                        <div class="filter-control">
+                            <div class="row">
+                                <div class="col-md-3 col-xs-6">
+                                    <asp:DropDownList ID="ddlCategory" runat="server" CssClass="form-control"></asp:DropDownList>
+                                </div>
+                                <div class="col-md-2 col-xs-6">
+                                    <asp:DropDownList ID="ddlProductStatus" runat="server" CssClass="form-control">
+                                        <asp:ListItem Value="" Text="Trang thái hàng"></asp:ListItem>
+                                        <asp:ListItem Value="true" Text="Đang ẩn"></asp:ListItem>
+                                        <asp:ListItem Value="false" Text="Đang hiện"></asp:ListItem>
+                                    </asp:DropDownList>
                                 </div>
                             </div>
                         </div>
@@ -136,6 +152,7 @@
             </div>
         </div>
 
+        <script type="text/javascript" src="/App_Themes/Ann/js/sync-product.js?v=20190926120003"></script>
         <script type="text/javascript" src="App_Themes/Ann/js/services/cron-job-product-status/cron-job-product-status-service.js?v=20190926120003"></script>
         <script type="text/javascript" src="App_Themes/Ann/js/controllers/cron-job-product-status/cron-job-product-status-controller.js?v=20190926120003"></script>
         <script type="text/javascript" src="App_Themes/Ann/js/pages/cron-job-product-status/cron-job-product-status.js?v=20190926120003"></script>
