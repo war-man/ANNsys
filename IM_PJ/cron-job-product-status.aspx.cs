@@ -10,6 +10,7 @@ using static IM_PJ.Controllers.ProductController;
 using IM_PJ.Utils;
 using IM_PJ.Models.Pages.cron_job_product_status;
 using System.Web.Services;
+using System.Web.UI.WebControls;
 
 namespace IM_PJ
 {
@@ -28,6 +29,7 @@ namespace IM_PJ
                     acc = AccountController.GetByUsername(username);
                     if (acc != null)
                     {
+                        LoadCategory();
                         LoadData();
                     }
                 }
@@ -36,6 +38,19 @@ namespace IM_PJ
                     Response.Redirect("/dang-nhap");
                 }
             }
+        }
+
+        public void LoadCategory()
+        {
+            var categories = CategoryController.getDropDownList();
+
+            ddlCategory.Items.Clear();
+            ddlCategory.Items.Insert(0, new ListItem("Danh mục", "0"));
+
+            if (categories.Count > 0)
+                ddlCategory.Items.AddRange(categories.ToArray());
+
+            ddlCategory.DataBind();
         }
 
         public void LoadData()
@@ -65,10 +80,12 @@ namespace IM_PJ
                 rToDate.MinDate = DateConfig;
                 rToDate.MaxDate = DateTime.Now;
 
-                string search = String.Empty;
-                string web = String.Empty;
-                int status = 0;
-                int Page = 1;
+                var search = String.Empty;
+                var web = String.Empty;
+                var status = 0;
+                var category = 0;
+                var isHidden = (Nullable<bool>)null;
+                var Page = 1;
 
                 if (Request.QueryString["search"] != null)
                     search = Request.QueryString["search"].Trim();
@@ -76,6 +93,10 @@ namespace IM_PJ
                     web = Request.QueryString["web"];
                 if (Request.QueryString["status"] != null)
                     status = Request.QueryString["status"].ToInt();
+                if (Request.QueryString["category"] != null)
+                    category = Request.QueryString["category"].ToInt();
+                if (!String.IsNullOrEmpty(Request.QueryString["isHidden"]))
+                    isHidden = Request.QueryString["isHidden"].ToBool();
                 if (Request.QueryString["Page"] != null)
                     Page = Request.QueryString["Page"].ToInt();
 
@@ -90,7 +111,9 @@ namespace IM_PJ
                     web = web,
                     status = status,
                     fromDate = fromDate,
-                    toDate = toDate
+                    toDate = toDate,
+                    category = category,
+                    isHidden = isHidden
                 };
                 // Create pagination
                 var page = new PaginationMetadataModel()
@@ -122,10 +145,12 @@ namespace IM_PJ
             html.AppendLine("    <th class='sku-column'>Mã</th>");
             html.AppendLine("    <th class='category-column'>Danh mục</th>");
             html.AppendLine("    <th class='web-column'>Web</th>");
+            html.AppendLine("    <th class='show-homepage-column'>Trang chủ</th>");
             html.AppendLine("    <th class='status-column'>Trạng Thái</th>");
             html.AppendLine("    <th class='cron-column'>Cron</th>");
             html.AppendLine("    <th class='date-column'>Ngày chạy</th>");
             html.AppendLine("    <th class='note-column'>Chú thích</th>");
+            html.AppendLine("    <th class='action-column'></th>");
             html.AppendLine("</tr>");
             html.AppendLine("</thead>");
 
@@ -147,8 +172,12 @@ namespace IM_PJ
                     html.AppendLine("   <td data-title='Mã' class=\"customer-name-link\">" + item.sku + "</td>");
                     html.AppendLine("   <td data-title='Danh mục'>" + item.categoryName + "</td>");
                     html.AppendLine("   <td data-title='Web'>" + item.web.Replace("https://", String.Empty) + "</td>");
+                    if (item.webPublish == false)
+                        html.Append("   <td data-title='Trang xem hàng'><span class='bg-black bg-button'>Đang ẩn</span></td>");
+                    else
+                        html.Append("   <td data-title='Trang xem hàng'><span class='bg-green bg-button'>Đang hiện</span></td>");
                     html.AppendLine("   <td data-title='Trạng Thái Sản phẩm'>");
-                    if(item.isHidden)
+                    if (item.isHidden)
                         html.AppendLine("      <span class='bg-red'>Ẩn</span>");
                     else
                         html.AppendLine("      <span class='bg-green'>Hiện</span>");
@@ -169,13 +198,17 @@ namespace IM_PJ
                     html.AppendLine("   </td>");
                     html.AppendLine(String.Format("   <td data-title='Ngày chạy'>{0:dd/MM/yyyy}</td>", item.startDate));
                     html.AppendLine("   <td data-title='Chú thích' class='update-button'>" + item.note + "</td>");
+                    html.AppendLine("   <td data-title='Thao tác' class='update-button'>");
+                    if (item.cronJobStatus == (int)CronJobStatus.Done)
+                        html.AppendLine("       <a href='javascript:;' title='Đồng bộ sản phẩm' class='up-product-" + item.id + " btn primary-btn h45-btn' onclick='ShowUpProductToWeb(`" + item.sku + "`, `" + item.id + "`, `" + item.categoryID + "`, `false`, `false`, `null`);'><i class='fa fa-refresh' aria-hidden='true'></i></a>");
+                    html.Append("  </td>");
                     html.AppendLine("</tr>");
                 }
 
             }
             else
             {
-                html.Append("<tr><td colspan='14'>Không tìm thấy sản phẩm...</td></tr>");
+                html.Append("<tr><td colspan='16'>Không tìm thấy sản phẩm...</td></tr>");
             }
             html.Append("</tbody>");
 
@@ -349,6 +382,16 @@ namespace IM_PJ
             if (rToDate.SelectedDate.HasValue)
             {
                 request += "&todate=" + rToDate.SelectedDate.ToString();
+            }
+
+            if (ddlCategory.SelectedValue != "0")
+            {
+                request += "&category=" + ddlCategory.SelectedValue;
+            }
+
+            if (!String.IsNullOrEmpty(ddlProductStatus.SelectedValue))
+            {
+                request += "&isHidden=" + ddlProductStatus.SelectedValue;
             }
 
             Response.Redirect(request);

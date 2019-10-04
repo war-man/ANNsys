@@ -12,5 +12,7 @@ namespace IM_PJ.Models.Pages.cron_job_product_status
         public int status { get; set; }
         public DateTime fromDate { get; set; }
         public DateTime toDate { get; set; }
+        public int category { get; set; }
+        public Nullable<bool> isHidden { get; set; }
     }
 }

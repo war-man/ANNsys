@@ -53,5 +53,7 @@ namespace IM_PJ.Models
         public Nullable<int> PostalDeliveryType { get; set; }
         public string CustomerNewPhone { get; set; }
         public string UserHelp { get; set; }
+        public bool VerifiedCOD { get; set; }
+        public string VerifiedBy { get; set; }
     }
 }
