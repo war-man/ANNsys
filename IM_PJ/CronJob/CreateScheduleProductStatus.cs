@@ -200,7 +200,7 @@ namespace IM_PJ.CronJob
                         ProductID = x.productID,
                         SKU = x.sku,
                         Quantity = (int)x.quantity,
-                        IsHidden = x.quantity <= 5,
+                        IsHidden = x.quantity < 5,
                         Status = (int)CronJobStatus.Scheduled,
                         CreatedDate = now,
                         ModifiedDate = now
@@ -256,6 +256,8 @@ namespace IM_PJ.CronJob
                     if (website == "https://chuyensidobo.com" && item.CategoryID != 18)
                         continue;
                     else if (website == "https://damgiasi.vn" && item.CategoryID != 17)
+                        continue;
+                    else if (item.CategoryID == 44)
                         continue;
 
                     item.Web = website;
@@ -329,7 +331,7 @@ namespace IM_PJ.CronJob
 
                             if (product != null)
                             {
-                                product.IsHidden = item.Quantity <= 5;
+                                product.IsHidden = item.Quantity < 5;
                                 product.ModifiedBy = "CronJob";
                                 product.ModifiedDate = now;
 
