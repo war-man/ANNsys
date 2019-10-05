@@ -17,10 +17,11 @@ namespace IM_PJ.Models.Pages.cron_job_product_status
         public double regularPrice { get; set; }
         public double retailPrice { get; set; }
         public string web { get; set; }
-        public bool webPublish { get; set; }
+        public int showHomePage { get; set; }
         public bool isHidden { get; set; }
         public int cronJobStatus { get; set; }
         public DateTime startDate { get; set; }
         public string note { get; set; }
+        public DateTime productCreatedDate { get; set; }
     }
 }

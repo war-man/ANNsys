@@ -14,5 +14,6 @@ namespace IM_PJ.Models.Pages.cron_job_product_status
         public DateTime toDate { get; set; }
         public int category { get; set; }
         public Nullable<bool> isHidden { get; set; }
+        public string showHomePage { get; set; }
     }
 }

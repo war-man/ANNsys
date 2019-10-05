@@ -85,6 +85,7 @@ namespace IM_PJ
                 var status = 0;
                 var category = 0;
                 var isHidden = (Nullable<bool>)null;
+                var showHomePage = String.Empty;
                 var Page = 1;
 
                 if (Request.QueryString["search"] != null)
@@ -97,12 +98,16 @@ namespace IM_PJ
                     category = Request.QueryString["category"].ToInt();
                 if (!String.IsNullOrEmpty(Request.QueryString["isHidden"]))
                     isHidden = Request.QueryString["isHidden"].ToBool();
+                if (Request.QueryString["showhomepage"] != null)
+                    showHomePage = Request.QueryString["showhomepage"];
                 if (Request.QueryString["Page"] != null)
                     Page = Request.QueryString["Page"].ToInt();
 
                 txtSearchProduct.Text = search;
                 ddlWebAdvertisement.SelectedValue = web;
+                ddlProductStatus.SelectedValue = isHidden != null ? isHidden.ToString() : "";
                 ddlScheduleStatus.SelectedValue = status.ToString();
+                ddlShowHomePage.SelectedValue = showHomePage;
 
                 // Create order fileter
                 var filter = new FilterModel()
@@ -113,7 +118,8 @@ namespace IM_PJ
                     fromDate = fromDate,
                     toDate = toDate,
                     category = category,
-                    isHidden = isHidden
+                    isHidden = isHidden,
+                    showHomePage = showHomePage
                 };
                 // Create pagination
                 var page = new PaginationMetadataModel()
@@ -145,12 +151,12 @@ namespace IM_PJ
             html.AppendLine("    <th class='sku-column'>Mã</th>");
             html.AppendLine("    <th class='category-column'>Danh mục</th>");
             html.AppendLine("    <th class='web-column'>Web</th>");
-            html.AppendLine("    <th class='show-homepage-column'>Trang chủ</th>");
-            html.AppendLine("    <th class='status-column'>Trạng Thái</th>");
+            html.AppendLine("    <th class='show-homepage-column'>Trang quảng cáo</th>");
+            html.AppendLine("    <th class='status-column'>Trạng thái</th>");
             html.AppendLine("    <th class='cron-column'>Cron</th>");
             html.AppendLine("    <th class='date-column'>Ngày chạy</th>");
             html.AppendLine("    <th class='note-column'>Chú thích</th>");
-            html.AppendLine("    <th class='action-column'></th>");
+            html.AppendLine("    <th>Đồng bộ</th>");
             html.AppendLine("</tr>");
             html.AppendLine("</thead>");
 
@@ -164,18 +170,18 @@ namespace IM_PJ
                 {
                     html.AppendLine("<tr>");
                     html.AppendLine("   <td>");
-                    html.AppendLine("       <a href=\"/xem-san-pham?id=" + item.id + "\">");
-                    html.AppendLine("           <img src=\"" + Thumbnail.getURL(item.image, Thumbnail.Size.Small) + "\"/></a>");
+                    html.AppendLine("       <a target='_blank' href='/xem-san-pham?id=" + item.id + "'>");
+                    html.AppendLine("           <img src='" + Thumbnail.getURL(item.image, Thumbnail.Size.Small) + "'/></a>");
                     html.AppendLine("       </a>");
                     html.AppendLine("   </td>");
-                    html.AppendLine("   <td class=\"customer-name-link\"><a href=\"/xem-san-pham?id=" + item.id + "\">" + item.title + "</a></td>");
-                    html.AppendLine("   <td data-title='Mã' class=\"customer-name-link\">" + item.sku + "</td>");
+                    html.AppendLine("   <td class='customer-name-link'><a target='_blank' href='/xem-san-pham?id=" + item.id + "'>" + item.title + "</a><br>" + string.Format("{0:dd/MM/yyyy}", item.productCreatedDate) + "</td>");
+                    html.AppendLine("   <td data-title='Mã' class='customer-name-link'>" + item.sku + "</td>");
                     html.AppendLine("   <td data-title='Danh mục'>" + item.categoryName + "</td>");
                     html.AppendLine("   <td data-title='Web'>" + item.web.Replace("https://", String.Empty) + "</td>");
-                    if (item.webPublish == false)
-                        html.Append("   <td data-title='Trang xem hàng'><span class='bg-black bg-button'>Đang ẩn</span></td>");
+                    if (item.showHomePage == 0)
+                        html.Append("   <td data-title='Trang quảng cáo'><span class='bg-black bg-button'>Đang ẩn</span></td>");
                     else
-                        html.Append("   <td data-title='Trang xem hàng'><span class='bg-green bg-button'>Đang hiện</span></td>");
+                        html.Append("   <td data-title='Trang quảng cáo'><span class='bg-green bg-button'>Đang hiện</span></td>");
                     html.AppendLine("   <td data-title='Trạng Thái Sản phẩm'>");
                     if (item.isHidden)
                         html.AppendLine("      <span class='bg-red'>Ẩn</span>");
@@ -199,7 +205,7 @@ namespace IM_PJ
                     html.AppendLine(String.Format("   <td data-title='Ngày chạy'>{0:dd/MM/yyyy}</td>", item.startDate));
                     html.AppendLine("   <td data-title='Chú thích' class='update-button'>" + item.note + "</td>");
                     html.AppendLine("   <td data-title='Thao tác' class='update-button'>");
-                    if (item.cronJobStatus == (int)CronJobStatus.Done)
+                    if (item.cronJobStatus == (int)CronJobStatus.Continue && !item.isHidden && item.showHomePage == 1)
                         html.AppendLine("       <a href='javascript:;' title='Đồng bộ sản phẩm' class='up-product-" + item.id + " btn primary-btn h45-btn' onclick='ShowUpProductToWeb(`" + item.sku + "`, `" + item.id + "`, `" + item.categoryID + "`, `false`, `false`, `null`);'><i class='fa fa-refresh' aria-hidden='true'></i></a>");
                     html.Append("  </td>");
                     html.AppendLine("</tr>");
@@ -392,6 +398,11 @@ namespace IM_PJ
             if (!String.IsNullOrEmpty(ddlProductStatus.SelectedValue))
             {
                 request += "&isHidden=" + ddlProductStatus.SelectedValue;
+            }
+
+            if (!String.IsNullOrEmpty(ddlShowHomePage.SelectedValue))
+            {
+                request += "&showhomepage=" + ddlShowHomePage.SelectedValue;
             }
 
             Response.Redirect(request);

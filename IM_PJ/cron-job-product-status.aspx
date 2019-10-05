@@ -43,7 +43,7 @@
                                 <div class="col-md-2 col-xs-6">
                                     <asp:DropDownList ID="ddlScheduleStatus" runat="server" CssClass="form-control">
                                         <asp:ListItem Value="0" Text="Trang thái cron job"></asp:ListItem>
-                                        <asp:ListItem Value="1" Text="Đang chờ chạy"></asp:ListItem>
+                                        <asp:ListItem Value="1" Text="Chờ chạy"></asp:ListItem>
                                         <asp:ListItem Value="2" Text="Đang chạy"></asp:ListItem>
                                         <asp:ListItem Value="3" Text="Tạm dừng"></asp:ListItem>
                                         <asp:ListItem Value="4" Text="Hoàn thành"></asp:ListItem>
@@ -81,9 +81,16 @@
                                 </div>
                                 <div class="col-md-2 col-xs-6">
                                     <asp:DropDownList ID="ddlProductStatus" runat="server" CssClass="form-control">
-                                        <asp:ListItem Value="" Text="Trang thái hàng"></asp:ListItem>
+                                        <asp:ListItem Value="" Text="Trạng thái hàng"></asp:ListItem>
                                         <asp:ListItem Value="true" Text="Đang ẩn"></asp:ListItem>
                                         <asp:ListItem Value="false" Text="Đang hiện"></asp:ListItem>
+                                    </asp:DropDownList>
+                                </div>
+                                <div class="col-md-2 col-xs-6">
+                                    <asp:DropDownList ID="ddlShowHomePage" runat="server" CssClass="form-control">
+                                        <asp:ListItem Value="" Text="Trang quảng cáo"></asp:ListItem>
+                                        <asp:ListItem Value="0" Text="Đang ẩn"></asp:ListItem>
+                                        <asp:ListItem Value="1" Text="Đang hiện"></asp:ListItem>
                                     </asp:DropDownList>
                                 </div>
                             </div>

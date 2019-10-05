@@ -250,6 +250,12 @@ namespace IM_PJ.Controllers
                     schedules = schedules.Where(x => x.IsHidden == filter.isHidden.Value);
                 #endregion
 
+                // Lọc theo trạng thái ẩn hiện trang quảng cáo
+                if (!String.IsNullOrEmpty(filter.showHomePage))
+                    products = products.Where(x =>
+                        x.ShowHomePage.ToString() == filter.showHomePage
+                    );
+
                 #region Tính toán phân trang
                 var data = schedules
                     .Join(
@@ -276,11 +282,12 @@ namespace IM_PJ.Controllers
                         regularPrice = x.product.Regular_Price.HasValue ? x.product.Regular_Price.Value : 0,
                         retailPrice = x.product.Retail_Price.HasValue ? x.product.Retail_Price.Value : 0,
                         web = x.schedule.Web,
-                        webPublic = x.product.WebPublish.HasValue ? x.product.WebPublish.Value : false,
+                        showHomePage = x.product.ShowHomePage.HasValue ? x.product.ShowHomePage.Value : 0,
                         isHidden = x.schedule.IsHidden,
                         cronJobStatus = x.schedule.Status,
                         startDate = x.schedule.ModifiedDate,
-                        note = x.schedule.Note
+                        note = x.schedule.Note,
+                        productCreatedDate = x.product.CreatedDate.Value
                     });
 
                 // Calculate pagination
@@ -305,11 +312,12 @@ namespace IM_PJ.Controllers
                     regularPrice = x.regularPrice,
                     retailPrice = x.retailPrice,
                     web = x.web,
-                    webPublish = x.webPublic,
+                    showHomePage = x.showHomePage,
                     isHidden = x.isHidden,
                     cronJobStatus = x.cronJobStatus,
                     startDate = x.startDate,
-                    note = x.note
+                    note = x.note,
+                    productCreatedDate = x.productCreatedDate
                 })
                 .ToList();
 

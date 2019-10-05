@@ -161,7 +161,7 @@ namespace IM_PJ.CronJob
                 var content = new FormUrlEncodedContent(new[] {
                     new KeyValuePair<string, string>("key", "828327"),
                     new KeyValuePair<string, string>("sku", schedule.SKU),
-                    new KeyValuePair<string, string>("visibility", schedule.IsHidden ? "hidden" : "visible")
+                    new KeyValuePair<string, string>("visibility", schedule.IsHidden ? "exclude-from-catalog" : "visible")
                 });
 
                 var response = client.PostAsync(schedule.API, content).Result;
