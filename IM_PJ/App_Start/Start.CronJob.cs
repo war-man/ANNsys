@@ -22,9 +22,9 @@ namespace IM_PJ
             CronManager.AddJob(productStatus);
             CronJobController.update("Product Status", productStatus.JobID);
 
-            //var websites = productStatus.getWebAdvertisements();
-            //foreach (var website in websites)
-            //    CronManager.AddJob(new RunScheduleProductStatus(website));
+            var websites = productStatus.getWebAdvertisements();
+            foreach (var website in websites)
+                CronManager.AddJob(new RunScheduleProductStatus(website));
         }
     }
 }
