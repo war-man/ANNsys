@@ -22,5 +22,6 @@ namespace IM_PJ.Models
         public System.DateTime CreatedDate { get; set; }
         public System.DateTime ModifiedDate { get; set; }
         public bool RunAllProduct { get; set; }
+        public int MinProduct { get; set; }
     }
 }

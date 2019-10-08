@@ -77,6 +77,7 @@
           <Property Name="CreatedDate" Type="datetime" Nullable="false" />
           <Property Name="ModifiedDate" Type="date" Nullable="false" />
           <Property Name="RunAllProduct" Type="bit" Nullable="false" />
+          <Property Name="MinProduct" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="CronJobProductStatus">
           <Key>
@@ -2140,6 +2141,7 @@
           <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="ModifiedDate" Type="DateTime" Nullable="false" Precision="0" />
           <Property Name="RunAllProduct" Type="Boolean" Nullable="false" />
+          <Property Name="MinProduct" Type="Int32" Nullable="false" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -3199,6 +3201,7 @@
           <EntitySetMapping Name="CronJobs">
             <EntityTypeMapping TypeName="inventorymanagementModel.CronJob">
               <MappingFragment StoreEntitySet="CronJob">
+                <ScalarProperty Name="MinProduct" ColumnName="MinProduct" />
                 <ScalarProperty Name="RunAllProduct" ColumnName="RunAllProduct" />
                 <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
                 <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />

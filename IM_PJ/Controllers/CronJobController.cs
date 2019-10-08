@@ -33,20 +33,21 @@ namespace IM_PJ.Controllers
         /// <param name="cronExpression"></param>
         /// <param name="status"></param>
         /// <returns></returns>
-        public static IM_PJ.Models.CronJob update(string name, string cronExpression, int status, bool runAllProduct)
+        public static IM_PJ.Models.CronJob update(IM_PJ.Models.CronJob cronNew)
         {
             using (var con = new inventorymanagementEntities())
             {
                 var cronJOB = con.CronJobs
-                    .Where(x => x.Name.Trim().ToLower() == name.Trim().ToLower())
+                    .Where(x => x.Name.Trim().ToLower() == cronNew.Name.Trim().ToLower())
                     .FirstOrDefault();
 
                 if (cronJOB != null)
                 {
                     // Cập nhật lại trạng thái và giờ start
-                    cronJOB.CronExpression = cronExpression;
-                    cronJOB.Status = status;
-                    cronJOB.RunAllProduct = runAllProduct;
+                    cronJOB.CronExpression = cronNew.CronExpression;
+                    cronJOB.Status = cronNew.Status;
+                    cronJOB.RunAllProduct = cronNew.RunAllProduct;
+                    cronJOB.MinProduct = cronNew.MinProduct;
                     cronJOB.ModifiedDate = DateTime.Now;
                     
                     con.SaveChanges();

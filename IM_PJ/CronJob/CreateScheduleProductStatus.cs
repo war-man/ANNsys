@@ -130,6 +130,9 @@ namespace IM_PJ.CronJob
                 {
                     var cron = CronJobController.get(CRON_NAME);
 
+                    if (cron == null)
+                        throw new Exception("Không tìm thấy thông tin cron job " + CRON_NAME);
+
                     #region Tìm thời điểm cập nhật sản phẩm cuối cùng
                     var lastDatetime = con.tbl_Product.Where(x => x.ModifiedDate.HasValue).Max(x => x.ModifiedDate.Value);
                     #endregion
@@ -208,7 +211,7 @@ namespace IM_PJ.CronJob
                         ProductID = x.productID,
                         SKU = x.sku,
                         Quantity = (int)x.quantity,
-                        IsHidden = x.quantity < 5,
+                        IsHidden = x.quantity < cron.MinProduct,
                         Status = (int)CronJobStatus.Scheduled,
                         CreatedDate = now,
                         ModifiedDate = now
@@ -312,6 +315,11 @@ namespace IM_PJ.CronJob
                 _log.Info("Begin updating the products which were be scheduled");
                 _log.Info(String.Format("Update Product - Number Product: {0:N}", products.Count));
 
+                var cron = CronJobController.get(CRON_NAME);
+
+                if (cron == null)
+                    throw new Exception("Không tìm thấy thông tin cron job " + CRON_NAME);
+
                 var size = 100;
                 var chunks = new List<List<CronJobProductStatu>>();
                 var chunkCount = Math.Ceiling(1.0 * products.Count() / size);
@@ -339,7 +347,7 @@ namespace IM_PJ.CronJob
 
                             if (product != null)
                             {
-                                product.IsHidden = item.Quantity < 5;
+                                product.IsHidden = item.Quantity < cron.MinProduct;
                                 product.ModifiedBy = "CronJob";
                                 product.ModifiedDate = now;
 

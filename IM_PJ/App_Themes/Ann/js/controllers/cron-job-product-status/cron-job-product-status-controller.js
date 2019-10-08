@@ -8,15 +8,17 @@
                     let modalDOM = document.querySelector("#CronJobSettingModal");
                     let cronExpressionDOM = modalDOM.querySelector("[id$='_txtCronExpression']");
                     let cronJobStatusDOM = modalDOM.querySelector("[id$='_ddlCronJobStatus']");
+                    let minProductDOM = modalDOM.querySelector("[id$='_txtMinProduct']");
                     
                     cronExpressionDOM.value = data.CronExpression;
-                    cronJobStatusDOM.value = data.Status;
+                    cronJobStatusDOM.value = +data.Status || 0;
                     if (data.RunAllProduct) {
                         $('#chbRunAllProduct').bootstrapToggle('on');
                     }
                     else {
                         $('#chbRunAllProduct').bootstrapToggle('off');
                     };
+                    minProductDOM.value = UtilsService.formatThousands((+data.MinProduct || 0), ',');
 
                     $("#CronJobSettingModal").modal({ show: 'true', backdrop: 'static' });
                 }
@@ -40,14 +42,18 @@
         let cronExpressionDOM = modalDOM.querySelector("[id$='_txtCronExpression']");
         let cronJobStatusDOM = modalDOM.querySelector("[id$='_ddlCronJobStatus']");
         let runAllProductDOM = modalDOM.querySelector("#chbRunAllProduct");
+        let minProductDOM = modalDOM.querySelector("[id$='_txtMinProduct']");
 
         // Lấy dữ liệu để cập nhật cron job
-        let cronExpress = cronExpressionDOM.value || "* * * * *";
-        let status = +cronJobStatusDOM.value || 0;
-        let runAllProduct = runAllProductDOM.checked || false;
+        let cronNew = {
+            'CronExpression': cronExpressionDOM.value || "* * * * *",
+            'Status': +cronJobStatusDOM.value || 0,
+            'RunAllProduct': runAllProductDOM.checked || false,
+            'MinProduct': +minProductDOM.value.replace(',', '') || 1
+        }
 
         window.HoldOn.open();
-        CronJobProductStatusService.updateCronJob(cronExpress, status, runAllProduct)
+        CronJobProductStatusService.updateCronJob(cronNew)
             .then(data => {
                 modalDOM.querySelector("#closeCronJobSetting").click();
 

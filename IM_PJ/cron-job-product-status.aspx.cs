@@ -416,9 +416,11 @@ namespace IM_PJ
         }
 
         [WebMethod]
-        public static IM_PJ.Models.CronJob updateCronJob(string cronExpression, int status, bool runAllProduct)
+        public static IM_PJ.Models.CronJob updateCronJob(IM_PJ.Models.CronJob cronNew)
         {
-            var cron = CronJobController.update(CRON_JOB_NAME, cronExpression, status, runAllProduct);
+            // Cài đặt tên của cron job
+            cronNew.Name = CRON_JOB_NAME;
+            var cron = CronJobController.update(cronNew);
 
             return cron;
         }
