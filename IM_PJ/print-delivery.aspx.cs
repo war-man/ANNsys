@@ -165,19 +165,15 @@ namespace IM_PJ
             {
                 index += 1;
                 totalQuantity += item.Quantity;
-                totalCollection += item.Collection;
+                totalCollection += item.Collection >= 0 ? item.Collection : 0;
 
                 html.AppendLine("                        <tr>");
                 html.AppendLine(String.Format("                            <td><strong>{0}</strong></td>", item.TransportName.ToLower().ToTitleCase()));
                 html.AppendLine(String.Format("                            <td>{0:#,###}</td>", item.Quantity));
-                if (item.Collection > 0)
-                {
+                if (item.Collection >= 0)
                     html.AppendLine(String.Format("                            <td>{0:#,###}</td>", item.Collection));
-                }
                 else
-                {
-                    html.AppendLine(String.Format("<td></td>"));
-                }
+                    html.AppendLine(String.Format("                            <td>0({0:#,###})</td>", item.Collection));
                 html.AppendLine("                        </tr>");
             }
             html.AppendLine("                        <tr>");
@@ -226,14 +222,20 @@ namespace IM_PJ
                     html.AppendLine("                        </tr>");
                     html.AppendLine("                        <tr>");
                     html.AppendLine(String.Format("                            <td>{0}</td>", item.TransportName.ToLower().ToTitleCase()));
-                    html.AppendLine(String.Format("                            <td>{0:#,###}</td>", item.Collection));
-                    html.AppendLine(String.Format("                            <td>{0:#,###}</td>", item.MoneyReceived));
+                    if (item.Collection >= 0)
+                        html.AppendLine(String.Format("                            <td>{0:#,###}</td>", item.Collection));
+                    else
+                        html.AppendLine(String.Format("                            <td>0({0:#,###})</td>", item.Collection));
+                    if (item.MoneyReceived >=0)
+                        html.AppendLine(String.Format("                            <td>{0:#,###}</td>", item.MoneyReceived));
+                    else
+                        html.AppendLine(String.Format("                            <td>0({0:#,###})</td>", item.MoneyReceived));
                     html.AppendLine("                        </tr>");
                 }
                 if (totalCollection > 0)
                 {
-                    var moneyCollection = data.Collections.Sum(x => x.Collection);
-                    var moneyReceived = data.Collections.Sum(x => x.MoneyReceived);
+                    var moneyCollection = data.Collections.Sum(x => x.Collection >= 0 ? x.Collection : 0);
+                    var moneyReceived = data.Collections.Sum(x => x.MoneyReceived >= 0 ? x.MoneyReceived : 0);
 
                     html.AppendLine("                        <tr>");
                     html.AppendLine("                            <td colspan='2' style='text-align: right'>Tổng tiền thu hộ</td>");
@@ -305,9 +307,9 @@ namespace IM_PJ
             foreach (var item in data)
             {
                 index +=  1;
-                totalPayment += item.Payment;
-                moneyCollection += item.MoneyCollection;
-                totalPrice += item.Price;
+                totalPayment += item.Payment >= 0 ? item.Payment : 0;
+                moneyCollection += item.MoneyCollection >= 0 ? item.MoneyCollection : 0;
+                totalPrice += item.Price >= 0 ? item.Price : 0;
                 html.AppendLine("                        <tr>");
                 html.AppendLine(String.Format("                            <td rowspan='2' style='text-align: center;'>{0:#,###}</td>", index));
                 html.AppendLine(String.Format("                            <td colspan='3' style='border-bottom: 0;'><strong>{0}</strong> - {1}</td>", item.CustomerName.ToTitleCase(), item.OrderID));
@@ -316,15 +318,24 @@ namespace IM_PJ
                 html.AppendLine("                        <tr>");
                 if (item.MoneyCollection > 0)
                 {
-                    totalRequestCOD += item.Payment;
-                    html.AppendLine(String.Format("                            <td style='border-top: 0; font-weight: bold;'>{0:#,###}</td>", item.Payment));
+                    totalRequestCOD += item.Payment >= 0 ? item.Payment : 0;
+                    if (item.Payment >= 0)
+                        html.AppendLine(String.Format("                            <td style='border-top: 0; font-weight: bold;'>{0:#,###}</td>", item.Payment));
+                    else
+                        html.AppendLine(String.Format("                            <td style='border-top: 0; font-weight: bold;'>0({0:#,###})</td>", item.Payment));
                     totalOrderCOD++;
                     html.AppendLine(String.Format("                            <td style='border-top: 0;'>{0:#,###}</td>", item.MoneyCollection));
                 }
                 else
                 {
-                    html.AppendLine(String.Format("                            <td style='border-top: 0;'>{0:#,###}</td>", item.Payment));
-                    html.AppendLine(String.Format("<td style='border-top: 0;'>-</td>"));
+                    if (item.Payment > 0)
+                        html.AppendLine(String.Format("                            <td style='border-top: 0;'>{0:#,###}</td>", item.Payment));
+                    else
+                        html.AppendLine(String.Format("                            <td style='border-top: 0;'>0({0:#,###})</td>", item.Payment));
+                    if (item.MoneyCollection < 0)
+                        html.AppendLine(String.Format("                            <td style='border-top: 0;'>0({0:#,###})</td>", item.MoneyCollection));
+                    else
+                        html.AppendLine(String.Format("                            <td style='border-top: 0;'>-</td>"));
                 }
 
                 if (item.Price > 0)
@@ -332,9 +343,13 @@ namespace IM_PJ
                     totalOrderShippingFee++;
                     html.AppendLine(String.Format("                            <td style='border-top: 0;'>{0:#,###}</td>", item.Price));
                 }
+                else if (item.Price < 0)
+                {
+                    html.AppendLine(String.Format("                            <td style='border-top: 0;'>0({0:#,###})</td>", item.Price));
+                }
                 else
                 {
-                    html.AppendLine(String.Format("<td style='border-top: 0;'>-</td>"));
+                    html.AppendLine(String.Format("                            <td style='border-top: 0;'>-</td>"));
                 }
                 html.AppendLine("                        </tr>");
             }
