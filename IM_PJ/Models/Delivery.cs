@@ -17,6 +17,7 @@ namespace IM_PJ.Models
         public System.Guid UUID { get; set; }
         public int OrderID { get; set; }
         public int ShipperID { get; set; }
+        public int ShippingType { get; set; }
         public int Status { get; set; }
         public string Image { get; set; }
         public decimal COD { get; set; }

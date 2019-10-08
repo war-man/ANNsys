@@ -76,6 +76,7 @@
           <Property Name="Status" Type="int" Nullable="false" />
           <Property Name="CreatedDate" Type="datetime" Nullable="false" />
           <Property Name="ModifiedDate" Type="date" Nullable="false" />
+          <Property Name="RunAllProduct" Type="bit" Nullable="false" />
         </EntityType>
         <EntityType Name="CronJobProductStatus">
           <Key>
@@ -2133,11 +2134,12 @@
           </Key>
           <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Name" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="JobID" Type="Guid" />
+          <Property Name="CronExpression" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Status" Type="Int32" Nullable="false" />
           <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="ModifiedDate" Type="DateTime" Nullable="false" Precision="0" />
-          <Property Name="CronExpression" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="JobID" Type="Guid" />
+          <Property Name="RunAllProduct" Type="Boolean" Nullable="false" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -3197,11 +3199,12 @@
           <EntitySetMapping Name="CronJobs">
             <EntityTypeMapping TypeName="inventorymanagementModel.CronJob">
               <MappingFragment StoreEntitySet="CronJob">
-                <ScalarProperty Name="JobID" ColumnName="JobID" />
-                <ScalarProperty Name="CronExpression" ColumnName="CronExpression" />
+                <ScalarProperty Name="RunAllProduct" ColumnName="RunAllProduct" />
                 <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
                 <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
                 <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="CronExpression" ColumnName="CronExpression" />
+                <ScalarProperty Name="JobID" ColumnName="JobID" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>

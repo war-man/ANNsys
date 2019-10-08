@@ -416,9 +416,9 @@ namespace IM_PJ
         }
 
         [WebMethod]
-        public static IM_PJ.Models.CronJob updateCronJob(string cronExpression, int status)
+        public static IM_PJ.Models.CronJob updateCronJob(string cronExpression, int status, bool runAllProduct)
         {
-            var cron = CronJobController.update(CRON_JOB_NAME, cronExpression, status);
+            var cron = CronJobController.update(CRON_JOB_NAME, cronExpression, status, runAllProduct);
 
             return cron;
         }
