@@ -1,5 +1,17 @@
 ﻿let controller = new CronJobProductStatusController();
 
+document.addEventListener("DOMContentLoaded", (event) => {
+    // Jquery Dependency
+    $("input[data-type='currency']").on({
+        keyup: function () {
+            UtilsService.formatCurrency($(this));
+        },
+        blur: function () {
+            UtilsService.formatCurrency($(this), "blur");
+        }
+    });
+});
+
 
 function onKeyUp_txtSearchProduct(event) {
     if (event.keyCode == 13)
