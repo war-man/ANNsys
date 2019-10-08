@@ -17,12 +17,12 @@
         });
     }
 
-    static updateCronJob(cronExpression, status) {
+    static updateCronJob(cronExpression, status, runAllProduct) {
         return new Promise((resolve, reject) => {
             $.ajax({
                 type: "POST",
                 url: "/cron-job-product-status.aspx/updateCronJob",
-                data: JSON.stringify({ 'cronExpression': cronExpression, 'status': status }),
+                data: JSON.stringify({ 'cronExpression': cronExpression, 'status': status, 'runAllProduct': runAllProduct }),
                 contentType: "application/json; charset=utf-8",
                 dataType: "json",
                 success: response => {

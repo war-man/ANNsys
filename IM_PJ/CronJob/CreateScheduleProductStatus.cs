@@ -1,14 +1,11 @@
 ﻿using CronNET;
 using IM_PJ.Controllers;
 using IM_PJ.Models;
-using IM_PJ.Models.Pages.ExecuteAPI;
 using IM_PJ.Utils;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -45,29 +42,34 @@ namespace IM_PJ.CronJob
         {
             try
             {
-                // Lấy ra sản phẩm cần cập nhật trạng thái
-                var products = getProduct();
-
                 var websites = getWebAdvertisements();
                 var tasks = new List<Task>();
 
                 foreach (var website in websites)
                 {
                     var apiName = getAPIName(website);
-                    var job = new Task(() => { createSchedule(products, website, apiName); });
+                    var job = new Task(() => {
+                        // Lấy ra sản phẩm cần cập nhật trạng thái
+                        var products = getProduct();
 
-                    job.Start();
+                        createSchedule(products, website, apiName);
+
+                        // Thực hiện  cập nhật thời gian với product
+                        updateProduct(products);
+                    });
+
                     tasks.Add(job);
+                    job.Start();
                 }
-
-                Task.WaitAll(tasks.ToArray());
-
-                // Thực hiện  cập nhật thời gian với product
-                updateProduct(products);
             }
             catch (ThreadAbortException)
             {
                 Thread.ResetAbort();
+            }
+            catch (Exception ex)
+            {
+                _log.Error("Creating the schedule for updating the status of the product", ex);
+                throw;
             }
         }
 
@@ -126,6 +128,8 @@ namespace IM_PJ.CronJob
 
                 using (var con = new inventorymanagementEntities())
                 {
+                    var cron = CronJobController.get(CRON_NAME);
+
                     #region Tìm thời điểm cập nhật sản phẩm cuối cùng
                     var lastDatetime = con.tbl_Product.Where(x => x.ModifiedDate.HasValue).Max(x => x.ModifiedDate.Value);
                     #endregion
@@ -137,13 +141,7 @@ namespace IM_PJ.CronJob
                     #region Lấy thông tin stock của các sản phẩm cập nhật
                     // Giảm bớt thông tin stock cho sản phẩn biến thể và không biến thể
                     var stocks = con.tbl_StockManager
-                        .Where(x => x.CreatedDate > lastDatetime)
-                        .Join(
-                            products,
-                            s => s.ParentID,
-                            p => p.ID,
-                            (s, p) => s
-                        );
+                        .Where(x => (cron.RunAllProduct == true) || (cron.RunAllProduct == false && x.CreatedDate > lastDatetime));
 
                     // Lấy ID stock dòng cuối cùng của mỗi sản phẩn (gồm sản phẩm biến thể  và không biến thể)
                     var lastStocks = stocks.GroupBy(x => x.SKU).Select(x => new { stockID = x.Max(m => m.ID) });
@@ -176,19 +174,29 @@ namespace IM_PJ.CronJob
                     #region Lên cái lịch cập nhật và chèn vào table CronJobProductStatus
                     // Dữ liệu chính dùng để cho xửa lý cấp nhật table CronJobProductStatus
                     var data = products
-                        .Join(
+                        .GroupJoin(
                             quantities,
                             p => p.ID,
                             q => q.productID,
-                            (p, q) => new
-                            {
-                                categoryID = p.CategoryID.Value,
-                                productID = p.ID,
-                                sku = p.ProductSKU,
-                                quantity = q.quantity
-                            }
+                            (p, q) => new { product = p, quantity = q}
                         )
+                        .SelectMany(
+                            x => x.quantity.DefaultIfEmpty(),
+                            (parent, child) => new { parent, child }
+                        )
+                        .Where(
+                            x => (cron.RunAllProduct == true) || (cron.RunAllProduct == false && x.child != null)
+                        )
+                        .Select(x => new
+                        {
+                            categoryID = x.parent.product.CategoryID.Value,
+                            productID = x.parent.product.ID,
+                            sku = x.parent.product.ProductSKU,
+                            quantity = x.child != null ? x.child.quantity : 0
+                        })
                         .ToList();
+
+
                     #endregion
 
                     var now = DateTime.Now;
@@ -265,7 +273,7 @@ namespace IM_PJ.CronJob
                     cronNews.Add(item);
                     _log.Info(String.Format("{0:N0} - Schedule New - {1}", index, JsonConvert.SerializeObject(item)));
 
-                    if (index % 100 == 0 && cronNews.Count > 0)
+                    if (cronNews.Count >= 100)
                     {
                         CronJobController.postScheduleProductStatus(cronNews);
                         cronNews.Clear();

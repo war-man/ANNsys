@@ -16,10 +16,11 @@ namespace IM_PJ.Models
     {
         public int ID { get; set; }
         public string Name { get; set; }
+        public Nullable<System.Guid> JobID { get; set; }
+        public string CronExpression { get; set; }
         public int Status { get; set; }
         public System.DateTime CreatedDate { get; set; }
         public System.DateTime ModifiedDate { get; set; }
-        public string CronExpression { get; set; }
-        public Nullable<System.Guid> JobID { get; set; }
+        public bool RunAllProduct { get; set; }
     }
 }

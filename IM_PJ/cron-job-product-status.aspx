@@ -2,7 +2,8 @@
 
 <%@ Register Assembly="Telerik.Web.UI" Namespace="Telerik.Web.UI" TagPrefix="telerik" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
-    <link type="text/css" rel="stylesheet" href="App_Themes/Ann/css/pages/cron-job-product-status/cron-job-product-status.css?v=20190926120003" />
+    <link type="text/css" rel="stylesheet" href="Content/bootstrap-toggle.min.css" />
+    <link type="text/css" rel="stylesheet" href="App_Themes/Ann/css/pages/cron-job-product-status/cron-job-product-status.css?v=20191007043911" />
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <main id="main-wrap">
@@ -123,7 +124,7 @@
 
         <!-- Modal Cấu hình Cron Job của trạng thái sản phẩm -->
         <div class="modal fade" id="CronJobSettingModal" role="dialog">
-            <div class="modal-dialog modal-sm">
+            <div class="modal-dialog">
                 <!-- Modal content-->
                 <div class="modal-content">
                     <div class="modal-header">
@@ -150,6 +151,14 @@
                                 </asp:DropDownList>
                             </div>
                         </div>
+                        <div class="row form-group">
+                            <div class="col-md-5 col-xs-6">
+                                <p>Quét tất cả sản phẩn</p>
+                            </div>
+                            <div class="col-md-7 col-xs-6">
+                                <input id="chbRunAllProduct" type="checkbox" checked data-toggle="toggle" data-on="Có" data-off="Không" data-onstyle="success" data-offstyle="danger" data-width="80">
+                            </div>
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button id="closeCronJobSetting" type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
@@ -159,9 +168,10 @@
             </div>
         </div>
 
-        <script type="text/javascript" src="/App_Themes/Ann/js/sync-product.js?v=20190926120003"></script>
-        <script type="text/javascript" src="App_Themes/Ann/js/services/cron-job-product-status/cron-job-product-status-service.js?v=20190926120003"></script>
-        <script type="text/javascript" src="App_Themes/Ann/js/controllers/cron-job-product-status/cron-job-product-status-controller.js?v=20190926120003"></script>
-        <script type="text/javascript" src="App_Themes/Ann/js/pages/cron-job-product-status/cron-job-product-status.js?v=20190926120003"></script>
+        <script type="text/javascript" src="Scripts/bootstrap-toggle.min.js"></script>
+        <script type="text/javascript" src="/App_Themes/Ann/js/sync-product.js?v=20191007043911"></script>
+        <script type="text/javascript" src="App_Themes/Ann/js/services/cron-job-product-status/cron-job-product-status-service.js?v=20191007043911"></script>
+        <script type="text/javascript" src="App_Themes/Ann/js/controllers/cron-job-product-status/cron-job-product-status-controller.js?v=20191007043911"></script>
+        <script type="text/javascript" src="App_Themes/Ann/js/pages/cron-job-product-status/cron-job-product-status.js?v=20191007043911"></script>
     </main>
 </asp:Content>

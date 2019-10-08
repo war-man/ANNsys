@@ -33,7 +33,7 @@ namespace IM_PJ.Controllers
         /// <param name="cronExpression"></param>
         /// <param name="status"></param>
         /// <returns></returns>
-        public static IM_PJ.Models.CronJob update(string name, string cronExpression, int status)
+        public static IM_PJ.Models.CronJob update(string name, string cronExpression, int status, bool runAllProduct)
         {
             using (var con = new inventorymanagementEntities())
             {
@@ -46,6 +46,7 @@ namespace IM_PJ.Controllers
                     // Cập nhật lại trạng thái và giờ start
                     cronJOB.CronExpression = cronExpression;
                     cronJOB.Status = status;
+                    cronJOB.RunAllProduct = runAllProduct;
                     cronJOB.ModifiedDate = DateTime.Now;
                     
                     con.SaveChanges();

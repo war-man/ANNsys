@@ -137,3 +137,32 @@ table.shop_table_responsive > tbody > tr:nth-of-type(2n+1) td {
         display: none;
     }
 }
+
+.toggle-group > .toggle-handle {
+    border-width: 1px;
+    border-style: solid;
+    border-radius: 20rem;
+}
+
+.toggle-group .btn-default {
+    color: #333;
+    background-color: #fff;
+    border-color: #ccc;
+    border-top-color: rgb(204, 204, 204);
+    border-right-color: rgb(204, 204, 204);
+    border-bottom-color: rgb(204, 204, 204);
+    border-left-color: rgb(204, 204, 204);
+}
+
+.toggle-group .btn-success {
+    color: #fff;
+    
+    background-color: #5cb85c;
+    border-color: #4cae4c;
+}
+
+.toggle-group .btn-danger {
+    color: #fff;
+    background-color: #d9534f;
+    border-color: #d43f3a;
+}

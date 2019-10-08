@@ -11,6 +11,12 @@
                     
                     cronExpressionDOM.value = data.CronExpression;
                     cronJobStatusDOM.value = data.Status;
+                    if (data.RunAllProduct) {
+                        $('#chbRunAllProduct').bootstrapToggle('on');
+                    }
+                    else {
+                        $('#chbRunAllProduct').bootstrapToggle('off');
+                    };
 
                     $("#CronJobSettingModal").modal({ show: 'true', backdrop: 'static' });
                 }
@@ -33,13 +39,15 @@
         let modalDOM = document.querySelector("#CronJobSettingModal");
         let cronExpressionDOM = modalDOM.querySelector("[id$='_txtCronExpression']");
         let cronJobStatusDOM = modalDOM.querySelector("[id$='_ddlCronJobStatus']");
+        let runAllProductDOM = modalDOM.querySelector("#chbRunAllProduct");
 
         // Lấy dữ liệu để cập nhật cron job
         let cronExpress = cronExpressionDOM.value || "* * * * *";
         let status = +cronJobStatusDOM.value || 0;
+        let runAllProduct = runAllProductDOM.checked || false;
 
         window.HoldOn.open();
-        CronJobProductStatusService.updateCronJob(cronExpress, status)
+        CronJobProductStatusService.updateCronJob(cronExpress, status, runAllProduct)
             .then(data => {
                 modalDOM.querySelector("#closeCronJobSetting").click();
 
