@@ -1139,7 +1139,8 @@ namespace IM_PJ.Controllers
                             OrderID = h.ID,
                             RefundsGoodsID = h.RefundsGoodsID,
                             TotalPrice = r.TotalPrice
-                        });
+                        })
+                    .ToList();
                 #endregion
 
                 #region Xuất thông tin khách hàng
