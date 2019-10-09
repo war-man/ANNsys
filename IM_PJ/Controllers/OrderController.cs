@@ -248,6 +248,25 @@ namespace IM_PJ.Controllers
             }
         }
 
+        public static tbl_Order UpdateExcuteStatus(int orderID, int status, string CreatedBy)
+        {
+            using (var con = new inventorymanagementEntities())
+            {
+                var order = con.tbl_Order.Where(x => x.ID == orderID).FirstOrDefault();
+
+                if (order != null)
+                {
+                    order.ExcuteStatus = status;
+                    order.ModifiedDate = DateTime.Now;
+                    order.ModifiedBy = CreatedBy;
+
+                    con.SaveChanges();
+                }
+
+                return order;
+            }
+        }
+
         public static int UpdateExcuteStatus(int ID, string CreatedBy)
         {
             using (var db = new inventorymanagementEntities())

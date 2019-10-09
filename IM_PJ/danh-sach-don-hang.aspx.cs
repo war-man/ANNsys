@@ -8,9 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
-using System.Web.Script.Serialization;
 using System.Web.Services;
-using System.Web.UI;
 using System.Web.UI.WebControls;
 using static IM_PJ.Controllers.OrderController;
 
@@ -361,7 +359,10 @@ namespace IM_PJ
                     }
 
                     html.Append("   <td data-title='Đã mua'>" + item.Quantity + "</td>");
-                    html.Append("   <td data-title='Xử lý'>" + PJUtils.OrderExcuteStatus(Convert.ToInt32(item.ExcuteStatus)) + "</td>");
+                    if (acc.RoleID == 0 && item.ExcuteStatus == 2)
+                        html.Append("   <td data-title='Xử lý'><span class='bg-green' style='cursor: pointer' onclick='onClick_spFinishStatusOrder(this, " + item.ID + ")'>Đã hoàn tất</span></td>");
+                    else
+                        html.Append("   <td data-title='Xử lý'>" + PJUtils.OrderExcuteStatus(Convert.ToInt32(item.ExcuteStatus)) + "</td>");
                     html.Append("   <td data-title='Thanh toán'>" + PJUtils.OrderPaymentStatus(Convert.ToInt32(item.PaymentStatus)) + "</td>");
 
                     #region Phương thức thanh toán
@@ -437,7 +438,7 @@ namespace IM_PJ
                     }
                     if (item.OtherFeeValue != 0)
                     {
-                        html.Append("<span class='order-info'><strong>Phí khác:</strong> " + string.Format("{0:N0}", Convert.ToDouble(item.OtherFeeValue)) + " (<a href='#feeInfoModal' data-toggle='modal' data-backdrop='static' onclick='openFeeInfoModal(" + item.ID + ")'>" + item.OtherFeeName.Trim() + "</a>)</span>");
+                        html.Append("<span class='order-info'><strong>Phí khác:</strong> " + string.Format("{0:N0}", Convert.ToDouble(item.OtherFeeValue)) + " (<a href='#feeInfoModal' data-toggle='modal' data-backdrop='static' onclick='onClick_aFeeInfoModal(" + item.ID + ")'>" + item.OtherFeeName.Trim() + "</a>)</span>");
                     }
                     if (item.ShippingType == 4)
                     {
@@ -692,12 +693,15 @@ namespace IM_PJ
             {
                 if (ddlQuantityFilter.SelectedValue == "greaterthan" || ddlQuantityFilter.SelectedValue == "lessthan")
                 {
-                    request += "&quantityfilter=" + ddlQuantityFilter.SelectedValue + "&quantity=" + txtQuantity.Text;
+                    request += "&quantityfilter=" + ddlQuantityFilter.SelectedValue;
+                    request += "&quantity=" + (String.IsNullOrEmpty(txtQuantity.Text) ? "0" : txtQuantity.Text);
                 }
 
                 if (ddlQuantityFilter.SelectedValue == "between")
                 {
-                    request += "&quantityfilter=" + ddlQuantityFilter.SelectedValue + "&quantitymin=" + txtQuantityMin.Text + "&quantitymax=" + txtQuantityMax.Text;
+                    request += "&quantityfilter=" + ddlQuantityFilter.SelectedValue;
+                    request += "&quantitymin=" + (String.IsNullOrEmpty(txtQuantityMin.Text) ? "0" : txtQuantityMin.Text);
+                    request += "&quantitymax=" + (String.IsNullOrEmpty(txtQuantityMax.Text) ? "0" : txtQuantityMax.Text);
                 }
             }
             if (ddlTransportCompany.SelectedValue != "0")
@@ -716,6 +720,18 @@ namespace IM_PJ
         public static string getFeeInfo(int orderID)
         {
             return FeeController.getFeesJSON(orderID);
+        }
+
+        [WebMethod]
+        public static tbl_Order changeFinishStatusOrder(int orderID)
+        {
+            string username = HttpContext.Current.Request.Cookies["usernameLoginSystem"].Value;
+            var acc = AccountController.GetByUsername(username);
+
+            if (acc == null)
+                throw new Exception("Vui lòng đăng nhập lại!");
+
+            return OrderController.UpdateExcuteStatus(orderID, (int)ExcuteStatus.Doing, acc.Username);
         }
     }
 }
