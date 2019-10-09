@@ -73,6 +73,7 @@ namespace IM_PJ
                             ltrMenu.Text += "<li><a href='/bao-cao'><span class='icon-menu icon-product'></span>Báo cáo</a></li>";
                         }
                         ltrMenu.Text += "<li><a href='/cai-dat'><span class='icon-menu icon-product'></span>Cài đặt</a></li>";
+                        ltrMenu.Text += "<li><a href='/cron-job-product-status'><span class='icon-menu icon-product'></span>Cron Job</a></li>";
                     }
                     else if (role == 1) //Nhân viên kho
                     {

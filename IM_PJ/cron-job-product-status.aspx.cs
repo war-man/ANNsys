@@ -27,10 +27,14 @@ namespace IM_PJ
                 {
                     string username = Request.Cookies["usernameLoginSystem"].Value;
                     acc = AccountController.GetByUsername(username);
-                    if (acc != null)
+                    if (acc != null && acc.RoleID == 0)
                     {
                         LoadCategory();
                         LoadData();
+                    }
+                    else
+                    {
+                        Response.Redirect("/trang-chu");
                     }
                 }
                 else

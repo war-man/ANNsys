@@ -96,7 +96,7 @@ namespace IM_PJ
 
                         t++;
                         Print += "<tr>";
-                        Print += "<td>" + t + "</td>";
+                        Print += "<td id='" + SKU + "'>" + t + "</td>";
 
                         if (ProductType == 1)
                         {
@@ -132,7 +132,7 @@ namespace IM_PJ
                                     }
                                 }
 
-                                Print += "<td><image src='" + Thumbnail.getURL(ProductImage, Thumbnail.Size.Large) + "' /></td>";
+                                Print += "<td id='" + parent_product.ProductSKU + "'><image src='" + Thumbnail.getURL(ProductImage, Thumbnail.Size.Large) + "' /></td>";
                                 Print += "<td><p><strong>" + SKU + "</strong> - " + PJUtils.Truncate(ProductName, 30) + "</p><p class=\"variable\">" + item.ProductVariableDescrition.Replace("|", ". ") + "</p></td> ";
                             }
                         }
