@@ -86,6 +86,7 @@ namespace IM_PJ
                 var category = 0;
                 var isHidden = (Nullable<bool>)null;
                 var showHomePage = String.Empty;
+                var sort = String.Empty;
                 var Page = 1;
 
                 if (Request.QueryString["search"] != null)
@@ -100,14 +101,18 @@ namespace IM_PJ
                     isHidden = Request.QueryString["isHidden"].ToBool();
                 if (Request.QueryString["showhomepage"] != null)
                     showHomePage = Request.QueryString["showhomepage"];
+                if (Request.QueryString["sort"] != null)
+                    sort = Request.QueryString["sort"];
                 if (Request.QueryString["Page"] != null)
                     Page = Request.QueryString["Page"].ToInt();
 
                 txtSearchProduct.Text = search;
                 ddlWebAdvertisement.SelectedValue = web;
-                ddlProductStatus.SelectedValue = isHidden != null ? isHidden.ToString() : "";
+                ddlProductStatus.SelectedValue = isHidden.HasValue ? (isHidden.Value ? "true" : "false") : "";
                 ddlScheduleStatus.SelectedValue = status.ToString();
                 ddlShowHomePage.SelectedValue = showHomePage;
+                ddlCategory.SelectedValue = category.ToString();
+                ddlSort.SelectedValue = sort;
 
                 // Create order fileter
                 var filter = new FilterModel()
@@ -119,7 +124,8 @@ namespace IM_PJ
                     toDate = toDate,
                     category = category,
                     isHidden = isHidden,
-                    showHomePage = showHomePage
+                    showHomePage = showHomePage,
+                    sort = sort
                 };
                 // Create pagination
                 var page = new PaginationMetadataModel()
@@ -150,12 +156,13 @@ namespace IM_PJ
             html.AppendLine("    <th class='name-column'>Sản phẩm</th>");
             html.AppendLine("    <th class='sku-column'>Mã</th>");
             html.AppendLine("    <th class='category-column'>Danh mục</th>");
+            html.AppendLine("    <th class='quantity-column'>Số lượng</th>");
             html.AppendLine("    <th class='web-column'>Web</th>");
             html.AppendLine("    <th class='show-homepage-column'>Trang quảng cáo</th>");
             html.AppendLine("    <th class='status-column'>Trạng thái</th>");
             html.AppendLine("    <th class='cron-column'>Cron</th>");
-            html.AppendLine("    <th class='date-column'>Ngày chạy</th>");
-            html.AppendLine("    <th class='note-column'>Chú thích</th>");
+            html.AppendLine("    <th class='date-column'>Ngày chạy<br/>Chú thích</th>");
+            
             html.AppendLine("    <th>Đồng bộ</th>");
             html.AppendLine("</tr>");
             html.AppendLine("</thead>");
@@ -177,6 +184,7 @@ namespace IM_PJ
                     html.AppendLine("   <td class='customer-name-link'><a target='_blank' href='/xem-san-pham?id=" + item.id + "'>" + item.title + "</a><br>" + string.Format("{0:dd/MM/yyyy}", item.productCreatedDate) + "</td>");
                     html.AppendLine("   <td data-title='Mã' class='customer-name-link'>" + item.sku + "</td>");
                     html.AppendLine("   <td data-title='Danh mục'>" + item.categoryName + "</td>");
+                    html.AppendLine(String.Format("   <td data-title='Số lượng'>{0:#,###}</td>", item.quantity));
                     html.AppendLine("   <td data-title='Web'>" + item.web.Replace("https://", String.Empty) + "</td>");
                     if (item.showHomePage == 0)
                         html.Append("   <td data-title='Trang quảng cáo'><span class='bg-black bg-button'>Đang ẩn</span></td>");
@@ -202,8 +210,7 @@ namespace IM_PJ
                     else
                         html.AppendLine("      <span class='bg-red'>Thất bại</span>");
                     html.AppendLine("   </td>");
-                    html.AppendLine(String.Format("   <td data-title='Ngày chạy'>{0:dd/MM/yyyy}</td>", item.startDate));
-                    html.AppendLine("   <td data-title='Chú thích' class='update-button'>" + item.note + "</td>");
+                    html.AppendLine(String.Format("   <td data-title='Ngày chạy và Chú thích'>{0:dd/MM/yyyy}<br/>{1}</td>", item.startDate, item.note));
                     html.AppendLine("   <td data-title='Thao tác' class='update-button'>");
                     if (item.cronJobStatus == (int)CronJobStatus.Continue && !item.isHidden && item.showHomePage == 1)
                         html.AppendLine("       <a href='javascript:;' title='Đồng bộ sản phẩm' class='up-product-" + item.id + " btn primary-btn h45-btn' onclick='ShowUpProductToWeb(`" + item.sku + "`, `" + item.id + "`, `" + item.categoryID + "`, `false`, `false`, `null`);'><i class='fa fa-refresh' aria-hidden='true'></i></a>");
@@ -403,6 +410,11 @@ namespace IM_PJ
             if (!String.IsNullOrEmpty(ddlShowHomePage.SelectedValue))
             {
                 request += "&showhomepage=" + ddlShowHomePage.SelectedValue;
+            }
+
+            if (!String.IsNullOrEmpty(ddlSort.SelectedValue))
+            {
+                request += "&sort=" + ddlSort.SelectedValue;
             }
 
             Response.Redirect(request);
