@@ -283,6 +283,7 @@ namespace IM_PJ.Controllers
                         costOfGood = x.product.CostOfGood.HasValue ? x.product.CostOfGood.Value : 0,
                         regularPrice = x.product.Regular_Price.HasValue ? x.product.Regular_Price.Value : 0,
                         retailPrice = x.product.Retail_Price.HasValue ? x.product.Retail_Price.Value : 0,
+                        quantity = x.schedule.Quantity,
                         web = x.schedule.Web,
                         showHomePage = x.product.ShowHomePage.HasValue ? x.product.ShowHomePage.Value : 0,
                         isHidden = x.schedule.IsHidden,
@@ -292,12 +293,21 @@ namespace IM_PJ.Controllers
                         productCreatedDate = x.product.CreatedDate.Value
                     });
 
+                // Sort theo filter
+                if (filter.sort == "ProductCreationDate")
+                    data = data.OrderByDescending(x => x.productCreatedDate);
+                else if (filter.sort == "QuantityAsc")
+                    data = data.OrderBy(x => x.quantity);
+                else if (filter.sort == "QuantityDesc")
+                    data = data.OrderByDescending(x => x.quantity);
+                else
+                    data = data.OrderByDescending(x => x.startDate);
+
                 // Calculate pagination
                 page.totalCount = data.Count();
                 page.totalPages = (int)Math.Ceiling(page.totalCount / (double)page.pageSize);
 
                 data = data
-                    .OrderByDescending(x => x.startDate)
                     .Skip((page.currentPage - 1) * page.pageSize)
                     .Take(page.pageSize);
                 #endregion
@@ -313,6 +323,7 @@ namespace IM_PJ.Controllers
                     costOfGood = x.costOfGood,
                     regularPrice = x.regularPrice,
                     retailPrice = x.retailPrice,
+                    quantity = x.quantity,
                     web = x.web,
                     showHomePage = x.showHomePage,
                     isHidden = x.isHidden,

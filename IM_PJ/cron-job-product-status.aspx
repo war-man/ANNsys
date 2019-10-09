@@ -94,6 +94,15 @@
                                         <asp:ListItem Value="1" Text="Đang hiện"></asp:ListItem>
                                     </asp:DropDownList>
                                 </div>
+                                <div class="col-md-2 col-xs-6">
+                                    <asp:DropDownList ID="ddlSort" runat="server" CssClass="form-control">
+                                        <asp:ListItem Value="" Text="Thứ tự hiển thị"></asp:ListItem>
+                                        <asp:ListItem Value="ProductCreationDate" Text="Ngày tạo sản phẩm"></asp:ListItem>
+                                        <asp:ListItem Value="CronJobStartingDate" Text="Ngày chạy Cron Job"></asp:ListItem>
+                                        <asp:ListItem Value="QuantityDesc" Text="Số lượng giảm dần"></asp:ListItem>
+                                        <asp:ListItem Value="QuantityAsc" Text="Số lượng tăng dần"></asp:ListItem>
+                                    </asp:DropDownList>
+                                </div>
                             </div>
                         </div>
                     </div>
