@@ -16,6 +16,7 @@ namespace IM_PJ.Models.Pages.cron_job_product_status
         public double costOfGood { get; set; }
         public double regularPrice { get; set; }
         public double retailPrice { get; set; }
+        public int quantity { get; set; }
         public string web { get; set; }
         public int showHomePage { get; set; }
         public bool isHidden { get; set; }

@@ -2,115 +2,7 @@
 
 <%@ Register Assembly="Telerik.Web.UI" Namespace="Telerik.Web.UI" TagPrefix="telerik" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
-    <style>
-        .search-box-type .col-1, .search-box-type .col-2 {
-            float: left;
-        }
-        .search-box-type .col-1 {
-            width: calc(100% - 115px);
-        }
-        .search-box-type .col-1 input {
-            border-right: none;
-        }
-        .search-box-type .col-2 {
-            width: 115px;
-        }
-        .search-box-type .col-2 select {
-            border-left: none;
-            background-color: #f7f7f7!important;
-        }
-        .select2-container .select2-selection--single {
-            height: 45px;
-        }
-        .select2-container--default .select2-selection--single .select2-selection__rendered {
-            line-height: 45px;
-        }
-        .select2-container--default .select2-selection--single .select2-selection__arrow {
-            height: 43px;
-        }
-        @media (max-width: 768px) {
-            table.shop_table_responsive thead {
-	            display: none;
-            }
-            table.shop_table_responsive > tbody > tr > td:nth-of-type(1):before {
-                content: "#";
-                font-size: 20px;
-                margin-right: 2px;
-            }
-            table.shop_table_responsive > tbody > tr > td:nth-of-type(1) {
-                text-align: left;
-                font-size: 20px;
-                font-weight: bold;
-                height: 50px;
-            }
-            table.shop_table_responsive > tbody > tr:nth-of-type(2n) td {
-                border-top: none;
-                border-bottom: none!important;
-            }
-            table.shop_table_responsive > tbody > tr > td:first-child {
-	            border-left: none;
-                padding-left: 20px;
-            }
-            table.shop_table_responsive > tbody > tr > td:last-child {
-	            border-right: none;
-                padding-left: 20px;
-            }
-            table.shop_table_responsive > tbody > tr > td {
-	            height: 40px;
-            }
-            table.shop_table_responsive > tbody > tr > td.customer-td {
-	            height: 60px;
-            }
-            table.shop_table_responsive > tbody > tr > td.payment-type, table.shop_table_responsive > tbody > tr > td.shipping-type {
-                height: 70px;
-            }
-            table.shop_table_responsive > tbody > tr > td .new-status-btn {
-                display: block;
-                margin-top: 10px;
-            }
-            table.shop_table_responsive > tbody > tr > td.update-button {
-                height: 85px;
-            }
-            table.shop_table_responsive .bg-bronze,
-            table.shop_table_responsive .bg-red,
-            table.shop_table_responsive .bg-blue,
-            table.shop_table_responsive .bg-yellow,
-            table.shop_table_responsive .bg-black,
-            table.shop_table_responsive .bg-green {
-                display: initial;
-                float: right;
-            }
-            table.shop_table_responsive tbody td {
-	            background-color: #f8f8f8;
-	            display: block;
-	            text-align: right;
-	            border: none;
-	            padding: 20px;
-            }
-            table.shop_table_responsive > tbody > tr.tr-more-info > td {
-                height: initial;
-            }
-            table.shop_table_responsive > tbody > tr.tr-more-info > td span {
-                display: block;
-                text-align: left;
-                margin-bottom: 10px;
-                margin-right: 0;
-            }
-            table.shop_table_responsive > tbody > tr.tr-more-info > td:nth-child(2):before {
-                content: none;
-            }
-            table.shop_table_responsive tbody td:before {
-	            content: attr(data-title) ": ";
-	            font-weight: 700;
-	            float: left;
-	            text-transform: uppercase;
-	            font-size: 14px;
-            }
-            table.shop_table_responsive tbody td:empty {
-                display: none;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="App_Themes/Ann/css/pages/danh-sach-don-hang/danh-sach-don-hang.css?v=20191009011413" />
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <main id="main-wrap">
@@ -130,7 +22,7 @@
                             <div class="row">
                                 <div class="col-md-3 col-xs-12 search-box-type">
                                     <div class="col-1">
-                                        <asp:TextBox ID="txtSearchOrder" runat="server" CssClass="form-control" placeholder="Tìm đơn hàng" autocomplete="off"></asp:TextBox>
+                                        <asp:TextBox ID="txtSearchOrder" runat="server" CssClass="form-control" placeholder="Tìm đơn hàng" autocomplete="off" onKeyUp="onKeyUp_txtSearchOrder(event)"></asp:TextBox>
                                     </div>
                                     <div class="col-2">
                                         <asp:DropDownList ID="ddlSearchType" runat="server" CssClass="form-control">
@@ -168,7 +60,7 @@
                                     </telerik:RadDatePicker>
                                 </div>
                                 <div class="col-md-1 col-xs-6 search-button">
-                                    <a href="javascript:;" onclick="searchOrder()" class="btn primary-btn h45-btn"><i class="fa fa-search"></i></a>
+                                    <a href="javascript:;" onclick="onClick_aSearchOrder()" class="btn primary-btn h45-btn"><i class="fa fa-search"></i></a>
                                     <asp:Button ID="btnSearch" runat="server" CssClass="btn primary-btn h45-btn" OnClick="btnSearch_Click" Style="display: none" />
                                     <a href="/danh-sach-don-hang" class="btn primary-btn h45-btn"><i class="fa fa-times" aria-hidden="true"></i></a>
                                 </div>
@@ -248,7 +140,7 @@
                                     <asp:DropDownList ID="ddlTransportCompany" runat="server" CssClass="form-control select2" Width="100%"></asp:DropDownList>
                                 </div>
                                 <div class="col-md-2 col-xs-6">
-                                    <asp:DropDownList ID="ddlQuantityFilter" runat="server" CssClass="form-control" onchange="changeQuantityFilter($(this))">
+                                    <asp:DropDownList ID="ddlQuantityFilter" runat="server" CssClass="form-control" onchange="onChange_ddlQuantityFilter(this)">
                                         <asp:ListItem Value="" Text="Số lượng mua"></asp:ListItem>
                                         <asp:ListItem Value="greaterthan" Text="Số lượng lớn hơn"></asp:ListItem>
                                         <asp:ListItem Value="lessthan" Text="Số lượng nhỏ hơn"></asp:ListItem>
@@ -324,112 +216,9 @@
             </div>
         </div>
 
-        <script type="text/javascript">
-            $("#<%=txtSearchOrder.ClientID%>").keyup(function (e) {
-                if (e.keyCode == 13)
-                {
-                    $("#<%= btnSearch.ClientID%>").click();
-                }
-            });
-
-            // Parse URL Queries
-            function url_query(query) {
-                query = query.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
-                var expr = "[\\?&]" + query + "=([^&#]*)";
-                var regex = new RegExp(expr);
-                var results = regex.exec(window.location.href);
-                if (results !== null) {
-                    return results[1];
-                } else {
-                    return false;
-                }
-            }
-
-            var url_param = url_query('quantityfilter');
-            if (url_param) {
-                if (url_param == "greaterthan" || url_param == "lessthan") {
-                    $(".greaterthan").removeClass("hide");
-                    $(".between").addClass("hide");
-                }
-                else if (url_param == "between") {
-                    $(".between").removeClass("hide");
-                    $(".greaterthan").addClass("hide");
-                }
-            }
-
-            function changeQuantityFilter(obj) {
-                var value = obj.val();
-                if (value == "greaterthan" || value == "lessthan") {
-                    $(".greaterthan").removeClass("hide");
-                    $(".between").addClass("hide");
-                    $("#<%=txtQuantity.ClientID%>").focus().select();
-                }
-                else if (value == "between") {
-                    $(".between").removeClass("hide");
-                    $(".greaterthan").addClass("hide");
-                    $("#<%=txtQuantityMin.ClientID%>").focus().select();
-                }
-            }
-
-            function searchOrder() {
-                $("#<%= btnSearch.ClientID%>").click();
-            }
-
-            var formatThousands = function (n, dp) {
-                var s = '' + (Math.floor(n)), d = n % 1, i = s.length, r = '';
-                while ((i -= 3) > 0) { r = ',' + s.substr(i, 3) + r; }
-                return s.substr(0, i + 3) + r +
-                    (d ? '.' + Math.round(d * Math.pow(10, dp || 2)) : '');
-            };
-
-            function createFeeInfoHTML(fee, is_total) {
-                if (!is_total) {
-                    is_total = false;
-                }
-                let addHTML = "";
-
-                if (is_total) {
-                    addHTML += "<tr class='info'>";
-                    addHTML += "    <td style='text-align: right'>" + fee.FeeTypeName + "</td>";
-                    addHTML += "    <td>" + formatThousands(fee.FeePrice) + "</td>";
-                    addHTML += "</tr>";
-                }
-                else {
-                    addHTML += "<tr>";
-                    addHTML += "    <td>" + fee.FeeTypeName + "</td>";
-                    addHTML += "    <td>" + formatThousands(fee.FeePrice) + "</td>";
-                    addHTML += "</tr>";
-                }
-
-                return addHTML;
-            }
-
-            function openFeeInfoModal(orderID) {
-                let tbodyDOM = $("tbody[id='feeInfo']");
-                // Clear body
-                tbodyDOM.html("");
-                $.ajax({
-                    type: "POST",
-                    url: "/danh-sach-don-hang.aspx/getFeeInfo",
-                    data: JSON.stringify({ 'orderID': orderID }),
-                    contentType: "application/json; charset=utf-8",
-                    dataType: "json",
-                    success: (response) => {
-                        if (response.d) {
-                            let data = JSON.parse(response.d);
-                            let feeTotal = 0;
-                            data.forEach((item) => {
-                                feeTotal += item.FeePrice;
-                                tbodyDOM.append(createFeeInfoHTML(item));
-                            });
-                            tbodyDOM.append(createFeeInfoHTML({ "FeeTypeName": "Tổng", "FeePrice": feeTotal }, true));
-                        }
-                    },
-                    error: (xmlhttprequest, textstatus, errorthrow) => {
-                        swal("Thông báo", "Có lỗi trong quá trình lấy thông tin phí", "error");
-                    }
-                })
-            }
-        </script>
+        <script type="text/javascript" src="App_Themes/Ann/js/services/common/utils-service.js?v=20191009011413"></script>
+        <script type="text/javascript" src="App_Themes/Ann/js/services/danh-sach-don-hang/danh-sach-don-hang-service.js?v=20191009011413"></script>
+        <script type="text/javascript" src="App_Themes/Ann/js/controllers/danh-sach-don-hang/danh-sach-don-hang-controller.js?v=20191009011413"></script>
+        <script type="text/javascript" src="App_Themes/Ann/js/pages/danh-sach-don-hang/danh-sach-don-hang.js?v=20191009011413"></script>
     </main>
 </asp:Content>

@@ -6,15 +6,27 @@
 
     // format price
     static formatThousands(n, dp) {
-        var s = '' + (Math.floor(n)),
+        let isNegative = (+n || 0) < 0;
+        if (isNegative)
+            n = (+n || 0) * -1;
+
+        let s = '' + (Math.floor(n)),
             d = n % 1,
             i = s.length,
             r = '';
+
         while ((i -= 3) > 0) {
             r = ',' + s.substr(i, 3) + r;
         }
-        return s.substr(0, i + 3) + r +
-            (d ? '.' + Math.round(d * Math.pow(10, dp || 2)) : '');
+
+        let result = "";
+
+        result += isNegative ? "-" : "";
+        result += s.substr(0, i + 3);
+        result += r;
+        result += (d ? '.' + Math.round(d * Math.pow(10, dp || 2)) : '');
+
+        return result;
     };
 
     static formatNumber(n) {
