@@ -418,6 +418,7 @@ namespace IM_PJ
                     html.Append("       <a href=\"/chi-tiet-khach-hang?id=" + item.CustomerID + "\" title=\"Thông tin khách hàng " + item.CustomerName + "\" target=\"_blank\" class=\"btn primary-btn btn-black h45-btn\"><i class=\"fa fa-user-circle\" aria-hidden=\"true\"></i></a>");
                     if (item.DeliveryStatus.HasValue && item.DeliveryStatus.Value == 1 && !string.IsNullOrEmpty(item.InvoiceImage))
                         html.Append("       <a href='javascript:;' onclick='openImageInvoice($(this))' data-link='" + item.InvoiceImage + "' title='Biên nhận gửi hàng' class='btn primary-btn btn-blue h45-btn'><i class='fa fa-file-text-o' aria-hidden='true'></i></a>");
+                    html.Append("       <a href=\"http://ann-shop-invoice.com/hoa-don/" + item.ID + "/khach-hang/" + item.CustomerID + "\" title=\"Xem đơn hàng\" target=\"_blank\" class=\"btn primary-btn btn-green h45-btn\"><i class=\"glyphicon glyphicon-list-alt\" aria-hidden=\"true\"></i></a>");
                     html.Append("   </td>");
                     html.Append("</tr>");
 
