@@ -4,6 +4,7 @@
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
     <script src="/App_Themes/Ann/js/search-customer.js?v=05092019"></script>
     <script src="/App_Themes/Ann/js/search-product.js?v=05092019"></script>
+    <script type="text/javascript" src="App_Themes/Ann/js/copy-invoice-url.js?v=20191009011413"></script>
     <style>
         .panel-post {
             margin-bottom: 20px;

@@ -220,5 +220,6 @@
         <script type="text/javascript" src="App_Themes/Ann/js/services/danh-sach-don-hang/danh-sach-don-hang-service.js?v=20191009011413"></script>
         <script type="text/javascript" src="App_Themes/Ann/js/controllers/danh-sach-don-hang/danh-sach-don-hang-controller.js?v=20191009011413"></script>
         <script type="text/javascript" src="App_Themes/Ann/js/pages/danh-sach-don-hang/danh-sach-don-hang.js?v=20191009011413"></script>
+        <script type="text/javascript" src="App_Themes/Ann/js/copy-invoice-url.js?v=20191009011413"></script>
     </main>
 </asp:Content>

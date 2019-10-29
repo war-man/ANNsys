@@ -307,6 +307,8 @@ namespace IM_PJ
 
                     #endregion
 
+                    ltrCopyInvoiceURL.Text = "<a href='javascript:;' onclick='copyInvoiceURL(" + order.ID + ", " + order.CustomerID + ")' title='Copy link hóa đơn' class='btn btn-violet h45-btn'>Copy link hóa đơn</a>";
+
                     string error = "";
                     string Print = "";
 
