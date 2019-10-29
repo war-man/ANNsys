@@ -238,7 +238,7 @@ namespace IM_PJ
                         productPrint += "<td>" + order.CustomerPhone + "</td>";
                         productPrint += "</tr>";
 
-                        if (!string.IsNullOrEmpty(order.DateDone.ToString()))
+                        if (order.ExcuteStatus == 2 && !string.IsNullOrEmpty(order.DateDone.ToString()))
                         {
                             productPrint += "<tr>";
                             productPrint += "<td>Ngày hoàn tất</td>";

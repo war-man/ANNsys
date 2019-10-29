@@ -28,19 +28,19 @@
     <asp:Literal ID="ltrPrintInvoice" runat="server"></asp:Literal>
     <asp:Literal ID="ltrPrintEnable"  runat="server"></asp:Literal>
     <script>
-        //$(document).ready(function () {
-        //    var print = $(".print");
-        //    for (var i = 0; i < print.length; i++) {
-        //        html2canvas(document.querySelector(".print-" + i), {
-        //            allowTaint: true,
-        //            logging: false
-        //        }).then(canvas => {
-        //            $("#previewImage").append(canvas);
-        //            $(".print-order-image").hide();
-        //            $(".guide").addClass("p-guide");
-        //        });
-        //    }
-        //});
+        $(document).ready(function () {
+            var print = $(".print");
+            for (var i = 0; i < print.length; i++) {
+                html2canvas(document.querySelector(".print-" + i), {
+                    allowTaint: true,
+                    logging: false
+                }).then(canvas => {
+                    $("#previewImage").append(canvas);
+                    $(".print-order-image").hide();
+                    $(".guide").addClass("p-guide");
+                });
+            }
+        });
     </script>
 </body>
 </html>

@@ -1120,12 +1120,12 @@
                 var ds = $("#<%=pDiscount.ClientID%>").val();
                 var discount = parseFloat(ds.replace(/\,/g, ''));
 
-                if (discount > 15000 && $("#<%=hdfRoleID.ClientID%>").val() != 0) {
+                if (discount > 16000 && $("#<%=hdfRoleID.ClientID%>").val() != 0) {
                     checkAllValue = false;
                     $("#<%=pDiscount.ClientID%>").focus();
                     swal({
                         title: "Lạ vậy:",
-                        text: "Sao chiết khấu lại lớn hơn <strong>15.000đ</strong> nè?<br><br>Nếu có lý do thì báo chị Ngọc nha!",
+                        text: "Sao chiết khấu lại lớn hơn <strong>16.000đ</strong> nè?<br><br>Nếu có lý do thì báo chị Ngọc nha!",
                         type: "warning",
                         showCancelButton: false,
                         confirmButtonColor: "#DD6B55",

@@ -385,7 +385,7 @@
                         newFee = newFee.replace(/,|\./g, "");
                         newFee = +newFee || 0;
 
-                        if (newFee > 1000 && newFee < 100000) {
+                        if (newFee >= 1000 && newFee <= 25000) {
                             $("input.reducedPrice").each(function (index) {
                                 let row = $(this).parent().parent();
                                 let feeRefundDOM = row.find(".feeRefund");
@@ -407,7 +407,7 @@
                             $(".restore-discount").addClass("hide");
                         }
                         else {
-                            alert("Phải nhập số dương lớn hơn 1000");
+                            alert("Phí đổi hàng phải là số dương lớn hơn 1,000 và nhỏ hơn 25,000.");
                         }
                     }
                     else {
@@ -480,8 +480,15 @@
                     }
 
                     // Ruler Price - ReducedPrice >= 10,000 VND
-                    if ((item.Price - item.ReducedPrice) > 11000) {
-                        alert("Giá đã bán không thể giảm hơn 11.000đ.");
+                    if ((item.Price - item.ReducedPrice) < discount) {
+                        alert("Giá đã bán phải giảm ít nhất " + formatThousands(discount, ","));
+                        let sold_price = row.data("sold-price");
+                        row.find(".reducedPrice").val(formatThousands(sold_price, ","));
+                        item.ReducedPrice = sold_price;
+                    }
+
+                    if ((item.Price - item.ReducedPrice) > 25000) {
+                        alert("Giá đã bán không được giảm quá 25,000");
                         let sold_price = row.data("sold-price");
                         row.find(".reducedPrice").val(formatThousands(sold_price, ","));
                         item.ReducedPrice = sold_price;

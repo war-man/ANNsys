@@ -55,7 +55,14 @@ namespace IM_PJ.CronJob
             {
                 _log.Info("Begin excute post API for the websites");
 
-                var schedules = CronJobController.getScheduleProductStatus(_website, (int)CronJobStatus.Scheduled, 100);
+                // Nếu cron job được yêu cầu dưng lại thì sẽ không sử lý nữa
+                if (isPause())
+                {
+                    _log.Info("Run Schedule Web - Cron Job Pause.");
+                    return;
+                }
+
+                var schedules = CronJobController.getScheduleProductStatus(_website, (int)CronJobStatus.Scheduled, 80);
                 _log.Info(String.Format("Run Schedule - Number Schedule: {0:N}", schedules.Count));
 
                 if(schedules.Count > 0)
@@ -99,46 +106,26 @@ namespace IM_PJ.CronJob
             _log.Info("Begin execute the scheduler for website");
             _log.Info(String.Format("Run Schedule Web - Number Schedule: {0:N}", schedules.Count));
 
-            var size = 100;
-            var chunks = new List<List<CronJobProductStatu>>();
-            var chunkCount = Math.Ceiling(1.0 * schedules.Count() / size);
-
-            for (var i = 0; i < chunkCount; i++)
-                chunks.Add(schedules.Skip(i * size).Take(size).ToList());
-
             var scheduleUpdate = new List<CronJobProductStatu>();
             var index = 0;
 
-            foreach (var chunk in chunks)
+            foreach (var schedule in schedules)
             {
-                // Nếu cron job được yêu cầu dưng lại thì sẽ không sử lý nữa
-                if (isPause())
-                {
-                    if (scheduleUpdate.Count > 0)
-                        CronJobController.updateScheduleProductStatus(scheduleUpdate);
+                // Đếm số lượng thực thi
+                index++;
 
-                    _log.Info("Run Schedule Web - Cron Job Pause.");
-                    return;
-                }
+                // Thực thi post API cập nhật thông tin trạng thái sản phẩm
+                var response = postAPI(schedule);
+                // Lấy thông tin trạng thái lịch trình sau khi thực thi post API
+                var scheduleDone = checkResponse(schedule, response);
 
-                foreach (var schedule in chunk)
-                {
-                    // Đếm số lượng thực thi
-                    index++;
+                scheduleUpdate.Add(scheduleDone);
+                _log.Info(String.Format("{0:N0} - Run Schedule Web - {1}", index, JsonConvert.SerializeObject(scheduleDone)));
 
-                    // Thực thi post API cập nhật thông tin trạng thái sản phẩm
-                    var response = postAPI(schedule);
-                    // Lấy thông tin trạng thái lịch trình sau khi thực thi post API
-                    var scheduleDone = checkResponse(schedule, response);
-
-                    scheduleUpdate.Add(scheduleDone);
-                    _log.Info(String.Format("{0:N0} - Run Schedule Web - {1}", index, JsonConvert.SerializeObject(scheduleDone)));
-
-                    Thread.Sleep(500);
-                }
-
-                CronJobController.updateScheduleProductStatus(scheduleUpdate);
+                Thread.Sleep(500);
             }
+
+            CronJobController.updateScheduleProductStatus(scheduleUpdate);
         }
 
         /// <summary>
