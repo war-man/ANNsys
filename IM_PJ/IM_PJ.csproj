@@ -991,6 +991,9 @@
     <Compile Include="Models\CronJobProductStatu.cs">
       <DependentUpon>IMModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\CustomerEditOrder.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\Delivery.cs">
       <DependentUpon>IMModel.tt</DependentUpon>
     </Compile>
@@ -1051,9 +1054,6 @@
       <DependentUpon>IMModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Shipper.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\sysdiagram.cs">
       <DependentUpon>IMModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\tbl_Account.cs">

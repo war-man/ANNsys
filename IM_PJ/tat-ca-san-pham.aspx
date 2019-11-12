@@ -176,7 +176,7 @@
                     <div class="filter-above-wrap clear">
                         <div class="filter-control">
                             <div class="row">
-                                <div class="col-md-3 col-xs-6">
+                                <div class="col-md-2 col-xs-6">
                                     <asp:DropDownList ID="ddlCategory" runat="server" CssClass="form-control"></asp:DropDownList>
                                 </div>
                                 <div class="col-md-1 col-xs-6">
@@ -295,6 +295,13 @@
                                             <asp:TextBox ID="txtQuantityMax" runat="server" CssClass="form-control" placeholder="Max" autocomplete="off"></asp:TextBox>
                                         </div>
                                     </div>
+                                </div>
+                                <div class="col-md-2 col-xs-6">
+                                    <asp:DropDownList ID="ddlPreOrder" runat="server" CssClass="form-control">
+                                        <asp:ListItem Value="" Text="Hàng Order"></asp:ListItem>
+                                        <asp:ListItem Value="0" Text="Khồng cần đặt hàng"></asp:ListItem>
+                                        <asp:ListItem Value="1" Text="Phải đặt hàng"></asp:ListItem>
+                                    </asp:DropDownList>
                                 </div>
                             </div>
                         </div>

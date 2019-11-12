@@ -185,6 +185,9 @@ namespace IM_PJ
                 lbMaterials.Text = p.Materials;
                 lbColor.Text = p.Color;
 
+                // Hàng order
+                ddlPreOrder.SelectedValue = p.PreOrder ? "1" : "0";
+
                 // thư viện ảnh
                 var image = ProductImageController.GetByProductID(id);
                 imageGallery.Text = "<ul class='image-gallery'>";

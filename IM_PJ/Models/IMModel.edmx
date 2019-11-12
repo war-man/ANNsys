@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-    <Schema Namespace="inventorymanagementModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+      <Schema Namespace="inventorymanagementModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="Bank">
           <Key>
             <PropertyRef Name="ID" />
@@ -95,6 +95,23 @@
           <Property Name="Note" Type="nchar" MaxLength="255" />
           <Property Name="CategoryID" Type="int" Nullable="false" />
           <Property Name="Quantity" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="CustomerEditOrder">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="OrderID" Type="int" Nullable="false" />
+          <Property Name="OrderItemID" Type="int" Nullable="false" />
+          <Property Name="ProductID" Type="int" Nullable="false" />
+          <Property Name="ProductVariableID" Type="int" Nullable="false" />
+          <Property Name="SKU" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="Quantity" Type="int" Nullable="false" />
+          <Property Name="Price" Type="float" Nullable="false" />
+          <Property Name="TotalPrice" Type="float" Nullable="false" />
+          <Property Name="Status" Type="int" Nullable="false" />
+          <Property Name="CustomerID" Type="int" Nullable="false" />
+          <Property Name="CreatedDate" Type="datetime" Nullable="false" />
         </EntityType>
         <EntityType Name="Delivery">
           <Key>
@@ -294,16 +311,6 @@
           <Property Name="CreatedDate" Type="datetime" Nullable="false" />
           <Property Name="ModifiedBy" Type="int" Nullable="false" />
           <Property Name="ModifiedDate" Type="datetime" Nullable="false" />
-        </EntityType>
-        <EntityType Name="sysdiagrams">
-          <Key>
-            <PropertyRef Name="diagram_id" />
-          </Key>
-          <Property Name="name" Type="nvarchar" MaxLength="128" Nullable="false" />
-          <Property Name="principal_id" Type="int" Nullable="false" />
-          <Property Name="diagram_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="version" Type="int" />
-          <Property Name="definition" Type="varbinary(max)" />
         </EntityType>
         <EntityType Name="tbl_Account">
           <Key>
@@ -759,6 +766,7 @@
           <Property Name="UnSignedTitle" Type="varchar" MaxLength="255" />
           <Property Name="Slug" Type="varchar" MaxLength="255" />
           <Property Name="Color" Type="nchar" MaxLength="30" />
+          <Property Name="PreOrder" Type="bit" Nullable="false" />
         </EntityType>
         <EntityType Name="tbl_ProductImage">
           <Key>
@@ -1020,6 +1028,7 @@
           <EntitySet Name="CategoryShelf" EntityType="Self.CategoryShelf" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CronJob" EntityType="Self.CronJob" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CronJobProductStatus" EntityType="Self.CronJobProductStatus" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CustomerEditOrder" EntityType="Self.CustomerEditOrder" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Delivery" EntityType="Self.Delivery" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="DeliveryPostOffice" EntityType="Self.DeliveryPostOffice" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="DeliveryProship" EntityType="Self.DeliveryProship" Schema="dbo" store:Type="Tables" />
@@ -1031,7 +1040,6 @@
           <EntitySet Name="Session" EntityType="Self.Session" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ShelfManager" EntityType="Self.ShelfManager" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Shipper" EntityType="Self.Shipper" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_Account" EntityType="Self.tbl_Account" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_AccountInfo" EntityType="Self.tbl_AccountInfo" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_Agent" EntityType="Self.tbl_Agent" Schema="dbo" store:Type="Tables" />
@@ -1072,7 +1080,8 @@
           <EntitySet Name="tbl_VariableValue" EntityType="Self.tbl_VariableValue" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_WhiteDomain" EntityType="Self.tbl_WhiteDomain" Schema="dbo" store:Type="Tables" />
         </EntityContainer>
-      </Schema></edmx:StorageModels>
+      </Schema>
+    </edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="inventorymanagementModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -1136,6 +1145,20 @@
           <Property Name="ModifedBy" Type="Int32" Nullable="false" />
           <Property Name="ModifiedDate" Type="DateTime" Nullable="false" Precision="3" />
         </EntityType>
+        <EntityType Name="CronJob">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="JobID" Type="Guid" />
+          <Property Name="CronExpression" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Status" Type="Int32" Nullable="false" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ModifiedDate" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="RunAllProduct" Type="Boolean" Nullable="false" />
+          <Property Name="MinProduct" Type="Int32" Nullable="false" />
+        </EntityType>
         <EntityType Name="CronJobProductStatu">
           <Key>
             <PropertyRef Name="ID" />
@@ -1152,6 +1175,23 @@
           <Property Name="Note" Type="String" MaxLength="255" FixedLength="true" Unicode="true" />
           <Property Name="CategoryID" Type="Int32" Nullable="false" />
           <Property Name="Quantity" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="CustomerEditOrder">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="OrderID" Type="Int32" Nullable="false" />
+          <Property Name="OrderItemID" Type="Int32" Nullable="false" />
+          <Property Name="ProductID" Type="Int32" Nullable="false" />
+          <Property Name="ProductVariableID" Type="Int32" Nullable="false" />
+          <Property Name="SKU" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Quantity" Type="Int32" Nullable="false" />
+          <Property Name="Price" Type="Double" Nullable="false" />
+          <Property Name="TotalPrice" Type="Double" Nullable="false" />
+          <Property Name="Status" Type="Int32" Nullable="false" />
+          <Property Name="CustomerID" Type="Int32" Nullable="false" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
         </EntityType>
         <EntityType Name="Delivery">
           <Key>
@@ -1351,16 +1391,6 @@
           <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="ModifiedBy" Type="Int32" Nullable="false" />
           <Property Name="ModifiedDate" Type="DateTime" Nullable="false" Precision="3" />
-        </EntityType>
-        <EntityType Name="sysdiagram">
-          <Key>
-            <PropertyRef Name="diagram_id" />
-          </Key>
-          <Property Name="name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="principal_id" Type="Int32" Nullable="false" />
-          <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="version" Type="Int32" />
-          <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
         </EntityType>
         <EntityType Name="tbl_Account">
           <Key>
@@ -1816,6 +1846,7 @@
           <Property Name="UnSignedTitle" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
           <Property Name="Slug" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
           <Property Name="Color" Type="String" MaxLength="30" FixedLength="true" Unicode="true" />
+          <Property Name="PreOrder" Type="Boolean" Nullable="false" />
         </EntityType>
         <EntityType Name="tbl_ProductImage">
           <Key>
@@ -2070,12 +2101,14 @@
           <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
           <Property Name="ModifiedBy" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
-        <EntityContainer Name="inventorymanagementEntities" annotation:LazyLoadingEnabled="true">
+        <EntityContainer Name="inventorymanagementEntities1" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="Banks" EntityType="Self.Bank" />
           <EntitySet Name="BankAccounts" EntityType="Self.BankAccount" />
           <EntitySet Name="BankTransfers" EntityType="Self.BankTransfer" />
           <EntitySet Name="CategoryShelves" EntityType="Self.CategoryShelf" />
+          <EntitySet Name="CronJobs" EntityType="Self.CronJob" />
           <EntitySet Name="CronJobProductStatus" EntityType="Self.CronJobProductStatu" />
+          <EntitySet Name="CustomerEditOrders" EntityType="Self.CustomerEditOrder" />
           <EntitySet Name="Deliveries" EntityType="Self.Delivery" />
           <EntitySet Name="DeliveryPostOffices" EntityType="Self.DeliveryPostOffice" />
           <EntitySet Name="DeliveryProships" EntityType="Self.DeliveryProship" />
@@ -2087,7 +2120,6 @@
           <EntitySet Name="Sessions" EntityType="Self.Session" />
           <EntitySet Name="ShelfManagers" EntityType="Self.ShelfManager" />
           <EntitySet Name="Shippers" EntityType="Self.Shipper" />
-          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagram" />
           <EntitySet Name="tbl_Account" EntityType="Self.tbl_Account" />
           <EntitySet Name="tbl_AccountInfo" EntityType="Self.tbl_AccountInfo" />
           <EntitySet Name="tbl_Agent" EntityType="Self.tbl_Agent" />
@@ -2127,28 +2159,13 @@
           <EntitySet Name="tbl_Variable" EntityType="Self.tbl_Variable" />
           <EntitySet Name="tbl_VariableValue" EntityType="Self.tbl_VariableValue" />
           <EntitySet Name="tbl_WhiteDomain" EntityType="Self.tbl_WhiteDomain" />
-          <EntitySet Name="CronJobs" EntityType="inventorymanagementModel.CronJob" />
         </EntityContainer>
-        <EntityType Name="CronJob">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Name" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="JobID" Type="Guid" />
-          <Property Name="CronExpression" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="Status" Type="Int32" Nullable="false" />
-          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="ModifiedDate" Type="DateTime" Nullable="false" Precision="0" />
-          <Property Name="RunAllProduct" Type="Boolean" Nullable="false" />
-          <Property Name="MinProduct" Type="Int32" Nullable="false" />
-        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
-        <EntityContainerMapping StorageEntityContainer="inventorymanagementModelStoreContainer" CdmEntityContainer="inventorymanagementEntities">
+        <EntityContainerMapping StorageEntityContainer="inventorymanagementModelStoreContainer" CdmEntityContainer="inventorymanagementEntities1">
           <EntitySetMapping Name="Banks">
             <EntityTypeMapping TypeName="inventorymanagementModel.Bank">
               <MappingFragment StoreEntitySet="Bank">
@@ -2213,11 +2230,24 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="CronJobs">
+            <EntityTypeMapping TypeName="inventorymanagementModel.CronJob">
+              <MappingFragment StoreEntitySet="CronJob">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="JobID" ColumnName="JobID" />
+                <ScalarProperty Name="CronExpression" ColumnName="CronExpression" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="RunAllProduct" ColumnName="RunAllProduct" />
+                <ScalarProperty Name="MinProduct" ColumnName="MinProduct" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="CronJobProductStatus">
             <EntityTypeMapping TypeName="inventorymanagementModel.CronJobProductStatu">
               <MappingFragment StoreEntitySet="CronJobProductStatus">
-                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
-                <ScalarProperty Name="CategoryID" ColumnName="CategoryID" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="Web" ColumnName="Web" />
                 <ScalarProperty Name="API" ColumnName="API" />
@@ -2228,6 +2258,26 @@
                 <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
                 <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
                 <ScalarProperty Name="Note" ColumnName="Note" />
+                <ScalarProperty Name="CategoryID" ColumnName="CategoryID" />
+                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CustomerEditOrders">
+            <EntityTypeMapping TypeName="inventorymanagementModel.CustomerEditOrder">
+              <MappingFragment StoreEntitySet="CustomerEditOrder">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="OrderID" ColumnName="OrderID" />
+                <ScalarProperty Name="OrderItemID" ColumnName="OrderItemID" />
+                <ScalarProperty Name="ProductID" ColumnName="ProductID" />
+                <ScalarProperty Name="ProductVariableID" ColumnName="ProductVariableID" />
+                <ScalarProperty Name="SKU" ColumnName="SKU" />
+                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+                <ScalarProperty Name="Price" ColumnName="Price" />
+                <ScalarProperty Name="TotalPrice" ColumnName="TotalPrice" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="CustomerID" ColumnName="CustomerID" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -2438,17 +2488,6 @@
                 <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
                 <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
                 <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="sysdiagrams">
-            <EntityTypeMapping TypeName="inventorymanagementModel.sysdiagram">
-              <MappingFragment StoreEntitySet="sysdiagrams">
-                <ScalarProperty Name="name" ColumnName="name" />
-                <ScalarProperty Name="principal_id" ColumnName="principal_id" />
-                <ScalarProperty Name="diagram_id" ColumnName="diagram_id" />
-                <ScalarProperty Name="version" ColumnName="version" />
-                <ScalarProperty Name="definition" ColumnName="definition" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -2766,8 +2805,6 @@
           <EntitySetMapping Name="tbl_Order">
             <EntityTypeMapping TypeName="inventorymanagementModel.tbl_Order">
               <MappingFragment StoreEntitySet="tbl_Order">
-                <ScalarProperty Name="VerifiedBy" ColumnName="VerifiedBy" />
-                <ScalarProperty Name="VerifiedCOD" ColumnName="VerifiedCOD" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="AgentID" ColumnName="AgentID" />
                 <ScalarProperty Name="OrderType" ColumnName="OrderType" />
@@ -2807,6 +2844,8 @@
                 <ScalarProperty Name="PostalDeliveryType" ColumnName="PostalDeliveryType" />
                 <ScalarProperty Name="CustomerNewPhone" ColumnName="CustomerNewPhone" />
                 <ScalarProperty Name="UserHelp" ColumnName="UserHelp" />
+                <ScalarProperty Name="VerifiedCOD" ColumnName="VerifiedCOD" />
+                <ScalarProperty Name="VerifiedBy" ColumnName="VerifiedBy" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -2928,6 +2967,7 @@
                 <ScalarProperty Name="UnSignedTitle" ColumnName="UnSignedTitle" />
                 <ScalarProperty Name="Slug" ColumnName="Slug" />
                 <ScalarProperty Name="Color" ColumnName="Color" />
+                <ScalarProperty Name="PreOrder" ColumnName="PreOrder" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -3195,21 +3235,6 @@
                 <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
                 <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
                 <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="CronJobs">
-            <EntityTypeMapping TypeName="inventorymanagementModel.CronJob">
-              <MappingFragment StoreEntitySet="CronJob">
-                <ScalarProperty Name="MinProduct" ColumnName="MinProduct" />
-                <ScalarProperty Name="RunAllProduct" ColumnName="RunAllProduct" />
-                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
-                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
-                <ScalarProperty Name="Status" ColumnName="Status" />
-                <ScalarProperty Name="CronExpression" ColumnName="CronExpression" />
-                <ScalarProperty Name="JobID" ColumnName="JobID" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

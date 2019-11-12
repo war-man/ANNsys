@@ -115,6 +115,8 @@ namespace IM_PJ
                 string Quantity = "";
                 int QuantityFrom = 0;
                 int QuantityTo = 0;
+                // add filter preOrder
+                var preOrder = String.Empty;
 
                 if (Request.QueryString["textsearch"] != null)
                     TextSearch = Request.QueryString["textsearch"].Trim();
@@ -184,6 +186,9 @@ namespace IM_PJ
                 // Add filter valiable value
                 ddlColor.SelectedValue = strColor;
                 ddlSize.SelectedValue = strSize;
+                // Add filter preOrder
+                if (!String.IsNullOrEmpty(Request.QueryString["preOrder"]))
+                    preOrder = Request.QueryString["preOrder"];
 
                 // Create order fileter
                 var filter = new ProductFilterModel()
@@ -199,7 +204,8 @@ namespace IM_PJ
                     fromDate = fromDate,
                     toDate = toDate,
                     showHomePage = ShowHomePage,
-                    webPublish = WebPublish
+                    webPublish = WebPublish,
+                    preOrder = preOrder
                 };
                 // Create pagination
                 var page = new PaginationMetadataModel()
@@ -1015,6 +1021,9 @@ namespace IM_PJ
             {
                 request += "&size=" + ddlSize.SelectedValue;
             }
+            // Add filter preOrder
+            if (!String.IsNullOrEmpty(ddlPreOrder.SelectedValue))
+                request += "&preOrder=" + ddlPreOrder.SelectedValue;
 
             Response.Redirect(request);
         }

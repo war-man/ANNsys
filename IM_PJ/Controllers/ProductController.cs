@@ -30,42 +30,40 @@ namespace IM_PJ.Controllers
         }
 
         #region CRUD
-        public static string Insert(int CategoryID, int ProductOldID, string ProductTitle, string ProductContent, string ProductSKU, double ProductStock,
-            int StockStatus, bool ManageStock, double Regular_Price, double CostOfGood, double Retail_Price, string ProductImage, int ProductType,
-            bool IsHidden, DateTime CreatedDate, string CreatedBy, int SupplierID, string SupplierName, string Materials,
-            double MinimumInventoryLevel, double MaximumInventoryLevel, int ProductStyle, int ShowHomePage, string mainColor)
+        public static string Insert(tbl_Product product)
         {
             using (var dbe = new inventorymanagementEntities())
             {
                 tbl_Product ui = new tbl_Product();
-                ui.CategoryID = CategoryID;
-                ui.ProductOldID = ProductOldID;
-                ui.ProductTitle = ProductTitle;
-                ui.ProductContent = ProductContent;
-                ui.ProductSKU = ProductSKU;
-                ui.ProductStock = ProductStock;
-                ui.StockStatus = StockStatus;
-                ui.ManageStock = ManageStock;
-                ui.Regular_Price = Regular_Price;
-                ui.CostOfGood = CostOfGood;
-                ui.Retail_Price = Retail_Price;
-                ui.ProductImage = ProductImage;
-                ui.ProductType = ProductType;
-                ui.IsHidden = IsHidden;
-                ui.CreatedDate = CreatedDate;
-                ui.CreatedBy = CreatedBy;
-                ui.SupplierID = SupplierID;
-                ui.SupplierName = SupplierName;
-                ui.Materials = Materials;
-                ui.MinimumInventoryLevel = MinimumInventoryLevel;
-                ui.MaximumInventoryLevel = MaximumInventoryLevel;
-                ui.ProductStyle = ProductStyle;
-                ui.ShowHomePage = ShowHomePage;
+                ui.CategoryID = product.CategoryID;
+                ui.ProductOldID = product.ProductOldID;
+                ui.ProductTitle = product.ProductTitle;
+                ui.ProductContent = product.ProductContent;
+                ui.ProductSKU = product.ProductSKU;
+                ui.ProductStock = product.ProductStock;
+                ui.StockStatus = product.StockStatus;
+                ui.ManageStock = product.ManageStock;
+                ui.Regular_Price = product.Regular_Price;
+                ui.CostOfGood = product.CostOfGood;
+                ui.Retail_Price = product.Retail_Price;
+                ui.ProductImage = product.ProductImage;
+                ui.ProductType = product.ProductType;
+                ui.IsHidden = product.IsHidden;
+                ui.CreatedDate = product.CreatedDate;
+                ui.CreatedBy = product.CreatedBy;
+                ui.SupplierID = product.SupplierID;
+                ui.SupplierName = product.SupplierName;
+                ui.Materials = product.Materials;
+                ui.MinimumInventoryLevel = product.MinimumInventoryLevel;
+                ui.MaximumInventoryLevel = product.MaximumInventoryLevel;
+                ui.ProductStyle = product.ProductStyle;
+                ui.ShowHomePage = product.ShowHomePage;
                 ui.WebPublish = true;
-                ui.WebUpdate = CreatedDate;
-                ui.UnSignedTitle = UnSign.convert(ProductTitle);
-                ui.Slug = checkSlug(Slug.ConvertToSlug(ProductTitle));
-                ui.Color = mainColor;
+                ui.WebUpdate = product.CreatedDate;
+                ui.UnSignedTitle = UnSign.convert(product.ProductTitle);
+                ui.Slug = checkSlug(Slug.ConvertToSlug(product.ProductTitle));
+                ui.Color = product.Color;
+                ui.PreOrder = product.PreOrder;
 
                 dbe.tbl_Product.Add(ui);
                 dbe.SaveChanges();
@@ -73,42 +71,40 @@ namespace IM_PJ.Controllers
                 return kq.ToString();
             }
         }
-        public static string Update(int ID, int CategoryID, int ProductOldID, string ProductTitle, string ProductContent, string ProductSKU, double ProductStock,
-            int StockStatus, bool ManageStock, double Regular_Price, double CostOfGood, double Retail_Price, string ProductImage, int ProductType,
-            bool IsHidden, DateTime ModifiedDate, string ModifiedBy, int SupplierID, string SupplierName, string Materials,
-            double MinimumInventoryLevel, double MaximumInventoryLevel, string ProductImageClean, string mainColor)
+        public static string Update(tbl_Product product)
         {
             using (var dbe = new inventorymanagementEntities())
             {
-                tbl_Product ui = dbe.tbl_Product.Where(a => a.ID == ID).SingleOrDefault();
+                tbl_Product ui = dbe.tbl_Product.Where(a => a.ID == product.ID).SingleOrDefault();
                 if (ui != null)
                 {
-                    ui.CategoryID = CategoryID;
-                    ui.ProductOldID = ProductOldID;
-                    ui.ProductTitle = ProductTitle;
-                    ui.ProductContent = ProductContent;
-                    ui.ProductSKU = ProductSKU;
-                    if (ProductStock > 0)
-                        ui.ProductStock = ProductStock;
-                    if (StockStatus > 0)
-                        ui.StockStatus = StockStatus;
-                    ui.ManageStock = ManageStock;
-                    ui.Regular_Price = Regular_Price;
-                    ui.CostOfGood = CostOfGood;
-                    ui.Retail_Price = Retail_Price;
-                    ui.ProductImage = ProductImage;
-                    ui.ProductType = ProductType;
-                    ui.IsHidden = IsHidden;
-                    ui.ModifiedBy = ModifiedBy;
-                    ui.ModifiedDate = ModifiedDate;
-                    ui.SupplierID = SupplierID;
-                    ui.SupplierName = SupplierName;
-                    ui.Materials = Materials;
-                    ui.MinimumInventoryLevel = MinimumInventoryLevel;
-                    ui.MaximumInventoryLevel = MaximumInventoryLevel;
-                    ui.ProductImageClean = ProductImageClean;
-                    ui.UnSignedTitle = UnSign.convert(ProductTitle);
-                    ui.Color = mainColor;
+                    ui.CategoryID = product.CategoryID;
+                    ui.ProductOldID = product.ProductOldID;
+                    ui.ProductTitle = product.ProductTitle;
+                    ui.ProductContent = product.ProductContent;
+                    ui.ProductSKU = product.ProductSKU;
+                    if (product.ProductStock > 0)
+                        ui.ProductStock = product.ProductStock;
+                    if (product.StockStatus > 0)
+                        ui.StockStatus = product.StockStatus;
+                    ui.ManageStock = product.ManageStock;
+                    ui.Regular_Price = product.Regular_Price;
+                    ui.CostOfGood = product.CostOfGood;
+                    ui.Retail_Price = product.Retail_Price;
+                    ui.ProductImage = product.ProductImage;
+                    ui.ProductType = product.ProductType;
+                    ui.IsHidden = product.IsHidden;
+                    ui.ModifiedBy = product.ModifiedBy;
+                    ui.ModifiedDate = product.ModifiedDate;
+                    ui.SupplierID = product.SupplierID;
+                    ui.SupplierName = product.SupplierName;
+                    ui.Materials = product.Materials;
+                    ui.MinimumInventoryLevel = product.MinimumInventoryLevel;
+                    ui.MaximumInventoryLevel = product.MaximumInventoryLevel;
+                    ui.ProductImageClean = product.ProductImageClean;
+                    ui.UnSignedTitle = UnSign.convert(product.ProductTitle);
+                    ui.Color = product.Color;
+                    ui.PreOrder = product.PreOrder;
 
                     int kq = dbe.SaveChanges();
                     return kq.ToString();
@@ -1190,6 +1186,11 @@ namespace IM_PJ.Controllers
                 sql.AppendLine("                    ID = PRD.CategoryID");
                 sql.AppendLine("    )");
             }
+            #endregion
+
+            #region Lọc theo sản phẩm Order
+            if (!String.IsNullOrEmpty(filter.preOrder))
+                sql.AppendLine(String.Format("    AND PRD.PreOrder = '{0}'", filter.preOrder));
             #endregion
 
             sql.AppendLine("     ORDER BY");
