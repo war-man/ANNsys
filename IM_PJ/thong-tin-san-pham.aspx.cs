@@ -182,6 +182,9 @@ namespace IM_PJ
                     }
                     imageGallery.Text += "</ul>";
 
+                    // Hàng cần Order
+                    ddlPreOrder.SelectedValue = p.PreOrder ? "1" : "0";
+
                     // Lấy tất cả biến thể ra
 
                     List<tbl_ProductVariable> a = new List<tbl_ProductVariable>();
@@ -364,8 +367,37 @@ namespace IM_PJ
                     }
                 }
 
+                // Hàng Order
+                var preOrder = ddlPreOrder.SelectedValue == "1" ? true : false;
+
                 // Update product
-                string kq = ProductController.Update(ProductID, CategoryID, 0, ProductTitle, ProductContent, ProductSKU, ProductStock, StockStatus, ManageStock, Regular_Price, CostOfGood, Retail_Price, ProductImage, 0, false, DateTime.Now, username, ddlSupplier.SelectedValue.ToInt(0), ddlSupplier.SelectedItem.ToString(), txtMaterials.Text, MinimumInventoryLevel, MaximumInventoryLevel, ProductImageClean, mainColor);
+                string kq = ProductController.Update(new tbl_Product() {
+                    ID = ProductID,
+                    CategoryID = CategoryID,
+                    ProductOldID = 0,
+                    ProductTitle = ProductTitle,
+                    ProductContent = ProductContent,
+                    ProductSKU = ProductSKU,
+                    ProductStock = ProductStock,
+                    StockStatus = StockStatus,
+                    ManageStock = ManageStock,
+                    Regular_Price = Regular_Price,
+                    CostOfGood = CostOfGood,
+                    Retail_Price = Retail_Price,
+                    ProductImage = ProductImage,
+                    ProductType = 0,
+                    IsHidden = false,
+                    ModifiedDate = DateTime.Now,
+                    ModifiedBy = username,
+                    SupplierID = ddlSupplier.SelectedValue.ToInt(0),
+                    SupplierName = ddlSupplier.SelectedItem.ToString(),
+                    Materials = txtMaterials.Text,
+                    MinimumInventoryLevel = MinimumInventoryLevel,
+                    MaximumInventoryLevel = MaximumInventoryLevel,
+                    ProductImageClean = ProductImageClean,
+                    Color = mainColor,
+                    PreOrder = preOrder
+                });
 
                 // Upload image gallery
                 string itemGallery = "";

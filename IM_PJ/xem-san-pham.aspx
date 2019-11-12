@@ -133,6 +133,17 @@
                             </div>
                             <div class="form-row">
                                 <div class="row-left">
+                                    Hàng Order
+                                </div>
+                                <div class="row-right">
+                                    <asp:DropDownList ID="ddlPreOrder" runat="server" CssClass="form-control" Enabled="False">
+                                        <asp:ListItem Text="Khồng cần đặt hàng" Value="0"></asp:ListItem>
+                                        <asp:ListItem Text="Phải đặt hàng" Value="1"></asp:ListItem>
+                                    </asp:DropDownList>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="row-left">
                                     Nội dung
                                 </div>
                                 <div class="row-right">

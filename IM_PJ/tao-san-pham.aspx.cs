@@ -1,4 +1,5 @@
 ﻿using IM_PJ.Controllers;
+using IM_PJ.Models;
 using IM_PJ.Utils;
 using MB.Extensions;
 using NHST.Bussiness;
@@ -345,6 +346,7 @@ namespace IM_PJ
                             string supplierName = ddlSupplier.SelectedItem.ToString();
                             string mainColor = ddlColor.SelectedValue.Trim();
                             int a = 1;
+                            var preOrder = ddlPreOrder.SelectedValue == "1" ? true : false;
 
                             double MinimumInventoryLevel = pMinimumInventoryLevel.Text.ToInt(0);
                             double MaximumInventoryLevel = pMaximumInventoryLevel.Text.ToInt(0);
@@ -358,7 +360,33 @@ namespace IM_PJ
 
                             int ShowHomePage = ddlShowHomePage.SelectedValue.ToInt(0);
 
-                            string kq = ProductController.Insert(cateID, 0, ProductTitle, ProductContent, ProductSKU, ProductStock, StockStatus, true, Regular_Price, CostOfGood, Retail_Price, "", a, false, currentDate, username, supplierID, supplierName, txtMaterials.Text, MinimumInventoryLevel, MaximumInventoryLevel, a, ShowHomePage, mainColor);
+                            string kq = ProductController.Insert(new tbl_Product() {
+                                CategoryID = cateID,
+                                ProductOldID = 0,
+                                ProductTitle = ProductTitle,
+                                ProductContent = ProductContent,
+                                ProductSKU = ProductSKU,
+                                ProductStock = ProductStock,
+                                StockStatus = StockStatus,
+                                ManageStock = true,
+                                Regular_Price = Regular_Price,
+                                CostOfGood = CostOfGood,
+                                Retail_Price = Retail_Price,
+                                ProductImage = String.Empty,
+                                ProductType = a,
+                                IsHidden = false,
+                                CreatedDate = currentDate,
+                                CreatedBy = username,
+                                SupplierID = supplierID,
+                                SupplierName = supplierName,
+                                Materials = txtMaterials.Text,
+                                MinimumInventoryLevel = MinimumInventoryLevel,
+                                MaximumInventoryLevel = MaximumInventoryLevel,
+                                ProductStyle = a,
+                                ShowHomePage = ShowHomePage,
+                                Color = mainColor,
+                                PreOrder = preOrder
+                            });
 
                             //Phần thêm ảnh đại diện sản phẩm
                             string path = "/uploads/images/";

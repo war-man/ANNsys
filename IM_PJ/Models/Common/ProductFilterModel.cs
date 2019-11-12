@@ -40,5 +40,7 @@ namespace IM_PJ.Models
         // Tên người yêu cầu nhập hàng
         public int createdBy { get; set; }
         public double price { get; set; }
+        // Sản phẩm Order
+        public string preOrder { get; set; }
     }
 }
