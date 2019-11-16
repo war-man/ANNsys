@@ -282,7 +282,7 @@ namespace IM_PJ
                 var customer = CustomerController.GetByID(Convert.ToInt32(order.CustomerID));
                 if (!string.IsNullOrEmpty(customer.CustomerPhone2))
                 {
-                    CustomerPhone = " - " + customer.CustomerPhone2;
+                    CustomerPhone += " - " + customer.CustomerPhone2;
                 }
 
                 // Lấy logo ANN
