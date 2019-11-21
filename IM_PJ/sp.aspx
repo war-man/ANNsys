@@ -8,11 +8,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=yes">
     <meta name="format-detection" content="telephone=no">
     <meta name="robots" content="noindex, nofollow">
-    <link rel="stylesheet" href="/App_Themes/Ann/css/style.css?v=15052019" media="all">
-    <link rel="stylesheet" href="/App_Themes/Ann/css/style-P.css?v=23082019" media="all">
+    <link rel="stylesheet" href="/App_Themes/Ann/css/style.css?v=21112019" media="all">
+    <link rel="stylesheet" href="/App_Themes/Ann/css/style-P.css?v=21112019" media="all">
     <link href="/App_Themes/Ann/css/HoldOn.css?v=17042019" rel="stylesheet" type="text/css" />
     <link href="/App_Themes/NewUI/js/select2/select2.css" rel="stylesheet" />
-    <link rel="stylesheet" href="/App_Themes/Ann/css/style-sp.css?v=11092019" media="all">
+    <link rel="stylesheet" href="/App_Themes/Ann/css/style-sp.css?v=21112019" media="all">
     <script type="text/javascript" src="/App_Themes/Ann/js/jquery-2.1.3.min.js"></script>
     <link href="/App_Themes/NewUI/js/sweet/sweet-alert.css" rel="stylesheet" />
     <script src="/App_Themes/NewUI/js/select2/select2.min.js"></script>
@@ -230,12 +230,12 @@
             <script src="/App_Themes/Ann/js/bootstrap.min.js"></script>
             <script src="/App_Themes/Ann/js/bootstrap-table/bootstrap-table.js"></script>
             <script src="App_Themes/NewUI/js/sweet/sweet-alert.min.js"></script>
-            <script src="/App_Themes/Ann/js/master.js?v=2011"></script>
-            <script src="/App_Themes/Ann/js/copy-product-info.js?v=15082019"></script>
-            <script src="App_Themes/Ann/js/services/common/product-service.js?v=2019816122020"></script>
-            <script src="/App_Themes/Ann/js/sync-product-small.js?v=20190920121238"></script>
-            <script src="/App_Themes/Ann/js/download-product-image.js?v=17072019"></script>
-            <script src="/App_Themes/Ann/js/HoldOn.js?v=2011"></script>
+            <script src="/App_Themes/Ann/js/master.js?v=21112019"></script>
+            <script src="/App_Themes/Ann/js/copy-product-info.js?v=21112019"></script>
+            <script src="App_Themes/Ann/js/services/common/product-service.js?v=21112019"></script>
+            <script src="/App_Themes/Ann/js/sync-product-small.js?v=21112019"></script>
+            <script src="/App_Themes/Ann/js/download-product-image.js?v=21112019"></script>
+            <script src="/App_Themes/Ann/js/HoldOn.js?v=21112019"></script>
 
             <script type="text/javascript">
 

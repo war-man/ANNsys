@@ -45,6 +45,6 @@
 })(window, document, navigator);
 
 function copyInvoiceURL(orderID, customerID) {
-    var copyText = "http://khachhangann.com/hoa-don/" + orderID + "/khach-hang/" + customerID;
+    var copyText = "kiểm tra bill giúp em nha!\r\nbấm vào link này để xem bill:\r\nhttp://khachhangann.com/hoa-don/" + orderID + "/khach-hang/" + customerID;
     Clipboard.copy(copyText);
 }

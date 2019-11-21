@@ -199,7 +199,7 @@ namespace IM_PJ
 
                     // Title
                     this.Title = String.Format("{0} - Đơn hàng", cus.Nick != "" ? cus.Nick.ToTitleCase() : cus.CustomerName.ToTitleCase());
-                    ltrHeading.Text = "Đơn hàng #" + ID.ToString() + " - " + (cus.Nick != "" ? cus.Nick.ToTitleCase() : cus.CustomerName.ToLower().ToTitleCase()) + (!String.IsNullOrEmpty(order.UserHelp) ? " (được tạo giúp bởi " + order.UserHelp + ")" : "");
+                    ltrHeading.Text = "Đơn hàng " + ID.ToString() + " - " + (cus.Nick != "" ? cus.Nick.ToTitleCase() : cus.CustomerName.ToLower().ToTitleCase()) + (!String.IsNullOrEmpty(order.UserHelp) ? " (được tạo giúp bởi " + order.UserHelp + ")" : "");
                     ltrOrderID.Text = ID.ToString();
                     int customerID = Convert.ToInt32(order.CustomerID);
                     ltrViewDetail.Text = "<a href='javascript:;' class='btn primary-btn fw-btn not-fullwidth' onclick='viewCustomerDetail(`" + customerID + "`)'><i class='fa fa-address-card-o' aria-hidden='true'></i> Xem</a>";

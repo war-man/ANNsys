@@ -346,16 +346,16 @@ namespace IM_PJ
                 foreach(var item in acs)
                 {
                     html.Append("<tr>");
-                    html.Append("   <td data-title='Mã đơn'><a href=\"/thong-tin-don-hang?id=" + item.ID + "\">" + item.ID + "</a></td>");
+                    html.Append("   <td data-title='Mã đơn'><a target='_blank' href='/thong-tin-don-hang?id=" + item.ID + "'>" + item.ID + "</a></td>");
                     html.Append("   <td data-title='Loại đơn'>" + PJUtils.OrderTypeStatus(Convert.ToInt32(item.OrderType)) + "</td>");
 
                     if (!string.IsNullOrEmpty(item.Nick))
                     {
-                        html.Append("   <td data-title='Khách hàng' class='customer-td'><a class=\"col-customer-name-link\" href=\"/thong-tin-don-hang?id=" + item.ID + "\">" + item.Nick.ToTitleCase() + "</a><br><span class=\"name-bottom-nick\">(" + item.CustomerName.ToTitleCase() + ")</span></td>");
+                        html.Append("   <td data-title='Khách hàng' class='customer-td'><a class='col-customer-name-link' target='_blank' href='/thong-tin-don-hang?id=" + item.ID + "'>" + item.Nick.ToTitleCase() + "</a><br><span class='name-bottom-nick'>(" + item.CustomerName.ToTitleCase() + ")</span></td>");
                     }
                     else
                     {
-                        html.Append("   <td data-title='Khách hàng' class='customer-td'><a class=\"col-customer-name-link\" href=\"/thong-tin-don-hang?id=" + item.ID + "\">" + item.CustomerName.ToTitleCase() + "</a></td>");
+                        html.Append("   <td data-title='Khách hàng' class='customer-td'><a class='col-customer-name-link' target='_blank' href='/thong-tin-don-hang?id=" + item.ID + "'>" + item.CustomerName.ToTitleCase() + "</a></td>");
                     }
 
                     html.Append("   <td data-title='Đã mua'>" + item.Quantity + "</td>");

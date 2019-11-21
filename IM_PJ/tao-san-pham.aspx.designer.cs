@@ -94,6 +94,15 @@ namespace IM_PJ {
         protected global::System.Web.UI.WebControls.DropDownList ddlColor;
         
         /// <summary>
+        /// ddlPreOrder control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList ddlPreOrder;
+        
+        /// <summary>
         /// pMinimumInventoryLevel control.
         /// </summary>
         /// <remarks>
@@ -209,15 +218,6 @@ namespace IM_PJ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList ddlShowHomePage;
-        
-        /// <summary>
-        /// ddlPreOrder control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlPreOrder;
         
         /// <summary>
         /// pContent control.

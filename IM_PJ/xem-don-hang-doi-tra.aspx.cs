@@ -112,7 +112,7 @@ namespace IM_PJ
                         ltrOrderStatus.Text = PJUtils.RefundStatus(Convert.ToInt32(r.Status));
                         if(r.OrderSaleID > 0)
                         {
-                            ltrOrderSaleID.Text = "<td><a class=\"customer-name-link\" target=\"_blank\" title=\"Bấm vào xem đơn hàng trừ tiền\" href=\"/thong-tin-don-hang?id=" + r.OrderSaleID + "\">" + r.OrderSaleID + " (Xem đơn)</a>";
+                            ltrOrderSaleID.Text = "<td><a class='customer-name-link' target='_blank' title='Bấm vào xem đơn hàng trừ tiền' href='/thong-tin-don-hang?id=" + r.OrderSaleID + "'>" + r.OrderSaleID + " (Xem đơn)</a>";
                         }
                         else
                         {
@@ -140,7 +140,7 @@ namespace IM_PJ
 
                         // Title
                         this.Title = String.Format("{0} - Đổi trả", string.IsNullOrEmpty(nick) ? nick.ToTitleCase() : r.CustomerName.ToTitleCase());
-                        ltrHeading.Text = "Đơn đổi trả #" + ID.ToString() + " - " + (string.IsNullOrEmpty(nick) ? nick.ToTitleCase() : r.CustomerName.ToTitleCase()) + (!string.IsNullOrEmpty(r.UserHelp) ? " (được tạo giúp bởi " + r.UserHelp + ")" : "");
+                        ltrHeading.Text = "Đơn đổi trả " + ID.ToString() + " - " + (string.IsNullOrEmpty(nick) ? nick.ToTitleCase() : r.CustomerName.ToTitleCase()) + (!string.IsNullOrEmpty(r.UserHelp) ? " (được tạo giúp bởi " + r.UserHelp + ")" : "");
 
                         ltrInfo.Text += "<div class='row'>";
                         ltrInfo.Text += "<div class='col-md-4'>";

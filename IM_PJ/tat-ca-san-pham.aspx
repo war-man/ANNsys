@@ -298,9 +298,9 @@
                                 </div>
                                 <div class="col-md-2 col-xs-6">
                                     <asp:DropDownList ID="ddlPreOrder" runat="server" CssClass="form-control">
-                                        <asp:ListItem Value="" Text="Hàng Order"></asp:ListItem>
-                                        <asp:ListItem Value="0" Text="Khồng cần đặt hàng"></asp:ListItem>
-                                        <asp:ListItem Value="1" Text="Phải đặt hàng"></asp:ListItem>
+                                        <asp:ListItem Value="" Text="Loại hàng"></asp:ListItem>
+                                        <asp:ListItem Value="0" Text="Hàng có sẵn"></asp:ListItem>
+                                        <asp:ListItem Value="1" Text="Hàng order"></asp:ListItem>
                                     </asp:DropDownList>
                                 </div>
                             </div>
@@ -331,10 +331,10 @@
             </div>
         </div>
 
-        <script src="/App_Themes/Ann/js/copy-product-info.js?v=15082019"></script>
+        <script src="/App_Themes/Ann/js/copy-product-info.js?v=21112019"></script>
         <script src="/App_Themes/Ann/js/sync-product.js?v=01082019"></script>
-        <script src="/App_Themes/Ann/js/download-product-image.js?v=17072019"></script>
-        <script src="App_Themes/Ann/js/services/common/product-service.js?v=2019816122020"></script>
+        <script src="/App_Themes/Ann/js/download-product-image.js?v=21112019"></script>
+        <script src="App_Themes/Ann/js/services/common/product-service.js?v=21112019"></script>
         
         <script type="text/javascript">
             $("#<%=txtSearchProduct.ClientID%>").keyup(function (e) {
@@ -462,7 +462,7 @@
                         {
                             if (update == "true")
                             {
-                                $('#showWebPublish_' + ID).html("<a href='javascript:;' data-product-id='" + ID + "' data-update='false' class='bg-green bg-button' onclick='updateShowWebPublish($(this))'>Đang hiện</a>");
+                                $('#showWebPublish_' + ID).html("<a href='javascript:;' data-product-id='" + ID + "' data-update='false' class='bg-red bg-button' onclick='updateShowWebPublish($(this))'>Đang hiện</a>");
                                 $(".webupdate-product-" + ID).removeClass("hide");
                             }
                             else

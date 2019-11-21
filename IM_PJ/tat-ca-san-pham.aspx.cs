@@ -672,7 +672,7 @@ namespace IM_PJ
                 if (product.CategoryID == 44)
                 {
                     html.Append("<p></p>\r\n");
-                    html.Append("<p>⭐ Web xem mẫu nước hoa: http://nuochoaANN.com </p>\r\n");
+                    html.Append("<p>⭐ Web xem mẫu nước hoa: http://XuongANN.com/category/nuoc-hoa </p>\r\n");
                 }
 
                 html.Append("<p></p>\r\n");
@@ -684,15 +684,15 @@ namespace IM_PJ
                     
                     html.Append("<p>-----------------------------------------------------------</p>\r\n");
                     html.Append("<p></p>\r\n");
-                    html.Append("<p>⚡⚡ Hàng có sẵn tại KHO HÀNG SỈ ANN ⚡⚡</p>\r\n");
+                    html.Append("<p>⚡⚡ KHO HÀNG SỈ ANN ⚡⚡</p>\r\n");
                     html.Append("<p></p>\r\n");
-                    html.Append("<p>🏭 68 Đường C12, Tân Bình, TP.HCM</p>\r\n");
-                    html.Append("<p></p>\r\n");
-                    html.Append("<p>⭐ Web: ANN.COM.VN</p>\r\n");
+                    html.Append("<p>🏭 68 Đường C12, P.13, Tân Bình, TP.HCM</p>\r\n");
                     html.Append("<p></p>\r\n");
                     html.Append("<p>⭐ Zalo đặt hàng: 0918569400 - 0936786404 - 0913268406 - 0918567409</p>\r\n");
                     html.Append("<p></p>\r\n");
                     html.Append("<p>⭐ Facebook: https://facebook.com/bosiquanao.net </p>\r\n");
+                    html.Append("<p></p>\r\n");
+                    html.Append("<p>⭐ Web xem hàng: XuongANN.com </p>\r\n");
                     html.Append("<p></p>\r\n");
                     html.Append("<p>⭐ Zalo Xem Hàng (các Zalo này không nhận đơn hàng)</p>\r\n");
                     html.Append("<p></p>\r\n");
@@ -788,7 +788,7 @@ namespace IM_PJ
                         }
                         else
                         {
-                            html.Append("   <td data-title='Trang xem hàng'><span id='showWebPublish_" + item.ID + "'><a href='javascript:;' data-product-id='" + item.ID + "' data-update='false' class='bg-green bg-button' onclick='updateShowWebPublish($(this))'>Đang hiện</a></span></td>");
+                            html.Append("   <td data-title='Trang xem hàng'><span id='showWebPublish_" + item.ID + "'><a href='javascript:;' data-product-id='" + item.ID + "' data-update='false' class='bg-red bg-button' onclick='updateShowWebPublish($(this))'>Đang hiện</a></span></td>");
                         }
                     }
 

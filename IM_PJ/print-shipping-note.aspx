@@ -147,6 +147,12 @@
         padding-left: 2.5mm;
         letter-spacing: 2px;
     }
+    .btn-violet {
+        background-color: #8000d0!important
+    }
+    .btn-violet:hover, .btn-violet:active {
+        background-color: #585858!important;
+    }
     @media print { 
         body {
             -ms-transform:rotate(-90deg);
@@ -166,7 +172,7 @@
     <div id="previewImage"></div>
     <asp:Literal ID="ltrShippingNote" runat="server"></asp:Literal>
     <asp:Literal ID="ltrPrintButton"  runat="server"></asp:Literal>
-
+    <a href="javascript:;" onclick="copyNote()" title="Copy link hóa đơn" class="btn btn-violet h45-btn">Copy câu kiểm tra</a>
     <script src="/App_Themes/NewUI/js/sweet/sweet-alert.js" type="text/javascript"></script>
     <script src="/App_Themes/Ann/js/html2canvas.js"></script>
     <script type="text/javascript">
@@ -224,6 +230,7 @@
             window.print();
             window.close();
         }
+
         function showTransportInfo() {
             $("#previewImage").html("");
             $(".table").show();
@@ -236,6 +243,57 @@
                 $(".show-transport-info").html("Hiện thông tin nhà xe");
             }
             printImage();
+        }
+
+        window.Clipboard = (function (window, document, navigator) {
+            var textArea,
+                copy;
+
+            function isOS() {
+                return navigator.userAgent.match(/ipad|iphone/i);
+            }
+
+            function createTextArea(text) {
+                textArea = document.createElement('textArea');
+                textArea.value = text;
+                document.body.appendChild(textArea);
+            }
+
+            function selectText() {
+                var range,
+                    selection;
+
+                if (isOS()) {
+                    range = document.createRange();
+                    range.selectNodeContents(textArea);
+                    selection = window.getSelection();
+                    selection.removeAllRanges();
+                    selection.addRange(range);
+                    textArea.setSelectionRange(0, 999999);
+                } else {
+                    textArea.select();
+                }
+            }
+
+            function copyToClipboard() {
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+            }
+
+            copy = function (text) {
+                createTextArea(text);
+                selectText();
+                copyToClipboard();
+            };
+
+            return {
+                copy: copy
+            };
+        })(window, document, navigator);
+
+        function copyNote(orderID, customerID) {
+            var copyText = "kiểm tra thông tin trên phiếu gửi hàng giúp em nha!";
+            Clipboard.copy(copyText);
         }
     </script> 
 </body>

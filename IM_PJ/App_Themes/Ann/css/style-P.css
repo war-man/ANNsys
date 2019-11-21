@@ -1,4 +1,5 @@
-﻿.font-green {
+﻿
+.font-green {
     background: #73a724;
     color: #fff;
     padding: 5px 6px;
@@ -512,6 +513,9 @@ a.bg-button:hover {
 }
 .btn-violet {
     background-color: #8000d0!important;
+}
+.btn-violet:hover {
+    background-color: #585858!important;
 }
 .sku-input {
     text-transform: uppercase;

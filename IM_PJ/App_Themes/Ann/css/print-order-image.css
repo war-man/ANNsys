@@ -1,4 +1,7 @@
-﻿.customer-name {
+﻿.btn-violet:hover, .btn-violet:active {
+    background-color: #585858!important;
+}
+.customer-name {
     text-transform: capitalize;
 }
 .align-right {

@@ -228,6 +228,17 @@
                             </div>
                             <div class="form-row">
                                 <div class="row-left">
+                                    Loại hàng
+                                </div>
+                                <div class="row-right">
+                                    <asp:DropDownList ID="ddlPreOrder" runat="server" CssClass="form-control">
+                                        <asp:ListItem Text="Hàng có sẵn" Value="0"></asp:ListItem>
+                                        <asp:ListItem Text="Hàng order" Value="1"></asp:ListItem>
+                                    </asp:DropDownList>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="row-left">
                                     Tồn kho ít nhất
                                 </div>
                                 <div class="row-right">
@@ -291,17 +302,6 @@
                                     <asp:Image runat="server" ID="ProductThumbnail" class="img-product" />
                                     <asp:HiddenField runat="server" ID="ListProductThumbnail" ClientIDMode="Static" />
                                     <div class="hidProductThumbnail"></div>
-                                </div>
-                            </div>
-                            <div class="form-row">
-                                <div class="row-left">
-                                    Hàng Order
-                                </div>
-                                <div class="row-right">
-                                    <asp:DropDownList ID="ddlPreOrder" runat="server" CssClass="form-control">
-                                        <asp:ListItem Text="Khồng cần đặt hàng" Value="0"></asp:ListItem>
-                                        <asp:ListItem Text="Phải đặt hàng" Value="1"></asp:ListItem>
-                                    </asp:DropDownList>
                                 </div>
                             </div>
                             <div class="form-row">
