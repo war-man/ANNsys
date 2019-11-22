@@ -196,7 +196,7 @@ function addHtmlProductResult(item) {
     else {
         html += "   <td class='image-item'><img onclick='openImage($(this))' src='/uploads/images/85x113/" + item.ProductImage + "'></td>";
     }
-    html += "   <td class='name-item'><a href='/xem-san-pham?id=" + item.ProductID + "&variableid=" + item.ProductVariableID + "' target='_blank'>" + item.ProductTitle + "</a></td>";
+    html += "   <td class='name-item'><a href='/xem-san-pham?id=" + item.ProductID + "&variableid=" + item.ProductVariableID + "' target='_blank'>" + (customerType == 2 && item.OldPrice > 0 ? "<span class='sale-icon'>SALE</span> " : "") + item.ProductTitle + "</a></td>";
     html += "   <td class='sku-item'>" + SKU + "</td>";
     html += "   <td class='variable-item'>" + item.VariableValue + "</td>";
 

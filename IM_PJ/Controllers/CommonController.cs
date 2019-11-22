@@ -53,7 +53,8 @@ namespace IM_PJ.Controllers
                                     ChildSKU = child != null ? child.SKU : String.Empty,
                                     RegularPrice = child != null ? child.Regular_Price.Value : parent.product.Regular_Price.Value,
                                     CostOfGood = child != null ? child.CostOfGood.Value : parent.product.CostOfGood.Value,
-                                    RetailPrice = child != null ? child.RetailPrice.Value : parent.product.Retail_Price.Value
+                                    RetailPrice = child != null ? child.RetailPrice.Value : parent.product.Retail_Price.Value,
+                                    OldPrice = parent.product.Old_Price.Value > 0 ? parent.product.Old_Price.Value : 0
                                 })
                     .Where(x => x.ParentSKU == SKU.Trim().ToUpper() || x.ChildSKU == SKU.Trim().ToUpper())
                     .OrderBy(x => x.ProductID)
@@ -94,7 +95,8 @@ namespace IM_PJ.Controllers
                             ChildSKU = x.ChildSKU,
                             RegularPrice = x.RegularPrice,
                             CostOfGood = x.CostOfGood,
-                            RetailPrice = x.RetailPrice
+                            RetailPrice = x.RetailPrice,
+                            OldPrice = x.OldPrice
                         };
                     })
                     .ToList();
@@ -168,7 +170,8 @@ namespace IM_PJ.Controllers
                                 RegularPrice = parent.product.RegularPrice,
                                 CostOfGood = parent.product.CostOfGood,
                                 RetailPrice = parent.product.RetailPrice,
-                                QuantityCurrent = child != null ? child.Quantity : 0
+                                QuantityCurrent = child != null ? child.Quantity : 0,
+                                OldPrice = parent.product.OldPrice
                             })
                         .ToList();
                 }

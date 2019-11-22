@@ -753,13 +753,13 @@ namespace IM_PJ
                     html.Append("<tr>");
 
                     html.Append("<td>");
-                    html.Append("   <a href='/xem-san-pham?id=" + item.ID + "'><img src='" + Thumbnail.getURL(item.ProductImage, Thumbnail.Size.Small) + "\'></a>");
+                    html.Append("   <a href='/xem-san-pham?id=" + item.ID + "'><img src='" + Thumbnail.getURL(item.ProductImage, Thumbnail.Size.Small) + "'></a>");
                     html.Append("   <a href='javascript:;' onclick='copyProductInfo(" + item.ID + ")' class='btn download-btn h45-btn'><i class='fa fa-files-o'></i> Copy</a>");
                     html.Append("</td>");
 
-                    html.Append("   <td class='customer-name-link'><a href='/xem-san-pham?id=" + item.ID + "'>" + item.ProductTitle + "</a></td>");
+                    html.Append("   <td class='customer-name-link'><a href='/xem-san-pham?id=" + item.ID + "'>" + (item.OldPrice > 0 ? "<span class='sale-icon'>SALE</span> " : "") + item.ProductTitle + "</a></td>");
                     html.Append("   <td data-title='Mã' class='customer-name-link'>" + item.ProductSKU + "</td>");
-                    html.Append("   <td data-title='Giá sỉ'>" + string.Format("{0:N0}", item.RegularPrice) + "</td>");
+                    html.Append("   <td data-title='Giá sỉ'>" + string.Format("{0:N0}", item.RegularPrice) + (item.OldPrice > 0 ? " <span class='old-price'>" + string.Format("{0:N0}", item.OldPrice) + "</span>" : "") + "</td>");
                     if (acc.RoleID == 0)
                     {
                         html.Append("   <td data-title='Giá vốn'>" + string.Format("{0:N0}", item.CostOfGood) + "</td>");

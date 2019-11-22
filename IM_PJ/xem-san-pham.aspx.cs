@@ -164,6 +164,7 @@ namespace IM_PJ
                     lbProductStock.Text = "0";
                 }
 
+                lbOldPrice.Text = string.Format("{0:N0}", p.Old_Price);
                 lbRegularPrice.Text = string.Format("{0:N0}", p.Regular_Price);
 
                 ltrCostOfGood.Text = "";

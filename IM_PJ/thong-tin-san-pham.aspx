@@ -264,6 +264,15 @@
                             </div>
                             <div class="form-row">
                                 <div class="row-left">
+                                    Giá cũ chưa sale
+                                    <asp:RequiredFieldValidator ID="RequiredFieldValidator1" runat="server" ControlToValidate="pOld_Price" ForeColor="Red" ErrorMessage="(*)" Display="Dynamic" SetFocusOnError="true"></asp:RequiredFieldValidator>
+                                </div>
+                                <div class="row-right">
+                                    <asp:TextBox type="number" min="0" autocomplete="off" ID="pOld_Price" runat="server" CssClass="form-control" placeholder="Giá sỉ cũ chưa sale"></asp:TextBox>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="row-left">
                                     Giá sỉ
                                     <asp:RequiredFieldValidator ID="RequiredFieldValidator3" runat="server" ControlToValidate="pRegular_Price" ForeColor="Red" ErrorMessage="(*)" Display="Dynamic" SetFocusOnError="true"></asp:RequiredFieldValidator>
                                 </div>
@@ -515,6 +524,7 @@
                     var materials = $("#<%=txtMaterials.ClientID%>").val();
                     var maximum = $("#<%=pMaximumInventoryLevel.ClientID%>").val();
                     var minimum = $("#<%=pMinimumInventoryLevel.ClientID%>").val();
+                    var giacu = $("#<%=pOld_Price.ClientID%>").val();
                     var giasi = $("#<%=pRegular_Price.ClientID%>").val();
                     var giavon = $("#<%=pCostOfGood.ClientID%>").val();
                     var giale = $("#<%=pRetailPrice.ClientID%>").val();
@@ -550,6 +560,10 @@
                     else if (parseFloat(giasi) < parseFloat(giavon)) {
                         $("#<%=pRegular_Price.ClientID%>").focus();
                         swal("Thông báo", "Gía sỉ không được thấp hơn giá vốn", "error");
+                    }
+                    else if (parseFloat(giacu) > 0 && parseFloat(giacu) < parseFloat(giasi)) {
+                        $("#<%=pOld_Price.ClientID%>").focus();
+                        swal("Thông báo", "Giá cũ chưa sale không được thấp hơn giá sỉ", "error");
                     }
                     else if (parseFloat(giasi) > parseFloat(giale)) {
                         $("#<%=pRetailPrice.ClientID%>").focus();
@@ -701,6 +715,7 @@
                     var materials = $("#<%=txtMaterials.ClientID%>").val();
                     var maximum = $("#<%=pMaximumInventoryLevel.ClientID%>").val();
                     var minimum = $("#<%=pMinimumInventoryLevel.ClientID%>").val();
+                    var giacu = $("#<%=pOld_Price.ClientID%>").val();
                     var giasi = $("#<%=pRegular_Price.ClientID%>").val();
                     var giavon = $("#<%=pCostOfGood.ClientID%>").val();
                     var giale = $("#<%=pRetailPrice.ClientID%>").val();
@@ -733,6 +748,10 @@
                     else if (parseFloat(giasi) < parseFloat(giavon)) {
                         $("#<%=pRegular_Price.ClientID%>").focus();
                         swal("Thông báo", "Giá sỉ không được thấp hơn giá vốn", "error");
+                    }
+                    else if (parseFloat(giacu) > 0 && parseFloat(giacu) < parseFloat(giasi)) {
+                        $("#<%=pOld_Price.ClientID%>").focus();
+                        swal("Thông báo", "Giá cũ chưa sale không được thấp hơn giá sỉ", "error");
                     }
                     else if (parseFloat(giasi) > parseFloat(giale)) {
                         $("#<%=pRetailPrice.ClientID%>").focus();

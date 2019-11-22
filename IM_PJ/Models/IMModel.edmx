@@ -767,6 +767,7 @@
           <Property Name="Slug" Type="varchar" MaxLength="255" />
           <Property Name="Color" Type="nchar" MaxLength="30" />
           <Property Name="PreOrder" Type="bit" Nullable="false" />
+          <Property Name="Old_Price" Type="float" />
         </EntityType>
         <EntityType Name="tbl_ProductImage">
           <Key>
@@ -1847,6 +1848,7 @@
           <Property Name="Slug" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
           <Property Name="Color" Type="String" MaxLength="30" FixedLength="true" Unicode="true" />
           <Property Name="PreOrder" Type="Boolean" Nullable="false" />
+          <Property Name="Old_Price" Type="Double" />
         </EntityType>
         <EntityType Name="tbl_ProductImage">
           <Key>
@@ -2968,6 +2970,7 @@
                 <ScalarProperty Name="Slug" ColumnName="Slug" />
                 <ScalarProperty Name="Color" ColumnName="Color" />
                 <ScalarProperty Name="PreOrder" ColumnName="PreOrder" />
+                <ScalarProperty Name="Old_Price" ColumnName="Old_Price" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

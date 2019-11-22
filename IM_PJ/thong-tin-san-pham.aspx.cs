@@ -144,6 +144,7 @@ namespace IM_PJ
                     pContent.Content = p.ProductContent;
                     txtProductSKU.Text = p.ProductSKU;
 
+                    pOld_Price.Text = p.Old_Price.ToString();
                     pRegular_Price.Text = p.Regular_Price.ToString();
                     pCostOfGood.Text = p.CostOfGood.ToString();
                     pRetailPrice.Text = p.Retail_Price.ToString();
@@ -289,6 +290,7 @@ namespace IM_PJ
                 double ProductStock = 0;
                 int StockStatus = 0;
                 bool ManageStock = true;
+                double Old_Price = Convert.ToDouble(pOld_Price.Text);
                 double Regular_Price = Convert.ToDouble(pRegular_Price.Text);
                 double CostOfGood = Convert.ToDouble(pCostOfGood.Text);
                 double Retail_Price = Convert.ToDouble(pRetailPrice.Text);
@@ -396,7 +398,8 @@ namespace IM_PJ
                     MaximumInventoryLevel = MaximumInventoryLevel,
                     ProductImageClean = ProductImageClean,
                     Color = mainColor,
-                    PreOrder = preOrder
+                    PreOrder = preOrder,
+                    Old_Price = Old_Price
                 });
 
                 // Upload image gallery

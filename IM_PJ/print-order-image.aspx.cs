@@ -109,7 +109,7 @@ namespace IM_PJ
                                     ProductImage = product.ProductImage;
                                 }
                                 Print += "<td><image src='" + Thumbnail.getURL(ProductImage, Thumbnail.Size.Large) + "' /></td> ";
-                                Print += "<td><strong>" + SKU + "</strong> - " + PJUtils.Truncate(ProductName, 30) + "</td> ";
+                                Print += "<td><strong>" + SKU + "</strong> - " + (product.Old_Price > 0 ? "<span class='sale-icon'>SALE</span> " : "") + PJUtils.Truncate(ProductName, 30) + "</td> ";
                             }
                         }
                         else
@@ -133,7 +133,7 @@ namespace IM_PJ
                                 }
 
                                 Print += "<td id='" + parent_product.ProductSKU + "'><image src='" + Thumbnail.getURL(ProductImage, Thumbnail.Size.Large) + "' /></td>";
-                                Print += "<td><p><strong>" + SKU + "</strong> - " + PJUtils.Truncate(ProductName, 30) + "</p><p class=\"variable\">" + item.ProductVariableDescrition.Replace("|", ". ") + "</p></td> ";
+                                Print += "<td><p><strong>" + SKU + "</strong> - " + (parent_product.Old_Price > 0 ? "<span class='sale-icon'>SALE</span> " : "") + PJUtils.Truncate(ProductName, 30) + "</p><p class='variable'>" + item.ProductVariableDescrition.Replace("|", ". ") + "</p></td> ";
                             }
                         }
 
@@ -157,18 +157,18 @@ namespace IM_PJ
                             Print += "</div>";
                             Print += "</div>";
 
-                            Print += "<div class=\"print-order-image\">";
-                            Print += "<div class=\"all print print-" + print + "\">";
-                            Print += "<div class=\"body\">";
-                            Print += "<div class=\"table-2\">";
+                            Print += "<div class='print-order-image'>";
+                            Print += "<div class='all print print-" + print + "'>";
+                            Print += "<div class='body'>";
+                            Print += "<div class='table-2'>";
                             Print += "<table>";
                             Print += "<colgroup>";
-                            Print += "<col class=\"order-item\" />";
-                            Print += "<col class=\"image\" />";
-                            Print += "<col class=\"name\" />";
-                            Print += "<col class=\"quantity\" />";
-                            Print += "<col class=\"price\" />";
-                            Print += "<col class=\"subtotal\"/>";
+                            Print += "<col class='order-item' />";
+                            Print += "<col class='image' />";
+                            Print += "<col class='name' />";
+                            Print += "<col class='quantity' />";
+                            Print += "<col class='price' />";
+                            Print += "<col class='subtotal' />";
                             Print += "</colgroup>";
                             Print += "<thead>";
                             Print += "<th>#</th>";
@@ -523,6 +523,20 @@ namespace IM_PJ
                                 address = agent.AgentAddress;
                                 phone = agent.AgentPhone;
                             }
+
+                            var acc = AccountController.GetByUsername(order.CreatedBy);
+                            if (acc != null)
+                            {
+                                var accountInfo = AccountInfoController.GetByUserID(acc.ID);
+                                if (accountInfo != null)
+                                {
+                                    if (!string.IsNullOrEmpty(accountInfo.Phone))
+                                    {
+                                        phone = accountInfo.Phone;
+                                    }
+                                }
+                            }
+
                             shtml += "<div class=\"logo\"><img src=\"App_Themes/Ann/image/logo.png\" /></div>";
                             shtml += "<div class=\"info\">";
 

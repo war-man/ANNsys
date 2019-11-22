@@ -754,17 +754,17 @@
                     var listUser = $("#<%=hdfListUser.ClientID%>").val();
 
                     var list = listUser.split('|');
-                    var item = "<select id=\"listUser\" class=\"form-control fjx\">";
+                    var item = "<select id='listUser' class='form-control fjx'>";
                     for (var i = 0; i < list.length - 1; i++) {
-                        item += "<option value=\"" + list[i] + "\">" + list[i] + "</option>";
+                        item += "<option value='" + list[i] + "'>" + list[i] + "</option>";
                     }
                     item += "</select>";
 
                     var html = "";
-                    html += "<div class=\"form-group\">";
+                    html += "<div class='form-group'>";
                     html += "<label>Chọn nhân viên khác: </label>";
                     html += item;
-                    html += "<a href=\"javascript: ;\" class=\"btn link-btn\" style=\"background-color:#f87703;float:right;color:#fff;\" onclick=\"setNewUser()\">Chọn</a>";
+                    html += "<a href='javascript:;' class='btn link-btn' style='background-color:#f87703;float:right;color:#fff;' onclick='setNewUser()'>Chọn</a>";
                     html += "</div>";
                     showPopup(html);
                 }

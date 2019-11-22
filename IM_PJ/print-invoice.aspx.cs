@@ -95,7 +95,7 @@ namespace IM_PJ
                             if (product != null)
                             {
                                 ProductName = product.ProductTitle;
-                                Print += "<td colspan='3'>" + t + "&ensp;<strong>" + SKU + "</strong> - " + PJUtils.Truncate(ProductName, 32) + "</td> ";
+                                Print += "<td colspan='3'>" + t + "&ensp;<strong>" + SKU + "</strong> - " + (product.Old_Price > 0 ? "<span class='sale-icon'>SALE</span> " : "") + PJUtils.Truncate(ProductName, 32) + "</td> ";
                             }
                         }
                         else
@@ -108,7 +108,7 @@ namespace IM_PJ
                                 {
                                     ProductName = parent_product.ProductTitle;
                                 }
-                                Print += "<td colspan='3'>" + t + "&ensp;<strong>" + SKU + "</strong> - " + PJUtils.Truncate(ProductName, 40) + " - " + item.ProductVariableDescrition.Replace("|", ". ") + "</td> ";
+                                Print += "<td colspan='3'>" + t + "&ensp;<strong>" + SKU + "</strong> - " + (parent_product.Old_Price > 0 ? "<span class='sale-icon'>SALE</span> " : "") + PJUtils.Truncate(ProductName, 40) + " - " + item.ProductVariableDescrition.Replace("|", ". ") + "</td> ";
                             }
                         }
                         Print += "</tr>";

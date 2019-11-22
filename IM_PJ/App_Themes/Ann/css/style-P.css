@@ -1,4 +1,15 @@
-﻿
+﻿.sale-icon {
+    background: #F44336;
+    color: #fff;
+    padding: 5px 6px;
+    white-space: nowrap;
+    font-size: 12px;
+    border-radius: 6px;
+}
+.old-price {
+    text-decoration: line-through;
+    color: #cccccc;
+}
 .font-green {
     background: #73a724;
     color: #fff;

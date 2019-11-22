@@ -347,6 +347,7 @@ namespace IM_PJ
                             string mainColor = ddlColor.SelectedValue.Trim();
                             int a = 1;
                             var preOrder = ddlPreOrder.SelectedValue == "1" ? true : false;
+                            double Old_Price = Convert.ToDouble(pOld_Price.Text);
 
                             double MinimumInventoryLevel = pMinimumInventoryLevel.Text.ToInt(0);
                             double MaximumInventoryLevel = pMaximumInventoryLevel.Text.ToInt(0);
@@ -385,7 +386,8 @@ namespace IM_PJ
                                 ProductStyle = a,
                                 ShowHomePage = ShowHomePage,
                                 Color = mainColor,
-                                PreOrder = preOrder
+                                PreOrder = preOrder,
+                                Old_Price = Old_Price
                             });
 
                             //Phần thêm ảnh đại diện sản phẩm

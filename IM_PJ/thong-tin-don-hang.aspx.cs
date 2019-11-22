@@ -326,6 +326,7 @@ namespace IM_PJ
                             int ProductType = Convert.ToInt32(item.ProductType);
                             double ItemPrice = Convert.ToDouble(item.Price);
                             string SKU = item.SKU;
+                            double Giacu = 0;
                             double Giabansi = 0;
                             double Giabanle = 0;
                             string stringGiabansi = "";
@@ -352,11 +353,13 @@ namespace IM_PJ
 
                                     if (customerType == 1)
                                     {
+                                        Giacu = 0;
                                         Giabansi = Convert.ToDouble(product.Regular_Price);
                                         Giabanle = ItemPrice;
                                     }
                                     else
                                     {
+                                        Giacu = Convert.ToDouble(product.Old_Price);
                                         Giabansi = ItemPrice;
                                         Giabanle = Convert.ToDouble(product.Retail_Price);
                                     }
@@ -427,8 +430,16 @@ namespace IM_PJ
                                     if (_product != null)
                                     {
                                         ProductName = _product.ProductTitle;
+
+                                        if (customerType == 1)
+                                        {
+                                            Giacu = 0;
+                                        }
+                                        else
+                                        {
+                                            Giacu = Convert.ToDouble(_product.Old_Price);
+                                        }
                                     }
-                                        
 
                                     if (!string.IsNullOrEmpty(productvariable.Image))
                                     {
@@ -473,7 +484,7 @@ namespace IM_PJ
                             html.AppendLine(String.Format("        data-quantitymaininstock='{0}'>", QuantityMainInstock));
                             html.AppendLine(String.Format("    <td class='order-item'>{0}</td>", orderitem));
                             html.AppendLine(String.Format("    <td class='image-item'>{0}</td>", ProductImage));
-                            html.AppendLine(String.Format("    <td class='name-item'>{0}</td>", "<a href='/xem-san-pham?id=" + item.ProductID + "&variableid=" + item.ProductVariableID + "' target='_blank'>" + ProductName + "</a>"));
+                            html.AppendLine(String.Format("    <td class='name-item'>{0}</td>", "<a href='/xem-san-pham?id=" + item.ProductID + "&variableid=" + item.ProductVariableID + "' target='_blank'>" + (Giacu > 0 ? "<span class='sale-icon'>SALE</span> " : "") + ProductName + "</a>"));
                             html.AppendLine(String.Format("    <td class='sku-item'>{0}</td>", SKU));
                             html.AppendLine(String.Format("    <td class='variable-item'>{0}</td>", ProductVariable));
                             html.AppendLine(String.Format("    <td class='price-item gia-san-pham' data-price='{0}'>{0:N0}</td>", ItemPrice));

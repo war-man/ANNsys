@@ -64,6 +64,7 @@ namespace IM_PJ.Controllers
                 ui.Slug = checkSlug(Slug.ConvertToSlug(product.ProductTitle));
                 ui.Color = product.Color;
                 ui.PreOrder = product.PreOrder;
+                ui.Old_Price = product.Old_Price;
 
                 dbe.tbl_Product.Add(ui);
                 dbe.SaveChanges();
@@ -105,6 +106,7 @@ namespace IM_PJ.Controllers
                     ui.UnSignedTitle = UnSign.convert(product.ProductTitle);
                     ui.Color = product.Color;
                     ui.PreOrder = product.PreOrder;
+                    ui.Old_Price = product.Old_Price;
 
                     int kq = dbe.SaveChanges();
                     return kq.ToString();
@@ -1475,6 +1477,8 @@ namespace IM_PJ.Controllers
 
                 entity.TotalProductInstockQuantityLeft = quantityLeft;
 
+                if (reader["Old_Price"] != DBNull.Value)
+                    entity.OldPrice = Convert.ToDouble(reader["Old_Price"].ToString());
                 if (reader["Regular_Price"] != DBNull.Value)
                     entity.RegularPrice = Convert.ToDouble(reader["Regular_Price"].ToString());
                 if (reader["CostOfGood"] != DBNull.Value)
@@ -2979,6 +2983,7 @@ namespace IM_PJ.Controllers
             public string ProductInstockStatus { get; set; }
             public double TotalProductInstockQuantityLeft { get; set; }
             public string ProductContent { get; set; }
+            public double OldPrice { get; set; }
             public double RegularPrice { get; set; }
             public double CostOfGood { get; set; }
             public double RetailPrice { get; set; }

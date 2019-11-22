@@ -1,4 +1,12 @@
-﻿.btn-violet:hover, .btn-violet:active {
+﻿.sale-icon {
+    background: #F44336;
+    color: #fff;
+    padding: 5px 6px;
+    white-space: nowrap;
+    font-size: 28px;
+    border-radius: 6px;
+}
+.btn-violet:hover, .btn-violet:active {
     background-color: #585858!important;
 }
 .customer-name {

@@ -116,6 +116,14 @@
                             </div>
                             <div class="form-row">
                                 <div class="row-left">
+                                    Giá cũ chưa sale
+                                </div>
+                                <div class="row-right">
+                                    <asp:Label ID="lbOldPrice" runat="server" CssClass="form-control"></asp:Label>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="row-left">
                                     Giá sỉ
                                 </div>
                                 <div class="row-right">
