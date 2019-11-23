@@ -2,6 +2,8 @@
 
 <%@ Register Assembly="Telerik.Web.UI" Namespace="Telerik.Web.UI" TagPrefix="telerik" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
+    <link type="text/css" rel="stylesheet" href="Content/bootstrap-tagsinput.css" />
+
     <style>
         .btn.download-btn {
             background-color: #000;
@@ -152,6 +154,14 @@
                             </div>
                             <div class="form-row">
                                 <div class="row-left">
+                                    Tags
+                                </div>
+                                <div class="row-right">
+                                    <input type="text" id="txtTag" data-role="tagsinput" />
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="row-left">
                                     Nội dung
                                 </div>
                                 <div class="row-right">
@@ -195,10 +205,6 @@
             </div>
         </div>
 
-        <asp:HiddenField ID="hdfTempVariable" runat="server" />
-        <asp:HiddenField ID="hdfVariableFull" runat="server" />
-        <asp:HiddenField ID="hdfTable" runat="server" />
-
         <!-- Modal Create Register -->
         <div class="modal fade" id="modalUpdateProductSKU" role="dialog">
             <div class="modal-dialog">
@@ -233,12 +239,22 @@
                 </div>
             </div>
         </div>
+
+        <asp:HiddenField ID="hdfTempVariable" runat="server" />
+        <asp:HiddenField ID="hdfVariableFull" runat="server" />
+        <asp:HiddenField ID="hdfTable" runat="server" />
+        <asp:HiddenField ID="hdfTags" runat="server" />
     </main>
 
-    <script src="/App_Themes/Ann/js/copy-product-info.js?v=15082019"></script>
+    <script type="text/javascript" src="Scripts/bootstrap-tagsinput.min.js"></script>
+
     <script src="/App_Themes/Ann/js/sync-product.js?v=01082019"></script>
+    <script src="/App_Themes/Ann/js/copy-product-info.js?v=15082019"></script>pt>
     <script src="/App_Themes/Ann/js/download-product-image.js?v=17072019"></script>
     <script>
+        // init Input Tag
+        let txtTagDOM = $('#txtTag');
+
         $(document).ready(() => {
             $("a[data-target='#modalUpdateProductSKU']").click(e => {
                 $("#<%=txtNewSKU.ClientID%>").focus();
@@ -296,6 +312,12 @@
                     }
                 });
             });
+
+            // Init Tags
+            txtTagDOM.tagsinput('add', $("#<%=hdfTags.ClientID%>").val());
+            let divBootstrapTagsinput = $('.bootstrap-tagsinput');
+            divBootstrapTagsinput.find('span[data-role="remove"]').remove();
+            divBootstrapTagsinput.find('input[type="text"]').remove();
         });
 
         function deleteProduct(id)

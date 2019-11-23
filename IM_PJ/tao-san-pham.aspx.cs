@@ -10,6 +10,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Script.Serialization;
+using System.Web.Script.Services;
 using System.Web.Services;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -361,7 +362,8 @@ namespace IM_PJ
 
                             int ShowHomePage = ddlShowHomePage.SelectedValue.ToInt(0);
 
-                            string kq = ProductController.Insert(new tbl_Product() {
+                            var prodNew = new tbl_Product()
+                            {
                                 CategoryID = cateID,
                                 ProductOldID = 0,
                                 ProductTitle = ProductTitle,
@@ -389,6 +391,24 @@ namespace IM_PJ
                                 PreOrder = preOrder,
                                 Old_Price = Old_Price
                             });
+
+                            string kq = ProductController.Insert(prodNew);
+                            prodNew.ID = Convert.ToInt32(kq);
+
+                            var tagIDList = hdfTags.Value.Split(',');
+
+                            foreach (var item in tagIDList)
+                            {
+                                ProductTagController.insert(new ProductTag()
+                                {
+                                    TagID = Convert.ToInt32(item),
+                                    ProductID = prodNew.ID,
+                                    ProductVariableID = 0,
+                                    SKU = prodNew.ProductSKU,
+                                    CreatedBy = acc.ID,
+                                    CreatedDate = currentDate
+                                });
+                            }
 
                             //Phần thêm ảnh đại diện sản phẩm
                             string path = "/uploads/images/";
@@ -542,6 +562,29 @@ namespace IM_PJ
                 }
             }
 
+        [WebMethod]
+        [ScriptMethod(ResponseFormat = ResponseFormat.Json, UseHttpGet = true, XmlSerializeString = false)]
+        public static List<TagModel> GetTags(string tagName)
+        {
+            var tags = TagController.get(tagName);
+
+            if (tags.Count() > 0)
+            {
+                return tags;
+            }
+            else
+            {
+                var username = HttpContext.Current.Request.Cookies["usernameLoginSystem"].Value;
+                var acc = AccountController.GetByUsername(username);
+
+                var tagNew = TagController.insert(new Tag()
+                {
+                    Name = tagName,
+                    CreatedBy = acc == null ? acc.ID : 0,
+                    CreatedDate = DateTime.Now,
+                });
+                return new List<TagModel>() { new TagModel() { id = tagNew.ID, name = tagNew.Name }};
+            }
         }
     }
 }

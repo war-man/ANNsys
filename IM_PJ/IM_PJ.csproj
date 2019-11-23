@@ -516,6 +516,8 @@
     <Content Include="chuyen-ke.aspx" />
     <Content Include="Content\bootstrap-datetimepicker.css" />
     <Content Include="Content\bootstrap-datetimepicker.min.css" />
+    <Content Include="Content\bootstrap-tagsinput-typeahead.css" />
+    <Content Include="Content\bootstrap-tagsinput.css" />
     <Content Include="Content\bootstrap-theme.css" />
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap-toggle.css" />
@@ -524,6 +526,7 @@
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\bootstrap2-toggle.css" />
     <Content Include="Content\bootstrap2-toggle.min.css" />
+    <Content Include="Content\typeahead.css" />
     <Content Include="kiem-ke.aspx" />
     <Content Include="kh.aspx" />
     <Content Include="Models\IMModel.Context.tt">
@@ -539,10 +542,18 @@
     <Content Include="san-pham-theo-ke.aspx" />
     <Content Include="nuoc-hoa.aspx" />
     <Content Include="cron-job-product-status.aspx" />
+    <Content Include="Scripts\bloodhound.js" />
+    <Content Include="Scripts\bootstrap-tagsinput-angular.js" />
+    <Content Include="Scripts\bootstrap-tagsinput-angular.min.js" />
+    <Content Include="Scripts\bootstrap-tagsinput.js" />
+    <Content Include="Scripts\bootstrap-tagsinput.min.js" />
     <Content Include="Scripts\bootstrap-toggle.js" />
     <Content Include="Scripts\bootstrap-toggle.min.js" />
     <Content Include="Scripts\bootstrap2-toggle.js" />
     <Content Include="Scripts\bootstrap2-toggle.min.js" />
+    <Content Include="Scripts\typeahead.bundle.js" />
+    <Content Include="Scripts\typeahead.bundle.min.js" />
+    <Content Include="Scripts\typeahead.jquery.js" />
     <Content Include="thong-ke-khach-hang.aspx" />
     <Content Include="thong-ke-proship.aspx" />
     <Content Include="thong-ke-buu-dien.aspx" />
@@ -576,9 +587,12 @@
     <Content Include="Models\IMModel.edmx.diagram">
       <DependentUpon>IMModel.edmx</DependentUpon>
     </Content>
+    <Content Include="Content\bootstrap-tagsinput.less" />
     <None Include="Properties\PublishProfiles\ANN.pubxml" />
     <Content Include="Scripts\bootstrap2-toggle.min.js.map" />
     <Content Include="Scripts\bootstrap-toggle.min.js.map" />
+    <Content Include="Scripts\bootstrap-tagsinput.min.js.map" />
+    <Content Include="Scripts\bootstrap-tagsinput-angular.min.js.map" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
@@ -946,6 +960,7 @@
     <Compile Include="Controllers\CronJobController.cs" />
     <Compile Include="Controllers\DeliveryProshipController.cs" />
     <Compile Include="Controllers\DeliveryPostOfficeController.cs" />
+    <Compile Include="Controllers\ProductTagController.cs" />
     <Compile Include="Controllers\RegisterController.cs" />
     <Compile Include="Controllers\BankAccountController.cs" />
     <Compile Include="Controllers\BankController.cs" />
@@ -959,6 +974,7 @@
     <Compile Include="Controllers\RegisterProductController.cs" />
     <Compile Include="Controllers\SessionController.cs" />
     <Compile Include="Controllers\ShipperController.cs" />
+    <Compile Include="Controllers\TagController.cs" />
     <Compile Include="CronJob\RunScheduleProductStatus.cs" />
     <Compile Include="CronJob\CreateScheduleProductStatus.cs" />
     <Compile Include="kiem-ke.aspx.cs">
@@ -985,6 +1001,7 @@
     <Compile Include="Models\Common\DeliveryPostOfficeFilterModel.cs" />
     <Compile Include="Models\Common\DiscountGroupModel.cs" />
     <Compile Include="Models\Common\OrderModel.cs" />
+    <Compile Include="Models\Common\TagModel.cs" />
     <Compile Include="Models\CronJob.cs">
       <DependentUpon>IMModel.tt</DependentUpon>
     </Compile>
@@ -1038,6 +1055,9 @@
     <Compile Include="kh.aspx.designer.cs">
       <DependentUpon>kh.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Models\ProductTag.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\ReceivedProductHistory.cs">
       <DependentUpon>IMModel.tt</DependentUpon>
     </Compile>
@@ -1054,6 +1074,9 @@
       <DependentUpon>IMModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Shipper.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Tag.cs">
       <DependentUpon>IMModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\tbl_Account.cs">

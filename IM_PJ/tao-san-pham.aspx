@@ -3,6 +3,9 @@
 <%@ Register Assembly="Telerik.Web.UI" Namespace="Telerik.Web.UI" TagPrefix="telerik" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
+    <link type="text/css" rel="stylesheet" href="Content/bootstrap-tagsinput.css" />
+    <link type="text/css" rel="stylesheet" href="Content/bootstrap-tagsinput-typeahead.css" />
+    <link type="text/css" rel="stylesheet" href="Content/typeahead.css" />
     <style>
         .select2-container {
             width: 100%!important;
@@ -360,6 +363,25 @@
                             </div>
                             <div class="form-row">
                                 <div class="row-left">
+                                    Hàng Order
+                                </div>
+                                <div class="row-right">
+                                    <asp:DropDownList ID="ddlPreOrder" runat="server" CssClass="form-control">
+                                        <asp:ListItem Text="Khồng cần đặt hàng" Value="0"></asp:ListItem>
+                                        <asp:ListItem Text="Phải đặt hàng" Value="1"></asp:ListItem>
+                                    </asp:DropDownList>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="row-left">
+                                    Tags
+                                </div>
+                                <div class="row-right">
+                                    <input type="text" id="txtTag" class="typeahead" data-role="tagsinput" />
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="row-left">
                                     Nội dung
                                 </div>
                                 <div class="row-right">
@@ -445,6 +467,7 @@
                 </div>
             </div>
         </div>
+
         <asp:HiddenField ID="hdfTempVariable" runat="server" />
         <asp:HiddenField ID="hdfVariableFull" runat="server" />
         <asp:HiddenField ID="hdfVariableListInsert" runat="server" />
@@ -454,10 +477,49 @@
         <asp:HiddenField ID="hdfMinimum" runat="server" />
         <asp:HiddenField ID="hdfParentID" runat="server" />
         <asp:HiddenField ID="hdfUserRole" runat="server" />
+        <asp:HiddenField ID="hdfTags" runat="server" />
     </main>
 
     <telerik:RadCodeBlock runat="server">
+        <script type="text/javascript" src="Scripts/bootstrap-tagsinput.min.js"></script>
+        <script type="text/javascript" src="Scripts/typeahead.bundle.min.js"></script>
+        <script type="text/javascript" src="Scripts/typeahead.jquery.js"></script>
         <script type="text/javascript">
+            // init Input Tag
+            let tags = new Bloodhound({
+                datumTokenizer: (tag) => {
+                    return Bloodhound.tokenizers.whitespace(tag.name);
+                },
+                queryTokenizer: Bloodhound.tokenizers.whitespace,
+                remote: {
+                    url: '/tao-san-pham.aspx/GetTags?tagName="%QUERY"',
+                    filter: (response) => {
+                        return $.map(response.d, function (item) {
+                            return {
+                                id: item.id,
+                                name: item.name
+                            };
+                        });
+                    },
+                    ajax: {
+                        type: "GET",
+                        contentType: "application/json; charset=utf-8"
+                    }
+                }
+            });
+            tags.initialize();
+
+            let txtTagDOM = $('#txtTag');
+            txtTagDOM.tagsinput({
+                itemValue: 'id',
+                itemText: 'name',
+                trimValue: true,
+                typeaheadjs: {
+                    name: 'tags',
+                    displayKey: 'name',
+                    source: tags.ttAdapter()
+                }
+            });
 
             function initdropdown() {
                 $("#<%=ddlVariableValue.ClientID%>").select2();
@@ -498,7 +560,7 @@
                 });
 
             });
-            
+
             function redirectTo(ID) {
                 window.location.href = "/xem-san-pham?id=" +ID;
             }
@@ -1001,6 +1063,8 @@
                                 swal("Thông báo", "Hãy nhập đầy đủ thông tin biến thể.", "error");
                             }
                             else {
+                                // Insert tagID list into hdfTags
+                                $("#<%=hdfTags.ClientID%>").val(txtTagDOM.val());
                                 $("#<%=hdfVariableListInsert.ClientID%>").val(listv);
 
                                 $("#<%=btnSubmit.ClientID%>").click();
@@ -1069,6 +1133,8 @@
                     else {
                         HoldOn.open();
                         if (!isBlank(title) && !isBlank(SKU) && !isBlank(materials) && !isBlank(giasi) && !isBlank(giavon) && !isBlank(giale)) {
+                            // Insert tagID list into hdfTags
+                            $("#<%=hdfTags.ClientID%>").val(txtTagDOM.val());
                             $("#<%=hdfVariableListInsert.ClientID%>").val("");
                             $("#<%=btnSubmit.ClientID%>").click();
                         }
