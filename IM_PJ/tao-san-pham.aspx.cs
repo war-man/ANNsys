@@ -2,14 +2,17 @@
 using IM_PJ.Models;
 using IM_PJ.Utils;
 using MB.Extensions;
+using Newtonsoft.Json;
 using NHST.Bussiness;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Script.Serialization;
+using System.Web.Script.Services;
 using System.Web.Services;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -347,7 +350,7 @@ namespace IM_PJ
                             string mainColor = ddlColor.SelectedValue.Trim();
                             int a = 1;
                             var preOrder = ddlPreOrder.SelectedValue == "1" ? true : false;
-                            double Old_Price = Convert.ToDouble(pOld_Price.Text);
+                            double Old_Price = String.IsNullOrEmpty(pOld_Price.Text) ? 0 : Convert.ToDouble(pOld_Price.Text);
 
                             double MinimumInventoryLevel = pMinimumInventoryLevel.Text.ToInt(0);
                             double MaximumInventoryLevel = pMaximumInventoryLevel.Text.ToInt(0);
@@ -361,7 +364,8 @@ namespace IM_PJ
 
                             int ShowHomePage = ddlShowHomePage.SelectedValue.ToInt(0);
 
-                            string kq = ProductController.Insert(new tbl_Product() {
+                            var prodNew = new tbl_Product()
+                            {
                                 CategoryID = cateID,
                                 ProductOldID = 0,
                                 ProductTitle = ProductTitle,
@@ -388,7 +392,44 @@ namespace IM_PJ
                                 Color = mainColor,
                                 PreOrder = preOrder,
                                 Old_Price = Old_Price
-                            });
+                            };
+
+                            string kq = ProductController.Insert(prodNew);
+                            prodNew.ID = Convert.ToInt32(kq);
+
+                            if (!String.IsNullOrEmpty(hdfTags.Value))
+                            {
+                                var tagList = JsonConvert.DeserializeObject<List<TagModel>>(hdfTags.Value);
+
+                                if (tagList.Count > 0)
+                                {
+                                    // Get tag new
+                                    var tagNew = TagController.insert(tagList, acc);
+
+                                    var productTag = tagList
+                                        .GroupJoin(
+                                            tagNew,
+                                            t => t.name.ToLower(),
+                                            n => n.Name.ToLower(),
+                                            (t, n) => new { t, n }
+                                        )
+                                        .SelectMany(
+                                            x => x.n.DefaultIfEmpty(),
+                                            (parent, child) => new ProductTag
+                                            {
+                                                TagID = child != null ? child.ID : parent.t.id,
+                                                ProductID = prodNew.ID,
+                                                ProductVariableID = 0,
+                                                SKU = prodNew.ProductSKU,
+                                                CreatedBy = acc.ID,
+                                                CreatedDate = currentDate
+                                            }
+                                        )
+                                        .ToList();
+
+                                    ProductTagController.insert(productTag);
+                                }
+                            }
 
                             //Phần thêm ảnh đại diện sản phẩm
                             string path = "/uploads/images/";
@@ -456,7 +497,7 @@ namespace IM_PJ
                                     ProductImageController.Insert(kq.ToInt(), IMG, false, currentDate, username);
                                 }
                             }
-                            
+
 
                             if (kq.ToInt(0) > 0)
                             {
@@ -500,7 +541,7 @@ namespace IM_PJ
                                                 Thumbnail.create(Server.MapPath(o), 240, 320);
                                                 Thumbnail.create(Server.MapPath(o), 350, 467);
                                             }
-                                            
+
                                             image = Path.GetFileName(Server.MapPath(o));
                                         }
 
@@ -532,16 +573,41 @@ namespace IM_PJ
                                     }
                                 }
 
-                                
-                                PJUtils.ShowMessageBoxSwAlertCallFunction("Tạo sản phẩm thành công", "s", true, "redirectTo("+ kq +")", Page);
+                                PJUtils.ShowMessageBoxSwAlertCallFunction("Tạo sản phẩm thành công", "s", true, "redirectTo(" + kq + ")", Page);
                             }
                         }
 
                     }
-                   
+
                 }
             }
+        }
 
+        [WebMethod]
+        [ScriptMethod(ResponseFormat = ResponseFormat.Json, UseHttpGet = true, XmlSerializeString = false)]
+        public static List<TagModel> GetTags(string tagName)
+        {
+            var now = DateTime.Now;
+            var textInfo = new CultureInfo("vi-VN", false).TextInfo;
+            var tags = new List<TagModel>();
+            var tagData = TagController.get(tagName);
+
+            if (tagData.Where(x => x.name == textInfo.ToTitleCase(tagName)).Count() > 0)
+            {
+                tags.AddRange(tagData);
+            }
+            else
+            {
+                tags.Add(new TagModel()
+                {
+                    id = 0,
+                    name = textInfo.ToTitleCase(tagName),
+                    slug = String.Format("tag-new-{0:YYYYMMDDhhmmss}", now)
+                });
+                tags.AddRange(tagData);
+            }
+
+            return tags;
         }
     }
 }

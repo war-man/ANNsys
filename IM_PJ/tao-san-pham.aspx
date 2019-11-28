@@ -3,6 +3,9 @@
 <%@ Register Assembly="Telerik.Web.UI" Namespace="Telerik.Web.UI" TagPrefix="telerik" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
+    <link type="text/css" rel="stylesheet" href="Content/bootstrap-tagsinput.css" />
+    <link type="text/css" rel="stylesheet" href="Content/bootstrap-tagsinput-typeahead.css" />
+    <link type="text/css" rel="stylesheet" href="Content/typeahead.css" />
     <style>
         .select2-container {
             width: 100%!important;
@@ -107,6 +110,22 @@
             margin: 15px 0;
             border: dotted 1px #ccc;
             padding: 15px 0;
+        }
+
+        .bootstrap-tagsinput {
+            width: 100%;
+        }
+
+        .bootstrap-tagsinput .label {
+            font-size: 100%;
+        }
+
+        .bootstrap-tagsinput .twitter-typeahead input {
+            margin-top: 5px;
+        }
+
+        .bootstrap-tagsinput input {
+            width: 100%
         }
 
         @media (max-width: 769px) {
@@ -299,7 +318,6 @@
                             <div class="form-row">
                                 <div class="row-left">
                                     Giá cũ chưa sale
-                                    <asp:RequiredFieldValidator ID="RequiredFieldValidator6" runat="server" ControlToValidate="pOld_Price" ForeColor="Red" ErrorMessage="(*)" Display="Dynamic" SetFocusOnError="true"></asp:RequiredFieldValidator>
                                 </div>
                                 <div class="row-right">
                                     <asp:TextBox type="number" min="0" autocomplete="off" ID="pOld_Price" runat="server" CssClass="form-control" placeholder="Giá sỉ cũ chưa sale"></asp:TextBox>
@@ -356,6 +374,14 @@
                                         <asp:ListItem Text="Không" Value="0"></asp:ListItem>
                                         <asp:ListItem Text="Có" Value="1"></asp:ListItem>
                                     </asp:DropDownList>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="row-left">
+                                    Tags
+                                </div>
+                                <div class="row-right">
+                                    <input type="text" id="txtTag" class="typeahead" data-role="tagsinput" />
                                 </div>
                             </div>
                             <div class="form-row">
@@ -445,6 +471,7 @@
                 </div>
             </div>
         </div>
+
         <asp:HiddenField ID="hdfTempVariable" runat="server" />
         <asp:HiddenField ID="hdfVariableFull" runat="server" />
         <asp:HiddenField ID="hdfVariableListInsert" runat="server" />
@@ -454,10 +481,50 @@
         <asp:HiddenField ID="hdfMinimum" runat="server" />
         <asp:HiddenField ID="hdfParentID" runat="server" />
         <asp:HiddenField ID="hdfUserRole" runat="server" />
+        <asp:HiddenField ID="hdfTags" runat="server" />
     </main>
 
     <telerik:RadCodeBlock runat="server">
+        <script type="text/javascript" src="Scripts/bootstrap-tagsinput.min.js"></script>
+        <script type="text/javascript" src="Scripts/typeahead.bundle.min.js"></script>
+        <script type="text/javascript" src="Scripts/typeahead.jquery.js"></script>
         <script type="text/javascript">
+            // init Input Tag
+            let tags = new Bloodhound({
+                datumTokenizer: (tag) => {
+                    return Bloodhound.tokenizers.whitespace(tag.name);
+                },
+                queryTokenizer: Bloodhound.tokenizers.whitespace,
+                remote: {
+                    url: '/tao-san-pham.aspx/GetTags?tagName="%QUERY"',
+                    filter: (response) => {
+                        return $.map(response.d, function (item) {
+                            return {
+                                id: item.id,
+                                name: item.name,
+                                slug: item.slug,
+                            };
+                        });
+                    },
+                    ajax: {
+                        type: "GET",
+                        contentType: "application/json; charset=utf-8"
+                    }
+                }
+            });
+            tags.initialize();
+
+            let txtTagDOM = $('#txtTag');
+            txtTagDOM.tagsinput({
+                itemValue: 'slug',
+                itemText: 'name',
+                trimValue: true,
+                typeaheadjs: {
+                    name: 'tags',
+                    displayKey: 'name',
+                    source: tags.ttAdapter()
+                }
+            });
 
             function initdropdown() {
                 $("#<%=ddlVariableValue.ClientID%>").select2();
@@ -498,7 +565,7 @@
                 });
 
             });
-            
+
             function redirectTo(ID) {
                 window.location.href = "/xem-san-pham?id=" +ID;
             }
@@ -905,7 +972,7 @@
                     var materials = $("#<%=txtMaterials.ClientID%>").val();
                     var maximum = $("#<%=pMaximumInventoryLevel.ClientID%>").val();
                     var minimum = $("#<%=pMinimumInventoryLevel.ClientID%>").val();
-                    var giacu = $("#<%=pOld_Price.ClientID%>").val();
+                    var giacu = $("#<%=pOld_Price.ClientID%>").val() || 0;
                     var giasi = $("#<%=pRegular_Price.ClientID%>").val();
                     var giavon = $("#<%=pCostOfGood.ClientID%>").val();
                     var giale = $("#<%=pRetailPrice.ClientID%>").val();
@@ -1001,6 +1068,8 @@
                                 swal("Thông báo", "Hãy nhập đầy đủ thông tin biến thể.", "error");
                             }
                             else {
+                                // Insert tagID list into hdfTags
+                                $("#<%=hdfTags.ClientID%>").val(JSON.stringify(txtTagDOM.tagsinput('items')));
                                 $("#<%=hdfVariableListInsert.ClientID%>").val(listv);
 
                                 $("#<%=btnSubmit.ClientID%>").click();
@@ -1016,7 +1085,7 @@
                     var title = $("#<%=txtProductTitle.ClientID%>").val();
                     var SKU = $("#<%=txtProductSKU.ClientID%>").val();
                     var materials = $("#<%=txtMaterials.ClientID%>").val();
-                    var giacu = $("#<%=pOld_Price.ClientID%>").val();
+                    var giacu = $("#<%=pOld_Price.ClientID%>").val() || 0;
                     var giasi = $("#<%=pRegular_Price.ClientID%>").val();
                     var giavon = $("#<%=pCostOfGood.ClientID%>").val();
                     var giale = $("#<%=pRetailPrice.ClientID%>").val();
@@ -1069,6 +1138,8 @@
                     else {
                         HoldOn.open();
                         if (!isBlank(title) && !isBlank(SKU) && !isBlank(materials) && !isBlank(giasi) && !isBlank(giavon) && !isBlank(giale)) {
+                            // Insert tagID list into hdfTags
+                            $("#<%=hdfTags.ClientID%>").val(JSON.stringify(txtTagDOM.tagsinput('items')));
                             $("#<%=hdfVariableListInsert.ClientID%>").val("");
                             $("#<%=btnSubmit.ClientID%>").click();
                         }

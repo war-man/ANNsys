@@ -37,12 +37,14 @@ namespace IM_PJ.Models
         public virtual DbSet<DeliveryProship> DeliveryProships { get; set; }
         public virtual DbSet<Fee> Fees { get; set; }
         public virtual DbSet<FeeType> FeeTypes { get; set; }
+        public virtual DbSet<ProductTag> ProductTags { get; set; }
         public virtual DbSet<ReceivedProductHistory> ReceivedProductHistories { get; set; }
         public virtual DbSet<Register> Registers { get; set; }
         public virtual DbSet<RegisterProduct> RegisterProducts { get; set; }
         public virtual DbSet<Session> Sessions { get; set; }
         public virtual DbSet<ShelfManager> ShelfManagers { get; set; }
         public virtual DbSet<Shipper> Shippers { get; set; }
+        public virtual DbSet<Tag> Tags { get; set; }
         public virtual DbSet<tbl_Account> tbl_Account { get; set; }
         public virtual DbSet<tbl_AccountInfo> tbl_AccountInfo { get; set; }
         public virtual DbSet<tbl_Agent> tbl_Agent { get; set; }
