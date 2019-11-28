@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-    <Schema Namespace="inventorymanagementModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+      <Schema Namespace="inventorymanagementModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="Bank">
           <Key>
             <PropertyRef Name="ID" />
@@ -1105,7 +1105,8 @@
           <EntitySet Name="tbl_VariableValue" EntityType="Self.tbl_VariableValue" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_WhiteDomain" EntityType="Self.tbl_WhiteDomain" Schema="dbo" store:Type="Tables" />
         </EntityContainer>
-      </Schema></edmx:StorageModels>
+      </Schema>
+    </edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="inventorymanagementModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -1309,6 +1310,18 @@
           <Property Name="ModifiedDate" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="IsNegativeFee" Type="Boolean" />
         </EntityType>
+        <EntityType Name="ProductTag">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="TagID" Type="Int32" Nullable="false" />
+          <Property Name="ProductID" Type="Int32" Nullable="false" />
+          <Property Name="ProductVariableID" Type="Int32" Nullable="false" />
+          <Property Name="SKU" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="CreatedBy" Type="Int32" Nullable="false" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+        </EntityType>
         <EntityType Name="ReceivedProductHistory">
           <Key>
             <PropertyRef Name="ID" />
@@ -1415,6 +1428,16 @@
           <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="ModifiedBy" Type="Int32" Nullable="false" />
           <Property Name="ModifiedDate" Type="DateTime" Nullable="false" Precision="3" />
+        </EntityType>
+        <EntityType Name="Tag">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Slug" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="CreatedBy" Type="Int32" Nullable="false" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
         </EntityType>
         <EntityType Name="tbl_Account">
           <Key>
@@ -2126,7 +2149,7 @@
           <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
           <Property Name="ModifiedBy" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
-        <EntityContainer Name="inventorymanagementEntities1" annotation:LazyLoadingEnabled="true">
+        <EntityContainer Name="inventorymanagementEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="Banks" EntityType="Self.Bank" />
           <EntitySet Name="BankAccounts" EntityType="Self.BankAccount" />
           <EntitySet Name="BankTransfers" EntityType="Self.BankTransfer" />
@@ -2139,12 +2162,14 @@
           <EntitySet Name="DeliveryProships" EntityType="Self.DeliveryProship" />
           <EntitySet Name="Fees" EntityType="Self.Fee" />
           <EntitySet Name="FeeTypes" EntityType="Self.FeeType" />
+          <EntitySet Name="ProductTags" EntityType="Self.ProductTag" />
           <EntitySet Name="ReceivedProductHistories" EntityType="Self.ReceivedProductHistory" />
           <EntitySet Name="Registers" EntityType="Self.Register" />
           <EntitySet Name="RegisterProducts" EntityType="Self.RegisterProduct" />
           <EntitySet Name="Sessions" EntityType="Self.Session" />
           <EntitySet Name="ShelfManagers" EntityType="Self.ShelfManager" />
           <EntitySet Name="Shippers" EntityType="Self.Shipper" />
+          <EntitySet Name="Tags" EntityType="Self.Tag" />
           <EntitySet Name="tbl_Account" EntityType="Self.tbl_Account" />
           <EntitySet Name="tbl_AccountInfo" EntityType="Self.tbl_AccountInfo" />
           <EntitySet Name="tbl_Agent" EntityType="Self.tbl_Agent" />
@@ -2184,37 +2209,13 @@
           <EntitySet Name="tbl_Variable" EntityType="Self.tbl_Variable" />
           <EntitySet Name="tbl_VariableValue" EntityType="Self.tbl_VariableValue" />
           <EntitySet Name="tbl_WhiteDomain" EntityType="Self.tbl_WhiteDomain" />
-          <EntitySet Name="ProductTags" EntityType="inventorymanagementModel.ProductTag" />
-          <EntitySet Name="Tags" EntityType="inventorymanagementModel.Tag" />
         </EntityContainer>
-        <EntityType Name="ProductTag">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="TagID" Type="Int32" Nullable="false" />
-          <Property Name="ProductID" Type="Int32" Nullable="false" />
-          <Property Name="ProductVariableID" Type="Int32" Nullable="false" />
-          <Property Name="SKU" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="CreatedBy" Type="Int32" Nullable="false" />
-          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
-        </EntityType>
-        <EntityType Name="Tag">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Name" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="CreatedBy" Type="Int32" Nullable="false" />
-          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="Slug" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
-        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
-        <EntityContainerMapping StorageEntityContainer="inventorymanagementModelStoreContainer" CdmEntityContainer="inventorymanagementEntities1">
+        <EntityContainerMapping StorageEntityContainer="inventorymanagementModelStoreContainer" CdmEntityContainer="inventorymanagementEntities">
           <EntitySetMapping Name="Banks">
             <EntityTypeMapping TypeName="inventorymanagementModel.Bank">
               <MappingFragment StoreEntitySet="Bank">
@@ -2427,6 +2428,19 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="ProductTags">
+            <EntityTypeMapping TypeName="inventorymanagementModel.ProductTag">
+              <MappingFragment StoreEntitySet="ProductTag">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="TagID" ColumnName="TagID" />
+                <ScalarProperty Name="ProductID" ColumnName="ProductID" />
+                <ScalarProperty Name="ProductVariableID" ColumnName="ProductVariableID" />
+                <ScalarProperty Name="SKU" ColumnName="SKU" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="ReceivedProductHistories">
             <EntityTypeMapping TypeName="inventorymanagementModel.ReceivedProductHistory">
               <MappingFragment StoreEntitySet="ReceivedProductHistory">
@@ -2537,6 +2551,17 @@
                 <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
                 <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
                 <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Tags">
+            <EntityTypeMapping TypeName="inventorymanagementModel.Tag">
+              <MappingFragment StoreEntitySet="Tag">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Slug" ColumnName="Slug" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -2984,7 +3009,6 @@
           <EntitySetMapping Name="tbl_Product">
             <EntityTypeMapping TypeName="inventorymanagementModel.tbl_Product">
               <MappingFragment StoreEntitySet="tbl_Product">
-                <ScalarProperty Name="Old_Price" ColumnName="Old_Price" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="CategoryID" ColumnName="CategoryID" />
                 <ScalarProperty Name="ProductOldID" ColumnName="ProductOldID" />
@@ -3286,30 +3310,6 @@
                 <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
                 <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
                 <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="ProductTags">
-            <EntityTypeMapping TypeName="inventorymanagementModel.ProductTag">
-              <MappingFragment StoreEntitySet="ProductTag">
-                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
-                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
-                <ScalarProperty Name="SKU" ColumnName="SKU" />
-                <ScalarProperty Name="ProductVariableID" ColumnName="ProductVariableID" />
-                <ScalarProperty Name="ProductID" ColumnName="ProductID" />
-                <ScalarProperty Name="TagID" ColumnName="TagID" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Tags">
-            <EntityTypeMapping TypeName="inventorymanagementModel.Tag">
-              <MappingFragment StoreEntitySet="Tag">
-                <ScalarProperty Name="Slug" ColumnName="Slug" />
-                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
-                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

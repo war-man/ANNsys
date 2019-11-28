@@ -285,7 +285,6 @@
                             <div class="form-row">
                                 <div class="row-left">
                                     Giá cũ chưa sale
-                                    <asp:RequiredFieldValidator ID="RequiredFieldValidator1" runat="server" ControlToValidate="pOld_Price" ForeColor="Red" ErrorMessage="(*)" Display="Dynamic" SetFocusOnError="true"></asp:RequiredFieldValidator>
                                 </div>
                                 <div class="row-right">
                                     <asp:TextBox type="number" min="0" autocomplete="off" ID="pOld_Price" runat="server" CssClass="form-control" placeholder="Giá sỉ cũ chưa sale"></asp:TextBox>
@@ -331,17 +330,6 @@
                                     <asp:Image runat="server" ID="ProductThumbnail" class="img-product" />
                                     <asp:HiddenField runat="server" ID="ListProductThumbnail" ClientIDMode="Static" />
                                     <div class="hidProductThumbnail"></div>
-                                </div>
-                            </div>
-                            <div class="form-row">
-                                <div class="row-left">
-                                    Hàng Order
-                                </div>
-                                <div class="row-right">
-                                    <asp:DropDownList ID="ddlPreOrder" runat="server" CssClass="form-control">
-                                        <asp:ListItem Text="Khồng cần đặt hàng" Value="0"></asp:ListItem>
-                                        <asp:ListItem Text="Phải đặt hàng" Value="1"></asp:ListItem>
-                                    </asp:DropDownList>
                                 </div>
                             </div>
                             <div class="form-row">
@@ -495,7 +483,8 @@
                     $(".variable").addClass("hide");
                 }
 
-                let tags = JSON.parse($("#<%=hdfTags.ClientID%>").val()) || [];
+                let hdfTags = $("#<%=hdfTags.ClientID%>").val();
+                let tags = hdfTags ? (JSON.parse(hdfTags) || []) : [];
 
                 tags.forEach((item) => txtTagDOM.tagsinput('add', { id: item.id, name: item.name, slug: item.slug }));
             });
@@ -617,7 +606,7 @@
                     var materials = $("#<%=txtMaterials.ClientID%>").val();
                     var maximum = $("#<%=pMaximumInventoryLevel.ClientID%>").val();
                     var minimum = $("#<%=pMinimumInventoryLevel.ClientID%>").val();
-                    var giacu = $("#<%=pOld_Price.ClientID%>").val();
+                    var giacu = $("#<%=pOld_Price.ClientID%>").val() || 0;
                     var giasi = $("#<%=pRegular_Price.ClientID%>").val();
                     var giavon = $("#<%=pCostOfGood.ClientID%>").val();
                     var giale = $("#<%=pRetailPrice.ClientID%>").val();
@@ -809,7 +798,7 @@
                     var materials = $("#<%=txtMaterials.ClientID%>").val();
                     var maximum = $("#<%=pMaximumInventoryLevel.ClientID%>").val();
                     var minimum = $("#<%=pMinimumInventoryLevel.ClientID%>").val();
-                    var giacu = $("#<%=pOld_Price.ClientID%>").val();
+                    var giacu = $("#<%=pOld_Price.ClientID%>").val() || 0;
                     var giasi = $("#<%=pRegular_Price.ClientID%>").val();
                     var giavon = $("#<%=pCostOfGood.ClientID%>").val();
                     var giale = $("#<%=pRetailPrice.ClientID%>").val();

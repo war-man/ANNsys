@@ -16,8 +16,8 @@ namespace IM_PJ.Models
     {
         public int ID { get; set; }
         public string Name { get; set; }
+        public string Slug { get; set; }
         public int CreatedBy { get; set; }
         public System.DateTime CreatedDate { get; set; }
-        public string Slug { get; set; }
     }
 }

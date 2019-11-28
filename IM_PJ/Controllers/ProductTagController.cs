@@ -75,7 +75,10 @@ namespace IM_PJ.Controllers
                     tagDB = tagDB.Except(tagDelete).ToList();
                 }
 
-                var tagInsert = prodTags.Except(tagOld).ToList();
+                var tagInsert = prodTags
+                    .Where(x => !tagOld.Any(y => y.ProductID == x.ProductID && y.TagID == x.TagID))
+                    .ToList();
+
                 if (tagInsert.Count > 0)
                 {
                     con.ProductTags.AddRange(tagInsert);
@@ -84,6 +87,25 @@ namespace IM_PJ.Controllers
                 }
 
                 return tagDB;
+            }
+        }
+
+        public static List<ProductTag> delete(int productID)
+        {
+            using (var con = new inventorymanagementEntities())
+            {
+                var tagDelete = con.ProductTags
+                    .Where(x => x.ProductID == productID)
+                    .Where(x => x.ProductVariableID == 0)
+                    .ToList();
+
+                if (tagDelete.Count > 0)
+                {
+                    con.ProductTags.RemoveRange(tagDelete);
+                    con.SaveChanges();
+                }
+
+                return tagDelete;
             }
         }
 

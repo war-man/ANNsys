@@ -298,7 +298,7 @@ namespace IM_PJ
                 double ProductStock = 0;
                 int StockStatus = 0;
                 bool ManageStock = true;
-                double Old_Price = Convert.ToDouble(pOld_Price.Text);
+                double Old_Price = String.IsNullOrEmpty(pOld_Price.Text) ? 0 : Convert.ToDouble(pOld_Price.Text);
                 double Regular_Price = Convert.ToDouble(pRegular_Price.Text);
                 double CostOfGood = Convert.ToDouble(pCostOfGood.Text);
                 double Retail_Price = Convert.ToDouble(pRetailPrice.Text);
@@ -442,6 +442,10 @@ namespace IM_PJ
                             .ToList();
 
                         ProductTagController.update(ProductID, productTag);
+                    }
+                    else
+                    {
+                        ProductTagController.delete(ProductID);
                     }
                 }
 

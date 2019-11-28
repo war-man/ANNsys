@@ -350,7 +350,7 @@ namespace IM_PJ
                             string mainColor = ddlColor.SelectedValue.Trim();
                             int a = 1;
                             var preOrder = ddlPreOrder.SelectedValue == "1" ? true : false;
-                            double Old_Price = Convert.ToDouble(pOld_Price.Text);
+                            double Old_Price = String.IsNullOrEmpty(pOld_Price.Text) ? 0 : Convert.ToDouble(pOld_Price.Text);
 
                             double MinimumInventoryLevel = pMinimumInventoryLevel.Text.ToInt(0);
                             double MaximumInventoryLevel = pMaximumInventoryLevel.Text.ToInt(0);
@@ -392,7 +392,7 @@ namespace IM_PJ
                                 Color = mainColor,
                                 PreOrder = preOrder,
                                 Old_Price = Old_Price
-                            });
+                            };
 
                             string kq = ProductController.Insert(prodNew);
                             prodNew.ID = Convert.ToInt32(kq);
@@ -497,7 +497,7 @@ namespace IM_PJ
                                     ProductImageController.Insert(kq.ToInt(), IMG, false, currentDate, username);
                                 }
                             }
-                            
+
 
                             if (kq.ToInt(0) > 0)
                             {
@@ -541,7 +541,7 @@ namespace IM_PJ
                                                 Thumbnail.create(Server.MapPath(o), 240, 320);
                                                 Thumbnail.create(Server.MapPath(o), 350, 467);
                                             }
-                                            
+
                                             image = Path.GetFileName(Server.MapPath(o));
                                         }
 
@@ -573,15 +573,15 @@ namespace IM_PJ
                                     }
                                 }
 
-                                
-                                PJUtils.ShowMessageBoxSwAlertCallFunction("Tạo sản phẩm thành công", "s", true, "redirectTo("+ kq +")", Page);
+                                PJUtils.ShowMessageBoxSwAlertCallFunction("Tạo sản phẩm thành công", "s", true, "redirectTo(" + kq + ")", Page);
                             }
                         }
 
                     }
-                   
+
                 }
             }
+        }
 
         [WebMethod]
         [ScriptMethod(ResponseFormat = ResponseFormat.Json, UseHttpGet = true, XmlSerializeString = false)]
