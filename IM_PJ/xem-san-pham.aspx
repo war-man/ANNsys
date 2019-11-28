@@ -17,6 +17,15 @@
             background-color: #E91E63;
             color: #fff;
         }
+
+        .bootstrap-tagsinput {
+            width: 100%;
+        }
+        
+        .bootstrap-tagsinput .label {
+            font-size: 100%;
+        }
+
         @media (max-width: 769px) {
             ul.image-gallery li {
                 width: 100%;

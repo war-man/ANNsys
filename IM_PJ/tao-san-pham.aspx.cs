@@ -2,9 +2,11 @@
 using IM_PJ.Models;
 using IM_PJ.Utils;
 using MB.Extensions;
+using Newtonsoft.Json;
 using NHST.Bussiness;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -395,19 +397,38 @@ namespace IM_PJ
                             string kq = ProductController.Insert(prodNew);
                             prodNew.ID = Convert.ToInt32(kq);
 
-                            var tagIDList = hdfTags.Value.Split(',');
-
-                            foreach (var item in tagIDList)
+                            if (!String.IsNullOrEmpty(hdfTags.Value))
                             {
-                                ProductTagController.insert(new ProductTag()
+                                var tagList = JsonConvert.DeserializeObject<List<TagModel>>(hdfTags.Value);
+
+                                if (tagList.Count > 0)
                                 {
-                                    TagID = Convert.ToInt32(item),
-                                    ProductID = prodNew.ID,
-                                    ProductVariableID = 0,
-                                    SKU = prodNew.ProductSKU,
-                                    CreatedBy = acc.ID,
-                                    CreatedDate = currentDate
-                                });
+                                    // Get tag new
+                                    var tagNew = TagController.insert(tagList, acc);
+
+                                    var productTag = tagList
+                                        .GroupJoin(
+                                            tagNew,
+                                            t => t.name.ToLower(),
+                                            n => n.Name.ToLower(),
+                                            (t, n) => new { t, n }
+                                        )
+                                        .SelectMany(
+                                            x => x.n.DefaultIfEmpty(),
+                                            (parent, child) => new ProductTag
+                                            {
+                                                TagID = child != null ? child.ID : parent.t.id,
+                                                ProductID = prodNew.ID,
+                                                ProductVariableID = 0,
+                                                SKU = prodNew.ProductSKU,
+                                                CreatedBy = acc.ID,
+                                                CreatedDate = currentDate
+                                            }
+                                        )
+                                        .ToList();
+
+                                    ProductTagController.insert(productTag);
+                                }
                             }
 
                             //Phần thêm ảnh đại diện sản phẩm
@@ -566,25 +587,27 @@ namespace IM_PJ
         [ScriptMethod(ResponseFormat = ResponseFormat.Json, UseHttpGet = true, XmlSerializeString = false)]
         public static List<TagModel> GetTags(string tagName)
         {
-            var tags = TagController.get(tagName);
+            var now = DateTime.Now;
+            var textInfo = new CultureInfo("vi-VN", false).TextInfo;
+            var tags = new List<TagModel>();
+            var tagData = TagController.get(tagName);
 
-            if (tags.Count() > 0)
+            if (tagData.Where(x => x.name == textInfo.ToTitleCase(tagName)).Count() > 0)
             {
-                return tags;
+                tags.AddRange(tagData);
             }
             else
             {
-                var username = HttpContext.Current.Request.Cookies["usernameLoginSystem"].Value;
-                var acc = AccountController.GetByUsername(username);
-
-                var tagNew = TagController.insert(new Tag()
+                tags.Add(new TagModel()
                 {
-                    Name = tagName,
-                    CreatedBy = acc == null ? acc.ID : 0,
-                    CreatedDate = DateTime.Now,
+                    id = 0,
+                    name = textInfo.ToTitleCase(tagName),
+                    slug = String.Format("tag-new-{0:YYYYMMDDhhmmss}", now)
                 });
-                return new List<TagModel>() { new TagModel() { id = tagNew.ID, name = tagNew.Name }};
+                tags.AddRange(tagData);
             }
+
+            return tags;
         }
     }
 }

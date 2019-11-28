@@ -19,6 +19,74 @@ namespace IM_PJ.Controllers
             }
         }
 
+        public static List<ProductTag> insert(List<ProductTag> prodTags)
+        {
+            using (var con = new inventorymanagementEntities())
+            {
+                var tagNews = new List<ProductTag>();
+
+                foreach (var item in prodTags)
+                {
+                    var tagOld = con.ProductTags
+                        .Where(x => x.SKU == item.SKU)
+                        .Where(x => x.TagID == item.TagID)
+                        .FirstOrDefault();
+
+                    if (tagOld == null)
+                        tagNews.Add(item);
+                }
+
+                if (tagNews.Count > 0)
+                {
+                    con.ProductTags.AddRange(tagNews);
+                    con.SaveChanges();
+                    return tagNews;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+
+        public static List<ProductTag> update(int productID, List<ProductTag> prodTags)
+        {
+            using (var con = new inventorymanagementEntities())
+            {
+                var tagDB = con.ProductTags
+                    .Where(x => x.ProductID == productID)
+                    .Where(x => x.ProductVariableID == 0)
+                    .ToList();
+
+                var tagOld = tagDB
+                    .Join(
+                        prodTags,
+                        tdb => tdb.TagID,
+                        pt => pt.TagID,
+                        (tdb, pt) => tdb
+                    )
+                    .ToList();
+
+                var tagDelete = tagDB.Except(tagOld).ToList();
+                if (tagDelete.Count > 0)
+                {
+                    con.ProductTags.RemoveRange(tagDelete);
+                    con.SaveChanges();
+                    tagDB = tagDB.Except(tagDelete).ToList();
+                }
+
+                var tagInsert = prodTags.Except(tagOld).ToList();
+                if (tagInsert.Count > 0)
+                {
+                    con.ProductTags.AddRange(tagInsert);
+                    con.SaveChanges();
+                    tagDB.AddRange(tagInsert);
+                }
+
+                return tagDB;
+            }
+        }
+
         private static List<TagModel> get(string sku, int? productID, int? productVariableID)
         {
             using (var con = new inventorymanagementEntities())
@@ -41,7 +109,8 @@ namespace IM_PJ.Controllers
                     .Select(x => new TagModel()
                     {
                         id = x.ID,
-                        name = x.Name
+                        name = x.Name,
+                        slug = x.Slug
                     })
                     .OrderBy(o => o.name)
                     .ToList();

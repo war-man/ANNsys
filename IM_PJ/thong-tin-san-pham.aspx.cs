@@ -1,9 +1,12 @@
 ﻿using IM_PJ.Controllers;
 using IM_PJ.Models;
+using IM_PJ.Utils;
 using MB.Extensions;
+using Newtonsoft.Json;
 using NHST.Bussiness;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -11,8 +14,6 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Telerik.Web.UI;
-using System.IO;
-using IM_PJ.Utils;
 
 namespace IM_PJ
 {
@@ -186,9 +187,16 @@ namespace IM_PJ
                     // Hàng cần Order
                     ddlPreOrder.SelectedValue = p.PreOrder ? "1" : "0";
 
-                    // Lấy tất cả biến thể ra
+                    // Init Tags
+                    var tags = ProductTagController.get(p.ID, 0);
 
-                    List<tbl_ProductVariable> a = new List<tbl_ProductVariable>();
+                    if (tags.Count > 0)
+                        hdfTags.Value = JsonConvert.SerializeObject(tags);
+                    else
+                        hdfTags.Value = String.Empty;
+
+                    // Lấy tất cả biến thể ra
+                    List <tbl_ProductVariable> a = new List<tbl_ProductVariable>();
                     a = ProductVariableController.GetProductID(p.ID);
 
                     if(a.Count > 0)
@@ -401,6 +409,41 @@ namespace IM_PJ
                     PreOrder = preOrder,
                     Old_Price = Old_Price
                 });
+
+                // Upload tags
+                if (!String.IsNullOrEmpty(hdfTags.Value))
+                {
+                    var tagList = JsonConvert.DeserializeObject<List<TagModel>>(hdfTags.Value);
+
+                    if (tagList.Count > 0)
+                    {
+                        // Get tag new
+                        var tagNew = TagController.insert(tagList, acc);
+
+                        var productTag = tagList
+                            .GroupJoin(
+                                tagNew,
+                                t => t.name.ToLower(),
+                                n => n.Name.ToLower(),
+                                (t, n) => new { t, n }
+                            )
+                            .SelectMany(
+                                x => x.n.DefaultIfEmpty(),
+                                (parent, child) => new ProductTag
+                                {
+                                    TagID = child != null ? child.ID : parent.t.id,
+                                    ProductID = ProductID,
+                                    ProductVariableID = 0,
+                                    SKU = ProductSKU,
+                                    CreatedBy = acc.ID,
+                                    CreatedDate = DateTime.Now
+                                }
+                            )
+                            .ToList();
+
+                        ProductTagController.update(ProductID, productTag);
+                    }
+                }
 
                 // Upload image gallery
                 string itemGallery = "";

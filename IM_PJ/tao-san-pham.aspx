@@ -112,6 +112,22 @@
             padding: 15px 0;
         }
 
+        .bootstrap-tagsinput {
+            width: 100%;
+        }
+
+        .bootstrap-tagsinput .label {
+            font-size: 100%;
+        }
+
+        .bootstrap-tagsinput .twitter-typeahead input {
+            margin-top: 5px;
+        }
+
+        .bootstrap-tagsinput input {
+            width: 100%
+        }
+
         @media (max-width: 769px) {
             .RadUpload .ruInputs li {
                 width: 100%;
@@ -497,7 +513,8 @@
                         return $.map(response.d, function (item) {
                             return {
                                 id: item.id,
-                                name: item.name
+                                name: item.name,
+                                slug: item.slug,
                             };
                         });
                     },
@@ -511,7 +528,7 @@
 
             let txtTagDOM = $('#txtTag');
             txtTagDOM.tagsinput({
-                itemValue: 'id',
+                itemValue: 'slug',
                 itemText: 'name',
                 trimValue: true,
                 typeaheadjs: {
@@ -1064,7 +1081,7 @@
                             }
                             else {
                                 // Insert tagID list into hdfTags
-                                $("#<%=hdfTags.ClientID%>").val(txtTagDOM.val());
+                                $("#<%=hdfTags.ClientID%>").val(JSON.stringify(txtTagDOM.tagsinput('items')));
                                 $("#<%=hdfVariableListInsert.ClientID%>").val(listv);
 
                                 $("#<%=btnSubmit.ClientID%>").click();
@@ -1134,7 +1151,7 @@
                         HoldOn.open();
                         if (!isBlank(title) && !isBlank(SKU) && !isBlank(materials) && !isBlank(giasi) && !isBlank(giavon) && !isBlank(giale)) {
                             // Insert tagID list into hdfTags
-                            $("#<%=hdfTags.ClientID%>").val(txtTagDOM.val());
+                            $("#<%=hdfTags.ClientID%>").val(JSON.stringify(txtTagDOM.tagsinput('items')));
                             $("#<%=hdfVariableListInsert.ClientID%>").val("");
                             $("#<%=btnSubmit.ClientID%>").click();
                         }
