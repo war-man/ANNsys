@@ -208,6 +208,12 @@ namespace IM_PJ
 
                 hdfTable.Value = p.ProductStyle.ToString();
 
+                // Init Tag
+                var tagIDList = ProductTagController.get(p.ID, 0)
+                    .Select(x => x.name)
+                    .ToList();
+                hdfTags.Value = String.Join(",", tagIDList);
+
                 List<tbl_ProductVariable> b = new List<tbl_ProductVariable>();
 
                 b = ProductVariableController.SearchProductID(p.ID, "");

@@ -184,6 +184,24 @@ namespace IM_PJ {
         protected global::System.Web.UI.WebControls.Literal ltrList;
         
         /// <summary>
+        /// txtOldSKU control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtOldSKU;
+        
+        /// <summary>
+        /// txtNewSKU control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtNewSKU;
+        
+        /// <summary>
         /// hdfTempVariable control.
         /// </summary>
         /// <remarks>
@@ -211,21 +229,12 @@ namespace IM_PJ {
         protected global::System.Web.UI.WebControls.HiddenField hdfTable;
         
         /// <summary>
-        /// txtOldSKU control.
+        /// hdfTags control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtOldSKU;
-        
-        /// <summary>
-        /// txtNewSKU control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtNewSKU;
+        protected global::System.Web.UI.WebControls.HiddenField hdfTags;
     }
 }

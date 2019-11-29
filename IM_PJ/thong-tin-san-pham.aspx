@@ -2,6 +2,9 @@
 
 <%@ Register Assembly="Telerik.Web.UI" Namespace="Telerik.Web.UI" TagPrefix="telerik" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
+    <link type="text/css" rel="stylesheet" href="Content/bootstrap-tagsinput.css" />
+    <link type="text/css" rel="stylesheet" href="Content/bootstrap-tagsinput-typeahead.css" />
+    <link type="text/css" rel="stylesheet" href="Content/typeahead.css" />
     <style>
         .generat-variable-content {
             float: left;
@@ -92,6 +95,23 @@
         .img-product {
             width: 200px;
         }
+
+        .bootstrap-tagsinput {
+            width: 100%;
+        }
+
+        .bootstrap-tagsinput .label {
+            font-size: 100%;
+        }
+
+        .bootstrap-tagsinput .twitter-typeahead input {
+            margin-top: 5px;
+        }
+
+        .bootstrap-tagsinput input {
+            width: 100%
+        }
+
         @media (max-width: 769px) {
             .RadUpload .ruInputs li {
                 width: 100%;
@@ -314,6 +334,24 @@
                             </div>
                             <div class="form-row">
                                 <div class="row-left">
+                                    Tags
+                                </div>
+                                <div class="row-right">
+                                    <input type="text" id="txtTag" class="typeahead" data-role="tagsinput" />
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="row-left">
+                                    Nội dung
+                                </div>
+                                <div class="row-right">
+                                    <telerik:RadEditor runat="server" ID="RadEditor1" Width="100%" Height="500px" ToolsFile="~/FilesResources/ToolContent.xml" Skin="Metro" DialogHandlerUrl="~/Telerik.Web.UI.DialogHandler.axd" AutoResizeHeight="False" EnableResize="False">
+                                        <ImageManager ViewPaths="~/uploads/images" UploadPaths="~/uploads/images" DeletePaths="~/uploads/images" />
+                                    </telerik:RadEditor>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="row-left">
                                     Nội dung
                                 </div>
                                 <div class="row-right">
@@ -387,10 +425,50 @@
         <asp:HiddenField ID="hdfVariableListInsert" runat="server" />
         <asp:HiddenField ID="hdfParentID" runat="server" />
         <asp:HiddenField ID="hdfUserRole" runat="server" />
+        <asp:HiddenField ID="hdfTags" runat="server" />
     </main>
 
     <telerik:RadCodeBlock runat="server">
+        <script type="text/javascript" src="Scripts/bootstrap-tagsinput.min.js"></script>
+        <script type="text/javascript" src="Scripts/typeahead.bundle.min.js"></script>
+        <script type="text/javascript" src="Scripts/typeahead.jquery.js"></script>
         <script>
+            // init Input Tag
+            let tags = new Bloodhound({
+                datumTokenizer: (tag) => {
+                    return Bloodhound.tokenizers.whitespace(tag.name);
+                },
+                queryTokenizer: Bloodhound.tokenizers.whitespace,
+                remote: {
+                    url: '/tao-san-pham.aspx/GetTags?tagName="%QUERY"',
+                    filter: (response) => {
+                        return $.map(response.d, function (item) {
+                            return {
+                                id: item.id,
+                                name: item.name,
+                                slug: item.slug,
+                            };
+                        });
+                    },
+                    ajax: {
+                        type: "GET",
+                        contentType: "application/json; charset=utf-8"
+                    }
+                }
+            });
+            tags.initialize();
+
+            let txtTagDOM = $('#txtTag');
+            txtTagDOM.tagsinput({
+                itemValue: 'slug',
+                itemText: 'name',
+                trimValue: true,
+                typeaheadjs: {
+                    name: 'tags',
+                    displayKey: 'name',
+                    source: tags.ttAdapter()
+                }
+            });
 
             var storedFiles = [];
 
@@ -404,6 +482,11 @@
                 if (productStyle == 1) {
                     $(".variable").addClass("hide");
                 }
+
+                let hdfTags = $("#<%=hdfTags.ClientID%>").val();
+                let tags = hdfTags ? (JSON.parse(hdfTags) || []) : [];
+
+                tags.forEach((item) => txtTagDOM.tagsinput('add', { id: item.id, name: item.name, slug: item.slug }));
             });
 
             function showVariableContent(obj) {
@@ -523,7 +606,7 @@
                     var materials = $("#<%=txtMaterials.ClientID%>").val();
                     var maximum = $("#<%=pMaximumInventoryLevel.ClientID%>").val();
                     var minimum = $("#<%=pMinimumInventoryLevel.ClientID%>").val();
-                    var giacu = $("#<%=pOld_Price.ClientID%>").val();
+                    var giacu = $("#<%=pOld_Price.ClientID%>").val() || 0;
                     var giasi = $("#<%=pRegular_Price.ClientID%>").val();
                     var giavon = $("#<%=pCostOfGood.ClientID%>").val();
                     var giale = $("#<%=pRetailPrice.ClientID%>").val();
@@ -696,6 +779,7 @@
                                 if ($("#<%=hdfVariableListInsert.ClientID%>").val() != "")
                                 {
                                     HoldOn.open();
+                                    $("#<%=hdfTags.ClientID%>").val(JSON.stringify(txtTagDOM.tagsinput('items')));
                                     $("#<%=btnSubmit.ClientID%>").click();
                                 }
                                 else
@@ -714,7 +798,7 @@
                     var materials = $("#<%=txtMaterials.ClientID%>").val();
                     var maximum = $("#<%=pMaximumInventoryLevel.ClientID%>").val();
                     var minimum = $("#<%=pMinimumInventoryLevel.ClientID%>").val();
-                    var giacu = $("#<%=pOld_Price.ClientID%>").val();
+                    var giacu = $("#<%=pOld_Price.ClientID%>").val() || 0;
                     var giasi = $("#<%=pRegular_Price.ClientID%>").val();
                     var giavon = $("#<%=pCostOfGood.ClientID%>").val();
                     var giale = $("#<%=pRetailPrice.ClientID%>").val();
@@ -757,6 +841,7 @@
                         swal("Thông báo", "Giá lẻ không được thấp hơn giá sỉ", "error");
                     }
                     else {
+                        $("#<%=hdfTags.ClientID%>").val(JSON.stringify(txtTagDOM.tagsinput('items')));
                         $("#<%=btnSubmit.ClientID%>").click();
                         HoldOn.open();
                     }
