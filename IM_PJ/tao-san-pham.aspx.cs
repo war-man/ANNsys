@@ -347,7 +347,7 @@ namespace IM_PJ
                             string mainColor = ddlColor.SelectedValue.Trim();
                             int a = 1;
                             var preOrder = ddlPreOrder.SelectedValue == "1" ? true : false;
-                            double Old_Price = Convert.ToDouble(pOld_Price.Text);
+                            double Old_Price = Convert.ToDouble(!string.IsNullOrEmpty(pOld_Price.Text) ? pOld_Price.Text : "0");
 
                             double MinimumInventoryLevel = pMinimumInventoryLevel.Text.ToInt(0);
                             double MaximumInventoryLevel = pMaximumInventoryLevel.Text.ToInt(0);
