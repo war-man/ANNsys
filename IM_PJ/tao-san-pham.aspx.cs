@@ -587,6 +587,11 @@ namespace IM_PJ
         [ScriptMethod(ResponseFormat = ResponseFormat.Json, UseHttpGet = true, XmlSerializeString = false)]
         public static List<TagModel> GetTags(string tagName)
         {
+            if (!String.IsNullOrEmpty(tagName) && tagName.IndexOf(',') >= 0)
+            {
+                return null;
+            }
+
             var now = DateTime.Now;
             var textInfo = new CultureInfo("vi-VN", false).TextInfo;
             var tags = new List<TagModel>();

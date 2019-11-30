@@ -430,8 +430,11 @@
                 },
                 queryTokenizer: Bloodhound.tokenizers.whitespace,
                 remote: {
-                    url: '/tao-san-pham.aspx/GetTags?tagName="%QUERY"',
+                    url: '/thong-tin-san-pham.aspx/GetTags?tagName="%QUERY"',
                     filter: (response) => {
+                        if (!response.d)
+                            return {};
+
                         return $.map(response.d, function (item) {
                             return {
                                 id: item.id,
@@ -477,6 +480,36 @@
                 let tags = hdfTags ? (JSON.parse(hdfTags) || []) : [];
 
                 tags.forEach((item) => txtTagDOM.tagsinput('add', { id: item.id, name: item.name, slug: item.slug }));
+
+                $(".bootstrap-tagsinput").find(".tt-input").keypress((event) => {
+                    if (event.which === 13) {
+                        event.preventDefault();
+                        return false;
+                    }
+
+                    if (event.which === 44) {
+                        let target = event.target;
+                        let tagName = target.value || "";
+
+                        $.ajax({
+                            headers: { 
+                                Accept: "application/json, text/javascript, */*; q=0.01",
+                                "Content-Type": "application/json; charset=utf-8"
+                            },
+                            type: "GET",
+                            url: `/thong-tin-san-pham.aspx/GetTags?tagName=${JSON.stringify(tagName)}`,
+                            success: function (response) {
+                                let data = response.d || [];
+                                
+                                data.forEach((item) => {
+                                    txtTagDOM.tagsinput('add', { id: item.id, name: item.name, slug: item.slug })
+                                })
+
+                                target.value = "";
+                            }
+                        })
+                    }
+                })
             });
 
             function showVariableContent(obj) {
