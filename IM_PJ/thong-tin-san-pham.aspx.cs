@@ -6,11 +6,14 @@ using Newtonsoft.Json;
 using NHST.Bussiness;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
+using System.Web.Script.Services;
+using System.Web.Services;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Telerik.Web.UI;
@@ -604,6 +607,38 @@ namespace IM_PJ
                     PJUtils.ShowMessageBoxSwAlert("Cập nhật sản phẩm thành công", "s", true, Page);
                 }
             }
+        }
+
+        [WebMethod]
+        [ScriptMethod(ResponseFormat = ResponseFormat.Json, UseHttpGet = true, XmlSerializeString = false)]
+        public static List<TagModel> GetTags(string tagName)
+        {
+            if (!String.IsNullOrEmpty(tagName) && tagName.IndexOf(',') >= 0)
+            {
+                return null;
+            }
+
+            var now = DateTime.Now;
+            var textInfo = new CultureInfo("vi-VN", false).TextInfo;
+            var tags = new List<TagModel>();
+            var tagData = TagController.get(tagName);
+
+            if (tagData.Where(x => x.name == textInfo.ToTitleCase(tagName)).Count() > 0)
+            {
+                tags.AddRange(tagData);
+            }
+            else
+            {
+                tags.Add(new TagModel()
+                {
+                    id = 0,
+                    name = textInfo.ToTitleCase(tagName),
+                    slug = String.Format("tag-new-{0:YYYYMMDDhhmmss}", now)
+                });
+                tags.AddRange(tagData);
+            }
+
+            return tags;
         }
     }
 }
