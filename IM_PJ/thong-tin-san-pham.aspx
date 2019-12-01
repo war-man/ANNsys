@@ -482,14 +482,29 @@
                 tags.forEach((item) => txtTagDOM.tagsinput('add', { id: item.id, name: item.name, slug: item.slug }));
 
                 $(".bootstrap-tagsinput").find(".tt-input").keypress((event) => {
-                    if (event.which === 13) {
-                        event.preventDefault();
-                        return false;
-                    }
+                    if (event.which === 13 || event.which === 44) {
+                        if (event.which === 13)
+                            event.preventDefault();
 
-                    if (event.which === 44) {
                         let target = event.target;
                         let tagName = target.value || "";
+
+                        if (!tagName)
+                            return; 
+
+                        let tagNameList = tagName.split(',');
+                        let url = "";
+
+                        if (tagNameList.length > 1) {
+                            url += "/thong-tin-san-pham.aspx/GetTagListByNameList?"
+                            tagNameList.forEach((value, index) => {
+                                url += `&tagName[${index}]=${JSON.stringify(value)}`
+                            })
+                        }
+                        else {
+                            url += `/thong-tin-san-pham.aspx/GetTags?tagName=${JSON.stringify(tagNameList[0])}`
+                        }
+
 
                         $.ajax({
                             headers: { 
@@ -497,7 +512,7 @@
                                 "Content-Type": "application/json; charset=utf-8"
                             },
                             type: "GET",
-                            url: `/thong-tin-san-pham.aspx/GetTags?tagName=${JSON.stringify(tagName)}`,
+                            url: url,
                             success: function (response) {
                                 let data = response.d || [];
                                 

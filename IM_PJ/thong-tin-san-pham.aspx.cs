@@ -12,6 +12,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
+using System.Web.Http;
 using System.Web.Script.Services;
 using System.Web.Services;
 using System.Web.UI;
@@ -639,6 +640,16 @@ namespace IM_PJ
             }
 
             return tags;
+        }
+
+        [WebMethod]
+        [ScriptMethod(ResponseFormat = ResponseFormat.Json, UseHttpGet = true, XmlSerializeString = false)]
+        public static List<TagModel> GetTagListByNameList(string[] tagNameList)
+        {
+            if (tagNameList == null || tagNameList.Length == 0)
+                return null;
+
+            return TagController.get(tagNameList.ToList());
         }
     }
 }

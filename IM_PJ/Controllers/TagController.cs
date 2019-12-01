@@ -80,5 +80,47 @@ namespace IM_PJ.Controllers
                 return tags;
             }
         }
+
+        public static List<TagModel> get(List<string> tagNameList)
+        {
+            using (var con = new inventorymanagementEntities())
+            {
+                var result = new List<TagModel>();
+
+                foreach (var tagName in tagNameList)
+                {
+                    if (String.IsNullOrEmpty(tagName))
+                        continue;
+
+                    var tags = con.Tags.Where(x => x.Name.Trim().ToLower().StartsWith(tagName.Trim().ToLower()))
+                        .Select(x => new TagModel()
+                        {
+                            id = x.ID,
+                            name = x.Name,
+                            slug = x.Slug
+                        })
+                        .OrderBy(o => o.name)
+                        .ToList();
+
+                    if (tags.Count > 0)
+                        result.AddRange(tags);
+                    else
+                    {
+                        var now = DateTime.Now;
+                        var textInfo = new CultureInfo("vi-VN", false).TextInfo;
+
+                        result.Add(new TagModel()
+                        {
+                            id = 0,
+                            name = textInfo.ToTitleCase(tagName),
+                            slug = String.Format("tag-new-{0:YYYYMMDDhhmmss}", now)
+                        });
+                    }
+                }
+                
+
+                return result;
+            }
+        }
     }
 }

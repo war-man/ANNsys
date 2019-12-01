@@ -569,14 +569,15 @@
 
                 // Handle short code taginput
                 $(".bootstrap-tagsinput").find(".tt-input").keypress((event) => {
-                    if (event.which === 13) {
-                        event.preventDefault();
-                        return false;
-                    }
+                    if (event.which === 13 || event.which === 44) {
+                        if (event.which === 13)
+                            event.preventDefault();
 
-                    if (event.which === 44) {
                         let target = event.target;
                         let tagName = target.value || "";
+
+                        if (!tagName)
+                            return;
 
                         $.ajax({
                             headers: {
@@ -596,7 +597,7 @@
                             }
                         })
                     }
-                })
+                });
             });
 
             function redirectTo(ID) {
