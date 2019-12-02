@@ -567,6 +567,24 @@
                     return this.value.toUpperCase();
                 });
 
+                // Handle unique name
+                txtTagDOM.on('beforeItemAdd', function (event) {
+                    // event.item: contains the item
+                    // event.cancel: set to true to prevent the item getting added
+                    let items = txtTagDOM.tagsinput('items') || [];
+                    let exist = false;
+
+                    items.forEach((tag) => {
+                        if (tag.name === event.item.name) {
+                            exist = true;
+                            return false;
+                        }
+                    })
+
+                    if (exist)
+                        event.cancel = true;
+                });
+
                 // Handle short code taginput
                 $(".bootstrap-tagsinput").find(".tt-input").keypress((event) => {
                     if (event.which === 13 || event.which === 44) {
@@ -579,13 +597,24 @@
                         if (!tagName)
                             return;
 
+                        let tagNameList = tagName.split(',');
+                        let url = "";
+
+                        if (tagNameList.length > 1) {
+                            url += "/tao-san-pham.aspx/GetTagListByNameList?";
+                            url += `&tagNameList=${JSON.stringify(tagNameList)}`;
+                        }
+                        else {
+                            url += `/tao-san-pham.aspx/GetTags?tagName=${JSON.stringify(tagNameList[0])}`;
+                        }
+
                         $.ajax({
                             headers: {
                                 Accept: "application/json, text/javascript, */*; q=0.01",
                                 "Content-Type": "application/json; charset=utf-8"
                             },
                             type: "GET",
-                            url: `/tao-san-pham.aspx/GetTags?tagName=${JSON.stringify(tagName)}`,
+                            url: url,
                             success: function (response) {
                                 let data = response.d || [];
 

@@ -29,7 +29,7 @@ namespace IM_PJ.Controllers
                 var textInfo = new CultureInfo("vi-VN", false).TextInfo;
 
                 var tagNew = tagList.Where(x => 
-                    x.slug.StartsWith(String.Format("tag-new-{0:YYYYMMDD}", now))
+                    x.slug.StartsWith(String.Format("tag-new-{0:yyyyMMdd}", now))
                 )
                 .Select(x => new Tag
                 {
@@ -85,6 +85,7 @@ namespace IM_PJ.Controllers
         {
             using (var con = new inventorymanagementEntities())
             {
+                var now = DateTime.Now;
                 var result = new List<TagModel>();
 
                 foreach (var tagName in tagNameList)
@@ -106,14 +107,14 @@ namespace IM_PJ.Controllers
                         result.AddRange(tags);
                     else
                     {
-                        var now = DateTime.Now;
+                        now = now.AddSeconds(1);
                         var textInfo = new CultureInfo("vi-VN", false).TextInfo;
 
                         result.Add(new TagModel()
                         {
                             id = 0,
                             name = textInfo.ToTitleCase(tagName),
-                            slug = String.Format("tag-new-{0:YYYYMMDDhhmmss}", now)
+                            slug = String.Format("tag-new-{0:yyyyMMddhhmmss}", now.AddSeconds(1))
                         });
                     }
                 }

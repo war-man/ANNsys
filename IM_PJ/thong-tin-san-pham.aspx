@@ -463,6 +463,7 @@
                 }
             });
 
+
             var storedFiles = [];
 
             $(document).ready(function () {
@@ -481,6 +482,24 @@
 
                 tags.forEach((item) => txtTagDOM.tagsinput('add', { id: item.id, name: item.name, slug: item.slug }));
 
+
+                txtTagDOM.on('beforeItemAdd', function (event) {
+                    // event.item: contains the item
+                    // event.cancel: set to true to prevent the item getting added
+                    let items = txtTagDOM.tagsinput('items') || [];
+                    let exist = false;
+
+                    items.forEach((tag) => {
+                        if (tag.name === event.item.name) {
+                            exist = true;
+                            return false;
+                        }
+                    })
+
+                    if (exist)
+                        event.cancel = true;
+                });
+
                 $(".bootstrap-tagsinput").find(".tt-input").keypress((event) => {
                     if (event.which === 13 || event.which === 44) {
                         if (event.which === 13)
@@ -496,15 +515,12 @@
                         let url = "";
 
                         if (tagNameList.length > 1) {
-                            url += "/thong-tin-san-pham.aspx/GetTagListByNameList?"
-                            tagNameList.forEach((value, index) => {
-                                url += `&tagName[${index}]=${JSON.stringify(value)}`
-                            })
+                            url += "/thong-tin-san-pham.aspx/GetTagListByNameList?";
+                            url += `&tagNameList=${JSON.stringify(tagNameList)}`;
                         }
                         else {
-                            url += `/thong-tin-san-pham.aspx/GetTags?tagName=${JSON.stringify(tagNameList[0])}`
+                            url += `/thong-tin-san-pham.aspx/GetTags?tagName=${JSON.stringify(tagNameList[0])}`;
                         }
-
 
                         $.ajax({
                             headers: { 
