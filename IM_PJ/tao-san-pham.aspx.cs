@@ -608,7 +608,7 @@ namespace IM_PJ
                 {
                     id = 0,
                     name = textInfo.ToTitleCase(tagName),
-                    slug = String.Format("tag-new-{0:YYYYMMDDhhmmss}", now)
+                    slug = String.Format("tag-new-{0:yyyyMMddhhmmss}", now)
                 });
                 tags.AddRange(tagData);
             }
