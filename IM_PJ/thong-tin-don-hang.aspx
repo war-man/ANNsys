@@ -707,6 +707,8 @@
     </telerik:RadAjaxManager>
     <telerik:RadScriptBlock ID="sc" runat="server">
         <script type="text/javascript">
+            let preExcuteStatus = 0;
+
             // OrderDetailModel
             class OrderDetailModel {
                 constructor(ID, SKU, ProductID, Quantity) {
@@ -1234,6 +1236,7 @@
                 }
 
                 // onchange drop down list excute status
+                preExcuteStatus = +$("#<%=ddlExcuteStatus.ClientID%>").val() || 0;
                 onChangeExcuteStatus();
 
                 // Jquery Dependency
@@ -2232,7 +2235,46 @@
                             }
                         }
                         break;
+                };
+
+                // Trường hợp trạng thái trước là (hoàn tất đơn hàng || hủy)
+                if (preExcuteStatus == 2 || preExcuteStatus == 3) {
+                    // Chuyển qua trạng thái đang xử lý
+                    if (excuteStatus == 1) {
+                        let contentProduct = document.querySelector('.content-product');
+                        let products = [...contentProduct.children];
+
+                        contentProduct.innerHTML = "";
+                        products.reverse();
+                        products.forEach((item) => contentProduct.innerHTML += item.outerHTML);
+
+                        // Cập nhật lại index
+                        for (let i = 0; i < contentProduct.children.length; i++) {
+                            let item = contentProduct.children[i];
+                            item.querySelector('.order-item').innerText = i + 1;
+                        }
+                    }
                 }
+                // Trường hợp trạng thái trước là đang xử lý
+                if (preExcuteStatus == 1) {
+                    // Chuyển qua trạng thái (hoàn tất đơn hàng || hủy)
+                    if (excuteStatus == 2 || excuteStatus == 3) {
+                        let contentProduct = document.querySelector('.content-product');
+                        let products = [...contentProduct.children];
+
+                        contentProduct.innerHTML = "";
+                        products.reverse();
+                        products.forEach((item) => contentProduct.innerHTML += item.outerHTML);
+
+                        // Cập nhật lại index
+                        for (let i = 0; i < contentProduct.children.length; i++) {
+                            let item = contentProduct.children[i];
+                            item.querySelector('.order-item').innerText = i + 1;
+                        }
+                    }
+                }
+
+                preExcuteStatus = excuteStatus;
             };
             
             function onChangeTransportCompany(transport) {

@@ -372,6 +372,9 @@ namespace IM_PJ
                             List<tbl_OrderDetail> orderDetails = new List<tbl_OrderDetail>();
                             List<tbl_StockManager> stockManager = new List<tbl_StockManager>();
 
+                            // Reverser
+                            POS.productPOS.Reverse();
+
                             foreach (ProductGetOut item in POS.productPOS)
                             {
                                 orderDetails.Add(

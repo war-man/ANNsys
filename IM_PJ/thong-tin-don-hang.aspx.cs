@@ -315,6 +315,10 @@ namespace IM_PJ
                     #region Lấy danh sách sản phẩm
 
                     var orderdetails = OrderDetailController.GetByOrderID(ID);
+
+                    if (excuteStatus == (int)ExcuteStatus.Doing)
+                        orderdetails.Reverse();
+
                     StringBuilder html = new StringBuilder();
                     if (orderdetails.Count > 0)
                     {
@@ -982,158 +986,138 @@ namespace IM_PJ
                             if (OrderID > 0)
                             {
                                 string list = hdfListProduct.Value;
-                                string[] items = list.Split(';');
-                                if (items.Length - 1 > 0)
+                                var items = list.Split(';').Where(x => !String.IsNullOrEmpty(x)).ToList();
+
+                                if (items.Count > 0 && ExcuteStatus == 1)
+                                    items.Reverse();
+
+                                foreach (var item in items)
                                 {
-                                    for (int i = 0; i < items.Length - 1; i++)
+                                    string[] itemValue = item.Split(',');
+
+                                    int ProductID = itemValue[0].ToInt();
+                                    int ProductVariableID = itemValue[12].ToInt();
+                                    string SKU = itemValue[1].ToString();
+                                    int ProductType = itemValue[2].ToInt();
+
+                                    // Tìm parentID
+                                    int parentID = ProductID;
+                                    var variable = ProductVariableController.GetByID(ProductVariableID);
+                                    if (variable != null)
                                     {
-                                        var item = items[i];
-                                        string[] itemValue = item.Split(',');
+                                        parentID = Convert.ToInt32(variable.ProductID);
+                                    }
 
-                                        int ProductID = itemValue[0].ToInt();
-                                        int ProductVariableID = itemValue[12].ToInt();
-                                        string SKU = itemValue[1].ToString();
-                                        int ProductType = itemValue[2].ToInt();
+                                    string ProductVariableName = itemValue[3];
+                                    string ProductVariableValue = itemValue[4];
+                                    double Quantity = Convert.ToDouble(itemValue[5]);
+                                    string ProductName = itemValue[6];
+                                    string ProductImageOrigin = itemValue[7];
+                                    string ProductVariable = itemValue[8];
+                                    double Price = Convert.ToDouble(itemValue[9]);
+                                    string ProductVariableSave = itemValue[10];
+                                    int OrderDetailID = itemValue[11].ToInt(0);
 
-                                        // Tìm parentID
-                                        int parentID = ProductID;
-                                        var variable = ProductVariableController.GetByID(ProductVariableID);
-                                        if (variable != null)
+                                    // Xử lý với trạng thái của đơn hàng đã hủy
+                                    if (ExcuteStatusOld == 3)
+                                    {
+                                        var orderDetail = OrderDetailController.GetByID(OrderDetailID);
+
+                                        if (orderDetail != null)
                                         {
-                                            parentID = Convert.ToInt32(variable.ProductID);
+                                            OrderDetailController.UpdateQuantity(OrderDetailID, Quantity, Price, currentDate, username);
+                                        }
+                                        else
+                                        {
+                                            OrderDetailController.Insert(new tbl_OrderDetail()
+                                            {
+                                                AgentID = AgentID,
+                                                OrderID = OrderID,
+                                                SKU = SKU,
+                                                ProductID = ProductID,
+                                                ProductVariableID = ProductVariableID,
+                                                ProductVariableDescrition = ProductVariableSave,
+                                                Quantity = Quantity,
+                                                Price = Price,
+                                                Status = 1,
+                                                DiscountPrice = 0,
+                                                ProductType = 2,
+                                                CreatedDate = currentDate,
+                                                CreatedBy = username,
+                                                IsCount = true
+                                            });
                                         }
 
-                                        string ProductVariableName = itemValue[3];
-                                        string ProductVariableValue = itemValue[4];
-                                        double Quantity = Convert.ToDouble(itemValue[5]);
-                                        string ProductName = itemValue[6];
-                                        string ProductImageOrigin = itemValue[7];
-                                        string ProductVariable = itemValue[8];
-                                        double Price = Convert.ToDouble(itemValue[9]);
-                                        string ProductVariableSave = itemValue[10];
-                                        int OrderDetailID = itemValue[11].ToInt(0);
-                                        
-                                        // Xử lý với trạng thái của đơn hàng đã hủy
-                                        if (ExcuteStatusOld == 3)
+                                        StockManagerController.Insert(
+                                            new tbl_StockManager
+                                            {
+                                                AgentID = AgentID,
+                                                ProductID = ProductID,
+                                                ProductVariableID = ProductVariableID,
+                                                Quantity = Quantity,
+                                                QuantityCurrent = 0,
+                                                Type = 2,
+                                                NoteID = "Xuất kho khi chuyển trạng từ trạng thái hủy đơn hàng sang trạng thái khác",
+                                                OrderID = OrderID,
+                                                Status = 4,
+                                                SKU = SKU,
+                                                CreatedDate = currentDate,
+                                                CreatedBy = username,
+                                                MoveProID = 0,
+                                                ParentID = parentID,
+                                            });
+
+                                        continue;
+                                    }
+
+                                    // kiểm tra sản phẩm này đã có trong đơn chưa?
+
+                                    var od = OrderDetailController.GetByID(OrderDetailID);
+
+                                    if (od != null) // nếu sản phẩm này có trong đơn có rồi thì chỉnh sửa
+                                    {
+                                        if (od.IsCount == true)
                                         {
-                                            var orderDetail = OrderDetailController.GetByID(OrderDetailID);
-
-                                            if(orderDetail != null)
+                                            double quantityOld = Convert.ToDouble(od.Quantity);
+                                            if (quantityOld > Quantity)
                                             {
-                                                OrderDetailController.UpdateQuantity(OrderDetailID, Quantity, Price, currentDate, username);
-                                            }
-                                            else
-                                            {
-                                                OrderDetailController.Insert(new tbl_OrderDetail()
-                                                {
-                                                    AgentID = AgentID,
-                                                    OrderID = OrderID,
-                                                    SKU = SKU,
-                                                    ProductID = ProductID,
-                                                    ProductVariableID = ProductVariableID,
-                                                    ProductVariableDescrition = ProductVariableSave,
-                                                    Quantity = Quantity,
-                                                    Price = Price,
-                                                    Status = 1,
-                                                    DiscountPrice = 0,
-                                                    ProductType = 2,
-                                                    CreatedDate = currentDate,
-                                                    CreatedBy = username,
-                                                    IsCount = true
-                                                });
-                                            }
-
-                                            StockManagerController.Insert(
-                                                new tbl_StockManager {
-                                                    AgentID = AgentID,
-                                                    ProductID = ProductID,
-                                                    ProductVariableID = ProductVariableID,
-                                                    Quantity = Quantity,
-                                                    QuantityCurrent = 0,
-                                                    Type = 2,
-                                                    NoteID = "Xuất kho khi chuyển trạng từ trạng thái hủy đơn hàng sang trạng thái khác",
-                                                    OrderID = OrderID,
-                                                    Status = 4,
-                                                    SKU = SKU,
-                                                    CreatedDate = currentDate,
-                                                    CreatedBy = username,
-                                                    MoveProID = 0,
-                                                    ParentID = parentID,
-                                                });
-
-                                            continue;
-                                        }
-
-                                        // kiểm tra sản phẩm này đã có trong đơn chưa?
-                                        
-                                        var od = OrderDetailController.GetByID(OrderDetailID);
-                                        
-                                        if (od != null) // nếu sản phẩm này có trong đơn có rồi thì chỉnh sửa
-                                        {
-                                            if (od.IsCount == true)
-                                            {
-                                                double quantityOld = Convert.ToDouble(od.Quantity);
-                                                if (quantityOld > Quantity)
-                                                {
-                                                    //cộng vô kho
-                                                    double quantitynew = quantityOld - Quantity;
-                                                    StockManagerController.Insert(
-                                                        new tbl_StockManager
-                                                        {
-                                                            AgentID = AgentID,
-                                                            ProductID = ProductID,
-                                                            ProductVariableID = ProductVariableID,
-                                                            Quantity = quantitynew,
-                                                            QuantityCurrent = 0,
-                                                            Type = 1,
-                                                            NoteID = "Nhập kho khi giảm số lượng trong sửa đơn",
-                                                            OrderID = OrderID,
-                                                            Status = 4,
-                                                            SKU = SKU,
-                                                            CreatedDate = currentDate,
-                                                            CreatedBy = username,
-                                                            MoveProID = 0,
-                                                            ParentID = parentID,
-                                                        });
-                                                }
-                                                else if (quantityOld < Quantity)
-                                                {
-                                                    // tính số lượng kho cần xuất thêm
-                                                    double quantitynew = Quantity - quantityOld;
-
-                                                    //trừ tiếp trong kho
-                                                    StockManagerController.Insert(
-                                                        new tbl_StockManager
-                                                        {
-                                                            AgentID = AgentID,
-                                                            ProductID = ProductID,
-                                                            ProductVariableID = ProductVariableID,
-                                                            Quantity = quantitynew,
-                                                            QuantityCurrent = 0,
-                                                            Type = 2,
-                                                            NoteID = "Xuất kho khi tăng số lượng trong sửa đơn",
-                                                            OrderID = OrderID,
-                                                            Status = 3,
-                                                            SKU = SKU,
-                                                            CreatedDate = currentDate,
-                                                            CreatedBy = username,
-                                                            MoveProID = 0,
-                                                            ParentID = parentID,
-                                                        });
-                                                }
-                                            }
-                                            else
-                                            {
+                                                //cộng vô kho
+                                                double quantitynew = quantityOld - Quantity;
                                                 StockManagerController.Insert(
                                                     new tbl_StockManager
                                                     {
                                                         AgentID = AgentID,
                                                         ProductID = ProductID,
                                                         ProductVariableID = ProductVariableID,
-                                                        Quantity = Quantity,
+                                                        Quantity = quantitynew,
+                                                        QuantityCurrent = 0,
+                                                        Type = 1,
+                                                        NoteID = "Nhập kho khi giảm số lượng trong sửa đơn",
+                                                        OrderID = OrderID,
+                                                        Status = 4,
+                                                        SKU = SKU,
+                                                        CreatedDate = currentDate,
+                                                        CreatedBy = username,
+                                                        MoveProID = 0,
+                                                        ParentID = parentID,
+                                                    });
+                                            }
+                                            else if (quantityOld < Quantity)
+                                            {
+                                                // tính số lượng kho cần xuất thêm
+                                                double quantitynew = Quantity - quantityOld;
+
+                                                //trừ tiếp trong kho
+                                                StockManagerController.Insert(
+                                                    new tbl_StockManager
+                                                    {
+                                                        AgentID = AgentID,
+                                                        ProductID = ProductID,
+                                                        ProductVariableID = ProductVariableID,
+                                                        Quantity = quantitynew,
                                                         QuantityCurrent = 0,
                                                         Type = 2,
-                                                        NoteID = "Xuất kho thêm mới sản phẩm khi sửa đơn",
+                                                        NoteID = "Xuất kho khi tăng số lượng trong sửa đơn",
                                                         OrderID = OrderID,
                                                         Status = 3,
                                                         SKU = SKU,
@@ -1142,17 +1126,10 @@ namespace IM_PJ
                                                         MoveProID = 0,
                                                         ParentID = parentID,
                                                     });
-                                                OrderDetailController.UpdateIsCount(OrderDetailID, true);
                                             }
-
-                                            // cập nhật số lượng sản phẩm trong đơn hàng
-                                            OrderDetailController.UpdateQuantity(OrderDetailID, Quantity, Price, currentDate, username);
                                         }
-                                        // nếu sản phẩm này chưa có trong đơn thì thêm vào
                                         else
                                         {
-                                            OrderDetailController.Insert(AgentID, OrderID, SKU, ProductID, ProductVariableID, ProductVariableSave, Quantity, Price, 1, 0, ProductType, currentDate, username, true);
-
                                             StockManagerController.Insert(
                                                 new tbl_StockManager
                                                 {
@@ -1162,7 +1139,7 @@ namespace IM_PJ
                                                     Quantity = Quantity,
                                                     QuantityCurrent = 0,
                                                     Type = 2,
-                                                    NoteID = "Xuất kho khi thêm sản phẩm mới trong sửa đơn",
+                                                    NoteID = "Xuất kho thêm mới sản phẩm khi sửa đơn",
                                                     OrderID = OrderID,
                                                     Status = 3,
                                                     SKU = SKU,
@@ -1171,7 +1148,35 @@ namespace IM_PJ
                                                     MoveProID = 0,
                                                     ParentID = parentID,
                                                 });
+                                            OrderDetailController.UpdateIsCount(OrderDetailID, true);
                                         }
+
+                                        // cập nhật số lượng sản phẩm trong đơn hàng
+                                        OrderDetailController.UpdateQuantity(OrderDetailID, Quantity, Price, currentDate, username);
+                                    }
+                                    // nếu sản phẩm này chưa có trong đơn thì thêm vào
+                                    else
+                                    {
+                                        OrderDetailController.Insert(AgentID, OrderID, SKU, ProductID, ProductVariableID, ProductVariableSave, Quantity, Price, 1, 0, ProductType, currentDate, username, true);
+
+                                        StockManagerController.Insert(
+                                            new tbl_StockManager
+                                            {
+                                                AgentID = AgentID,
+                                                ProductID = ProductID,
+                                                ProductVariableID = ProductVariableID,
+                                                Quantity = Quantity,
+                                                QuantityCurrent = 0,
+                                                Type = 2,
+                                                NoteID = "Xuất kho khi thêm sản phẩm mới trong sửa đơn",
+                                                OrderID = OrderID,
+                                                Status = 3,
+                                                SKU = SKU,
+                                                CreatedDate = currentDate,
+                                                CreatedBy = username,
+                                                MoveProID = 0,
+                                                ParentID = parentID,
+                                            });
                                     }
                                 }
 

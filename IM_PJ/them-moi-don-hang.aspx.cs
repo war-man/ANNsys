@@ -311,60 +311,58 @@ namespace IM_PJ
                     if (OrderID > 0)
                     {
                         string list = hdfListProduct.Value;
-                        string[] items = list.Split(';');
-                        if (items.Length - 1 > 0)
+                        var items = list.Split(';').Where(x => !String.IsNullOrEmpty(x)).ToList();
+                        if (items.Count > 0)
+                            items.Reverse();
+
+                        foreach (var item in items)
                         {
-                            for (int i = 0; i < items.Length - 1; i++)
+                            string[] itemValue = item.Split(',');
+
+                            int ProductID = itemValue[0].ToInt();
+                            int ProductVariableID = itemValue[11].ToInt();
+                            string SKU = itemValue[1].ToString();
+                            int ProductType = itemValue[2].ToInt();
+
+                            // Tìm parentID
+                            int parentID = ProductID;
+                            var variable = ProductVariableController.GetByID(ProductVariableID);
+                            if (variable != null)
                             {
-
-                                var item = items[i];
-                                string[] itemValue = item.Split(',');
-
-                                int ProductID = itemValue[0].ToInt();
-                                int ProductVariableID = itemValue[11].ToInt();
-                                string SKU = itemValue[1].ToString();
-                                int ProductType = itemValue[2].ToInt();
-
-                                // Tìm parentID
-                                int parentID = ProductID;
-                                var variable = ProductVariableController.GetByID(ProductVariableID);
-                                if (variable != null)
-                                {
-                                    parentID = Convert.ToInt32(variable.ProductID);
-                                }
-
-                                string ProductVariableName = itemValue[3];
-                                string ProductVariableValue = itemValue[4];
-                                double Quantity = Convert.ToDouble(itemValue[5]);
-                                string ProductName = itemValue[6];
-                                string ProductImageOrigin = itemValue[7];
-                                string ProductVariable = itemValue[8];
-                                double Price = Convert.ToDouble(itemValue[9]);
-                                string ProductVariableSave = itemValue[10];
-
-                                OrderDetailController.Insert(AgentID, OrderID, SKU, ProductID, ProductVariableID, ProductVariableSave, Quantity, Price, 1, 0,
-                                    ProductType, currentDate, username, true);
-
-                                StockManagerController.Insert(
-                                    new tbl_StockManager
-                                    {
-                                        AgentID = AgentID,
-                                        ProductID = ProductID,
-                                        ProductVariableID = ProductVariableID,
-                                        Quantity = Quantity,
-                                        QuantityCurrent = 0,
-                                        Type = 2,
-                                        NoteID = "Xuất kho khi tạo đơn",
-                                        OrderID = OrderID,
-                                        Status = 3,
-                                        SKU = SKU,
-                                        CreatedDate = currentDate,
-                                        CreatedBy = username,
-                                        MoveProID = 0,
-                                        ParentID = parentID,
-                                    });
-                                totalQuantity += Quantity;
+                                parentID = Convert.ToInt32(variable.ProductID);
                             }
+
+                            string ProductVariableName = itemValue[3];
+                            string ProductVariableValue = itemValue[4];
+                            double Quantity = Convert.ToDouble(itemValue[5]);
+                            string ProductName = itemValue[6];
+                            string ProductImageOrigin = itemValue[7];
+                            string ProductVariable = itemValue[8];
+                            double Price = Convert.ToDouble(itemValue[9]);
+                            string ProductVariableSave = itemValue[10];
+
+                            OrderDetailController.Insert(AgentID, OrderID, SKU, ProductID, ProductVariableID, ProductVariableSave, Quantity, Price, 1, 0,
+                                ProductType, currentDate, username, true);
+
+                            StockManagerController.Insert(
+                                new tbl_StockManager
+                                {
+                                    AgentID = AgentID,
+                                    ProductID = ProductID,
+                                    ProductVariableID = ProductVariableID,
+                                    Quantity = Quantity,
+                                    QuantityCurrent = 0,
+                                    Type = 2,
+                                    NoteID = "Xuất kho khi tạo đơn",
+                                    OrderID = OrderID,
+                                    Status = 3,
+                                    SKU = SKU,
+                                    CreatedDate = currentDate,
+                                    CreatedBy = username,
+                                    MoveProID = 0,
+                                    ParentID = parentID,
+                                });
+                            totalQuantity += Quantity;
                         }
 
                         string refund = hdSession.Value;
