@@ -173,7 +173,7 @@ namespace IM_PJ.Controllers
             using (var dbe = new inventorymanagementEntities())
             {
                 List<tbl_OrderDetail> ags = new List<tbl_OrderDetail>();
-                ags = dbe.tbl_OrderDetail.Where(o => o.OrderID == OrderID).ToList();
+                ags = dbe.tbl_OrderDetail.Where(o => o.OrderID == OrderID).OrderBy(o => o.ID).ToList();
                 return ags;
             }
         }
