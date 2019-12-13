@@ -56,6 +56,11 @@
         table.shop_table_responsive > tbody > tr:nth-of-type(2n+1) td {
             border-bottom: solid 1px #e1e1e1!important;
         }
+
+        .coupon .right {
+            display: flex;
+        }
+
         @media (max-width: 769px) {
             label {
                 margin-bottom: 0;
@@ -195,7 +200,6 @@
             table.shop_table_responsive tbody td:empty {
                 display: none;
             }
-            
         }
     </style>
 </asp:Content>
@@ -418,6 +422,14 @@
                                 </div>
                             </div>
                             <div id="fee-list"></div>
+                            <div class="post-row clear coupon">
+                                <div class="left">Mã giảm giá</div>
+                                <div class="right">
+                                    <a id="btnOpenCouponModal" class="btn link-btn" style="background-color: #453288" title="Nhập chiết khấu mỗi cái" onclick="openCouponModal()"><i class="fa fa-tag"></i> Mã Giảm Giá</a>
+                                    <a href="javascript:;" id="btnRemoveCouponCode" class="btn btn-feeship link-btn hide" onclick="removeCoupon()"><i class="fa fa-times" aria-hidden="true"></i> Xóa</a>
+                                    <asp:TextBox ID="txtCouponValue" runat="server" CssClass="form-control text-right width-notfull" value="0" disabled="disabled"></asp:TextBox>
+                                </div>
+                            </div>
                             <div class="post-row clear">
                                 <div class="left"><strong>TỔNG TIỀN</strong> (đơn hàng <strong><asp:Literal ID="ltrOrderID" runat="server"></asp:Literal></strong>)</div>
                                 <div class="right totalpriceorderall price-red">
@@ -631,6 +643,11 @@
             <asp:HiddenField ID="hdfOtherFees" runat="server" />
             <asp:HiddenField ID="hdfCustomerID" runat="server" />
             <asp:HiddenField ID="hdfTransportCompanySubID" runat="server" />
+            <asp:HiddenField ID="hdfCouponID" runat="server" />
+            <asp:HiddenField ID="hdfCouponValue" runat="server" />
+            <asp:HiddenField ID="hdfCouponIDOld" runat="server" />
+            <asp:HiddenField ID="hdfCouponCodeOld" runat="server" />
+            <asp:HiddenField ID="hdfCouponValueOld" runat="server" />
 
             <!-- Modal -->
             <div class="modal fade" id="feeModal" role="dialog">
@@ -690,6 +707,33 @@
                         <div class="modal-footer">
                             <button id="closeOrderReturn" type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
                             <button id="createReturnOrder" type="button" class="btn btn-primary" data-dismiss="modal">Tạo đơn hàng đổi trả</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Coupon Modal -->
+            <div class="modal fade" id="couponModal" role="dialog">
+                <div class="modal-dialog">
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h4 class="modal-title">Nhập mã giảm giá</h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row form-group">
+                                <div class="col-xs-12">
+                                    <asp:TextBox ID="txtCouponCode" runat="server" CssClass="form-control text-left" placeholder="Mã giảm giá"></asp:TextBox>
+                                </div>
+                            </div>
+                            <div id="errorCoupon" class="row form-group hide">
+                                <div class="col-xs-12 text-align-left text-danger"><p></p></div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button id="closeCoupon" type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
+                            <button id="insertCoupon" type="button" class="btn btn-primary" onclick="getCoupon()">Xác nhận</button>
                         </div>
                     </div>
                 </div>
@@ -1312,6 +1356,20 @@
                     else {
                         createReturnOrder(customerID);
                     }
+                });
+
+                // Init Coupon
+                let couponCodeOld = $('[id$="_hdfCouponCodeOld"]').val() || "";
+                let couponValueOld = +$('[id$="_hdfCouponValueOld"]').val() || 0;
+                if (couponCodeOld) {
+                    $('[id$="_txtCouponValue"]').val(`${couponCodeOld.trim().toUpperCase()}: ${formatThousands(couponValueOld, ',')}`);
+                    $('#btnOpenCouponModal').addClass('hide');
+                    $('#btnRemoveCouponCode').removeClass('hide');
+                }
+
+                $('[id$="_txtCouponCode"]').keypress((event) => {
+                    if (event.which == 13)
+                        getCoupon();
                 });
             });
 
@@ -1981,8 +2039,10 @@
                     });
 
                     var priceafterchietkhau = totalleft;
+                    // Phiếu giảm giá
+                    let priceCoupon = +$("#<%=hdfCouponValue.ClientID%>").val() || 0;
 
-                    var totalmoney = totalleft + feeship + otherfee;
+                    var totalmoney = totalleft + feeship + otherfee - priceCoupon;
 
                     $("#<%=pDiscount.ClientID%>").val(formatThousands(totalDiscount, ','));
 
@@ -2317,6 +2377,141 @@
                     swal("Thông báo", "Vui lòng cho phép cửa sổ bật lên cho trang web này", "error");
                 }
             };
+
+            function openCouponModal() {
+                let customerID = +document.querySelector('[id$="_hdfCustomerID"]').value || 0;
+                let productNumber = +document.querySelector('[id$="_hdftotal"]').value || 0;
+
+                if (!customerID)
+                    return swal("Thông báo", "Chưa nhập thông tin khách hàng", "warning");
+
+                if (!productNumber)
+                    return swal("Thông báo", "Chưa có sản phẩm", "warning");
+
+                let couponModalDOM = $('#couponModal');
+                let codeDOM = couponModalDOM.find("[id$='_txtCouponCode']");
+                let errorDOM = couponModalDOM.find("#errorCoupon");
+                let txtCouponValue = $('[id$="_txtCouponValue"]');
+                let hdfCouponID = $('[id$="_hdfCouponID"]');
+                let hdfCouponValue = $('[id$="_hdfCouponValue"]');
+
+                if (codeDOM)
+                    codeDOM.val('');
+
+                if (errorDOM) {
+                    errorDOM.addClass('hide');
+                    errorDOM.find('p').html('');
+                }
+
+                if (txtCouponValue)
+                    txtCouponValue.val('0');
+
+                if (hdfCouponID)
+                    hdfCouponID.val('0');
+
+                if (hdfCouponValue)
+                    hdfCouponValue.val('0');
+
+                couponModalDOM.modal({ show: 'true', backdrop: 'static', keyboard: false });
+
+                couponModalDOM.on('shown.bs.modal', function () {
+                    codeDOM.focus();
+                });
+            }
+
+            function getCoupon() {
+                let couponModalDOM = document.querySelector('#couponModal');
+                let codeDOM = document.querySelector('[id$="_txtCouponCode"]');
+                let errorDOM = document.querySelector('#errorCoupon');
+
+                let customerID = +document.querySelector('[id$="_hdfCustomerID"]').value || 0;
+                let code = codeDOM.value.trim() || "";
+                let productNumber = +document.querySelector('[id$="_hdftotal"]').value || 0;
+                let price = +document.querySelector('[id$="_hdfTotalPrice"]').value || 0;
+
+                if (!code) {
+                    errorDOM.classList.remove('hide')
+                    errorDOM.querySelector('p').innerText = "Vui lòng nhập thông tin CODE giảm giá";
+
+                    codeDOM.focus();
+                    codeDOM.select();
+
+                    return;
+                }
+
+                let couponIDOld = +document.querySelector('[id$="_hdfCouponIDOld"]').value || 0;
+                let couponCodeOld = document.querySelector('[id$="_hdfCouponCodeOld"]').value || "";
+                let couponValueOld = +document.querySelector('[id$="_hdfCouponValueOld"]').value || 0;
+
+                code = code.trim().toUpperCase();
+                couponCodeOld = couponCodeOld ? couponCodeOld.trim().toUpperCase() : "";
+
+                if (code === couponCodeOld) {
+                    document.querySelector('[id$="_txtCouponValue"]').value = `${couponCodeOld}: ${formatThousands(couponValueOld, ',')}`;
+                    document.querySelector('[id$="_hdfCouponID"]').value = couponIDOld;
+                    document.querySelector('[id$="_hdfCouponValue"]').value = couponValueOld;
+
+                    couponModalDOM.querySelector('#closeCoupon').click();
+                    document.querySelector('#btnOpenCouponModal').classList.add('hide');
+                    document.querySelector('#btnRemoveCouponCode').classList.remove('hide');
+
+                    getAllPrice();
+
+                    return;
+                }
+
+                $.ajax({
+                    type: "POST",
+                    url: "/thong-tin-don-hang.aspx/getCoupon",
+                    data: JSON.stringify({ "customerID": customerID, "code": code, "productNumber": productNumber, "price": price }),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: (respon) => {
+                        let data = JSON.parse(respon.d);
+
+                        if (data) {
+                            if (!data.status) {
+                                errorDOM.classList.remove('hide')
+                                errorDOM.querySelector('p').innerText = data.message;
+
+                                codeDOM.focus();
+                                codeDOM.select();
+                            }
+                            else {
+                                document.querySelector('[id$="_txtCouponValue"]').value = `${code}: ${formatThousands(+data.value || 0, ',')}`;
+                                document.querySelector('[id$="_hdfCouponID"]').value = +data.couponID || 0;
+                                document.querySelector('[id$="_hdfCouponValue"]').value = +data.value || 0;
+
+                                couponModalDOM.querySelector('#closeCoupon').click();
+                                document.querySelector('#btnOpenCouponModal').classList.add('hide');
+                                document.querySelector('#btnRemoveCouponCode').classList.remove('hide');
+
+                                getAllPrice();
+                            }
+                        }
+                        else {
+                            errorDOM.classList.remove('hide')
+                            errorDOM.querySelector('p').innerText = `Mã code ${code} không tồn tại`;
+
+                            codeDOM.focus();
+                            codeDOM.select();
+                        }
+                    },
+                    error: (xmlhttprequest, textstatus, errorthrow) => {
+                        swal("Thông báo", "Đã xảy ra lỗi trong quá trình lấy mã giảm giá", "error");
+                    }
+                });
+            }
+
+            function removeCoupon() {
+                document.querySelector('[id$="_txtCouponValue"]').value = 0;
+                document.querySelector('[id$="_hdfCouponID"]').value = 0;
+                document.querySelector('[id$="_hdfCouponValue"]').value = 0;
+                document.querySelector('#btnOpenCouponModal').classList.remove('hide');
+                document.querySelector('#btnRemoveCouponCode').classList.add('hide');
+
+                getAllPrice();
+            }
         </script>
     </telerik:RadScriptBlock>
 </asp:Content>

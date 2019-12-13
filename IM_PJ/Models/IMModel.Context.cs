@@ -29,8 +29,10 @@ namespace IM_PJ.Models
         public virtual DbSet<BankAccount> BankAccounts { get; set; }
         public virtual DbSet<BankTransfer> BankTransfers { get; set; }
         public virtual DbSet<CategoryShelf> CategoryShelves { get; set; }
+        public virtual DbSet<Coupon> Coupons { get; set; }
         public virtual DbSet<CronJob> CronJobs { get; set; }
         public virtual DbSet<CronJobProductStatu> CronJobProductStatus { get; set; }
+        public virtual DbSet<CustomerCoupon> CustomerCoupons { get; set; }
         public virtual DbSet<CustomerEditOrder> CustomerEditOrders { get; set; }
         public virtual DbSet<Delivery> Deliveries { get; set; }
         public virtual DbSet<DeliveryPostOffice> DeliveryPostOffices { get; set; }

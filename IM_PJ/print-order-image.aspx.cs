@@ -490,6 +490,19 @@ namespace IM_PJ
                             productPrint += "</tr>";
                         }
 
+                        // Giảm giá
+                        if (order.CouponID.HasValue && order.CouponID.Value > 0)
+                        {
+                            var coupon = CouponController.getCoupon(order.CouponID.Value);
+
+                            TotalOrder = TotalOrder - Convert.ToDouble(coupon.Value);
+                            TotalPrice = TotalPrice - Convert.ToDouble(coupon.Value);
+                            productPrint += "<tr>";
+                            productPrint += String.Format("<td colspan='{0}' class='align-right'>Mã giảm giá: {1}</td>", colspan, coupon.Code);
+                            productPrint += String.Format("<td>{0:N0}</td>", Convert.ToDouble(coupon.Value));
+                            productPrint += "</tr>";
+                        }
+
                         if (TotalPrice != Convert.ToDouble(order.TotalPrice))
                         {
                             error += "Đơn hàng tính sai tổng tiền";

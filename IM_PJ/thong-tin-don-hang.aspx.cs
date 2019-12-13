@@ -560,6 +560,18 @@ namespace IM_PJ
                     }
                     ltrOrderNote.Text = order.OrderNote;
                     ltrOrderQuantity.Text = ProductQuantity.ToString();
+
+                    // Thông tin giảm mã giảm giá
+                    hdfCouponID.Value = order.CouponID.ToString();
+                    hdfCouponValue.Value = order.CouponValue.ToString();
+                    hdfCouponIDOld.Value = order.CouponID.ToString();
+                    if (order.CouponID.HasValue && order.CouponID > 0)
+                    {
+                        var coupon = CouponController.getCoupon(order.CouponID.Value);
+                        hdfCouponCodeOld.Value = coupon.Code.Trim().ToUpper();
+                    }
+                    hdfCouponValueOld.Value = order.CouponValue.ToString();
+
                     ltrOrderTotalPrice.Text = string.Format("{0:N0}", Convert.ToDouble(order.TotalPrice));
 
                     if(order.ExcuteStatus == 1)
@@ -895,10 +907,51 @@ namespace IM_PJ
                                     }
                                 }
                             }
+                            var couponID = hdfCouponID.Value.ToInt(0);
+                            var couponIDOld = order.CouponID.HasValue ? order.CouponID.Value : 0;
+                            var couponValue = hdfCouponValue.Value.ToDecimal(0);
 
-                            string ret = OrderController.UpdateOnSystem(OrderID, OrderType, AdditionFee, DisCount, CustomerID, CustomerName, CustomerPhone,
-                                CustomerAddress, "", totalPrice, totalPriceNotDiscount, PaymentStatus, ExcuteStatus, currentDate, username, acc.Username,
-                                Convert.ToDouble(pDiscount.Value), TotalDiscount, FeeShipping, Convert.ToDouble(order.GuestPaid), Convert.ToDouble(order.GuestChange), PaymentType, ShippingType, OrderNote, datedone, 0, ShippingCode, TransportCompanyID, TransportCompanySubID, String.Empty, 0, PostalDeliveryType);
+                            var orderNew = new tbl_Order()
+                            {
+                                ID = OrderID,
+                                OrderType = OrderType,
+                                AdditionFee = AdditionFee,
+                                DisCount = DisCount,
+                                CustomerID = CustomerID,
+                                CustomerName = CustomerName,
+                                CustomerPhone = CustomerPhone,
+                                CustomerAddress = CustomerAddress,
+                                CustomerEmail = String.Empty,
+                                TotalPrice = totalPrice,
+                                TotalPriceNotDiscount = totalPriceNotDiscount,
+                                PaymentStatus = PaymentStatus,
+                                ExcuteStatus = ExcuteStatus,
+                                ModifiedDate = currentDate,
+                                CreatedBy = username,
+                                ModifiedBy = acc.Username,
+                                DiscountPerProduct = Convert.ToDouble(pDiscount.Value),
+                                TotalDiscount = TotalDiscount,
+                                FeeShipping = FeeShipping,
+                                GuestPaid = Convert.ToDouble(order.GuestPaid),
+                                GuestChange = Convert.ToDouble(order.GuestChange),
+                                PaymentType = PaymentType,
+                                ShippingType = ShippingType,
+                                OrderNote = OrderNote,
+                                RefundsGoodsID = 0,
+                                ShippingCode = ShippingCode,
+                                TransportCompanyID = TransportCompanyID,
+                                TransportCompanySubID = TransportCompanySubID,
+                                OtherFeeName = String.Empty,
+                                OtherFeeValue = 0,
+                                PostalDeliveryType = PostalDeliveryType,
+                                CouponID = couponID,
+                                CouponValue = couponValue
+                            };
+
+                            if (!String.IsNullOrEmpty(datedone))
+                                orderNew.DateDone = Convert.ToDateTime(datedone);
+
+                            OrderController.UpdateOnSystem(orderNew);
 
                             // Insert Other Fee
                             if (!String.IsNullOrEmpty(hdfOtherFees.Value))
@@ -923,6 +976,25 @@ namespace IM_PJ
                             {
                                 // Remove all fee
                                 FeeController.deleteAll(OrderID);
+                            }
+
+                            // Trường hợp remove mã khuyến mãi
+                            if (couponID == 0)
+                            {
+                                if (couponIDOld > 0)
+                                {
+                                    CouponController.updateStatusCouponCustomer(CustomerID, couponIDOld, true);
+                                }
+                            }
+                            else
+                            {
+                                if (couponIDOld != couponID)
+                                {
+                                    if (couponIDOld > 0)
+                                        CouponController.updateStatusCouponCustomer(CustomerID, couponIDOld, true);
+                                    if (couponID > 0)
+                                        CouponController.updateStatusCouponCustomer(CustomerID, couponID, false);
+                                }
                             }
 
                             // Insert Or Update Transfer Bank
@@ -1220,6 +1292,12 @@ namespace IM_PJ
                     }
                 }
             }
+        }
+
+        [WebMethod]
+        public static string getCoupon(int customerID, string code, int productNumber, decimal price)
+        {
+            return CouponController.getCoupon(customerID, code, productNumber, price);
         }
     }
 }
