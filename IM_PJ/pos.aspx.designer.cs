@@ -94,6 +94,15 @@ namespace IM_PJ {
         protected global::Telerik.Web.UI.RadNumericTextBox pFeeShip;
         
         /// <summary>
+        /// txtCouponValue control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtCouponValue;
+        
+        /// <summary>
         /// pGuestPaid control.
         /// </summary>
         /// <remarks>
@@ -319,6 +328,24 @@ namespace IM_PJ {
         protected global::System.Web.UI.WebControls.HiddenField hdfCustomerID;
         
         /// <summary>
+        /// hdfCouponID control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField hdfCouponID;
+        
+        /// <summary>
+        /// hdfCouponValue control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField hdfCouponValue;
+        
+        /// <summary>
         /// hdfUUID control.
         /// </summary>
         /// <remarks>
@@ -344,6 +371,15 @@ namespace IM_PJ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtFeePrice;
+        
+        /// <summary>
+        /// txtCouponCode control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtCouponCode;
         
         /// <summary>
         /// rAjax control.

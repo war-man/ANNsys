@@ -20,97 +20,24 @@ namespace IM_PJ.Controllers
     public class OrderController
     {
         #region CRUD
-        public static tbl_Order Insert(int AgentID, int OrderType, string AdditionFee, string DisCount, int CustomerID, string CustomerName, string CustomerPhone,
-            string CustomerAddress, string CustomerEmail, string TotalPrice, string TotalPriceNotDiscount, int PaymentStatus, int ExcuteStatus, bool IsHidden, int WayIn,
-            DateTime CreatedDate, string CreatedBy, double DiscountPerProduct, double TotalDiscount, string FeeShipping, int PaymentType, int ShippingType, string DateDone, double GuestPaid, double GuestChange, int TransportCompanyID, int TransportCompanySubID, string OtherFeeName, double OtherFeeValue, int PostalDeliveryType)
+        public static tbl_Order Insert(tbl_Order data)
         {
-            using (var dbe = new inventorymanagementEntities())
+            using (var con = new inventorymanagementEntities())
             {
-                tbl_Order ui = new tbl_Order();
-                ui.AgentID = AgentID;
-                ui.OrderType = OrderType;
-                ui.AdditionFee = AdditionFee;
-                ui.DisCount = DisCount;
-                ui.CustomerID = CustomerID;
-                ui.CustomerName = CustomerName;
-                ui.CustomerPhone = CustomerPhone;
-                ui.CustomerAddress = CustomerAddress;
-                if (!string.IsNullOrEmpty(CustomerEmail))
-                    ui.CustomerEmail = CustomerEmail;
-                ui.TotalPrice = TotalPrice;
-                ui.TotalPriceNotDiscount = TotalPriceNotDiscount;
-                ui.PaymentStatus = PaymentStatus;
-                ui.ExcuteStatus = ExcuteStatus;
-                ui.IsHidden = IsHidden;
-                ui.WayIn = WayIn;
-                ui.IsHidden = IsHidden;
-                ui.DiscountPerProduct = DiscountPerProduct;
-                ui.TotalDiscount = TotalDiscount;
-                ui.FeeShipping = FeeShipping;
-                ui.CreatedDate = CreatedDate;
-                ui.CreatedBy = CreatedBy;
-                ui.PaymentType = PaymentType;
-                ui.ShippingType = ShippingType;
-                ui.GuestPaid = GuestPaid;
-                ui.GuestChange = GuestChange;
-                ui.TransportCompanyID = TransportCompanyID;
-                ui.TransportCompanySubID = TransportCompanySubID;
-                ui.OtherFeeName = OtherFeeName;
-                ui.OtherFeeValue = OtherFeeValue;
-                ui.PostalDeliveryType = PostalDeliveryType;
-                if (DateDone != "")
-                {
-                    ui.DateDone = Convert.ToDateTime(DateDone);
-                }
+                con.tbl_Order.Add(data);
+                con.SaveChanges();
 
-                dbe.tbl_Order.Add(ui);
-                dbe.SaveChanges();
-                //int kq = ui.ID;
-                return ui;
+                return data;
             }
         }
-        public static tbl_Order InsertOnSystem(int AgentID, int OrderType, string AdditionFee, string DisCount, int CustomerID, string CustomerName, string CustomerPhone,
-           string CustomerAddress, string CustomerEmail, string TotalPrice, string TotalPriceNotDiscount, int PaymentStatus, int ExcuteStatus, bool IsHidden, int WayIn,
-           DateTime CreatedDate, string CreatedBy, double DiscountPerProduct, double TotalDiscount, string FeeShipping, double GuestPaid, double GuestChange, int PaymentType, int ShippingType, string OrderNote, DateTime DateDone, string OtherFeeName, double OtherFeeValue, int PostalDeliveryType, string UserHelp)
+        public static tbl_Order InsertOnSystem(tbl_Order data)
         {
             using (var dbe = new inventorymanagementEntities())
             {
-                tbl_Order ui = new tbl_Order();
-                ui.AgentID = AgentID;
-                ui.OrderType = OrderType;
-                ui.AdditionFee = AdditionFee;
-                ui.DisCount = DisCount;
-                ui.CustomerID = CustomerID;
-                ui.CustomerName = CustomerName;
-                ui.CustomerPhone = CustomerPhone;
-                ui.CustomerAddress = CustomerAddress;
-                ui.CustomerEmail = CustomerEmail;
-                ui.TotalPrice = TotalPrice;
-                ui.TotalPriceNotDiscount = TotalPriceNotDiscount;
-                ui.PaymentStatus = PaymentStatus;
-                ui.ExcuteStatus = ExcuteStatus;
-                ui.IsHidden = IsHidden;
-                ui.WayIn = WayIn;
-                ui.IsHidden = IsHidden;
-                ui.DiscountPerProduct = DiscountPerProduct;
-                ui.TotalDiscount = TotalDiscount;
-                ui.FeeShipping = FeeShipping;
-                ui.CreatedDate = CreatedDate;
-                ui.CreatedBy = CreatedBy;
-                ui.GuestPaid = GuestPaid;
-                ui.GuestChange = GuestChange;
-                ui.PaymentType = PaymentType;
-                ui.ShippingType = ShippingType;
-                ui.OrderNote = OrderNote;
-                ui.DateDone = DateDone;
-                ui.OtherFeeName = OtherFeeName;
-                ui.OtherFeeValue = OtherFeeValue;
-                ui.PostalDeliveryType = PostalDeliveryType;
-                ui.UserHelp = UserHelp;
-                dbe.tbl_Order.Add(ui);
+                dbe.tbl_Order.Add(data);
                 dbe.SaveChanges();
 
-                return ui;
+                return data;
             }
         }
 
@@ -196,53 +123,48 @@ namespace IM_PJ.Controllers
                 return null;
             }
         }
-        public static string UpdateOnSystem(int ID, int OrderType, string AdditionFee, string DisCount, int CustomerID, string CustomerName,
-            string CustomerPhone, string CustomerAddress, string CustomerEmail, string TotalPrice, string TotalPriceNotDiscount, int PaymentStatus,
-            int ExcuteStatus, DateTime ModifiedDate, string CreatedBy, string ModifiedBy, double DiscountPerProduct, double TotalDiscount,
-            string FeeShipping, double GuestPaid, double GuestChange, int PaymentType, int ShippingType, string OrderNote, string DateDone, int RefundsGoodsID = 0, string ShippingCode = null, int TransportCompanyID = 0, int TransportCompanySubID = 0, string OtherFeeName = "", double OtherFeeValue = 0, int PostalDeliveryType = 1)
+        public static tbl_Order UpdateOnSystem(tbl_Order data)
         {
-            using (var dbe = new inventorymanagementEntities())
+            using (var con = new inventorymanagementEntities())
             {
-                var ui = dbe.tbl_Order.Where(o => o.ID == ID).FirstOrDefault();
-                if (ui != null)
+                var orderOld = con.tbl_Order.Where(o => o.ID == data.ID).FirstOrDefault();
+                if (orderOld != null)
                 {
-                    ui.OrderType = OrderType;
-                    ui.AdditionFee = AdditionFee;
-                    ui.DisCount = DisCount;
-                    ui.CustomerID = CustomerID;
-                    ui.CustomerName = CustomerName;
-                    ui.CustomerPhone = CustomerPhone;
-                    ui.CustomerAddress = CustomerAddress;
-                    ui.CustomerEmail = CustomerEmail;
-                    ui.TotalPrice = TotalPrice;
-                    ui.TotalPriceNotDiscount = TotalPriceNotDiscount;
-                    ui.PaymentStatus = PaymentStatus;
-                    ui.ExcuteStatus = ExcuteStatus;
-                    ui.DiscountPerProduct = DiscountPerProduct;
-                    ui.TotalDiscount = TotalDiscount;
-                    ui.FeeShipping = FeeShipping;
-                    ui.GuestPaid = GuestPaid;
-                    ui.GuestChange = GuestChange;
-                    ui.ModifiedDate = ModifiedDate;
-                    ui.CreatedBy = CreatedBy;
-                    ui.ModifiedBy = ModifiedBy;
-                    ui.PaymentType = PaymentType;
-                    ui.ShippingType = ShippingType;
-                    ui.OrderNote = OrderNote;
-                    ui.DateDone = null;
-                    if (DateDone != "")
-                    {
-                        ui.DateDone = Convert.ToDateTime(DateDone);
-                    }
-                    ui.ShippingCode = ShippingCode;
-                    ui.TransportCompanyID = TransportCompanyID;
-                    ui.TransportCompanySubID = TransportCompanySubID;
-                    ui.OtherFeeName = OtherFeeName;
-                    ui.OtherFeeValue = OtherFeeValue;
-                    ui.PostalDeliveryType = PostalDeliveryType;
-                    dbe.SaveChanges();
-                    int kq = ui.ID;
-                    return kq.ToString();
+                    orderOld.OrderType = data.OrderType;
+                    orderOld.AdditionFee = data.AdditionFee;
+                    orderOld.DisCount = data.DisCount;
+                    orderOld.CustomerID = data.CustomerID;
+                    orderOld.CustomerName = data.CustomerName;
+                    orderOld.CustomerPhone = data.CustomerPhone;
+                    orderOld.CustomerAddress = data.CustomerAddress;
+                    orderOld.CustomerEmail = data.CustomerEmail;
+                    orderOld.TotalPrice = data.TotalPrice;
+                    orderOld.TotalPriceNotDiscount = data.TotalPriceNotDiscount;
+                    orderOld.PaymentStatus = data.PaymentStatus;
+                    orderOld.ExcuteStatus = data.ExcuteStatus;
+                    orderOld.DiscountPerProduct = data.DiscountPerProduct;
+                    orderOld.TotalDiscount = data.TotalDiscount;
+                    orderOld.FeeShipping = data.FeeShipping;
+                    orderOld.GuestPaid = data.GuestPaid;
+                    orderOld.GuestChange = data.GuestChange;
+                    orderOld.ModifiedDate = data.ModifiedDate;
+                    orderOld.CreatedBy = data.CreatedBy;
+                    orderOld.ModifiedBy = data.ModifiedBy;
+                    orderOld.PaymentType = data.PaymentType;
+                    orderOld.ShippingType = data.ShippingType;
+                    orderOld.OrderNote = data.OrderNote;
+                    orderOld.DateDone = data.DateDone;
+                    orderOld.ShippingCode = data.ShippingCode;
+                    orderOld.TransportCompanyID = data.TransportCompanyID;
+                    orderOld.TransportCompanySubID = data.TransportCompanySubID;
+                    orderOld.OtherFeeName = data.OtherFeeName;
+                    orderOld.OtherFeeValue = data.OtherFeeValue;
+                    orderOld.PostalDeliveryType = data.PostalDeliveryType;
+                    orderOld.CouponID = data.CouponID;
+                    orderOld.CouponValue = data.CouponValue;
+                    con.SaveChanges();
+
+                    return orderOld;
                 }
                 return null;
             }

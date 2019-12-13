@@ -339,10 +339,46 @@ namespace IM_PJ
                         string FeeShipping = pFeeShip.Value.ToString();
                         double GuestPaid = Convert.ToDouble(pGuestPaid.Value);
                         double GuestChange = Convert.ToDouble(totalPrice) - GuestPaid;
+                        var couponID = hdfCouponID.Value.ToInt(0);
+                        var couponValue = hdfCouponValue.Value.ToDecimal(0);
 
-                        var ret = OrderController.InsertOnSystem(AgentID, OrderType, AdditionFee, DisCount, CustomerID, CustomerName, CustomerPhone, CustomerAddress,
-                            CustomerEmail, totalPrice, totalPriceNotDiscount, PaymentStatus, ExcuteStatus, IsHidden, WayIn, currentDate, username, DiscountPerProduct,
-                            TotalDiscount, FeeShipping, GuestPaid, GuestChange, PaymentType, ShippingType, String.Empty, DateTime.Now, String.Empty, 0, 1, UserHelp);
+                        tbl_Order order = new tbl_Order()
+                        {
+                            AgentID = AgentID,
+                            OrderType = OrderType,
+                            AdditionFee = AdditionFee,
+                            DisCount = DisCount,
+                            CustomerID = CustomerID,
+                            CustomerName = CustomerName,
+                            CustomerPhone = CustomerPhone,
+                            CustomerAddress = CustomerAddress,
+                            CustomerEmail = CustomerEmail,
+                            TotalPrice = totalPrice,
+                            TotalPriceNotDiscount = totalPriceNotDiscount,
+                            PaymentStatus = PaymentStatus,
+                            ExcuteStatus = ExcuteStatus,
+                            IsHidden = IsHidden,
+                            WayIn = WayIn,
+                            CreatedDate = currentDate,
+                            CreatedBy = username,
+                            DiscountPerProduct = DiscountPerProduct,
+                            TotalDiscount = TotalDiscount,
+                            FeeShipping = FeeShipping,
+                            GuestPaid = GuestPaid,
+                            GuestChange = GuestChange,
+                            PaymentType = PaymentType,
+                            ShippingType = ShippingType,
+                            OrderNote = String.Empty,
+                            DateDone = DateTime.Now,
+                            OtherFeeName = String.Empty,
+                            OtherFeeValue = 0,
+                            PostalDeliveryType = 1,
+                            UserHelp = UserHelp,
+                            CouponID = couponID,
+                            CouponValue = couponValue
+                        };
+
+                        var ret = OrderController.InsertOnSystem(order);
 
                         int OrderID = ret.ID;
 
@@ -364,6 +400,12 @@ namespace IM_PJ
 
                                 FeeController.Update(ret.ID, fees);
                             }
+                        }
+
+                        // Inactive code coupon
+                        if (order.CouponID.HasValue && order.CouponID.Value > 0)
+                        {
+                            CouponController.updateStatusCouponCustomer(acc.ID, order.CouponID.Value, false);
                         }
 
                         if (OrderID > 0)
@@ -448,6 +490,12 @@ namespace IM_PJ
                 
                 ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "script", "$(function () { handleErrorSubmit(); });", true);
             }
+        }
+
+        [WebMethod]
+        public static string getCoupon(int customerID, string code, int productNumber, decimal price)
+        {
+            return CouponController.getCoupon(customerID, code, productNumber, price);
         }
     }
 }

@@ -55,5 +55,7 @@ namespace IM_PJ.Models
         public string UserHelp { get; set; }
         public bool VerifiedCOD { get; set; }
         public string VerifiedBy { get; set; }
+        public Nullable<int> CouponID { get; set; }
+        public Nullable<decimal> CouponValue { get; set; }
     }
 }

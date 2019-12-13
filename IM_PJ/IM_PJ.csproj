@@ -957,6 +957,7 @@
     </Compile>
     <Compile Include="Controllers\CategoryController.cs" />
     <Compile Include="Controllers\CategoryShelfController.cs" />
+    <Compile Include="Controllers\CouponController.cs" />
     <Compile Include="Controllers\CronJobController.cs" />
     <Compile Include="Controllers\DeliveryProshipController.cs" />
     <Compile Include="Controllers\DeliveryPostOfficeController.cs" />
@@ -1002,10 +1003,16 @@
     <Compile Include="Models\Common\DiscountGroupModel.cs" />
     <Compile Include="Models\Common\OrderModel.cs" />
     <Compile Include="Models\Common\TagModel.cs" />
+    <Compile Include="Models\Coupon.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\CronJob.cs">
       <DependentUpon>IMModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\CronJobProductStatu.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\CustomerCoupon.cs">
       <DependentUpon>IMModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\CustomerEditOrder.cs">

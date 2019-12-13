@@ -65,6 +65,21 @@
           <Property Name="ModifedBy" Type="int" Nullable="false" />
           <Property Name="ModifiedDate" Type="datetime" Nullable="false" />
         </EntityType>
+        <EntityType Name="Coupon">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Code" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="Value" Type="money" Nullable="false" />
+          <Property Name="StartDate" Type="datetime" Nullable="false" />
+          <Property Name="EndDate" Type="datetime" Nullable="false" />
+          <Property Name="Active" Type="bit" Nullable="false" />
+          <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+          <Property Name="ModifiedDate" Type="datetime" Nullable="false" />
+          <Property Name="ProductNumber" Type="int" Nullable="false" />
+          <Property Name="PriceMin" Type="money" Nullable="false" />
+        </EntityType>
         <EntityType Name="CronJob">
           <Key>
             <PropertyRef Name="ID" />
@@ -95,6 +110,19 @@
           <Property Name="Note" Type="nchar" MaxLength="255" />
           <Property Name="CategoryID" Type="int" Nullable="false" />
           <Property Name="Quantity" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="CustomerCoupon">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CustomerID" Type="int" Nullable="false" />
+          <Property Name="CouponID" Type="int" Nullable="false" />
+          <Property Name="StartDate" Type="datetime" Nullable="false" />
+          <Property Name="EndDate" Type="datetime" Nullable="false" />
+          <Property Name="Active" Type="bit" Nullable="false" />
+          <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+          <Property Name="ModifiedDate" Type="datetime" Nullable="false" />
         </EntityType>
         <EntityType Name="CustomerEditOrder">
           <Key>
@@ -673,6 +701,8 @@
           <Property Name="UserHelp" Type="nvarchar(max)" />
           <Property Name="VerifiedCOD" Type="bit" Nullable="false" />
           <Property Name="VerifiedBy" Type="nvarchar" MaxLength="255" />
+          <Property Name="CouponID" Type="int" />
+          <Property Name="CouponValue" Type="money" />
         </EntityType>
         <EntityType Name="tbl_OrderDetail">
           <Key>
@@ -1049,8 +1079,10 @@
           <EntitySet Name="BankAccount" EntityType="Self.BankAccount" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="BankTransfer" EntityType="Self.BankTransfer" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CategoryShelf" EntityType="Self.CategoryShelf" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Coupon" EntityType="Self.Coupon" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CronJob" EntityType="Self.CronJob" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CronJobProductStatus" EntityType="Self.CronJobProductStatus" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CustomerCoupon" EntityType="Self.CustomerCoupon" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CustomerEditOrder" EntityType="Self.CustomerEditOrder" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Delivery" EntityType="Self.Delivery" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="DeliveryPostOffice" EntityType="Self.DeliveryPostOffice" Schema="dbo" store:Type="Tables" />
@@ -1170,6 +1202,21 @@
           <Property Name="ModifedBy" Type="Int32" Nullable="false" />
           <Property Name="ModifiedDate" Type="DateTime" Nullable="false" Precision="3" />
         </EntityType>
+        <EntityType Name="Coupon">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Code" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Value" Type="Decimal" Precision="19" Scale="4" Nullable="false" />
+          <Property Name="StartDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="EndDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Active" Type="Boolean" Nullable="false" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ModifiedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ProductNumber" Type="Int32" Nullable="false" />
+          <Property Name="PriceMin" Type="Decimal" Precision="19" Scale="4" Nullable="false" />
+        </EntityType>
         <EntityType Name="CronJob">
           <Key>
             <PropertyRef Name="ID" />
@@ -1200,6 +1247,19 @@
           <Property Name="Note" Type="String" MaxLength="255" FixedLength="true" Unicode="true" />
           <Property Name="CategoryID" Type="Int32" Nullable="false" />
           <Property Name="Quantity" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="CustomerCoupon">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CustomerID" Type="Int32" Nullable="false" />
+          <Property Name="CouponID" Type="Int32" Nullable="false" />
+          <Property Name="StartDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="EndDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Active" Type="Boolean" Nullable="false" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ModifiedDate" Type="DateTime" Nullable="false" Precision="3" />
         </EntityType>
         <EntityType Name="CustomerEditOrder">
           <Key>
@@ -1778,6 +1838,8 @@
           <Property Name="UserHelp" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="VerifiedCOD" Type="Boolean" Nullable="false" />
           <Property Name="VerifiedBy" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="CouponID" Type="Int32" />
+          <Property Name="CouponValue" Type="Decimal" Precision="19" Scale="4" />
         </EntityType>
         <EntityType Name="tbl_OrderDetail">
           <Key>
@@ -2154,8 +2216,10 @@
           <EntitySet Name="BankAccounts" EntityType="Self.BankAccount" />
           <EntitySet Name="BankTransfers" EntityType="Self.BankTransfer" />
           <EntitySet Name="CategoryShelves" EntityType="Self.CategoryShelf" />
+          <EntitySet Name="Coupons" EntityType="Self.Coupon" />
           <EntitySet Name="CronJobs" EntityType="Self.CronJob" />
           <EntitySet Name="CronJobProductStatus" EntityType="Self.CronJobProductStatu" />
+          <EntitySet Name="CustomerCoupons" EntityType="Self.CustomerCoupon" />
           <EntitySet Name="CustomerEditOrders" EntityType="Self.CustomerEditOrder" />
           <EntitySet Name="Deliveries" EntityType="Self.Delivery" />
           <EntitySet Name="DeliveryPostOffices" EntityType="Self.DeliveryPostOffice" />
@@ -2280,6 +2344,22 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="Coupons">
+            <EntityTypeMapping TypeName="inventorymanagementModel.Coupon">
+              <MappingFragment StoreEntitySet="Coupon">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Code" ColumnName="Code" />
+                <ScalarProperty Name="Value" ColumnName="Value" />
+                <ScalarProperty Name="StartDate" ColumnName="StartDate" />
+                <ScalarProperty Name="EndDate" ColumnName="EndDate" />
+                <ScalarProperty Name="Active" ColumnName="Active" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="ProductNumber" ColumnName="ProductNumber" />
+                <ScalarProperty Name="PriceMin" ColumnName="PriceMin" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="CronJobs">
             <EntityTypeMapping TypeName="inventorymanagementModel.CronJob">
               <MappingFragment StoreEntitySet="CronJob">
@@ -2310,6 +2390,20 @@
                 <ScalarProperty Name="Note" ColumnName="Note" />
                 <ScalarProperty Name="CategoryID" ColumnName="CategoryID" />
                 <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CustomerCoupons">
+            <EntityTypeMapping TypeName="inventorymanagementModel.CustomerCoupon">
+              <MappingFragment StoreEntitySet="CustomerCoupon">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="CustomerID" ColumnName="CustomerID" />
+                <ScalarProperty Name="CouponID" ColumnName="CouponID" />
+                <ScalarProperty Name="StartDate" ColumnName="StartDate" />
+                <ScalarProperty Name="EndDate" ColumnName="EndDate" />
+                <ScalarProperty Name="Active" ColumnName="Active" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -2920,6 +3014,8 @@
                 <ScalarProperty Name="UserHelp" ColumnName="UserHelp" />
                 <ScalarProperty Name="VerifiedCOD" ColumnName="VerifiedCOD" />
                 <ScalarProperty Name="VerifiedBy" ColumnName="VerifiedBy" />
+                <ScalarProperty Name="CouponID" ColumnName="CouponID" />
+                <ScalarProperty Name="CouponValue" ColumnName="CouponValue" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

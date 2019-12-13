@@ -457,8 +457,40 @@ namespace IM_PJ
                     bool IsHidden = false;
                     int Wayin = 2;
 
-                    var ret = OrderController.Insert(AgentID, OrderType, AdditionFee, DisCount, CustomerID, CustomerName, CustomerPhone, CustomerAddress,
-                            CustomerEmail, TotalPrice.ToString(), TotalPrice.ToString(), PaymentStatus, ExcuteStatus, IsHidden, Wayin, currentDate, CreatedBy, 0, 0, "0", 0, 0, DateTime.Now.ToString(), 0, 0, 0, 0, "", 0, 1);
+                    var orderNew = new tbl_Order() {
+                        AgentID = AgentID,
+                        OrderType = OrderType,
+                        AdditionFee = AdditionFee,
+                        DisCount = DisCount,
+                        CustomerID = CustomerID,
+                        CustomerName = CustomerName,
+                        CustomerPhone = CustomerPhone,
+                        CustomerAddress = CustomerAddress,
+                        CustomerEmail = CustomerEmail,
+                        TotalPrice = TotalPrice.ToString(),
+                        TotalPriceNotDiscount = TotalPrice.ToString(),
+                        PaymentStatus = PaymentStatus,
+                        ExcuteStatus = ExcuteStatus,
+                        IsHidden = IsHidden,
+                        WayIn = Wayin,
+                        CreatedDate = currentDate,
+                        CreatedBy = CreatedBy,
+                        DiscountPerProduct = 0,
+                        TotalDiscount = 0,
+                        FeeShipping = "0",
+                        PaymentType = 0,
+                        ShippingType = 0,
+                        DateDone = DateTime.Now,
+                        GuestPaid = 0,
+                        GuestChange = 0,
+                        TransportCompanyID = 0,
+                        TransportCompanySubID = 0,
+                        OtherFeeName = String.Empty,
+                        OtherFeeValue = 0,
+                        PostalDeliveryType = 1,
+                    };
+
+                    var ret = OrderController.Insert(orderNew);
                     int OrderID = ret.ID;
                     if (OrderID > 0)
                     {
@@ -666,9 +698,41 @@ namespace IM_PJ
                         totalleft = Convert.ToDouble(TotalPrice);
                     }
 
-                    var ret = OrderController.Insert(AgentID, OrderType.ToInt(1), AdditionFee, DisCount, CustomerID, CustomerName, CustomerPhone, CustomerAddress,
-                            CustomerEmail, totalleft.ToString(), TotalPrice.ToString(), PaymentStatus.ToInt(0), ExcuteStatus.ToInt(0), IsHidden, Wayin, currentDate, CreatedBy,
-                            amount, totalDiscount, FeeShipping.ToString(), PaymentType, ShippingType, DateTime.Now.ToString(), 0, 0, 0, 0, "", 0, 1);
+                    var orderNew = new tbl_Order()
+                    {
+                        AgentID = AgentID,
+                        OrderType = OrderType.ToInt(1),
+                        AdditionFee = AdditionFee,
+                        DisCount = DisCount,
+                        CustomerID = CustomerID,
+                        CustomerName = CustomerName,
+                        CustomerPhone = CustomerPhone,
+                        CustomerAddress = CustomerAddress,
+                        CustomerEmail = CustomerEmail,
+                        TotalPrice = totalleft.ToString(),
+                        TotalPriceNotDiscount = TotalPrice.ToString(),
+                        PaymentStatus = PaymentStatus.ToInt(0),
+                        ExcuteStatus = ExcuteStatus.ToInt(0),
+                        IsHidden = IsHidden,
+                        WayIn = Wayin,
+                        CreatedDate = currentDate,
+                        CreatedBy = CreatedBy,
+                        DiscountPerProduct = amount,
+                        TotalDiscount = totalDiscount,
+                        FeeShipping = FeeShipping.ToString(),
+                        PaymentType = PaymentType,
+                        ShippingType = ShippingType,
+                        DateDone = DateTime.Now,
+                        GuestPaid = 0,
+                        GuestChange = 0,
+                        TransportCompanyID = 0,
+                        TransportCompanySubID = 0,
+                        OtherFeeName = String.Empty,
+                        OtherFeeValue = 0,
+                        PostalDeliveryType = 1,
+                    };
+
+                    var ret = OrderController.Insert(orderNew);
                     int OrderID = ret.ID;
                     if (OrderID > 0)
                     {
