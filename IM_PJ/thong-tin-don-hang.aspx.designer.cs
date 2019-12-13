@@ -778,6 +778,24 @@ namespace IM_PJ {
         protected global::System.Web.UI.WebControls.HiddenField hdfCouponValue;
         
         /// <summary>
+        /// hdfCouponProductNumber control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField hdfCouponProductNumber;
+        
+        /// <summary>
+        /// hdfCouponPriceMin control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField hdfCouponPriceMin;
+        
+        /// <summary>
         /// hdfCouponIDOld control.
         /// </summary>
         /// <remarks>
@@ -803,6 +821,24 @@ namespace IM_PJ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.HiddenField hdfCouponValueOld;
+        
+        /// <summary>
+        /// hdfCouponProductNumberOld control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField hdfCouponProductNumberOld;
+        
+        /// <summary>
+        /// hdfCouponPriceMinOld control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField hdfCouponPriceMinOld;
         
         /// <summary>
         /// hdfUUID control.
