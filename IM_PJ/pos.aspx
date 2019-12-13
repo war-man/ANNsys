@@ -80,11 +80,11 @@
                             </div>
                             <div id="fee-list"></div>
                             <div class="post-row clear coupon">
-                                <div class="left">Phiếu giảm giá</div>
+                                <div class="left">Mã giảm giá</div>
                                 <div class="right">
-                                    <a id="btnOpenCouponModal" class="btn link-btn" style="background-color: #453288" title="Nhập chiết khấu mỗi cái" onclick="openCouponModal()"><i class="fa fa-tag"></i> Mã Giảm Giá</a>
+                                    <a id="btnOpenCouponModal" class="btn btn-feeship btn-violet" title="Nhập mã giảm giá" onclick="openCouponModal()"><i class="fa fa-tag"></i> Nhập mã</a>
                                     <a href="javascript:;" id="btnRemoveCouponCode" class="btn btn-feeship link-btn hide" onclick="removeCoupon()"><i class="fa fa-times" aria-hidden="true"></i> Xóa</a>
-                                    <asp:TextBox ID="txtCouponValue" runat="server" CssClass="form-control text-right width-notfull" value="0" disabled="disabled"></asp:TextBox>
+                                    <asp:TextBox ID="txtCouponValue" runat="server" CssClass="form-control text-right width-notfull input-coupon" value="0" disabled="disabled"></asp:TextBox>
                                 </div>
                             </div>
                             <div class="post-row clear">
@@ -93,7 +93,7 @@
                             </div>
                             <div class="post-row clear returnorder hide">
                                 <div class="left">
-                                    Trừ hàng trả
+                                    Hàng trả
                                     <a href="javascript:;" class="find2 hide btn btn-feeship link-btn"></a>
                                     <a href="javascript:;" class="find3 hide btn btn-feeship link-btn btn-edit-fee" onclick="searchReturnOrder()"><i class="fa fa-refresh" aria-hidden="true"></i> Chọn</a>
                                     <a href="javascript:;" class="find3 hide btn btn-feeship link-btn" onclick="deleteReturnOrder()"><i class="fa fa-times" aria-hidden="true"></i> Bỏ</a>
@@ -1448,7 +1448,10 @@
 
                 $("#<%=hdfcheck.ClientID%>").val(discount);
 
-                var totalleft = total + feeship + otherfee - discount * quantity;
+                // Phiếu giảm giá
+                let priceCoupon = +$("#<%=hdfCouponValue.ClientID%>").val() || 0;
+
+                var totalleft = total + feeship + otherfee - discount * quantity - priceCoupon;
                 var priceafterchietkhau = total - discount * quantity;
 
                 $(".totalpriceorderall").html(formatThousands(totalleft, ','));
@@ -1536,8 +1539,11 @@
                 if (!customerID) 
                     return swal("Thông báo", "Chưa nhập thông tin khách hàng", "warning");
 
-                if (!productNumber) 
+                if (!productNumber) {
+                    $("#txtSearch").focus();
                     return swal("Thông báo", "Chưa có sản phẩm", "warning");
+                }
+                    
 
                 let couponModalDOM = $('#couponModal');
                 let codeDOM = couponModalDOM.find("[id$='_txtCouponCode']");
@@ -1601,14 +1607,15 @@
                             
                         if (data) {
                             if (!data.status) {
-                                errorDOM.classList.remove('hide')
+                                errorDOM.classList.remove('hide');
                                 errorDOM.querySelector('p').innerText = data.message;
 
                                 codeDOM.focus();
                                 codeDOM.select();
                             }
                             else {
-                                document.querySelector('[id$="_txtCouponValue"]').value = `${code.trim().toUpperCase()}: ${formatThousands(+data.value || 0, ',')}`;
+                                $(".subtotal").removeClass("hide");
+                                document.querySelector('[id$="_txtCouponValue"]').value = `${code.trim().toUpperCase()}: -${formatThousands(+data.value || 0, ',')}`;
                                 document.querySelector('[id$="_hdfCouponID"]').value = +data.couponID || 0;
                                 document.querySelector('[id$="_hdfCouponValue"]').value = +data.value || 0;
 

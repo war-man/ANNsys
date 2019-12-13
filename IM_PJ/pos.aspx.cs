@@ -405,7 +405,7 @@ namespace IM_PJ
                         // Inactive code coupon
                         if (order.CouponID.HasValue && order.CouponID.Value > 0)
                         {
-                            CouponController.updateStatusCouponCustomer(acc.ID, order.CouponID.Value, false);
+                            CouponController.updateStatusCouponCustomer(CustomerID, order.CouponID.Value, false);
                         }
 
                         if (OrderID > 0)

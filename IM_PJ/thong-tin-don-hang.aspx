@@ -2111,13 +2111,16 @@
                 $("#<%=hdfcheck.ClientID%>").val(discount);
                 $("#<%=hdfDiscountInOrder.ClientID%>").val(discount);
 
+                // Phiếu giảm giá
+                let priceCoupon = +$("#<%=hdfCouponValue.ClientID%>").val() || 0;
+
                 if (quantity > 0) {
-                    var totalleft = total + feeship + otherfee - discount * quantity;
+                    var totalleft = total + feeship + otherfee - discount * quantity - priceCoupon;
                     var priceafterchietkhau = total - discount * quantity;
                     $("#<%=hdfTotalQuantity.ClientID%>").val(quantity);
                 }
                 else {
-                    var totalleft = total + feeship + otherfee - discount * totalproduct;
+                    var totalleft = total + feeship + otherfee - discount * totalproduct - priceCoupon;
                     var priceafterchietkhau = total - discount * totalproduct;
                     $("#<%=hdfTotalQuantity.ClientID%>").val(totalproduct);
                 }

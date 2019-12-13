@@ -398,7 +398,12 @@ function selectCustomer() {
 
                     getCustomerDiscount(id);
 
+                    if (typeof removeCoupon === 'function') {
+                        removeCoupon();
+                    }
+
                     closePopup();
+
                     if (typeof checkCustomer === 'function') {
                         checkCustomer();
                     }
@@ -458,6 +463,10 @@ function selectCustomer() {
 
             getCustomerDiscount(id);
 
+            if (typeof removeCoupon === 'function') {
+                removeCoupon();
+            }
+            
             closePopup();
 
             $("input[id$='_hdfCustomerID']").val(id);
@@ -597,7 +606,13 @@ function clearCustomerDetail() {
     $("input[id$='_hdfIsDiscount']").val(0);
     $("input[id$='_hdfDiscountAmount']").val(0);
     $("input[id$='_hdfCustomerFeeChange']").val(0);
-    
+
+    $("input[id$='_hdfCustomerID']").val("");
+
+    if (typeof removeCoupon === 'function') {
+        removeCoupon();
+    }
+
     getAllPrice();
 }
 
@@ -632,6 +647,10 @@ function selectCustomerDetail(data) {
     $(".view-detail").html(button).show();
 
     getCustomerDiscount(data.ID);
+
+    if (typeof removeCoupon === 'function') {
+        removeCoupon();
+    }
 
     closePopup();
     if (typeof checkCustomer === 'function') {
@@ -693,6 +712,7 @@ function ajaxCheckCustomer() {
                                             $("input[id$='_hdfCustomerID']").val(data.ID);
                                             $("input[id$='_hdfUsernameCurrent']").val(data.CreatedBy);
                                             selectCustomerDetail(data);
+                                            $("#txtSearch").focus();
                                         }
                                         else {
                                             $("input[id$='_hdfCustomerID']").val("");
@@ -719,9 +739,12 @@ function ajaxCheckCustomer() {
                             html: true,
                         }, function (confirm) {
                             if (confirm) {
+                                $("input[id$='_hdfCustomerID']").val(data.ID);
                                 selectCustomerDetail(data);
+                                $("#txtSearch").focus();
                             }
                             else {
+                                $("input[id$='_hdfCustomerID']").val("");
                                 $("input[id$='_txtPhone']").val("");
                             }
                         });

@@ -1462,8 +1462,11 @@
                 });
 
                 $("#<%=hdfcheck.ClientID%>").val(discount);
-                var totalleft = total + feeship + otherfee - discount * quantity;
 
+                // Phiếu giảm giá
+                let priceCoupon = +$("#<%=hdfCouponValue.ClientID%>").val() || 0;
+
+                var totalleft = total + feeship + otherfee - discount * quantity - priceCoupon;
                 var priceafterchietkhau = total - discount * quantity;
 
                 $(".priceafterchietkhau").html(formatThousands(priceafterchietkhau, ','));

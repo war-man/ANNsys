@@ -1,4 +1,16 @@
-﻿.sale-icon {
+﻿.input-coupon {
+    cursor: not-allowed;
+    border-color: #cdcdcd;
+    width: 100%;
+    padding: 5px;
+    height: 36px;
+    line-height: 20px;
+    font-weight: 100;
+    font-size: 16px;
+    font-family: "Segoe UI",Arial,Helvetica,sans-serif;
+    color: #000;
+}
+.sale-icon {
     background: #F44336;
     color: #fff;
     padding: 5px 6px;
@@ -83,7 +95,7 @@ table.shop_table_responsive > thead > tr > th {
 #feePrice {
     cursor: pointer;
     border-color: #cdcdcd;
-    width: 160px;
+    width: 100%;
     padding: 5px;
     height: 36px;
     line-height: 20px;
@@ -524,9 +536,11 @@ a.bg-button:hover {
 }
 .btn-violet {
     background-color: #8000d0!important;
+    color: #fff!important;
 }
 .btn-violet:hover {
     background-color: #585858!important;
+    color: #fff!important;
 }
 .sku-input {
     text-transform: uppercase;
