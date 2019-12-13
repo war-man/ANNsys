@@ -28,7 +28,9 @@ namespace IM_PJ.Controllers
                             status = false,
                             message = String.Format("Mã khuyến mãi {0} hết hiệu lực ({1:yyyy-MM-dd} -> {2:yyyy-MM-dd})", code, coupon.CreatedDate, coupon.EndDate),
                             couponID = 0,
-                            value = 0
+                            value = 0,
+                            productNumber = 0,
+                            priceMin = 0
                         });
 
                     if (!coupon.Active)
@@ -36,7 +38,9 @@ namespace IM_PJ.Controllers
                             status = false,
                             message = String.Format("Mã khuyến mãi {0} hết hiệu lực", code),
                             couponID = 0,
-                            value = 0
+                            value = 0,
+                            productNumber = 0,
+                            priceMin = 0
                         });
 
                     if (!(productNumber >= coupon.ProductNumber && price >= coupon.PriceMin))
@@ -45,7 +49,9 @@ namespace IM_PJ.Controllers
                             status = false,
                             message = String.Format("Mã khuyến mãi {0} chỉ áp dụng với đơn hàn có số lượng {1:N0} và số tiền tối thiểu {2:N0}VND", code, coupon.ProductNumber, coupon.PriceMin),
                             couponID = 0,
-                            value = 0
+                            value = 0,
+                            productNumber = 0,
+                            priceMin = 0
                         });
 
                     var customerCouponList = con.CustomerCoupons
@@ -63,7 +69,9 @@ namespace IM_PJ.Controllers
                             status = false,
                             message = String.Format("Mã khuyến mãi {0} không áp dụng cho khách hàng {1}", code, textInfo.ToTitleCase(user.CustomerName)),
                             couponID = 0,
-                            value = 0
+                            value = 0,
+                            productNumber = 0,
+                            priceMin = 0
                         });
                     }
 
@@ -80,7 +88,9 @@ namespace IM_PJ.Controllers
                                 status = false,
                                 message = String.Format("Mã khuyến {0} được khách hàng {1} sử dụng {2} lần", code, textInfo.ToTitleCase(user.CustomerName), customerCouponList.Count),
                                 couponID = 0,
-                                value = 0
+                                value = 0,
+                                productNumber = 0,
+                                priceMin = 0
                             });
                         else
                             return JsonConvert.SerializeObject(new
@@ -88,7 +98,9 @@ namespace IM_PJ.Controllers
                                 status = false,
                                 message = String.Format("Khách hàng {0} đã sử dung mã khuyến mãi {1}", textInfo.ToTitleCase(user.CustomerName), code),
                                 couponID = 0,
-                                value = 0
+                                value = 0,
+                                productNumber = 0,
+                                priceMin = 0
                             });
                     }
                     else
@@ -105,7 +117,9 @@ namespace IM_PJ.Controllers
                                 status = false,
                                 message = String.Format("Khách hàng {0} sử dụng mã {1} không đúng ngày ({2:yyyy-MM-dd} -> {3:yyyy-MM-dd})", textInfo.ToTitleCase(user.CustomerName), code, customerCoupon.StartDate, customerCoupon.EndDate),
                                 couponID = 0,
-                                value = 0
+                                value = 0,
+                                productNumber = 0,
+                                priceMin = 0
                             });
                         }
                     }
@@ -115,7 +129,9 @@ namespace IM_PJ.Controllers
                         status = true,
                         message = String.Empty,
                         couponID = coupon.ID,
-                        value = coupon.Value
+                        value = coupon.Value,
+                        productNumber = coupon.ProductNumber,
+                        priceMin = coupon.PriceMin
                     });
                 }
 
@@ -123,7 +139,9 @@ namespace IM_PJ.Controllers
                     status = false,
                     message = String.Format("Mã khuyến mãi {0} không tồn tại", code),
                     couponID = 0,
-                    value = 0
+                    value = 0,
+                    productNumber = 0,
+                    priceMin = 0
                 });
             }
         }

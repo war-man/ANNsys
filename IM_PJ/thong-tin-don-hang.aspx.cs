@@ -519,6 +519,7 @@ namespace IM_PJ
                     hdfPaymentStatus.Value = paymentStatus.ToString();
                     hdfExcuteStatus.Value = excuteStatus.ToString();
                     hdftotal.Value = ProductQuantity.ToString();
+                    hdfTotalQuantity.Value = ProductQuantity.ToString();
                     hdfRoleID.Value = acc.RoleID.ToString();
 
                     #endregion
@@ -568,7 +569,15 @@ namespace IM_PJ
                     if (order.CouponID.HasValue && order.CouponID > 0)
                     {
                         var coupon = CouponController.getCoupon(order.CouponID.Value);
-                        hdfCouponCodeOld.Value = coupon.Code.Trim().ToUpper();
+
+                        if (coupon != null)
+                        {
+                            hdfCouponProductNumber.Value = coupon.ProductNumber.ToString();
+                            hdfCouponPriceMin.Value = coupon.PriceMin.ToString();
+                            hdfCouponCodeOld.Value = coupon.Code.Trim().ToUpper();
+                            hdfCouponProductNumberOld.Value = coupon.ProductNumber.ToString();
+                            hdfCouponPriceMinOld.Value = coupon.PriceMin.ToString();
+                        }
                     }
                     hdfCouponValueOld.Value = order.CouponValue.ToString();
 

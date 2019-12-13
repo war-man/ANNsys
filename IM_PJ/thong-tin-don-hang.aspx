@@ -645,9 +645,13 @@
             <asp:HiddenField ID="hdfTransportCompanySubID" runat="server" />
             <asp:HiddenField ID="hdfCouponID" runat="server" />
             <asp:HiddenField ID="hdfCouponValue" runat="server" />
+            <asp:HiddenField ID="hdfCouponProductNumber" runat="server" />
+            <asp:HiddenField ID="hdfCouponPriceMin" runat="server" />
             <asp:HiddenField ID="hdfCouponIDOld" runat="server" />
             <asp:HiddenField ID="hdfCouponCodeOld" runat="server" />
             <asp:HiddenField ID="hdfCouponValueOld" runat="server" />
+            <asp:HiddenField ID="hdfCouponProductNumberOld" runat="server" />
+            <asp:HiddenField ID="hdfCouponPriceMinOld" runat="server" />
 
             <!-- Modal -->
             <div class="modal fade" id="feeModal" role="dialog">
@@ -2040,6 +2044,7 @@
 
                     var priceafterchietkhau = totalleft;
                     // Phiếu giảm giá
+                    checkCouponCondition();
                     let priceCoupon = +$("#<%=hdfCouponValue.ClientID%>").val() || 0;
 
                     var totalmoney = totalleft + feeship + otherfee - priceCoupon;
@@ -2066,6 +2071,9 @@
                     $(".totalpriceorderall").html(formatThousands(0, ','));
                     $(".priceafterchietkhau").html(formatThousands(0, ','));
 
+                    $('[id$="_hdfTotalQuantity"]').val(formatThousands(0, ','));
+                    $('[id$="_hdfTotalPrice"]').val(formatThousands(0, ','));
+                    checkCouponCondition();
                 }
                 reIndex();
             };
@@ -2383,7 +2391,7 @@
 
             function openCouponModal() {
                 let customerID = +document.querySelector('[id$="_hdfCustomerID"]').value || 0;
-                let productNumber = +document.querySelector('[id$="_hdftotal"]').value || 0;
+                let productNumber = +document.querySelector('[id$="_hdfTotalQuantity"]').value || 0;
 
                 if (!customerID)
                     return swal("Thông báo", "Chưa nhập thông tin khách hàng", "warning");
@@ -2429,7 +2437,7 @@
 
                 let customerID = +document.querySelector('[id$="_hdfCustomerID"]').value || 0;
                 let code = codeDOM.value.trim() || "";
-                let productNumber = +document.querySelector('[id$="_hdftotal"]').value || 0;
+                let productNumber = +document.querySelector('[id$="_hdfTotalQuantity"]').value || 0;
                 let price = +document.querySelector('[id$="_hdfTotalPrice"]').value || 0;
 
                 if (!code) {
@@ -2442,17 +2450,22 @@
                     return;
                 }
 
-                let couponIDOld = +document.querySelector('[id$="_hdfCouponIDOld"]').value || 0;
                 let couponCodeOld = document.querySelector('[id$="_hdfCouponCodeOld"]').value || "";
-                let couponValueOld = +document.querySelector('[id$="_hdfCouponValueOld"]').value || 0;
 
                 code = code.trim().toUpperCase();
                 couponCodeOld = couponCodeOld ? couponCodeOld.trim().toUpperCase() : "";
 
                 if (code === couponCodeOld) {
+                    let couponIDOld = +document.querySelector('[id$="_hdfCouponIDOld"]').value || 0;
+                    let couponValueOld = +document.querySelector('[id$="_hdfCouponValueOld"]').value || 0;
+                    let couponProductNumberOld = +document.querySelector('[id$="_hdfCouponProductNumberOld"]').value || 0;
+                    let couponPriceMinOld = +document.querySelector('[id$="_hdfCouponPriceMin"]').value || 0;
+
                     document.querySelector('[id$="_txtCouponValue"]').value = `${couponCodeOld}: ${formatThousands(couponValueOld, ',')}`;
                     document.querySelector('[id$="_hdfCouponID"]').value = couponIDOld;
                     document.querySelector('[id$="_hdfCouponValue"]').value = couponValueOld;
+                    document.querySelector('[id$="_hdfCouponProductNumber"]').value = couponProductNumberOld;
+                    document.querySelector('[id$="_hdfCouponPriceMin"]').value = couponPriceMinOld;
 
                     couponModalDOM.querySelector('#closeCoupon').click();
                     document.querySelector('#btnOpenCouponModal').classList.add('hide');
@@ -2484,6 +2497,8 @@
                                 document.querySelector('[id$="_txtCouponValue"]').value = `${code}: ${formatThousands(+data.value || 0, ',')}`;
                                 document.querySelector('[id$="_hdfCouponID"]').value = +data.couponID || 0;
                                 document.querySelector('[id$="_hdfCouponValue"]').value = +data.value || 0;
+                                document.querySelector('[id$="_hdfCouponProductNumber"]').value = +data.productNumber || 0;
+                                document.querySelector('[id$="_hdfCouponPriceMin"]').value = +data.priceMin || 0;
 
                                 couponModalDOM.querySelector('#closeCoupon').click();
                                 document.querySelector('#btnOpenCouponModal').classList.add('hide');
@@ -2510,10 +2525,28 @@
                 document.querySelector('[id$="_txtCouponValue"]').value = 0;
                 document.querySelector('[id$="_hdfCouponID"]').value = 0;
                 document.querySelector('[id$="_hdfCouponValue"]').value = 0;
+                document.querySelector('[id$="_hdfCouponProductNumber"]').value = 0;
+                document.querySelector('[id$="_hdfCouponPriceMin"]').value = 0;
                 document.querySelector('#btnOpenCouponModal').classList.remove('hide');
                 document.querySelector('#btnRemoveCouponCode').classList.add('hide');
 
                 getAllPrice();
+            }
+
+            function checkCouponCondition() {
+                let couponID = +document.querySelector('[id$="_hdfCouponID"]').value || 0;
+
+                if (couponID > 0) {
+                    let couponProductNumber = +document.querySelector('[id$="_hdfCouponProductNumber"]').value || 0;
+                    let couponPriceMin = +document.querySelector('[id$="_hdfCouponPriceMin"]').value || 0;
+                    let productNumber = +document.querySelector('[id$="_hdfTotalQuantity"]').value || 0;
+                    let price = +document.querySelector('[id$="_hdfTotalPrice"]').value || 0;
+
+                    if (!(productNumber >= couponProductNumber && price >= couponPriceMin)) {
+                        removeCoupon();
+                        return setTimeout(_ => { swal("Thông báo", "Mã giảm giá đã xóa, do không đạt yêu cầu", "warning") }, 300);
+                    }
+                }
             }
         </script>
     </telerik:RadScriptBlock>
