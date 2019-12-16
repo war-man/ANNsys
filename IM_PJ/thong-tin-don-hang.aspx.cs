@@ -258,7 +258,7 @@ namespace IM_PJ
                        
                         ltrtotalpricedetail.Text = string.Format("{0:N0}", totalPrice - totalrefund);
 
-                        ltrTotalPriceRefund.Text = string.Format("{0:N0}", totalrefund);
+                        ltrTotalPriceRefund.Text = string.Format("-{0:N0}", totalrefund);
                     }
 
                     hdfDiscountInOrder.Value = "";
@@ -541,7 +541,7 @@ namespace IM_PJ
                     txtShippingCode.Text = order.ShippingCode;
                     txtOrderNote.Text = order.OrderNote;
 
-                    ltrProductQuantity.Text = string.Format("{0:N0}", ProductQuantity) + " sản phẩm";
+                    ltrProductQuantity.Text = string.Format("{0:N0}", ProductQuantity) + " cái";
                     ltrTotalNotDiscount.Text = string.Format("{0:N0}", Convert.ToDouble(order.TotalPriceNotDiscount));
                     ltrTotalprice.Text = string.Format("{0:N0}", Convert.ToDouble(order.TotalPrice));
                     pDiscount.Value = order.DiscountPerProduct;
@@ -987,7 +987,7 @@ namespace IM_PJ
                                 FeeController.deleteAll(OrderID);
                             }
 
-                            // Trường hợp remove mã khuyến mãi
+                            // Trường hợp remove mã giảm giá
                             if (couponID == 0)
                             {
                                 if (couponIDOld > 0)

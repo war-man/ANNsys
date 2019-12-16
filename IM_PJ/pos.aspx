@@ -2,8 +2,8 @@
 
 <%@ Register Assembly="Telerik.Web.UI" Namespace="Telerik.Web.UI" TagPrefix="telerik" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
-    <script src="/App_Themes/Ann/js/search-customer.js?v=05092019"></script>
-    <script src="/App_Themes/Ann/js/search-product.js?v=05092019"></script>
+    <script src="/App_Themes/Ann/js/search-customer.js?v=14122019"></script>
+    <script src="/App_Themes/Ann/js/search-product.js?v=14122019"></script>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <style>
@@ -55,10 +55,11 @@
                                 <div class="right totalpriceorder"></div>
                             </div>
                             <div class="post-row clear discount hide">
-                                <div class="left">Chiết khấu <a href="javascript:;" class="btn btn-feeship link-btn" onclick="refreshDiscount()"><i class="fa fa-refresh" aria-hidden="true"></i> Tính lại</a></div>
+                                <div class="left">Chiết khấu</div>
                                 <div class="right totalDiscount">
-                                    <telerik:RadNumericTextBox runat="server" CssClass="form-control width-notfull" Skin="MetroTouch"
-                                        ID="pDiscount" MinValue="0" NumberFormat-GroupSizes="3" Width="100%" Value="0" NumberFormat-DecimalDigits="0"
+                                    <a href="javascript:;" class="btn btn-feeship link-btn" onclick="refreshDiscount()"><i class="fa fa-refresh" aria-hidden="true"></i></a>
+                                    <telerik:RadNumericTextBox runat="server" CssClass="form-control width-notfull input-discount" Skin="MetroTouch"
+                                        ID="pDiscount" MinValue="0" NumberFormat-GroupSizes="3" Value="0" NumberFormat-DecimalDigits="0"
                                         oninput="countTotal()" IncrementSettings-InterceptMouseWheel="false" IncrementSettings-InterceptArrowKeys="false">
                                     </telerik:RadNumericTextBox>
                                 </div>
@@ -68,12 +69,10 @@
                                 <div class="right priceafterchietkhau"></div>
                             </div>
                             <div class="post-row clear shipping hide">
-                                <div class="left">Phí vận chuyển
-                                    
-                                </div>
+                                <div class="left">Phí vận chuyển</div>
                                 <div class="right totalDiscount">
-                                    <telerik:RadNumericTextBox runat="server" CssClass="form-control width-notfull" Skin="MetroTouch"
-                                        ID="pFeeShip" MinValue="0" NumberFormat-GroupSizes="3" Width="100%" Value="0" NumberFormat-DecimalDigits="0"
+                                    <telerik:RadNumericTextBox runat="server" CssClass="form-control width-notfull input-feeship" Skin="MetroTouch"
+                                        ID="pFeeShip" MinValue="0" NumberFormat-GroupSizes="3" Value="0" NumberFormat-DecimalDigits="0"
                                         oninput="countTotal()" IncrementSettings-InterceptMouseWheel="false" IncrementSettings-InterceptArrowKeys="false">
                                     </telerik:RadNumericTextBox>
                                 </div>
@@ -82,8 +81,8 @@
                             <div class="post-row clear coupon">
                                 <div class="left">Mã giảm giá</div>
                                 <div class="right">
-                                    <a id="btnOpenCouponModal" class="btn btn-feeship btn-violet" title="Nhập mã giảm giá" onclick="openCouponModal()"><i class="fa fa-tag"></i> Nhập mã</a>
-                                    <a href="javascript:;" id="btnRemoveCouponCode" class="btn btn-feeship link-btn hide" onclick="removeCoupon()"><i class="fa fa-times" aria-hidden="true"></i> Xóa</a>
+                                    <a id="btnOpenCouponModal" class="btn btn-coupon btn-violet" title="Nhập mã giảm giá" onclick="openCouponModal()"><i class="fa fa-gift"></i></a>
+                                    <a href="javascript:;" id="btnRemoveCouponCode" class="btn btn-coupon link-btn hide" onclick="removeCoupon()"><i class="fa fa-times" aria-hidden="true"></i></a>
                                     <asp:TextBox ID="txtCouponValue" runat="server" CssClass="form-control text-right width-notfull input-coupon" value="0" disabled="disabled"></asp:TextBox>
                                 </div>
                             </div>
@@ -94,11 +93,13 @@
                             <div class="post-row clear returnorder hide">
                                 <div class="left">
                                     Hàng trả
-                                    <a href="javascript:;" class="find2 hide btn btn-feeship link-btn"></a>
-                                    <a href="javascript:;" class="find3 hide btn btn-feeship link-btn btn-edit-fee" onclick="searchReturnOrder()"><i class="fa fa-refresh" aria-hidden="true"></i> Chọn</a>
-                                    <a href="javascript:;" class="find3 hide btn btn-feeship link-btn" onclick="deleteReturnOrder()"><i class="fa fa-times" aria-hidden="true"></i> Bỏ</a>
                                 </div>
-                                <div class="right totalpriceorderrefund"></div>
+                                <div class="right ">
+                                    <a href="javascript:;" class="find2 hide btn btn-return-order link-btn"></a>
+                                    <a href="javascript:;" class="find3 hide btn btn-return-order link-btn btn-edit-fee" onclick="searchReturnOrder()"><i class="fa fa-refresh" aria-hidden="true"></i></a>
+                                    <a href="javascript:;" class="find3 hide btn btn-feeship link-btn" onclick="deleteReturnOrder()"><i class="fa fa-times" aria-hidden="true"></i></a>
+                                    <span class="totalpriceorderrefund"></span>
+                                </div>
                             </div>
                             <div class="post-row clear refund hide">
                                 <div class="left">Tổng tiền còn lại</div>
@@ -514,14 +515,14 @@
                     addHTML += "<div id='" + fee.UUID + "' class='post-row clear otherfee' data-feeid='" + fee.FeeTypeID + "' data-price='" + fee.FeePrice + "'>";
                     addHTML += "    <div class='left'>";
                     addHTML += "        <span class='otherfee-name'>" + fee.FeeTypeName + "</span>";
-                    addHTML += "        <a href='javascript:;' class='btn btn-feeship link-btn' onclick='removeOtherFee(`" + fee.UUID + "`)'>";
-                    addHTML += "            <i class='fa fa-times' aria-hidden='true'></i> Xóa";
-                    addHTML += "        </a>";
-                    addHTML += "        <a href='javascript:;' class='btn btn-feeship link-btn btn-edit-fee' onclick='editOtherFee(`" + fee.UUID + "`)'>";
-                    addHTML += "            <i class='fa fa-pencil-square-o' aria-hidden='true'></i> Sửa";
-                    addHTML += "        </a>";
                     addHTML += "    </div>";
                     addHTML += "    <div class='right otherfee-value' onclick='openFeeUpdateModal($(this))'>";
+                    addHTML += "        <a href='javascript:;' class='btn btn-other-fee link-btn btn-edit-fee' onclick='editOtherFee(`" + fee.UUID + "`)'>";
+                    addHTML += "            <i class='fa fa-pencil-square-o' aria-hidden='true'></i>";
+                    addHTML += "        </a>";
+                    addHTML += "        <a href='javascript:;' class='btn btn-other-fee link-btn' onclick='removeOtherFee(`" + fee.UUID + "`)'>";
+                    addHTML += "            <i class='fa fa-times' aria-hidden='true'></i>";
+                    addHTML += "        </a>";
                     addHTML += "        <input id='feePrice' type='text' class='form-control text-right' placeholder='Số tiền phí' disabled='disabled' value='" + negative + formatNumber(fee.FeePrice.toString()) + "'/>";
                     addHTML += "    </div>";
                     addHTML += "</div>";
@@ -950,7 +951,7 @@
                     $(".totalpricedetail").addClass("price-red");
                     $(".find3").removeClass("hide");
                     $(".find1").addClass("hide");
-                    $(".find2").html("<i class='fa fa-share' aria-hidden='true'></i> Đơn " + refundGood.ID);
+                    $(".find2").html("<i class='fa fa-share' aria-hidden='true'></i> " + refundGood.ID);
                     $(".find2").attr("onclick", "viewReturnOrder(" + refundGood.ID + ")");
                     $(".find2").removeClass("hide");
                     $(".totalpricedetail").html(totalPrice);
@@ -1318,7 +1319,7 @@
                         totalprice += total;
                     });
                     $("#<%=hdfTotalPriceNotDiscount.ClientID%>").val(totalprice);
-                    $(".totalproductQuantity").html(formatThousands(productquantity, ',') + " sản phẩm");
+                    $(".totalproductQuantity").html(formatThousands(productquantity, ',') + " cái");
                     $("#<%=hdfTotalPriceNotDiscountNotFee.ClientID%>").val(totalprice);
                     $(".totalpriceorder").html(formatThousands(totalprice, ','));
                     $("#<%=hdfTotalQuantity.ClientID%>").val(productquantity);
@@ -1379,12 +1380,14 @@
                     });
 
                     var priceafterchietkhau = totalleft;
+                    var totalmoney = totalleft + feeship + otherfee;
+                    $("#<%=hdfTotalPrice.ClientID%>").val(totalmoney);
 
                     // Phiếu giảm giá
                     checkCouponCondition();
                     let priceCoupon = +$("#<%=hdfCouponValue.ClientID%>").val() || 0;
 
-                    var totalmoney = totalleft + feeship + otherfee - priceCoupon;
+                    totalmoney -= priceCoupon;
 
                     $("#<%=pDiscount.ClientID%>").val(formatThousands(totalDiscount, ','));
                     $(".totalpriceorderall").html(formatThousands(totalmoney, ','));
@@ -1399,7 +1402,7 @@
                     $("#<%=hdfTongTienConLai.ClientID%>").val(totalmoney - refund);
                     countGuestChange();
                 } else {
-                    $(".totalproductQuantity").html(formatThousands(0, ',') + " sản phẩm");
+                    $(".totalproductQuantity").html(formatThousands(0, ',') + " cái");
                     $(".totalpriceorder").html(formatThousands(0, ','));
                     $(".totalGuestChange").html(formatThousands(0, ','));
                     $(".totalpriceorderall").html(formatThousands(0, ','));
@@ -1543,11 +1546,11 @@
                 let productNumber = +document.querySelector('[id$="_hdfTotalQuantity"]').value || 0;
 
                 if (!customerID) 
-                    return swal("Thông báo", "Chưa nhập thông tin khách hàng", "warning");
+                    return swal("Thông báo", "Chưa nhập thông tin khách hàng!", "warning");
 
                 if (!productNumber) {
                     $("#txtSearch").focus();
-                    return swal("Thông báo", "Chưa có sản phẩm", "warning");
+                    return swal("Thông báo", "Chưa nhập sản phẩm!", "warning");
                 }
                     
 
@@ -1594,7 +1597,7 @@
 
                 if (!code) {
                     errorDOM.classList.remove('hide')
-                    errorDOM.querySelector('p').innerText = "Vui lòng nhập thông tin CODE giảm giá";
+                    errorDOM.querySelector('p').innerText = "Hãy nhập mã giảm giá!";
 
                     codeDOM.focus();
                     codeDOM.select();
@@ -1636,7 +1639,7 @@
                         }
                         else {
                             errorDOM.classList.remove('hide')
-                            errorDOM.querySelector('p').innerText = `Mã code ${code} không tồn tại`;
+                            errorDOM.querySelector('p').innerText = `Mã giảm giá ${code} không tồn tại!`;
 
                             codeDOM.focus();
                             codeDOM.select();
@@ -1671,7 +1674,7 @@
 
                     if (!(productNumber >= couponProductNumber && price >= couponPriceMin)) {
                         removeCoupon();
-                        return setTimeout(_ => { swal("Thông báo", "Mã giảm giá đã xóa, do không đạt yêu cầu", "warning") }, 300);
+                        return setTimeout(_ => { swal("Thông báo", "Đã xóa mã giảm giá, do không đạt yêu cầu!", "warning") }, 300);
                     }
                 }
             }

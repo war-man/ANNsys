@@ -2,7 +2,7 @@
 
 <%@ Register Assembly="Telerik.Web.UI" Namespace="Telerik.Web.UI" TagPrefix="telerik" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
-    <script src="/App_Themes/Ann/js/search-customer.js?v=05092019"></script>
+    <script src="/App_Themes/Ann/js/search-customer.js?v=14122019"></script>
     <script src="/Scripts/moment.min.js"></script>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
@@ -115,21 +115,23 @@
                                     </tbody>
                                 </table>
                             </div>
-                            <div class="post-row clear">
-                                <div class="left">Số lượng</div>
-                                <div class="right totalProductQuantity"></div>
-                            </div>
-                            <div class="post-row clear">
-                                <div class="left">Số lượng miễn tiền phí</div>
-                                <div class="right totalProductQuantityNoFee"></div>
-                            </div>
-                            <div class="post-row clear">
-                                <div class="left">Phí đổi hàng</div>
-                                <div class="right totalRefund"></div>
-                            </div>
-                            <div class="post-row clear">
-                                <div class="left">Tổng tiền (đã trừ phí)</div>
-                                <div class="right totalPriceOrder"></div>
+                            <div class="post-footer">
+                                <div class="post-row clear">
+                                    <div class="left">Số lượng</div>
+                                    <div class="right totalProductQuantity"></div>
+                                </div>
+                                <div class="post-row clear">
+                                    <div class="left">Số lượng miễn tiền phí</div>
+                                    <div class="right totalProductQuantityNoFee"></div>
+                                </div>
+                                <div class="post-row clear">
+                                    <div class="left">Phí đổi hàng</div>
+                                    <div class="right totalRefund"></div>
+                                </div>
+                                <div class="post-row clear">
+                                    <div class="left">Tổng tiền (đã trừ phí)</div>
+                                    <div class="right totalPriceOrder"></div>
+                                </div>
                             </div>
                         </div>
                     </div>

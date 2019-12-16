@@ -436,8 +436,8 @@ namespace IM_PJ
                             productPrint += "<td>" + string.Format("{0:N0}", Convert.ToDouble(order.DiscountPerProduct)) + "</td>";
                             productPrint += "</tr>";
                             productPrint += "<tr>";
-                            productPrint += "<td colspan=\"" + colspan + "\" class=\"align-right\">Trừ chiết khấu</td>";
-                            productPrint += "<td>" + string.Format("{0:N0}", TotalDiscount) + "</td>";
+                            productPrint += "<td colspan=\"" + colspan + "\" class=\"align-right\">Trừ tổng chiết khấu</td>";
+                            productPrint += "<td>-" + string.Format("{0:N0}", TotalDiscount) + "</td>";
                             productPrint += "</tr>";
                             productPrint += "<tr>";
                             productPrint += "<td colspan=\"" + colspan + "\" class=\"align-right\">Sau chiết khấu</td>";
@@ -453,8 +453,8 @@ namespace IM_PJ
                                 TotalOrder = TotalOrder - Convert.ToDouble(refund.TotalPrice);
 
                                 productPrint += "<tr>";
-                                productPrint += "<td colspan=\"" + colspan + "\" class=\"align-right\">Trừ tiền hàng trả (đơn " + order.RefundsGoodsID + ")</td>";
-                                productPrint += "<td>" + string.Format("{0:N0}", Convert.ToDouble(refund.TotalPrice)) + "</td>";
+                                productPrint += "<td colspan=\"" + colspan + "\" class=\"align-right\">Trừ hàng trả (đơn " + order.RefundsGoodsID + ")</td>";
+                                productPrint += "<td>-" + string.Format("{0:N0}", Convert.ToDouble(refund.TotalPrice)) + "</td>";
                                 productPrint += "</tr>";
 
                                 productPrint += "<tr>";
@@ -499,7 +499,7 @@ namespace IM_PJ
                             TotalPrice = TotalPrice - Convert.ToDouble(coupon.Value);
                             productPrint += "<tr>";
                             productPrint += String.Format("<td colspan='{0}' class='align-right'>Mã giảm giá: {1}</td>", colspan, coupon.Code);
-                            productPrint += String.Format("<td>{0:N0}</td>", Convert.ToDouble(coupon.Value));
+                            productPrint += String.Format("<td>-{0:N0}</td>", Convert.ToDouble(coupon.Value));
                             productPrint += "</tr>";
                         }
 

@@ -26,7 +26,7 @@ namespace IM_PJ.Controllers
                         return JsonConvert.SerializeObject(new
                         {
                             status = false,
-                            message = String.Format("Mã khuyến mãi {0} hết hiệu lực ({1:yyyy-MM-dd} -> {2:yyyy-MM-dd})", code, coupon.CreatedDate, coupon.EndDate),
+                            message = String.Format("Mã {0} hết hiệu lực ({1:dd/MM/yyyy} - {2:dd/MM/yyyy})", code, coupon.CreatedDate, coupon.EndDate),
                             couponID = 0,
                             value = 0,
                             productNumber = 0,
@@ -36,7 +36,7 @@ namespace IM_PJ.Controllers
                     if (!coupon.Active)
                         return JsonConvert.SerializeObject(new {
                             status = false,
-                            message = String.Format("Mã khuyến mãi {0} hết hiệu lực", code),
+                            message = String.Format("Mã {0} hết hiệu lực", code),
                             couponID = 0,
                             value = 0,
                             productNumber = 0,
@@ -47,7 +47,7 @@ namespace IM_PJ.Controllers
                         return JsonConvert.SerializeObject(new
                         {
                             status = false,
-                            message = String.Format("Mã khuyến mãi {0} chỉ áp dụng với đơn hàn có số lượng {1:N0} và số tiền tối thiểu {2:N0}VND", code, coupon.ProductNumber, coupon.PriceMin),
+                            message = String.Format("Mã {0} chỉ áp dụng với đơn hàng số lượng > {1:N0} và trị giá > {2:N0}", code, coupon.ProductNumber, coupon.PriceMin),
                             couponID = 0,
                             value = 0,
                             productNumber = 0,
@@ -67,7 +67,7 @@ namespace IM_PJ.Controllers
                         return JsonConvert.SerializeObject(new
                         {
                             status = false,
-                            message = String.Format("Mã khuyến mãi {0} không áp dụng cho khách hàng {1}", code, textInfo.ToTitleCase(user.CustomerName)),
+                            message = String.Format("Mã {0} không áp dụng cho khách hàng {1}", code, textInfo.ToTitleCase(user.CustomerName)),
                             couponID = 0,
                             value = 0,
                             productNumber = 0,
@@ -86,7 +86,7 @@ namespace IM_PJ.Controllers
                             return JsonConvert.SerializeObject(new
                             {
                                 status = false,
-                                message = String.Format("Mã khuyến {0} được khách hàng {1} sử dụng {2} lần", code, textInfo.ToTitleCase(user.CustomerName), customerCouponList.Count),
+                                message = String.Format("Mã {0} đã được khách hàng {1} sử dụng {2} lần", code, textInfo.ToTitleCase(user.CustomerName), customerCouponList.Count),
                                 couponID = 0,
                                 value = 0,
                                 productNumber = 0,
@@ -96,7 +96,7 @@ namespace IM_PJ.Controllers
                             return JsonConvert.SerializeObject(new
                             {
                                 status = false,
-                                message = String.Format("Khách hàng {0} đã sử dung mã khuyến mãi {1}", textInfo.ToTitleCase(user.CustomerName), code),
+                                message = String.Format("Khách hàng {0} đã sử dụng mã {1}", textInfo.ToTitleCase(user.CustomerName), code),
                                 couponID = 0,
                                 value = 0,
                                 productNumber = 0,
@@ -115,7 +115,7 @@ namespace IM_PJ.Controllers
                             return JsonConvert.SerializeObject(new
                             {
                                 status = false,
-                                message = String.Format("Khách hàng {0} sử dụng mã {1} không đúng ngày ({2:yyyy-MM-dd} -> {3:yyyy-MM-dd})", textInfo.ToTitleCase(user.CustomerName), code, customerCoupon.StartDate, customerCoupon.EndDate),
+                                message = String.Format("Khách hàng {0} sử dụng mã {1} không đúng thời gian ({2:dd/MM/yyyy} - {3:dd/MM/yyyy})", textInfo.ToTitleCase(user.CustomerName), code, customerCoupon.StartDate, customerCoupon.EndDate),
                                 couponID = 0,
                                 value = 0,
                                 productNumber = 0,
@@ -137,7 +137,7 @@ namespace IM_PJ.Controllers
 
                 return JsonConvert.SerializeObject(new {
                     status = false,
-                    message = String.Format("Mã khuyến mãi {0} không tồn tại", code),
+                    message = String.Format("Mã {0} không tồn tại", code),
                     couponID = 0,
                     value = 0,
                     productNumber = 0,

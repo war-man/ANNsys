@@ -308,8 +308,8 @@ namespace IM_PJ
                             productPrint += "<td>" + string.Format("{0:N0}", Convert.ToDouble(order.DiscountPerProduct)) + "</td>";
                             productPrint += "</tr>";
                             productPrint += "<tr>";
-                            productPrint += "<td colspan='2'>Tổng chiết khấu</td>";
-                            productPrint += "<td>" + string.Format("{0:N0}", TotalDiscount) + "</td>";
+                            productPrint += "<td colspan='2'>Trừ tổng chiết khấu</td>";
+                            productPrint += "<td>-" + string.Format("{0:N0}", TotalDiscount) + "</td>";
                             productPrint += "</tr>";
                             productPrint += "<tr>";
                             productPrint += "<td colspan='2'>Sau chiết khấu</td>";
@@ -326,7 +326,7 @@ namespace IM_PJ
 
                                 productPrint += "<tr>";
                                 productPrint += "<td colspan='2'>Trừ hàng trả (đơn " + order.RefundsGoodsID + ")</td>";
-                                productPrint += "<td>" + string.Format("{0:N0}", Convert.ToDouble(refund.TotalPrice)) + "</td>";
+                                productPrint += "<td>-" + string.Format("{0:N0}", Convert.ToDouble(refund.TotalPrice)) + "</td>";
                                 productPrint += "</tr>";
 
                                 productPrint += "<tr>";
@@ -373,7 +373,7 @@ namespace IM_PJ
                             TotalPrice = TotalPrice - Convert.ToDouble(coupon.Value);
                             productPrint += "<tr>";
                             productPrint += String.Format("<td colspan='2'>Mã giảm giá: {0}</td>", coupon.Code);
-                            productPrint += String.Format("<td>{0:N0}</td>", Convert.ToDouble(coupon.Value));
+                            productPrint += String.Format("<td>-{0:N0}</td>", Convert.ToDouble(coupon.Value));
                             productPrint += "</tr>";
                         }
                         

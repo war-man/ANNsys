@@ -1,14 +1,58 @@
-﻿.input-coupon {
-    cursor: not-allowed;
+﻿.totalproductQuantity {
+    font-size: 18px;
+}
+.post-footer {
+    font-size: 18px;
+}
+.post-footer .post-row {
+    background-color: #fff!important;
+}
+.input-other-fee {
+    width: inherit!important;
+    vertical-align: middle;
+    border: solid 1px #cdcdcd;
+    background-color: #eeeeee;
+    opacity: 1;
+    box-shadow: none;
+    border-radius: 2px;
+    outline: 0;
+    -webkit-transition: all 0.3s ease-in-out;
+    -moz-transition: all 0.3s ease-in-out;
+    -o-transition: all 0.3s ease-in-out;
+    -ms-transition: all 0.3s ease-in-out;
+    transition: all 0.3s ease-in-out;
+}
+.input-coupon {
     border-color: #cdcdcd;
-    width: 100%;
+    width: 160px!important;
     padding: 5px;
     height: 36px;
     line-height: 20px;
-    font-weight: 100;
-    font-size: 16px;
+    font-weight: 500;
+    font-size: 18px;
     font-family: "Segoe UI",Arial,Helvetica,sans-serif;
     color: #000;
+}
+.input-discount {
+    font-weight: 500!important;
+    font-size: 18px!important;
+}
+.input-feeship {
+    font-weight: 500!important;
+    font-size: 18px!important;
+}
+#feePrice {
+    cursor: pointer;
+    border-color: #cdcdcd;
+    width: 160px;
+    padding: 5px;
+    height: 36px;
+    line-height: 20px;
+    font-weight: 500;
+    font-size: 18px;
+    font-family: "Segoe UI",Arial,Helvetica,sans-serif;
+    color: #000;
+    float: right;
 }
 .sale-icon {
     background: #F44336;
@@ -91,18 +135,6 @@ table.shop_table_responsive > tbody > tr:nth-of-type(2n + 1) td {
 }
 table.shop_table_responsive > thead > tr > th {
     border-bottom: none;
-}
-#feePrice {
-    cursor: pointer;
-    border-color: #cdcdcd;
-    width: 100%;
-    padding: 5px;
-    height: 36px;
-    line-height: 20px;
-    font-weight: 100;
-    font-size: 16px;
-    font-family: "Segoe UI",Arial,Helvetica,sans-serif;
-    color: #000;
 }
 .btn-edit-fee {
     background-color: #000!important;
@@ -508,7 +540,39 @@ a.bg-button:hover {
     margin-top: 5px;
     display: block;
 }
+.btn-return-order {
+    height: 36px;
+    border-radius: 0;
+    background-color: #F44336;
+    margin-right: 10px;
+    line-height: 18px;
+    color: #fff!important;
+}
 .btn-feeship {
+    height: 36px;
+    border-radius: 0;
+    background-color: #F44336;
+    margin-right: 5px;
+    line-height: 18px;
+    color: #fff!important;
+}
+.btn-coupon {
+    height: 36px;
+    border-radius: 0;
+    background-color: #F44336;
+    margin-right: 10px;
+    line-height: 18px;
+    color: #fff!important;
+}
+.btn-cal-discount {
+    height: 36px;
+    border-radius: 0;
+    background-color: #F44336;
+    margin-right: 5px;
+    line-height: 18px;
+    color: #fff!important;
+}
+.btn-other-fee {
     height: 36px;
     border-radius: 0;
     background-color: #F44336;
@@ -1442,17 +1506,17 @@ body {
 }
 
 .totalpriceorder {
-    font-size: 16px;
+    font-size: 18px;
     font-weight: bold;
 }
 
 .priceafterchietkhau {
-    font-size: 16px;
+    font-size: 18px;
     font-weight: bold;
 }
 
 .totalpriceorderall {
-    font-size: 16px;
+    font-size: 18px;
     font-weight: bold;
 }
 
@@ -1472,11 +1536,30 @@ body {
     width: 150px;
 }
 .totalpriceorderrefund {
-    font-size: 16px;
-    font-weight: bold;
+    background-color: #eeeeee;
+    border-color: #cdcdcd;
+    border: solid 1px #cdcdcd;
+    width: 160px!important;
+    padding: 5px;
+    height: 36px;
+    line-height: 23px;
+    font-weight: 500;
+    font-size: 18px;
+    font-family: "Segoe UI",Arial,Helvetica,sans-serif;
+    color: #000;
+    -webkit-transition: all 0.3s ease-in-out;
+    -moz-transition: all 0.3s ease-in-out;
+    -o-transition: all 0.3s ease-in-out;
+    -ms-transition: all 0.3s ease-in-out;
+    transition: all 0.3s ease-in-out;
+    box-shadow: none;
+    border-radius: 2px;
+    vertical-align: middle;
+    display: inline-block;
+    cursor: not-allowed;
 }
 .totalpricedetail {
-    font-size: 16px;
+    font-size: 18px;
     font-weight: bold;
 }
 
