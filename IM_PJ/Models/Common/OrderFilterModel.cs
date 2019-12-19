@@ -61,5 +61,7 @@ namespace IM_PJ.Models
         public bool selected { get; set; } = false;
         // Người đang thực hiện filter
         public tbl_Account account { get; set; }
+        // Đơn hàng có mã khuyến mãi hay không
+        public int couponStatus { get; set; }
     }
 }

@@ -134,4 +134,10 @@ namespace IM_PJ.Models
         Fail = 5, // Trạng thái thất bại
         Continue = 6 // Trạng thái bỏ qua khi không có sản phẩm
     }
+
+    public enum CouponStatus
+    {
+        Yes = 1, // Trạng thái có mã giảm giá
+        No = 2 // Trạng thái không có mã giảm giá
+    }
 }
