@@ -486,7 +486,7 @@ namespace IM_PJ
                             html.AppendLine(String.Format("        data-productvariablevalue ='{0}'", ProductVariableValue));
                             html.AppendLine(String.Format("        data-productvariablesave ='{0}'", ProductVariableSave));
                             html.AppendLine(String.Format("        data-quantitymaininstock='{0}'>", QuantityMainInstock));
-                            html.AppendLine(String.Format("    <td class='order-item'>{0}</td>", orderitem));
+                            html.AppendLine(String.Format("    <td class='order-item'>{0}</td>", excuteStatus == (int)ExcuteStatus.Doing ? (orderdetails.Count - orderitem + 1) : orderitem));
                             html.AppendLine(String.Format("    <td class='image-item'>{0}</td>", ProductImage));
                             html.AppendLine(String.Format("    <td class='name-item'>{0}</td>", "<a href='/xem-san-pham?id=" + item.ProductID + "&variableid=" + item.ProductVariableID + "' target='_blank'>" + (Giacu > 0 ? "<span class='sale-icon'>SALE</span> " : "") + ProductName + "</a>"));
                             html.AppendLine(String.Format("    <td class='sku-item'>{0}</td>", SKU));

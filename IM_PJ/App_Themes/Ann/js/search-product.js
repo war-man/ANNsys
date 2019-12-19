@@ -243,10 +243,13 @@ function addHtmlProductResult(item) {
 }
 
 // reindex item order
-function reIndex() {
+function reIndex(reverse) {
+    if (reverse === undefined)
+        reverse = false;
+
     var item = $(".order-item");
     for (var i = 1; i < item.length + 1; i++) {
-        $(".order-item:eq(" + i + ")").html(i);
+        $(".order-item:eq(" + i + ")").html(reverse ? (item.length - i) : i);
     }
 }
 
