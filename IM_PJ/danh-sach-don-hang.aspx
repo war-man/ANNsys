@@ -165,6 +165,19 @@
                             </div>
                         </div>
                     </div>
+                     <div class="filter-above-wrap clear">
+                        <div class="filter-control">
+                            <div class="row">
+                                <div class="col-md-3 col-xs-6">
+                                    <asp:DropDownList ID="ddlCouponStatus" runat="server" CssClass="form-control" onchange="onChange_ddlQuantityFilter(this)">
+                                        <asp:ListItem Value="0" Text="Mã giảm giá"></asp:ListItem>
+                                        <asp:ListItem Value="1" Text="Có mã giảm giá"></asp:ListItem>
+                                        <asp:ListItem Value="2" Text="Không mã giảm giá"></asp:ListItem>
+                                    </asp:DropDownList>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <div class="panel-table clear">
                         <div class="panel-footer clear">
                             <div class="pagination">

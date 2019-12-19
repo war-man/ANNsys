@@ -381,6 +381,8 @@ namespace IM_PJ.Controllers
                         CreatedBy = x.CreatedBy,
                         OrderNote = x.OrderNote,
                         RefundsGoodsID = x.RefundsGoodsID,
+                        CouponID = x.CouponID,
+                        CouponValue = x.CouponValue
                     })
                     .Where(x => x.CreatedDate >= year);
                 #endregion
@@ -501,7 +503,8 @@ namespace IM_PJ.Controllers
                 {
                     ID = x.ID,
                     CustomerID = x.CustomerID,
-                    RefundsGoodsID = x.RefundsGoodsID
+                    RefundsGoodsID = x.RefundsGoodsID,
+                    CouponID = x.CouponID
                 });
                 #endregion
 
@@ -529,7 +532,8 @@ namespace IM_PJ.Controllers
                                     {
                                         ID = x.ID,
                                         CustomerID = x.CustomerID,
-                                        RefundsGoodsID = x.RefundsGoodsID
+                                        RefundsGoodsID = x.RefundsGoodsID,
+                                        CouponID = x.CouponID
                                     });
                             }
                             else
@@ -545,6 +549,7 @@ namespace IM_PJ.Controllers
                                             CustomerID = h.CustomerID,
                                             ShippingCode = h.ShippingCode,
                                             RefundsGoodsID = h.RefundsGoodsID,
+                                            CouponID = h.CouponID,
                                             // Customer
                                             Zalo = c.Zalo,
                                             CustomerPhone = c.CustomerPhone,
@@ -561,7 +566,8 @@ namespace IM_PJ.Controllers
                                     {
                                         ID = x.ID,
                                         CustomerID = x.CustomerID,
-                                        RefundsGoodsID = x.RefundsGoodsID
+                                        RefundsGoodsID = x.RefundsGoodsID,
+                                        CouponID = x.CouponID
                                     });
                             }
                         }
@@ -578,6 +584,7 @@ namespace IM_PJ.Controllers
                                         CustomerID = h.CustomerID,
                                         ShippingCode = h.ShippingCode,
                                         RefundsGoodsID = h.RefundsGoodsID,
+                                        CouponID = h.CouponID,
                                         // Customer
                                         UnSignedName = c.UnSignedName,
                                         UnSignedNick = c.UnSignedNick
@@ -592,7 +599,8 @@ namespace IM_PJ.Controllers
                                 {
                                     ID = x.ID,
                                     CustomerID = x.CustomerID,
-                                    RefundsGoodsID = x.RefundsGoodsID
+                                    RefundsGoodsID = x.RefundsGoodsID,
+                                    CouponID = x.CouponID
                                 });
                         }
 
@@ -610,6 +618,7 @@ namespace IM_PJ.Controllers
                                     CustomerID = h.CustomerID,
                                     ShippingCode = h.ShippingCode,
                                     RefundsGoodsID = h.RefundsGoodsID,
+                                    CouponID = h.CouponID,
                                     // Order detail
                                     SKU = d.SKU
                                 }
@@ -621,7 +630,8 @@ namespace IM_PJ.Controllers
                             {
                                 ID = x.ID,
                                 CustomerID = x.CustomerID,
-                                RefundsGoodsID = x.RefundsGoodsID
+                                RefundsGoodsID = x.RefundsGoodsID,
+                                CouponID = x.CouponID
                             });
                     }
                 }
@@ -649,6 +659,7 @@ namespace IM_PJ.Controllers
                                 ID = parent.h.ID,
                                 CustomerID = parent.h.CustomerID,
                                 RefundsGoodsID = parent.h.RefundsGoodsID,
+                                CouponID = parent.h.CouponID,
                                 // Delivery
                                 DelStartAt = child.StartAt
                             }
@@ -661,7 +672,8 @@ namespace IM_PJ.Controllers
                         {
                             ID = x.ID,
                             CustomerID = x.CustomerID,
-                            RefundsGoodsID = x.RefundsGoodsID
+                            RefundsGoodsID = x.RefundsGoodsID,
+                            CouponID = x.CouponID
                         });
                 }
                 #endregion
@@ -684,6 +696,7 @@ namespace IM_PJ.Controllers
                                 ID = parent.h.ID,
                                 CustomerID = parent.h.CustomerID,
                                 RefundsGoodsID = parent.h.RefundsGoodsID,
+                                CouponID = parent.h.CouponID,
                                 // Bank Transfers
                                 TransStatus = child.Status,
                                 TransDoneAt = child.DoneAt,
@@ -717,7 +730,8 @@ namespace IM_PJ.Controllers
                     {
                         ID = x.ID,
                         CustomerID = x.CustomerID,
-                        RefundsGoodsID = x.RefundsGoodsID
+                        RefundsGoodsID = x.RefundsGoodsID,
+                        CouponID = x.CouponID
                     });
                 }
                 #endregion
@@ -740,6 +754,7 @@ namespace IM_PJ.Controllers
                                 ID = parent.h.ID,
                                 CustomerID = parent.h.CustomerID,
                                 RefundsGoodsID = parent.h.RefundsGoodsID,
+                                CouponID = parent.h.CouponID,
                                 // Delivery
                                 DeliveryTimes = child.Times
                             }
@@ -749,7 +764,8 @@ namespace IM_PJ.Controllers
                         {
                             ID = x.ID,
                             CustomerID = x.CustomerID,
-                            RefundsGoodsID = x.RefundsGoodsID
+                            RefundsGoodsID = x.RefundsGoodsID,
+                            CouponID = x.CouponID
                         });
                 }
                 #endregion
@@ -772,6 +788,7 @@ namespace IM_PJ.Controllers
                                 ID = parent.h.ID,
                                 CustomerID = parent.h.CustomerID,
                                 RefundsGoodsID = parent.h.RefundsGoodsID,
+                                CouponID = parent.h.CouponID,
                                 ShipperID = child.ShipperID,
                             }
                         )
@@ -780,7 +797,8 @@ namespace IM_PJ.Controllers
                         {
                             ID = x.ID,
                             CustomerID = x.CustomerID,
-                            RefundsGoodsID = x.RefundsGoodsID
+                            RefundsGoodsID = x.RefundsGoodsID,
+                            CouponID = x.CouponID
                         });
                 }
                 #endregion
@@ -1034,6 +1052,37 @@ namespace IM_PJ.Controllers
                         break;
                 }
                 #endregion
+
+                #region Lọc theo mã giảm giá
+                var customerCoupon = con.Coupons
+                    .Join(
+                        orderFilter,
+                        c => c.ID,
+                        o => o.CouponID,
+                        (c, o) => new
+                        {
+                            orderID = o.ID,
+                            couponID = c.ID,
+                            couponCode = c.Code
+                        }
+                    );
+
+                if (filter.couponStatus != 0)
+                {
+                    var orderCoupon = orderFilter
+                       .Where(x => x.CouponID.HasValue)
+                       .Join(
+                           customerCoupon,
+                           o => o.ID,
+                           c => c.orderID,
+                           (o, c) => o
+                       );
+                    if (filter.couponStatus == (int)CouponStatus.Yes)
+                        orderFilter = orderCoupon;
+                    if (filter.couponStatus == (int)CouponStatus.No)
+                        orderFilter = orderFilter.Except(orderCoupon);
+                }
+                #endregion
                 #endregion
 
                 #region Tính toán phân trang
@@ -1123,6 +1172,13 @@ namespace IM_PJ.Controllers
                     .OrderByDescending(o => o.OrderID)
                     .ToList();
                 #endregion
+
+                #region Xuất thông phiếu giảm giá
+                // Lấy thông tin phiếu giảm giá
+                var coupons = customerCoupon
+                    .OrderByDescending(o => o.orderID)
+                    .ToList();
+                #endregion
                 #endregion
 
                 #region Kêt thúc: Tổng hợp lại các thông tin
@@ -1131,281 +1187,227 @@ namespace IM_PJ.Controllers
                         body,
                         h => h.ID,
                         b => b.OrderID,
-                        (h, b) => new OrderList()
-                        {
-                            ID = h.ID,
-                            CustomerID = h.CustomerID.HasValue ? h.CustomerID.Value : 0,
-                            OrderType = h.OrderType.HasValue ? h.OrderType.Value : 0,
-                            ExcuteStatus = h.ExcuteStatus.HasValue ? h.ExcuteStatus.Value : 0,
-                            PaymentStatus = h.PaymentStatus.HasValue ? h.PaymentStatus.Value : 0,
-                            PaymentType = h.PaymentType.HasValue ? h.PaymentType.Value : 0,
-                            ShippingType = h.ShippingType.HasValue ? h.ShippingType.Value : 0,
-                            TotalPrice = Convert.ToDouble(h.TotalPrice),
-                            TotalDiscount = h.TotalDiscount.Value,
-                            FeeShipping = Convert.ToDouble(h.FeeShipping),
-                            CreatedBy = h.CreatedBy,
-                            CreatedDate = h.CreatedDate.HasValue ? h.CreatedDate.Value : DateTime.Now,
-                            DateDone = h.DateDone,
-                            OrderNote = h.OrderNote,
-                            RefundsGoodsID = h.RefundsGoodsID,
-                            ShippingCode = h.ShippingCode,
-                            TransportCompanyID = h.TransportCompanyID,
-                            TransportCompanySubID = h.TransportCompanySubID,
-                            PostalDeliveryType = h.PostalDeliveryType.HasValue ? h.PostalDeliveryType.Value : 0,
-                            // Order Detail
-                            Quantity = Convert.ToInt32(b.Quantity),
+                        (h, b) => new {
+                            header = h,
+                            body = b
                         }
                     )
                     .Join(
                         customer,
-                        h => new { OrderID = h.ID, CustomerID = h.CustomerID },
+                        temp => new {
+                            OrderID = temp.header.ID,
+                            CustomerID = temp.header.CustomerID.HasValue ? temp.header.CustomerID.Value : 0
+                        },
                         c => new { OrderID = c.OrderID, CustomerID = c.CustomerID },
-                        (h, c) => new OrderList()
-                        {
-                            ID = h.ID,
-                            CustomerID = h.CustomerID,
-                            OrderType = h.OrderType,
-                            ExcuteStatus = h.ExcuteStatus,
-                            PaymentStatus = h.PaymentStatus,
-                            PaymentType = h.PaymentType,
-                            ShippingType = h.ShippingType,
-                            TotalPrice = h.TotalPrice,
-                            TotalDiscount = h.TotalDiscount,
-                            FeeShipping = h.FeeShipping,
-                            CreatedBy = h.CreatedBy,
-                            CreatedDate = h.CreatedDate,
-                            DateDone = h.DateDone,
-                            OrderNote = h.OrderNote,
-                            RefundsGoodsID = h.RefundsGoodsID,
-                            ShippingCode = h.ShippingCode,
-                            TransportCompanyID = h.TransportCompanyID,
-                            TransportCompanySubID = h.TransportCompanySubID,
-                            PostalDeliveryType = h.PostalDeliveryType,
-                            // Order Detail
-                            Quantity = h.Quantity,
-                            // Customer
-                            CustomerName = c.CustomerName,
-                            Nick = c.Nick,
-                            CustomerPhone = c.CustomerPhone
+                        (temp, c) => new {
+                            header = temp.header,
+                            body = temp.body,
+                            customer = c
                         }
                     )
                     .GroupJoin(
                         refunds,
-                        h => new { OrderID = h.ID, RefundsGoodsID = h.RefundsGoodsID },
+                        temp => new { OrderID = temp.header.ID, RefundsGoodsID = temp.header.RefundsGoodsID },
                         rf => new { OrderID = rf.OrderID, RefundsGoodsID = rf.RefundsGoodsID },
-                        (h, rf) => new { h, rf }
+                        (temp, rf) => new {
+                            header = temp.header,
+                            body = temp.body,
+                            customer = temp.customer,
+                            refund = rf
+                        }
                     )
                     .SelectMany(
-                        x => x.rf.DefaultIfEmpty(),
-                        (parent, child) => new OrderList()
-                        {
-                            ID = parent.h.ID,
-                            CustomerID = parent.h.CustomerID,
-                            OrderType = parent.h.OrderType,
-                            ExcuteStatus = parent.h.ExcuteStatus,
-                            PaymentStatus = parent.h.PaymentStatus,
-                            PaymentType = parent.h.PaymentType,
-                            ShippingType = parent.h.ShippingType,
-                            TotalPrice = parent.h.TotalPrice,
-                            TotalDiscount = parent.h.TotalDiscount,
-                            FeeShipping = parent.h.FeeShipping,
-                            CreatedBy = parent.h.CreatedBy,
-                            CreatedDate = parent.h.CreatedDate,
-                            DateDone = parent.h.DateDone,
-                            OrderNote = parent.h.OrderNote,
-                            RefundsGoodsID = parent.h.RefundsGoodsID,
-                            ShippingCode = parent.h.ShippingCode,
-                            TransportCompanyID = parent.h.TransportCompanyID,
-                            TransportCompanySubID = parent.h.TransportCompanySubID,
-                            PostalDeliveryType = parent.h.PostalDeliveryType,
-                            // Order Detail
-                            Quantity = parent.h.Quantity,
-                            // Customer
-                            CustomerName = parent.h.CustomerName,
-                            Nick = parent.h.Nick,
-                            CustomerPhone = parent.h.CustomerPhone,
-                            // Refunds
-                            TotalRefund = child != null ? Convert.ToDouble(child.TotalPrice) : 0
+                        x => x.refund.DefaultIfEmpty(),
+                        (parent, child) => new {
+                            header = parent.header,
+                            body = parent.body,
+                            customer = parent.customer,
+                            refund = child
                         }
                     )
                     .GroupJoin(
                         fee,
-                        h => h.ID,
+                        temp => temp.header.ID,
                         f => f.OrderID,
-                        (h, f) => new { h, f }
+                        (temp, f) => new {
+                            header = temp.header,
+                            body = temp.body,
+                            customer = temp.customer,
+                            refund = temp.refund,
+                            fee = f
+                        }
                     )
                     .SelectMany(
-                        x => x.f.DefaultIfEmpty(),
-                        (parent, child) => new OrderList()
-                        {
-                            ID = parent.h.ID,
-                            CustomerID = parent.h.CustomerID,
-                            OrderType = parent.h.OrderType,
-                            ExcuteStatus = parent.h.ExcuteStatus,
-                            PaymentStatus = parent.h.PaymentStatus,
-                            PaymentType = parent.h.PaymentType,
-                            ShippingType = parent.h.ShippingType,
-                            TotalPrice = parent.h.TotalPrice,
-                            TotalDiscount = parent.h.TotalDiscount,
-                            FeeShipping = parent.h.FeeShipping,
-                            CreatedBy = parent.h.CreatedBy,
-                            CreatedDate = parent.h.CreatedDate,
-                            DateDone = parent.h.DateDone,
-                            OrderNote = parent.h.OrderNote,
-                            RefundsGoodsID = parent.h.RefundsGoodsID,
-                            ShippingCode = parent.h.ShippingCode,
-                            TransportCompanyID = parent.h.TransportCompanyID,
-                            TransportCompanySubID = parent.h.TransportCompanySubID,
-                            PostalDeliveryType = parent.h.PostalDeliveryType,
-                            // Order Detail
-                            Quantity = parent.h.Quantity,
-                            // Customer
-                            CustomerName = parent.h.CustomerName,
-                            Nick = parent.h.Nick,
-                            CustomerPhone = parent.h.CustomerPhone,
-                            // Refunds
-                            TotalRefund = parent.h.TotalRefund,
-                            // Fee Other
-                            OtherFeeName = child != null ? child.OtherFeeName : String.Empty,
-                            OtherFeeValue = child != null ? Convert.ToDouble(child.OtherFeeValue) : 0
+                        x => x.fee.DefaultIfEmpty(),
+                        (parent, child) => new {
+                            header = parent.header,
+                            body = parent.body,
+                            customer = parent.customer,
+                            refund = parent.refund,
+                            fee = child
                         }
                     )
                     .GroupJoin(
                         trans,
-                        h => h.ID,
+                        temp => temp.header.ID,
                         t => t.OrderID,
-                        (h, t) => new { h, t }
+                        (temp, t) => new {
+                            header = temp.header,
+                            body = temp.body,
+                            customer = temp.customer,
+                            refund = temp.refund,
+                            fee = temp.fee,
+                            trans = t
+                        }
                     )
                     .SelectMany(
-                        x => x.t.DefaultIfEmpty(),
-                        (parent, child) =>
-                        {
-                            var result = new OrderList()
-                            {
-                                ID = parent.h.ID,
-                                CustomerID = parent.h.CustomerID,
-                                OrderType = parent.h.OrderType,
-                                ExcuteStatus = parent.h.ExcuteStatus,
-                                PaymentStatus = parent.h.PaymentStatus,
-                                PaymentType = parent.h.PaymentType,
-                                ShippingType = parent.h.ShippingType,
-                                TotalPrice = parent.h.TotalPrice,
-                                TotalDiscount = parent.h.TotalDiscount,
-                                FeeShipping = parent.h.FeeShipping,
-                                CreatedBy = parent.h.CreatedBy,
-                                CreatedDate = parent.h.CreatedDate,
-                                DateDone = parent.h.DateDone,
-                                OrderNote = parent.h.OrderNote,
-                                RefundsGoodsID = parent.h.RefundsGoodsID,
-                                ShippingCode = parent.h.ShippingCode,
-                                TransportCompanyID = parent.h.TransportCompanyID,
-                                TransportCompanySubID = parent.h.TransportCompanySubID,
-                                PostalDeliveryType = parent.h.PostalDeliveryType,
-                                // Order Detail
-                                Quantity = parent.h.Quantity,
-                                // Customer
-                                CustomerName = parent.h.CustomerName,
-                                Nick = parent.h.Nick,
-                                CustomerPhone = parent.h.CustomerPhone,
-                                // Refunds
-                                TotalRefund = parent.h.TotalRefund,
-                                // Fee Other
-                                OtherFeeName = parent.h.OtherFeeName,
-                                OtherFeeValue = parent.h.OtherFeeValue,
-                            };
-
-                            if (child != null)
-                            {
-                                // Transfer Bank
-                                result.CusBankID = child.CusBankID;
-                                result.CusBankName = child.CusBankName;
-                                result.AccBankID = child.AccBankID;
-                                result.AccBankName = child.AccBankName;
-                                result.MoneyReceive = child.Money;
-                                result.TransferStatus = child.Status;
-                                result.StatusName = child.Status == 1 ? "Đã nhận tiền" : "Chưa nhận tiền";
-                                result.DoneAt = child.DoneAt;
-                                result.TransferNote = child.Note;
-                            }
-
-                            return result;
+                        x => x.trans.DefaultIfEmpty(),
+                        (parent, child) => new {
+                            header = parent.header,
+                            body = parent.body,
+                            customer = parent.customer,
+                            refund = parent.refund,
+                            fee = parent.fee,
+                            trans = child
                         }
                     )
                     .GroupJoin(
                         deliveries,
-                        h => h.ID,
+                        temp => temp.header.ID,
                         d => d.OrderID,
-                        (h, d) => new { h, d }
-                    )
-                    .SelectMany(
-                        x => x.d.DefaultIfEmpty(),
-                        (parent, child) =>
-                        {
-                            var result = new OrderList()
-                            {
-                                ID = parent.h.ID,
-                                CustomerID = parent.h.CustomerID,
-                                OrderType = parent.h.OrderType,
-                                ExcuteStatus = parent.h.ExcuteStatus,
-                                PaymentStatus = parent.h.PaymentStatus,
-                                PaymentType = parent.h.PaymentType,
-                                ShippingType = parent.h.ShippingType,
-                                TotalPrice = parent.h.TotalPrice,
-                                TotalDiscount = parent.h.TotalDiscount,
-                                FeeShipping = parent.h.FeeShipping,
-                                CreatedBy = parent.h.CreatedBy,
-                                CreatedDate = parent.h.CreatedDate,
-                                DateDone = parent.h.DateDone,
-                                OrderNote = parent.h.OrderNote,
-                                RefundsGoodsID = parent.h.RefundsGoodsID,
-                                ShippingCode = parent.h.ShippingCode,
-                                TransportCompanyID = parent.h.TransportCompanyID,
-                                TransportCompanySubID = parent.h.TransportCompanySubID,
-                                PostalDeliveryType = parent.h.PostalDeliveryType,
-                                // Order Detail
-                                Quantity = parent.h.Quantity,
-                                // Customer
-                                CustomerName = parent.h.CustomerName,
-                                Nick = parent.h.Nick,
-                                CustomerPhone = parent.h.CustomerPhone,
-                                // Refunds
-                                TotalRefund = parent.h.TotalRefund,
-                                // Fee Other
-                                OtherFeeName = parent.h.OtherFeeName,
-                                OtherFeeValue = parent.h.OtherFeeValue,
-                                // Transfer Bank
-                                CusBankID = parent.h.CusBankID,
-                                CusBankName = parent.h.CusBankName,
-                                AccBankID = parent.h.AccBankID,
-                                AccBankName = parent.h.AccBankName,
-                                MoneyReceive = parent.h.MoneyReceive,
-                                TransferStatus = parent.h.TransferStatus,
-                                StatusName = parent.h.StatusName,
-                                DoneAt = parent.h.DoneAt,
-                                TransferNote = parent.h.TransferNote,
-                            };
-
-                            if (child != null)
-                            {
-                                // Delivery
-                                result.DeliveryDate = child.StartAt;
-                                result.DeliveryStatus = child.Status;
-                                result.ShipperID = child.ShipperID;
-                                result.CostOfDelivery = child.COD;
-                                result.CollectionOfOrder = child.COO;
-                                result.ShipNote = child.ShipNote;
-                                result.InvoiceImage = child.Image;
-                                result.ShipperName = child.ShipperName;
-                                result.DeliveryTimes = child.DeliveryTimes.HasValue ? child.DeliveryTimes.Value : 0;
-                            }
-                            else
-                            {
-                                result.DeliveryStatus = (int)DeliveryStatus.Waiting;
-                            }
-
-                            return result;
+                        (temp, d) => new {
+                            header = temp.header,
+                            body = temp.body,
+                            customer = temp.customer,
+                            refund = temp.refund,
+                            fee = temp.fee,
+                            trans = temp.trans,
+                            delivery = d
                         }
                     )
+                    .SelectMany(
+                        x => x.delivery.DefaultIfEmpty(),
+                        (parent, child) => new {
+                            header = parent.header,
+                            body = parent.body,
+                            customer = parent.customer,
+                            refund = parent.refund,
+                            fee = parent.fee,
+                            trans = parent.trans,
+                            delivery = child
+                        }
+                    )
+                    .GroupJoin(
+                        coupons,
+                        temp => temp.header.ID,
+                        c => c.orderID,
+                        (temp, c) => new {
+                            header = temp.header,
+                            body = temp.body,
+                            customer = temp.customer,
+                            refund = temp.refund,
+                            fee = temp.fee,
+                            trans = temp.trans,
+                            delivery = temp.delivery,
+                            coupon = c
+                        }
+                    )
+                    .SelectMany(
+                        x => x.coupon.DefaultIfEmpty(),
+                        (parent, child) => new {
+                            header = parent.header,
+                            body = parent.body,
+                            customer = parent.customer,
+                            refund = parent.refund,
+                            fee = parent.fee,
+                            trans = parent.trans,
+                            delivery = parent.delivery,
+                            coupon = child
+                        }
+                    )
+                    .Select(temp => {
+                        var result = new OrderList();
+
+                        // OrderID
+                        result.ID = temp.header.ID;
+                        result.CustomerID = temp.header.CustomerID.HasValue ? temp.header.CustomerID.Value : 0;
+                        result.OrderType = temp.header.OrderType.HasValue ? temp.header.OrderType.Value : 0;
+                        result.ExcuteStatus = temp.header.ExcuteStatus.HasValue ? temp.header.ExcuteStatus.Value : 0;
+                        result.PaymentStatus = temp.header.PaymentStatus.HasValue ? temp.header.PaymentStatus.Value : 0;
+                        result.PaymentType = temp.header.PaymentType.HasValue ? temp.header.PaymentType.Value : 0;
+                        result.ShippingType = temp.header.ShippingType.HasValue ? temp.header.ShippingType.Value : 0;
+                        result.TotalPrice = Convert.ToDouble(temp.header.TotalPrice);
+                        result.TotalDiscount = temp.header.TotalDiscount.Value;
+                        result.FeeShipping = Convert.ToDouble(temp.header.FeeShipping);
+                        result.CreatedBy = temp.header.CreatedBy;
+                        result.CreatedDate = temp.header.CreatedDate.HasValue ? temp.header.CreatedDate.Value : DateTime.Now;
+                        result.DateDone = temp.header.DateDone;
+                        result.OrderNote = temp.header.OrderNote;
+                        result.RefundsGoodsID = temp.header.RefundsGoodsID;
+                        result.ShippingCode = temp.header.ShippingCode;
+                        result.TransportCompanyID = temp.header.TransportCompanyID;
+                        result.TransportCompanySubID = temp.header.TransportCompanySubID;
+                        result.PostalDeliveryType = temp.header.PostalDeliveryType.HasValue ? temp.header.PostalDeliveryType.Value : 0;
+                        // Order Detail
+                        result.Quantity = Convert.ToInt32(temp.body.Quantity);
+                        // Customer
+                        result.CustomerName = temp.customer.CustomerName;
+                        result.Nick = temp.customer.Nick;
+                        result.CustomerPhone = temp.customer.CustomerPhone;
+                        // Refunds
+                        result.TotalRefund = temp.refund != null ? Convert.ToDouble(temp.refund.TotalPrice) : 0;
+                        // Fee Other
+                        if (temp.fee != null)
+                        {
+                            result.OtherFeeName = temp.fee.OtherFeeName;
+                            result.OtherFeeValue = Convert.ToDouble(temp.fee.OtherFeeValue);
+                        }
+                        else
+                        {
+                            result.OtherFeeName = String.Empty;
+                            result.OtherFeeValue = 0;
+                        }
+                        // Transfer Bank
+                        if (temp.trans != null)
+                        {
+
+                            result.CusBankID = temp.trans.CusBankID;
+                            result.CusBankName = temp.trans.CusBankName;
+                            result.AccBankID = temp.trans.AccBankID;
+                            result.AccBankName = temp.trans.AccBankName;
+                            result.MoneyReceive = temp.trans.Money;
+                            result.TransferStatus = temp.trans.Status;
+                            result.StatusName = temp.trans.Status == 1 ? "Đã nhận tiền" : "Chưa nhận tiền";
+                            result.DoneAt = temp.trans.DoneAt;
+                            result.TransferNote = temp.trans.Note;
+                        }
+                        // Delivery
+                        if (temp.delivery != null)
+                        {
+
+                            result.DeliveryDate = temp.delivery.StartAt;
+                            result.DeliveryStatus = temp.delivery.Status;
+                            result.ShipperID = temp.delivery.ShipperID;
+                            result.CostOfDelivery = temp.delivery.COD;
+                            result.CollectionOfOrder = temp.delivery.COO;
+                            result.ShipNote = temp.delivery.ShipNote;
+                            result.InvoiceImage = temp.delivery.Image;
+                            result.ShipperName = temp.delivery.ShipperName;
+                            result.DeliveryTimes = temp.delivery.DeliveryTimes.HasValue ? temp.delivery.DeliveryTimes.Value : 0;
+                        }
+                        else
+                        {
+                            result.DeliveryStatus = (int)DeliveryStatus.Waiting;
+                        }
+                        // Phiếm giảm giắ
+                        if (temp.coupon != null)
+                        {
+                            result.CouponCode = temp.coupon.couponCode;
+                            result.CouponValue = temp.header.CouponValue.HasValue ? temp.header.CouponValue.Value : 0;
+                        }
+
+                        return result;
+                    })
                     .OrderByDescending(x => x.ID)
                     .ToList();
                 #endregion
@@ -2327,6 +2329,9 @@ namespace IM_PJ.Controllers
             public string InvoiceImage { get; set; }
             public Boolean? CheckDelivery { get; set; }
             public int DeliveryTimes { get; set; }
+            // Mã giảm giá
+            public string CouponCode { get; set; }
+            public decimal CouponValue { get; set; }
         }
 
         public class OrderSQL

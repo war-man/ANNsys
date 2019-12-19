@@ -152,6 +152,8 @@ namespace IM_PJ
                 int QuantityTo = 0;
                 // add filter seach type
                 int SearchType = 0;
+                // Trạng thái mã giảm giá
+                int CouponStatus = 0;
 
                 if (Request.QueryString["textsearch"] != null)
                 {
@@ -231,6 +233,9 @@ namespace IM_PJ
                         QuantityTo = Request.QueryString["quantitymax"].ToInt();
                     }
                 }
+                // Drop download có / không mã giảm giá
+                if (Request.QueryString["couponstatus"] != null)
+                    CouponStatus = Request.QueryString["couponstatus"].ToInt(0);
 
                 txtSearchOrder.Text = TextSearch;
                 ddlSearchType.SelectedValue = SearchType.ToString();
@@ -267,6 +272,9 @@ namespace IM_PJ
                     txtQuantityMax.Text = QuantityTo.ToString();
                 }
 
+                // Drop download có / không mã giảm giá
+                ddlCouponStatus.SelectedValue = CouponStatus.ToString();
+
                 if (acc.RoleID != 0)
                 {
                     CreatedBy = acc.Username;
@@ -293,7 +301,8 @@ namespace IM_PJ
                     orderToDate = OrderToDate,
                     transportCompany = TransportCompany,
                     shipper = ShipperID,
-                    orderNote = OrderNote
+                    orderNote = OrderNote,
+                    couponStatus = CouponStatus
                 };
                 // Create pagination
                 var page = new PaginationMetadataModel()
@@ -470,6 +479,10 @@ namespace IM_PJ
                     if ((item.ShippingType == 4 || item.ShippingType == 5) && !string.IsNullOrEmpty(item.ShipperName))
                     {
                         html.Append("<span class='order-info'><strong>Nhân viên giao hàng:</strong> " + item.ShipperName + "</span>");
+                    }
+                    if (!string.IsNullOrEmpty(item.CouponCode))
+                    {
+                        html.Append(String.Format("<span class='order-info'><strong>Mã giảm giá({0}):</strong> {1:N0}</span>", item.CouponCode.Trim().ToUpper(), item.CouponValue));
                     }
                     if (!string.IsNullOrEmpty(item.OrderNote))
                     {
@@ -713,6 +726,9 @@ namespace IM_PJ
             {
                 request += "&shipperid=" + ddlShipperFilter.SelectedValue;
             }
+            // Drop downlist có / không mã giảm giá
+            if (ddlCouponStatus.SelectedValue != "0")
+                request += "&couponstatus=" + ddlCouponStatus.SelectedValue;
 
             Response.Redirect(request);
         }
