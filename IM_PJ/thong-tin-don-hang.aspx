@@ -3,7 +3,7 @@
 <%@ Register Assembly="Telerik.Web.UI" Namespace="Telerik.Web.UI" TagPrefix="telerik" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
     <script src="/App_Themes/Ann/js/search-customer.js?v=14122019"></script>
-    <script src="/App_Themes/Ann/js/search-product.js?v=14122019"></script>
+    <script src="/App_Themes/Ann/js/search-product.js?v=20191219030735"></script>
     <script type="text/javascript" src="App_Themes/Ann/js/copy-invoice-url.js?v=20191009011413"></script>
     <style>
         .panel-post {
@@ -2082,7 +2082,9 @@
                     $('[id$="_hdfTotalPrice"]').val(formatThousands(0, ','));
                     checkCouponCondition();
                 }
-                reIndex();
+
+                let excuteStatus = +document.querySelector('[id$="_ddlExcuteStatus"]').value || 0;
+                reIndex(excuteStatus == 1);
             };
 
             // check empty
@@ -2330,7 +2332,7 @@
                         // Cập nhật lại index
                         for (let i = 0; i < contentProduct.children.length; i++) {
                             let item = contentProduct.children[i];
-                            item.querySelector('.order-item').innerText = i + 1;
+                            item.querySelector('.order-item').innerText = contentProduct.children.length - i;
                         }
                     }
                 }
