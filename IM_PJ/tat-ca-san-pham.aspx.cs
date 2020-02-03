@@ -80,7 +80,15 @@ namespace IM_PJ
                     ltrAddProduct.Text = "<a href='/tao-san-pham' class='h45-btn btn primary-btn'>Thêm mới</a>";
                 }
 
-                DateTime DateConfig = new DateTime(2018, 6, 22);
+                DateTime year = new DateTime(2018, 6, 22);
+
+                var config = ConfigController.GetByTop1();
+                if (config.ViewAllReports == 0)
+                {
+                    year = DateTime.Now.AddMonths(-2);
+                }
+
+                DateTime DateConfig = year;
 
                 DateTime fromDate = DateConfig;
                 DateTime toDate = DateTime.Now;
@@ -212,6 +220,7 @@ namespace IM_PJ
                 {
                     currentPage = Page
                 };
+
                 List<ProductSQL> a = new List<ProductSQL>();
                 a = ProductController.GetAllSql(filter, ref page);
 

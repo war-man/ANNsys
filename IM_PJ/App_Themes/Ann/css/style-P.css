@@ -1,4 +1,13 @@
-﻿.totalproductQuantity {
+﻿.visible-sm {
+    display: none !important;
+}
+@media (max-width: 480px) {
+    .visible-sm {
+        display: block !important;
+    }
+}
+
+.totalproductQuantity {
     font-size: 18px;
 }
 .post-footer {

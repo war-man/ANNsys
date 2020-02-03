@@ -107,6 +107,17 @@ namespace IM_PJ
 
                 
                     var rs = OrderController.SearchByStatical(orderType, paymentStatus, 4, s, agentID, payment, ship, sku);
+
+                    //DateTime year = new DateTime(2019, 10, 23);
+
+                    //var config = ConfigController.GetByTop1();
+                    //if (config.ViewAllOrders == 1)
+                    //{
+                    //    year = new DateTime(2018, 6, 22);
+                    //}
+
+                    //rs = rs.Where(x => x.CreatedDate >= year).ToList();
+
                     if (rs.Count > 0)
                     {
                         if (acc.RoleID == 0)
@@ -115,7 +126,7 @@ namespace IM_PJ
                             if (by > 0)
                             {
                                 var create = AccountController.GetByID(by);
-                                if(create != null)
+                                if (create != null)
                                 {
                                     pagingall(rs.Where(x=>x.CreatedBy == create.Username).OrderByDescending(x=>x.ModifiedDate).ToList());
                                 }

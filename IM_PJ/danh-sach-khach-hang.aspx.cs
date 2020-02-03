@@ -96,7 +96,15 @@ namespace IM_PJ
             var acc = AccountController.GetByUsername(username);
             if (acc != null)
             {
-                DateTime DateConfig = new DateTime(2018, 6, 21);
+                DateTime year = new DateTime(2018, 6, 22);
+
+                var config = ConfigController.GetByTop1();
+                if (config.ViewAllReports == 0)
+                {
+                    year = DateTime.Now.AddMonths(-2);
+                }
+
+                DateTime DateConfig = year;
 
                 DateTime FromDate = DateConfig;
                 DateTime ToDate = DateTime.Now;

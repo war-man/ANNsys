@@ -354,12 +354,19 @@ namespace IM_PJ.Controllers
             using (var con = new inventorymanagementEntities())
             {
                 #region Loại bớt data chỉ lấy những dữ liệu tỏng 2019-02-15
+                // ẩn sản phẩm theo thời gian
                 DateTime year = new DateTime(2019, 2, 15);
 
                 var config = ConfigController.GetByTop1();
+
                 if (config.ViewAllOrders == 1)
                 {
                     year = new DateTime(2018, 6, 22);
+                }
+
+                if (config.ViewAllReports == 0)
+                {
+                    year = DateTime.Now.AddMonths(-2);
                 }
 
                 var orders = con.tbl_Order

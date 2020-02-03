@@ -103,13 +103,22 @@ namespace IM_PJ
             var acc = AccountController.GetByUsername(username);
             if (acc != null)
             {
-                DateTime DateConfig = new DateTime(2019, 2, 15);
+                // ẩn sản phẩm theo thời gian
+                DateTime year = new DateTime(2019, 2, 15);
 
                 var config = ConfigController.GetByTop1();
+
                 if (config.ViewAllOrders == 1)
                 {
-                    DateConfig = new DateTime(2018, 6, 22);
+                    year = new DateTime(2018, 6, 22);
                 }
+
+                if (config.ViewAllReports == 0)
+                {
+                    year = DateTime.Now.AddMonths(-2);
+                }
+
+                DateTime DateConfig = year;
 
                 DateTime OrderFromDate = DateConfig;
                 DateTime OrderToDate = DateTime.Now;
@@ -439,12 +448,12 @@ namespace IM_PJ
 
                     if(item.TotalRefund != 0)
                     {
-                        html.Append("<span class='order-info'><strong>Trừ hàng trả:</strong> " + string.Format("{0:N0}", item.TotalRefund) + " (<a href='xem-don-hang-doi-tra?id=" + item.RefundsGoodsID + "' target='_blank'>Xem đơn " + item.RefundsGoodsID + "</a>)</span>");
+                        html.Append("<span class='order-info'><strong>Hàng trả:</strong> -" + string.Format("{0:N0}", item.TotalRefund) + " (<a href='xem-don-hang-doi-tra?id=" + item.RefundsGoodsID + "' target='_blank'>Đơn " + item.RefundsGoodsID + "</a>)</span>");
                     }
 
                     if (item.TotalDiscount > 0)
                     {
-                        html.Append("<span class='order-info'><strong>Chiết khấu:</strong> " + string.Format("{0:N0}", Convert.ToDouble(item.TotalDiscount)) + "</span>");
+                        html.Append("<span class='order-info'><strong>Chiết khấu:</strong> -" + string.Format("{0:N0}", Convert.ToDouble(item.TotalDiscount)) + "</span>");
                     }
                     if (item.OtherFeeValue != 0)
                     {
@@ -470,19 +479,19 @@ namespace IM_PJ
                         {
                             moreInfo = " (Chuyển " + ((item.PostalDeliveryType == 1) ? "thường" : "nhanh") + ")";
                         }
-                        html.Append("<span class='order-info'><strong>Mã vận đơn:</strong> " + item.ShippingCode + moreInfo + "</span>");
+                        html.Append("<span class='order-info'><strong>Vận đơn:</strong> " + item.ShippingCode + moreInfo + "</span>");
                     }
                     if (item.FeeShipping > 0)
                     {
-                        html.Append("<span class='order-info'><strong>Phí vận chuyển:</strong> " + string.Format("{0:N0}", Convert.ToDouble(item.FeeShipping)) + "</span>");
+                        html.Append("<span class='order-info'><strong>Phí ship:</strong> " + string.Format("{0:N0}", Convert.ToDouble(item.FeeShipping)) + "</span>");
                     }
                     if ((item.ShippingType == 4 || item.ShippingType == 5) && !string.IsNullOrEmpty(item.ShipperName))
                     {
-                        html.Append("<span class='order-info'><strong>Nhân viên giao hàng:</strong> " + item.ShipperName + "</span>");
+                        html.Append("<span class='order-info'><strong>Shipper:</strong> " + item.ShipperName + "</span>");
                     }
                     if (!string.IsNullOrEmpty(item.CouponCode))
                     {
-                        html.Append(String.Format("<span class='order-info'><strong>Mã giảm giá({0}):</strong> {1:N0}</span>", item.CouponCode.Trim().ToUpper(), item.CouponValue));
+                        html.Append(String.Format("<span class='order-info'><strong>Mã giảm giá ({0}):</strong> -{1:N0}</span>", item.CouponCode.Trim().ToUpper(), item.CouponValue));
                     }
                     if (!string.IsNullOrEmpty(item.OrderNote))
                     {

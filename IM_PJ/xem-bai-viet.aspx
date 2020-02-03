@@ -50,6 +50,6 @@
         <asp:HiddenField ID="hdfTable" runat="server" />
     </main>
 
-    <script src="/App_Themes/Ann/js/copy-post-info.js?v=21112019"></script>
-    <script src="/App_Themes/Ann/js/download-post-image.js?v=21112019"></script>
+    <script src="/App_Themes/Ann/js/copy-post-info.js?v=22122019"></script>
+    <script src="/App_Themes/Ann/js/download-post-image.js?v=22122019"></script>
 </asp:Content>

@@ -409,11 +409,11 @@ namespace IM_PJ
                     }
                     if (item.TotalRefund != 0)
                     {
-                        html.Append("<span class='order-info'><strong>Trừ hàng trả:</strong> " + string.Format("{0:N0}", item.TotalRefund) + " (<a href='xem-don-hang-doi-tra?id=" + item.RefundsGoodsID + "' target='_blank'>Xem đơn " + item.RefundsGoodsID + "</a>)</span>");
+                        html.Append("<span class='order-info'><strong>Hàng trả:</strong> -" + string.Format("{0:N0}", item.TotalRefund) + " (<a href='xem-don-hang-doi-tra?id=" + item.RefundsGoodsID + "' target='_blank'>Xem đơn " + item.RefundsGoodsID + "</a>)</span>");
                     }
                     if (item.TotalDiscount > 0)
                     {
-                        html.Append("<span class='order-info'><strong>Chiết khấu:</strong> " + string.Format("{0:N0}", Convert.ToDouble(item.TotalDiscount)) + "</span>");
+                        html.Append("<span class='order-info'><strong>Chiết khấu:</strong> -" + string.Format("{0:N0}", Convert.ToDouble(item.TotalDiscount)) + "</span>");
                     }
                     if (item.OtherFeeValue != 0)
                     {
@@ -421,7 +421,11 @@ namespace IM_PJ
                     }
                     if (item.FeeShipping > 0)
                     {
-                        html.Append("<span class='order-info'><strong>Phí vận chuyển:</strong> " + string.Format("{0:N0}", Convert.ToDouble(item.FeeShipping)) + "</span>");
+                        html.Append("<span class='order-info'><strong>Phí ship:</strong> " + string.Format("{0:N0}", Convert.ToDouble(item.FeeShipping)) + "</span>");
+                    }
+                    if (!string.IsNullOrEmpty(item.CouponCode))
+                    {
+                        html.Append(String.Format("<span class='order-info'><strong>Mã giảm giá ({0}):</strong> -{1:N0}</span>", item.CouponCode.Trim().ToUpper(), item.CouponValue));
                     }
                     if (!string.IsNullOrEmpty(item.OrderNote))
                     {
@@ -436,11 +440,11 @@ namespace IM_PJ
             {
                 if (acc.RoleID == 0)
                 {
-                    html.Append("<tr><td colspan=\"14\">Không tìm thấy đơn hàng...</td></tr>");
+                    html.Append("<tr><td colspan='14'>Không tìm thấy đơn hàng...</td></tr>");
                 }
                 else
                 {
-                    html.Append("<tr><td colspan=\"13\">Không tìm thấy đơn hàng...</td></tr>");
+                    html.Append("<tr><td colspan='13'>Không tìm thấy đơn hàng...</td></tr>");
                 }
             }
             html.Append("</tbody>");

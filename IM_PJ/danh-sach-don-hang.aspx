@@ -124,7 +124,12 @@
                     <div class="filter-above-wrap clear">
                         <div class="filter-control">
                             <div class="row">
-                                <div class="col-md-1">
+                                <div class="col-md-1 col-xs-6">
+                                    <asp:DropDownList ID="ddlCouponStatus" runat="server" CssClass="form-control" onchange="onChange_ddlQuantityFilter(this)">
+                                        <asp:ListItem Value="0" Text="Coupon"></asp:ListItem>
+                                        <asp:ListItem Value="1" Text="Có"></asp:ListItem>
+                                        <asp:ListItem Value="2" Text="Không"></asp:ListItem>
+                                    </asp:DropDownList>
                                 </div>
                                 <div class="col-md-2 col-xs-6">
                                     <asp:DropDownList ID="ddlOrderNote" runat="server" CssClass="form-control">
@@ -161,19 +166,6 @@
                                     </div>
                                 </div>
                                 <div class="col-md-1 col-xs-6">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                     <div class="filter-above-wrap clear">
-                        <div class="filter-control">
-                            <div class="row">
-                                <div class="col-md-3 col-xs-6">
-                                    <asp:DropDownList ID="ddlCouponStatus" runat="server" CssClass="form-control" onchange="onChange_ddlQuantityFilter(this)">
-                                        <asp:ListItem Value="0" Text="Mã giảm giá"></asp:ListItem>
-                                        <asp:ListItem Value="1" Text="Có mã giảm giá"></asp:ListItem>
-                                        <asp:ListItem Value="2" Text="Không mã giảm giá"></asp:ListItem>
-                                    </asp:DropDownList>
                                 </div>
                             </div>
                         </div>

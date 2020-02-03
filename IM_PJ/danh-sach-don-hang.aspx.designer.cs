@@ -139,6 +139,15 @@ namespace IM_PJ {
         protected global::System.Web.UI.WebControls.DropDownList ddlCreatedBy;
         
         /// <summary>
+        /// ddlCouponStatus control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList ddlCouponStatus;
+        
+        /// <summary>
         /// ddlOrderNote control.
         /// </summary>
         /// <remarks>
@@ -200,15 +209,6 @@ namespace IM_PJ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtQuantityMax;
-        
-        /// <summary>
-        /// ddlCouponStatus control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlCouponStatus;
         
         /// <summary>
         /// ltrList control.
