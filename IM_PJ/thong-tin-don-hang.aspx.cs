@@ -1157,70 +1157,47 @@ namespace IM_PJ
 
                                     if (od != null) // nếu sản phẩm này có trong đơn có rồi thì chỉnh sửa
                                     {
-                                        if (od.IsCount == true)
-                                        {
-                                            double quantityOld = Convert.ToDouble(od.Quantity);
-                                            if (quantityOld > Quantity)
-                                            {
-                                                //cộng vô kho
-                                                double quantitynew = quantityOld - Quantity;
-                                                StockManagerController.Insert(
-                                                    new tbl_StockManager
-                                                    {
-                                                        AgentID = AgentID,
-                                                        ProductID = ProductID,
-                                                        ProductVariableID = ProductVariableID,
-                                                        Quantity = quantitynew,
-                                                        QuantityCurrent = 0,
-                                                        Type = 1,
-                                                        NoteID = "Nhập kho khi giảm số lượng trong sửa đơn",
-                                                        OrderID = OrderID,
-                                                        Status = 4,
-                                                        SKU = SKU,
-                                                        CreatedDate = currentDate,
-                                                        CreatedBy = username,
-                                                        MoveProID = 0,
-                                                        ParentID = parentID,
-                                                    });
-                                            }
-                                            else if (quantityOld < Quantity)
-                                            {
-                                                // tính số lượng kho cần xuất thêm
-                                                double quantitynew = Quantity - quantityOld;
+                                        double quantityOld = Convert.ToDouble(od.Quantity);
 
-                                                //trừ tiếp trong kho
-                                                StockManagerController.Insert(
-                                                    new tbl_StockManager
-                                                    {
-                                                        AgentID = AgentID,
-                                                        ProductID = ProductID,
-                                                        ProductVariableID = ProductVariableID,
-                                                        Quantity = quantitynew,
-                                                        QuantityCurrent = 0,
-                                                        Type = 2,
-                                                        NoteID = "Xuất kho khi tăng số lượng trong sửa đơn",
-                                                        OrderID = OrderID,
-                                                        Status = 3,
-                                                        SKU = SKU,
-                                                        CreatedDate = currentDate,
-                                                        CreatedBy = username,
-                                                        MoveProID = 0,
-                                                        ParentID = parentID,
-                                                    });
-                                            }
-                                        }
-                                        else
+                                        if (quantityOld > Quantity)
                                         {
+                                            //cộng vô kho
+                                            double quantitynew = quantityOld - Quantity;
                                             StockManagerController.Insert(
                                                 new tbl_StockManager
                                                 {
                                                     AgentID = AgentID,
                                                     ProductID = ProductID,
                                                     ProductVariableID = ProductVariableID,
-                                                    Quantity = Quantity,
+                                                    Quantity = quantitynew,
+                                                    QuantityCurrent = 0,
+                                                    Type = 1,
+                                                    NoteID = "Nhập kho khi giảm số lượng trong sửa đơn",
+                                                    OrderID = OrderID,
+                                                    Status = 4,
+                                                    SKU = SKU,
+                                                    CreatedDate = currentDate,
+                                                    CreatedBy = username,
+                                                    MoveProID = 0,
+                                                    ParentID = parentID,
+                                                });
+                                        }
+                                        else if (quantityOld < Quantity)
+                                        {
+                                            // tính số lượng kho cần xuất thêm
+                                            double quantitynew = Quantity - quantityOld;
+
+                                            //trừ tiếp trong kho
+                                            StockManagerController.Insert(
+                                                new tbl_StockManager
+                                                {
+                                                    AgentID = AgentID,
+                                                    ProductID = ProductID,
+                                                    ProductVariableID = ProductVariableID,
+                                                    Quantity = quantitynew,
                                                     QuantityCurrent = 0,
                                                     Type = 2,
-                                                    NoteID = "Xuất kho thêm mới sản phẩm khi sửa đơn",
+                                                    NoteID = "Xuất kho khi tăng số lượng trong sửa đơn",
                                                     OrderID = OrderID,
                                                     Status = 3,
                                                     SKU = SKU,
@@ -1229,7 +1206,6 @@ namespace IM_PJ
                                                     MoveProID = 0,
                                                     ParentID = parentID,
                                                 });
-                                            OrderDetailController.UpdateIsCount(OrderDetailID, true);
                                         }
 
                                         // cập nhật số lượng sản phẩm trong đơn hàng

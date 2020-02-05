@@ -355,7 +355,7 @@ namespace IM_PJ.Controllers
             {
                 #region Loại bớt data chỉ lấy những dữ liệu tỏng 2019-02-15
                 // ẩn sản phẩm theo thời gian
-                DateTime year = new DateTime(2019, 2, 15);
+                DateTime year = new DateTime(2019, 12, 15);
 
                 var config = ConfigController.GetByTop1();
 

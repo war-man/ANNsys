@@ -18,7 +18,7 @@ namespace IM_PJ.Controllers
                 foreach (var item in postOffices)
                 {
                     var order = con.tbl_Order
-                        .Where(x => x.CreatedDate >= new DateTime(2019, 2, 15))
+                        .Where(x => x.CreatedDate >= new DateTime(2019, 12, 15))
                         .Where(x => x.ExcuteStatus == (int)ExcuteStatus.Done || x.ExcuteStatus == (int)ExcuteStatus.Return)
                         .Where(x => x.ID == item.OrderID || x.ShippingCode == item.NumberID)
                         .FirstOrDefault();

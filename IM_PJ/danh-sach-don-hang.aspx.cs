@@ -104,7 +104,7 @@ namespace IM_PJ
             if (acc != null)
             {
                 // ẩn sản phẩm theo thời gian
-                DateTime year = new DateTime(2019, 2, 15);
+                DateTime year = new DateTime(2019, 12, 15);
 
                 var config = ConfigController.GetByTop1();
 

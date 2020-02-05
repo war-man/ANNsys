@@ -46,7 +46,7 @@ namespace IM_PJ
             var acc = AccountController.GetByUsername(username);
             if (acc != null)
             {
-                DateTime DateConfig = new DateTime(2019, 2, 15);
+                DateTime DateConfig = new DateTime(2019, 12, 15);
 
                 var config = ConfigController.GetByTop1();
                 if (config.ViewAllOrders == 1)

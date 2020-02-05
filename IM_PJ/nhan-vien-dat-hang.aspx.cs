@@ -65,7 +65,7 @@ namespace IM_PJ
             string username = Request.Cookies["loginHiddenPage"].Value;
             var acc = AccountController.GetByUsername(username);
 
-            DateTime DateConfig = new DateTime(2019, 2, 15);
+            DateTime DateConfig = new DateTime(2019, 12, 15);
 
             var config = ConfigController.GetByTop1();
             if (config.ViewAllOrders == 1)
