@@ -28,7 +28,6 @@ namespace IM_PJ.Models
         public virtual DbSet<Bank> Banks { get; set; }
         public virtual DbSet<BankAccount> BankAccounts { get; set; }
         public virtual DbSet<BankTransfer> BankTransfers { get; set; }
-        public virtual DbSet<CategoryShelf> CategoryShelves { get; set; }
         public virtual DbSet<Coupon> Coupons { get; set; }
         public virtual DbSet<CronJob> CronJobs { get; set; }
         public virtual DbSet<CronJobProductStatu> CronJobProductStatus { get; set; }
@@ -36,15 +35,20 @@ namespace IM_PJ.Models
         public virtual DbSet<CustomerEditOrder> CustomerEditOrders { get; set; }
         public virtual DbSet<Delivery> Deliveries { get; set; }
         public virtual DbSet<DeliveryPostOffice> DeliveryPostOffices { get; set; }
-        public virtual DbSet<DeliveryProship> DeliveryProships { get; set; }
         public virtual DbSet<Fee> Fees { get; set; }
         public virtual DbSet<FeeType> FeeTypes { get; set; }
+        public virtual DbSet<GroupNotifyPromotion> GroupNotifyPromotions { get; set; }
+        public virtual DbSet<Notification> Notifications { get; set; }
+        public virtual DbSet<NotifyNew> NotifyNews { get; set; }
+        public virtual DbSet<NotifyPromotion> NotifyPromotions { get; set; }
+        public virtual DbSet<NotifyUser> NotifyUsers { get; set; }
+        public virtual DbSet<PostCategory> PostCategories { get; set; }
+        public virtual DbSet<PostPublic> PostPublics { get; set; }
         public virtual DbSet<ProductTag> ProductTags { get; set; }
         public virtual DbSet<ReceivedProductHistory> ReceivedProductHistories { get; set; }
         public virtual DbSet<Register> Registers { get; set; }
         public virtual DbSet<RegisterProduct> RegisterProducts { get; set; }
         public virtual DbSet<Session> Sessions { get; set; }
-        public virtual DbSet<ShelfManager> ShelfManagers { get; set; }
         public virtual DbSet<Shipper> Shippers { get; set; }
         public virtual DbSet<Tag> Tags { get; set; }
         public virtual DbSet<tbl_Account> tbl_Account { get; set; }
@@ -86,5 +90,8 @@ namespace IM_PJ.Models
         public virtual DbSet<tbl_Variable> tbl_Variable { get; set; }
         public virtual DbSet<tbl_VariableValue> tbl_VariableValue { get; set; }
         public virtual DbSet<tbl_WhiteDomain> tbl_WhiteDomain { get; set; }
+        public virtual DbSet<User> Users { get; set; }
+        public virtual DbSet<UserNotifyPromotion> UserNotifyPromotions { get; set; }
+        public virtual DbSet<NotificationCategory> NotificationCategories { get; set; }
     }
 }

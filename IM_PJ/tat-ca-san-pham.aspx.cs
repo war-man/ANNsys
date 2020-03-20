@@ -75,7 +75,7 @@ namespace IM_PJ
         {
             if (acc != null)
             {
-                if (acc.RoleID == 0 || acc.RoleID == 1)
+                if (acc.RoleID == 0 || acc.RoleID == 1 || acc.Username == "nhom_zalo502")
                 {
                     ltrAddProduct.Text = "<a href='/tao-san-pham' class='h45-btn btn primary-btn'>Thêm mới</a>";
                 }
@@ -588,24 +588,24 @@ namespace IM_PJ
             StringBuilder html = new StringBuilder();
             if (product != null)
             {
-                html.Append("<p>" + product.ProductSKU + " - " + product.ProductTitle + "</p>\r\n");
-                html.Append("<p></p>\r\n");
-                html.Append("<p>📌 Giá sỉ: " + (product.Regular_Price / 1000).ToString() + "k</p>\r\n");
-                html.Append("<p></p>\r\n");
-                html.Append("<p>📌 Giá lẻ: " + ((product.Retail_Price + 25000) / 1000).ToString() + "k</p>\r\n");
-                html.Append("<p></p>\r\n");
+                html.AppendLine("<p>" + product.ProductSKU + " - " + product.ProductTitle + "</p>\r\n");
+                html.AppendLine("<p></p>\r\n");
+                html.AppendLine("<p>📌 Giá sỉ: " + (product.Regular_Price / 1000).ToString() + "k</p>\r\n");
+                html.AppendLine("<p></p>\r\n");
+                html.AppendLine("<p>📌 Giá lẻ: " + (product.Retail_Price / 1000).ToString() + "k</p>\r\n");
+                html.AppendLine("<p></p>\r\n");
 
                 if (!string.IsNullOrEmpty(product.Materials))
                 {
-                    html.Append("<p>🔖 " + (product.CategoryID == 44 ? "" : "Chất liệu: ")  + product.Materials + "</p>\r\n");
-                    html.Append("<p></p>\r\n");
+                    html.AppendLine("<p>🔖 " + (product.CategoryID == 44 ? "" : "Chất liệu: ")  + product.Materials + "</p>\r\n");
+                    html.AppendLine("<p></p>\r\n");
                 }
 
                 if (!string.IsNullOrEmpty(product.ProductContent))
                 {
                     string content = Regex.Replace(product.ProductContent, @"<img\s[^>]*>(?:\s*?</img>)?", "").ToString();
-                    html.Append("<p>🔖 " + content + "</p>\r\n");
-                    html.Append("<p></p>\r\n");
+                    html.AppendLine("<p>🔖 " + content + "</p>\r\n");
+                    html.AppendLine("<p></p>\r\n");
                 }
 
                 // liệt kê thuộc tính sản phẩm
@@ -675,44 +675,26 @@ namespace IM_PJ
                         }
                     }
                     
-                    html.Append(Variable);
+                    html.AppendLine(Variable);
                 }
 
-                if (product.CategoryID == 44)
-                {
-                    html.Append("<p></p>\r\n");
-                    html.Append("<p>⭐ Web xem mẫu nước hoa: http://XuongANN.com/category/nuoc-hoa </p>\r\n");
-                }
-
-                html.Append("<p></p>\r\n");
-                html.Append("<p></p>\r\n");
+                html.AppendLine("<p></p>\r\n");
+                html.AppendLine("<p></p>\r\n");
 
                 if (product.ID%4 == 0)
                 {
                     // thông tin liên hệ
                     
-                    html.Append("<p>-----------------------------------------------------------</p>\r\n");
-                    html.Append("<p></p>\r\n");
-                    html.Append("<p>⚡⚡ KHO HÀNG SỈ ANN ⚡⚡</p>\r\n");
-                    html.Append("<p></p>\r\n");
-                    html.Append("<p>🏭 68 Đường C12, P.13, Tân Bình, TP.HCM</p>\r\n");
-                    html.Append("<p></p>\r\n");
-                    html.Append("<p>⭐ Zalo đặt hàng: 0918569400 - 0936786404 - 0913268406 - 0918567409</p>\r\n");
-                    html.Append("<p></p>\r\n");
-                    html.Append("<p>⭐ Facebook: https://facebook.com/bosiquanao.net </p>\r\n");
-                    html.Append("<p></p>\r\n");
-                    html.Append("<p>⭐ Web xem hàng: XuongANN.com </p>\r\n");
-                    html.Append("<p></p>\r\n");
-                    html.Append("<p>⭐ Zalo Xem Hàng (các Zalo này không nhận đơn hàng)</p>\r\n");
-                    html.Append("<p></p>\r\n");
-                    html.Append("<p>⭐ Quần Áo Nam: 0977399405</p>\r\n");
-                    html.Append("<p></p>\r\n");
-                    html.Append("<p>⭐ Đồ Bộ Nữ: 0967702402</p>\r\n");
-                    html.Append("<p></p>\r\n");
-                    html.Append("<p>⭐ Váy Đầm - Quần Áo Nữ: 0987409403</p>\r\n");
-                    html.Append("<p></p>\r\n");
-                    html.Append("<p>⭐ Hàng Sale: 0971406402</p>\r\n");
-                    html.Append("<p></p>\r\n");
+                    html.AppendLine("<p>-----------------------------------------------------------</p>\r\n");
+                    html.AppendLine("<p></p>\r\n");
+                    html.AppendLine("<p>⚡⚡ KHO HÀNG SỈ ANN ⚡⚡</p>\r\n");
+                    html.AppendLine("<p></p>\r\n");
+                    html.AppendLine("<p>🏭 68 Đường C12, P.13, Tân Bình, TP.HCM</p>\r\n");
+                    html.AppendLine("<p></p>\r\n");
+                    html.AppendLine("<p>⭐ Zalo đặt hàng: 0918569400 - 0936786404 - 0913268406 - 0918567409</p>\r\n");
+                    html.AppendLine("<p></p>\r\n");
+                    html.AppendLine("<p>⭐ Ứng dụng: https://app.ann.com.vn/download </p>\r\n");
+                    html.AppendLine("<p></p>\r\n");
                 }
             }
 
@@ -727,31 +709,31 @@ namespace IM_PJ
         public void pagingall(List<ProductSQL> acs, PaginationMetadataModel page)
         {
             StringBuilder html = new StringBuilder();
-            html.Append("<thead>");
-            html.Append("<tr>");
-            html.Append("    <th class='image-column'>Ảnh</th>");
-            html.Append("    <th class='name-column'>Sản phẩm</th>");
-            html.Append("    <th class='sku-column'>Mã</th>");
-            html.Append("    <th class='wholesale-price-column'>Giá sỉ</th>");
+            html.AppendLine("<thead>");
+            html.AppendLine("<tr>");
+            html.AppendLine("    <th class='image-column'>Ảnh</th>");
+            html.AppendLine("    <th class='name-column'>Sản phẩm</th>");
+            html.AppendLine("    <th class='sku-column'>Mã</th>");
+            html.AppendLine("    <th class='wholesale-price-column'>Giá sỉ</th>");
             if (acc.RoleID == 0)
             {
-                html.Append("    <th class='cost-price-column'>Giá vốn</th> ");
+                html.AppendLine("    <th class='cost-price-column'>Giá vốn</th> ");
             }
-            html.Append("    <th class='retail-price-column'>Giá lẻ</th>");
-            html.Append("    <th class='stock-column'>SL</th>");
-            html.Append("    <th class='stock-status-column'>Kho</th>");
-            html.Append("    <th class='category-column'>Danh mục</th>");
-            html.Append("    <th class='date-column'>Ngày tạo</th>");
-            if (acc.RoleID == 0)
+            html.AppendLine("    <th class='retail-price-column'>Giá lẻ</th>");
+            html.AppendLine("    <th class='stock-column'>SL</th>");
+            html.AppendLine("    <th class='stock-status-column'>Kho</th>");
+            html.AppendLine("    <th class='category-column'>Danh mục</th>");
+            html.AppendLine("    <th class='date-column'>Ngày tạo</th>");
+            if (acc.RoleID == 0 || acc.Username == "nhom_zalo502")
             {
-                html.Append("    <th class='show-homepage-column'>Trang chủ</th>");
-                html.Append("    <th class='show-webpublish-column'>Xem hàng</th>");
+                html.AppendLine("    <th class='show-homepage-column'>Trang chủ</th>");
+                html.AppendLine("    <th class='show-webpublish-column'>Xem hàng</th>");
             }
-            html.Append("    <th class='action-column'></th>");
-            html.Append("</tr>");
-            html.Append("</thead>");
+            html.AppendLine("    <th class='action-column'></th>");
+            html.AppendLine("</tr>");
+            html.AppendLine("</thead>");
 
-            html.Append("<tbody>");
+            html.AppendLine("<tbody>");
             if (acs.Count > 0)
             {
                 PageCount = page.totalPages;
@@ -759,72 +741,85 @@ namespace IM_PJ
 
                 foreach (var item in acs)
                 {
-                    html.Append("<tr>");
+                    html.AppendLine("<tr>");
 
-                    html.Append("<td>");
-                    html.Append("   <a href='/xem-san-pham?id=" + item.ID + "'><img src='" + Thumbnail.getURL(item.ProductImage, Thumbnail.Size.Small) + "'></a>");
-                    html.Append("   <a href='javascript:;' onclick='copyProductInfo(" + item.ID + ")' class='btn download-btn h45-btn'><i class='fa fa-files-o'></i> Copy</a>");
-                    html.Append("</td>");
+                    html.AppendLine("<td>");
+                    html.AppendLine("   <a target='_blank' href='/xem-san-pham?id=" + item.ID + "'><img src='" + Thumbnail.getURL(item.ProductImage, Thumbnail.Size.Small) + "'></a>");
+                    html.AppendLine("   <a href='javascript:;' onclick='copyProductInfo(" + item.ID + ")' class='btn download-btn h45-btn'><i class='fa fa-files-o'></i> Copy</a>");
+                    html.AppendLine("</td>");
+                    html.AppendLine("   <td>");
+                    html.AppendLine("       <a target='_blank' class='customer-name-link' href='/xem-san-pham?id=" + item.ID + "'>" + (item.OldPrice > 0 ? "<span class='sale-icon'>SALE</span> " : "") + item.ProductTitle + "</a>");
+                    html.AppendLine("       <p class='p-paterials'><strong>Chất liệu:</strong> " + item.Materials + "<p>");
 
-                    html.Append("   <td class='customer-name-link'><a href='/xem-san-pham?id=" + item.ID + "'>" + (item.OldPrice > 0 ? "<span class='sale-icon'>SALE</span> " : "") + item.ProductTitle + "</a></td>");
-                    html.Append("   <td data-title='Mã' class='customer-name-link'>" + item.ProductSKU + "</td>");
-                    html.Append("   <td data-title='Giá sỉ'>" + string.Format("{0:N0}", item.RegularPrice) + (item.OldPrice > 0 ? " <span class='old-price'>" + string.Format("{0:N0}", item.OldPrice) + "</span>" : "") + "</td>");
+                    if (!String.IsNullOrEmpty(item.Tags))
+                    {
+                        var tagList = item.Tags.Split(',').Select(x => x.Trim()).ToList();
+
+                        foreach (var tag in tagList)
+                        {
+                            html.AppendLine(String.Format("       <span class='tag-blue'>{0}</span>", tag.ToLower()));
+                        }
+                    }
+                    html.AppendLine("   </td>");
+
+                    html.AppendLine("   <td data-title='Mã' class='customer-name-link'>" + item.ProductSKU + "</td>");
+                    html.AppendLine("   <td data-title='Giá sỉ'>" + string.Format("{0:N0}", item.RegularPrice) + (item.OldPrice > 0 ? " <span class='old-price'>" + string.Format("{0:N0}", item.OldPrice) + "</span>" : "") + "</td>");
                     if (acc.RoleID == 0)
                     {
-                        html.Append("   <td data-title='Giá vốn'>" + string.Format("{0:N0}", item.CostOfGood) + "</td>");
+                        html.AppendLine("   <td data-title='Giá vốn'>" + string.Format("{0:N0}", item.CostOfGood) + "</td>");
                     }
-                    html.Append("   <td data-title='Giá lẻ'>" + string.Format("{0:N0}", item.RetailPrice) + "</td>");
-                    html.Append("   <td data-title='Số lượng'><a target='_blank' title='Xem thống kê sản phẩm' href='/thong-ke-san-pham?SKU=" + item.ProductSKU + "'>" + string.Format("{0:N0}", item.TotalProductInstockQuantityLeft) + "</a></td>");
-                    html.Append("   <td data-title='Kho'>" + item.ProductInstockStatus + "</td>");
-                    html.Append("   <td data-title='Danh mục'>" + item.CategoryName + "</td>");
-                    string date = string.Format("{0:dd/MM/yyyy}", item.CreatedDate);
-                    html.Append("   <td data-title='Ngày tạo'>" + date + "</td>");
-
-                    if (acc.RoleID == 0 || acc.RoleID == 1)
+                    html.AppendLine("   <td data-title='Giá lẻ'>" + string.Format("{0:N0}", item.RetailPrice) + "</td>");
+                    html.AppendLine("   <td data-title='Số lượng'><a target='_blank' title='Xem thống kê sản phẩm' href='/thong-ke-san-pham?SKU=" + item.ProductSKU + "'>" + string.Format("{0:N0}", item.TotalProductInstockQuantityLeft) + "</a></td>");
+                    html.AppendLine("   <td data-title='Kho'>" + item.ProductInstockStatus + "</td>");
+                    html.AppendLine("   <td data-title='Danh mục'>" + item.CategoryName + "</td>");
+                    string date = string.Format("<strong>{0:dd/MM/yyyy}</strong><br>{0:HH:mm}", item.CreatedDate);
+                    html.AppendLine("   <td data-title='Ngày tạo'>" + date + "</td>");
+                    if (acc.RoleID == 0 || acc.RoleID == 1 || acc.Username == "nhom_zalo502")
                     {
                         if (item.ShowHomePage == 0)
                         {
-                            html.Append("   <td data-title='Trang chủ'><span id='showHomePage_" + item.ID + "'><a href='javascript:;' data-product-id='" + item.ID + "' data-update='1' class='bg-black bg-button' onclick='updateShowHomePage($(this))'>Đang ẩn</a></span></td>");
+                            html.AppendLine("   <td data-title='Trang chủ'><span id='showHomePage_" + item.ID + "'><a href='javascript:;' data-product-id='" + item.ID + "' data-update='1' class='bg-black bg-button' onclick='updateShowHomePage($(this))'>Đang ẩn</a></span></td>");
                         }
                         else
                         {
-                            html.Append("   <td data-title='Trang chủ'><span id='showHomePage_" + item.ID + "'><a href='javascript:;' data-product-id='" + item.ID + "' data-update='0' class='bg-green bg-button' onclick='updateShowHomePage($(this))'>Đang hiện</a></span></td>");
+                            html.AppendLine("   <td data-title='Trang chủ'><span id='showHomePage_" + item.ID + "'><a href='javascript:;' data-product-id='" + item.ID + "' data-update='0' class='bg-green bg-button' onclick='updateShowHomePage($(this))'>Đang hiện</a></span></td>");
                         }
 
                         if (item.WebPublish == false)
                         {
-                            html.Append("   <td data-title='Trang xem hàng'><span id='showWebPublish_" + item.ID + "'><a href='javascript:;' data-product-id='" + item.ID + "' data-update='true' class='bg-black bg-button' onclick='updateShowWebPublish($(this))'>Đang ẩn</a></span></td>");
+                            html.AppendLine("   <td data-title='Trang xem hàng'><span id='showWebPublish_" + item.ID + "'><a href='javascript:;' data-product-id='" + item.ID + "' data-update='true' class='bg-black bg-button' onclick='updateShowWebPublish($(this))'>Đang ẩn</a></span></td>");
                         }
                         else
                         {
-                            html.Append("   <td data-title='Trang xem hàng'><span id='showWebPublish_" + item.ID + "'><a href='javascript:;' data-product-id='" + item.ID + "' data-update='false' class='bg-red bg-button' onclick='updateShowWebPublish($(this))'>Đang hiện</a></span></td>");
+                            html.AppendLine("   <td data-title='Trang xem hàng'><span id='showWebPublish_" + item.ID + "'><a href='javascript:;' data-product-id='" + item.ID + "' data-update='false' class='bg-red bg-button' onclick='updateShowWebPublish($(this))'>Đang hiện</a></span></td>");
                         }
                     }
 
-                    html.Append("   <td data-title='Thao tác' class='update-button'>");
-                    html.Append("       <a href='javascript:;' title='Download tất cả hình sản phẩm này' class='btn primary-btn h45-btn' onclick='getAllProductImage(`" + item.ProductSKU + "`);'><i class='fa fa-file-image-o' aria-hidden='true'></i></a>");
-                    html.Append("       <a target='_blank' href='https://www.facebook.com/search/posts/?q=" + item.ProductSKU + "&filters_rp_author=%7B%22name%22%3A%22author%22%2C%22args%22%3A%22100012594165130%22%7D&filters_rp_chrono_sort=%7B%22name%22%3A%22chronosort%22%2C%22args%22%3A%22%22%7D' title='Tìm trên facebook' class='btn primary-btn btn-black h45-btn'><i class='fa fa-facebook-official' aria-hidden='true'></i></a>");
+                    html.AppendLine("   <td data-title='Thao tác' class='update-button'>");
+                    html.AppendLine("       <a href='javascript:;' title='Download tất cả hình sản phẩm này' class='btn primary-btn h45-btn' onclick='getAllProductImage(`" + item.ProductSKU + "`);'><i class='fa fa-file-image-o' aria-hidden='true'></i></a>");
+                    html.AppendLine("       <a target='_blank' href='https://www.facebook.com/search/posts/?q=" + item.ProductSKU + "&filters_rp_author=%7B%22name%22%3A%22author%22%2C%22args%22%3A%22100012594165130%22%7D&filters_rp_chrono_sort=%7B%22name%22%3A%22chronosort%22%2C%22args%22%3A%22%22%7D' title='Tìm trên facebook' class='btn primary-btn btn-black h45-btn'><i class='fa fa-facebook-official' aria-hidden='true'></i></a>");
 
-                    if (acc.RoleID == 0)
+                    if (acc.RoleID == 0 || acc.Username == "nhom_zalo502")
                     {
-                        html.Append("       <a href='javascript:;' title='Đồng bộ sản phẩm' class='up-product-" + item.ID + " btn primary-btn h45-btn " + (item.ShowHomePage == 1 ? "" : "hide") + "' onclick='ShowUpProductToWeb(`" + item.ProductSKU + "`, `" + item.ID + "`, `" + item.CategoryID + "`, `false`, `false`, `null`);'><i class='fa fa-refresh' aria-hidden='true'></i></a>");
-                        html.Append("       <a href='javascript:;' title='Up sản phẩm lên đầu trang' class='webupdate-product-" + item.ID + " btn primary-btn btn-blue h45-btn " + (item.WebPublish == true ? "" : "hide") + "' onclick='updateWebUpdate(`" + item.ID + "`);'><i class='fa fa-upload' aria-hidden='true'></i></a>");
+                        html.AppendLine("       <a href='javascript:;' title='Đồng bộ sản phẩm' class='up-product-" + item.ID + " btn btn-green primary-btn h45-btn " + (item.ShowHomePage == 1 ? "" : "hide") + "' onclick='ShowUpProductToWeb(`" + item.ProductSKU + "`, `" + item.ID + "`, `" + item.CategoryID + "`, `false`, `false`, `null`);'><i class='fa fa-refresh' aria-hidden='true'></i></a>");
+                        html.AppendLine("       <a href='javascript:;' title='Up sản phẩm lên đầu trang' class='webupdate-product-" + item.ID + " btn primary-btn btn-violet h45-btn " + (item.WebPublish == true ? "" : "hide") + "' onclick='updateWebUpdate(`" + item.ID + "`);'><i class='fa fa-upload' aria-hidden='true'></i></a>");
                         if (item.TotalProductInstockQuantityLeft > 0)
-                            html.Append("       <a href='javascript:;' title='Xả hết kho' class='liquidation-product-" + item.ID + " btn primary-btn btn-red h45-btn' onclick='liquidateProduct(" + item.CategoryID + ", " + item.ID + ", `" + item.ProductSKU + "`);'><i class='glyphicon glyphicon-trash' aria-hidden='true'></i></a>");
+                            html.AppendLine("       <a href='javascript:;' title='Xả hết kho' class='liquidation-product-" + item.ID + " btn primary-btn btn-red h45-btn' onclick='liquidateProduct(" + item.CategoryID + ", " + item.ID + ", `" + item.ProductSKU + "`);'><i class='glyphicon glyphicon-trash' aria-hidden='true'></i></a>");
                         else if(item.Liquidated)
-                            html.Append("       <a href='javascript:;' title='Phục hồi xả kho' class='recover-liquidation-product-" + item.ID + " btn primary-btn btn-green h45-btn' onclick='recoverLiquidatedProduct(" + item.CategoryID + ", " + item.ID + ", `" + item.ProductSKU + "`);'><i class='glyphicon glyphicon-repeat' aria-hidden='true'></i></a>");
+                            html.AppendLine("       <a href='javascript:;' title='Phục hồi xả kho' class='recover-liquidation-product-" + item.ID + " btn primary-btn btn-green h45-btn' onclick='recoverLiquidatedProduct(" + item.CategoryID + ", " + item.ID + ", `" + item.ProductSKU + "`);'><i class='glyphicon glyphicon-repeat' aria-hidden='true'></i></a>");
+                        html.AppendLine("       <a target='_blank' href='/thong-tin-san-pham?id=" + item.ID + "' title='Sửa sản phẩm' class='btn btn-blue primary-btn h45-btn'><i class='fa fa-pencil-square-o' aria-hidden='true'></i></a>");
                     }
 
-                    html.Append("  </td>");
-                    html.Append("</tr>");
+                    html.AppendLine("  </td>");
+                    html.AppendLine("</tr>");
                 }
 
             }
             else
             {
-                html.Append("<tr><td colspan='11'>Không tìm thấy sản phẩm...</td></tr>");
+                html.AppendLine("<tr><td colspan='11'>Không tìm thấy sản phẩm...</td></tr>");
             }
-            html.Append("</tbody>");
+            html.AppendLine("</tbody>");
 
             ltrList.Text = html.ToString();
         }

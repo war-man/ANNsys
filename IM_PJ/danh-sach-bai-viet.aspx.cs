@@ -29,13 +29,44 @@ namespace IM_PJ
                     var acc = AccountController.GetByUsername(username);
                     if (acc != null)
                     {
-                        LoadData();
-                        LoadCategory();
+                        if (acc.RoleID == 0 || acc.Username == "nhom_zalo502")
+                        {
+                            LoadData();
+                            LoadCreatedBy();
+                            LoadCategory();
+                        }
+                        else
+                        {
+                            Response.Redirect("/trang-chu");
+                        }
                     }
                 }
                 else
                 {
                     Response.Redirect("/dang-nhap");
+                }
+            }
+        }
+        public void LoadCreatedBy(tbl_Account acc = null)
+        {
+            if (acc != null)
+            {
+                ddlCreatedBy.Items.Clear();
+                ddlCreatedBy.Items.Insert(0, new ListItem(acc.Username, acc.Username));
+            }
+            else
+            {
+                var CreateBy = AccountController.GetAllNotSearch().Where(x => x.RoleID == 0 || x.RoleID == 2).ToList();
+                ddlCreatedBy.Items.Clear();
+                ddlCreatedBy.Items.Insert(0, new ListItem("Người viết bài", ""));
+                if (CreateBy.Count > 0)
+                {
+                    foreach (var p in CreateBy)
+                    {
+                        ListItem listitem = new ListItem(p.Username, p.Username);
+                        ddlCreatedBy.Items.Add(listitem);
+                    }
+                    ddlCreatedBy.DataBind();
                 }
             }
         }
@@ -72,7 +103,7 @@ namespace IM_PJ
             var acc = AccountController.GetByUsername(username);
             if (acc != null)
             {
-                if (acc.RoleID == 0)
+                if (acc.RoleID == 0 || acc.Username == "nhom_zalo502")
                 {
                     ltrAddPost.Text = "<a href='/tao-bai-viet' class='h45-btn btn primary-btn'>Thêm mới</a>";
                 }
@@ -80,6 +111,7 @@ namespace IM_PJ
             
             string TextSearch = "";
             string CreatedDate = "";
+            string CreatedBy = "";
             int CategoryID = 0;
             string Status = "";
             string WebPublish = "";
@@ -94,15 +126,18 @@ namespace IM_PJ
                 CreatedDate = Request.QueryString["createddate"];
             if (Request.QueryString["webpublish"] != null)
                 WebPublish = Request.QueryString["webpublish"];
+            if (Request.QueryString["createdby"] != null)
+                CreatedBy = Request.QueryString["createdby"];
 
             txtSearchPost.Text = TextSearch;
             ddlCategory.SelectedValue = CategoryID.ToString();
             ddlCreatedDate.SelectedValue = CreatedDate.ToString();
             ddlStatus.SelectedValue = Status.ToString();
             ddlWebPublish.SelectedValue = WebPublish.ToString();
+            ddlCreatedBy.SelectedValue = CreatedBy;
 
             List<PostSQL> a = new List<PostSQL>();
-            a = PostController.GetAllSql(CategoryID, TextSearch, Status, WebPublish, CreatedDate);
+            a = PostController.GetAllSql(CategoryID, TextSearch, Status, WebPublish, CreatedDate, CreatedBy);
 
             pagingall(a);
 
@@ -200,11 +235,7 @@ namespace IM_PJ
 
             return html.ToString();
         }
-        public class ProductVariable
-        {
-            public string VariableName { get; set; }
-            public string VariableValue { get; set; }
-        }
+
         #region Paging
         public void pagingall(List<PostSQL> acs)
         {
@@ -220,6 +251,7 @@ namespace IM_PJ
             html.Append("    <th class='stock-status-column'>Trang nội bộ</th>");
             html.Append("    <th class='category-column'>Danh mục</th>");
             html.Append("    <th class='category-column'>Trang xem hàng</th>");
+            html.Append("    <th class='date-column'>Người viết</th>");
             html.Append("    <th class='date-column'>Ngày tạo</th>");
             html.Append("    <th class='action-column'></th>");
             html.Append("</tr>");
@@ -244,23 +276,19 @@ namespace IM_PJ
                 {
                     var item = acs[i];
                     html.Append("<tr class='item-" + item.ID + "'>");
-
                     html.Append("<td>");
-                    html.Append("   <a href=\"/xem-bai-viet?id=" + item.ID + "\"><img src=\"" + item.Image + "\"/></a>");
-                    html.Append("   <a href=\"javascript:;\" onclick=\"copyPostInfo(" + item.ID + ")\" class=\"btn download-btn h45-btn\"><i class=\"fa fa-files-o\"></i> Copy</a>");
+                    html.Append("   <a target='_blank' href='/xem-bai-viet?id=" + item.ID + "'><img src='" + item.Image + "'/></a>");
+                    html.Append("   <a href='javascript:;' onclick='copyPostInfo(" + item.ID + ")' class='btn download-btn h45-btn'><i class='fa fa-files-o'></i> Copy</a>");
                     html.Append("</td>");
-
-                    html.Append("   <td class=\"customer-name-link\"><a href=\"/xem-bai-viet?id=" + item.ID + "\">" + item.Title + "</a></td>");
-
+                    html.Append("   <td class='customer-name-link'><a target='_blank' href='/xem-bai-viet?id=" + item.ID + "'>" + item.Title + "</a></td>");
                     if (item.Featured == 1)
                     {
-                        html.Append("   <td><span class=\"bg-blue\">Nổi bật</span></td>");
+                        html.Append("   <td><span class='bg-blue'>Nổi bật</span></td>");
                     }
                     else
                     {
                         html.Append("   <td></td>");
                     }
-
                     if (item.Status == 1)
                     {
                         html.Append("   <td>Đang hiện</td>");
@@ -269,7 +297,6 @@ namespace IM_PJ
                     {
                         html.Append("   <td>Đang ẩn</td>");
                     }
-
                     html.Append("   <td>" + item.CategoryName + "</td>");
                     if (item.WebPublish == false)
                     {
@@ -279,12 +306,13 @@ namespace IM_PJ
                     {
                         html.Append("   <td data-title='Trang xem hàng'><span id='showWebPublish_" + item.ID + "'><a href='javascript:;' data-post-id='" + item.ID + "' data-update='false' class='bg-green bg-button' onclick='updateShowWebPublish($(this))'>Đang hiện</a></span></td>");
                     }
+                    html.Append("   <td>" + item.CreatedBy + "</td>");
                     string date = string.Format("{0:dd/MM/yyyy}", item.CreatedDate);
                     html.Append("   <td>" + date + "</td>");
-
                     html.Append("   <td>");
-                    html.Append("       <a href=\"javascript:;\" title=\"Download tất cả hình bài viết này\" class=\"btn primary-btn h45-btn\" onclick=\"getAllPostImage('" + item.ID + "');\"><i class=\"fa fa-file-image-o\" aria-hidden=\"true\"></i></a>");
-                    html.Append("       <a href=\"javascript:;\" title=\"Xóa bài này\" class=\"btn primary-btn h45-btn\" onclick=\"deletePost('" + item.ID + "');\"><i class=\"fa fa-times\" aria-hidden=\"true\"></i></a>");
+                    html.Append("       <a href='javascript:;' title='Tải hình bài viết này' class='btn primary-btn h45-btn' onclick='getAllPostImage(" + item.ID + ");'><i class='fa fa-file-image-o' aria-hidden='true'></i> Tải</a>");
+                    html.Append("       <a href='javascript:;' title='Xóa bài này' class='btn primary-btn btn-red h45-btn' onclick='deletePost(" + item.ID + ");'><i class='fa fa-times' aria-hidden='true'></i> Xóa</a>");
+                    html.Append("       <a target='_blank' href='/sua-bai-viet?id=" + item.ID + "' title='Sửa bài này' class='btn primary-btn btn-blue h45-btn'><i class='fa fa-pencil-square-o' aria-hidden='true'></i> Sửa</a>");
                     html.Append("  </td>");
                     html.Append("</tr>");
 
@@ -293,7 +321,7 @@ namespace IM_PJ
             }
             else
             {
-                html.Append("<tr><td colspan='11'>Không tìm thấy bài viết...</td></tr>");
+                html.Append("<tr><td colspan='9'>Không tìm thấy bài viết...</td></tr>");
             }
 
             ltrList.Text = html.ToString();
@@ -467,6 +495,11 @@ namespace IM_PJ
             if (ddlCreatedDate.SelectedValue != "")
             {
                 request += "&createddate=" + ddlCreatedDate.SelectedValue;
+            }
+
+            if (ddlCreatedBy.SelectedValue != "")
+            {
+                request += "&createdby=" + ddlCreatedBy.SelectedValue;
             }
 
             Response.Redirect(request);

@@ -2,7 +2,7 @@
 
 <%@ Register Assembly="Telerik.Web.UI" Namespace="Telerik.Web.UI" TagPrefix="telerik" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
-    <link rel="stylesheet" href="App_Themes/Ann/css/pages/danh-sach-don-hang/danh-sach-don-hang.css?v=20191009011413" />
+    <link rel="stylesheet" href="App_Themes/Ann/css/pages/danh-sach-don-hang/danh-sach-don-hang.css?v=17032020" />
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <main id="main-wrap">
@@ -107,8 +107,8 @@
                                     <asp:DropDownList ID="ddlShippingType" runat="server" CssClass="form-control">
                                         <asp:ListItem Value="" Text="Kiểu giao hàng"></asp:ListItem>
                                         <asp:ListItem Value="1" Text="Lấy trực tiếp"></asp:ListItem>
-                                        <asp:ListItem Value="2" Text="Chuyển bưu điện"></asp:ListItem>
-                                        <asp:ListItem Value="3" Text="Dịch vụ Proship"></asp:ListItem>
+                                        <asp:ListItem Value="2" Text="Bưu điện"></asp:ListItem>
+                                        <asp:ListItem Value="3" Text="Proship"></asp:ListItem>
                                         <asp:ListItem Value="4" Text="Chuyển xe"></asp:ListItem>
                                         <asp:ListItem Value="5" Text="Nhân viên giao"></asp:ListItem>
                                         <asp:ListItem Value="6" Text="GHTK"></asp:ListItem>
@@ -221,10 +221,10 @@
             </div>
         </div>
 
-        <script type="text/javascript" src="App_Themes/Ann/js/services/common/utils-service.js?v=20191009011413"></script>
-        <script type="text/javascript" src="App_Themes/Ann/js/services/danh-sach-don-hang/danh-sach-don-hang-service.js?v=20191009011413"></script>
-        <script type="text/javascript" src="App_Themes/Ann/js/controllers/danh-sach-don-hang/danh-sach-don-hang-controller.js?v=20191009011413"></script>
-        <script type="text/javascript" src="App_Themes/Ann/js/pages/danh-sach-don-hang/danh-sach-don-hang.js?v=20191009011413"></script>
-        <script type="text/javascript" src="App_Themes/Ann/js/copy-invoice-url.js?v=20191009011413"></script>
+        <script type="text/javascript" src="/App_Themes/Ann/js/services/common/utils-service.js?v=17032020"></script>
+        <script type="text/javascript" src="/App_Themes/Ann/js/services/danh-sach-don-hang/danh-sach-don-hang-service.js?v=17032020"></script>
+        <script type="text/javascript" src="/App_Themes/Ann/js/controllers/danh-sach-don-hang/danh-sach-don-hang-controller.js?v=17032020"></script>
+        <script type="text/javascript" src="/App_Themes/Ann/js/pages/danh-sach-don-hang/danh-sach-don-hang.js?v=17032020"></script>
+        <script type="text/javascript" src="/App_Themes/Ann/js/copy-invoice-url.js?v=17032020"></script>
     </main>
 </asp:Content>

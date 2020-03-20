@@ -70,7 +70,7 @@ namespace IM_PJ
                         if (product != null)
                         {
                             ProductName = product.ProductTitle;
-                            Print += "<td colspan='4'><strong>" + SKU + "</strong> - " + PJUtils.Truncate(ProductName, 30) + "</td>";
+                            Print += "<td colspan='4'><strong>" + SKU + "</strong> - " + PJUtils.Truncate(ProductName, 27) + "</td>";
                         }
                     }
                     else
@@ -83,7 +83,7 @@ namespace IM_PJ
                             {
                                 ProductName = parent_product.ProductTitle;
                             }
-                            Print += "<td colspan='4'><strong>" + SKU + "</strong> - " + PJUtils.Truncate(ProductName, 30) + "</td>";
+                            Print += "<td colspan='4'><strong>" + SKU + "</strong> - " + PJUtils.Truncate(ProductName, 27) + "</td>";
                         }
                     }
                     Print += "</tr>";
@@ -200,7 +200,7 @@ namespace IM_PJ
                         productPrint += "<table>";
                         productPrint += "<tr>";
                         productPrint += "<td colspan='2'>Số lượng</td>";
-                        productPrint += "<td>" + TotalQuantity + "</td>";
+                        productPrint += "<td>" + TotalQuantity + "&nbsp;&nbsp;&nbsp;&nbsp;</td>";
                         productPrint += "</tr>";
 
                         if (TotalOrder != Convert.ToDouble(order.TotalPrice))
@@ -210,12 +210,12 @@ namespace IM_PJ
 
                         productPrint += "<tr>";
                         productPrint += "<td colspan='2'>Phí đổi hàng</td>";
-                        productPrint += "<td>" + string.Format("{0:N0}", Convert.ToDouble(order.TotalRefundFee)) + "</td>";
+                        productPrint += "<td>" + string.Format("{0:N0}", Convert.ToDouble(order.TotalRefundFee)) + "&nbsp;</td>";
                         productPrint += "</tr>";
 
                         productPrint += "<tr>";
                         productPrint += "<td class='strong' colspan='2'>TỔNG TIỀN (đã trừ phí)</td>";
-                        productPrint += "<td class='strong'>" + string.Format("{0:N0}", TotalOrder) + "</td>";
+                        productPrint += "<td class='strong'>" + string.Format("{0:N0}", TotalOrder) + "&nbsp;</td>";
                         productPrint += "</tr>";
 
                         productPrint += "</tbody>";

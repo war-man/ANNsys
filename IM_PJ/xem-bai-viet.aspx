@@ -15,13 +15,18 @@
             background-color: #E91E63;
             color: #fff;
         }
+        .post-content {
+            font-size: 18px;
+        }
     </style>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <main id="main-wrap">
         <div class="container">
             <div class="row">
-                <div class="col-md-12">
+                <div class="col-md-3">
+                </div>
+                <div class="col-md-6">
                     <div class="panel panelborderheading">
                         <div class="panel-heading clear">
                             <h3 class="page-title left not-margin-bot"><asp:Literal ID="ltrTitle" runat="server"></asp:Literal></h3>
@@ -30,7 +35,7 @@
                             <div class="form-row">
                                 <asp:Literal ID="ltrEditTop" runat="server"></asp:Literal>
                             </div>
-                            <div class="form-row">
+                            <div class="form-row post-content">
                                 <asp:Literal ID="ltrContent" runat="server"></asp:Literal>
                             </div>
                             <div class="form-row">
@@ -42,14 +47,12 @@
                         </div>
                     </div>
                 </div>
+                <div class="col-md-3">
+                </div>
             </div>
         </div>
-
-        <asp:HiddenField ID="hdfTempVariable" runat="server" />
-        <asp:HiddenField ID="hdfVariableFull" runat="server" />
-        <asp:HiddenField ID="hdfTable" runat="server" />
     </main>
 
-    <script src="/App_Themes/Ann/js/copy-post-info.js?v=22122019"></script>
-    <script src="/App_Themes/Ann/js/download-post-image.js?v=22122019"></script>
+    <script src="/App_Themes/Ann/js/copy-post-info.js?v=17032020"></script>
+    <script src="/App_Themes/Ann/js/download-post-image.js?v=17032020"></script>
 </asp:Content>

@@ -178,13 +178,13 @@ namespace IM_PJ
             }
             html.AppendLine("                        <tr>");
             html.AppendLine("                            <td colspan='1' style='text-align: right'>Tổng số đơn</td>");
-            html.AppendLine(String.Format("                            <td colspan='2'>{0:#,###}</td>", totalQuantity));
+            html.AppendLine(String.Format("                            <td colspan='2'>{0:#,###}&nbsp;&nbsp;&nbsp;</td>", totalQuantity));
             html.AppendLine("                        </tr>");
             if(totalCollection > 0)
             {
                 html.AppendLine("                        <tr>");
                 html.AppendLine("                            <td colspan='1'  style='text-align: right'>Số đơn thu hộ</td>");
-                html.AppendLine(String.Format("                            <td colspan='2'>{0:#,###}</td>", totalCollection));
+                html.AppendLine(String.Format("                            <td colspan='2'>{0:#,###}&nbsp;&nbsp;&nbsp;</td>", totalCollection));
                 html.AppendLine("                        </tr>");
             }
             html.AppendLine("                    </tbody>");
@@ -239,11 +239,11 @@ namespace IM_PJ
 
                     html.AppendLine("                        <tr>");
                     html.AppendLine("                            <td colspan='2' style='text-align: right'>Tổng tiền thu hộ</td>");
-                    html.AppendLine(String.Format("                            <td>{0:#,###}</td>", moneyCollection));
+                    html.AppendLine(String.Format("                            <td>{0:#,###}&nbsp;</td>", moneyCollection));
                     html.AppendLine("                        </tr>");
                     html.AppendLine("                        <tr>");
                     html.AppendLine("                            <td colspan='2' style='text-align: right'>Tổng tiền đã thu</td>");
-                    html.AppendLine(String.Format("                            <td>{0:#,###}</td>", moneyReceived));
+                    html.AppendLine(String.Format("                            <td>{0:#,###}&nbsp;</td>", moneyReceived));
                     html.AppendLine("                        </tr>");
 
                     // cộng dồn
@@ -355,25 +355,25 @@ namespace IM_PJ
             }
             html.AppendLine("                        <tr>");
             html.AppendLine("                            <td colspan='3' style='text-align: right'>Tổng số đơn</td>");
-            html.AppendLine(String.Format("                            <td style='text-align: right'>{0:#,###}</td>", data.Count));
+            html.AppendLine(String.Format("                            <td style='text-align: right'>{0:#,###}&nbsp;&nbsp;&nbsp;</td>", data.Count));
             html.AppendLine("                        </tr>");
             html.AppendLine("                        <tr>");
             html.AppendLine("                            <td colspan='3' style='text-align: right'>Tổng tiền đơn hàng</td>");
-            html.AppendLine(String.Format("                            <td style='text-align: right'>{0:#,###}</td>", totalPayment));
+            html.AppendLine(String.Format("                            <td style='text-align: right'>{0:#,###}&nbsp;</td>", totalPayment));
             html.AppendLine("                        </tr>");
             if (moneyCollection > 0)
             {
                 html.AppendLine("                        <tr>");
                 html.AppendLine("                            <td colspan='3' style='text-align: right'>Số đơn thu hộ</td>");
-                html.AppendLine(String.Format("                            <td style='text-align: right'>{0}</td>", totalOrderCOD));
+                html.AppendLine(String.Format("                            <td style='text-align: right'>{0}&nbsp;&nbsp;&nbsp;</td>", totalOrderCOD));
                 html.AppendLine("                        </tr>");
                 html.AppendLine("                        <tr>");
                 html.AppendLine("                            <td colspan='3' style='text-align: right'>Tổng tiền thu hộ</td>");
-                html.AppendLine(String.Format("                            <td style='text-align: right'>{0:#,###}</td>", totalRequestCOD));
+                html.AppendLine(String.Format("                            <td style='text-align: right'>{0:#,###}&nbsp;</td>", totalRequestCOD));
                 html.AppendLine("                        </tr>");
                 html.AppendLine("                        <tr>");
                 html.AppendLine("                            <td colspan='3' style='text-align: right'>Tổng tiền đã thu</td>");
-                html.AppendLine(String.Format("                            <td style='text-align: right'>{0:#,###}</td>", moneyCollection));
+                html.AppendLine(String.Format("                            <td style='text-align: right'>{0:#,###}&nbsp;</td>", moneyCollection));
                 html.AppendLine("                        </tr>");
                 
                 // cộng dồn
@@ -385,11 +385,11 @@ namespace IM_PJ
             {
                 html.AppendLine("                        <tr>");
                 html.AppendLine("                            <td colspan='3'  style='text-align: right'>Số đơn có phí</td>");
-                html.AppendLine(String.Format("                            <td style='text-align: right'>{0:#,###}</td>", totalOrderShippingFee));
+                html.AppendLine(String.Format("                            <td style='text-align: right'>{0:#,###}&nbsp;&nbsp;&nbsp;</td>", totalOrderShippingFee));
                 html.AppendLine("                        </tr>");
                 html.AppendLine("                        <tr>");
                 html.AppendLine("                            <td colspan='3'  style='text-align: right'>Tổng phí</td>");
-                html.AppendLine(String.Format("                            <td style='text-align: right'>{0:#,###}</td>", totalPrice));
+                html.AppendLine(String.Format("                            <td style='text-align: right'>{0:#,###}&nbsp;</td>", totalPrice));
                 html.AppendLine("                        </tr>");
             }
             html.AppendLine("                    </tbody>");
@@ -425,15 +425,15 @@ namespace IM_PJ
             html.AppendLine("                    <tbody>");
             html.AppendLine("                        <tr>");
             html.AppendLine("                            <td colspan='2' style='text-align: right'>Số đơn thu hộ</td>");
-            html.AppendLine(String.Format("                            <td style='text-align: right'>{0}</td>", totalCODOrder));
+            html.AppendLine(String.Format("                            <td style='text-align: right'>{0}&nbsp;&nbsp;&nbsp;</td>", totalCODOrder));
             html.AppendLine("                        </tr>");
             html.AppendLine("                        <tr>");
             html.AppendLine("                            <td colspan='2' style='text-align: right'>Tổng tiền thu hộ</td>");
-            html.AppendLine(String.Format("                            <td style='text-align: right'>{0:#,###}</td>", totalMoneyCollection));
+            html.AppendLine(String.Format("                            <td style='text-align: right'>{0:#,###}&nbsp;</td>", totalMoneyCollection));
             html.AppendLine("                        </tr>");
             html.AppendLine("                        <tr>");
             html.AppendLine("                            <td colspan='2' style='text-align: right'>Tổng tiền đã thu</td>");
-            html.AppendLine(String.Format("                            <td style='text-align: right'>{0:#,###}</td>", totalMoneyReceived));
+            html.AppendLine(String.Format("                            <td style='text-align: right'>{0:#,###}&nbsp;</td>", totalMoneyReceived));
             html.AppendLine("                        </tr>");
             html.AppendLine("                    </tbody>");
             html.AppendLine("                </table>");

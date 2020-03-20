@@ -158,7 +158,7 @@ namespace IM_PJ
 
                 rs = CustomerController.Filter(TextSearch, CreatedBy, Province, Sort, FromDate, ToDate);
 
-                if (acc.RoleID != 0)
+                if (acc.RoleID != 0 && acc.Username != "nhom_zalo502")
                 {
                     rs = rs.Where(x => x.CreatedBy == acc.Username).ToList();
                     ddlCreatedBy.Enabled = false;

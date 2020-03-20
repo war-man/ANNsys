@@ -70,7 +70,7 @@ namespace IM_PJ.Controllers
                     ui.Slug = checkSlug(Slug.ConvertToSlug(PostSlug != "" ? PostSlug : Title), ui.ID);
 
                     int kq = dbe.SaveChanges();
-                    return kq.ToString();
+                    return ui.ID.ToString();
                 }
                 else
                     return null;
@@ -140,7 +140,7 @@ namespace IM_PJ.Controllers
                 return ags;
             }
         }
-        public static List<PostSQL> GetAllSql(int categoryID, string textsearch, string PostStatus, string WebPublish, string CreatedDate)
+        public static List<PostSQL> GetAllSql(int categoryID, string textsearch, string PostStatus, string WebPublish, string CreatedDate, string CreatedBy)
         {
             var list = new List<PostSQL>();
             StringBuilder sql = new StringBuilder();
@@ -202,6 +202,11 @@ namespace IM_PJ.Controllers
             if (!string.IsNullOrEmpty(WebPublish))
             {
                 sql.AppendLine("    AND (POS.WebPublish = '" + WebPublish + "')");
+            }
+
+            if (!string.IsNullOrEmpty(CreatedBy))
+            {
+                sql.AppendLine("    AND (POS.CreatedBy = '" + CreatedBy + "')");
             }
 
             if (!string.IsNullOrEmpty(CreatedDate))
@@ -321,6 +326,8 @@ namespace IM_PJ.Controllers
                     entity.WebPublish = reader["WebPublish"].ToString().ToBool();
                 if (reader["WebUpdate"] != DBNull.Value)
                     entity.WebUpdate = Convert.ToDateTime(reader["WebUpdate"]);
+                if (reader["CreatedBy"] != DBNull.Value)
+                    entity.CreatedBy = reader["CreatedBy"].ToString();
                 list.Add(entity);
             }
             reader.Close();

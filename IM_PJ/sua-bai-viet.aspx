@@ -1,4 +1,4 @@
-﻿<%@ Page Title="Chỉnh sửa bài viết" Language="C#" MasterPageFile="~/MasterPage.Master" AutoEventWireup="true" CodeBehind="sua-bai-viet.aspx.cs" Inherits="IM_PJ.sua_bai_viet" %>
+﻿<%@ Page Title="Sửa bài viết nội bộ" Language="C#" MasterPageFile="~/MasterPage.Master" AutoEventWireup="true" CodeBehind="sua-bai-viet.aspx.cs" Inherits="IM_PJ.sua_bai_viet" %>
 
 <%@ Register Assembly="Telerik.Web.UI" Namespace="Telerik.Web.UI" TagPrefix="telerik" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
@@ -12,10 +12,10 @@
     <main id="main-wrap">
         <div class="container">
             <div class="row">
-                <div class="col-md-12">
+                <div class="col-md-9">
                     <div class="panel panelborderheading">
                         <div class="panel-heading clear">
-                            <h3 class="page-title left not-margin-bot">Chỉnh sửa bài viết</h3>
+                            <h3 class="page-title left not-margin-bot">Sửa bài viết nội bộ</h3>
                         </div>
                         <div class="panel-body">
                             <div class="form-row">
@@ -74,8 +74,8 @@
                                     Nội dung
                                 </div>
                                 <div class="row-right">
-                                    <telerik:RadEditor runat="server" ID="pContent" Width="100%" Height="600px" ToolsFile="~/FilesResources/ToolContent.xml" Skin="Metro" DialogHandlerUrl="~/Telerik.Web.UI.DialogHandler.axd" AutoResizeHeight="False">
-                                        <ImageManager ViewPaths="~/uploads/images" UploadPaths="~/uploads/images" DeletePaths="~/uploads/images" />
+                                    <telerik:RadEditor runat="server" ID="pContent" Width="100%" Height="700px" ToolsFile="~/FilesResources/ToolContent.xml" Skin="Metro" DialogHandlerUrl="~/Telerik.Web.UI.DialogHandler.axd" AutoResizeHeight="False" ContentFilters="MakeUrlsAbsolute">
+                                        <ImageManager ViewPaths="~/uploads/images/posts" UploadPaths="~/uploads/images/posts" DeletePaths="~/uploads/images/posts" />
                                     </telerik:RadEditor>
                                 </div>
                             </div>
@@ -85,14 +85,27 @@
                                 </div>
                                 <div class="row-right">
                                     <asp:FileUpload runat="server" ID="UploadImages" name="uploadImageGallery" onchange='showImageGallery(this,$(this));' AllowMultiple="true" />  
-                                    
                                     <asp:Literal ID="imageGallery" runat="server"></asp:Literal>
                                 </div>
                             </div>
                             <div class="form-row">
-                                <a href="javascript:;" class="btn primary-btn fw-btn not-fullwidth" onclick="updatePost()">Cập nhật</a>
+                                <a href="javascript:;" class="btn primary-btn fw-btn not-fullwidth" onclick="updatePost()"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Cập nhật</a>
                                 <asp:Button ID="btnSubmit" runat="server" CssClass="btn primary-btn fw-btn not-fullwidth" Text="Cập nhật" OnClick="btnSubmit_Click" Style="display: none" />
                                 <asp:Literal ID="ltrBack" runat="server"></asp:Literal>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="panel panelborderheading">
+                        <div class="panel-heading clear">
+                            <h3 class="page-title left not-margin-bot">Thông tin</h3>
+                        </div>
+                        <div class="panel-body">
+                            <div class="form-row">
+                                <asp:Literal ID="ltrPostInfo" runat="server"></asp:Literal>
+                                <a href="javascript:;" class="btn primary-btn fw-btn not-fullwidth" onclick="updatePost()"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Cập nhật</a>
+                                <asp:Literal ID="ltrBack2" runat="server"></asp:Literal>
                             </div>
                         </div>
                     </div>
@@ -103,11 +116,14 @@
         <asp:HiddenField ID="hdfDeleteImageGallery" runat="server" />
         <asp:HiddenField ID="hdfsetStyle" runat="server" />
         <asp:HiddenField ID="hdfParentID" runat="server" />
-        <asp:HiddenField ID="hdfUserRole" runat="server" />
     </main>
 
     <telerik:RadCodeBlock runat="server">
         <script>
+
+            function redirectTo(ID) {
+                window.location.href = "/xem-bai-viet?id=" + ID;
+            }
 
             var storedFiles = [];
 

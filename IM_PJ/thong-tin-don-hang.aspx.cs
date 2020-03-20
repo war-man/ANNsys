@@ -97,6 +97,12 @@ namespace IM_PJ
         }
         public void LoadData()
         {
+            int n;
+            if (String.IsNullOrEmpty(Request.QueryString["id"]) || !int.TryParse(Request.QueryString["id"], out n))
+            {
+                PJUtils.ShowMessageBoxSwAlertError("Không tìm thấy đơn hàng", "e", true, "/danh-sach-don-hang", Page);
+            }
+
             int ID = Request.QueryString["id"].ToInt(0);
             if (ID > 0)
             {
@@ -862,6 +868,11 @@ namespace IM_PJ
                             int ExcuteStatus = ddlExcuteStatus.SelectedValue.ToInt(0);
 
                             string ShippingCode = txtShippingCode.Text.Trim().Replace("#", "").Replace(" ", "");
+                            //if (ShippingType == 6)
+                            //{
+                            //    string[] barcode = ShippingCode.Split('.');
+                            //    ShippingCode = barcode[barcode.Length - 1];
+                            //}
                             string OrderNote = txtOrderNote.Text;
 
                             double DiscountPerProduct = 0;

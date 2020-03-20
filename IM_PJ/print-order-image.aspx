@@ -7,9 +7,9 @@
     <link rel="stylesheet" href="/App_Themes/Ann/css/print-order-image.css?v=24082019" type="text/css"/>
     <link rel="stylesheet" href="/App_Themes/Ann/barcode/style.css" type="text/css"/>
     <link rel="stylesheet" href="/App_Themes/Ann/css/responsive.css" type="text/css"/>
-    <script src="/App_Themes/Ann/js/jquery-2.1.3.min.js"></script>
-    <script src="/App_Themes/Ann/js/html2canvas.js"></script>
-    <script type="text/javascript" src="App_Themes/Ann/js/copy-invoice-url.js?v=20191009011413"></script>
+    <script type="text/javascript" src="/App_Themes/Ann/js/jquery-2.1.3.min.js"></script>
+    <script type="text/javascript" src="/App_Themes/Ann/js/html2canvas.js"></script>
+    <script type="text/javascript" src="/App_Themes/Ann/js/copy-invoice-url.js?v=17032020"></script>
     <title>Lấy ảnh đơn hàng</title>    
     <style>
         #old-order-note {

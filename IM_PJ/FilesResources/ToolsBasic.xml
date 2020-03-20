@@ -1,17 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <root>
   <tools name="MainToolbar" dockable="true" enabled="true">
-    <tool name="PasteFromWord" />
+    <!--<tool name="PasteFromWord" />-->
     <!--<tool name="JustifyLeft" />
     <tool name="JustifyCenter" />
     <tool name="JustifyRight" />
     <tool name="JustifyFull" />
     <tool name="InsertImage"/>-->
-    <tool name="Bold" />
+    <!--<tool name="Bold" />
     <tool name="Italic" />
     <tool name="Underline" />
     <tool name="ForeColor" />
-    <tool separator="true"/>
+    <tool separator="true"/>-->
     
     <!--<tool name="FontName" />
     <tool separator="true"/>
@@ -19,4 +19,7 @@
     <tool name="InsertImage" />-->
     
   </tools>
+  <cssFiles>
+    <item name="~/App_Themes/Ann/css/style-editor.css" />
+  </cssFiles>
 </root>

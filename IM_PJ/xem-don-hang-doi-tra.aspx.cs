@@ -48,11 +48,16 @@ namespace IM_PJ
         }
         public void LoadData()
         {
+            int n;
+            if (String.IsNullOrEmpty(Request.QueryString["id"]) || !int.TryParse(Request.QueryString["id"], out n))
+            {
+                PJUtils.ShowMessageBoxSwAlertError("Không tìm thấy đơn hàng", "e", true, "/danh-sach-don-tra-hang", Page);
+            }
+
             string username = Request.Cookies["usernameLoginSystem"].Value;
             var acc = AccountController.GetByUsername(username);
             if (acc != null)
             {
-
                 int AgentID = Convert.ToInt32(acc.AgentID);
                 int ID = Request.QueryString["id"].ToInt(0);
                 if (ID > 0)
@@ -66,7 +71,6 @@ namespace IM_PJ
                     else
                     {
                         
-
                         if (acc.RoleID != 0)
                         {
                             // Kiểm tra nếu đơn hàng này không "chính chủ"

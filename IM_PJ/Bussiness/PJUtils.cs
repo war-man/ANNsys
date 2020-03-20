@@ -312,11 +312,11 @@ namespace NHST.Bussiness
             }
             else if (ShippingType == 2)
             {
-                ret = "<span class='bg-red'>Chuyển bưu điện</span>";
+                ret = "<span class='bg-red'>Bưu điện</span>";
             }
             else if (ShippingType == 3)
             {
-                ret = "<span class='bg-yellow'>Dịch vụ Proship</span>";
+                ret = "<span class='bg-yellow'>Proship</span>";
             }
             else if (ShippingType == 4)
             {

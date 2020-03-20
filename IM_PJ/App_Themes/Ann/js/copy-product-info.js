@@ -7,7 +7,7 @@
     }
 
     function createTextArea(text) {
-        textArea = document.createElement('textArea');
+        textArea = document.createElement('textarea');
         textArea.style.position = 'fixed';
         textArea.style.left = '0';
         textArea.style.top = '0';
@@ -49,16 +49,14 @@
 })(window, document, navigator);
 
 
-function copyProductInfo(id) {
-    $('body').append($('<div>', {
-        "class": 'copy-product-info hide'
-    }));
+function copyPostInfo(id) {
+    $("body").append("<div class='copy-content hide'></div>");
 
     ajaxCopyInfo(id);
 
-    Clipboard.copy($(".copy-product-info").text());
+    Clipboard.copy($(".copy-content").text());
 
-    $(".copy-product-info").remove();
+    $(".copy-content").remove();
 }
 
 function ajaxCopyInfo(id) {
@@ -70,7 +68,10 @@ function ajaxCopyInfo(id) {
         dataType: "json",
         async: false,
         success: function (data) {
-            $(".copy-product-info").html(data.d);
+            var content = data.d;
+            content = content.replace(/<br\s*[\/]?>/gi, "\n");
+            content = content.replace(/<\/p\s*[\/]?>/gi, "</p>\n");
+            $(".copy-content").html(content);
         }
     });
 }

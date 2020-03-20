@@ -1,4 +1,4 @@
-﻿<%@ Page Title="Tạo bài viết" Language="C#" MasterPageFile="~/MasterPage.Master" AutoEventWireup="true" CodeBehind="tao-bai-viet.aspx.cs" Inherits="IM_PJ.tao_bai_viet" EnableSessionState="ReadOnly" %>
+﻿<%@ Page Title="Thêm bài viết nội bộ" Language="C#" MasterPageFile="~/MasterPage.Master" AutoEventWireup="true" CodeBehind="tao-bai-viet.aspx.cs" Inherits="IM_PJ.tao_bai_viet" EnableSessionState="ReadOnly" %>
 
 <%@ Register Assembly="Telerik.Web.UI" Namespace="Telerik.Web.UI" TagPrefix="telerik" %>
 
@@ -83,10 +83,10 @@
     <main id="main-wrap">
         <div class="container">
             <div class="row">
-                <div class="col-md-12">
+                <div class="col-md-9">
                     <div class="panel panelborderheading">
                         <div class="panel-heading clear">
-                            <h3 class="page-title left not-margin-bot">Thêm bài viết</h3>
+                            <h3 class="page-title left not-margin-bot">Thêm bài viết nội bộ</h3>
                         </div>
                         <div class="panel-body">
                             <div class="form-row">
@@ -147,9 +147,9 @@
                                 </div>
                                 <div class="row-right">
                                     <telerik:RadEditor runat="server" ID="pContent" Width="100%"
-                                        Height="600px" ToolsFile="~/FilesResources/ToolContent.xml" Skin="Metro"
-                                        DialogHandlerUrl="~/Telerik.Web.UI.DialogHandler.axd" AutoResizeHeight="False">
-                                        <ImageManager ViewPaths="~/uploads/images" UploadPaths="~/uploads/images" DeletePaths="~/uploads/images" />
+                                        Height="700px" ToolsFile="~/FilesResources/ToolContent.xml" Skin="Metro"
+                                        DialogHandlerUrl="~/Telerik.Web.UI.DialogHandler.axd" AutoResizeHeight="False" ContentFilters="MakeUrlsAbsolute">
+                                        <ImageManager ViewPaths="~/uploads/images/posts" UploadPaths="~/uploads/images/posts" DeletePaths="~/uploads/images/posts" />
                                     </telerik:RadEditor>
                                 </div>
                             </div>
@@ -168,9 +168,22 @@
                                 </div>
                             </div>
                             <div class="form-row">
-                                <a href="javascript:;" class="btn primary-btn fw-btn not-fullwidth" onclick="addNewPost()">Tạo mới</a>
-                                <asp:Button ID="btnSubmit" runat="server" CssClass="btn primary-btn fw-btn not-fullwidth" Text="Tạo mới" OnClick="btnSubmit_Click" Style="display: none" />
-                                <asp:Literal ID="ltrBack" runat="server"></asp:Literal>
+                                <a href="javascript:;" class="btn primary-btn fw-btn not-fullwidth" onclick="addNewPost()"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Xuất bản</a>
+                                <asp:Button ID="btnSubmit" runat="server" CssClass="btn primary-btn fw-btn not-fullwidth" Text="Xuất bản" OnClick="btnSubmit_Click" Style="display: none" />
+                                <a href="/danh-sach-bai-viet" class="btn primary-btn fw-btn not-fullwidth"><i class="fa fa-arrow-left" aria-hidden="true"></i> Trở về</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="panel panelborderheading">
+                        <div class="panel-heading clear">
+                            <h3 class="page-title left not-margin-bot">Thao tác</h3>
+                        </div>
+                        <div class="panel-body">
+                            <div class="form-row">
+                                <a href="javascript:;" class="btn primary-btn fw-btn not-fullwidth" onclick="addNewPost()"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Xuất bản</a>
+                                <a href="/danh-sach-bai-viet" class="btn primary-btn fw-btn not-fullwidth"><i class="fa fa-arrow-left" aria-hidden="true"></i> Trở về</a>
                             </div>
                         </div>
                     </div>
@@ -178,7 +191,6 @@
             </div>
         </div>
         <asp:HiddenField ID="hdfParentID" runat="server" />
-        <asp:HiddenField ID="hdfUserRole" runat="server" />
     </main>
 
     <telerik:RadCodeBlock runat="server">
@@ -256,7 +268,6 @@
                     }
                 });
             }
-            
 
             function openUploadImage(obj) {
                 obj.parent().find(".productVariableImage").click();
@@ -282,13 +293,13 @@
                 var title = $("#<%=txtTitle.ClientID%>").val();
                 var slug = $("#<%=txtSlug.ClientID%>").val();
 
-                if (category == "") {
-                    $("#<%=ddlCategory.ClientID%>").focus();
-                    swal("Thông báo", "Chưa chọn danh mục bài viết", "error");
-                }
-                else if (title == "") {
+                if (title == "") {
                     $("#<%=txtTitle.ClientID%>").focus();
                     swal("Thông báo", "Chưa nhập tiêu đề bài viết", "error");
+                }
+                else if (category == "") {
+                    $("#<%=ddlCategory.ClientID%>").focus();
+                    swal("Thông báo", "Chưa chọn danh mục bài viết", "error");
                 }
                 else if (slug == "") {
                     $("#<%=txtSlug.ClientID%>").focus();

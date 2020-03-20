@@ -50,21 +50,6 @@
           <Property Name="ModifiedBy" Type="int" Nullable="false" />
           <Property Name="ModifiedDate" Type="datetime" Nullable="false" />
         </EntityType>
-        <EntityType Name="CategoryShelf">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="Name" Type="nvarchar" MaxLength="100" Nullable="false" />
-          <Property Name="Description" Type="nvarchar" MaxLength="255" />
-          <Property Name="Level" Type="int" Nullable="false" />
-          <Property Name="ParentID" Type="int" Nullable="false" />
-          <Property Name="IsHidden" Type="bit" Nullable="false" />
-          <Property Name="CreatedBy" Type="int" Nullable="false" />
-          <Property Name="CreatedDate" Type="datetime" Nullable="false" />
-          <Property Name="ModifedBy" Type="int" Nullable="false" />
-          <Property Name="ModifiedDate" Type="datetime" Nullable="false" />
-        </EntityType>
         <EntityType Name="Coupon">
           <Key>
             <PropertyRef Name="ID" />
@@ -79,6 +64,7 @@
           <Property Name="ModifiedDate" Type="datetime" Nullable="false" />
           <Property Name="ProductNumber" Type="int" Nullable="false" />
           <Property Name="PriceMin" Type="money" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="255" />
         </EntityType>
         <EntityType Name="CronJob">
           <Key>
@@ -123,6 +109,7 @@
           <Property Name="Active" Type="bit" Nullable="false" />
           <Property Name="CreatedDate" Type="datetime" Nullable="false" />
           <Property Name="ModifiedDate" Type="datetime" Nullable="false" />
+          <Property Name="Phone" Type="nvarchar" MaxLength="20" />
         </EntityType>
         <EntityType Name="CustomerEditOrder">
           <Key>
@@ -185,27 +172,6 @@
           <Property Name="Review" Type="int" Nullable="false" />
           <Property Name="OrderStatus" Type="int" Nullable="false" />
         </EntityType>
-        <EntityType Name="DeliveryProship">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="OrderID" Type="int" Nullable="false" />
-          <Property Name="NumberID" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="Customer" Type="nvarchar" MaxLength="100" Nullable="false" />
-          <Property Name="Phone" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="Address" Type="nvarchar" MaxLength="255" Nullable="false" />
-          <Property Name="DeliveryStatus" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="StartDate" Type="datetime" Nullable="false" />
-          <Property Name="DoneDate" Type="datetime" />
-          <Property Name="COD" Type="money" Nullable="false" />
-          <Property Name="OrderCOD" Type="money" Nullable="false" />
-          <Property Name="Fee" Type="money" Nullable="false" />
-          <Property Name="OrderFee" Type="money" Nullable="false" />
-          <Property Name="Staff" Type="nvarchar" MaxLength="100" Nullable="false" />
-          <Property Name="Review" Type="int" Nullable="false" />
-          <Property Name="OrderStatus" Type="int" Nullable="false" />
-        </EntityType>
         <EntityType Name="Fee">
           <Key>
             <PropertyRef Name="UUID" />
@@ -232,6 +198,155 @@
           <Property Name="ModifiedBy" Type="int" Nullable="false" />
           <Property Name="ModifiedDate" Type="datetime" Nullable="false" />
           <Property Name="IsNegativeFee" Type="bit" />
+        </EntityType>
+        <EntityType Name="GroupNotifyPromotion">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="Slug" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="AllUser" Type="bit" Nullable="false" />
+          <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+          <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="ModifiedDate" Type="datetime" Nullable="false" />
+          <Property Name="ModifiedBy" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Notification">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Phone" Type="nvarchar" MaxLength="15" />
+          <Property Name="Kind" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="NotifyID" Type="int" Nullable="false" />
+          <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+          <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="ModifiedDate" Type="datetime" Nullable="false" />
+          <Property Name="ModifiedBy" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'inventorymanagement.dbo.NotificationCategory' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="NotificationCategory">
+          <Key>
+            <PropertyRef Name="ID" />
+            <PropertyRef Name="Name" />
+            <PropertyRef Name="Slug" />
+            <PropertyRef Name="ParentID" />
+            <PropertyRef Name="Hidden" />
+            <PropertyRef Name="CreatedDate" />
+            <PropertyRef Name="CreatedBy" />
+            <PropertyRef Name="ModifiedDate" />
+            <PropertyRef Name="ModifiedBy" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Icon" Type="nvarchar" MaxLength="255" />
+          <Property Name="Name" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="Slug" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="Description" Type="nvarchar" MaxLength="255" />
+          <Property Name="ParentID" Type="int" Nullable="false" />
+          <Property Name="Hidden" Type="bit" Nullable="false" />
+          <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+          <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="ModifiedDate" Type="datetime" Nullable="false" />
+          <Property Name="ModifiedBy" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="NotifyNews">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CategoryID" Type="int" Nullable="false" />
+          <Property Name="CategorySlug" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="Title" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="Thumbnail" Type="nvarchar" MaxLength="255" />
+          <Property Name="Summary" Type="nvarchar(max)" />
+          <Property Name="Content" Type="nvarchar(max)" />
+          <Property Name="Action" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="ActionValue" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="AtHome" Type="bit" Nullable="false" />
+          <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+          <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="ModifiedDate" Type="datetime" Nullable="false" />
+          <Property Name="ModifiedBy" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="NotifyPromotion">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CategoryID" Type="int" Nullable="false" />
+          <Property Name="CategorySlug" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="GroupID" Type="int" Nullable="false" />
+          <Property Name="GroupSlug" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="Title" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="Thumbnail" Type="nvarchar" MaxLength="255" />
+          <Property Name="Summary" Type="nvarchar(max)" />
+          <Property Name="Content" Type="nvarchar(max)" />
+          <Property Name="Action" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="ActionValue" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+          <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="ModifiedDate" Type="datetime" Nullable="false" />
+          <Property Name="ModifiedBy" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="NotifyUser">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CategoryID" Type="int" Nullable="false" />
+          <Property Name="CategorySlug" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="Phone" Type="nvarchar" MaxLength="15" Nullable="false" />
+          <Property Name="Title" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="Thumbnail" Type="nvarchar" MaxLength="255" />
+          <Property Name="Summary" Type="nvarchar(max)" />
+          <Property Name="Content" Type="nvarchar(max)" />
+          <Property Name="Action" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="ActionValue" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+          <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="ModifiedDate" Type="datetime" Nullable="false" />
+          <Property Name="ModifiedBy" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="PostCategory">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Icon" Type="nvarchar" MaxLength="255" />
+          <Property Name="Name" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="Slug" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="Description" Type="nvarchar" MaxLength="255" />
+          <Property Name="Level" Type="int" Nullable="false" />
+          <Property Name="ParentID" Type="int" Nullable="false" />
+          <Property Name="Hidden" Type="bit" Nullable="false" />
+          <Property Name="AtPost" Type="bit" Nullable="false" />
+          <Property Name="IndexPost" Type="int" Nullable="false" />
+          <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+          <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="ModifiedDate" Type="datetime" Nullable="false" />
+          <Property Name="ModifiedBy" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="PostPublic">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CategoryID" Type="int" Nullable="false" />
+          <Property Name="CategorySlug" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="Title" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="Thumbnail" Type="nvarchar" MaxLength="255" />
+          <Property Name="Summary" Type="nvarchar(max)" />
+          <Property Name="Content" Type="nvarchar(max)" />
+          <Property Name="Action" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="ActionValue" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="AtHome" Type="bit" Nullable="false" />
+          <Property Name="IsPolicy" Type="bit" Nullable="false" />
+          <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+          <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="ModifiedDate" Type="datetime" Nullable="false" />
+          <Property Name="ModifiedBy" Type="nvarchar" MaxLength="50" Nullable="false" />
         </EntityType>
         <EntityType Name="ProductTag">
           <Key>
@@ -317,23 +432,6 @@
           <Property Name="AccountID" Type="int" Nullable="false" />
           <Property Name="Page" Type="nvarchar" MaxLength="100" Nullable="false" />
           <Property Name="Value" Type="nvarchar(max)" />
-          <Property Name="CreatedBy" Type="int" Nullable="false" />
-          <Property Name="CreatedDate" Type="datetime" Nullable="false" />
-          <Property Name="ModifiedBy" Type="int" Nullable="false" />
-          <Property Name="ModifiedDate" Type="datetime" Nullable="false" />
-        </EntityType>
-        <EntityType Name="ShelfManager">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="Floor" Type="int" Nullable="false" />
-          <Property Name="Row" Type="int" Nullable="false" />
-          <Property Name="Shelf" Type="int" Nullable="false" />
-          <Property Name="FloorShelf" Type="int" Nullable="false" />
-          <Property Name="ProductID" Type="int" Nullable="false" />
-          <Property Name="ProductVariableID" Type="int" Nullable="false" />
-          <Property Name="Quantity" Type="int" Nullable="false" />
           <Property Name="CreatedBy" Type="int" Nullable="false" />
           <Property Name="CreatedDate" Type="datetime" Nullable="false" />
           <Property Name="ModifiedBy" Type="int" Nullable="false" />
@@ -461,6 +559,7 @@
           <Property Name="ModifiedDate" Type="datetime" />
           <Property Name="ModifiedBy" Type="nvarchar(max)" />
           <Property Name="Slug" Type="nvarchar" MaxLength="100" />
+          <Property Name="Icon" Type="nvarchar" MaxLength="255" />
         </EntityType>
         <EntityType Name="tbl_CheckWarehouse">
           <Key>
@@ -1074,11 +1173,38 @@
           <Property Name="ModifiedDate" Type="datetime" />
           <Property Name="ModifiedBy" Type="nvarchar(max)" />
         </EntityType>
+        <EntityType Name="User">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Phone" Type="nvarchar" MaxLength="15" Nullable="false" />
+          <Property Name="Password" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="FullName" Type="nvarchar" MaxLength="255" />
+          <Property Name="BirthDay" Type="date" />
+          <Property Name="Gender" Type="nvarchar" MaxLength="10" />
+          <Property Name="Address" Type="nvarchar" MaxLength="255" />
+          <Property Name="City" Type="nvarchar" MaxLength="255" />
+          <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+          <Property Name="ModifiedDate" Type="datetime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="UserNotifyPromotion">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="GroupID" Type="int" Nullable="false" />
+          <Property Name="GroupSlug" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="Phone" Type="nvarchar" MaxLength="15" Nullable="false" />
+          <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+          <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="ModifiedDate" Type="datetime" Nullable="false" />
+          <Property Name="ModifiedBy" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
         <EntityContainer Name="inventorymanagementModelStoreContainer">
           <EntitySet Name="Bank" EntityType="Self.Bank" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="BankAccount" EntityType="Self.BankAccount" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="BankTransfer" EntityType="Self.BankTransfer" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="CategoryShelf" EntityType="Self.CategoryShelf" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Coupon" EntityType="Self.Coupon" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CronJob" EntityType="Self.CronJob" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CronJobProductStatus" EntityType="Self.CronJobProductStatus" Schema="dbo" store:Type="Tables" />
@@ -1086,15 +1212,20 @@
           <EntitySet Name="CustomerEditOrder" EntityType="Self.CustomerEditOrder" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Delivery" EntityType="Self.Delivery" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="DeliveryPostOffice" EntityType="Self.DeliveryPostOffice" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="DeliveryProship" EntityType="Self.DeliveryProship" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Fee" EntityType="Self.Fee" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="FeeType" EntityType="Self.FeeType" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="GroupNotifyPromotion" EntityType="Self.GroupNotifyPromotion" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Notification" EntityType="Self.Notification" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="NotifyNews" EntityType="Self.NotifyNews" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="NotifyPromotion" EntityType="Self.NotifyPromotion" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="NotifyUser" EntityType="Self.NotifyUser" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PostCategory" EntityType="Self.PostCategory" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PostPublic" EntityType="Self.PostPublic" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ProductTag" EntityType="Self.ProductTag" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ReceivedProductHistory" EntityType="Self.ReceivedProductHistory" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Register" EntityType="Self.Register" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="RegisterProduct" EntityType="Self.RegisterProduct" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Session" EntityType="Self.Session" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="ShelfManager" EntityType="Self.ShelfManager" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Shipper" EntityType="Self.Shipper" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Tag" EntityType="Self.Tag" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_Account" EntityType="Self.tbl_Account" Schema="dbo" store:Type="Tables" />
@@ -1136,6 +1267,23 @@
           <EntitySet Name="tbl_Variable" EntityType="Self.tbl_Variable" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_VariableValue" EntityType="Self.tbl_VariableValue" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_WhiteDomain" EntityType="Self.tbl_WhiteDomain" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="User" EntityType="Self.User" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="UserNotifyPromotion" EntityType="Self.UserNotifyPromotion" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="NotificationCategory" EntityType="Self.NotificationCategory" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [NotificationCategory].[ID] AS [ID], 
+    [NotificationCategory].[Icon] AS [Icon], 
+    [NotificationCategory].[Name] AS [Name], 
+    [NotificationCategory].[Slug] AS [Slug], 
+    [NotificationCategory].[Description] AS [Description], 
+    [NotificationCategory].[ParentID] AS [ParentID], 
+    [NotificationCategory].[Hidden] AS [Hidden], 
+    [NotificationCategory].[CreatedDate] AS [CreatedDate], 
+    [NotificationCategory].[CreatedBy] AS [CreatedBy], 
+    [NotificationCategory].[ModifiedDate] AS [ModifiedDate], 
+    [NotificationCategory].[ModifiedBy] AS [ModifiedBy]
+    FROM [dbo].[NotificationCategory] AS [NotificationCategory]</DefiningQuery>
+          </EntitySet>
         </EntityContainer>
       </Schema>
     </edmx:StorageModels>
@@ -1187,21 +1335,6 @@
           <Property Name="ModifiedBy" Type="Int32" Nullable="false" />
           <Property Name="ModifiedDate" Type="DateTime" Nullable="false" Precision="3" />
         </EntityType>
-        <EntityType Name="CategoryShelf">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="Description" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Level" Type="Int32" Nullable="false" />
-          <Property Name="ParentID" Type="Int32" Nullable="false" />
-          <Property Name="IsHidden" Type="Boolean" Nullable="false" />
-          <Property Name="CreatedBy" Type="Int32" Nullable="false" />
-          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="ModifedBy" Type="Int32" Nullable="false" />
-          <Property Name="ModifiedDate" Type="DateTime" Nullable="false" Precision="3" />
-        </EntityType>
         <EntityType Name="Coupon">
           <Key>
             <PropertyRef Name="ID" />
@@ -1216,6 +1349,7 @@
           <Property Name="ModifiedDate" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="ProductNumber" Type="Int32" Nullable="false" />
           <Property Name="PriceMin" Type="Decimal" Precision="19" Scale="4" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="CronJob">
           <Key>
@@ -1260,6 +1394,7 @@
           <Property Name="Active" Type="Boolean" Nullable="false" />
           <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="ModifiedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Phone" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="CustomerEditOrder">
           <Key>
@@ -1322,27 +1457,6 @@
           <Property Name="Review" Type="Int32" Nullable="false" />
           <Property Name="OrderStatus" Type="Int32" Nullable="false" />
         </EntityType>
-        <EntityType Name="DeliveryProship">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="OrderID" Type="Int32" Nullable="false" />
-          <Property Name="NumberID" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="Customer" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="Phone" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="Address" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="DeliveryStatus" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="StartDate" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="DoneDate" Type="DateTime" Precision="3" />
-          <Property Name="COD" Type="Decimal" Precision="19" Scale="4" Nullable="false" />
-          <Property Name="OrderCOD" Type="Decimal" Precision="19" Scale="4" Nullable="false" />
-          <Property Name="Fee" Type="Decimal" Precision="19" Scale="4" Nullable="false" />
-          <Property Name="OrderFee" Type="Decimal" Precision="19" Scale="4" Nullable="false" />
-          <Property Name="Staff" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="Review" Type="Int32" Nullable="false" />
-          <Property Name="OrderStatus" Type="Int32" Nullable="false" />
-        </EntityType>
         <EntityType Name="Fee">
           <Key>
             <PropertyRef Name="UUID" />
@@ -1369,6 +1483,129 @@
           <Property Name="ModifiedBy" Type="Int32" Nullable="false" />
           <Property Name="ModifiedDate" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="IsNegativeFee" Type="Boolean" />
+        </EntityType>
+        <EntityType Name="GroupNotifyPromotion">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Slug" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="AllUser" Type="Boolean" Nullable="false" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ModifiedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ModifiedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Notification">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Phone" Type="String" MaxLength="15" FixedLength="false" Unicode="true" />
+          <Property Name="Kind" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="NotifyID" Type="Int32" Nullable="false" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ModifiedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ModifiedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+        </EntityType>
+        <EntityType Name="NotifyNew">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CategoryID" Type="Int32" Nullable="false" />
+          <Property Name="CategorySlug" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Title" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Thumbnail" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Summary" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Content" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Action" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ActionValue" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="AtHome" Type="Boolean" Nullable="false" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ModifiedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ModifiedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+        </EntityType>
+        <EntityType Name="NotifyPromotion">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CategoryID" Type="Int32" Nullable="false" />
+          <Property Name="CategorySlug" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="GroupID" Type="Int32" Nullable="false" />
+          <Property Name="GroupSlug" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Title" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Thumbnail" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Summary" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Content" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Action" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ActionValue" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ModifiedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ModifiedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+        </EntityType>
+        <EntityType Name="NotifyUser">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CategoryID" Type="Int32" Nullable="false" />
+          <Property Name="CategorySlug" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Phone" Type="String" MaxLength="15" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Title" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Thumbnail" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Summary" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Content" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Action" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ActionValue" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ModifiedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ModifiedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+        </EntityType>
+        <EntityType Name="PostCategory">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Icon" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Slug" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Description" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Level" Type="Int32" Nullable="false" />
+          <Property Name="ParentID" Type="Int32" Nullable="false" />
+          <Property Name="Hidden" Type="Boolean" Nullable="false" />
+          <Property Name="AtPost" Type="Boolean" Nullable="false" />
+          <Property Name="IndexPost" Type="Int32" Nullable="false" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ModifiedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ModifiedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+        </EntityType>
+        <EntityType Name="PostPublic">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CategoryID" Type="Int32" Nullable="false" />
+          <Property Name="CategorySlug" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Title" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Thumbnail" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Summary" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Content" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Action" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ActionValue" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="AtHome" Type="Boolean" Nullable="false" />
+          <Property Name="IsPolicy" Type="Boolean" Nullable="false" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ModifiedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ModifiedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
         </EntityType>
         <EntityType Name="ProductTag">
           <Key>
@@ -1454,23 +1691,6 @@
           <Property Name="AccountID" Type="Int32" Nullable="false" />
           <Property Name="Page" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="Value" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="CreatedBy" Type="Int32" Nullable="false" />
-          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="ModifiedBy" Type="Int32" Nullable="false" />
-          <Property Name="ModifiedDate" Type="DateTime" Nullable="false" Precision="3" />
-        </EntityType>
-        <EntityType Name="ShelfManager">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Floor" Type="Int32" Nullable="false" />
-          <Property Name="Row" Type="Int32" Nullable="false" />
-          <Property Name="Shelf" Type="Int32" Nullable="false" />
-          <Property Name="FloorShelf" Type="Int32" Nullable="false" />
-          <Property Name="ProductID" Type="Int32" Nullable="false" />
-          <Property Name="ProductVariableID" Type="Int32" Nullable="false" />
-          <Property Name="Quantity" Type="Int32" Nullable="false" />
           <Property Name="CreatedBy" Type="Int32" Nullable="false" />
           <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="ModifiedBy" Type="Int32" Nullable="false" />
@@ -1598,6 +1818,7 @@
           <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
           <Property Name="ModifiedBy" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="Slug" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Icon" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="tbl_CheckWarehouse">
           <Key>
@@ -2211,11 +2432,62 @@
           <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
           <Property Name="ModifiedBy" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
+        <EntityType Name="User">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Phone" Type="String" MaxLength="15" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Password" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="FullName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="BirthDay" Type="DateTime" Precision="0" />
+          <Property Name="Gender" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="Address" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="City" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ModifiedDate" Type="DateTime" Nullable="false" Precision="3" />
+        </EntityType>
+        <EntityType Name="UserNotifyPromotion">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="GroupID" Type="Int32" Nullable="false" />
+          <Property Name="GroupSlug" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Phone" Type="String" MaxLength="15" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ModifiedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ModifiedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+        </EntityType>
+        <EntityType Name="NotificationCategory">
+          <Key>
+            <PropertyRef Name="ID" />
+            <PropertyRef Name="Name" />
+            <PropertyRef Name="Slug" />
+            <PropertyRef Name="ParentID" />
+            <PropertyRef Name="Hidden" />
+            <PropertyRef Name="CreatedDate" />
+            <PropertyRef Name="CreatedBy" />
+            <PropertyRef Name="ModifiedDate" />
+            <PropertyRef Name="ModifiedBy" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Icon" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Slug" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Description" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="ParentID" Type="Int32" Nullable="false" />
+          <Property Name="Hidden" Type="Boolean" Nullable="false" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ModifiedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ModifiedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+        </EntityType>
         <EntityContainer Name="inventorymanagementEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="Banks" EntityType="Self.Bank" />
           <EntitySet Name="BankAccounts" EntityType="Self.BankAccount" />
           <EntitySet Name="BankTransfers" EntityType="Self.BankTransfer" />
-          <EntitySet Name="CategoryShelves" EntityType="Self.CategoryShelf" />
           <EntitySet Name="Coupons" EntityType="Self.Coupon" />
           <EntitySet Name="CronJobs" EntityType="Self.CronJob" />
           <EntitySet Name="CronJobProductStatus" EntityType="Self.CronJobProductStatu" />
@@ -2223,15 +2495,20 @@
           <EntitySet Name="CustomerEditOrders" EntityType="Self.CustomerEditOrder" />
           <EntitySet Name="Deliveries" EntityType="Self.Delivery" />
           <EntitySet Name="DeliveryPostOffices" EntityType="Self.DeliveryPostOffice" />
-          <EntitySet Name="DeliveryProships" EntityType="Self.DeliveryProship" />
           <EntitySet Name="Fees" EntityType="Self.Fee" />
           <EntitySet Name="FeeTypes" EntityType="Self.FeeType" />
+          <EntitySet Name="GroupNotifyPromotions" EntityType="Self.GroupNotifyPromotion" />
+          <EntitySet Name="Notifications" EntityType="Self.Notification" />
+          <EntitySet Name="NotifyNews" EntityType="Self.NotifyNew" />
+          <EntitySet Name="NotifyPromotions" EntityType="Self.NotifyPromotion" />
+          <EntitySet Name="NotifyUsers" EntityType="Self.NotifyUser" />
+          <EntitySet Name="PostCategories" EntityType="Self.PostCategory" />
+          <EntitySet Name="PostPublics" EntityType="Self.PostPublic" />
           <EntitySet Name="ProductTags" EntityType="Self.ProductTag" />
           <EntitySet Name="ReceivedProductHistories" EntityType="Self.ReceivedProductHistory" />
           <EntitySet Name="Registers" EntityType="Self.Register" />
           <EntitySet Name="RegisterProducts" EntityType="Self.RegisterProduct" />
           <EntitySet Name="Sessions" EntityType="Self.Session" />
-          <EntitySet Name="ShelfManagers" EntityType="Self.ShelfManager" />
           <EntitySet Name="Shippers" EntityType="Self.Shipper" />
           <EntitySet Name="Tags" EntityType="Self.Tag" />
           <EntitySet Name="tbl_Account" EntityType="Self.tbl_Account" />
@@ -2273,6 +2550,9 @@
           <EntitySet Name="tbl_Variable" EntityType="Self.tbl_Variable" />
           <EntitySet Name="tbl_VariableValue" EntityType="Self.tbl_VariableValue" />
           <EntitySet Name="tbl_WhiteDomain" EntityType="Self.tbl_WhiteDomain" />
+          <EntitySet Name="Users" EntityType="Self.User" />
+          <EntitySet Name="UserNotifyPromotions" EntityType="Self.UserNotifyPromotion" />
+          <EntitySet Name="NotificationCategories" EntityType="Self.NotificationCategory" />
         </EntityContainer>
       </Schema>
     </edmx:ConceptualModels>
@@ -2328,22 +2608,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="CategoryShelves">
-            <EntityTypeMapping TypeName="inventorymanagementModel.CategoryShelf">
-              <MappingFragment StoreEntitySet="CategoryShelf">
-                <ScalarProperty Name="ID" ColumnName="ID" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="Description" ColumnName="Description" />
-                <ScalarProperty Name="Level" ColumnName="Level" />
-                <ScalarProperty Name="ParentID" ColumnName="ParentID" />
-                <ScalarProperty Name="IsHidden" ColumnName="IsHidden" />
-                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
-                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
-                <ScalarProperty Name="ModifedBy" ColumnName="ModifedBy" />
-                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="Coupons">
             <EntityTypeMapping TypeName="inventorymanagementModel.Coupon">
               <MappingFragment StoreEntitySet="Coupon">
@@ -2357,6 +2621,7 @@
                 <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
                 <ScalarProperty Name="ProductNumber" ColumnName="ProductNumber" />
                 <ScalarProperty Name="PriceMin" ColumnName="PriceMin" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -2404,6 +2669,7 @@
                 <ScalarProperty Name="Active" ColumnName="Active" />
                 <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
                 <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="Phone" ColumnName="Phone" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -2471,28 +2737,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="DeliveryProships">
-            <EntityTypeMapping TypeName="inventorymanagementModel.DeliveryProship">
-              <MappingFragment StoreEntitySet="DeliveryProship">
-                <ScalarProperty Name="ID" ColumnName="ID" />
-                <ScalarProperty Name="OrderID" ColumnName="OrderID" />
-                <ScalarProperty Name="NumberID" ColumnName="NumberID" />
-                <ScalarProperty Name="Customer" ColumnName="Customer" />
-                <ScalarProperty Name="Phone" ColumnName="Phone" />
-                <ScalarProperty Name="Address" ColumnName="Address" />
-                <ScalarProperty Name="DeliveryStatus" ColumnName="DeliveryStatus" />
-                <ScalarProperty Name="StartDate" ColumnName="StartDate" />
-                <ScalarProperty Name="DoneDate" ColumnName="DoneDate" />
-                <ScalarProperty Name="COD" ColumnName="COD" />
-                <ScalarProperty Name="OrderCOD" ColumnName="OrderCOD" />
-                <ScalarProperty Name="Fee" ColumnName="Fee" />
-                <ScalarProperty Name="OrderFee" ColumnName="OrderFee" />
-                <ScalarProperty Name="Staff" ColumnName="Staff" />
-                <ScalarProperty Name="Review" ColumnName="Review" />
-                <ScalarProperty Name="OrderStatus" ColumnName="OrderStatus" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="Fees">
             <EntityTypeMapping TypeName="inventorymanagementModel.Fee">
               <MappingFragment StoreEntitySet="Fee">
@@ -2519,6 +2763,136 @@
                 <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
                 <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
                 <ScalarProperty Name="IsNegativeFee" ColumnName="IsNegativeFee" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="GroupNotifyPromotions">
+            <EntityTypeMapping TypeName="inventorymanagementModel.GroupNotifyPromotion">
+              <MappingFragment StoreEntitySet="GroupNotifyPromotion">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Slug" ColumnName="Slug" />
+                <ScalarProperty Name="AllUser" ColumnName="AllUser" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Notifications">
+            <EntityTypeMapping TypeName="inventorymanagementModel.Notification">
+              <MappingFragment StoreEntitySet="Notification">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Phone" ColumnName="Phone" />
+                <ScalarProperty Name="Kind" ColumnName="Kind" />
+                <ScalarProperty Name="NotifyID" ColumnName="NotifyID" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="NotifyNews">
+            <EntityTypeMapping TypeName="inventorymanagementModel.NotifyNew">
+              <MappingFragment StoreEntitySet="NotifyNews">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="CategoryID" ColumnName="CategoryID" />
+                <ScalarProperty Name="CategorySlug" ColumnName="CategorySlug" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="Thumbnail" ColumnName="Thumbnail" />
+                <ScalarProperty Name="Summary" ColumnName="Summary" />
+                <ScalarProperty Name="Content" ColumnName="Content" />
+                <ScalarProperty Name="Action" ColumnName="Action" />
+                <ScalarProperty Name="ActionValue" ColumnName="ActionValue" />
+                <ScalarProperty Name="AtHome" ColumnName="AtHome" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="NotifyPromotions">
+            <EntityTypeMapping TypeName="inventorymanagementModel.NotifyPromotion">
+              <MappingFragment StoreEntitySet="NotifyPromotion">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="CategoryID" ColumnName="CategoryID" />
+                <ScalarProperty Name="CategorySlug" ColumnName="CategorySlug" />
+                <ScalarProperty Name="GroupID" ColumnName="GroupID" />
+                <ScalarProperty Name="GroupSlug" ColumnName="GroupSlug" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="Thumbnail" ColumnName="Thumbnail" />
+                <ScalarProperty Name="Summary" ColumnName="Summary" />
+                <ScalarProperty Name="Content" ColumnName="Content" />
+                <ScalarProperty Name="Action" ColumnName="Action" />
+                <ScalarProperty Name="ActionValue" ColumnName="ActionValue" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="NotifyUsers">
+            <EntityTypeMapping TypeName="inventorymanagementModel.NotifyUser">
+              <MappingFragment StoreEntitySet="NotifyUser">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="CategoryID" ColumnName="CategoryID" />
+                <ScalarProperty Name="CategorySlug" ColumnName="CategorySlug" />
+                <ScalarProperty Name="Phone" ColumnName="Phone" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="Thumbnail" ColumnName="Thumbnail" />
+                <ScalarProperty Name="Summary" ColumnName="Summary" />
+                <ScalarProperty Name="Content" ColumnName="Content" />
+                <ScalarProperty Name="Action" ColumnName="Action" />
+                <ScalarProperty Name="ActionValue" ColumnName="ActionValue" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PostCategories">
+            <EntityTypeMapping TypeName="inventorymanagementModel.PostCategory">
+              <MappingFragment StoreEntitySet="PostCategory">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Icon" ColumnName="Icon" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Slug" ColumnName="Slug" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Level" ColumnName="Level" />
+                <ScalarProperty Name="ParentID" ColumnName="ParentID" />
+                <ScalarProperty Name="Hidden" ColumnName="Hidden" />
+                <ScalarProperty Name="AtPost" ColumnName="AtPost" />
+                <ScalarProperty Name="IndexPost" ColumnName="IndexPost" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PostPublics">
+            <EntityTypeMapping TypeName="inventorymanagementModel.PostPublic">
+              <MappingFragment StoreEntitySet="PostPublic">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="CategoryID" ColumnName="CategoryID" />
+                <ScalarProperty Name="CategorySlug" ColumnName="CategorySlug" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="Thumbnail" ColumnName="Thumbnail" />
+                <ScalarProperty Name="Summary" ColumnName="Summary" />
+                <ScalarProperty Name="Content" ColumnName="Content" />
+                <ScalarProperty Name="Action" ColumnName="Action" />
+                <ScalarProperty Name="ActionValue" ColumnName="ActionValue" />
+                <ScalarProperty Name="AtHome" ColumnName="AtHome" />
+                <ScalarProperty Name="IsPolicy" ColumnName="IsPolicy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -2609,24 +2983,6 @@
                 <ScalarProperty Name="AccountID" ColumnName="AccountID" />
                 <ScalarProperty Name="Page" ColumnName="Page" />
                 <ScalarProperty Name="Value" ColumnName="Value" />
-                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
-                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
-                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
-                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="ShelfManagers">
-            <EntityTypeMapping TypeName="inventorymanagementModel.ShelfManager">
-              <MappingFragment StoreEntitySet="ShelfManager">
-                <ScalarProperty Name="ID" ColumnName="ID" />
-                <ScalarProperty Name="Floor" ColumnName="Floor" />
-                <ScalarProperty Name="Row" ColumnName="Row" />
-                <ScalarProperty Name="Shelf" ColumnName="Shelf" />
-                <ScalarProperty Name="FloorShelf" ColumnName="FloorShelf" />
-                <ScalarProperty Name="ProductID" ColumnName="ProductID" />
-                <ScalarProperty Name="ProductVariableID" ColumnName="ProductVariableID" />
-                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
                 <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
                 <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
                 <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
@@ -2762,6 +3118,7 @@
                 <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
                 <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
                 <ScalarProperty Name="Slug" ColumnName="Slug" />
+                <ScalarProperty Name="Icon" ColumnName="Icon" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -3402,6 +3759,53 @@
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="Domain" ColumnName="Domain" />
                 <ScalarProperty Name="IsHidden" ColumnName="IsHidden" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Users">
+            <EntityTypeMapping TypeName="inventorymanagementModel.User">
+              <MappingFragment StoreEntitySet="User">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Phone" ColumnName="Phone" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+                <ScalarProperty Name="FullName" ColumnName="FullName" />
+                <ScalarProperty Name="BirthDay" ColumnName="BirthDay" />
+                <ScalarProperty Name="Gender" ColumnName="Gender" />
+                <ScalarProperty Name="Address" ColumnName="Address" />
+                <ScalarProperty Name="City" ColumnName="City" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UserNotifyPromotions">
+            <EntityTypeMapping TypeName="inventorymanagementModel.UserNotifyPromotion">
+              <MappingFragment StoreEntitySet="UserNotifyPromotion">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="GroupID" ColumnName="GroupID" />
+                <ScalarProperty Name="GroupSlug" ColumnName="GroupSlug" />
+                <ScalarProperty Name="Phone" ColumnName="Phone" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="NotificationCategories">
+            <EntityTypeMapping TypeName="inventorymanagementModel.NotificationCategory">
+              <MappingFragment StoreEntitySet="NotificationCategory">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Icon" ColumnName="Icon" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Slug" ColumnName="Slug" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="ParentID" ColumnName="ParentID" />
+                <ScalarProperty Name="Hidden" ColumnName="Hidden" />
                 <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
                 <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
                 <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />

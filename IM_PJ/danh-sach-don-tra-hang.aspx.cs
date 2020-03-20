@@ -192,15 +192,15 @@ namespace IM_PJ
                 {
                     var item = acs[i];
                     html.Append("<tr>");
-                    html.Append("   <td data-title='Mã đơn'><a href=\"/xem-don-hang-doi-tra?id=" + item.ID + "\">" + item.ID + "</a></td>");
+                    html.Append("   <td data-title='Mã đơn'><a target='_blank' href='/xem-don-hang-doi-tra?id=" + item.ID + "'>" + item.ID + "</a></td>");
 
                     if (!string.IsNullOrEmpty(item.Nick))
                     {
-                        html.Append("   <td data-title='Khách hàng' class='customer-td'><a class=\"customer-name-link\" href=\"/xem-don-hang-doi-tra?id=" + item.ID + "\">" + item.Nick.ToTitleCase() + "</a><br><span class=\"name-bottom-nick\">(" + item.CustomerName.ToTitleCase() + ")</span></td>");
+                        html.Append("   <td data-title='Khách hàng' class='customer-td'><a target='_blank' class='customer-name-link' href='/xem-don-hang-doi-tra?id=" + item.ID + "'>" + item.Nick.ToTitleCase() + "</a><br><span class='name-bottom-nick'>(" + item.CustomerName.ToTitleCase() + ")</span></td>");
                     }
                     else
                     {
-                        html.Append("   <td data-title='Khách hàng' class='customer-td'><a class=\"customer-name-link\" href=\"/xem-don-hang-doi-tra?id=" + item.ID + "\">" + item.CustomerName.ToTitleCase() + "</a></td>");
+                        html.Append("   <td data-title='Khách hàng' class='customer-td'><a target='_blank' class='customer-name-link' href='/xem-don-hang-doi-tra?id=" + item.ID + "'>" + item.CustomerName.ToTitleCase() + "</a></td>");
                     }
 
                     html.Append("   <td data-title='Số lượng'>" + string.Format("{0:N0}", Convert.ToDouble(item.Quantity)) + "</td>");
@@ -210,7 +210,7 @@ namespace IM_PJ
 
                     if(item.OrderSaleID > 0)
                     {
-                        html.Append("   <td data-title='Đơn trừ tiền'><a class=\"customer-name-link\" target=\"_blank\" title=\"Bấm vào xem đơn hàng trừ tiền\" href=\"/thong-tin-don-hang?id=" + item.OrderSaleID + "\">" + item.OrderSaleID + " (Xem đơn)</a></td>");
+                        html.Append("   <td data-title='Đơn trừ tiền'><a class='customer-name-link' target='_blank' title='Bấm vào xem đơn hàng trừ tiền' href='/thong-tin-don-hang?id=" + item.OrderSaleID + "'>" + item.OrderSaleID + "</a></td>");
                     }
                     else
                     {
@@ -222,12 +222,12 @@ namespace IM_PJ
                         html.Append("   <td data-title='Nhân viên'>" + item.CreatedBy + "</td>");
                     }
 
-                    string date = string.Format("{0:dd/MM}", item.CreatedDate);
+                    string date = string.Format("<strong>{0:dd/MM}</strong><br>{0:HH:mm}", item.CreatedDate);
                     html.Append("   <td data-title='Ngày tạo'>" + date + "</td>");
 
                     html.Append("   <td data-title='Thao tác' class='update-button'>");
-                    html.Append("       <a href=\"/print-invoice-return?id=" + item.ID + "\" title=\"In hóa đơn\" target=\"_blank\" class=\"btn primary-btn h45-btn\"><i class=\"fa fa-print\" aria-hidden=\"true\"></i></a>");
-                    html.Append("       <a href=\"/print-return-order-image?id=" + item.ID + "\" title=\"Lấy ảnh đơn hàng\" target=\"_blank\" class=\"btn primary-btn btn-red h45-btn\"><i class=\"fa fa-picture-o\" aria-hidden=\"true\"></i></a>");
+                    html.Append("       <a href='/print-invoice-return?id=" + item.ID + "' title='In hóa đơn' target='_blank' class='btn primary-btn h45-btn'><i class='fa fa-print' aria-hidden='true'></i></a>");
+                    html.Append("       <a href='/print-return-order-image?id=" + item.ID + "' title='Lấy ảnh đơn hàng' target='_blank' class='btn primary-btn btn-red h45-btn'><i class='fa fa-picture-o' aria-hidden='true'></i></a>");
                     html.Append("   </td>");
                     html.Append("</tr>");
                 }
@@ -236,11 +236,11 @@ namespace IM_PJ
             {
                 if (acc.RoleID == 0)
                 {
-                    html.Append("<tr><td colspan=\"10\">Không tìm thấy đơn hàng...</td></tr>");
+                    html.Append("<tr><td colspan='10'>Không tìm thấy đơn hàng...</td></tr>");
                 }
                 else
                 {
-                    html.Append("<tr><td colspan=\"9\">Không tìm thấy đơn hàng...</td></tr>");
+                    html.Append("<tr><td colspan='9'>Không tìm thấy đơn hàng...</td></tr>");
                 }
             }
 

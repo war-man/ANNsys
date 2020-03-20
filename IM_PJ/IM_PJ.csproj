@@ -513,7 +513,6 @@
     <Content Include="bc.aspx" />
     <Content Include="bao-cao.aspx" />
     <Content Include="bv.aspx" />
-    <Content Include="chuyen-ke.aspx" />
     <Content Include="Content\bootstrap-datetimepicker.css" />
     <Content Include="Content\bootstrap-datetimepicker.min.css" />
     <Content Include="Content\bootstrap-tagsinput-typeahead.css" />
@@ -527,7 +526,8 @@
     <Content Include="Content\bootstrap2-toggle.css" />
     <Content Include="Content\bootstrap2-toggle.min.css" />
     <Content Include="Content\typeahead.css" />
-    <Content Include="kiem-ke.aspx" />
+    <Content Include="danh-sach-thong-bao.aspx" />
+    <Content Include="danh-sach-bai-viet-app.aspx" />
     <Content Include="kh.aspx" />
     <Content Include="Models\IMModel.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
@@ -539,7 +539,6 @@
       <DependentUpon>IMModel.edmx</DependentUpon>
       <LastGenOutput>IMModel.cs</LastGenOutput>
     </Content>
-    <Content Include="san-pham-theo-ke.aspx" />
     <Content Include="nuoc-hoa.aspx" />
     <Content Include="cron-job-product-status.aspx" />
     <Content Include="Scripts\bloodhound.js" />
@@ -554,8 +553,12 @@
     <Content Include="Scripts\typeahead.bundle.js" />
     <Content Include="Scripts\typeahead.bundle.min.js" />
     <Content Include="Scripts\typeahead.jquery.js" />
+    <Content Include="SQL\04CREATE_FUNCTION_GetTagByProductID.sql" />
+    <Content Include="sua-thong-bao.aspx" />
+    <Content Include="sua-bai-viet-app.aspx" />
+    <Content Include="tao-thong-bao.aspx" />
+    <Content Include="tao-bai-viet-app.aspx" />
     <Content Include="thong-ke-khach-hang.aspx" />
-    <Content Include="thong-ke-proship.aspx" />
     <Content Include="thong-ke-buu-dien.aspx" />
     <Content Include="nhan-vien-dat-hang.aspx" />
     <Content Include="danh-sach-dang-ky.aspx" />
@@ -678,6 +681,8 @@
     <Content Include="thong-tin-don-hang-chuyen-hoan.aspx" />
     <Content Include="sua-bai-viet.aspx" />
     <Content Include="uploads\avatars\no-avatar.png" />
+    <Content Include="xem-thong-bao.aspx" />
+    <Content Include="xem-bai-viet-app.aspx" />
     <Content Include="xem-don-hang-doi-tra.aspx" />
     <Content Include="xem-bai-viet.aspx" />
     <Content Include="xem-bv.aspx" />
@@ -948,19 +953,16 @@
     <Compile Include="bao-cao.aspx.designer.cs">
       <DependentUpon>bao-cao.aspx</DependentUpon>
     </Compile>
-    <Compile Include="chuyen-ke.aspx.cs">
-      <DependentUpon>chuyen-ke.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="chuyen-ke.aspx.designer.cs">
-      <DependentUpon>chuyen-ke.aspx</DependentUpon>
-    </Compile>
     <Compile Include="Controllers\CategoryController.cs" />
     <Compile Include="Controllers\CategoryShelfController.cs" />
     <Compile Include="Controllers\CouponController.cs" />
     <Compile Include="Controllers\CronJobController.cs" />
     <Compile Include="Controllers\DeliveryProshipController.cs" />
     <Compile Include="Controllers\DeliveryPostOfficeController.cs" />
+    <Compile Include="Controllers\NotifyCategoryController.cs" />
+    <Compile Include="Controllers\PostPublicCategoryController.cs" />
+    <Compile Include="Controllers\NotifyController.cs" />
+    <Compile Include="Controllers\PostPublicController.cs" />
     <Compile Include="Controllers\ProductTagController.cs" />
     <Compile Include="Controllers\RegisterController.cs" />
     <Compile Include="Controllers\BankAccountController.cs" />
@@ -978,12 +980,19 @@
     <Compile Include="Controllers\TagController.cs" />
     <Compile Include="CronJob\RunScheduleProductStatus.cs" />
     <Compile Include="CronJob\CreateScheduleProductStatus.cs" />
-    <Compile Include="kiem-ke.aspx.cs">
-      <DependentUpon>kiem-ke.aspx</DependentUpon>
+    <Compile Include="danh-sach-thong-bao.aspx.cs">
+      <DependentUpon>danh-sach-thong-bao.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="kiem-ke.aspx.designer.cs">
-      <DependentUpon>kiem-ke.aspx</DependentUpon>
+    <Compile Include="danh-sach-thong-bao.aspx.designer.cs">
+      <DependentUpon>danh-sach-thong-bao.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="danh-sach-bai-viet-app.aspx.cs">
+      <DependentUpon>danh-sach-bai-viet-app.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="danh-sach-bai-viet-app.aspx.designer.cs">
+      <DependentUpon>danh-sach-bai-viet-app.aspx</DependentUpon>
     </Compile>
     <Compile Include="Models\Bank.cs">
       <DependentUpon>IMModel.tt</DependentUpon>
@@ -992,9 +1001,6 @@
       <DependentUpon>IMModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\BankTransfer.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\CategoryShelf.cs">
       <DependentUpon>IMModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Common\CustomerModel.cs" />
@@ -1024,13 +1030,13 @@
     <Compile Include="Models\DeliveryPostOffice.cs">
       <DependentUpon>IMModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\DeliveryProship.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
-    </Compile>
     <Compile Include="Models\Fee.cs">
       <DependentUpon>IMModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\FeeType.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\GroupNotifyPromotion.cs">
       <DependentUpon>IMModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\IMModel.Context.cs">
@@ -1048,6 +1054,21 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>IMModel.edmx</DependentUpon>
     </Compile>
+    <Compile Include="Models\Notification.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\NotificationCategory.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\NotifyNew.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\NotifyPromotion.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\NotifyUser.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\Pages\cron-job-product-status\FilterModel.cs" />
     <Compile Include="Models\Pages\cron-job-product-status\ProductModel.cs" />
     <Compile Include="Models\Pages\danh-sach-nhom-khach-hang\DiscountGroupModel.cs" />
@@ -1062,6 +1083,12 @@
     <Compile Include="kh.aspx.designer.cs">
       <DependentUpon>kh.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Models\PostCategory.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\PostPublic.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\ProductTag.cs">
       <DependentUpon>IMModel.tt</DependentUpon>
     </Compile>
@@ -1075,9 +1102,6 @@
       <DependentUpon>IMModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Session.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\ShelfManager.cs">
       <DependentUpon>IMModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Shipper.cs">
@@ -1203,12 +1227,11 @@
     <Compile Include="Models\tbl_WhiteDomain.cs">
       <DependentUpon>IMModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="san-pham-theo-ke.aspx.cs">
-      <DependentUpon>san-pham-theo-ke.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
+    <Compile Include="Models\User.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="san-pham-theo-ke.aspx.designer.cs">
-      <DependentUpon>san-pham-theo-ke.aspx</DependentUpon>
+    <Compile Include="Models\UserNotifyPromotion.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
     </Compile>
     <Compile Include="nuoc-hoa.aspx.cs">
       <DependentUpon>nuoc-hoa.aspx</DependentUpon>
@@ -1224,19 +1247,40 @@
     <Compile Include="cron-job-product-status.aspx.designer.cs">
       <DependentUpon>cron-job-product-status.aspx</DependentUpon>
     </Compile>
+    <Compile Include="sua-thong-bao.aspx.cs">
+      <DependentUpon>sua-thong-bao.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="sua-thong-bao.aspx.designer.cs">
+      <DependentUpon>sua-thong-bao.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="sua-bai-viet-app.aspx.cs">
+      <DependentUpon>sua-bai-viet-app.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="sua-bai-viet-app.aspx.designer.cs">
+      <DependentUpon>sua-bai-viet-app.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="tao-thong-bao.aspx.cs">
+      <DependentUpon>tao-thong-bao.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="tao-thong-bao.aspx.designer.cs">
+      <DependentUpon>tao-thong-bao.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="tao-bai-viet-app.aspx.cs">
+      <DependentUpon>tao-bai-viet-app.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="tao-bai-viet-app.aspx.designer.cs">
+      <DependentUpon>tao-bai-viet-app.aspx</DependentUpon>
+    </Compile>
     <Compile Include="thong-ke-khach-hang.aspx.cs">
       <DependentUpon>thong-ke-khach-hang.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="thong-ke-khach-hang.aspx.designer.cs">
       <DependentUpon>thong-ke-khach-hang.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="thong-ke-proship.aspx.cs">
-      <DependentUpon>thong-ke-proship.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="thong-ke-proship.aspx.designer.cs">
-      <DependentUpon>thong-ke-proship.aspx</DependentUpon>
     </Compile>
     <Compile Include="thong-ke-buu-dien.aspx.cs">
       <DependentUpon>thong-ke-buu-dien.aspx</DependentUpon>
@@ -2012,6 +2056,20 @@
     <Compile Include="Utils\Thumbnail.cs" />
     <Compile Include="Utils\UnSign.cs" />
     <Compile Include="Utils\Slug.cs" />
+    <Compile Include="xem-thong-bao.aspx.cs">
+      <DependentUpon>xem-thong-bao.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="xem-thong-bao.aspx.designer.cs">
+      <DependentUpon>xem-thong-bao.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="xem-bai-viet-app.aspx.cs">
+      <DependentUpon>xem-bai-viet-app.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="xem-bai-viet-app.aspx.designer.cs">
+      <DependentUpon>xem-bai-viet-app.aspx</DependentUpon>
+    </Compile>
     <Compile Include="xem-don-hang-doi-tra.aspx.cs">
       <DependentUpon>xem-don-hang-doi-tra.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>

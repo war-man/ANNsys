@@ -27,28 +27,21 @@ namespace IM_PJ
                     var acc = AccountController.GetByUsername(username);
                     if (acc != null)
                     {
-                        if (acc.RoleID == 0)
+                        if (acc.RoleID == 0 || acc.Username == "nhom_zalo502")
                         {
-
-                        }
-                        else if (acc.RoleID == 1)
-                        {
-
+                            LoadCategory();
+                            LoadData();
                         }
                         else
                         {
                             Response.Redirect("/trang-chu");
                         }
-
-                        hdfUserRole.Value = acc.RoleID.ToString();
                     }
                 }
                 else
                 {
                     Response.Redirect("/dang-nhap");
                 }
-                LoadCategory();
-                LoadData();
             }
         }
 
@@ -96,7 +89,8 @@ namespace IM_PJ
                     ViewState["ID"] = id;
                     ViewState["cateID"] = p.CategoryID;
                     hdfParentID.Value = p.CategoryID.ToString();
-                    ltrBack.Text = "<a href='/xem-bai-viet?id=" + p.ID + "' class='btn primary-btn fw-btn not-fullwidth'>Trở về</a>";
+                    ltrBack.Text = "<a href='/xem-bai-viet?id=" + p.ID + "' class='btn primary-btn fw-btn not-fullwidth'><i class='fa fa-arrow-left' aria-hidden='true'></i> Trở về</a>";
+                    ltrBack2.Text = ltrBack.Text;
                     txtTitle.Text = p.Title;
                     txtSlug.Text = p.Slug;
                     pContent.Content = p.Content;
@@ -120,6 +114,11 @@ namespace IM_PJ
                     }
                     imageGallery.Text += "</ul>";
 
+                    string PostInfo = "<p><strong>Ngày tạo</strong>: " + p.CreatedDate + "</p>";
+                    PostInfo += "<p><strong>Người viết</strong>: " + p.CreatedBy + "</p>";
+                    PostInfo += "<p><strong>Ngày cập nhật</strong>: " + p.ModifiedDate + "</p>";
+                    PostInfo += "<p><strong>Người cập nhật</strong>: " + p.ModifiedBy + "</p>";
+                    ltrPostInfo.Text = PostInfo;
                 }
             }
         }
@@ -134,11 +133,11 @@ namespace IM_PJ
             {
                 string Title = txtTitle.Text.Trim();
                 string PostSlug = txtSlug.Text.Trim();
-                string Content = pContent.Content;
+                string Content = pContent.Content.ToString();
                 int CategoryID = hdfParentID.Value.ToInt();
 
                 //Phần thêm ảnh đại diện sản phẩm
-                string path = "/uploads/images/";
+                string path = "/uploads/images/posts/";
                 string PostImage = ListPostThumbnail.Value;
                 if (PostThumbnailImage.UploadedFiles.Count > 0)
                 {
@@ -206,7 +205,7 @@ namespace IM_PJ
 
                 if (kq.ToInt(0) > 0)
                 {
-                    PJUtils.ShowMessageBoxSwAlert("Cập nhật bài viết thành công", "s", true, Page);
+                    PJUtils.ShowMessageBoxSwAlertCallFunction("Cập nhật bài viết thành công", "s", true, "redirectTo(" + kq + ")", Page);
                 }
             }
         }

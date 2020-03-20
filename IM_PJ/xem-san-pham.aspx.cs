@@ -26,10 +26,9 @@ namespace IM_PJ
                     var acc = AccountController.GetByUsername(username);
                     if (acc != null)
                     {
-                        ViewState["role"] = acc.RoleID;
                         LoadCategory();
                         LoadSupplier();
-                        LoadData(Convert.ToInt32(acc.RoleID));
+                        LoadData();
                     }
                 }
                 else
@@ -81,8 +80,11 @@ namespace IM_PJ
                 }
             }
         }
-        public void LoadData(int userRole)
+        public void LoadData()
         {
+            string username = HttpContext.Current.Request.Cookies["usernameLoginSystem"].Value;
+            var acc = AccountController.GetByUsername(username);
+
             int id = Request.QueryString["id"].ToInt(0);
             string sku = Request.QueryString["sku"];
 
@@ -125,7 +127,7 @@ namespace IM_PJ
                 ViewState["SKU"] = p.ProductSKU;
 
                 ltrEdit1.Text = "";
-                if (userRole == 0 || userRole == 1)
+                if (acc.RoleID == 0 || acc.RoleID == 1 || acc.Username == "nhom_zalo502")
                 {
                     ltrEdit1.Text += "<a href='/thong-tin-san-pham?id=" + p.ID + "' class='btn primary-btn fw-btn not-fullwidth'><i class='fa fa-pencil-square-o' aria-hidden='true'></i> Chỉnh sửa</a>";
                     ltrEdit1.Text += "<a href='/tao-san-pham' class='btn primary-btn fw-btn not-fullwidth print-invoice-merged'><i class='fa fa-file-text-o' aria-hidden='true'></i> Thêm mới</a>";
@@ -133,7 +135,8 @@ namespace IM_PJ
                 }
                 ltrEdit1.Text += "<a href='javascript:;' onclick='copyProductInfo(" + p.ID + ")' class='btn primary-btn not-fullwidth print-invoice-merged'><i class='fa fa-files-o'></i> Copy thông tin</a>";
                 ltrEdit1.Text += "<a href='javascript:;' onclick='getAllProductImage(`" + p.ProductSKU + "`);' class='btn primary-btn not-fullwidth print-invoice-merged'><i class='fa fa-cloud-download'></i> Tải tất cả hình ảnh</a>";
-                if (userRole == 0)
+
+                if (acc.RoleID == 0 || acc.Username == "nhom_zalo502")
                 {
                     ltrEdit1.Text += "<a href='javascript:;' onclick='deleteProduct(" + p.ID + ");' class='btn primary-btn not-fullwidth print-invoice-merged btn-red'><i class='fa fa-times'></i> Xóa sản phẩm</a>";
                     ltrEdit1.Text += "<a href='javascript:;' data-toggle='modal' data-target='#modalUpdateProductSKU' data-backdrop='static' data-keyboard='false' class='btn primary-btn not-fullwidth print-invoice-merged btn-blue'><i class='fa fa-times'></i> Sửa mã sản phẩm</a>";
@@ -168,7 +171,7 @@ namespace IM_PJ
                 lbRegularPrice.Text = string.Format("{0:N0}", p.Regular_Price);
 
                 ltrCostOfGood.Text = "";
-                if (userRole == 0)
+                if (acc.RoleID == 0)
                 {
                     ltrCostOfGood.Text += "<div class='form-row'>";
                     ltrCostOfGood.Text += "    <div class='row-left'>";
@@ -219,7 +222,7 @@ namespace IM_PJ
                 b = ProductVariableController.SearchProductID(p.ID, "");
                 if (b != null)
                 {
-                    pagingall(b, userRole);
+                    pagingall(b, Convert.ToInt32(acc.RoleID));
                 }
             }
         }

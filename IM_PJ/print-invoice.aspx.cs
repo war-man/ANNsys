@@ -95,7 +95,7 @@ namespace IM_PJ
                             if (product != null)
                             {
                                 ProductName = product.ProductTitle;
-                                Print += "<td colspan='3'>" + t + "&ensp;<strong>" + SKU + "</strong> - " + (product.Old_Price > 0 ? "<span class='sale-icon'>SALE</span> " : "") + PJUtils.Truncate(ProductName, 32) + "</td> ";
+                                Print += "<td colspan='3'>" + t + "&ensp;<strong>" + SKU + "</strong> - " + (product.Old_Price > 0 ? "<span class='sale-icon'>SALE</span> " : "") + PJUtils.Truncate(ProductName, 28) + "</td> ";
                             }
                         }
                         else
@@ -108,7 +108,7 @@ namespace IM_PJ
                                 {
                                     ProductName = parent_product.ProductTitle;
                                 }
-                                Print += "<td colspan='3'>" + t + "&ensp;<strong>" + SKU + "</strong> - " + (parent_product.Old_Price > 0 ? "<span class='sale-icon'>SALE</span> " : "") + PJUtils.Truncate(ProductName, 40) + " - " + item.ProductVariableDescrition.Replace("|", ". ") + "</td> ";
+                                Print += "<td colspan='3'>" + t + "&ensp;<strong>" + SKU + "</strong> - " + (parent_product.Old_Price > 0 ? "<span class='sale-icon'>SALE</span> " : "") + PJUtils.Truncate(ProductName, 37) + " - " + item.ProductVariableDescrition.Replace("|", ". ") + "</td> ";
                             }
                         }
                         Print += "</tr>";
@@ -289,11 +289,11 @@ namespace IM_PJ
                         productPrint += "<table>";
                         productPrint += "<tr>";
                         productPrint += "<td colspan='2'>Số lượng</td>";
-                        productPrint += "<td>" + TotalQuantity + "</td>";
+                        productPrint += "<td>" + TotalQuantity + "&nbsp;&nbsp;&nbsp;&nbsp;</td>";
                         productPrint += "</tr>";
                         productPrint += "<tr>";
                         productPrint += "<td colspan='2'>Thành tiền</td>";
-                        productPrint += "<td>" + string.Format("{0:N0}", TotalOrder) + "</td>";
+                        productPrint += "<td>" + string.Format("{0:N0}", TotalOrder) + "&nbsp;</td>";
                         productPrint += "</tr>";
 
                         double TotalPrice = TotalOrder;
@@ -305,15 +305,15 @@ namespace IM_PJ
                             TotalPrice = TotalPrice - TotalDiscount;
                             productPrint += "<tr>";
                             productPrint += "<td colspan='2'>Chiết khấu mỗi cái </td>";
-                            productPrint += "<td>" + string.Format("{0:N0}", Convert.ToDouble(order.DiscountPerProduct)) + "</td>";
+                            productPrint += "<td>" + string.Format("{0:N0}", Convert.ToDouble(order.DiscountPerProduct)) + "&nbsp;</td>";
                             productPrint += "</tr>";
                             productPrint += "<tr>";
                             productPrint += "<td colspan='2'>Trừ tổng chiết khấu</td>";
-                            productPrint += "<td>-" + string.Format("{0:N0}", TotalDiscount) + "</td>";
+                            productPrint += "<td>-" + string.Format("{0:N0}", TotalDiscount) + "&nbsp;</td>";
                             productPrint += "</tr>";
                             productPrint += "<tr>";
                             productPrint += "<td colspan='2'>Sau chiết khấu</td>";
-                            productPrint += "<td>" + string.Format("{0:N0}", TotalOrder) + "</td>";
+                            productPrint += "<td>" + string.Format("{0:N0}", TotalOrder) + "&nbsp;</td>";
                             productPrint += "</tr>";
                         }
                         
@@ -326,12 +326,12 @@ namespace IM_PJ
 
                                 productPrint += "<tr>";
                                 productPrint += "<td colspan='2'>Trừ hàng trả (đơn " + order.RefundsGoodsID + ")</td>";
-                                productPrint += "<td>-" + string.Format("{0:N0}", Convert.ToDouble(refund.TotalPrice)) + "</td>";
+                                productPrint += "<td>-" + string.Format("{0:N0}", Convert.ToDouble(refund.TotalPrice)) + "&nbsp;</td>";
                                 productPrint += "</tr>";
 
                                 productPrint += "<tr>";
                                 productPrint += "<td colspan='2'>Tổng tiền còn lại</td>";
-                                productPrint += "<td>" + string.Format("{0:N0}", TotalOrder) + "</td>";
+                                productPrint += "<td>" + string.Format("{0:N0}", TotalOrder) + "&nbsp;</td>";
                                 productPrint += "</tr>";
                             }
                             else
@@ -348,7 +348,7 @@ namespace IM_PJ
                             TotalPrice = TotalPrice + Convert.ToDouble(order.FeeShipping);
                             productPrint += "<tr>";
                             productPrint += "<td colspan='2'>Phí vận chuyển</td>";
-                            productPrint += "<td>" + string.Format("{0:N0}", Convert.ToDouble(order.FeeShipping)) + "</td>";
+                            productPrint += "<td>" + string.Format("{0:N0}", Convert.ToDouble(order.FeeShipping)) + "&nbsp;</td>";
                             productPrint += "</tr>";
                         }
 
@@ -360,7 +360,7 @@ namespace IM_PJ
                             TotalPrice = TotalPrice + Convert.ToDouble(fee.Price);
                             productPrint += "<tr>";
                             productPrint += "<td colspan='2'>" + fee.Name + "</td>";
-                            productPrint += "<td>" + string.Format("{0:N0}", Convert.ToDouble(fee.Price)) + "</td>";
+                            productPrint += "<td>" + string.Format("{0:N0}", Convert.ToDouble(fee.Price)) + "&nbsp;</td>";
                             productPrint += "</tr>";
                         }
 
@@ -373,7 +373,7 @@ namespace IM_PJ
                             TotalPrice = TotalPrice - Convert.ToDouble(coupon.Value);
                             productPrint += "<tr>";
                             productPrint += String.Format("<td colspan='2'>Mã giảm giá: {0}</td>", coupon.Code);
-                            productPrint += String.Format("<td>-{0:N0}</td>", Convert.ToDouble(coupon.Value));
+                            productPrint += String.Format("<td>-{0:N0}&nbsp;</td>", Convert.ToDouble(coupon.Value));
                             productPrint += "</tr>";
                         }
                         
@@ -385,7 +385,7 @@ namespace IM_PJ
 
                         productPrint += "<tr>";
                         productPrint += "<td class='strong' colspan='2'>TỔNG TIỀN</td>";
-                        productPrint += "<td class='strong'>" + string.Format("{0:N0}", TotalOrder) + "</td>";
+                        productPrint += "<td class='strong'>" + string.Format("{0:N0}", TotalOrder) + "&nbsp;</td>";
                         productPrint += "</tr>";
                         
                         
@@ -470,7 +470,7 @@ namespace IM_PJ
                         else
                         {
                             shtml += "<div class='footer'>";
-                            shtml += "<p>ANN rất vui khi quý khách đã mua được " + numberOfOrders.Count + " đơn hàng!</p>";
+                            shtml += "<p>ANN rất vui khi quý khách đã mua " + numberOfOrders.Count + " đơn hàng!</p>";
                             shtml += "</div>";
                         }
 

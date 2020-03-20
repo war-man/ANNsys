@@ -12,23 +12,17 @@ namespace IM_PJ.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class DeliveryProship
+    public partial class User
     {
         public int ID { get; set; }
-        public int OrderID { get; set; }
-        public string NumberID { get; set; }
-        public string Customer { get; set; }
         public string Phone { get; set; }
+        public string Password { get; set; }
+        public string FullName { get; set; }
+        public Nullable<System.DateTime> BirthDay { get; set; }
+        public string Gender { get; set; }
         public string Address { get; set; }
-        public string DeliveryStatus { get; set; }
-        public System.DateTime StartDate { get; set; }
-        public Nullable<System.DateTime> DoneDate { get; set; }
-        public decimal COD { get; set; }
-        public decimal OrderCOD { get; set; }
-        public decimal Fee { get; set; }
-        public decimal OrderFee { get; set; }
-        public string Staff { get; set; }
-        public int Review { get; set; }
-        public int OrderStatus { get; set; }
+        public string City { get; set; }
+        public System.DateTime CreatedDate { get; set; }
+        public System.DateTime ModifiedDate { get; set; }
     }
 }

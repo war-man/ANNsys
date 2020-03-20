@@ -12,19 +12,22 @@ namespace IM_PJ.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class ShelfManager
+    public partial class PostPublic
     {
         public int ID { get; set; }
-        public int Floor { get; set; }
-        public int Row { get; set; }
-        public int Shelf { get; set; }
-        public int FloorShelf { get; set; }
-        public int ProductID { get; set; }
-        public int ProductVariableID { get; set; }
-        public int Quantity { get; set; }
-        public int CreatedBy { get; set; }
+        public int CategoryID { get; set; }
+        public string CategorySlug { get; set; }
+        public string Title { get; set; }
+        public string Thumbnail { get; set; }
+        public string Summary { get; set; }
+        public string Content { get; set; }
+        public string Action { get; set; }
+        public string ActionValue { get; set; }
+        public bool AtHome { get; set; }
+        public bool IsPolicy { get; set; }
         public System.DateTime CreatedDate { get; set; }
-        public int ModifiedBy { get; set; }
+        public string CreatedBy { get; set; }
         public System.DateTime ModifiedDate { get; set; }
+        public string ModifiedBy { get; set; }
     }
 }

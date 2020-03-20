@@ -2,9 +2,9 @@
 
 <%@ Register Assembly="Telerik.Web.UI" Namespace="Telerik.Web.UI" TagPrefix="telerik" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
-    <script src="/App_Themes/Ann/js/search-customer.js?v=22122019"></script>
-    <script src="/App_Themes/Ann/js/search-product.js?v=20191219030735"></script>
-    <script type="text/javascript" src="App_Themes/Ann/js/copy-invoice-url.js?v=20191009011413"></script>
+    <script type="text/javascript" src="/App_Themes/Ann/js/search-customer.js?v=17032020"></script>
+    <script type="text/javascript" src="/App_Themes/Ann/js/search-product.js?v=17032020"></script>
+    <script type="text/javascript" src="/App_Themes/Ann/js/copy-invoice-url.js?v=17032020"></script>
     <style>
         .panel-post {
             margin-bottom: 20px;
@@ -521,10 +521,10 @@
                                     <div class="row-right">
                                         <asp:DropDownList ID="ddlShippingType" runat="server" CssClass="form-control shipping-type">
                                             <asp:ListItem Value="1" Text="Lấy trực tiếp"></asp:ListItem>
-                                            <asp:ListItem Value="2" Text="Chuyển bưu điện"></asp:ListItem>
-                                            <asp:ListItem Value="3" Text="Dịch vụ Proship"></asp:ListItem>
+                                            <asp:ListItem Value="2" Text="Bưu điện"></asp:ListItem>
+                                            <asp:ListItem Value="3" Text="Proship"></asp:ListItem>
                                             <asp:ListItem Value="4" Text="Chuyển xe"></asp:ListItem>
-                                            <asp:ListItem Value="5" Text="Nhân viên giao hàng"></asp:ListItem>
+                                            <asp:ListItem Value="5" Text="Nhân viên giao"></asp:ListItem>
                                             <asp:ListItem Value="6" Text="GHTK"></asp:ListItem>
                                             <asp:ListItem Value="7" Text="Viettel"></asp:ListItem>
                                         </asp:DropDownList>
@@ -1565,8 +1565,9 @@
                 var nick = $("#<%= txtNick.ClientID%>").val();
                 var address = $("#<%= txtAddress.ClientID%>").val();
                 var facebooklink = $("#<%= txtFacebook.ClientID%>").val();
+                var username = $("#<%= hdfUsernameCurrent.ClientID%>").val();
 
-                if (phone == "" || name == "" || nick == "" || address == "" || (facebooklink == "" && $("#<%= hdfUsernameCurrent.ClientID%>").val() == "nhom_facebook"))
+                if (phone == "" || name == "" || nick == "" || address == "" || (facebooklink == "" && username == "nhom_facebook"))
                 {
                     if (name == "") {
                         $("#<%= txtFullname.ClientID%>").focus();
@@ -1629,6 +1630,7 @@
 
                         // Kiểm tra trạng thái xử lý
                         let excuteStatus = Number($("#<%=ddlExcuteStatus.ClientID%>").val());
+                        let shippingType = Number($("#<%=ddlShippingType.ClientID%>").val());
 
                         // Nếu chọn trạng thái hủy
                         if (excuteStatus == 3) {
@@ -1696,6 +1698,20 @@
                             }
                             else {
                                 swal("Không thể đổi trạng thái từ Đã hoàn tất sang Đang xử lý!", "Hãy báo cáo chị Ngọc để khôi phục", "error");
+                            }
+                        }
+                        // Nếu chọn trạng thái hoàn tất và cần nhập mã vận đơn
+                        else if (excuteStatus == 2 && (shippingType == 2 || shippingType == 3 || shippingType == 6)) {
+                            let shippingCode = $("#<%=txtShippingCode.ClientID%>").val();
+                            if (shippingCode.length < 3) {
+                                $("#<%=txtShippingCode.ClientID%>").focus();
+                                swal("Thông báo", "Chưa nhập mã vận đơn!", "warning");
+                            }
+                            else {
+                                deleteOrder();
+                                $("#<%=hdfOrderType.ClientID %>").val(ordertype);
+                                $("#<%=hdfListProduct.ClientID%>").val(list);
+                                insertOrder();
                             }
                         }
                         else {

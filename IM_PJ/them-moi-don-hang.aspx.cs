@@ -139,10 +139,10 @@ namespace IM_PJ
             // Init drop down list Shipping Type
             var shipType = new List<ListItem>();
             shipType.Add(new ListItem("Lấy trực tiếp", "1"));
-            shipType.Add(new ListItem("Chuyển bưu điện", "2"));
-            shipType.Add(new ListItem("Dịch vụ Proship", "3"));
+            shipType.Add(new ListItem("Bưu điện", "2"));
+            shipType.Add(new ListItem("Proship", "3"));
             shipType.Add(new ListItem("Chuyển xe", "4"));
-            shipType.Add(new ListItem("Nhân viên giao hàng", "5"));
+            shipType.Add(new ListItem("Nhân viên giao", "5"));
             shipType.Add(new ListItem("GHTK", "6"));
             shipType.Add(new ListItem("Viettel", "7"));
 

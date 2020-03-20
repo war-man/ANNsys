@@ -16,43 +16,43 @@
     }
     p {
         line-height: 1.5;
-        margin-top: 5px;
-        margin-bottom: 5px;
+        margin-top: 4px;
+        margin-bottom: 4px;
     }
     .table {
         display: block;
         width: 220mm;
-        height: 79mm;
+        height: 72mm;
         position: relative;
         border-left: dashed 2px #000;
     }
     .top-left {
         position: absolute;
-        top: 1mm;
+        top: -2mm;
         left: 3mm;
         width: 90mm;
     }
     .top-right {
         position: absolute;
-        top: 2.5mm;
+        top: 0;
         right: 16mm;
         width: 120mm;
         text-align: right;
     }
     .bottom-left {
         position: absolute;
-        bottom: 0;
+        bottom: 1mm;
         left: 3mm;
         width: 70mm;
     }
     .bottom-right {
         position: absolute;
-        bottom: 0;
+        bottom: 1mm;
         right: 16mm;
-        width: 130mm;
+        width: 132mm;
     }
     .cod {
-        font-size: 19px;
+        font-size: 18px;
         font-weight: bold;
     }
     .address {
@@ -135,17 +135,28 @@
     }
     .rotated {
         transform: rotate(-90deg);
-        width: 79mm;
+        width: 72mm;
         position: absolute;
-        text-align: left;
-        top: 33.7mm;
-        left: 173mm;
-        font-size: 26.8px;
+        text-align: right;
+        /*top: 35.7mm;*/
+        top: 31mm;
+        left: 176mm;
+        font-size: 24px;
         font-weight: bold;
         border-top: dashed 2px #000;
         padding-top: 2mm;
-        padding-left: 2.5mm;
+        /*padding-left: 9mm;*/
         letter-spacing: 2px;
+    }
+    .margin-left-ghtk {
+        left: 193mm;
+    }
+    .ghtk {
+        top: 27.8mm;
+        left: 179mm;
+        padding-top: 0;
+        text-align: right;
+        font-size: 35px;
     }
     .btn-violet {
         background-color: #8000d0!important
@@ -158,14 +169,16 @@
             -ms-transform:rotate(-90deg);
             -o-transform:rotate(-90deg);
             transform:rotate(-90deg);
-            margin-top: 142mm;
+            margin-top: 143mm;
             margin-left: 0;
+        }
+        .table-ghtk {
+            margin-top: 159mm;
         }
     }
   </style>
     <asp:Literal ID="ltrDisablePrint"  runat="server"></asp:Literal>
 </head>
-
 <body class="receipt">
     <h2 class="h2guide" style="display:none">Gửi phiếu này cho khách xem để xác nhận thông tin!</h2>
     <p class="pguide" style="display:none">Click chuột phải vào ảnh -> Chọn Sao chép hình ảnh -> Dán vào Zalo hoặc Facebook</p>
@@ -224,6 +237,7 @@
             $(".print-it").hide();
             $(".h2guide").hide();
             $(".pguide").hide();
+            $(".btn-violet").hide();
             $(".show-transport-info").hide();
             $(".sweet-alert").hide().empty();
             $(".sweet-overlay").hide().empty();

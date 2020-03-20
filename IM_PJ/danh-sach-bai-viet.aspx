@@ -1,4 +1,4 @@
-﻿<%@ Page Title="Danh sách bài viết" Language="C#" MasterPageFile="~/MasterPage.Master" AutoEventWireup="true" CodeBehind="danh-sach-bai-viet.aspx.cs" Inherits="IM_PJ.danh_sach_bai_viet" EnableSessionState="ReadOnly" %>
+﻿<%@ Page Title="Bài viết nội bộ" Language="C#" MasterPageFile="~/MasterPage.Master" AutoEventWireup="true" CodeBehind="danh-sach-bai-viet.aspx.cs" Inherits="IM_PJ.danh_sach_bai_viet" EnableSessionState="ReadOnly" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
     <style>
@@ -21,7 +21,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
-                    <h3 class="page-title left">Bài viết <span>(<asp:Literal ID="ltrNumberOfPost" runat="server" EnableViewState="false"></asp:Literal>)</span></h3>
+                    <h3 class="page-title left">Bài viết nội bộ <span>(<asp:Literal ID="ltrNumberOfPost" runat="server" EnableViewState="false"></asp:Literal>)</span></h3>
                     <div class="right above-list-btn">
                         <asp:Literal ID="ltrAddPost" runat="server"></asp:Literal>
                     </div>
@@ -72,6 +72,19 @@
                             </div>
                         </div>
                     </div>
+                    <div class="filter-above-wrap clear">
+                        <div class="filter-control">
+                            <div class="row">
+                                <div class="col-md-9 col-xs-6">
+                                </div>
+                                <div class="col-md-2 col-xs-6">
+                                    <asp:DropDownList ID="ddlCreatedBy" runat="server" CssClass="form-control"></asp:DropDownList>
+                                </div>
+                                <div class="col-md-1 col-xs-6">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="row">
@@ -98,9 +111,9 @@
                 </div>
             </div>
         </div>
-
-        <script src="/App_Themes/Ann/js/copy-post-info.js?v=22122019"></script>
-        <script src="/App_Themes/Ann/js/download-post-image.js?v=22122019"></script>
+        
+        <script src="/App_Themes/Ann/js/copy-post-info.js?v=17032020"></script>
+        <script src="/App_Themes/Ann/js/download-post-image.js?v=17032020"></script>
         
         <script type="text/javascript">
             $("#<%=txtSearchPost.ClientID%>").keyup(function (e) {

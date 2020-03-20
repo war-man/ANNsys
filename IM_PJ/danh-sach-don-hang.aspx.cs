@@ -420,13 +420,13 @@ namespace IM_PJ
                         html.Append("   <td data-title='Nhân viên tạo đơn'>" + item.CreatedBy + "</td>");
                     }
 
-                    string date = string.Format("{0:dd/MM}", item.CreatedDate);
+                    string date = string.Format("<strong>{0:dd/MM}</strong><br>{0:HH:mm}", item.CreatedDate);
                     html.Append("   <td data-title='Ngày tạo đơn'>" + date + "</td>");
 
                     string datedone = "";
                     if (item.ExcuteStatus == 2)
                     {
-                        datedone = string.Format("{0:dd/MM}", item.DateDone);
+                        datedone = string.Format("<strong>{0:dd/MM}</strong><br>{0:HH:mm}", item.DateDone);
                     }
                     html.Append("   <td data-title='Ngày hoàn tất'>" + datedone + "</td>");
 

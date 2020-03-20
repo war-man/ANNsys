@@ -24,5 +24,6 @@ namespace IM_PJ.Models
         public System.DateTime ModifiedDate { get; set; }
         public int ProductNumber { get; set; }
         public decimal PriceMin { get; set; }
+        public string Name { get; set; }
     }
 }

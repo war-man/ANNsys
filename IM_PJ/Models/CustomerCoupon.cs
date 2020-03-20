@@ -22,5 +22,6 @@ namespace IM_PJ.Models
         public bool Active { get; set; }
         public System.DateTime CreatedDate { get; set; }
         public System.DateTime ModifiedDate { get; set; }
+        public string Phone { get; set; }
     }
 }

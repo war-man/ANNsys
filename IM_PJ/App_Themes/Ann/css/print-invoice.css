@@ -1,4 +1,12 @@
-﻿.sale-icon {
+﻿.all {
+    max-width: 88.5%!important;
+}
+@media print {
+    .all {
+        margin-left: 9px!important;
+    }
+}
+.sale-icon {
     background: #F44336;
     color: #fff;
     padding: 2px 3px;
@@ -12,7 +20,6 @@
 .hoadon {
   font-size: 11px;
   color: #000;
-  margin-right: 3px;
 }
 
 .info {

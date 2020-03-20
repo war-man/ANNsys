@@ -1,5 +1,14 @@
 ﻿.all {
     width: 600px!important;
+    max-width: 88%!important;
+}
+@media print {
+    .all {
+        margin-left: 9px!important;
+    }
+    .btn {
+        display: none;
+    }
 }
 .capitalize {
     text-transform: capitalize;
@@ -7,7 +16,6 @@
 .delivery {
   font-size: 13px;
   color: #000;
-  margin-right: 3px;
 }
 
 .info {

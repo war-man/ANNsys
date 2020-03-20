@@ -33,7 +33,7 @@ namespace IM_PJ.Controllers
                 )
                 .Select(x => new Tag
                 {
-                    Name = textInfo.ToTitleCase(x.name.Trim()),
+                    Name = textInfo.ToLower(x.name.Trim()),
                     Slug = Slug.ConvertToSlug(x.name.Trim()),
                     CreatedBy = acc.ID,
                     CreatedDate = now
@@ -113,7 +113,7 @@ namespace IM_PJ.Controllers
                         result.Add(new TagModel()
                         {
                             id = 0,
-                            name = textInfo.ToTitleCase(tagName),
+                            name = textInfo.ToLower(tagName),
                             slug = String.Format("tag-new-{0:yyyyMMddhhmmss}", now.AddSeconds(1))
                         });
                     }

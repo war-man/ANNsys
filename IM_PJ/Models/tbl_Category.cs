@@ -25,5 +25,6 @@ namespace IM_PJ.Models
         public Nullable<System.DateTime> ModifiedDate { get; set; }
         public string ModifiedBy { get; set; }
         public string Slug { get; set; }
+        public string Icon { get; set; }
     }
 }

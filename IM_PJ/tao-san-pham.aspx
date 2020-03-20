@@ -1,4 +1,4 @@
-﻿<%@ Page Title="Tạo sản phẩm" Language="C#" MasterPageFile="~/MasterPage.Master" AutoEventWireup="true" CodeBehind="tao-san-pham.aspx.cs" Inherits="IM_PJ.tao_san_pham" EnableSessionState="ReadOnly" %>
+﻿<%@ Page Title="Thêm sản phẩm" Language="C#" MasterPageFile="~/MasterPage.Master" AutoEventWireup="true" CodeBehind="tao-san-pham.aspx.cs" Inherits="IM_PJ.tao_san_pham" EnableSessionState="ReadOnly" %>
 
 <%@ Register Assembly="Telerik.Web.UI" Namespace="Telerik.Web.UI" TagPrefix="telerik" %>
 
@@ -150,7 +150,7 @@
     <main id="main-wrap">
         <div class="container">
             <div class="row">
-                <div class="col-md-12">
+                <div class="col-md-9">
                     <div class="panel panelborderheading">
                         <div class="panel-heading clear">
                             <h3 class="page-title left not-margin-bot">Thêm sản phẩm</h3>
@@ -382,6 +382,7 @@
                                 </div>
                                 <div class="row-right">
                                     <input type="text" id="txtTag" class="typeahead" data-role="tagsinput" />
+                                    <div id="tagList"></div>
                                 </div>
                             </div>
                             <div class="form-row">
@@ -443,15 +444,15 @@
 
                                     <div class="variableselect">
                                         <span id="selectvariabletitle">Các thuộc tính đã chọn: 
-                                            <a href="javascript:;" onclick="generateVariable()" id="generateVariable" class="btn primary-btn fw-btn not-fullwidth">Thiết lập biến thể</a></span>
+                                            <a href="javascript:;" onclick="generateVariable()" id="generateVariable" class="btn primary-btn fw-btn not-fullwidth"><i class="fa fa-file-o" aria-hidden="true"></i> Thiết lập biến thể</a></span>
                                     </div>
                                     <div class="generat-variable-content">
                                         <div class="row">
-                                            <div class="col-md-10">
+                                            <div class="col-md-9">
                                                 <h3>Danh sách biến thể</h3>
                                             </div>
-                                            <div class="col-md-2 delete" style="display: none;">
-                                                <a href="javascript:;" onclick="deleteAllVariable()" id="delete" class="btn primary-btn fw-btn not-fullwidth">Xóa tất cả</a>
+                                            <div class="col-md-3 delete" style="display: none;">
+                                                <a href="javascript:;" onclick="deleteAllVariable()" id="delete" class="btn primary-btn fw-btn not-fullwidth"><i class="fa fa-times" aria-hidden="true"></i> Xóa tất cả</a>
                                             </div>
                                         </div>
                                         <div class="row list-item-genred">
@@ -462,10 +463,23 @@
                                 </div>
                             </div>
                             <div class="form-row">
-                                <a href="javascript:;" class="btn primary-btn fw-btn not-fullwidth" onclick="addNewProduct()">Tạo mới</a>
-                                <asp:Button ID="btnSubmit" runat="server" CssClass="btn primary-btn fw-btn not-fullwidth" Text="Tạo mới" OnClick="btnSubmit_Click" Style="display: none" />
-                                <asp:Literal ID="ltrBack" runat="server"></asp:Literal>
+                                <a href="javascript:;" class="btn primary-btn fw-btn not-fullwidth" onclick="addNewProduct()"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Xuất bản</a>
+                                <asp:Button ID="btnSubmit" runat="server" CssClass="btn primary-btn fw-btn not-fullwidth" Text="Xuất bản" OnClick="btnSubmit_Click" Style="display: none" />
+                                <a href="/tat-ca-san-pham" class="btn primary-btn fw-btn not-fullwidth"><i class="fa fa-arrow-left" aria-hidden="true"></i> Trở về</a>
                             </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="panel panelborderheading">
+                        <div class="panel-heading clear">
+                            <h3 class="page-title left not-margin-bot">Thông tin</h3>
+                        </div>
+                        <div class="panel-body">
+                             <div class="form-row">
+                                <a href="javascript:;" class="btn primary-btn fw-btn not-fullwidth" onclick="addNewProduct()"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Xuất bản</a>
+                                <a href="/tat-ca-san-pham" class="btn primary-btn fw-btn not-fullwidth"><i class="fa fa-arrow-left" aria-hidden="true"></i> Trở về</a>
+                             </div>
                         </div>
                     </div>
                 </div>
@@ -554,12 +568,45 @@
                 }
 
                 $("#<%=pRegular_Price.ClientID%>").blur(function () {
-                    var cost = parseInt($("#<%=pRegular_Price.ClientID%>").val()) - 20000;
+                    var categoryID = $("#<%=ddlCategory.ClientID%>").val();
+                    var regularPrice = parseInt($("#<%=pRegular_Price.ClientID%>").val());
+                    var cost = 0;
+                    if (categoryID == 17 || categoryID == 18 || categoryID == 19 || categoryID == 47) {
+                        cost = regularPrice - 25000;
+                    }
+                    else if (categoryID == 12) {
+                        cost = regularPrice - 40000;
+                    }
+                    else 
+                    {
+                        cost = regularPrice - 25000;
+                    }
+
                     $("input.cost-price").val(cost);
                 });
 
                 $("#<%=pRegular_Price.ClientID%>").blur(function () {
-                    var retailPrice = parseInt($("#<%=pRegular_Price.ClientID%>").val()) + 50000;
+                    var regularPrice = parseInt($("#<%=pRegular_Price.ClientID%>").val());
+                    var retailPrice = 0;
+                    if (regularPrice < 60000)
+                    {
+                        retailPrice = regularPrice + 40000;
+                    }
+                    else if (regularPrice >= 60000 && regularPrice < 100000)
+                    {
+                        retailPrice = regularPrice + 50000;
+                    }
+                    else if (regularPrice >= 100000 && regularPrice < 140000)
+                    {
+                        retailPrice = regularPrice + 60000;
+                    }
+                    else if (regularPrice >= 140000 && regularPrice < 190000) {
+                        retailPrice = regularPrice + 70000;
+                    }
+                    else if (regularPrice >= 190000) {
+                        retailPrice = regularPrice + 80000;
+                    }
+
                     $("#<%=pRetailPrice.ClientID%>").val(retailPrice);
                 });
 
@@ -627,6 +674,8 @@
                         })
                     }
                 });
+
+                
             });
 
             function redirectTo(ID) {
@@ -773,7 +822,7 @@
                         var html = "";
                         //var sl = "";
                         if (data.length > 0) {
-                            html += "<select class='form-control slparent' style='margin-top:15px;' data-level=" + level + " onchange='selectCategory($(this))'>";
+                            html += "<select class='form-control slparent' style='margin-top:15px;' data-level='" + level + "' onchange='selectCategory($(this))'>";
                             html += "<option  value='0'>Chọn danh mục</option>";
                             for (var i = 0; i < data.length; i++) {
                                 html += "<option value='" + data[i].ID + "'>" + data[i].CategoryName + "</option>";
@@ -781,6 +830,68 @@
                             html += "</select>";
                         }
                         $(".parent").append(html);
+                    }
+                });
+
+                getTagList(parentID);
+            }
+
+            function getTagList(categoryID) {
+                // clear old value
+                $("#tagList").html("");
+
+                var search = "";
+                if (categoryID == 18) {
+                    search = "đồ bộ";
+                }
+                else if (categoryID == 17) {
+                    search = "đầm";
+                }
+                else if (categoryID == 3 || categoryID == 4 || categoryID == 5 || categoryID == 6) {
+                    search = "áo thun nam";
+                }
+                else if (categoryID == 19) {
+                    search = "áo thun nữ";
+                }
+
+                if (search != "") {
+                    var url = `/tao-san-pham.aspx/GetTagList?tagName=${JSON.stringify(search)}`;
+
+                    $.ajax({
+                        headers: {
+                            Accept: "application/json, text/javascript, */*; q=0.01",
+                            "Content-Type": "application/json; charset=utf-8"
+                        },
+                        type: "GET",
+                        url: url,
+                        success: function (response) {
+                            let data = response.d || [];
+
+                            data.forEach((item) => {
+                                $("#tagList").append("<span onclick='clickTagList(`" + item.name + "`)' class='tag-blue-click'>" + item.name + "</span>");
+                            })
+                        }
+                    });
+                }
+            }
+
+            function clickTagList(tagName) {
+
+                let url = `/tao-san-pham.aspx/GetTags?tagName=${JSON.stringify(tagName)}`;
+
+                $.ajax({
+                    headers: {
+                        Accept: "application/json, text/javascript, */*; q=0.01",
+                        "Content-Type": "application/json; charset=utf-8"
+                    },
+                    type: "GET",
+                    url: url,
+                    success: function (response) {
+                        let data = response.d || [];
+
+                        data.forEach((item) => {
+                            txtTagDOM.tagsinput('add', { id: item.id, name: item.name, slug: item.slug })
+                        })
                     }
                 })
             }
@@ -1228,7 +1339,7 @@
                     dataType: "json",
                     success: function (msg) {
                         if (msg.d != "ok") {
-                            swal("Thông báo", "Trùng mã sản phẩm.. Hãy kiểm tra lại :)", "error");
+                            swal("Thông báo", "Mã sản phẩm đã tồn tại. Hãy kiểm tra lại!", "error");
                             $("#<%=txtProductSKU.ClientID%>").select().focus();
                             $("body").removeClass("stop-scrolling");
                         }

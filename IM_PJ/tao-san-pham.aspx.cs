@@ -37,8 +37,13 @@ namespace IM_PJ
                     if (acc != null)
                     {
                         hdfUserRole.Value = acc.RoleID.ToString();
-
-                        if (acc.RoleID == 2)
+                        if (acc.RoleID == 0 || acc.RoleID == 1 || acc.Username == "nhom_zalo502")
+                        {
+                            LoadSupplier();
+                            LoadPDW();
+                            LoadCategory();
+                        }
+                        else
                         {
                             Response.Redirect("/trang-chu");
                         }
@@ -48,9 +53,6 @@ namespace IM_PJ
                 {
                     Response.Redirect("/dang-nhap");
                 }
-                LoadSupplier();
-                LoadPDW();
-                LoadCategory();
             }
         }
         public void LoadPDW()
@@ -115,7 +117,7 @@ namespace IM_PJ
         {
             var category = CategoryController.GetAllWithIsHidden(false);
             ddlCategory.Items.Clear();
-            ddlCategory.Items.Insert(0, new ListItem("Chọn danh mục sản phẩm", "0"));
+            ddlCategory.Items.Insert(0, new ListItem("Chọn danh mục", "0"));
             if (category.Count > 0)
             {
                 addItemCategory(0, "");
@@ -313,7 +315,7 @@ namespace IM_PJ
             DateTime currentDate = DateTime.Now;
             if (acc != null)
             {
-                if (acc.RoleID == 0 || acc.RoleID == 1)
+                if (acc.RoleID == 0 || acc.RoleID == 1 || acc.Username == "nhom_zalo502")
                 {
                     int cateID = hdfParentID.Value.ToInt();
                     if (cateID > 0)
@@ -334,7 +336,7 @@ namespace IM_PJ
 
                         if (check == false)
                         {
-                            PJUtils.ShowMessageBoxSwAlert("Trùng mã sản phẩm vui lòng kiểm tra lại", "e", false, Page);
+                            PJUtils.ShowMessageBoxSwAlert("Mã sản phẩm đã tồn tại, hãy kiểm tra lại", "e", false, Page);
                         }
                         else
                         {
@@ -598,7 +600,7 @@ namespace IM_PJ
             var tags = new List<TagModel>();
             var tagData = TagController.get(tagName);
 
-            if (tagData.Where(x => x.name == textInfo.ToTitleCase(tagName)).Count() > 0)
+            if (tagData.Where(x => x.name == textInfo.ToLower(tagName)).Count() > 0)
             {
                 tags.AddRange(tagData);
             }
@@ -607,11 +609,30 @@ namespace IM_PJ
                 tags.Add(new TagModel()
                 {
                     id = 0,
-                    name = textInfo.ToTitleCase(tagName),
+                    name = textInfo.ToLower(tagName),
                     slug = String.Format("tag-new-{0:yyyyMMddhhmmss}", now)
                 });
                 tags.AddRange(tagData);
             }
+
+            return tags;
+        }
+
+        [WebMethod]
+        [ScriptMethod(ResponseFormat = ResponseFormat.Json, UseHttpGet = true, XmlSerializeString = false)]
+        public static List<TagModel> GetTagList(string tagName)
+        {
+            if (!String.IsNullOrEmpty(tagName) && tagName.IndexOf(',') >= 0)
+            {
+                return null;
+            }
+
+            var now = DateTime.Now;
+            var textInfo = new CultureInfo("vi-VN", false).TextInfo;
+            var tags = new List<TagModel>();
+            var tagData = TagController.get(tagName);
+
+            tags.AddRange(tagData);
 
             return tags;
         }

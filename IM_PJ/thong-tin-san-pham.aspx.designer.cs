@@ -283,6 +283,24 @@ namespace IM_PJ {
         protected global::System.Web.UI.WebControls.Literal ltrBack;
         
         /// <summary>
+        /// ltrProductInfo control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Literal ltrProductInfo;
+        
+        /// <summary>
+        /// ltrBack2 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Literal ltrBack2;
+        
+        /// <summary>
         /// hdfTempVariable control.
         /// </summary>
         /// <remarks>

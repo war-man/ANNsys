@@ -8,8 +8,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=yes">
     <meta name="format-detection" content="telephone=no">
     <meta name="robots" content="noindex, nofollow">
-    <link rel="stylesheet" href="/App_Themes/Ann/css/style.css?v=22122019" media="all">
-    <link rel="stylesheet" href="/App_Themes/Ann/css/style-P.css?v=22122019" media="all">
+    <link rel="stylesheet" href="/App_Themes/Ann/css/style.css?v=06032020" media="all">
+    <link rel="stylesheet" href="/App_Themes/Ann/css/style-P.css?v=06032020" media="all">
     <link href="/App_Themes/NewUI/js/select2/select2.css" rel="stylesheet" />
     <script type="text/javascript" src="/App_Themes/Ann/js/jquery-2.1.3.min.js"></script>
     <style>
@@ -330,10 +330,10 @@
             <script src="/App_Themes/Ann/js/bootstrap.min.js"></script>
             <script src="/App_Themes/Ann/js/bootstrap-table/bootstrap-table.js"></script>
             <script src="/App_Themes/NewUI/js/select2/select2.min.js"></script>
-            <script src="/App_Themes/Ann/js/master.js?v=22122019"></script>
-            <script src="/App_Themes/Ann/js/copy-product-info.js?v=22122019"></script>
-            <script src="/App_Themes/Ann/js/sync-product-small.js?v=22122019"></script>
-            <script src="/App_Themes/Ann/js/download-product-image.js?v=22122019"></script>
+            <script src="/App_Themes/Ann/js/master.js?v=06032020"></script>
+            <script src="/App_Themes/Ann/js/copy-product-info.js?v=06032020"></script>
+            <script src="/App_Themes/Ann/js/sync-product-small.js?v=06032020"></script>
+            <script src="/App_Themes/Ann/js/download-product-image.js?v=06032020"></script>
 
             <script type="text/javascript">
                 // Loading drop downlist row with parentID

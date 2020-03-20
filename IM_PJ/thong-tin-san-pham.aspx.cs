@@ -33,13 +33,11 @@ namespace IM_PJ
                     var acc = AccountController.GetByUsername(username);
                     if (acc != null)
                     {
-                        if (acc.RoleID == 0)
+                        if (acc.RoleID == 0 || acc.RoleID == 1 || acc.Username == "nhom_zalo502")
                         {
-
-                        }
-                        else if (acc.RoleID == 1)
-                        {
-
+                            LoadSupplier();
+                            LoadCategory();
+                            LoadData();
                         }
                         else
                         {
@@ -53,9 +51,6 @@ namespace IM_PJ
                 {
                     Response.Redirect("/dang-nhap");
                 }
-                LoadSupplier();
-                LoadCategory();
-                LoadData();
             }
         }
 
@@ -63,7 +58,7 @@ namespace IM_PJ
         {
             var category = CategoryController.GetAllWithIsHidden(false);
             ddlCategory.Items.Clear();
-            ddlCategory.Items.Insert(0, new ListItem("Chọn danh mục sản phẩm", "0"));
+            ddlCategory.Items.Insert(0, new ListItem("Chọn danh mục", "0"));
             if (category.Count > 0)
             {
                 addItemCategory(0, "");
@@ -127,6 +122,12 @@ namespace IM_PJ
         }
         public void LoadData()
         {
+            int n;
+            if (String.IsNullOrEmpty(Request.QueryString["id"]) || !int.TryParse(Request.QueryString["id"], out n))
+            {
+                PJUtils.ShowMessageBoxSwAlertError("Không tìm thấy sản phẩm", "e", true, "/tat-ca-san-pham", Page);
+            }
+            
             int id = Request.QueryString["id"].ToInt(0);
             if (id > 0)
             {
@@ -144,7 +145,8 @@ namespace IM_PJ
                     ViewState["SKU"] = p.ProductSKU;
                     hdfParentID.Value = p.CategoryID.ToString();
                     hdfsetStyle.Value = p.ProductStyle.ToString();
-                    ltrBack.Text = "<a href='/xem-san-pham?id=" + p.ID + "' class='btn primary-btn fw-btn not-fullwidth'>Trở về</a>";
+                    ltrBack.Text = "<a href='/xem-san-pham?id=" + p.ID + "' class='btn primary-btn fw-btn not-fullwidth'><i class='fa fa-arrow-left' aria-hidden='true'></i> Trở về</a>";
+                    ltrBack2.Text = ltrBack.Text;
                     txtProductTitle.Text = p.ProductTitle;
                     pContent.Content = p.ProductContent;
                     txtProductSKU.Text = p.ProductSKU;
@@ -283,6 +285,12 @@ namespace IM_PJ
 
                         ltrVariables.Text = html.ToString();
                     }
+
+                    string ProductInfo = "<p><strong>Ngày tạo</strong>: " + p.CreatedDate + "</p>";
+                    ProductInfo += "<p><strong>Người viết</strong>: " + p.CreatedBy + "</p>";
+                    ProductInfo += "<p><strong>Ngày cập nhật</strong>: " + p.ModifiedDate + "</p>";
+                    ProductInfo += "<p><strong>Người cập nhật</strong>: " + p.ModifiedBy + "</p>";
+                    ltrProductInfo.Text = ProductInfo;
 
                 }
             }
@@ -624,7 +632,7 @@ namespace IM_PJ
             var tags = new List<TagModel>();
             var tagData = TagController.get(tagName);
 
-            if (tagData.Where(x => x.name == textInfo.ToTitleCase(tagName)).Count() > 0)
+            if (tagData.Where(x => x.name == textInfo.ToLower(tagName)).Count() > 0)
             {
                 tags.AddRange(tagData);
             }
@@ -633,7 +641,7 @@ namespace IM_PJ
                 tags.Add(new TagModel()
                 {
                     id = 0,
-                    name = textInfo.ToTitleCase(tagName),
+                    name = textInfo.ToLower(tagName),
                     slug = String.Format("tag-new-{0:yyyyMMddhhmmss}", now)
                 });
                 tags.AddRange(tagData);

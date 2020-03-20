@@ -17,9 +17,6 @@ namespace IM_PJ
 {
     public partial class tao_bai_viet : System.Web.UI.Page
     {
-
-        public static string htmlAll = "";
-        public static int element = 0;
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
@@ -30,9 +27,11 @@ namespace IM_PJ
                     var acc = AccountController.GetByUsername(username);
                     if (acc != null)
                     {
-                        hdfUserRole.Value = acc.RoleID.ToString();
-
-                        if (acc.RoleID == 2)
+                        if (acc.RoleID == 0 || acc.Username == "nhom_zalo502")
+                        {
+                            LoadCategory();
+                        }
+                        else
                         {
                             Response.Redirect("/trang-chu");
                         }
@@ -42,7 +41,6 @@ namespace IM_PJ
                 {
                     Response.Redirect("/dang-nhap");
                 }
-                LoadCategory();
             }
         }
 
@@ -109,66 +107,57 @@ namespace IM_PJ
             string username = Request.Cookies["usernameLoginSystem"].Value;
             var acc = AccountController.GetByUsername(username);
             DateTime currentDate = DateTime.Now;
-            if (acc != null)
+            int cateID = hdfParentID.Value.ToInt();
+            if (cateID > 0)
             {
-                if (acc.RoleID == 0 || acc.RoleID == 1)
+                string Title = txtTitle.Text.Trim();
+                string PostSlug = txtSlug.Text.Trim();
+                string Content = pContent.Content.ToString();
+
+                string kq = PostController.Insert(Title, Content, "", ddlFeatured.SelectedValue.ToInt(), cateID, 1, PostSlug, acc.Username, currentDate);
+
+                //Phần thêm ảnh đại diện
+                string path = "/uploads/images/posts/";
+                string Image = "";
+                if (ProductThumbnailImage.UploadedFiles.Count > 0)
                 {
-                    int cateID = hdfParentID.Value.ToInt();
-                    if (cateID > 0)
+                    foreach (UploadedFile f in ProductThumbnailImage.UploadedFiles)
                     {
-                        string Title = txtTitle.Text.Trim();
-                        string PostSlug = txtSlug.Text.Trim();
-                        string Content = pContent.Content.ToString();
-
-                        string kq = PostController.Insert(Title, Content, "", ddlFeatured.SelectedValue.ToInt(), cateID, 1, PostSlug, acc.Username, currentDate);
-
-                        //Phần thêm ảnh đại diện
-                        string path = "/uploads/images/";
-                        string Image = "";
-                        if (ProductThumbnailImage.UploadedFiles.Count > 0)
+                        var o = path + "post-" + kq + "-" + Slug.ConvertToSlug(Path.GetFileName(f.FileName));
+                        try
                         {
-                            foreach (UploadedFile f in ProductThumbnailImage.UploadedFiles)
-                            {
-                                var o = path + "post-" + kq + "-" + Slug.ConvertToSlug(Path.GetFileName(f.FileName));
-                                try
-                                {
-                                    f.SaveAs(Server.MapPath(o));
-                                    Image = o;
-                                }
-                                catch { }
-                            }
+                            f.SaveAs(Server.MapPath(o));
+                            Image = o;
                         }
-
-                        string updateImage = PostController.UpdateImage(kq.ToInt(), Image);
-
-                        //Phần thêm thư viện ảnh
-                        string IMG = "";
-                        if (hinhDaiDien.UploadedFiles.Count > 0)
-                        {
-                            foreach (UploadedFile f in hinhDaiDien.UploadedFiles)
-                            {
-                                var o = path + "post-" + kq + "-" + Slug.ConvertToSlug(Path.GetFileName(f.FileName));
-                                try
-                                {
-                                    f.SaveAs(Server.MapPath(o));
-                                    IMG = o;
-                                    PostImageController.Insert(kq.ToInt(), IMG, username, currentDate);
-                                }
-                                catch { }
-                            }
-                        }
-
-
-                        if (kq.ToInt(0) > 0)
-                        {
-                            PJUtils.ShowMessageBoxSwAlertCallFunction("Tạo bài viết thành công", "s", true, "redirectTo(" + kq + ")", Page);
-                        }
-
+                        catch { }
                     }
-                   
+                }
+
+                string updateImage = PostController.UpdateImage(kq.ToInt(), Image);
+
+                //Phần thêm thư viện ảnh
+                string IMG = "";
+                if (hinhDaiDien.UploadedFiles.Count > 0)
+                {
+                    foreach (UploadedFile f in hinhDaiDien.UploadedFiles)
+                    {
+                        var o = path + "post-" + kq + "-" + Slug.ConvertToSlug(Path.GetFileName(f.FileName));
+                        try
+                        {
+                            f.SaveAs(Server.MapPath(o));
+                            IMG = o;
+                            PostImageController.Insert(kq.ToInt(), IMG, username, currentDate);
+                        }
+                        catch { }
+                    }
+                }
+
+
+                if (kq.ToInt(0) > 0)
+                {
+                    PJUtils.ShowMessageBoxSwAlertCallFunction("Tạo bài viết thành công", "s", true, "redirectTo(" + kq + ")", Page);
                 }
             }
-
         }
     }
 }

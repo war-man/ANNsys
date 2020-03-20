@@ -178,7 +178,7 @@ namespace IM_PJ
                     }
                     else
                     {
-                        error += "<p>- Đơn hàng này <strong>gửi Dịch vụ Proship</strong> nhưng <strong>chưa nhập</strong> MÃ VẬN ĐƠN!</p>";
+                        error += "<p>- Đơn hàng này <strong>gửi Proship</strong> nhưng <strong>chưa nhập</strong> MÃ VẬN ĐƠN!</p>";
                     }
 
                     if (order.PaymentType != 3 && acc.RoleID != 0)
@@ -236,7 +236,14 @@ namespace IM_PJ
                 {
                     if (!string.IsNullOrEmpty(order.ShippingCode))
                     {
-                        DeliveryInfo = String.Format("<p class='delivery'><strong>GHTK</strong>: {0}</p>", order.ShippingCode);
+                        string[] barcode = order.ShippingCode.Split('.');
+                        string newCode = barcode[barcode.Length - 1];
+                        if (newCode.Length < 9)
+                        {
+                            error += "<p>- MÃ VẬN ĐƠN của GHTK phải có ít nhất 9 số ở cuối!</p>";
+                        }
+                        DeliveryInfo = String.Format("<p class='delivery'><strong>GHTK:</strong> {0}</p>", order.ShippingCode);
+                        DeliveryInfo += String.Format("<p><img src='{0}'></p>", createBarcode(newCode));
                     }
                     else
                     {
@@ -287,13 +294,34 @@ namespace IM_PJ
 
                 // Lấy logo ANN
                 string LogoANN = "";
-                if (order.ShippingType != 2 && order.ShippingType != 3)
+                if (order.ShippingType != 2 && order.ShippingType != 3 && order.ShippingType != 6)
                 {
                     LogoANN = String.Format("<img class='img' src='https://ann.com.vn/wp-content/uploads/ANN-logo-3.png'>");
                 }
 
+                // Xử lý phiếu GHTK
+                string cssClass = "";
+                string bodyClass = "";
+                string destination = "";
+                if (order.ShippingType == 6 && !string.IsNullOrEmpty(order.ShippingCode))
+                {
+                    string[] barcode = order.ShippingCode.Split('.');
+                    if (barcode.Length < 6 && barcode.Length > 3)
+                    {
+                        destination = String.Format("<p>{0}.{1}</p>", barcode[barcode.Length - 3], barcode[barcode.Length - 2]);
+                    }
+                    else if (barcode.Length >= 6)
+                    {
+                        destination = String.Format("<p>{0}.{1}.{2}</p>", barcode[barcode.Length - 4], barcode[barcode.Length - 3], barcode[barcode.Length - 2]);
+                    }
+                }
+                if (destination != "")
+                {
+                    bodyClass = "table-ghtk";
+                }
+
                 // HTML in phiếu gửi hàng
-                rowHtml += Environment.NewLine + String.Format("<div class='table'>");
+                rowHtml += Environment.NewLine + String.Format("<div class='table {0}'>", bodyClass);
                 rowHtml += Environment.NewLine + String.Format("    <div class='top-left'>");
                 rowHtml += Environment.NewLine + String.Format("        <p>Người gửi: <span class='name'>{0}</span></p>", leader);
                 rowHtml += Environment.NewLine + String.Format("        <p>{0}</p>", phone);
@@ -317,7 +345,14 @@ namespace IM_PJ
                 rowHtml += Environment.NewLine + String.Format("        <p>Điện thoại: <span class='phone'>{0}</span></p>", CustomerPhone);
                 rowHtml += Environment.NewLine + String.Format("        <p>Địa chỉ: <span class='address'>{0}</span></p>", CustomerAddress);
                 rowHtml += Environment.NewLine + String.Format("    </div>");
-                rowHtml += Environment.NewLine + String.Format("    <div class='rotated'>");
+                if (destination != "")
+                {
+                    rowHtml += Environment.NewLine + String.Format("    <div class='rotated ghtk'>");
+                    rowHtml += Environment.NewLine + String.Format("        {0}", destination);
+                    rowHtml += Environment.NewLine + String.Format("    </div>");
+                    cssClass = "margin-left-ghtk";
+                }
+                rowHtml += Environment.NewLine + String.Format("    <div class='rotated {0}'>", cssClass);
                 rowHtml += Environment.NewLine + String.Format("        KHO HÀNG SỈ ANN");
                 rowHtml += Environment.NewLine + String.Format("    </div>");
                 rowHtml += Environment.NewLine + String.Format("</div>");

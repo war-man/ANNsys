@@ -183,5 +183,25 @@ function syncImage(sku) {
                 reject(error);
             }
         });
+
+        $.ajax({
+            type: "POST",
+            url: "https://damgiasi.vn/sync-image",
+            data: {
+                sku: sku,
+                key: "828327"
+            },
+            datatype: "json",
+            beforeSend: function () {
+                HoldOn.open();
+            },
+            success: function (data) {
+                resolve(data);
+            },
+            error: function () {
+                HoldOn.close();
+                reject(error);
+            }
+        });
     });
 }

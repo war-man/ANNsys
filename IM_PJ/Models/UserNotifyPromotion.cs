@@ -12,17 +12,15 @@ namespace IM_PJ.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class CategoryShelf
+    public partial class UserNotifyPromotion
     {
         public int ID { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public int Level { get; set; }
-        public int ParentID { get; set; }
-        public bool IsHidden { get; set; }
-        public int CreatedBy { get; set; }
+        public int GroupID { get; set; }
+        public string GroupSlug { get; set; }
+        public string Phone { get; set; }
         public System.DateTime CreatedDate { get; set; }
-        public int ModifedBy { get; set; }
+        public string CreatedBy { get; set; }
         public System.DateTime ModifiedDate { get; set; }
+        public string ModifiedBy { get; set; }
     }
 }

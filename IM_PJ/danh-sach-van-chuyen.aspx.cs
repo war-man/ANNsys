@@ -32,11 +32,12 @@ namespace IM_PJ
                     if (acc != null)
                     {
                         
-                        if (acc.RoleID == 0 || acc.Username == "nhom_zalo406" || acc.Username == "hotline")
+                        if (acc.RoleID == 0 || acc.Username == "nhom_zalo406" || acc.Username == "hotline" || acc.Username == "nhom_zalo502")
                         {
                             LoadShipper();
                             LoadCreatedBy();
                             LoadTransportCompany();
+                            LoadData();
                         }
                         else
                         {
@@ -48,7 +49,6 @@ namespace IM_PJ
                 {
                     Response.Redirect("/dang-nhap");
                 }
-                LoadData();
             }
         }
         public void LoadTransportCompany()
@@ -287,7 +287,7 @@ namespace IM_PJ
             html.Append("    <th>Đợt</th>");
             html.Append("    <th>Hoàn tất đơn</th>");
 
-            if (acc.RoleID == 0 || acc.Username == "nhom_zalo406" || acc.Username == "hotline")
+            if (acc.RoleID == 0 || acc.Username == "nhom_zalo406" || acc.Username == "hotline" || acc.Username == "nhom_zalo502")
             {
                 html.Append("    <th>Nhân viên</th>");
             }
