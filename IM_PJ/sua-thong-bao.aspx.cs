@@ -135,7 +135,7 @@ namespace IM_PJ
                 var category = NotifyCategoryController.GetByID(CategoryID);
                 string CategorySlug = category.Slug;
                 string Title = txtTitle.Text.Trim();
-                string Slugs = txtSlug.Text.Trim();
+                string Slugs = Slug.ConvertToSlug(txtSlug.Text.Trim());
                 string Link = txtLink.Text.Trim();
                 string Content = pContent.Content.ToString();
                 string Summary = HttpUtility.HtmlDecode(pSummary.Content.ToString());
@@ -158,7 +158,7 @@ namespace IM_PJ
                 {
                     foreach (UploadedFile f in PostPublicThumbnailImage.UploadedFiles)
                     {
-                        var o = path + "notify-" + PostID + '-' + Slug.ConvertToSlug(Path.GetFileName(f.FileName));
+                        var o = path + "notify-" + PostID + '-' + Slug.ConvertToSlug(Path.GetFileName(f.FileName), isFile: true);
                         try
                         {
                             f.SaveAs(Server.MapPath(o));

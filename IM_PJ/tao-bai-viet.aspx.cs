@@ -111,7 +111,7 @@ namespace IM_PJ
             if (cateID > 0)
             {
                 string Title = txtTitle.Text.Trim();
-                string PostSlug = txtSlug.Text.Trim();
+                string PostSlug = Slug.ConvertToSlug(txtSlug.Text.Trim());
                 string Content = pContent.Content.ToString();
 
                 string kq = PostController.Insert(Title, Content, "", ddlFeatured.SelectedValue.ToInt(), cateID, 1, PostSlug, acc.Username, currentDate);
@@ -123,7 +123,7 @@ namespace IM_PJ
                 {
                     foreach (UploadedFile f in ProductThumbnailImage.UploadedFiles)
                     {
-                        var o = path + "post-" + kq + "-" + Slug.ConvertToSlug(Path.GetFileName(f.FileName));
+                        var o = path + "post-" + kq + "-" + Slug.ConvertToSlug(Path.GetFileName(f.FileName), isFile: true);
                         try
                         {
                             f.SaveAs(Server.MapPath(o));
@@ -141,7 +141,7 @@ namespace IM_PJ
                 {
                     foreach (UploadedFile f in hinhDaiDien.UploadedFiles)
                     {
-                        var o = path + "post-" + kq + "-" + Slug.ConvertToSlug(Path.GetFileName(f.FileName));
+                        var o = path + "post-" + kq + "-" + Slug.ConvertToSlug(Path.GetFileName(f.FileName), isFile: true);
                         try
                         {
                             f.SaveAs(Server.MapPath(o));

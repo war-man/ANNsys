@@ -97,7 +97,7 @@ namespace IM_PJ
                     ddlCategory.SelectedValue = p.CategoryID.ToString();
                     ddlFeatured.SelectedValue = p.Featured.ToString();
 
-                    if(p.Image != null)
+                    if (p.Image != null)
                     {
                         ListPostThumbnail.Value = p.Image;
                         PostThumbnail.ImageUrl = p.Image;
@@ -132,7 +132,7 @@ namespace IM_PJ
             if (cateID > 0)
             {
                 string Title = txtTitle.Text.Trim();
-                string PostSlug = txtSlug.Text.Trim();
+                string PostSlug = Slug.ConvertToSlug(txtSlug.Text.Trim());
                 string Content = pContent.Content.ToString();
                 int CategoryID = hdfParentID.Value.ToInt();
 
@@ -143,7 +143,7 @@ namespace IM_PJ
                 {
                     foreach (UploadedFile f in PostThumbnailImage.UploadedFiles)
                     {
-                        var o = path + "post-" + PostID + '-' + Slug.ConvertToSlug(Path.GetFileName(f.FileName));
+                        var o = path + "post-" + PostID + '-' + Slug.ConvertToSlug(Path.GetFileName(f.FileName), isFile: true);
                         try
                         {
                             f.SaveAs(Server.MapPath(o));
@@ -153,51 +153,31 @@ namespace IM_PJ
                     }
                 }
 
-                if (PostImage != ListPostThumbnail.Value)
-                {
-                    if (File.Exists(Server.MapPath(ListPostThumbnail.Value)))
-                    {
-                        File.Delete(Server.MapPath(ListPostThumbnail.Value));
-                    }
-                }
-
                 // Delete Image Gallery
-
                 string deleteImageGallery = hdfDeleteImageGallery.Value;
-
-                if(deleteImageGallery != "")
+                if (deleteImageGallery != "")
                 {
                     string[] deletelist = deleteImageGallery.Split(',');
 
-                    for(int i = 0; i < deletelist.Length - 1; i++)
+                    for (int i = 0; i < deletelist.Length - 1; i++)
                     {
                         var img = PostImageController.GetByID(Convert.ToInt32(deletelist[i]));
-                        if(img != null)
+                        if (img != null)
                         {
-                            var post = PostController.GetByID(PostID);
-
-                            // Delete image
-                            if (!string.IsNullOrEmpty(img.Image) && img.Image != post.Image)
-                            {
-                                string fileImage = Server.MapPath(img.Image);
-                                File.Delete(fileImage);
-                            }
                             string delete = PostImageController.Delete(img.ID);
                         }
                     }
                 }
 
                 // Update post
-
                 string kq = PostController.Update(PostID, Title, Content, PostImage, ddlFeatured.SelectedValue.ToInt(), CategoryID, 1, PostSlug, username, DateTime.Now);
 
                 // Upload image gallery
-
                 if (UploadImages.HasFiles)
                 {
                     foreach (HttpPostedFile uploadedFile in UploadImages.PostedFiles)
                     {
-                        var o = path + "post-" + PostID + '-' + Slug.ConvertToSlug(Path.GetFileName(uploadedFile.FileName));
+                        var o = path + "post-" + PostID + '-' + Slug.ConvertToSlug(Path.GetFileName(uploadedFile.FileName), isFile: true);
                         uploadedFile.SaveAs(Server.MapPath(o));
                         PostImageController.Insert(PostID, o, username, DateTime.Now);
                     }

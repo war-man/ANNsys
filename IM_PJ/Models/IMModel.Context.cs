@@ -93,5 +93,6 @@ namespace IM_PJ.Models
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<UserNotifyPromotion> UserNotifyPromotions { get; set; }
         public virtual DbSet<NotificationCategory> NotificationCategories { get; set; }
+        public virtual DbSet<PostPublicImage> PostPublicImages { get; set; }
     }
 }

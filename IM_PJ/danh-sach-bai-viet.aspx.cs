@@ -189,10 +189,8 @@ namespace IM_PJ
             if (post != null)
             {
                 // Delete image gallery
-
                 var postImage = PostImageController.GetByPostID(post.ID);
-
-                if(postImage.Count > 0)
+                if (postImage.Count > 0)
                 {
                     foreach (var img in postImage)
                     {
@@ -234,6 +232,54 @@ namespace IM_PJ
             }
 
             return html.ToString();
+        }
+
+        [WebMethod]
+        public static string copyPostToApp(int id)
+        {
+            var post = PostController.GetByID(id);
+            if (post != null)
+            {
+                var newPostPublic = new PostPublic()
+                {
+                    CategoryID = 0,
+                    CategorySlug = "",
+                    Title = post.Title,
+                    Thumbnail = post.Image,
+                    Summary = "",
+                    Content = post.Content,
+                    Action = "view_more",
+                    ActionValue = PostPublicController.checkSlug(post.Slug),
+                    AtHome = false,
+                    IsPolicy = false,
+                    CreatedDate = DateTime.Now,
+                    CreatedBy = post.CreatedBy,
+                    ModifiedDate = DateTime.Now,
+                    ModifiedBy = post.CreatedBy
+                };
+
+                var newpost = PostPublicController.Insert(newPostPublic);
+
+                if (newpost != null)
+                {
+                    // Copy image gallery
+                    var postImage = PostImageController.GetToCopyByPostID(post.ID);
+                    if (postImage.Count > 0)
+                    {
+                        foreach (var img in postImage)
+                        {
+                            if (!string.IsNullOrEmpty(img.Image))
+                            {
+                                string newImage = PostPublicImageController.Insert(newpost.ID, img.Image, newpost.CreatedBy, DateTime.Now);
+                            }
+                        }
+                    }
+
+                    return newpost.ID.ToString();
+                }
+            }
+
+            return "false";
         }
 
         #region Paging

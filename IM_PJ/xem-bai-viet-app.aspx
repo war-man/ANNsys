@@ -21,6 +21,10 @@
             max-width: 100%;
             height: auto;
         }
+        .image-gallery img {
+            width: 100%;
+            margin: 0;
+        }
         .post-content {
             font-size: 18px;
         }
@@ -52,6 +56,9 @@
                             <div class="form-row post-content">
                                 <asp:Literal ID="ltrLink" runat="server"></asp:Literal>
                                 <asp:Literal ID="ltrContent" runat="server"></asp:Literal>
+                            </div>
+                            <div class="form-row">
+                                <asp:Literal ID="imageGallery" runat="server"></asp:Literal>
                             </div>
                             <div class="form-row">
                                 <asp:Literal ID="ltrEditBottom" runat="server"></asp:Literal>

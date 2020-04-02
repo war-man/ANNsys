@@ -160,6 +160,20 @@ namespace IM_PJ
 
             if (post != null)
             {
+                // Delete image gallery
+                var postImage = PostPublicImageController.GetByPostID(post.ID);
+                if (postImage.Count > 0)
+                {
+                    foreach (var img in postImage)
+                    {
+                        if (!string.IsNullOrEmpty(img.Image))
+                        {
+                            // Delete in database
+                            string deletePostImage = PostPublicImageController.Delete(img.ID);
+                        }
+                    }
+                }
+
                 string deletePost = PostPublicController.Delete(id);
 
                 if (!string.IsNullOrEmpty(deletePost))

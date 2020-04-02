@@ -153,6 +153,13 @@ namespace IM_PJ.Controllers
                 return con.Coupons.Where(x => x.ID == id).FirstOrDefault();
             }
         }
+        public static Coupon getByName(string couponCode)
+        {
+            using (var con = new inventorymanagementEntities())
+            {
+                return con.Coupons.Where(x => x.Code == couponCode).FirstOrDefault();
+            }
+        }
 
         public static CustomerCoupon updateStatusCouponCustomer(int customerID, int couponID, bool active)
         {
@@ -161,6 +168,7 @@ namespace IM_PJ.Controllers
                 var customerCoupon = con.CustomerCoupons
                     .Where(x => x.CustomerID == customerID)
                     .Where(x => x.CouponID == couponID)
+                    .Where(x => x.Active == !active)
                     .FirstOrDefault();
 
                 if (customerCoupon == null)
@@ -170,6 +178,33 @@ namespace IM_PJ.Controllers
                 con.SaveChanges();
 
                 return customerCoupon;
+            }
+        }
+
+        public static CustomerCoupon insertCustomerCoupon(int customerID, int couponID)
+        {
+            using (var con = new inventorymanagementEntities())
+            {
+                var coupon = CouponController.getCoupon(couponID);
+                if (coupon != null)
+                {
+                    var cc = new CustomerCoupon()
+                    {
+                        CouponID = couponID,
+                        CustomerID = customerID,
+                        StartDate = coupon.StartDate,
+                        EndDate = coupon.EndDate,
+                        Active = coupon.Active,
+                        CreatedDate = DateTime.Now,
+                        ModifiedDate = DateTime.Now,
+                        Phone = "",
+                    };
+                    con.CustomerCoupons.Add(cc);
+                    con.SaveChanges();
+
+                    return cc;
+                }
+                return null;
             }
         }
     }

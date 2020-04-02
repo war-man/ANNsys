@@ -114,7 +114,7 @@ namespace IM_PJ
                 {
                     foreach (UploadedFile f in ProductThumbnailImage.UploadedFiles)
                     {
-                        var o = path + productID + '-' + Slug.ConvertToSlug(Path.GetFileName(f.FileName));
+                        var o = path + productID + '-' + Slug.ConvertToSlug(Path.GetFileName(f.FileName), isFile: true);
                         try
                         {
                             f.SaveAs(Server.MapPath(o));

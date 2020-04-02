@@ -115,7 +115,7 @@ namespace IM_PJ
                 var category = NotifyCategoryController.GetByID(CategoryID);
                 string CategorySlug = category.Slug;
                 string Title = txtTitle.Text.Trim();
-                string Slugs = txtSlug.Text.Trim();
+                string Slugs = Slug.ConvertToSlug(txtSlug.Text.Trim());
                 string Link = txtLink.Text.Trim();
                 string Content = pContent.Content.ToString();
                 string Summary = HttpUtility.HtmlDecode(pSummary.Content.ToString());
@@ -157,7 +157,7 @@ namespace IM_PJ
                 {
                     foreach (UploadedFile f in PostPublicThumbnailImage.UploadedFiles)
                     {
-                        var o = path + "notify-" + post.ID.ToString() + "-" + Slug.ConvertToSlug(Path.GetFileName(f.FileName));
+                        var o = path + "notify-" + post.ID.ToString() + "-" + Slug.ConvertToSlug(Path.GetFileName(f.FileName), isFile: true);
                         try
                         {
                             f.SaveAs(Server.MapPath(o));
@@ -170,7 +170,7 @@ namespace IM_PJ
 
                 if (post != null)
                 {
-                    PJUtils.ShowMessageBoxSwAlertCallFunction("Tạo bài viết thành công", "s", true, "redirectTo(" + post.ID.ToString() + ")", Page);
+                    PJUtils.ShowMessageBoxSwAlertCallFunction("Tạo thông báo thành công", "s", true, "redirectTo(" + post.ID.ToString() + ")", Page);
                 }
             }
         }

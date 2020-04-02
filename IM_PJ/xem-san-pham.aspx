@@ -257,9 +257,9 @@
 
     <script type="text/javascript" src="Scripts/bootstrap-tagsinput.min.js"></script>
 
-    <script src="/App_Themes/Ann/js/sync-product.js?v=17032020"></script>
-    <script src="/App_Themes/Ann/js/copy-product-info.js?v=17032020"></script>pt>
-    <script src="/App_Themes/Ann/js/download-product-image.js?v=17032020"></script>
+    <script src="/App_Themes/Ann/js/sync-product.js?v=30032020"></script>
+    <script src="/App_Themes/Ann/js/copy-product-info.js?v=30032020"></script>pt>
+    <script src="/App_Themes/Ann/js/download-product-image.js?v=30032020"></script>
     <script>
         // init Input Tag
         let txtTagDOM = $('#txtTag');

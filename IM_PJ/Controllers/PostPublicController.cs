@@ -13,7 +13,7 @@ namespace IM_PJ.Controllers
 {
     public class PostPublicController
     {
-        static string checkSlug(string slug, int ID = 0)
+        internal static string checkSlug(string slug, int ID = 0)
         {
             using (var con = new inventorymanagementEntities())
             {
@@ -312,6 +312,7 @@ namespace IM_PJ.Controllers
 
             return list.OrderByDescending(x => x.CreatedDate).ToList();
         }
+
         public static string updateAtHome(int id, bool value)
         {
             using (var dbe = new inventorymanagementEntities())

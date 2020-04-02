@@ -8,19 +8,19 @@ using System.Web;
 
 namespace IM_PJ.Controllers
 {
-    public class PostImageController
+    public class PostPublicImageController
     {
         #region CRUD
         public static string Insert(int PostID, string Image, string CreatedBy, DateTime CreatedDate)
         {
             using (var dbe = new inventorymanagementEntities())
             {
-                tbl_PostImage ui = new tbl_PostImage();
+                PostPublicImage ui = new PostPublicImage();
                 ui.PostID = PostID;
                 ui.Image = Image;
                 ui.CreatedDate = CreatedDate;
                 ui.CreatedBy = CreatedBy;
-                dbe.tbl_PostImage.Add(ui);
+                dbe.PostPublicImages.Add(ui);
                 int kq = dbe.SaveChanges();
                 return kq.ToString();
             }
@@ -29,7 +29,7 @@ namespace IM_PJ.Controllers
         {
             using (var dbe = new inventorymanagementEntities())
             {
-                tbl_PostImage ui = dbe.tbl_PostImage.Where(a => a.ID == ID).SingleOrDefault();
+                PostPublicImage ui = dbe.PostPublicImages.Where(a => a.ID == ID).SingleOrDefault();
                 if (ui != null)
                 {
                     ui.Image = Image;
@@ -46,10 +46,10 @@ namespace IM_PJ.Controllers
         {
             using (var dbe = new inventorymanagementEntities())
             {
-                var ui = dbe.tbl_PostImage.Where(o => o.ID == ID).FirstOrDefault();
+                var ui = dbe.PostPublicImages.Where(o => o.ID == ID).FirstOrDefault();
                 if (ui != null)
                 {
-                    dbe.tbl_PostImage.Remove(ui);
+                    dbe.PostPublicImages.Remove(ui);
                     int kq = dbe.SaveChanges();
                     return kq.ToString();
                 }
@@ -59,11 +59,11 @@ namespace IM_PJ.Controllers
         }
         #endregion
         #region Select
-        public static tbl_PostImage GetByID(int ID)
+        public static PostPublicImage GetByID(int ID)
         {
             using (var dbe = new inventorymanagementEntities())
             {
-                tbl_PostImage ai = dbe.tbl_PostImage.Where(a => a.ID == ID).SingleOrDefault();
+                PostPublicImage ai = dbe.PostPublicImages.Where(a => a.ID == ID).SingleOrDefault();
                 if (ai != null)
                 {
                     return ai;
@@ -72,38 +72,29 @@ namespace IM_PJ.Controllers
 
             }
         }
-        public static List<tbl_PostImage> GetAll(string s)
+        public static List<PostPublicImage> GetAll(string s)
         {
             using (var dbe = new inventorymanagementEntities())
             {
-                List<tbl_PostImage> ags = new List<tbl_PostImage>();
-                ags = dbe.tbl_PostImage.OrderByDescending(o => o.ID).ToList();
+                List<PostPublicImage> ags = new List<PostPublicImage>();
+                ags = dbe.PostPublicImages.OrderByDescending(o => o.ID).ToList();
                 return ags;
             }
         }
-        public static List<tbl_PostImage> GetByPostID(int ProductID)
+        public static List<PostPublicImage> GetByPostID(int ProductID)
         {
             using (var dbe = new inventorymanagementEntities())
             {
-                List<tbl_PostImage> ags = new List<tbl_PostImage>();
-                ags = dbe.tbl_PostImage.Where(p => p.PostID == ProductID).OrderByDescending(o => o.ID).ToList();
+                List<PostPublicImage> ags = new List<PostPublicImage>();
+                ags = dbe.PostPublicImages.Where(p => p.PostID == ProductID).OrderByDescending(o => o.ID).ToList();
                 return ags;
             }
         }
-        public static List<tbl_PostImage> GetToCopyByPostID(int ProductID)
+        public static PostPublicImage GetFirstByPostID(int ProductID)
         {
             using (var dbe = new inventorymanagementEntities())
             {
-                List<tbl_PostImage> ags = new List<tbl_PostImage>();
-                ags = dbe.tbl_PostImage.Where(p => p.PostID == ProductID).OrderBy(o => o.ID).ToList();
-                return ags;
-            }
-        }
-        public static tbl_PostImage GetFirstByPostID(int ProductID)
-        {
-            using (var dbe = new inventorymanagementEntities())
-            {
-                var ags = dbe.tbl_PostImage.Where(p => p.PostID == ProductID).FirstOrDefault();
+                var ags = dbe.PostPublicImages.Where(p => p.PostID == ProductID).FirstOrDefault();
                 if (ags != null)
                     return ags;
                 else return null;

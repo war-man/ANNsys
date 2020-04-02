@@ -197,6 +197,20 @@
                                 </div>
                             </div>
                             <div class="form-row">
+                                <div class="row-left">
+                                    Thư viện ảnh
+                                </div>
+                                <div class="row-right">
+                                    <telerik:RadAsyncUpload Skin="Metro" runat="server" ID="ImageGallery" ChunkSize="0"
+                                        Localization-Select="Chọn ảnh" AllowedFileExtensions=".jpeg,.jpg,.png"
+                                        MultipleFileSelection="Automatic" OnClientFileSelected="OnClientFileSelected1">
+                                    </telerik:RadAsyncUpload>
+                                    <asp:Image runat="server" ID="imgGallery" Width="200" />
+                                    <asp:HiddenField runat="server" ID="listImg" ClientIDMode="Static" />
+                                    <div class="hidImage"></div>
+                                </div>
+                            </div>
+                            <div class="form-row">
                                 <a href="javascript:;" class="btn primary-btn fw-btn not-fullwidth" onclick="addNewPost()"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Xuất bản</a>
                                 <asp:Button ID="btnSubmit" runat="server" CssClass="btn primary-btn fw-btn not-fullwidth" Text="Xuất bản" OnClick="btnSubmit_Click" Style="display: none" />
                                 <a href="/danh-sach-bai-viet-app" class="btn primary-btn fw-btn not-fullwidth"><i class="fa fa-arrow-left" aria-hidden="true"></i> Trở về</a>
@@ -245,6 +259,11 @@
                     $(".input-link").addClass("hide");
                     $(".input-summary").addClass("hide");
                     $(".input-content").addClass("hide");
+                }
+
+                var slug = $("#<%=txtSlug.ClientID%>").val();
+                if (slug == "") {
+                    ChangeToSlug();
                 }
             }
 
@@ -342,6 +361,11 @@
                 var slug = $("#<%=txtSlug.ClientID%>").val();
                 var link = $("#<%=txtLink.ClientID%>").val();
 
+                // tạo slug cho trường hợp chưa nhập
+                if (action == "view_more" && slug == "") {
+                    ChangeToSlug();
+                }
+
                 if (title == "") {
                     $("#<%=txtTitle.ClientID%>").focus();
                     swal("Thông báo", "Chưa nhập tiêu đề bài viết", "error");
@@ -349,10 +373,6 @@
                 else if (action == "") {
                     $("#<%=ddlAction.ClientID%>").focus();
                     swal("Thông báo", "Chưa chọn kiểu bài viết", "error");
-                }
-                else if (action == "view_more" && slug == "") {
-                    $("#<%=txtSlug.ClientID%>").focus();
-                    swal("Thông báo", "Chưa nhập slug", "error");
                 }
                 else if (action == "show_web" && link == "") {
                     $("#<%=txtLink.ClientID%>").focus();
@@ -381,6 +401,47 @@
                     showThumbnail(file, args);
                 }
             }
+
+            function DelRow(that, link) {
+
+                $(that).parent().parent().remove();
+                var myHidden = $("#<%= listImg.ClientID %>");
+                var tempF = myHidden.value;
+                myHidden.value = tempF.replace(link, '');
+            }
+            (function (global, undefined) {
+                var textBox = null;
+
+                function textBoxLoad(sender) {
+                    textBox = sender;
+                }
+
+                function OpenFileExplorerDialog() {
+                    global.radopen("/Dialogs/Dialog.aspx", "ExplorerWindow");
+                }
+
+                //This function is called from a code declared on the Explorer.aspx page
+                function OnFileSelected(fileSelected) {
+                    if (textBox) {
+                        {
+                            var myHidden = document.getElementById('<%= listImg.ClientID %>');
+                            var tempF = myHidden.value;
+
+                            tempF = tempF + '#' + fileSelected;
+                            myHidden.value = tempF;
+
+                            $('.hidImage').append('<tr><td><img height="100px" src="' + fileSelected + '"/></td><td style="text-align:center"><a class="btn btn-success" onclick="DelRow(this,\'' + fileSelected + '\')">Xóa</a></td></li>');
+                            //alert(fileSelected);
+                            textBox.set_value(fileSelected);
+                        }
+                    }
+                }
+
+                global.OpenFileExplorerDialog = OpenFileExplorerDialog;
+                global.OnFileSelected = OnFileSelected;
+                global.textBoxLoad = textBoxLoad;
+            })(window);
+
         </script>
     </telerik:RadCodeBlock>
 </asp:Content>

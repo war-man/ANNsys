@@ -441,7 +441,7 @@ namespace IM_PJ
                             {
                                 foreach (UploadedFile f in ProductThumbnailImage.UploadedFiles)
                                 {
-                                    var o = path + kq + '-' + Slug.ConvertToSlug(Path.GetFileName(f.FileName));
+                                    var o = path + kq + '-' + Slug.ConvertToSlug(Path.GetFileName(f.FileName), isFile: true);
                                     if (!File.Exists(Server.MapPath(o)))
                                     {
                                         f.SaveAs(Server.MapPath(o));
@@ -463,7 +463,7 @@ namespace IM_PJ
                             {
                                 foreach (UploadedFile f in ProductThumbnailImageClean.UploadedFiles)
                                 {
-                                    var o = path + kq + "-clean-" + Slug.ConvertToSlug(Path.GetFileName(f.FileName));
+                                    var o = path + kq + "-clean-" + Slug.ConvertToSlug(Path.GetFileName(f.FileName), isFile: true);
                                     if (!File.Exists(Server.MapPath(o)))
                                     {
                                         f.SaveAs(Server.MapPath(o));
@@ -485,7 +485,7 @@ namespace IM_PJ
                             {
                                 foreach (UploadedFile f in hinhDaiDien.UploadedFiles)
                                 {
-                                    var o = path + kq + '-' + Slug.ConvertToSlug(Path.GetFileName(f.FileName));
+                                    var o = path + kq + '-' + Slug.ConvertToSlug(Path.GetFileName(f.FileName), isFile: true);
                                     if (!File.Exists(Server.MapPath(o)))
                                     {
                                         f.SaveAs(Server.MapPath(o));
@@ -534,7 +534,7 @@ namespace IM_PJ
                                         string image = "";
                                         if (postedFile != null && postedFile.ContentLength > 0)
                                         {
-                                            var o = path + kq + '-' + Slug.ConvertToSlug(Path.GetFileName(postedFile.FileName));
+                                            var o = path + kq + '-' + Slug.ConvertToSlug(Path.GetFileName(postedFile.FileName), isFile: true);
                                             if (!File.Exists(Server.MapPath(o)))
                                             {
                                                 postedFile.SaveAs(Server.MapPath(o));

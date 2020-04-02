@@ -9,12 +9,16 @@ namespace IM_PJ
 {
     public class Slug
     {
-        public static string ConvertToSlug(string value)
+        public static string ConvertToSlug(string value, bool isFile = false )
         {
-            string extension = Path.GetExtension(value);
+            string extension = String.Empty;
 
-            //Get file name
-            value = Path.GetFileNameWithoutExtension(value);
+            if (isFile)
+            {
+                extension = Path.GetExtension(value);
+                //Get file name
+                value = Path.GetFileNameWithoutExtension(value);
+            }
 
             //First to lower case
             value = value.ToLower();
@@ -25,7 +29,7 @@ namespace IM_PJ
             value = regex.Replace(value, String.Empty).Replace('\u0111', 'd').Replace('\u0110', 'D');
 
             //Replace spaces or _
-            value = Regex.Replace(value, @"\s|_", "-", RegexOptions.Compiled);
+            value = Regex.Replace(value, @"[\s_\.]", "-", RegexOptions.Compiled);
 
             //Remove invalid chars 
             value = Regex.Replace(value, @"[^\w\s\p{Pd}]", "", RegexOptions.Compiled);

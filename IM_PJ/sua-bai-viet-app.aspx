@@ -121,6 +121,15 @@
                                 </div>
                             </div>
                             <div class="form-row">
+                                <div class="row-left">
+                                    Thư viện ảnh
+                                </div>
+                                <div class="row-right">
+                                    <asp:FileUpload runat="server" ID="UploadImages" name="uploadImageGallery" onchange='showImageGallery(this,$(this));' AllowMultiple="true" />  
+                                    <asp:Literal ID="imageGallery" runat="server"></asp:Literal>
+                                </div>
+                            </div>
+                            <div class="form-row">
                                 <a href="javascript:;" class="btn primary-btn fw-btn not-fullwidth" onclick="updatePost()"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Cập nhật</a>
                                 <asp:Button ID="btnSubmit" runat="server" CssClass="btn primary-btn fw-btn not-fullwidth" Text="Cập nhật" OnClick="btnSubmit_Click" Style="display: none" />
                                 <asp:Literal ID="ltrBack" runat="server"></asp:Literal>
@@ -144,6 +153,8 @@
                 </div>
             </div>
         </div>
+        <asp:HiddenField ID="hdfUploadGallery" runat="server" />
+        <asp:HiddenField ID="hdfDeleteImageGallery" runat="server" />
         <asp:HiddenField ID="hdfAction" runat="server" />
         <asp:HiddenField ID="hdfParentID" runat="server" />
     </main>
@@ -185,17 +196,17 @@
                     $(".input-link").addClass("hide");
                     $(".input-summary").removeClass("hide");
                     $(".input-content").removeClass("hide");
-
-                    var slug = $("#<%=txtSlug.ClientID%>").val();
-                    if (slug == "") {
-                        ChangeToSlug();
-                    }
                 }
                 else {
                     $(".input-slug").addClass("hide");
                     $(".input-link").addClass("hide");
                     $(".input-summary").addClass("hide");
                     $(".input-content").addClass("hide");
+                }
+
+                var slug = $("#<%=txtSlug.ClientID%>").val();
+                if (slug == "") {
+                    ChangeToSlug();
                 }
             }
 
@@ -268,12 +279,45 @@
                 });
             }
 
+            function showImageGallery(input, obj) {
+                if (input.files) {
+                    base64 = "";
+                    fileSize = 0;
+                    var allSizes = "";
+                    for (i = 0; i < input.files.length ; i++) {
+                        
+                        if (!input.files[i].type.match("image.*")) {
+                            return;
+                        }
+
+                        storedFiles.push(input.files[i]);
+                        fileSize += input.files[i].size; // total files size  
+                        allSizes = allSizes + input.files[i].size + ",";
+
+                        var reader = new FileReader();
+                        reader.onload = function (e) {
+                            $(".image-gallery").append("<li><img src='" + e.target.result + "' /><a href='javascript:;' data-image-id='' onclick='deleteImageGallery($(this))' class='btn-delete'><i class='fa fa-times' aria-hidden='true'></i> Xóa hình</a></li>")
+                            base64 += e.target.result + "|";
+                        }
+                        reader.readAsDataURL(input.files[i]);
+                    }
+                    allSizes = allSizes.substring(0, allSizes.length - 1);
+
+                    $("#<%=hdfUploadGallery.ClientID%>").val(allSizes);
+                }
+            }
+
             function updatePost() {
                 var action = $("#<%=ddlAction.ClientID%>").val();
-                var category = $("#<%=hdfParentID.ClientID%>").val();
+                var category = $("#<%=ddlCategory.ClientID%>").val();
                 var title = $("#<%=txtTitle.ClientID%>").val();
                 var slug = $("#<%=txtSlug.ClientID%>").val();
                 var link = $("#<%=txtLink.ClientID%>").val();
+
+                // tạo slug cho trường hợp chưa nhập
+                if (action == "view_more" && slug == "") {
+                    ChangeToSlug();
+                }
 
                 if (title == "") {
                     $("#<%=txtTitle.ClientID%>").focus();
@@ -283,15 +327,11 @@
                     $("#<%=ddlAction.ClientID%>").focus();
                     swal("Thông báo", "Chưa chọn kiểu bài viết", "error");
                 }
-                else if (action == "view_more" && slug == "") {
-                    $("#<%=txtSlug.ClientID%>").focus();
-                    swal("Thông báo", "Chưa nhập slug", "error");
-                }
                 else if (action == "show_web" && link == "") {
                     $("#<%=txtLink.ClientID%>").focus();
                     swal("Thông báo", "Chưa nhập link", "error");
                 }
-                else if (category == "") {
+                else if (category == "0") {
                     $("#<%=ddlCategory.ClientID%>").focus();
                     swal("Thông báo", "Chưa chọn danh mục bài viết", "error");
                 }
@@ -301,18 +341,24 @@
                 }
             }
 
-            function imagepreview(input, obj) {
-                if (input.files && input.files[0]) {
-                    var reader = new FileReader();
-
-                    reader.onload = function (e) {
-                        obj.parent().find(".imgpreview").attr("src", e.target.result);
-                        obj.parent().find(".imgpreview").attr("data-file-name", obj.parent().find("input:file").val());
-                        obj.parent().find(".btn-delete").removeClass("hide");
+            function deleteImageGallery(obj) {
+                swal({
+                    title: "Xác nhận",
+                    text: "Cưng có chắc xóa hình này?",
+                    type: "warning",
+                    showCancelButton: true,
+                    closeOnConfirm: true,
+                    cancelButtonText: "Đợi em xem tí!",
+                    confirmButtonText: "Chắc chắn sếp ơi..",
+                }, function (isConfirm) {
+                    if (isConfirm) {
+                        if (obj.attr("data-image-id") != "") {
+                            var deletelist = $("#<%=hdfDeleteImageGallery.ClientID%>").val();
+                            $("#<%=hdfDeleteImageGallery.ClientID%>").val(deletelist + obj.attr("data-image-id") + ",");
+                        }
+                        obj.parent().addClass("hide");
                     }
-
-                    reader.readAsDataURL(input.files[0]);
-                }
+                });
             }
 
             function OnClientFileSelected1(sender, args) {

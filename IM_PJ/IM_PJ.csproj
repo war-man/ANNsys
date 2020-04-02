@@ -404,6 +404,7 @@
     <Content Include="App_Themes\Ann\js\controllers\them-moi-giam-gia\them-moi-giam-gia-controller.js" />
     <Content Include="App_Themes\Ann\js\copy-invoice-url.js" />
     <Content Include="App_Themes\Ann\js\copy-post-info.js" />
+    <Content Include="App_Themes\Ann\js\copy-post-to-app.js" />
     <Content Include="App_Themes\Ann\js\download-post-image.js" />
     <Content Include="App_Themes\Ann\js\download-product-image.js" />
     <Content Include="App_Themes\Ann\js\jquery.cookie.js" />
@@ -414,6 +415,7 @@
     <Content Include="App_Themes\Ann\js\pages\cron-job-product-status\cron-job-product-status.js" />
     <Content Include="App_Themes\Ann\js\pages\danh-sach-don-hang\danh-sach-don-hang.js" />
     <Content Include="App_Themes\Ann\js\pages\danh-sach-khach-giam-gia\danh-sach-khach-giam-gia.js" />
+    <Content Include="App_Themes\Ann\js\pages\danh-sach-khach-hang\generate-coupon-for-customer.js" />
     <Content Include="App_Themes\Ann\js\pages\danh-sach-nhom-khach-hang\danh-sach-nhom-khach-hang.js" />
     <Content Include="App_Themes\Ann\js\pages\them-moi-giam-gia\them-moi-giam-gia.js" />
     <Content Include="App_Themes\Ann\js\services\common\product-service.js" />
@@ -960,6 +962,7 @@
     <Compile Include="Controllers\DeliveryProshipController.cs" />
     <Compile Include="Controllers\DeliveryPostOfficeController.cs" />
     <Compile Include="Controllers\NotifyCategoryController.cs" />
+    <Compile Include="Controllers\PostPublicImageController.cs" />
     <Compile Include="Controllers\PostPublicCategoryController.cs" />
     <Compile Include="Controllers\NotifyController.cs" />
     <Compile Include="Controllers\PostPublicController.cs" />
@@ -1087,6 +1090,9 @@
       <DependentUpon>IMModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\PostPublic.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\PostPublicImage.cs">
       <DependentUpon>IMModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ProductTag.cs">

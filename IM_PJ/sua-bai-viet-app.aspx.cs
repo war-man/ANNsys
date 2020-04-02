@@ -112,6 +112,18 @@ namespace IM_PJ
                         ListPostPublicThumbnail.Value = p.Thumbnail;
                         PostPublicThumbnail.ImageUrl = p.Thumbnail;
                     }
+
+                    var image = PostPublicImageController.GetByPostID(id);
+                    imageGallery.Text = "<ul class='image-gallery'>";
+                    if (image != null)
+                    {
+                        foreach (var img in image)
+                        {
+                            imageGallery.Text += "<li><img src='" + img.Image + "'><a href='javascript:;' data-image-id='" + img.ID + "' onclick='deleteImageGallery($(this))' class='btn-delete'><i class='fa fa-times' aria-hidden='true'></i> Xóa hình</a></li>";
+                        }
+                    }
+                    imageGallery.Text += "</ul>";
+
                     string PostInfo = "<p><strong>Ngày tạo</strong>: " + p.CreatedDate + "</p>";
                     PostInfo += "<p><strong>Người viết</strong>: " + p.CreatedBy + "</p>";
                     PostInfo += "<p><strong>Ngày cập nhật</strong>: " + p.ModifiedDate + "</p>";
@@ -136,7 +148,7 @@ namespace IM_PJ
                 var category = PostPublicCategoryController.GetByID(CategoryID);
                 string CategorySlug = category.Slug;
                 string Title = txtTitle.Text.Trim();
-                string Slugs = txtSlug.Text.Trim();
+                string Slugs = Slug.ConvertToSlug(txtSlug.Text.Trim());
                 string Link = txtLink.Text.Trim();
                 string Content = pContent.Content.ToString();
                 string Summary = HttpUtility.HtmlDecode(pSummary.Content.ToString());
@@ -160,7 +172,7 @@ namespace IM_PJ
                 {
                     foreach (UploadedFile f in PostPublicThumbnailImage.UploadedFiles)
                     {
-                        var o = path + "post-app-" + PostID + '-' + Slug.ConvertToSlug(Path.GetFileName(f.FileName));
+                        var o = path + "post-app-" + PostID + '-' + Slug.ConvertToSlug(Path.GetFileName(f.FileName), isFile: true);
                         try
                         {
                             f.SaveAs(Server.MapPath(o));
@@ -169,11 +181,20 @@ namespace IM_PJ
                         catch { }
                     }
                 }
-                if (Thumbnail != ListPostPublicThumbnail.Value)
+
+                // Delete Image Gallery
+                string deleteImageGallery = hdfDeleteImageGallery.Value;
+                if (deleteImageGallery != "")
                 {
-                    if (File.Exists(Server.MapPath(ListPostPublicThumbnail.Value)))
+                    string[] deletelist = deleteImageGallery.Split(',');
+
+                    for (int i = 0; i < deletelist.Length - 1; i++)
                     {
-                        File.Delete(Server.MapPath(ListPostPublicThumbnail.Value));
+                        var img = PostPublicImageController.GetByID(Convert.ToInt32(deletelist[i]));
+                        if (img != null)
+                        {
+                            string delete = PostPublicImageController.Delete(img.ID);
+                        }
                     }
                 }
 
@@ -198,6 +219,17 @@ namespace IM_PJ
                 };
 
                 var updatePost = PostPublicController.Update(oldPostPublic);
+
+                // Upload image gallery
+                if (UploadImages.HasFiles)
+                {
+                    foreach (HttpPostedFile uploadedFile in UploadImages.PostedFiles)
+                    {
+                        var o = path + "post-app-" + PostID + '-' + Slug.ConvertToSlug(Path.GetFileName(uploadedFile.FileName), isFile: true);
+                        uploadedFile.SaveAs(Server.MapPath(o));
+                        PostPublicImageController.Insert(PostID, o, username, DateTime.Now);
+                    }
+                }
 
                 if (updatePost != null)
                 {

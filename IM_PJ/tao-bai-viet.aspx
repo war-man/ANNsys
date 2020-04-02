@@ -269,29 +269,14 @@
                 });
             }
 
-            function openUploadImage(obj) {
-                obj.parent().find(".productVariableImage").click();
-            }
-
-            function imagepreview(input, obj) {
-                if (input.files && input.files[0]) {
-                    var reader = new FileReader();
-
-                    reader.onload = function (e) {
-                        obj.parent().find(".imgpreview").attr("src", e.target.result);
-                        obj.parent().find(".imgpreview").attr("data-file-name", obj.parent().find("input:file").val());
-                        obj.parent().find(".btn-delete").removeClass("hide");
-                    }
-
-                    reader.readAsDataURL(input.files[0]);
-                }
-            }
-
             function addNewPost() {
-
                 var category = $("#<%=hdfParentID.ClientID%>").val();
                 var title = $("#<%=txtTitle.ClientID%>").val();
                 var slug = $("#<%=txtSlug.ClientID%>").val();
+
+                if (slug == "") {
+                    ChangeToSlug();
+                }
 
                 if (title == "") {
                     $("#<%=txtTitle.ClientID%>").focus();
@@ -300,10 +285,6 @@
                 else if (category == "") {
                     $("#<%=ddlCategory.ClientID%>").focus();
                     swal("Thông báo", "Chưa chọn danh mục bài viết", "error");
-                }
-                else if (slug == "") {
-                    $("#<%=txtSlug.ClientID%>").focus();
-                    swal("Thông báo", "Chưa nhập slug", "error");
                 }
                 else {
                     HoldOn.open();

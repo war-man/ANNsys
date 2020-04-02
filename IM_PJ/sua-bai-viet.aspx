@@ -131,6 +131,40 @@
                 return (!str || /^\s*$/.test(str));
             }
 
+            function ChangeToSlug() {
+                var title, slug;
+
+                //Lấy text từ thẻ input title 
+                title = $("#<%=txtTitle.ClientID%>").val();
+
+                //Đổi chữ hoa thành chữ thường
+                slug = title.toLowerCase();
+
+                //Đổi ký tự có dấu thành không dấu
+                slug = slug.replace(/á|à|ả|ạ|ã|ă|ắ|ằ|ẳ|ẵ|ặ|â|ấ|ầ|ẩ|ẫ|ậ/gi, 'a');
+                slug = slug.replace(/é|è|ẻ|ẽ|ẹ|ê|ế|ề|ể|ễ|ệ/gi, 'e');
+                slug = slug.replace(/i|í|ì|ỉ|ĩ|ị/gi, 'i');
+                slug = slug.replace(/ó|ò|ỏ|õ|ọ|ô|ố|ồ|ổ|ỗ|ộ|ơ|ớ|ờ|ở|ỡ|ợ/gi, 'o');
+                slug = slug.replace(/ú|ù|ủ|ũ|ụ|ư|ứ|ừ|ử|ữ|ự/gi, 'u');
+                slug = slug.replace(/ý|ỳ|ỷ|ỹ|ỵ/gi, 'y');
+                slug = slug.replace(/đ/gi, 'd');
+                //Xóa các ký tự đặt biệt
+                slug = slug.replace(/\`|\~|\!|\@|\#|\||\$|\%|\^|\&|\*|\(|\)|\+|\=|\,|\.|\/|\?|\>|\<|\'|\"|\:|\;|_/gi, '');
+                //Đổi khoảng trắng thành ký tự gạch ngang
+                slug = slug.replace(/ /gi, "-");
+                //Đổi nhiều ký tự gạch ngang liên tiếp thành 1 ký tự gạch ngang
+                //Phòng trường hợp người nhập vào quá nhiều ký tự trắng
+                slug = slug.replace(/\-\-\-\-\-/gi, '-');
+                slug = slug.replace(/\-\-\-\-/gi, '-');
+                slug = slug.replace(/\-\-\-/gi, '-');
+                slug = slug.replace(/\-\-/gi, '-');
+                //Xóa các ký tự gạch ngang ở đầu và cuối
+                slug = '@' + slug + '@';
+                slug = slug.replace(/\@\-|\-\@|\@/gi, '');
+                //In slug ra textbox có id “slug”
+                $("#<%=txtSlug.ClientID%>").val(slug);
+            }
+
             function selectCategory(obj) {
                 var parentID = obj.val();
                 $("#<%=hdfParentID.ClientID%>").val(parentID);
@@ -195,31 +229,27 @@
             }
 
             function updatePost() {
-
-                var category = $("#<%=hdfParentID.ClientID%>").val();
+                var category = $("#<%=ddlCategory.ClientID%>").val();
                 var title = $("#<%=txtTitle.ClientID%>").val();
                 var slug = $("#<%=txtSlug.ClientID%>").val();
 
-                if (category == "") {
+                // tạo slug cho trường hợp chưa nhập
+                if (slug == "") {
+                    ChangeToSlug();
+                }
+
+                if (category == "0") {
                     $("#<%=ddlCategory.ClientID%>").focus();
                     swal("Thông báo", "Chưa chọn danh mục bài viết", "error");
                 }
-                if (title == "") {
+                else if (title == "") {
                     $("#<%=txtTitle.ClientID%>").focus();
                     swal("Thông báo", "Chưa nhập tiêu đề bài viết", "error");
-                }
-                else if (slug == "") {
-                    $("#<%=txtSlug.ClientID%>").focus();
-                    swal("Thông báo", "Chưa nhập slug", "error");
                 }
                 else {
                     $("#<%=btnSubmit.ClientID%>").click();
                     HoldOn.open();
                 }
-            }
-
-            function openUploadImage(obj) {
-                obj.parent().find(".productVariableImage").click();
             }
 
             function deleteImageGallery(obj) {
@@ -240,20 +270,6 @@
                         obj.parent().addClass("hide");
                     }
                 });
-            }
-
-            function imagepreview(input, obj) {
-                if (input.files && input.files[0]) {
-                    var reader = new FileReader();
-
-                    reader.onload = function (e) {
-                        obj.parent().find(".imgpreview").attr("src", e.target.result);
-                        obj.parent().find(".imgpreview").attr("data-file-name", obj.parent().find("input:file").val());
-                        obj.parent().find(".btn-delete").removeClass("hide");
-                    }
-
-                    reader.readAsDataURL(input.files[0]);
-                }
             }
 
             function OnClientFileSelected1(sender, args) {

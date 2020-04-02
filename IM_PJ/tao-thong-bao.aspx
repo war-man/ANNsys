@@ -221,7 +221,6 @@
                     $(".input-slug").addClass("hide");
                     $(".input-summary").removeClass("hide");
                     $(".input-content").addClass("hide");
-                    
                 }
                 else if (action == "view_more") {
                     $(".input-slug").removeClass("hide");
@@ -234,6 +233,11 @@
                     $(".input-link").addClass("hide");
                     $(".input-summary").addClass("hide");
                     $(".input-content").addClass("hide");
+                }
+
+                var slug = $("#<%=txtSlug.ClientID%>").val();
+                if (slug == "") {
+                    ChangeToSlug();
                 }
             }
 
@@ -331,6 +335,11 @@
                 var slug = $("#<%=txtSlug.ClientID%>").val();
                 var link = $("#<%=txtLink.ClientID%>").val();
 
+                // tạo slug cho trường hợp chưa nhập
+                if (action == "view_more" && slug == "") {
+                    ChangeToSlug();
+                }
+
                 if (title == "") {
                     $("#<%=txtTitle.ClientID%>").focus();
                     swal("Thông báo", "Chưa nhập tiêu đề bài viết", "error");
@@ -338,10 +347,6 @@
                 else if (action == "") {
                     $("#<%=ddlAction.ClientID%>").focus();
                     swal("Thông báo", "Chưa chọn kiểu bài viết", "error");
-                }
-                else if (action == "view_more" && slug == "") {
-                    $("#<%=txtSlug.ClientID%>").focus();
-                    swal("Thông báo", "Chưa nhập slug", "error");
                 }
                 else if (action == "show_web" && link == "") {
                     $("#<%=txtLink.ClientID%>").focus();
@@ -370,6 +375,7 @@
                     showThumbnail(file, args);
                 }
             }
+
         </script>
     </telerik:RadCodeBlock>
 </asp:Content>

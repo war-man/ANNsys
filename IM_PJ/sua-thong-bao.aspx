@@ -259,10 +259,15 @@
 
             function updatePost() {
                 var action = $("#<%=ddlAction.ClientID%>").val();
-                var category = $("#<%=hdfParentID.ClientID%>").val();
+                var category = $("#<%=ddlCategory.ClientID%>").val();
                 var title = $("#<%=txtTitle.ClientID%>").val();
                 var slug = $("#<%=txtSlug.ClientID%>").val();
                 var link = $("#<%=txtLink.ClientID%>").val();
+
+                // tạo slug cho trường hợp chưa nhập
+                if (action == "view_more" && slug == "") {
+                    ChangeToSlug();
+                }
 
                 if (title == "") {
                     $("#<%=txtTitle.ClientID%>").focus();
@@ -272,15 +277,11 @@
                     $("#<%=ddlAction.ClientID%>").focus();
                     swal("Thông báo", "Chưa chọn kiểu bài viết", "error");
                 }
-                else if (action == "view_more" && slug == "") {
-                    $("#<%=txtSlug.ClientID%>").focus();
-                    swal("Thông báo", "Chưa nhập slug", "error");
-                }
                 else if (action == "show_web" && link == "") {
                     $("#<%=txtLink.ClientID%>").focus();
                     swal("Thông báo", "Chưa nhập link", "error");
                 }
-                else if (category == "") {
+                else if (category == "0") {
                     $("#<%=ddlCategory.ClientID%>").focus();
                     swal("Thông báo", "Chưa chọn danh mục bài viết", "error");
                 }

@@ -115,7 +115,7 @@ namespace IM_PJ
                 var category = PostPublicCategoryController.GetByID(CategoryID);
                 string CategorySlug = category.Slug;
                 string Title = txtTitle.Text.Trim();
-                string Slugs = txtSlug.Text.Trim();
+                string Slugs = Slug.ConvertToSlug(txtSlug.Text.Trim());
                 string Link = txtLink.Text.Trim();
                 string Content = pContent.Content.ToString();
                 string Summary = HttpUtility.HtmlDecode(pSummary.Content.ToString());
@@ -159,7 +159,7 @@ namespace IM_PJ
                 {
                     foreach (UploadedFile f in PostPublicThumbnailImage.UploadedFiles)
                     {
-                        var o = path + "post-app-" + post.ID.ToString() + "-" + Slug.ConvertToSlug(Path.GetFileName(f.FileName));
+                        var o = path + "post-app-" + post.ID.ToString() + "-" + Slug.ConvertToSlug(Path.GetFileName(f.FileName), isFile: true);
                         try
                         {
                             f.SaveAs(Server.MapPath(o));
@@ -169,6 +169,23 @@ namespace IM_PJ
                     }
                 }
                 string updateImage = PostPublicController.UpdateImage(post.ID, Image);
+
+                //Phần thêm thư viện ảnh
+                string IMG = "";
+                if (ImageGallery.UploadedFiles.Count > 0)
+                {
+                    foreach (UploadedFile f in ImageGallery.UploadedFiles)
+                    {
+                        var o = path + "post-app-" + post.ID.ToString() + "-" + Slug.ConvertToSlug(Path.GetFileName(f.FileName), isFile: true);
+                        try
+                        {
+                            f.SaveAs(Server.MapPath(o));
+                            IMG = o;
+                            PostPublicImageController.Insert(post.ID, IMG, username, currentDate);
+                        }
+                        catch { }
+                    }
+                }
 
                 if (post != null)
                 {

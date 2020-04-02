@@ -69,6 +69,21 @@ namespace IM_PJ
                     ltrEditBottom.Text = ltrEditTop.Text;
                     ltrTitle.Text = p.Title;
 
+                    // thư viện ảnh
+                    var image = PostPublicImageController.GetByPostID(id);
+                    if (image != null)
+                    {
+                        imageGallery.Text = "<ul class='image-gallery'>";
+                        foreach (var img in image)
+                        {
+                            if (img.Image != p.Thumbnail)
+                            {
+                                imageGallery.Text += "<li><img src='" + img.Image + "' /><a href='" + img.Image + "' download class='btn download-btn download-image h45-btn'><i class='fa fa-cloud-download'></i> Tải hình này</a></li>";
+                            }
+                        }
+                        imageGallery.Text += "</ul>";
+                    }
+
                     string Action = "";
                     if (p.Action == "show_web")
                     {

@@ -335,10 +335,10 @@ namespace IM_PJ
                 {
                     foreach (UploadedFile f in ProductThumbnailImage.UploadedFiles)
                     {
-                        string o = path + ProductID + '-' + Slug.ConvertToSlug(Path.GetFileName(f.FileName));
+                        string o = path + ProductID + '-' + Slug.ConvertToSlug(Path.GetFileName(f.FileName), isFile: true);
                         if (File.Exists(Server.MapPath(o)))
                         {
-                            o = path + ProductID + '-' + DateTime.UtcNow.ToString("HHmmssffff") + '-' + Slug.ConvertToSlug(Path.GetFileName(f.FileName));
+                            o = path + ProductID + '-' + DateTime.UtcNow.ToString("HHmmssffff") + '-' + Slug.ConvertToSlug(Path.GetFileName(f.FileName), isFile: true);
                         }
                         f.SaveAs(Server.MapPath(o));
                         ProductImage = Path.GetFileName(o);
@@ -357,10 +357,10 @@ namespace IM_PJ
                 {
                     foreach (UploadedFile f in ProductThumbnailImageClean.UploadedFiles)
                     {
-                        var o = path + ProductID + "-clean-" + Slug.ConvertToSlug(Path.GetFileName(f.FileName));
+                        var o = path + ProductID + "-clean-" + Slug.ConvertToSlug(Path.GetFileName(f.FileName), isFile: true);
                         if (File.Exists(Server.MapPath(o)))
                         {
-                            o = path + ProductID + "-clean-" + DateTime.UtcNow.ToString("HHmmssffff") + '-' + Slug.ConvertToSlug(Path.GetFileName(f.FileName));
+                            o = path + ProductID + "-clean-" + DateTime.UtcNow.ToString("HHmmssffff") + '-' + Slug.ConvertToSlug(Path.GetFileName(f.FileName), isFile: true);
                         }
                         f.SaveAs(Server.MapPath(o));
                         ProductImageClean = Path.GetFileName(o);
@@ -467,10 +467,10 @@ namespace IM_PJ
                 {
                     foreach (HttpPostedFile uploadedFile in UploadImages.PostedFiles)
                     {
-                        var o = path + ProductID + '-' + Slug.ConvertToSlug(Path.GetFileName(uploadedFile.FileName));
+                        var o = path + ProductID + '-' + Slug.ConvertToSlug(Path.GetFileName(uploadedFile.FileName), isFile: true);
                         if (File.Exists(Server.MapPath(o)))
                         {
-                            o = path + ProductID + '-' + DateTime.UtcNow.ToString("HHmmssffff") + '-' + Slug.ConvertToSlug(Path.GetFileName(uploadedFile.FileName));
+                            o = path + ProductID + '-' + DateTime.UtcNow.ToString("HHmmssffff") + '-' + Slug.ConvertToSlug(Path.GetFileName(uploadedFile.FileName), isFile: true);
                         }
                         uploadedFile.SaveAs(Server.MapPath(o));
                         itemGallery = Path.GetFileName(o);
@@ -534,11 +534,11 @@ namespace IM_PJ
                                             if (postedFile != null && postedFile.ContentLength > 0)
                                             {
                                                 // Upload image
-                                                var o = path + ProductID + '-' + Slug.ConvertToSlug(Path.GetFileName(postedFile.FileName));
+                                                var o = path + ProductID + '-' + Slug.ConvertToSlug(Path.GetFileName(postedFile.FileName), isFile: true);
 
                                                 if (File.Exists(Server.MapPath(o)))
                                                 {
-                                                    o = path + ProductID + '-' + DateTime.UtcNow.ToString("HHmmssffff") + '-' + Slug.ConvertToSlug(Path.GetFileName(postedFile.FileName));
+                                                    o = path + ProductID + '-' + DateTime.UtcNow.ToString("HHmmssffff") + '-' + Slug.ConvertToSlug(Path.GetFileName(postedFile.FileName), isFile: true);
                                                 }
                                                 postedFile.SaveAs(Server.MapPath(o));
                                                 image = Path.GetFileName(o);
@@ -572,10 +572,10 @@ namespace IM_PJ
                                     if (postedFile != null && postedFile.ContentLength > 0)
                                     {
                                         // Upload image
-                                        var o = path + ProductID + '-' + Slug.ConvertToSlug(Path.GetFileName(postedFile.FileName));
+                                        var o = path + ProductID + '-' + Slug.ConvertToSlug(Path.GetFileName(postedFile.FileName), isFile: true);
                                         if (File.Exists(Server.MapPath(o)))
                                         {
-                                            o = path + ProductID + '-' + DateTime.UtcNow.ToString("HHmmssffff") + '-' + Slug.ConvertToSlug(Path.GetFileName(postedFile.FileName));
+                                            o = path + ProductID + '-' + DateTime.UtcNow.ToString("HHmmssffff") + '-' + Slug.ConvertToSlug(Path.GetFileName(postedFile.FileName), isFile: true);
                                         }
                                         postedFile.SaveAs(Server.MapPath(o));
                                         image = Path.GetFileName(o);

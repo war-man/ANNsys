@@ -128,7 +128,7 @@ namespace IM_PJ
                     html.Append("          </div>");
                     html.Append("          <div class='col-xs-6'>");
                     html.Append("               <div class='row'>");
-                    html.Append("                  <a href =\"javascript:;\" class=\"btn primary-btn h45-btn\" onclick=\"getAllPostImage('" + item.ID + "');\"><i class=\"fa fa-cloud-download\" aria-hidden=\"true\"></i> Tải hình</a>");
+                    html.Append("                  <a href =\"javascript:;\" class=\"btn primary-btn h45-btn\" onclick=\"getAllPostImage(" + item.ID + ");\"><i class=\"fa fa-cloud-download\" aria-hidden=\"true\"></i> Tải hình</a>");
                     html.Append("               </div>");
                     html.Append("          </div>");
                     html.Append("     </div>");

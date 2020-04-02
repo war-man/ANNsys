@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
+using System.Web.Services;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using static IM_PJ.Controllers.CustomerController;
@@ -171,6 +172,40 @@ namespace IM_PJ
             }
         }
 
+        [WebMethod]
+        public static string generateCouponForCustomer(int customerID, string couponCode)
+        {
+            // check customer
+            var customer = CustomerController.GetByID(customerID);
+            if (customer == null)
+            {
+                return "customerNotFound";
+            }
+
+            // check coupon
+            var coupon = CouponController.getByName(couponCode);
+            if (coupon == null)
+            {
+                return "couponNotFound";
+            }
+            else
+            {
+                if (coupon.Active == false)
+                {
+                    return "couponNotActived";
+                }
+            }
+
+            //generate coupon for customer
+            var customerCoupon = CouponController.insertCustomerCoupon(customerID, coupon.ID);
+            if (customerCoupon != null)
+            {
+                return "true";
+            }
+
+            return "false";
+        }
+
         #region Paging
         public void pagingall(List<CustomerOut> acs)
         {
@@ -276,6 +311,7 @@ namespace IM_PJ
                     }
 
                     html.Append("   <td>");
+                    html.Append("       <a href='javascript:;' onclick='generateCouponForCustomer(`" + item.CustomerName.ToLower().ToTitleCase() + "`, " + item.ID + ", `G15`);' title='Tạo mã giảm giá 15k - G15' class='btn primary-btn h45-btn btn-violet'><i class='fa fa-gift' aria-hidden='true'></i></a>");
                     html.Append("       <a href='/danh-sach-don-hang?searchtype=1&textsearch=" + item.CustomerPhone + "' title='Xem đơn hàng' class='btn primary-btn h45-btn'><i class='fa fa-shopping-cart' aria-hidden='true'></i></a>");
                     html.Append("       <a href='/thong-ke-khach-hang?textsearch=" + item.CustomerPhone + "' title='Xem thống kê khách hàng' class='btn primary-btn btn-blue h45-btn' target='_blank'><i class='fa fa-line-chart' aria-hidden='true'></i></a>");
                     html.Append("   </td>");
