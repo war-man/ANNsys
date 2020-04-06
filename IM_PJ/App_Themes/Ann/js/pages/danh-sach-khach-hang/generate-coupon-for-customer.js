@@ -11,16 +11,16 @@
     }, function (confirm) {
         if (confirm) {
             sweetAlert.close();
-            ajaxGenerateCoupon(customerID, couponCode);
+            ajaxGenerateCoupon(customerID, couponCode, true);
         }
     });
 }
 
-function ajaxGenerateCoupon(customerID, couponCode) {
+function ajaxGenerateCoupon(customerID, couponCode, checkUser) {
     $.ajax({
         type: "POST",
         url: "/danh-sach-khach-hang.aspx/generateCouponForCustomer",
-        data: "{customerID: " + customerID + ", couponCode: '" + couponCode + "'}",
+        data: "{customerID: " + customerID + ", couponCode: '" + couponCode + "', checkUser: " + checkUser + "}",
         contentType: "application/json; charset=utf-8",
         dataType: "json",
         success: function (msg) {
@@ -44,9 +44,27 @@ function ajaxGenerateCoupon(customerID, couponCode) {
             else if (msg.d === "couponNotActived") {
                 alert("Mã giảm giá chưa kích hoạt!");
             }
+            else if (msg.d === "userNotFound") {
+                swal({
+                    title: "Xác nhận:",
+                    text: "<strong>Số điện thoại này chưa đăng ký app!</strong><br><br>Vẫn tạo mã giảm giá cho khách?",
+                    type: "warning",
+                    showCancelButton: true,
+                    showCloseButton: false,
+                    confirmButtonText: "OK tạo luôn!",
+                    cancelButtonText: "Để em nói với khách!",
+                    html: true,
+                }, function (confirm) {
+                    if (confirm) {
+                        sweetAlert.close();
+                        ajaxGenerateCoupon(customerID, couponCode, false);
+                    }
+                });
+            }
             else {
                 alert("Lỗi");
             }
         }
     });
+    sweetAlert.close();
 }

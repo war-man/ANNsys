@@ -2,9 +2,10 @@
 
 <%@ Register Assembly="Telerik.Web.UI" Namespace="Telerik.Web.UI" TagPrefix="telerik" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
-    <script type="text/javascript" src="/App_Themes/Ann/js/search-customer.js?v=30032020"></script>
-    <script type="text/javascript" src="/App_Themes/Ann/js/search-product.js?v=30032020"></script>
-    <script type="text/javascript" src="/App_Themes/Ann/js/copy-invoice-url.js?v=30032020"></script>
+    <script type="text/javascript" src="/App_Themes/Ann/js/search-customer.js?v=02042020"></script>
+    <script type="text/javascript" src="/App_Themes/Ann/js/search-product.js?v=02042020"></script>
+    <script type="text/javascript" src="/App_Themes/Ann/js/copy-invoice-url.js?v=02042020"></script>
+    <script type="text/javascript" src="/App_Themes/Ann/js/pages/danh-sach-khach-hang/generate-coupon-for-customer.js?v=02042020"></script>
     <style>
         .panel-post {
             margin-bottom: 20px;
@@ -428,6 +429,7 @@
                                 <div class="post-row clear coupon">
                                     <div class="left">Mã giảm giá</div>
                                     <div class="right">
+                                        <a id="btnGenerateCouponG15" class="btn btn-coupon btn-violet" title="Tạo mã giảm giá G15" onclick="generateCouponG15()"><i class="fa fa-gift"></i> Tạo mã G15</a>
                                         <a id="btnOpenCouponModal" class="btn btn-coupon btn-violet" title="Nhập mã giảm giá" onclick="openCouponModal()"><i class="fa fa-gift"></i> Nhập mã</a>
                                         <a href="javascript:;" id="btnRemoveCouponCode" class="btn btn-coupon link-btn hide" onclick="removeCoupon()"><i class="fa fa-times" aria-hidden="true"></i> Xóa</a>
                                         <asp:TextBox ID="txtCouponValue" runat="server" CssClass="form-control text-right width-notfull input-coupon" value="0" disabled="disabled"></asp:TextBox>
@@ -1373,6 +1375,7 @@
                 if (couponCodeOld) {
                     $('[id$="_txtCouponValue"]').val(`${couponCodeOld.trim().toUpperCase()}: -${formatThousands(couponValueOld, ',')}`);
                     $('#btnOpenCouponModal').addClass('hide');
+                    $('#btnGenerateCouponG15').addClass('hide');
                     $('#btnRemoveCouponCode').removeClass('hide');
                 }
 
@@ -2528,6 +2531,7 @@
 
                                 couponModalDOM.querySelector('#closeCoupon').click();
                                 document.querySelector('#btnOpenCouponModal').classList.add('hide');
+                                document.querySelector('#btnGenerateCouponG15').classList.add('hide');
                                 document.querySelector('#btnRemoveCouponCode').classList.remove('hide');
 
                                 getAllPrice();
@@ -2554,8 +2558,9 @@
                 document.querySelector('[id$="_hdfCouponProductNumber"]').value = 0;
                 document.querySelector('[id$="_hdfCouponPriceMin"]').value = 0;
                 document.querySelector('#btnOpenCouponModal').classList.remove('hide');
+                document.querySelector('#btnGenerateCouponG15').classList.remove('hide');
                 document.querySelector('#btnRemoveCouponCode').classList.add('hide');
-
+                
                 getAllPrice();
             }
 
@@ -2573,6 +2578,12 @@
                         return setTimeout(_ => { swal("Thông báo", "Đã xóa mã giảm giá, do không đạt yêu cầu!", "warning") }, 300);
                     }
                 }
+            }
+
+            function generateCouponG15() {
+                let customerID = $("#<%=hdfCustomerID.ClientID%>").val();
+                let customerName = $("#<%=txtFullname.ClientID%>").val();
+                generateCouponForCustomer(customerName, customerID, "G15");
             }
         </script>
     </telerik:RadScriptBlock>

@@ -74,6 +74,8 @@
         <EntityTypeShape EntityType="inventorymanagementModel.UserNotifyPromotion" Width="1.5" PointX="24.75" PointY="17.75" IsExpanded="true" />
         <EntityTypeShape EntityType="inventorymanagementModel.NotificationCategory" Width="1.5" PointX="24.75" PointY="21.75" IsExpanded="true" />
         <EntityTypeShape EntityType="inventorymanagementModel.PostPublicImage" Width="1.5" PointX="3.375" PointY="25.75" />
+        <EntityTypeShape EntityType="inventorymanagementModel.CheckWarehouse" Width="1.5" PointX="13.375" PointY="25.75" />
+        <EntityTypeShape EntityType="inventorymanagementModel.CheckWarehouseDetail" Width="1.5" PointX="25.375" PointY="25.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

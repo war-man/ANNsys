@@ -543,6 +543,7 @@
     </Content>
     <Content Include="nuoc-hoa.aspx" />
     <Content Include="cron-job-product-status.aspx" />
+    <Content Include="tao-phien-kiem-kho.aspx" />
     <Content Include="Scripts\bloodhound.js" />
     <Content Include="Scripts\bootstrap-tagsinput-angular.js" />
     <Content Include="Scripts\bootstrap-tagsinput-angular.min.js" />
@@ -955,6 +956,7 @@
     <Compile Include="bao-cao.aspx.designer.cs">
       <DependentUpon>bao-cao.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Controllers\CategoryController.cs" />
     <Compile Include="Controllers\CategoryShelfController.cs" />
     <Compile Include="Controllers\CouponController.cs" />
@@ -1004,6 +1006,12 @@
       <DependentUpon>IMModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\BankTransfer.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\CheckWarehouse.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\CheckWarehouseDetail.cs">
       <DependentUpon>IMModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Common\CustomerModel.cs" />
@@ -1252,6 +1260,13 @@
     </Compile>
     <Compile Include="cron-job-product-status.aspx.designer.cs">
       <DependentUpon>cron-job-product-status.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="tao-phien-kiem-kho.aspx.cs">
+      <DependentUpon>tao-phien-kiem-kho.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="tao-phien-kiem-kho.aspx.designer.cs">
+      <DependentUpon>tao-phien-kiem-kho.aspx</DependentUpon>
     </Compile>
     <Compile Include="sua-thong-bao.aspx.cs">
       <DependentUpon>sua-thong-bao.aspx</DependentUpon>

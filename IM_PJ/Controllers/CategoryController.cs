@@ -66,6 +66,15 @@ namespace IM_PJ.Controllers
 
             }
         }
+
+        public static List<tbl_Category> GetAll()
+        {
+            using (var con = new inventorymanagementEntities())
+            {
+                return con.tbl_Category.ToList();
+            }
+        }
+
         public static List<tbl_Category> GetAll(string s)
         {
             using (var dbe = new inventorymanagementEntities())

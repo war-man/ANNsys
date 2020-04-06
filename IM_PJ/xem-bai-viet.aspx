@@ -52,7 +52,7 @@
             </div>
         </div>
     </main>
-    <script src="/App_Themes/Ann/js/copy-post-to-app.js?v=30032020"></script>
-    <script src="/App_Themes/Ann/js/copy-post-info.js?v=30032020"></script>
-    <script src="/App_Themes/Ann/js/download-post-image.js?v=30032020"></script>
+    <script src="/App_Themes/Ann/js/copy-post-to-app.js?v=02042020"></script>
+    <script src="/App_Themes/Ann/js/copy-post-info.js?v=02042020"></script>
+    <script src="/App_Themes/Ann/js/download-post-image.js?v=02042020"></script>
 </asp:Content>

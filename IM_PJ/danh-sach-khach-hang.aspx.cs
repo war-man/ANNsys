@@ -173,7 +173,7 @@ namespace IM_PJ
         }
 
         [WebMethod]
-        public static string generateCouponForCustomer(int customerID, string couponCode)
+        public static string generateCouponForCustomer(int customerID, string couponCode, bool checkUser = false)
         {
             // check customer
             var customer = CustomerController.GetByID(customerID);
@@ -193,6 +193,17 @@ namespace IM_PJ
                 if (coupon.Active == false)
                 {
                     return "couponNotActived";
+                }
+            }
+
+            // check user app
+            if (checkUser == true)
+            {
+                var userPhone = UserController.getByPhone(customer.CustomerPhone);
+                var userPhone2 = UserController.getByPhone(customer.CustomerPhone2);
+                if (userPhone == null && userPhone2 == null)
+                {
+                    return "userNotFound";
                 }
             }
 

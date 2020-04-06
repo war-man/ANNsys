@@ -2,8 +2,9 @@
 
 <%@ Register Assembly="Telerik.Web.UI" Namespace="Telerik.Web.UI" TagPrefix="telerik" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
-    <script src="/App_Themes/Ann/js/search-customer.js?v=30032020"></script>
-    <script src="/App_Themes/Ann/js/search-product.js?v=30032020"></script>
+    <script src="/App_Themes/Ann/js/search-customer.js?v=02042020"></script>
+    <script src="/App_Themes/Ann/js/search-product.js?v=02042020"></script>
+    <script type="text/javascript" src="/App_Themes/Ann/js/pages/danh-sach-khach-hang/generate-coupon-for-customer.js?v=02042020"></script>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <style>
@@ -154,6 +155,7 @@
                                 <div class="post-row clear coupon">
                                     <div class="left">Mã giảm giá</div>
                                     <div class="right">
+                                        <a id="btnGenerateCouponG15" class="btn btn-coupon btn-violet" title="Tạo mã giảm giá G15" onclick="generateCouponG15()"><i class="fa fa-gift"></i> Tạo mã G15</a>
                                         <a id="btnOpenCouponModal" class="btn btn-coupon btn-violet" title="Nhập mã giảm giá" onclick="openCouponModal()"><i class="fa fa-gift"></i> Nhập mã</a>
                                         <a href="javascript:;" id="btnRemoveCouponCode" class="btn btn-coupon link-btn hide" onclick="removeCoupon()"><i class="fa fa-times" aria-hidden="true"></i> Xóa</a>
                                         <asp:TextBox ID="txtCouponValue" runat="server" CssClass="form-control text-right width-notfull input-coupon" value="0" disabled="disabled"></asp:TextBox>
@@ -1795,7 +1797,7 @@
                 let productNumber = +document.querySelector('[id$="_hdfTotalQuantity"]').value || 0;
 
                 if (!customerID)
-                    return swal("Thông báo", "Chưa nhập thông tin khách hàng!", "warning");
+                    return swal("Thông báo", "Chưa nhập thông tin khách hàng! Hoặc đây là khách hàng mới...", "warning");
 
                 if (!productNumber)
                     return swal("Thông báo", "Chưa nhập sản phẩm!", "warning");
@@ -1921,6 +1923,16 @@
                         return setTimeout(_ => { swal("Thông báo", "Đã xóa mã giảm giá, do không đạt yêu cầu!", "warning") }, 300);
                     }
                 }
+            }
+
+            function generateCouponG15() {
+                let customerName = $("#<%=txtFullname.ClientID%>").val();
+                let customerID = +document.querySelector('[id$="_hdfCustomerID"]').value || 0;
+
+                if (!customerID)
+                    return swal("Thông báo", "Chưa nhập thông tin khách hàng! Hoặc đây là khách hàng mới...", "warning");
+
+                generateCouponForCustomer(customerName, customerID, "G15");
             }
         </script>
     </telerik:RadScriptBlock>
