@@ -543,6 +543,7 @@
     </Content>
     <Content Include="nuoc-hoa.aspx" />
     <Content Include="cron-job-product-status.aspx" />
+    <Content Include="thong-tin-kiem-kho.aspx" />
     <Content Include="tao-phien-kiem-kho.aspx" />
     <Content Include="Scripts\bloodhound.js" />
     <Content Include="Scripts\bootstrap-tagsinput-angular.js" />
@@ -1260,6 +1261,13 @@
     </Compile>
     <Compile Include="cron-job-product-status.aspx.designer.cs">
       <DependentUpon>cron-job-product-status.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="thong-tin-kiem-kho.aspx.cs">
+      <DependentUpon>thong-tin-kiem-kho.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="thong-tin-kiem-kho.aspx.designer.cs">
+      <DependentUpon>thong-tin-kiem-kho.aspx</DependentUpon>
     </Compile>
     <Compile Include="tao-phien-kiem-kho.aspx.cs">
       <DependentUpon>tao-phien-kiem-kho.aspx</DependentUpon>

@@ -59,5 +59,35 @@ namespace IM_PJ.Controllers
             }
         }        
         #endregion
+
+        public static List<CheckWarehouse> getAll()
+        {
+            using (var con = new inventorymanagementEntities())
+            {
+                return con.CheckWarehouses
+                    .OrderByDescending(o => o.CreatedDate)
+                    .ToList();
+            }
+        }
+
+        public static bool closeCheckHouse(int id, DateTime modifiedDate, string modifiedBy)
+        {
+            using (var con = new inventorymanagementEntities())
+            {
+                var checkHouse = con.CheckWarehouses.Where(x => x.ID == id).FirstOrDefault();
+
+                if (checkHouse != null)
+                {
+                    checkHouse.Active = false;
+                    checkHouse.ModifiedDate = modifiedDate;
+                    checkHouse.ModifiedBy = modifiedBy;
+                    con.SaveChanges();
+
+                    return true;
+                }
+
+                return false;
+            }
+        }
     }
 }
