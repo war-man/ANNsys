@@ -52,6 +52,16 @@ namespace IM_PJ.Controllers
                     return null;
             }
         }
+        public static void updateSKU(int productVariableID, string parentSKU, string newSKU)
+        {
+            using (var dbe = new inventorymanagementEntities())
+            {
+                var ui = dbe.tbl_ProductVariableValue.Where(a => a.ProductVariableID == productVariableID).ToList();
+                ui.ForEach(a => a.ProductvariableSKU = a.ProductvariableSKU.Replace(parentSKU, newSKU));
+
+                dbe.SaveChanges();
+            }
+        }
         public static bool DeleteByProductVariableID(int ProductVariableID)
         {
             using (var con = new inventorymanagementEntities())

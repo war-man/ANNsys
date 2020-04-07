@@ -101,6 +101,28 @@
                                 </div>
                             </div>
                             <div class="form-row">
+                                <div class="row-left">
+                                    Xem đơn hàng cũ
+                                </div>
+                                <div class="row-right">
+                                    <asp:DropDownList ID="ddlViewAllOrders" runat="server" CssClass="form-control">
+                                        <asp:ListItem Value="0" Text="Tắt"></asp:ListItem>
+                                        <asp:ListItem Value="1" Text="Bật"></asp:ListItem>
+                                    </asp:DropDownList>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="row-left">
+                                    Xem báo cáo
+                                </div>
+                                <div class="row-right">
+                                    <asp:DropDownList ID="ddlViewAllReports" runat="server" CssClass="form-control">
+                                        <asp:ListItem Value="0" Text="Tắt"></asp:ListItem>
+                                        <asp:ListItem Value="1" Text="Bật"></asp:ListItem>
+                                    </asp:DropDownList>
+                                </div>
+                            </div>
+                            <div class="form-row">
                                 <asp:Button ID="btnLogin" runat="server" CssClass="btn primary-btn fw-btn not-fullwidth" Text="Cập nhật" OnClick="btnLogin_Click" />
                             </div>
                         </div>

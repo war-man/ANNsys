@@ -2,7 +2,7 @@
 
 <%@ Register Assembly="Telerik.Web.UI" Namespace="Telerik.Web.UI" TagPrefix="telerik" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
-    <script src="/App_Themes/Ann/js/search-customer.js?v=2110"></script>
+    <script src="/App_Themes/Ann/js/search-customer.js?v=02042020"></script>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <asp:Panel ID="parent" runat="server">
@@ -23,7 +23,7 @@
                                         </div>
                                     </div>
                                     <div class="col-md-3">
-                                        <label class="left pad10">Nhân viên tạo đơn: </label>
+                                        <label class="left pad10">Nhân viên: </label>
                                         <div class="ordercreateby">
                                             <asp:Literal ID="ltrCreateBy" runat="server"></asp:Literal>
                                         </div>
@@ -35,7 +35,7 @@
                                         </div>
                                     </div>
                                     <div class="col-md-4">
-                                        <label class="left pad10">Ngày hoàn tất: </label>
+                                        <label class="left pad10">Hoàn tất: </label>
                                         <div class="orderdatedone">
                                             <asp:Literal ID="ltrDateDone" runat="server"></asp:Literal>
                                         </div>
@@ -153,7 +153,7 @@
                             <asp:Literal ID="ltrCustomerType" runat="server"></asp:Literal>
                             <div class="post-above clear">
                                 <div class="search-box left">
-                                    <input type="text" id="txtSearch" disabled class="form-control sku-input" placeholder="SKU (F3)" autocomplete="off">
+                                    <input type="text" id="txtSearch" disabled class="form-control sku-input" placeholder="NHẬP MÃ SẢN PHẨM (F3)" autocomplete="off">
                                 </div>
                                 <div class="right">
                                     <a href="javascript:;" class="link-btn" onclick="searchProduct()"><i class="fa fa-search"></i></a>
@@ -303,10 +303,12 @@
                                     <div class="row-right">
                                         <asp:DropDownList Enabled="false" ID="ddlShippingType" runat="server" CssClass="form-control shipping-type">
                                             <asp:ListItem Value="1" Text="Lấy trực tiếp"></asp:ListItem>
-                                            <asp:ListItem Value="2" Text="Chuyển bưu điện"></asp:ListItem>
-                                            <asp:ListItem Value="3" Text="Dịch vụ ship"></asp:ListItem>
+                                            <asp:ListItem Value="2" Text="Bưu điện"></asp:ListItem>
+                                            <asp:ListItem Value="3" Text="Proship"></asp:ListItem>
                                             <asp:ListItem Value="4" Text="Chuyển xe"></asp:ListItem>
-                                            <asp:ListItem Value="5" Text="Nhân viên giao hàng"></asp:ListItem>
+                                            <asp:ListItem Value="5" Text="Nhân viên giao"></asp:ListItem>
+                                            <asp:ListItem Value="6" Text="GHTK"></asp:ListItem>
+                                            <asp:ListItem Value="7" Text="Viettel"></asp:ListItem>
                                         </asp:DropDownList>
                                     </div>
                                 </div>
@@ -411,6 +413,7 @@
             <asp:HiddenField ID="hdfTongTienConLai" runat="server" />
             <asp:HiddenField ID="hdfSoLuong" runat="server" />
             <asp:HiddenField runat="server" ID="hdfcheckR" />
+            <asp:HiddenField ID="hdfCustomerID" runat="server" />
         </main>
     </asp:Panel>
     <style>

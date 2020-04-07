@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
+using System.Web.Services;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using static IM_PJ.Controllers.CustomerController;
@@ -20,9 +21,9 @@ namespace IM_PJ
         {
             if (!IsPostBack)
             {
-                if (Request.Cookies["userLoginSystem"] != null)
+                if (Request.Cookies["usernameLoginSystem"] != null)
                 {
-                    string username = Request.Cookies["userLoginSystem"].Value;
+                    string username = Request.Cookies["usernameLoginSystem"].Value;
                     var acc = AccountController.GetByUsername(username);
                     int agent = acc.AgentID.ToString().ToInt();
 
@@ -92,70 +93,139 @@ namespace IM_PJ
         }
         public void LoadData()
         {
-            string TextSearch = "";
-            int Province = 0;
-            string CreatedBy = "";
-            string CreatedDate = "";
-            string Sort = "";
-
-            if (Request.QueryString["textsearch"] != null)
-            {
-                TextSearch = Request.QueryString["textsearch"].Trim();
-            }
-            if (Request.QueryString["createdby"] != null)
-            {
-                CreatedBy = Request.QueryString["createdby"];
-            }
-            if (Request.QueryString["province"] != null)
-            {
-                Province = Request.QueryString["province"].ToInt();
-            }
-            if (Request.QueryString["createddate"] != null)
-            {
-                CreatedDate = Request.QueryString["createddate"];
-            }
-            if (Request.QueryString["sort"] != null)
-            {
-                Sort = Request.QueryString["sort"];
-            }
-
-            txtTextSearch.Text = TextSearch;
-            ddlProvince.SelectedValue = Province.ToString();
-            ddlCreatedBy.SelectedValue = CreatedBy.ToString();
-            ddlCreatedDate.SelectedValue = CreatedDate.ToString();
-            ddlSort.SelectedValue = Sort.ToString();
-
-            List<CustomerOut> rs = new List<CustomerOut>();
-
-            var customers = CustomerController.Filter(TextSearch, CreatedBy, Province, CreatedDate, Sort);
-            rs = customers;
-
-            string username = Request.Cookies["userLoginSystem"].Value;
+            string username = Request.Cookies["usernameLoginSystem"].Value;
             var acc = AccountController.GetByUsername(username);
-            if (acc.RoleID != 0)
+            if (acc != null)
             {
-                rs = rs.Where(x => x.CreatedBy == acc.Username).ToList();
+                DateTime year = new DateTime(2018, 6, 22);
+
+                var config = ConfigController.GetByTop1();
+                if (config.ViewAllReports == 0)
+                {
+                    year = DateTime.Now.AddMonths(-2);
+                }
+
+                DateTime DateConfig = year;
+
+                DateTime FromDate = DateConfig;
+                DateTime ToDate = DateTime.Now;
+
+                if (!String.IsNullOrEmpty(Request.QueryString["fromdate"]))
+                {
+                    FromDate = Convert.ToDateTime(Request.QueryString["fromdate"]);
+                }
+
+                if (!String.IsNullOrEmpty(Request.QueryString["todate"]))
+                {
+                    ToDate = Convert.ToDateTime(Request.QueryString["todate"]).AddDays(1).AddMinutes(-1);
+                }
+
+                rFromDate.SelectedDate = FromDate;
+                rFromDate.MinDate = DateConfig;
+                rFromDate.MaxDate = DateTime.Now;
+
+                rToDate.SelectedDate = ToDate;
+                rToDate.MinDate = DateConfig;
+                rToDate.MaxDate = DateTime.Now;
+
+                string TextSearch = "";
+                int Province = 0;
+                string CreatedBy = "";
+                string Sort = "";
+
+                if (Request.QueryString["textsearch"] != null)
+                {
+                    TextSearch = Request.QueryString["textsearch"].Trim();
+                }
+                if (Request.QueryString["createdby"] != null)
+                {
+                    CreatedBy = Request.QueryString["createdby"];
+                }
+                if (Request.QueryString["province"] != null)
+                {
+                    Province = Request.QueryString["province"].ToInt();
+                }
+                if (Request.QueryString["sort"] != null)
+                {
+                    Sort = Request.QueryString["sort"];
+                }
+
+                txtTextSearch.Text = TextSearch;
+                ddlProvince.SelectedValue = Province.ToString();
+                ddlCreatedBy.SelectedValue = CreatedBy.ToString();
+                ddlSort.SelectedValue = Sort.ToString();
+
+                List<CustomerOut> rs = new List<CustomerOut>();
+
+                rs = CustomerController.Filter(TextSearch, CreatedBy, Province, Sort, FromDate, ToDate);
+
+                if (acc.RoleID != 0 && acc.Username != "nhom_zalo502")
+                {
+                    rs = rs.Where(x => x.CreatedBy == acc.Username).ToList();
+                    ddlCreatedBy.Enabled = false;
+                    ddlCreatedBy.Visible = false;
+                }
+
                 pagingall(rs);
+
+                ltrNumberOfCustomer.Text = rs.Count().ToString();
+            }
+        }
+
+        [WebMethod]
+        public static string generateCouponForCustomer(int customerID, string couponCode, bool checkUser = false)
+        {
+            // check customer
+            var customer = CustomerController.GetByID(customerID);
+            if (customer == null)
+            {
+                return "customerNotFound";
+            }
+
+            // check coupon
+            var coupon = CouponController.getByName(couponCode);
+            if (coupon == null)
+            {
+                return "couponNotFound";
             }
             else
             {
-                pagingall(rs);
+                if (coupon.Active == false)
+                {
+                    return "couponNotActived";
+                }
             }
 
-            ltrNumberOfCustomer.Text = rs.Count().ToString();
+            // check user app
+            if (checkUser == true)
+            {
+                var userPhone = UserController.getByPhone(customer.CustomerPhone);
+                var userPhone2 = UserController.getByPhone(customer.CustomerPhone2);
+                if (userPhone == null && userPhone2 == null)
+                {
+                    return "userNotFound";
+                }
+            }
 
+            //generate coupon for customer
+            var customerCoupon = CouponController.insertCustomerCoupon(customerID, coupon.ID);
+            if (customerCoupon != null)
+            {
+                return "true";
+            }
+
+            return "false";
         }
 
         #region Paging
         public void pagingall(List<CustomerOut> acs)
         {
-            string username = Request.Cookies["userLoginSystem"].Value;
+            string username = Request.Cookies["usernameLoginSystem"].Value;
             var acc = AccountController.GetByUsername(username);
 
             int PageSize = 30;
             StringBuilder html = new StringBuilder();
             html.Append("<tr>");
-            //html.Append("     <th class='image-column'>Ảnh</th>");
             html.Append("     <th class='name-column'>Họ tên</th>");
             html.Append("     <th class='nick-column'>Nick đặt hàng</th>");
             html.Append("     <th class='phone-column'>Điện thoại</th>");
@@ -192,15 +262,14 @@ namespace IM_PJ
                     var item = acs[i];
                     html.Append("<tr>");
 
-                    //html.Append("   <td><a href=\"/chi-tiet-khach-hang?id=" + item.ID + "\"><img src=\"" + item.Avatar + "\"/></a></td>");
-                    html.Append("   <td class=\"customer-name-link capitalize\"><a href=\"/chi-tiet-khach-hang?id=" + item.ID + "\">" + item.CustomerName + "</a></td>");
-                    html.Append("   <td class=\"customer-name-link capitalize\">" + item.Nick + "</td>");
+                    html.Append("   <td class='customer-name-link'><a href='/chi-tiet-khach-hang?id=" + item.ID + "'>" + item.CustomerName.ToLower().ToTitleCase() + "</a></td>");
+                    html.Append("   <td class='customer-name-link'>" + item.Nick + "</td>");
                     html.Append("   <td>" + item.CustomerPhone + "</td>");
                     html.Append("   <td>" + item.Zalo + "</td>");
 
                     if (!string.IsNullOrEmpty(item.Facebook))
                     {
-                        html.Append("   <td><a class=\"link\" href=\"" + item.Facebook + "\" target=\"_blank\">Xem</a></td>");
+                        html.Append("   <td><a class='link' href='" + item.Facebook + "' target='_blank'>Xem</a></td>");
                     }
                     else
                     {
@@ -239,8 +308,7 @@ namespace IM_PJ
                         html.Append("   <td>" + item.CreatedBy + "</td>");
                     }
 
-                    string date = string.Format("{0:dd/MM/yyyy}", item.CreatedDate);
-                    html.Append("   <td>" + date + "</td>");
+                    html.Append("   <td>" + string.Format("{0:dd/MM/yyyy}", item.CreatedDate) + "</td>");
 
                     string ishidden = "";
                     if (item.IsHidden != null)
@@ -254,7 +322,9 @@ namespace IM_PJ
                     }
 
                     html.Append("   <td>");
-                    html.Append("       <a href=\"/danh-sach-don-hang?textsearch=" + item.CustomerPhone + "\" title=\"Xem đơn hàng\" class=\"btn primary-btn h45-btn\"><i class=\"fa fa-shopping-cart\" aria-hidden=\"true\"></i></a>");
+                    html.Append("       <a href='javascript:;' onclick='generateCouponForCustomer(`" + item.CustomerName.ToLower().ToTitleCase() + "`, " + item.ID + ", `G15`);' title='Tạo mã giảm giá 15k - G15' class='btn primary-btn h45-btn btn-violet'><i class='fa fa-gift' aria-hidden='true'></i></a>");
+                    html.Append("       <a href='/danh-sach-don-hang?searchtype=1&textsearch=" + item.CustomerPhone + "' title='Xem đơn hàng' class='btn primary-btn h45-btn'><i class='fa fa-shopping-cart' aria-hidden='true'></i></a>");
+                    html.Append("       <a href='/thong-ke-khach-hang?textsearch=" + item.CustomerPhone + "' title='Xem thống kê khách hàng' class='btn primary-btn btn-blue h45-btn' target='_blank'><i class='fa fa-line-chart' aria-hidden='true'></i></a>");
                     html.Append("   </td>");
                     html.Append("</tr>");
                 }
@@ -263,11 +333,11 @@ namespace IM_PJ
             {
                 if (acc.RoleID == 0)
                 {
-                    html.Append("<tr><td colspan=\"12\">Không tìm thấy khách hàng...</td></tr>");
+                    html.Append("<tr><td colspan='12'>Không tìm thấy khách hàng...</td></tr>");
                 }
                 else
                 {
-                    html.Append("<tr><td colspan=\"11\">Không tìm thấy khách hàng...</td></tr>");
+                    html.Append("<tr><td colspan='11'>Không tìm thấy khách hàng...</td></tr>");
                 }
             }
 
@@ -432,9 +502,14 @@ namespace IM_PJ
                 request += "&createdby=" + ddlCreatedBy.SelectedValue;
             }
 
-            if (ddlCreatedDate.SelectedValue != "")
+            if (rFromDate.SelectedDate.HasValue)
             {
-                request += "&createddate=" + ddlCreatedDate.SelectedValue;
+                request += "&fromdate=" + rFromDate.SelectedDate.ToString();
+            }
+
+            if (rToDate.SelectedDate.HasValue)
+            {
+                request += "&todate=" + rToDate.SelectedDate.ToString();
             }
 
             if (ddlSort.SelectedValue != "")

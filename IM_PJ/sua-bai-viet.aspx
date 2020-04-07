@@ -1,4 +1,4 @@
-﻿<%@ Page Title="Chỉnh sửa bài viết" Language="C#" MasterPageFile="~/MasterPage.Master" AutoEventWireup="true" CodeBehind="sua-bai-viet.aspx.cs" Inherits="IM_PJ.sua_bai_viet" %>
+﻿<%@ Page Title="Sửa bài viết nội bộ" Language="C#" MasterPageFile="~/MasterPage.Master" AutoEventWireup="true" CodeBehind="sua-bai-viet.aspx.cs" Inherits="IM_PJ.sua_bai_viet" %>
 
 <%@ Register Assembly="Telerik.Web.UI" Namespace="Telerik.Web.UI" TagPrefix="telerik" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
@@ -12,10 +12,10 @@
     <main id="main-wrap">
         <div class="container">
             <div class="row">
-                <div class="col-md-12">
+                <div class="col-md-9">
                     <div class="panel panelborderheading">
                         <div class="panel-heading clear">
-                            <h3 class="page-title left not-margin-bot">Chỉnh sửa bài viết</h3>
+                            <h3 class="page-title left not-margin-bot">Sửa bài viết nội bộ</h3>
                         </div>
                         <div class="panel-body">
                             <div class="form-row">
@@ -24,10 +24,17 @@
                             <div class="form-row">
                                 <div class="row-left">
                                     Tiêu đề
-                                    <asp:RequiredFieldValidator ID="rq" runat="server" ControlToValidate="txtPostTitle" ForeColor="Red" SetFocusOnError="true" ErrorMessage="(*)" Display="Dynamic"></asp:RequiredFieldValidator>
                                 </div>
                                 <div class="row-right">
-                                    <asp:TextBox ID="txtPostTitle" runat="server" CssClass="form-control" placeholder="Tiêu đề bài viết"></asp:TextBox>
+                                    <asp:TextBox ID="txtTitle" runat="server" CssClass="form-control" placeholder="Tiêu đề bài viết" autocomplete="off"></asp:TextBox>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="row-left">
+                                    Slug
+                                </div>
+                                <div class="row-right">
+                                    <asp:TextBox ID="txtSlug" runat="server" CssClass="form-control" placeholder="Slug" autocomplete="off"></asp:TextBox>
                                 </div>
                             </div>
                             <div class="form-row">
@@ -67,8 +74,8 @@
                                     Nội dung
                                 </div>
                                 <div class="row-right">
-                                    <telerik:RadEditor runat="server" ID="pContent" Width="100%" Height="600px" ToolsFile="~/FilesResources/ToolContent.xml" Skin="Metro" DialogHandlerUrl="~/Telerik.Web.UI.DialogHandler.axd" AutoResizeHeight="False">
-                                        <ImageManager ViewPaths="~/uploads/images" UploadPaths="~/uploads/images" DeletePaths="~/uploads/images" />
+                                    <telerik:RadEditor runat="server" ID="pContent" Width="100%" Height="700px" ToolsFile="~/FilesResources/ToolContent.xml" Skin="Metro" DialogHandlerUrl="~/Telerik.Web.UI.DialogHandler.axd" AutoResizeHeight="False" ContentFilters="MakeUrlsAbsolute">
+                                        <ImageManager ViewPaths="~/uploads/images/posts" UploadPaths="~/uploads/images/posts" DeletePaths="~/uploads/images/posts" />
                                     </telerik:RadEditor>
                                 </div>
                             </div>
@@ -78,14 +85,27 @@
                                 </div>
                                 <div class="row-right">
                                     <asp:FileUpload runat="server" ID="UploadImages" name="uploadImageGallery" onchange='showImageGallery(this,$(this));' AllowMultiple="true" />  
-                                    
                                     <asp:Literal ID="imageGallery" runat="server"></asp:Literal>
                                 </div>
                             </div>
                             <div class="form-row">
-                                <a href="javascript:;" class="btn primary-btn fw-btn not-fullwidth" onclick="updatePost()">Cập nhật</a>
+                                <a href="javascript:;" class="btn primary-btn fw-btn not-fullwidth" onclick="updatePost()"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Cập nhật</a>
                                 <asp:Button ID="btnSubmit" runat="server" CssClass="btn primary-btn fw-btn not-fullwidth" Text="Cập nhật" OnClick="btnSubmit_Click" Style="display: none" />
                                 <asp:Literal ID="ltrBack" runat="server"></asp:Literal>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="panel panelborderheading">
+                        <div class="panel-heading clear">
+                            <h3 class="page-title left not-margin-bot">Thông tin</h3>
+                        </div>
+                        <div class="panel-body">
+                            <div class="form-row">
+                                <asp:Literal ID="ltrPostInfo" runat="server"></asp:Literal>
+                                <a href="javascript:;" class="btn primary-btn fw-btn not-fullwidth" onclick="updatePost()"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Cập nhật</a>
+                                <asp:Literal ID="ltrBack2" runat="server"></asp:Literal>
                             </div>
                         </div>
                     </div>
@@ -96,16 +116,53 @@
         <asp:HiddenField ID="hdfDeleteImageGallery" runat="server" />
         <asp:HiddenField ID="hdfsetStyle" runat="server" />
         <asp:HiddenField ID="hdfParentID" runat="server" />
-        <asp:HiddenField ID="hdfUserRole" runat="server" />
     </main>
 
     <telerik:RadCodeBlock runat="server">
         <script>
 
+            function redirectTo(ID) {
+                window.location.href = "/xem-bai-viet?id=" + ID;
+            }
+
             var storedFiles = [];
 
             function isBlank(str) {
                 return (!str || /^\s*$/.test(str));
+            }
+
+            function ChangeToSlug() {
+                var title, slug;
+
+                //Lấy text từ thẻ input title 
+                title = $("#<%=txtTitle.ClientID%>").val();
+
+                //Đổi chữ hoa thành chữ thường
+                slug = title.toLowerCase();
+
+                //Đổi ký tự có dấu thành không dấu
+                slug = slug.replace(/á|à|ả|ạ|ã|ă|ắ|ằ|ẳ|ẵ|ặ|â|ấ|ầ|ẩ|ẫ|ậ/gi, 'a');
+                slug = slug.replace(/é|è|ẻ|ẽ|ẹ|ê|ế|ề|ể|ễ|ệ/gi, 'e');
+                slug = slug.replace(/i|í|ì|ỉ|ĩ|ị/gi, 'i');
+                slug = slug.replace(/ó|ò|ỏ|õ|ọ|ô|ố|ồ|ổ|ỗ|ộ|ơ|ớ|ờ|ở|ỡ|ợ/gi, 'o');
+                slug = slug.replace(/ú|ù|ủ|ũ|ụ|ư|ứ|ừ|ử|ữ|ự/gi, 'u');
+                slug = slug.replace(/ý|ỳ|ỷ|ỹ|ỵ/gi, 'y');
+                slug = slug.replace(/đ/gi, 'd');
+                //Xóa các ký tự đặt biệt
+                slug = slug.replace(/\`|\~|\!|\@|\#|\||\$|\%|\^|\&|\*|\(|\)|\+|\=|\,|\.|\/|\?|\>|\<|\'|\"|\:|\;|_/gi, '');
+                //Đổi khoảng trắng thành ký tự gạch ngang
+                slug = slug.replace(/ /gi, "-");
+                //Đổi nhiều ký tự gạch ngang liên tiếp thành 1 ký tự gạch ngang
+                //Phòng trường hợp người nhập vào quá nhiều ký tự trắng
+                slug = slug.replace(/\-\-\-\-\-/gi, '-');
+                slug = slug.replace(/\-\-\-\-/gi, '-');
+                slug = slug.replace(/\-\-\-/gi, '-');
+                slug = slug.replace(/\-\-/gi, '-');
+                //Xóa các ký tự gạch ngang ở đầu và cuối
+                slug = '@' + slug + '@';
+                slug = slug.replace(/\@\-|\-\@|\@/gi, '');
+                //In slug ra textbox có id “slug”
+                $("#<%=txtSlug.ClientID%>").val(slug);
             }
 
             function selectCategory(obj) {
@@ -118,7 +175,8 @@
                     if (lv < lev) {
                         $(this).remove();
                     }
-                })
+                });
+
                 $.ajax({
                     type: "POST",
                     url: "/tao-bai-viet.aspx/getParent",
@@ -130,16 +188,16 @@
                         var html = "";
                         //var sl = "";
                         if (data.length > 0) {
-                            html += "<select class=\"form-control slparent\" style=\"margin-top:15px;\" data-level=" + level + " onchange=\"chooseParent($(this))\">";
-                            html += "<option  value=\"0\">Chọn danh mục</option>";
+                            html += "<select class='form-control slparent' style='margin-top:15px;' data-level='" + level + "' onchange='chooseParent($(this))'>";
+                            html += "<option  value='0'>Chọn danh mục</option>";
                             for (var i = 0; i < data.length; i++) {
-                                html += "<option value=\"" + data[i].ID + "\">" + data[i].CategoryName + "</option>";
+                                html += "<option value='" + data[i].ID + "'>" + data[i].CategoryName + "</option>";
                             }
                             html += "</select>";
                         }
                         $(".parent").append(html);
                     }
-                })
+                });
             }
 
             function showImageGallery(input, obj) {
@@ -159,7 +217,7 @@
 
                         var reader = new FileReader();
                         reader.onload = function (e) {
-                            $(".image-gallery").append("<li><img src='" + e.target.result + "' /><a href='javascript:;' data-image-id='' onclick='deleteImageGallery($(this))' class='btn-delete'><i class=\"fa fa-times\" aria-hidden=\"true\"></i> Xóa hình</a></li>'")
+                            $(".image-gallery").append("<li><img src='" + e.target.result + "' /><a href='javascript:;' data-image-id='' onclick='deleteImageGallery($(this))' class='btn-delete'><i class='fa fa-times' aria-hidden='true'></i> Xóa hình</a></li>")
                             base64 += e.target.result + "|";
                         }
                         reader.readAsDataURL(input.files[i]);
@@ -171,26 +229,27 @@
             }
 
             function updatePost() {
+                var category = $("#<%=ddlCategory.ClientID%>").val();
+                var title = $("#<%=txtTitle.ClientID%>").val();
+                var slug = $("#<%=txtSlug.ClientID%>").val();
 
-                var category = $("#<%=hdfParentID.ClientID%>").val();
-                var title = $("#<%=txtPostTitle.ClientID%>").val();
+                // tạo slug cho trường hợp chưa nhập
+                if (slug == "") {
+                    ChangeToSlug();
+                }
 
-                if (category == "") {
+                if (category == "0") {
                     $("#<%=ddlCategory.ClientID%>").focus();
                     swal("Thông báo", "Chưa chọn danh mục bài viết", "error");
                 }
-                if (title == "") {
-                    $("#<%=txtPostTitle.ClientID%>").focus();
+                else if (title == "") {
+                    $("#<%=txtTitle.ClientID%>").focus();
                     swal("Thông báo", "Chưa nhập tiêu đề bài viết", "error");
                 }
                 else {
                     $("#<%=btnSubmit.ClientID%>").click();
                     HoldOn.open();
                 }
-            }
-
-            function openUploadImage(obj) {
-                obj.parent().find(".productVariableImage").click();
             }
 
             function deleteImageGallery(obj) {
@@ -211,20 +270,6 @@
                         obj.parent().addClass("hide");
                     }
                 });
-            }
-
-            function imagepreview(input, obj) {
-                if (input.files && input.files[0]) {
-                    var reader = new FileReader();
-
-                    reader.onload = function (e) {
-                        obj.parent().find(".imgpreview").attr("src", e.target.result);
-                        obj.parent().find(".imgpreview").attr("data-file-name", obj.parent().find("input:file").val());
-                        obj.parent().find(".btn-delete").removeClass("hide");
-                    }
-
-                    reader.readAsDataURL(input.files[0]);
-                }
             }
 
             function OnClientFileSelected1(sender, args) {

@@ -1,14 +1,14 @@
 ﻿using IM_PJ.Models;
 using MB.Extensions;
-using NHST.Bussiness;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using System.Web;
 using WebUI.Business;
 using System.Text.RegularExpressions;
 using System.Data.Entity.Validation;
+using System.Data.Entity;
+using IM_PJ.Models.Common;
 
 namespace IM_PJ.Controllers
 {
@@ -22,6 +22,7 @@ namespace IM_PJ.Controllers
             {
                 tbl_Customer ui = new tbl_Customer();
                 ui.CustomerName = CustomerName;
+                ui.UnSignedName = UnSign.convert(CustomerName);
                 ui.CustomerPhone = CustomerPhone;
                 ui.CustomerAddress = CustomerAddress;
                 if (!string.IsNullOrEmpty(CustomerEmail))
@@ -42,6 +43,7 @@ namespace IM_PJ.Controllers
                     ui.ProvinceID = Province.ToInt();
 
                 ui.Nick = Nick;
+                ui.UnSignedNick = UnSign.convert(Nick);
 
                 if (!string.IsNullOrEmpty(Avatar))
                     ui.Avatar = Avatar;
@@ -79,6 +81,7 @@ namespace IM_PJ.Controllers
                 if (ui != null)
                 {
                     ui.CustomerName = CustomerName;
+                    ui.UnSignedName = UnSign.convert(CustomerName);
                     ui.CustomerPhone = CustomerPhone;
                     ui.CustomerAddress = CustomerAddress;
                     ui.CustomerEmail = CustomerEmail;
@@ -92,6 +95,7 @@ namespace IM_PJ.Controllers
                     ui.Facebook = Facebook;
                     ui.Note = Note;
                     ui.Nick = Nick;
+                    ui.UnSignedNick = UnSign.convert(Nick);
                     ui.Avatar = Avatar;
                     ui.ShippingType = ShippingType;
                     ui.PaymentType = PaymentType;
@@ -166,7 +170,7 @@ namespace IM_PJ.Controllers
                 if (reader["ID"] != DBNull.Value)
                     entity.ID = reader["ID"].ToString().ToInt(0);
                 if (reader["CustomerName"] != DBNull.Value)
-                    entity.CustomerName = reader["CustomerName"].ToString();
+                    entity.CustomerName = reader["CustomerName"].ToString().ToTitleCase();
                 if (reader["CustomerPhone"] != DBNull.Value)
                     entity.CustomerPhone = reader["CustomerPhone"].ToString();
                 if (reader["CustomerPhone2"] != DBNull.Value)
@@ -174,13 +178,13 @@ namespace IM_PJ.Controllers
                 if (reader["CreatedBy"] != DBNull.Value)
                     entity.CreatedBy = reader["CreatedBy"].ToString();
                 if (reader["CustomerAddress"] != DBNull.Value)
-                    entity.CustomerAddress = reader["CustomerAddress"].ToString();
+                    entity.CustomerAddress = reader["CustomerAddress"].ToString().ToTitleCase();
                 if (reader["Zalo"] != DBNull.Value)
                     entity.Zalo = reader["Zalo"].ToString();
                 if (reader["Facebook"] != DBNull.Value)
                     entity.Facebook = reader["Facebook"].ToString();
                 if (reader["Nick"] != DBNull.Value)
-                    entity.Nick = reader["Nick"].ToString();
+                    entity.Nick = reader["Nick"].ToString().ToTitleCase();
                 if (reader["Province"] != DBNull.Value)
                 {
                     var provinceID = reader["Province"].ToString().ToInt();
@@ -277,48 +281,12 @@ namespace IM_PJ.Controllers
             return list;
         }
 
-        public static List<CustomerOut> Filter(string text, string by, int Province, string CreatedDate, string Sort)
+        public static List<CustomerOut> Filter(string text, string by, int Province, string Sort, DateTime FromDate, DateTime ToDate)
         {
             var result = new List<CustomerOut>();
 
             using (var dbe = new inventorymanagementEntities())
             {
-                DateTime fromdate = DateTime.Today;
-                DateTime todate = DateTime.Now;
-
-                switch (CreatedDate)
-                {
-                    case "today":
-                        fromdate = DateTime.Today;
-                        todate = DateTime.Now;
-                        break;
-                    case "yesterday":
-                        fromdate = fromdate.AddDays(-1);
-                        todate = DateTime.Today;
-                        break;
-                    case "beforeyesterday":
-                        fromdate = DateTime.Today.AddDays(-2);
-                        todate = DateTime.Today.AddDays(-1);
-                        break;
-                    case "week":
-                        int days = DateTime.Today.DayOfWeek == DayOfWeek.Sunday ? 7 : (int)DateTime.Today.DayOfWeek;
-                        fromdate = fromdate.AddDays(-days + 1);
-                        todate = DateTime.Now;
-                        break;
-                    case "month":
-                        fromdate = new DateTime(fromdate.Year, fromdate.Month, 1);
-                        todate = DateTime.Now;
-                        break;
-                    case "7days":
-                        fromdate = DateTime.Today.AddDays(-6);
-                        todate = DateTime.Now;
-                        break;
-                    case "30days":
-                        fromdate = DateTime.Today.AddDays(-29);
-                        todate = DateTime.Now;
-                        break;
-                }
-
                 var customers = dbe.tbl_Customer
                     .Where(
                         x =>
@@ -326,8 +294,8 @@ namespace IM_PJ.Controllers
                         (
                             !string.IsNullOrEmpty(text) &&
                             (
-                                x.CustomerName.Contains(text) ||
-                                x.Nick.Contains(text) ||
+                                x.UnSignedName.Contains(text) ||
+                                x.UnSignedNick.Contains(text) ||
                                 x.CustomerPhone.Contains(text) ||
                                 x.CustomerPhone2.Contains(text) ||
                                 x.CustomerPhoneBackup.Contains(text) ||
@@ -338,7 +306,7 @@ namespace IM_PJ.Controllers
                     )
                     .Where(x => Province <= 0 || (Province > 0 && x.ProvinceID == Province))
                     .Where(x => string.IsNullOrEmpty(by) || (!string.IsNullOrEmpty(by) && x.CreatedBy == by))
-                    .Where(x => string.IsNullOrEmpty(CreatedDate) || (!string.IsNullOrEmpty(CreatedDate) && x.CreatedDate >= fromdate && x.CreatedDate <= todate))
+                    .Where(x => (string.IsNullOrEmpty(FromDate.ToString()) && string.IsNullOrEmpty(ToDate.ToString())) || (!string.IsNullOrEmpty(FromDate.ToString()) && !string.IsNullOrEmpty(ToDate.ToString()) && x.CreatedDate >= FromDate && x.CreatedDate <= ToDate))
                     .OrderBy(x => x.ID);
 
                 // Get customer of province
@@ -357,6 +325,7 @@ namespace IM_PJ.Controllers
                             CustomerName = parent.customer.CustomerName,
                             CustomerPhone = parent.customer.CustomerPhone,
                             CustomerPhone2 = parent.customer.CustomerPhone2,
+                            CustomerAddress = parent.customer.CustomerAddress,
                             Zalo = parent.customer.Zalo,
                             Facebook = parent.customer.Facebook,
                             CreatedDate = parent.customer.CreatedDate.HasValue ? parent.customer.CreatedDate.Value : DateTime.Now,
@@ -375,7 +344,7 @@ namespace IM_PJ.Controllers
                     .ToList();
 
                 // Get info order
-                var orderInfo = dbe.tbl_Order
+                var orderInfo = dbe.tbl_Order.Where(x => x.ExcuteStatus == 2)
                     .Join(
                         customers,
                         order => order.CustomerID,
@@ -507,59 +476,177 @@ namespace IM_PJ.Controllers
 
             return result;
         }
-
-        public static List<CustomerGet> GetNotInGroupByGroupID(int GroupID)
+        public static List<tbl_Customer> Report(string CreatedBy, DateTime fromDate, DateTime toDate)
         {
-            var list = new List<CustomerGet>();
-            var sql = @"SELECT  l.ID, l.CustomerName, l.CustomerPhone, l.CreatedBy FROM tbl_Customer l";
-            sql += " LEFT JOIN (Select UID, CustomerName from tbl_DiscountCustomer where DiscountGroupID = " + GroupID + " ) as r ON  r.UID = l.ID";
-            sql += " WHERE r.UID IS NULL";
+            var result = new List<tbl_Customer>();
 
-            var reader = (IDataReader)SqlHelper.ExecuteDataReader(sql);
-            while (reader.Read())
+            using (var dbe = new inventorymanagementEntities())
             {
-                var entity = new CustomerGet();
-                if (reader["ID"] != DBNull.Value)
-                    entity.ID = reader["ID"].ToString().ToInt(0);
-                if (reader["CustomerName"] != DBNull.Value)
-                    entity.CustomerName = reader["CustomerName"].ToString();
-                if (reader["CustomerPhone"] != DBNull.Value)
-                    entity.CustomerPhone = reader["CustomerPhone"].ToString();
-                if (reader["CreatedBy"] != DBNull.Value)
-                    entity.CreatedBy = reader["CreatedBy"].ToString();
-                list.Add(entity);
+
+                result = dbe.tbl_Customer
+                    .Where(x => string.IsNullOrEmpty(CreatedBy) || (!string.IsNullOrEmpty(CreatedBy) && x.CreatedBy == CreatedBy))
+                    .Where(x => x.CreatedDate >= fromDate && x.CreatedDate <= toDate)
+                    .OrderBy(x => x.CreatedDate)
+                    .ToList();
             }
-            reader.Close();
-            return list;
+            return result;
         }
-        public static List<tbl_Customer> GetInGroupByGroupID(int GroupID)
+        public static List<CustomerModel> GetPotentialCustomers(int discountGroupID, string staffName = "")
         {
-            var list = new List<tbl_Customer>();
-            var sql = @"SELECT  l.ID, l.CustomerName, l.CustomerPhone, l.Nick, l.CreatedBy, r.CreatedDate as CreatedDate FROM tbl_Customer l";
-            sql += " LEFT JOIN (Select UID, CustomerName, CreatedDate from tbl_DiscountCustomer where DiscountGroupID = " + GroupID + " ) as r ON  r.UID = l.ID";
-            sql += " WHERE r.UID IS NOT NULL";
-
-            var reader = (IDataReader)SqlHelper.ExecuteDataReader(sql);
-            while (reader.Read())
+            using (var con = new inventorymanagementEntities())
             {
-                var entity = new tbl_Customer();
-                if (reader["ID"] != DBNull.Value)
-                    entity.ID = reader["ID"].ToString().ToInt(0);
-                if (reader["Nick"] != DBNull.Value)
-                    entity.Nick = reader["Nick"].ToString();
-                if (reader["CustomerName"] != DBNull.Value)
-                    entity.CustomerName = reader["CustomerName"].ToString();
-                if (reader["CustomerPhone"] != DBNull.Value)
-                    entity.CustomerPhone = reader["CustomerPhone"].ToString();
-                if (reader["CreatedBy"] != DBNull.Value)
-                    entity.CreatedBy = reader["CreatedBy"].ToString();
-                if (reader["CreatedDate"] != DBNull.Value)
-                    entity.CreatedDate = Convert.ToDateTime(reader["CreatedDate"]);
-                list.Add(entity);
+                #region Lọc ra các khách hàng tìm năng do nhân viên đó khởi tạo
+                var customerInGroup = con.tbl_Customer
+                    .Join(
+                        con.tbl_DiscountCustomer.Where(x => x.DiscountGroupID.Value == discountGroupID),
+                        c => c.ID,
+                        dc => dc.UID,
+                        (c, dc) => c
+                    );
+                var potentialCustomer = con.tbl_Customer
+                    .Except(customerInGroup)
+                    .OrderByDescending(o => o.ID)
+                    .ToList();
+
+                if (!String.IsNullOrEmpty(staffName) && staffName != "admin")
+                {
+                    potentialCustomer = potentialCustomer.Where(x => x.CreatedBy == staffName).ToList();
+                }
+                #endregion
+
+                if (!String.IsNullOrEmpty(staffName) && staffName != "admin")
+                {
+                    #region Lấy ra những đơn hàng mà khách hạng đạt tiêu chuẩn để join vô group
+                    var quanlityOrder = OrderController.getOrderQualifiedOfDiscountGroup(discountGroupID);
+                    if (quanlityOrder == null)
+                        return null;
+
+                    var customerOrdered = quanlityOrder
+                        .GroupBy(g => g.CustomerID)
+                        .Select(x => new { customerID = x.Key })
+                        .OrderByDescending(o => o.customerID)
+                        .ToList();
+                    #endregion
+
+                    potentialCustomer = potentialCustomer
+                        .Join(
+                            customerOrdered,
+                            pc => pc.ID,
+                            co => co.customerID,
+                            (pc, co) => pc
+                        )
+                        .ToList();
+                }
+
+                var discount = con.tbl_DiscountCustomer
+                    .Join(
+                        con.tbl_DiscountGroup,
+                        dc => dc.DiscountGroupID,
+                        dg => dg.ID,
+                        (dc, dg) => new
+                        {
+                            customerID = dc.UID,
+                            discountGroupID = dg.ID,
+                            discountGroupName = dg.DiscountName
+                        }
+                    )
+                    .ToList();
+
+                var data = potentialCustomer
+                    .GroupJoin(
+                        discount,
+                        c => c.ID,
+                        d => d.customerID,
+                        (c, d) => new { customer = c, discount = d}
+                    )
+                    .SelectMany(
+                        x => x.discount.DefaultIfEmpty(),
+                        (parent, child) => new CustomerModel()
+                        {
+                            ID = parent.customer.ID,
+                            FullName = parent.customer.CustomerName,
+                            Nick = parent.customer.Nick,
+                            Phone = !String.IsNullOrEmpty(parent.customer.CustomerPhone) ?
+                                parent.customer.CustomerPhone :
+                                !String.IsNullOrEmpty(parent.customer.CustomerPhone2) ? parent.customer.CustomerPhone2 : parent.customer.CustomerPhoneBackup,
+                            Address = parent.customer.CustomerAddress,
+                            Zalo = parent.customer.Zalo,
+                            Facebook = parent.customer.Facebook,
+                            StaffName = parent.customer.CreatedBy,
+                            DiscountGroup = child != null ?
+                                new DiscountGroupModel() { ID = child.discountGroupID, Name = child.discountGroupName } : null
+                        }
+                    )
+                    .OrderByDescending(o => o.ID)
+                    .ToList();
+
+                return data;
             }
-            reader.Close();
-            return list;
         }
+        public static List<CustomerModel> getByDiscountGroupID(int discountGroupID, string CreatedBy)
+        {
+            using (var con = new inventorymanagementEntities())
+            {
+                #region Lọc ra khách hàng trong group
+                var customer = con.tbl_Customer.Where(x => 1 == 1);
+                if (!string.IsNullOrEmpty(CreatedBy))
+                {
+                    customer = customer.Where(x => x.CreatedBy == CreatedBy);
+                }
+                var customerInGroup = customer
+                    .Join(
+                        con.tbl_DiscountCustomer.Where(x => x.DiscountGroupID.Value == discountGroupID),
+                        c => c.ID,
+                        dc => dc.UID,
+                        (c, dc) => c
+                    );
+                #endregion
+
+                #region Lấy thông tin nhóm chiết khấu
+                var discount = con.tbl_DiscountGroup.Where(x => x.ID == discountGroupID);
+                #endregion
+
+                var data = con.tbl_DiscountCustomer
+                    .Where(x => x.DiscountGroupID.Value == discountGroupID)
+                    .Join(
+                        customerInGroup,
+                        dc => dc.UID,
+                        c => c.ID,
+                        (dc, c) => new { customer = c, disCustomer = dc }
+                    )
+                    .Join(
+                        discount,
+                        tem => tem.disCustomer.DiscountGroupID.Value,
+                        d => d.ID,
+                        (tem, d) => new { customer = tem.customer, discount = d, disCustomer = tem.disCustomer }
+                    )
+                    .Select(x => new CustomerModel()
+                    {
+                        ID = x.customer.ID,
+                        FullName = x.customer.CustomerName,
+                        Nick = x.customer.Nick,
+                        Phone = !String.IsNullOrEmpty(x.customer.CustomerPhone) ?
+                                x.customer.CustomerPhone :
+                                !String.IsNullOrEmpty(x.customer.CustomerPhone2) ? x.customer.CustomerPhone2 : x.customer.CustomerPhoneBackup,
+                        Address = x.customer.CustomerAddress,
+                        Zalo = x.customer.Zalo,
+                        Facebook = x.customer.Facebook,
+                        StaffName = x.customer.CreatedBy,
+                        DiscountGroup = new DiscountGroupModel()
+                        {
+                            ID = x.discount.ID,
+                            Name = x.discount.DiscountName,
+                            DateJoined = x.disCustomer.CreatedDate.Value,
+                            StaffName = x.disCustomer.CreatedBy,
+                            VerifyOrder = x.disCustomer.VerifyOrder.HasValue ? x.disCustomer.VerifyOrder.Value : 0
+                        }
+                    })
+                    .ToList();
+
+                return data;
+            }
+        }
+
         public static List<tbl_Customer> GetBylevelID(int LevelID)
         {
             using (var dbe = new inventorymanagementEntities())
@@ -610,16 +697,41 @@ namespace IM_PJ.Controllers
                 return or;
             }
         }
-        #endregion
-        #region Class
-        public class CustomerGet
+
+        public static List<RefundInfo> getRefundQuantity(int? customerID, DateTime? fromDate, DateTime? toDate)
         {
-            public int ID { get; set; }
-            public string CustomerName { get; set; }
-            public string CustomerPhone { get; set; }
-            public string CreatedBy { get; set; }
+            using (var con = new inventorymanagementEntities())
+            {
+                var refund = con.tbl_RefundGoodsDetails.Where(x => 1 == 1);
+
+                if(customerID.HasValue)
+                    refund = refund.Where(x => x.CustomerID == customerID);
+
+                if (fromDate.HasValue)
+                    refund = refund.Where(x => DbFunctions.TruncateTime(x.CreatedDate) >= fromDate);
+
+                if (toDate.HasValue)
+                    refund = refund.Where(x => DbFunctions.TruncateTime(x.CreatedDate) <= toDate);
+
+                return refund.GroupBy(g => g.CustomerID.Value)
+                    .Select(x => new RefundInfo()
+                    {
+                        customerID = x.Key,
+                        refundNoFeeQuantity = x.Sum(s => 
+                            (s.TotalRefundFee == "0" && s.RefundType == 2) ? (s.Quantity.HasValue ? s.Quantity.Value : 0) : 0
+                        ),
+                        refundFeeQuantity = x.Sum(s => 
+                            !(s.TotalRefundFee == "0" && s.RefundType == 2) ? (s.Quantity.HasValue ? s.Quantity.Value : 0) : 0
+                        )
+                    })
+                    .OrderBy(o => o.customerID)
+                    .ToList();
+            }
         }
 
+        #endregion
+        
+        #region Class
         public class CustomerOut
         {
             public int ID { get; set; }
@@ -646,6 +758,13 @@ namespace IM_PJ.Controllers
             public int TotalOrder { get; set; }
             public double TotalQuantity { get; set; }
             public string ProvinceName { get; set; }
+        }
+
+        public class RefundInfo
+        {
+            public int customerID { get; set; }
+            public double refundNoFeeQuantity { get; set; }
+            public double refundFeeQuantity { get; set; }
         }
         #endregion
     }

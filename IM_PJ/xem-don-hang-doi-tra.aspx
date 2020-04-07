@@ -2,7 +2,7 @@
 
 <%@ Register Assembly="Telerik.Web.UI" Namespace="Telerik.Web.UI" TagPrefix="telerik" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
-    <script src="/App_Themes/Ann/js/search-customer.js?v=2110"></script>
+    <script src="/App_Themes/Ann/js/search-customer.js?v=02042020"></script>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <asp:Panel ID="parent" runat="server">
@@ -12,12 +12,12 @@
                     <div class="col-md-12">
                         <div class="panel panelborderheading">
                             <div class="panel-heading clear">
-                                <h3 class="page-title left not-margin-bot">Thông tin đơn hàng đổi trả #<asp:Literal ID="ltrOrderID" runat="server"></asp:Literal></h3>
+                                <h3 class="page-title left not-margin-bot"><asp:Literal ID="ltrHeading" runat="server"></asp:Literal></h3>
                             </div>
                             <div class="panel-body">
                                 <div class="row pad">
                                     <div class="col-md-3">
-                                        <label class="left pad10">Nhân viên tạo đơn: </label>
+                                        <label class="left pad10">Nhân viên: </label>
                                         <div class="ordercreateby">
                                             <asp:Literal ID="ltrCreateBy" runat="server"></asp:Literal>
                                         </div>
@@ -29,7 +29,7 @@
                                         </div>
                                     </div>
                                     <div class="col-md-3">
-                                        <label class="left pad10">Trạng thái: </label>
+                                        <label class="left pad10"></label>
                                         <div class="orderstatus">
                                             <asp:Literal ID="ltrOrderStatus" runat="server"></asp:Literal>
                                         </div>
@@ -117,22 +117,24 @@
                                     </tbody>
                                 </table>
                             </div>
-                            <div class="post-row clear">
-                                <div class="left">Tổng cộng</div>
-                                <div class="right totalpriceorder">
-                                    <asp:Literal ID="ltrTotal" runat="server"></asp:Literal>
+                            <div class="post-footer">
+                                <div class="post-row clear">
+                                    <div class="left">Số lượng</div>
+                                    <div class="right totalproductQuantity">
+                                        <asp:Literal ID="ltrQuantity" runat="server"></asp:Literal>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="post-row clear">
-                                <div class="left">Tổng số lượng sản phẩm</div>
-                                <div class="right totalproductQuantity">
-                                    <asp:Literal ID="ltrQuantity" runat="server"></asp:Literal>
+                                <div class="post-row clear">
+                                    <div class="left">Phí đổi hàng</div>
+                                    <div class="right totalrefund">
+                                        <asp:Literal ID="ltrRefund" runat="server"></asp:Literal>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="post-row clear">
-                                <div class="left">Phí đổi hàng</div>
-                                <div class="right totalrefund">
-                                    <asp:Literal ID="ltrRefund" runat="server"></asp:Literal>
+                                <div class="post-row clear">
+                                    <div class="left">Tổng tiền (đã trừ phí)</div>
+                                    <div class="right totalpriceorder">
+                                        <asp:Literal ID="ltrTotal" runat="server"></asp:Literal>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -142,7 +144,7 @@
                     <div class="col-md-12">
                         <div class="panel panelborderheading">
                             <div class="panel-heading clear">
-                                <h3 class="page-title left not-margin-bot">Thông tin trạng thái đơn hàng đổi trả</h3>
+                                <h3 class="page-title left not-margin-bot">Trạng thái đơn hàng</h3>
                             </div>
                             <div class="panel-body">
                                 <div class="form-row">
@@ -193,6 +195,7 @@
                     </div>
                 </div>
             </div>
+            <asp:HiddenField ID="hdfCustomerID" runat="server" />
         </main>
     </asp:Panel>
     <style>
@@ -249,5 +252,18 @@
                 $("#<%=btnDelete.ClientID%>").click();
             });
         }
+
+        // format price
+        function formatThousands(n, dp) {
+            var s = '' + (Math.floor(n)),
+                d = n % 1,
+                i = s.length,
+                r = '';
+            while ((i -= 3) > 0) {
+                r = ',' + s.substr(i, 3) + r;
+            }
+            return s.substr(0, i + 3) + r +
+                (d ? '.' + Math.round(d * Math.pow(10, dp || 2)) : '');
+        };
     </script>
 </asp:Content>

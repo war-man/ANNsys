@@ -1,5 +1,6 @@
 ﻿using IM_PJ.Controllers;
 using IM_PJ.Models;
+using IM_PJ.Utils;
 using MB.Extensions;
 using NHST.Bussiness;
 using System;
@@ -23,9 +24,9 @@ namespace IM_PJ
         {
             if (!IsPostBack)
             {
-                if (Request.Cookies["userLoginSystem"] != null)
+                if (Request.Cookies["usernameLoginSystem"] != null)
                 {
-                    string username = Request.Cookies["userLoginSystem"].Value;
+                    string username = Request.Cookies["usernameLoginSystem"].Value;
                     var acc = AccountController.GetByUsername(username);
                     if (acc != null)
                     {
@@ -54,7 +55,7 @@ namespace IM_PJ
         public static string getProduct(string textsearch, int gettotal)
         {
             List<ProductGetOut> ps = new List<ProductGetOut>();
-            string username = HttpContext.Current.Request.Cookies["userLoginSystem"].Value;
+            string username = HttpContext.Current.Request.Cookies["usernameLoginSystem"].Value;
             var acc = AccountController.GetByUsername(username);
             if (acc != null)
             {
@@ -100,18 +101,13 @@ namespace IM_PJ
 
                                 if (!string.IsNullOrEmpty(pv.Image))
                                 {
-                                    p.ProductImage = "<img src=\"" + pv.Image + "\" />";
-                                    p.ProductImageOrigin = pv.Image;
+                                    p.ProductImage = "<img src='" + Thumbnail.getURL(pv.Image, Thumbnail.Size.Normal) + "'>";
+                                    p.ProductImageOrigin = Thumbnail.getURL(pv.Image, Thumbnail.Size.Source);
                                 }
                                 else if (!string.IsNullOrEmpty(product.ProductImage))
                                 {
-                                    p.ProductImage = "<img src=\"" + product.ProductImage + "\" />";
-                                    p.ProductImageOrigin = product.ProductImage;
-                                }
-                                else
-                                {
-                                    p.ProductImage = "<img src=\"/App_Themes/Ann/image/placeholder.png\" />";
-                                    p.ProductImageOrigin = "";
+                                    p.ProductImage = "<img src='" + Thumbnail.getURL(product.ProductImage, Thumbnail.Size.Normal) + "'>";
+                                    p.ProductImageOrigin = Thumbnail.getURL(product.ProductImage, Thumbnail.Size.Source);
                                 }
 
                                 if (gettotal == 1)
@@ -146,18 +142,8 @@ namespace IM_PJ
                         p.ProductVariableName = "";
                         p.ProductVariableValue = "";
                         p.ProductType = 1;
-
-                        if (!string.IsNullOrEmpty(product.ProductImage))
-                        {
-                            p.ProductImage = "<img src=\"" + product.ProductImage + "\" />";
-                            p.ProductImageOrigin = product.ProductImage;
-                        }
-                        else
-                        {
-                            p.ProductImage = "<img src=\"/App_Themes/Ann/image/placeholder.png\" />";
-                            p.ProductImageOrigin = "";
-                        }
-
+                        p.ProductImage = "<img src='" + Thumbnail.getURL(product.ProductImage, Thumbnail.Size.Normal) + "'>";
+                        p.ProductImageOrigin = Thumbnail.getURL(product.ProductImage, Thumbnail.Size.Source);
                         p.SKU = SKU;
                         p.QuantityMainInstock = mainstock;
                         p.QuantityMainInstockString = string.Format("{0:N0}", mainstock);
@@ -213,18 +199,13 @@ namespace IM_PJ
 
                             if (!string.IsNullOrEmpty(productvariable.Image))
                             {
-                                p.ProductImage = "<img src=\"" + productvariable.Image + "\" />";
-                                p.ProductImageOrigin = productvariable.Image;
+                                p.ProductImage = "<img src='" + Thumbnail.getURL(productvariable.Image, Thumbnail.Size.Normal) + "'>";
+                                p.ProductImageOrigin = Thumbnail.getURL(productvariable.Image, Thumbnail.Size.Source);
                             }
                             else if (_product != null && !string.IsNullOrEmpty(_product.ProductImage))
                             {
-                                p.ProductImage = "<img src=\"" + _product.ProductImage + "\" />";
-                                p.ProductImageOrigin = _product.ProductImage;
-                            }
-                            else
-                            {
-                                p.ProductImage = "<img src=\"/App_Themes/Ann/image/placeholder.png\" />";
-                                p.ProductImageOrigin = "";
+                                p.ProductImage = "<img src='" + Thumbnail.getURL(_product.ProductImage, Thumbnail.Size.Normal) + "'>";
+                                p.ProductImageOrigin = Thumbnail.getURL(_product.ProductImage, Thumbnail.Size.Source);
                             }
 
                             p.SKU = SKU;
@@ -275,7 +256,10 @@ namespace IM_PJ
             string[] list = hdfListProduct.Value.Split(';');
             if (list.Count() > 0)
             {
-                productPrint += "<div class=\"qcode\">";
+                var temps = new List<String>();
+                productPrint += "<div class='qcode {0}'>";
+                int[] categoryIDs = new int[] { 44 };
+                bool isCol4 = true;
                 for (int i = 0; i < list.Length - 1; i++)
                 {
                   
@@ -283,21 +267,36 @@ namespace IM_PJ
                     int quantity = list2[2].ToInt();
                     for (int j = 0; j < quantity; j++)
                     {
-                        barcodeValue = list2[1];
+                        var variable = ProductVariableController.GetBySKU(list2[1]);
+                        if (variable != null)
+                        {
+                            var product = ProductController.GetByID(variable.ProductID.Value);
+                            isCol4 = categoryIDs.Contains(product.CategoryID.Value);
+                        }
+                        else
+                        {
+                            var product = ProductController.GetBySKU(list2[1]);
+                            isCol4 = categoryIDs.Contains(product.CategoryID.Value);
+                        }
 
-                        barcodeImage = "/uploads/barcodes/" + barcodeValue + ".png";
+                        barcodeValue = list2[1];
+                        var imageName = String.Format("{0}{1}.png", DateTime.UtcNow.ToString("yyyyMMddHHmmss"), Guid.NewGuid());
+                        barcodeImage = "/uploads/barcodes/" + imageName;
 
                         System.Drawing.Image barCode = PJUtils.MakeBarcodeImage(barcodeValue, 2,true);
 
                         barCode.Save(HttpContext.Current.Server.MapPath("" + barcodeImage + ""), ImageFormat.Png);
 
-                        productPrint += "<div class=\"item\">";
-                        productPrint += "<div class=\"img\"><img src=\"data:image/png;base64, " + Convert.ToBase64String(File.ReadAllBytes(Server.MapPath("" + barcodeImage + ""))) + "\"></div>";
+                        productPrint += "<div class='item'>";
+                        productPrint += "<div class='img'><img src='data:image/png;base64, " + Convert.ToBase64String(File.ReadAllBytes(Server.MapPath("" + barcodeImage + ""))) + "'></div>";
                         productPrint += "<div><h1>" + barcodeValue + "</h1></div>";
                         productPrint += "</div>";
+
+                        temps.Add(imageName);
                     }
                 }
                 productPrint += "</div>";
+                productPrint = String.Format(productPrint, isCol4 ? "col-4" : "");
                 string html = "";
                 html += productPrint;
                 ltrprint.Text = html;
@@ -306,7 +305,13 @@ namespace IM_PJ
                 string[] filePaths = Directory.GetFiles(Server.MapPath("/uploads/barcodes/"));
                 foreach (string filePath in filePaths)
                 {
-                    File.Delete(filePath);
+                    foreach (var item in temps)
+                    {
+                        if (filePath.EndsWith(item))
+                        {
+                            File.Delete(filePath);
+                        }
+                    }
                 }
                 ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "script", "$(function () { printBarcode() });", true);
             }

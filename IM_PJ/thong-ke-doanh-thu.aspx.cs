@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -12,11 +13,17 @@ namespace IM_PJ
     {
         protected void Page_Load(object sender, EventArgs e)
         {
+            var config = ConfigController.GetByTop1();
+            if (config.ViewAllReports == 0)
+            {
+                Response.Redirect("/trang-chu");
+            }
+
             if (!IsPostBack)
             {
-                if (Request.Cookies["userLoginSystem"] != null)
+                if (Request.Cookies["usernameLoginSystem"] != null)
                 {
-                    string username = Request.Cookies["userLoginSystem"].Value;
+                    string username = Request.Cookies["usernameLoginSystem"].Value;
                     var acc = AccountController.GetByUsername(username);
                     if (acc != null)
                     {
@@ -54,22 +61,76 @@ namespace IM_PJ
 
             int day = Convert.ToInt32((todate - fromdate).TotalDays);
 
-            var od = OrderController.GetProfitReport(fromdate, todate);
+            var reportModel = OrderController.GetProfitReport(fromdate, todate);
 
-            double TotalSale = od.TotalSalePrice - od.TotalRefundPrice - od.TotalSaleDiscount;
+            double TotalSalePrice = reportModel.Sum(x => x.TotalSalePrice);
+            double TotalRefundPrice = reportModel.Sum(x => x.TotalRefundPrice);
+            double TotalSaleDiscount = reportModel.Sum(x => x.TotalSaleDiscount);
 
-            ltrTotalNumberOfOrder.Text =  od.TotalNumberOfOrder.ToString() + " đơn";
-            ltrNumberOfOrderPerDay.Text = (od.TotalNumberOfOrder / day).ToString() + " đơn / ngày";
-            ltrTotalRevenue.Text = string.Format("{0:N0}", TotalSale) + "đ";
-            ltrAverageRevenue.Text = string.Format("{0:N0}", TotalSale / day) + "đ / ngày";
+            double TotalSale = TotalSalePrice - TotalRefundPrice - TotalSaleDiscount;
+            int TotalNumberOfOrder = reportModel.Sum(x => x.TotalNumberOfOrder);
 
-            if (od.TotalNumberOfOrder == 0)
+            ltrTotalNumberOfOrder.Text = TotalNumberOfOrder.ToString() + " đơn";
+            ltrNumberOfOrderPerDay.Text = (TotalNumberOfOrder / day).ToString() + " đơn/ngày";
+            ltrTotalRevenue.Text = string.Format("{0:N0}", TotalSale);
+            ltrAverageRevenue.Text = string.Format("{0:N0}", TotalSale / day) + "đ/ngày";
+
+            if (TotalNumberOfOrder == 0)
             {
                 ltrRevenuePerOrder.Text = "0";
             }
             else
             {
-                ltrRevenuePerOrder.Text = string.Format("{0:N0}", TotalSale / od.TotalNumberOfOrder) + "đ / đơn";
+                ltrRevenuePerOrder.Text = string.Format("{0:N0}", TotalSale / TotalNumberOfOrder) + "đ/đơn";
+            }
+
+
+            if (day > 1)
+            {
+                string chartLabelDays = "";
+                string chartTotalSalePrice = "";
+                string chartTotalNumberOfOrder = "";
+
+                List<string> dataDays = new List<string>();
+                List<string> dataTotalSalePrice = new List<string>();
+                List<string> dataTotalNumberOfOrder = new List<string>();
+
+                foreach (var item in reportModel)
+                {
+                    dataDays.Add(String.Format("'{0:d/M}'", item.DateDone));
+
+                    dataTotalSalePrice.Add((item.TotalSalePrice).ToString());
+
+                    dataTotalNumberOfOrder.Add((item.TotalNumberOfOrder).ToString());
+                }
+
+                chartLabelDays = String.Join(", ", dataDays);
+                chartTotalSalePrice = String.Join(", ", dataTotalSalePrice);
+                chartTotalNumberOfOrder = String.Join(", ", dataTotalNumberOfOrder);
+
+                StringBuilder html = new StringBuilder();
+                html.Append("<script>");
+                html.Append("var lineChartData = {");
+                html.Append("	labels: [" + chartLabelDays + "],");
+                html.Append("	datasets: [{");
+                html.Append("		label: 'Doanh thu',");
+                html.Append("		borderColor: 'rgb(255, 99, 132)',");
+                html.Append("		backgroundColor: 'rgb(255, 99, 132)',");
+                html.Append("		fill: false,");
+                html.Append("		data: [" + chartTotalSalePrice + "],");
+                html.Append("		yAxisID: 'y-axis-1',");
+                html.Append("	}, {");
+                html.Append("		label: 'Số đơn',");
+                html.Append("		borderColor: 'rgb(54, 162, 235)',");
+                html.Append("		backgroundColor: 'rgb(54, 162, 235)',");
+                html.Append("		fill: false,");
+                html.Append("		data: [" + chartTotalNumberOfOrder + "],");
+                html.Append("		yAxisID: 'y-axis-2'");
+                html.Append("	}]");
+                html.Append("};");
+                html.Append("</script>");
+
+                ltrChartData.Text = html.ToString();
             }
         }
         protected void btnSearch_Click(object sender, EventArgs e)

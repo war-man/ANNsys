@@ -13,22 +13,20 @@ namespace IM_PJ.Controllers
     public class DiscountCustomerController
     {
         #region CRUD
-        public static string Insert(int DiscountGroupID, int UID, string CustomerName, string customerPhone, bool IsHidden, DateTime CreatedDate, string CreatedBy)
+        public static void Insert(tbl_DiscountCustomer data)
         {
-            using (var dbe = new inventorymanagementEntities())
+            using (var con = new inventorymanagementEntities())
             {
-                tbl_DiscountCustomer ui = new tbl_DiscountCustomer();
-                ui.DiscountGroupID = DiscountGroupID;
-                ui.UID = UID;
-                ui.CustomerName = CustomerName;
-                ui.CustomerPhone = customerPhone;
-                ui.IsHidden = IsHidden;
-                ui.CreatedDate = CreatedDate;
-                ui.CreatedBy = CreatedBy;
-                dbe.tbl_DiscountCustomer.Add(ui);
-                dbe.SaveChanges();
-                int kq = ui.ID;
-                return kq.ToString();
+                var dataOld = con.tbl_DiscountCustomer
+                    .Where(x => x.UID == data.UID)
+                    .FirstOrDefault();
+
+                // Kiểm tra nếu khách hàng ở nhóm khác thì xóa khách ở nhóm đó đi để chuyển qua nhóm mới
+                if (dataOld != null)
+                    con.tbl_DiscountCustomer.Remove(dataOld);
+
+                con.tbl_DiscountCustomer.Add(data);
+                con.SaveChanges();
             }
         }
         public static string UpdateIsHidden(int ID, bool IsHidden, DateTime ModifiedDate, string ModifiedBy)
@@ -48,11 +46,11 @@ namespace IM_PJ.Controllers
                     return null;
             }
         }
-        public static string Delete(int ID)
+        public static string Delete(int customerID)
         {
             using (var dbe = new inventorymanagementEntities())
             {
-                tbl_DiscountCustomer ui = dbe.tbl_DiscountCustomer.Where(a => a.UID == ID).SingleOrDefault();
+                tbl_DiscountCustomer ui = dbe.tbl_DiscountCustomer.Where(a => a.UID == customerID).SingleOrDefault();
                 if (ui != null)
                 {
                     dbe.tbl_DiscountCustomer.Remove(ui);
@@ -89,39 +87,70 @@ namespace IM_PJ.Controllers
         }
         public static List<DiscountCustomerGet> getbyCustID(int CustID)
         {
-            List<DiscountCustomerGet> list = new List<DiscountCustomerGet>();
-            var sql = @"select r.discountgroupid as DiscountGroupID,r.uid as CustID,r.customername as CustName,d.discountName as DiscountName, d.discountamount as DiscountAmount, d.DiscountAmountPercent as DiscountAmountPercent, d.FeeRefund, d.NumOfDateToChangeProduct, d.NumOfProductCanChange from tbl_DiscountCustomer as r";
-            sql += " left join tbl_DiscountGroup as d on d.ID = r.DiscountGroupID";
-            sql += " where r.UID = " + CustID + " and r.IsHidden = 0";
-            sql += "order by d.discountamount desc";
-
-            var reader = (IDataReader)SqlHelper.ExecuteDataReader(sql);
-            while (reader.Read())
+            using (var con = new inventorymanagementEntities())
             {
-                var entity = new DiscountCustomerGet();
-                if (reader["DiscountGroupID"] != DBNull.Value)
-                    entity.DiscountGroupID = reader["DiscountGroupID"].ToString().ToInt(0);
-                if (reader["CustID"] != DBNull.Value)
-                    entity.CustID = reader["CustID"].ToString().ToInt(0);
-                if (reader["DiscountName"] != DBNull.Value)
-                    entity.DiscountName = reader["DiscountName"].ToString();
-                if (reader["CustName"] != DBNull.Value)
-                    entity.CustName = reader["CustName"].ToString();
-                if (reader["DiscountAmount"] != DBNull.Value)
-                    entity.DiscountAmount = Convert.ToDouble(reader["DiscountAmount"].ToString().ToFloat(0));
-                if (reader["DiscountAmountPercent"] != DBNull.Value)
-                    entity.DiscountAmountPercent = Convert.ToDouble(reader["DiscountAmountPercent"].ToString().ToFloat(0));
+                #region Filter khách hàng
+                var customer = con.tbl_DiscountCustomer
+                    .Where(x => x.UID == CustID)
+                    .Where(x => x.IsHidden.HasValue && x.IsHidden.Value == false)
+                    .OrderBy(o => o.DiscountGroupID);
+                #endregion
 
-                if (reader["FeeRefund"] != DBNull.Value)
-                    entity.FeeRefund = Convert.ToDouble(reader["FeeRefund"].ToString().ToFloat(0));
-                if (reader["NumOfDateToChangeProduct"] != DBNull.Value)
-                    entity.NumOfDateToChangeProduct = Convert.ToDouble(reader["NumOfDateToChangeProduct"].ToString().ToFloat(0));
-                if (reader["NumOfProductCanChange"] != DBNull.Value)
-                    entity.NumOfProductCanChange = Convert.ToDouble(reader["NumOfProductCanChange"].ToString().ToFloat(0));
-                list.Add(entity);
+                #region Lấy thông tin nhóm chiết khấu
+                var discount = con.tbl_DiscountGroup
+                    .Join(
+                        customer.Where(x => x.DiscountGroupID.HasValue),
+                        d => d.ID,
+                        c => c.DiscountGroupID.Value,
+                        (d, c) => d
+                    )
+                    .OrderByDescending(o => o.DiscountAmount);
+                #endregion
+
+                var data = customer
+                    .GroupJoin(
+                        discount,
+                        c => c.DiscountGroupID,
+                        d => d.ID,
+                        (c, d) => new { customer = c, discount = d }
+                    )
+                    .SelectMany(
+                        x => x.discount.DefaultIfEmpty(),
+                        (parent, child) => new
+                        {
+                            DiscountGroupID = child != null ? child.ID : 0,
+                            DiscountName = child != null ? child.DiscountName : "",
+                            CustID = parent.customer.ID,
+                            CustName = parent.customer.CustomerName,
+                            DiscountAmount = child != null ? (child.DiscountAmount.HasValue ? child.DiscountAmount.Value : 0) : 0,
+                            QuantityProduct = child != null ? (child.QuantityProduct.HasValue ? child.QuantityProduct.Value : 0) : 0,
+                            DiscountAmountPercent = child != null ? (child.DiscountAmountPercent.HasValue ? child.DiscountAmountPercent.Value : 0) : 0,
+                            FeeRefund = child != null ? (child.FeeRefund.HasValue ? child.FeeRefund.Value : 0) : 0,
+                            NumOfDateToChangeProduct = child != null ? (child.NumOfDateToChangeProduct.HasValue ? child.NumOfDateToChangeProduct.Value : 0) : 0,
+                            NumOfProductCanChange = child != null ? (child.NumOfProductCanChange.HasValue ? child.NumOfProductCanChange.Value : 0) : 0,
+                            RefundQuantityNoFee = child != null ? (child.RefundQuantityNoFee.HasValue ? child.RefundQuantityNoFee.Value : 0) : 0,
+                        }
+                    )
+                    .ToList();
+
+                return data
+                    .Select(x => new DiscountCustomerGet()
+                    {
+                        DiscountGroupID = x.DiscountGroupID,
+                        DiscountName = x.DiscountName,
+                        CustID = x.CustID,
+                        CustName = x.CustName,
+                        DiscountAmount = x.DiscountAmount,
+                        QuantityProduct = x.QuantityProduct,
+                        DiscountAmountPercent = x.DiscountAmountPercent,
+                        FeeRefund = x.FeeRefund,
+                        NumOfDateToChangeProduct = x.NumOfDateToChangeProduct,
+                        NumOfProductCanChange = x.NumOfProductCanChange,
+                        RefundQuantityNoFee = x.RefundQuantityNoFee,
+                    })
+                    .OrderByDescending(o => o.DiscountAmount)
+                    .ToList();
             }
-            reader.Close();
-            return list;
         }
         public static List<tbl_DiscountCustomer> GetByGroupID(int DiscountGroupID)
         {
@@ -140,10 +169,27 @@ namespace IM_PJ.Controllers
             public string DiscountName { get; set; }
             public string CustName { get; set; }
             public double DiscountAmount { get; set; }
+            public int QuantityProduct { get; set; }
             public double DiscountAmountPercent { get; set; }
             public double FeeRefund { get; set; }
             public double NumOfDateToChangeProduct { get; set; }
             public double NumOfProductCanChange { get; set; }
+            public int RefundQuantityNoFee { get; set; }
+        }
+
+        public static List<tbl_DiscountCustomer> getByDiscountGroup(List<tbl_DiscountGroup> groups)
+        {
+            using (var con = new inventorymanagementEntities())
+            {
+                var groupIDs = groups.Select(x => x.ID).ToList();
+
+                var customers = con.tbl_DiscountCustomer
+                    .Where(x => x.DiscountGroupID.HasValue)
+                    .Where(x => groupIDs.Contains(x.DiscountGroupID.Value))
+                    .ToList();
+
+                return customers;
+            }
         }
     }
 }

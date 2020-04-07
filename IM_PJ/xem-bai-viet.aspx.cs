@@ -19,14 +19,13 @@ namespace IM_PJ
         {
             if (!IsPostBack)
             {
-                if (Request.Cookies["userLoginSystem"] != null)
+                if (Request.Cookies["usernameLoginSystem"] != null)
                 {
-                    string username = Request.Cookies["userLoginSystem"].Value;
+                    string username = Request.Cookies["usernameLoginSystem"].Value;
                     var acc = AccountController.GetByUsername(username);
                     if (acc != null)
                     {
-                        ViewState["role"] = acc.RoleID;
-                        LoadData(Convert.ToInt32(acc.RoleID));
+                        LoadData();
                     }
                 }
                 else
@@ -35,8 +34,11 @@ namespace IM_PJ
                 }
             }
         }
-        public void LoadData(int userRole)
+        public void LoadData()
         {
+            string username = Request.Cookies["usernameLoginSystem"].Value;
+            var acc = AccountController.GetByUsername(username);
+
             int id = Request.QueryString["id"].ToInt(0);
             if (id > 0)
             {
@@ -47,35 +49,33 @@ namespace IM_PJ
                 }
                 else
                 {
-                    ViewState["ID"] = id;
-
+                    this.Title = String.Format("{0} - Bài viết", p.Title.ToTitleCase());
                     ltrEditTop.Text = "";
-
-                    if (Convert.ToInt32(ViewState["role"]) == 0 || Convert.ToInt32(ViewState["role"]) == 1)
+                    if (acc.RoleID == 0 || acc.Username == "nhom_zalo502")
                     {
-                        ltrEditTop.Text += "<a href=\"/sua-bai-viet?id=" + p.ID + "\" class=\"btn primary-btn fw-btn not-fullwidth\"><i class=\"fa fa-pencil-square-o\" aria-hidden=\"true\"></i> Chỉnh sửa</a>";
-                        ltrEditTop.Text += "<a href=\"/tao-bai-viet\" class=\"btn primary-btn fw-btn not-fullwidth print-invoice-merged\"><i class=\"fa fa-file-text-o\" aria-hidden=\"true\"></i> Thêm mới</a>";
+                        ltrEditTop.Text += "<a href='/sua-bai-viet?id=" + p.ID + "' class='btn primary-btn fw-btn not-fullwidth'><i class='fa fa-pencil-square-o' aria-hidden='true'></i> Chỉnh sửa</a>";
                     }
-                    ltrEditTop.Text += "<a href=\"javascript:;\" onclick=\"copyPostInfo(" + p.ID + ")\" class=\"btn primary-btn not-fullwidth print-invoice-merged\"><i class=\"fa fa-files-o\"></i> Copy nội dung</a>";
-                    ltrEditTop.Text += "<a href=\"javascript:;\" onclick=\"getAllPostImage('" + p.ID + "');\" class=\"btn primary-btn not-fullwidth print-invoice-merged\"><i class=\"fa fa-cloud-download\"></i> Tải tất cả hình ảnh</a>";
-
+                    ltrEditTop.Text += "<a href='javascript:;' onclick='copyPostInfo(" + p.ID + ");' class='btn primary-btn not-fullwidth print-invoice-merged'><i class='fa fa-files-o'></i> Copy nội dung</a>";
+                    ltrEditTop.Text += "<a href='javascript:;' onclick='getAllPostImage(" + p.ID + ");' class='btn primary-btn not-fullwidth print-invoice-merged'><i class='fa fa-cloud-download'></i> Tải hình</a>";
+                    ltrEditTop.Text += "<a href='javascript:;' onclick='copyPostToApp(" + p.ID + ");' class='btn primary-btn not-fullwidth print-invoice-merged'><i class='fa fa-cloud-download'></i> Copy vào App</a>";
                     ltrEditBottom.Text = ltrEditTop.Text;
-
                     ltrTitle.Text = p.Title;
                     ltrContent.Text = p.Content;
 
-
                     // thư viện ảnh
+                    imageGallery.Text = "<ul class='image-gallery'>";
+                    if (!String.IsNullOrEmpty(p.Image))
+                    {
+                        imageGallery.Text += "<li><img src='" + p.Image + "' /><a href='" + p.Image + "' download class='btn download-btn download-image h45-btn'><i class='fa fa-cloud-download'></i> Tải hình này</a></li>";
+                    }
                     var image = PostImageController.GetByPostID(id);
-                    imageGallery.Text = "<ul class=\"image-gallery\">";
-                    imageGallery.Text += "<li><img src=\"" + p.Image + "\" /><a href='" + p.Image + "' download class='btn download-btn download-image h45-btn'><i class='fa fa-cloud-download'></i> Tải hình này</a></li>";
                     if (image != null)
                     {
                         foreach (var img in image)
                         {
                             if (img.Image != p.Image)
                             {
-                                imageGallery.Text += "<li><img src=\"" + img.Image + "\" /><a href='" + img.Image + "' download class='btn download-btn download-image h45-btn'><i class='fa fa-cloud-download'></i> Tải hình này</a></li>";
+                                imageGallery.Text += "<li><img src='" + img.Image + "' /><a href='" + img.Image + "' download class='btn download-btn download-image h45-btn'><i class='fa fa-cloud-download'></i> Tải hình này</a></li>";
                             }
                         }
                     }

@@ -67,7 +67,7 @@ namespace IM_PJ
                     }
 
                     ltrCopyProductInfoButton.Text = "<p><a href=\"javascript:;\" class=\"btn primary-btn copy-btn h45-btn\" onclick=\"copyPost(" + p.ID + ")\"><i class=\"fa fa-files-o\" aria-hidden=\"true\"></i> Copy</a></p>";
-                    ltrDownloadProductImageButton.Text = "<a href =\"javascript:;\" class=\"btn primary-btn h45-btn\" onclick=\"getAllPostImage('" + p.ID + "');\"><i class=\"fa fa-cloud-download\" aria-hidden=\"true\"></i> Tải hình</a>";
+                    ltrDownloadProductImageButton.Text = "<a href =\"javascript:;\" class=\"btn primary-btn h45-btn\" onclick=\"getAllPostImage(" + p.ID + ");\"><i class=\"fa fa-cloud-download\" aria-hidden=\"true\"></i> Tải hình</a>";
                 }
             }
         }

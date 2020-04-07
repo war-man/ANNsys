@@ -7,6 +7,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Web;
+using System.Web.Script.Serialization;
 using WebUI.Business;
 
 namespace IM_PJ.Controllers
@@ -127,6 +128,38 @@ namespace IM_PJ.Controllers
             }
         }
 
+        public static int GetByCustomerID(int CustomerID, int Status)
+        {
+            using (var con = new inventorymanagementEntities())
+            {
+                var refundTarget = con.tbl_RefundGoods
+                    .Where(x => x.CustomerID == CustomerID)
+                    .Where(x => x.Status == Status)
+                    .OrderBy(x => x.ID);
+
+                var refundDetailTarget = con.tbl_RefundGoodsDetails.OrderBy(x => x.RefundGoodsID).ThenBy(x => x.ID);
+
+                var infoRefund = refundTarget
+                    .Join(
+                        refundDetailTarget,
+                        refund => refund.ID,
+                        detail => detail.RefundGoodsID,
+                        (refund, detail) => new
+                        {
+                            RefundGoodsID = refund.ID,
+                            ProductStyle = detail.ProductType.Value,
+                            SKU = detail.SKU,
+                            SoldPrice = detail.SoldPricePerProduct,
+                            Quantity = detail.Quantity.Value,
+                            TotalRefundPrice = refund.TotalPrice,
+                            TotalRefundFee = refund.TotalRefundFee
+                        })
+                      .ToList();
+
+                return infoRefund.GroupBy(x => x.RefundGoodsID).Count();
+            }
+        }
+
         public static List<tbl_RefundGoods> GetByAgentIDCustomerIDFromDateToDate(int AgentID, int CustomerID, DateTime FromDate, DateTime ToDate)
         {
             using (var dbe = new inventorymanagementEntities())
@@ -207,6 +240,7 @@ namespace IM_PJ.Controllers
                         las.RefundNote = "";
                     }
                     las.OrderSaleID = orderSale;
+                    las.CreatedBy = createdby;
                     las.ModifiedBy = createdby;
                     las.ModifiedDate = DateTime.Now;
                     int i = dbe.SaveChanges();
@@ -298,7 +332,7 @@ namespace IM_PJ.Controllers
                         todate = DateTime.Now;
                         break;
                 }
-                sql.AppendLine(String.Format("	AND	(CONVERT(datetime, Ord.CreatedDate, 121) BETWEEN CONVERT(datetime, '{0}', 121) AND CONVERT(datetime, '{1}', 121))", fromdate.ToString(), todate.ToString()));
+                sql.AppendLine(String.Format("	AND	(CONVERT(NVARCHAR(10), Ord.CreatedDate, 121) BETWEEN CONVERT(NVARCHAR(10), '{0:yyyy-MM-dd}', 121) AND CONVERT(NVARCHAR(10), '{1:yyyy-MM-dd}', 121))", fromdate, todate));
             }
 
             sql.AppendLine(String.Format("GROUP BY Ord.ID, Ord.CustomerName, Ord.CustomerPhone, Customer.Nick, Ord.CustomerID, Ord.Status, Ord.TotalPrice, Ord.TotalRefundFee, Ord.CreatedBy, Ord.CreatedDate, Ord.RefundNote, Ord.OrderSaleID"));
@@ -331,7 +365,7 @@ namespace IM_PJ.Controllers
             return list;
         }
 
-        public static RefundProductReportModel getRefundProductReport(string SKU, DateTime fromDate, DateTime toDate)
+        public static UserReportModel getUserReport(string CreatedBy, DateTime fromDate, DateTime toDate)
         {
             var list = new List<RefundReport>();
             var sql = new StringBuilder();
@@ -345,8 +379,12 @@ namespace IM_PJ.Controllers
             sql.AppendLine(String.Format("LEFT JOIN tbl_Product AS Product"));
             sql.AppendLine(String.Format("ON 	OrdDetail.SKU = Product.ProductSKU"));
             sql.AppendLine(String.Format("WHERE 1 = 1"));
-            sql.AppendLine(String.Format("	AND OrdDetail.SKU LIKE '{0}%'", SKU));
-            sql.AppendLine(String.Format("	AND	(CONVERT(datetime, Ord.CreatedDate, 121) BETWEEN CONVERT(datetime, '{0}', 121) AND CONVERT(datetime, '{1}', 121))", fromDate.ToString(), toDate.ToString()));
+
+            if (!String.IsNullOrEmpty(CreatedBy))
+            {
+                sql.AppendLine(String.Format("    AND Ord.CreatedBy = '{0}'", CreatedBy));
+            }
+            sql.AppendLine(String.Format("	AND	(CONVERT(NVARCHAR(10), Ord.CreatedDate, 121) BETWEEN CONVERT(NVARCHAR(10), '{0:yyyy-MM-dd}', 121) AND CONVERT(NVARCHAR(10), '{1:yyyy-MM-dd}', 121))", fromDate, toDate));
             sql.AppendLine(String.Format("GROUP BY Ord.ID, OrdDetail.RefundFeePerProduct"));
 
             var reader = (IDataReader)SqlHelper.ExecuteDataReader(sql.ToString());
@@ -363,17 +401,165 @@ namespace IM_PJ.Controllers
             }
             reader.Close();
 
-            return new RefundProductReportModel()
+            return new UserReportModel()
             {
-                totalRefund = list.Sum(x => x.Quantity),
+                totalRefundQuantity = list.Sum(x => x.Quantity),
                 totalRevenue = list.Sum(x => x.TotalRevenue),
                 totalCost = list.Sum(x => x.TotalCost),
                 totalRefundFee = list.Sum(x => x.TotalRefundFee),
             };
         }
 
+        public class UserReportModel
+        {
+            public int totalRefundQuantity { get; set; }
+            public double totalCost { get; set; }
+            public double totalRevenue { get; set; }
+            public double totalRefundFee { get; set; }
+        }
+
+        public static List<RefundProductReportModel> getRefundProductReport(string SKU, int CategoryID, string CreatedBy, DateTime fromDate, DateTime toDate)
+        {
+            var list = new List<RefundReport>();
+            var sql = new StringBuilder();
+
+            sql.AppendLine("BEGIN");
+
+            if (CategoryID > 0)
+            {
+                sql.AppendLine(String.Empty);
+                sql.AppendLine("WITH category AS(");
+                sql.AppendLine("    SELECT");
+                sql.AppendLine("            ID");
+                sql.AppendLine("    ,       CategoryName");
+                sql.AppendLine("    ,       ParentID");
+                sql.AppendLine("    FROM");
+                sql.AppendLine("            tbl_Category");
+                sql.AppendLine("    WHERE");
+                sql.AppendLine("            1 = 1");
+                sql.AppendLine("    AND     ID = " + CategoryID);
+                sql.AppendLine("");
+                sql.AppendLine("    UNION ALL");
+                sql.AppendLine("");
+                sql.AppendLine("    SELECT");
+                sql.AppendLine("            CHI.ID");
+                sql.AppendLine("    ,       CHI.CategoryName");
+                sql.AppendLine("    ,       CHI.ParentID");
+                sql.AppendLine("    FROM");
+                sql.AppendLine("            category AS PAR");
+                sql.AppendLine("    INNER JOIN tbl_Category AS CHI");
+                sql.AppendLine("        ON PAR.ID = CHI.ParentID");
+                sql.AppendLine(")");
+                sql.AppendLine("SELECT");
+                sql.AppendLine("        ID");
+                sql.AppendLine(",       CategoryName");
+                sql.AppendLine(",       ParentID");
+                sql.AppendLine("INTO #category");
+                sql.AppendLine("FROM category;");
+            }
+
+            sql.AppendLine("SELECT");
+            sql.AppendLine("    CONVERT(VARCHAR(10), Ord.CreatedDate, 121) AS CreatedDate,");
+            sql.AppendLine("    Ord.ID,");
+            sql.AppendLine("    OrdDetail.SKU,");
+            sql.AppendLine("    OrdDetail.Quantity,");
+            sql.AppendLine("    OrdDetail.SoldPricePerProduct,");
+            sql.AppendLine("    OrdDetail.RefundFeePerProduct");
+            sql.AppendLine("INTO #data");
+            sql.AppendLine("FROM tbl_RefundGoods AS Ord");
+            sql.AppendLine("INNER JOIN tbl_RefundGoodsDetails AS OrdDetail");
+            sql.AppendLine("ON     Ord.ID = OrdDetail.RefundGoodsID");
+            sql.AppendLine("WHERE 1 = 1");
+
+            if (!String.IsNullOrEmpty(CreatedBy))
+            {
+                sql.AppendLine(String.Format("    AND Ord.CreatedBy = '{0}'", CreatedBy));
+            }
+
+            if (!String.IsNullOrEmpty(SKU))
+            {
+                sql.AppendLine(String.Format("    AND OrdDetail.SKU LIKE '{0}%'", SKU));
+            }
+
+            sql.AppendLine(String.Format("    AND    CONVERT(NVARCHAR(10), Ord.CreatedDate, 121) BETWEEN CONVERT(NVARCHAR(10), '{0:yyyy-MM-dd}', 121) AND CONVERT(NVARCHAR(10), '{1:yyyy-MM-dd}', 121)", fromDate, toDate));
+
+            sql.AppendLine("SELECT");
+            sql.AppendLine("    DAT.CreatedDate,");
+            sql.AppendLine("    DAT.ID,");
+            sql.AppendLine("    SUM(ISNULL(DAT.Quantity, 0)) AS Quantity,");
+            sql.AppendLine("    SUM(DAT.Quantity * ISNULL(PRO.CostOfGood, 0)) AS TotalCost,");
+            sql.AppendLine("    SUM(DAT.Quantity * DAT.SoldPricePerProduct) AS TotalRevenue,");
+            sql.AppendLine("    SUM(DAT.Quantity * DAT.RefundFeePerProduct) AS TotalRefundFee");
+            sql.AppendLine("FROM #data AS DAT");
+            sql.AppendLine("INNER JOIN (");
+            sql.AppendLine("    SELECT");
+            sql.AppendLine("        Product.CategoryID,");
+            sql.AppendLine("        (");
+            sql.AppendLine("            CASE Product.ProductStyle");
+            sql.AppendLine("                WHEN 1 THEN Product.ProductSKU");
+            sql.AppendLine("                ELSE Variable.SKU");
+            sql.AppendLine("            END");
+            sql.AppendLine("        ) AS SKU,");
+            sql.AppendLine("        (");
+            sql.AppendLine("            CASE Product.ProductStyle");
+            sql.AppendLine("                WHEN 1 THEN Product.CostOfGood");
+            sql.AppendLine("                ELSE Variable.CostOfGood");
+            sql.AppendLine("            END");
+            sql.AppendLine("        ) AS CostOfGood");
+            sql.AppendLine("    FROM tbl_Product AS Product");
+            sql.AppendLine("    LEFT JOIN tbl_ProductVariable AS Variable");
+            sql.AppendLine("    ON Product.ID = Variable.ProductID");
+            sql.AppendLine("    WHERE 1 = 1");
+            if (CategoryID > 0)
+            {
+                sql.AppendLine("    AND EXISTS(");
+                sql.AppendLine("            SELECT");
+                sql.AppendLine("                    NULL AS DUMMY");
+                sql.AppendLine("            FROM");
+                sql.AppendLine("                    #category");
+                sql.AppendLine("            WHERE");
+                sql.AppendLine("                    ID = Product.CategoryID");
+                sql.AppendLine("    )");
+            }
+            sql.AppendLine(") AS PRO");
+            sql.AppendLine("ON     DAT.SKU = PRO.SKU");
+            sql.AppendLine("GROUP BY");
+            sql.AppendLine("    DAT.CreatedDate");
+            sql.AppendLine(",   DAT.ID");
+            sql.AppendLine(" END");
+
+            var reader = (IDataReader)SqlHelper.ExecuteDataReader(sql.ToString());
+            while (reader.Read())
+            {
+                var entity = new RefundReport();
+                entity.CreatedDate = Convert.ToDateTime(reader["CreatedDate"]);
+                entity.ID = Convert.ToInt32(reader["ID"]);
+                entity.Quantity = Convert.ToInt32(reader["Quantity"]);
+                entity.TotalCost = Convert.ToDouble(reader["TotalCost"]);
+                entity.TotalRevenue = Convert.ToDouble(reader["TotalRevenue"]);
+                entity.TotalRefundFee = Convert.ToInt32(reader["TotalRefundFee"]);
+                list.Add(entity);
+            }
+            reader.Close();
+
+            var result = list.GroupBy(g => g.CreatedDate)
+                .Select(x => new RefundProductReportModel()
+                {
+                    reportDate = x.Key,
+                    totalRefund = x.Sum(s => s.Quantity),
+                    totalRevenue = x.Sum(s => s.TotalRevenue),
+                    totalCost = x.Sum(s => s.TotalCost),
+                    totalRefundFee = x.Sum(s => s.TotalRefundFee),
+                })
+                .OrderBy(o => o.reportDate)
+                .ToList();
+
+            return result;
+        }
+
         public class RefundProductReportModel
         {
+            public DateTime reportDate { get; set; }
             public int totalRefund { get; set; }
             public double totalCost { get; set; }
             public double totalRevenue { get; set; }
@@ -537,7 +723,7 @@ namespace IM_PJ.Controllers
                 List<tbl_RefundGoods> or = new List<tbl_RefundGoods>();
                 or = db.tbl_RefundGoods
                             .Where(x => (fromdate <= x.CreatedDate && x.CreatedDate <= todate)
-                                        && x.CreatedBy.Trim().ToUpper() == accountName.Trim().ToUpper())
+                                        && x.CreatedBy == accountName)
                             .ToList();
                 int tongdoitra = 0;
                 if (or != null)
@@ -557,14 +743,32 @@ namespace IM_PJ.Controllers
                 return tongdoitra;
             }
         }
+
+        public static string getOrderReturnJSON(int customerID)
+        {
+            using (var con = new inventorymanagementEntities())
+            {
+                var orders = con.tbl_RefundGoods
+                    .Where(x => x.CustomerID == customerID)
+                    .Where(x => x.Status == 1)
+                    .OrderByDescending(o => o.CreatedDate)
+                    .ToArray();
+
+                var serializer = new JavaScriptSerializer();
+                return serializer.Serialize(orders);
+            }
+        }
+
         #endregion
         public class RefundReport
         {
+            public DateTime CreatedDate { get; set; }
             public int ID { get; set; }
             public int Quantity { get; set; }
             public double TotalRevenue { get; set; }
             public double TotalCost { get; set; }
             public double TotalRefundFee { get; set; }
+            
         }
         public class RefundOrder
         {

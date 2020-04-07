@@ -67,6 +67,24 @@ namespace IM_PJ {
         protected global::System.Web.UI.WebControls.TextBox txtMaterials;
         
         /// <summary>
+        /// ddlColor control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList ddlColor;
+        
+        /// <summary>
+        /// ddlPreOrder control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList ddlPreOrder;
+        
+        /// <summary>
         /// pMinimumInventoryLevel control.
         /// </summary>
         /// <remarks>
@@ -92,6 +110,15 @@ namespace IM_PJ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList ddlSupplier;
+        
+        /// <summary>
+        /// pOld_Price control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox pOld_Price;
         
         /// <summary>
         /// RequiredFieldValidator3 control.
@@ -202,13 +229,31 @@ namespace IM_PJ {
         protected global::System.Web.UI.WebControls.Literal imageGallery;
         
         /// <summary>
-        /// chkIsHidden control.
+        /// ProductThumbnailImageClean control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.CheckBox chkIsHidden;
+        protected global::Telerik.Web.UI.RadAsyncUpload ProductThumbnailImageClean;
+        
+        /// <summary>
+        /// ProductThumbnailClean control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Image ProductThumbnailClean;
+        
+        /// <summary>
+        /// ListProductThumbnailClean control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField ListProductThumbnailClean;
         
         /// <summary>
         /// ltrVariables control.
@@ -236,6 +281,24 @@ namespace IM_PJ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Literal ltrBack;
+        
+        /// <summary>
+        /// ltrProductInfo control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Literal ltrProductInfo;
+        
+        /// <summary>
+        /// ltrBack2 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Literal ltrBack2;
         
         /// <summary>
         /// hdfTempVariable control.
@@ -308,5 +371,14 @@ namespace IM_PJ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.HiddenField hdfUserRole;
+        
+        /// <summary>
+        /// hdfTags control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField hdfTags;
     }
 }

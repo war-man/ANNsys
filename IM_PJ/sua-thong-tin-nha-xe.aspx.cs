@@ -20,9 +20,9 @@ namespace IM_PJ
         {
             if (!IsPostBack)
             {
-                if (Request.Cookies["userLoginSystem"] != null)
+                if (Request.Cookies["usernameLoginSystem"] != null)
                 {
-                    string username = Request.Cookies["userLoginSystem"].Value;
+                    string username = Request.Cookies["usernameLoginSystem"].Value;
                     var acc = AccountController.GetByUsername(username);
                     if (acc != null)
                     {
@@ -56,7 +56,7 @@ namespace IM_PJ
         /// </summary>
         private void LoadData(int ID)
         {
-            var company = TransportCompanyController.GetTransportCompanyByID(ID);
+            var company = TransportCompanyController.GetAllTransportCompanyByID(ID);
 
             if (company == null)
             {
@@ -75,7 +75,7 @@ namespace IM_PJ
         }
         protected void btnUpdate_Click(object sender, EventArgs e)
         {
-            string username = Request.Cookies["userLoginSystem"].Value;
+            string username = Request.Cookies["usernameLoginSystem"].Value;
 
             tbl_TransportCompany transportCompany = new tbl_TransportCompany();
 

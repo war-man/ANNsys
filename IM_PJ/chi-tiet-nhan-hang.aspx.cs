@@ -1,5 +1,6 @@
 ﻿using IM_PJ.Controllers;
 using IM_PJ.Models;
+using IM_PJ.Utils;
 using MB.Extensions;
 using NHST.Bussiness;
 using System;
@@ -21,9 +22,9 @@ namespace IM_PJ
         {
             if (!IsPostBack)
             {
-                if (Request.Cookies["userLoginSystem"] != null)
+                if (Request.Cookies["usernameLoginSystem"] != null)
                 {
-                    string username = Request.Cookies["userLoginSystem"].Value;
+                    string username = Request.Cookies["usernameLoginSystem"].Value;
                     var acc = AccountController.GetByUsername(username);
                     if (acc != null)
                     {
@@ -43,7 +44,7 @@ namespace IM_PJ
             int ID = Request.QueryString["id"].ToInt(0);
             if (ID > 0)
             {
-                string username = Request.Cookies["userLoginSystem"].Value;
+                string username = Request.Cookies["usernameLoginSystem"].Value;
                 var acc = AccountController.GetByUsername(username);
                 if (acc != null)
                 {
@@ -159,8 +160,8 @@ namespace IM_PJ
                                         var img = ProductImageController.GetFirstByProductID(product.ID);
                                         if (img != null)
                                         {
-                                            ProductImage = "<img src=\"" + img.ProductImage + "\" alt=\"\" style=\"width: 50px\"  />";
-                                            ProductImageOrigin = img.ProductImage;
+                                            ProductImage = "<img src=\"" + Thumbnail.getURL(img.ProductImage, Thumbnail.Size.Small) + "\" alt=\"\" style=\"width: 50px\"  />";
+                                            ProductImageOrigin = Thumbnail.getURL(img.ProductImage, Thumbnail.Size.Small);
                                         }
                                         else
                                         {
@@ -210,8 +211,8 @@ namespace IM_PJ
 
                                         QuantityInstock = total;
                                         QuantityInstockString = string.Format("{0:N0}", total);
-                                        ProductImage = "<img src=\"" + productvariable.Image + "\" alt=\"\" style=\"width:50px;\" />";
-                                        ProductImageOrigin = productvariable.Image;
+                                        ProductImage = "<img src=\"" + Thumbnail.getURL(productvariable.Image, Thumbnail.Size.Small) + "\" alt=\"\" style=\"width:50px;\" />";
+                                        ProductImageOrigin = Thumbnail.getURL(productvariable.Image, Thumbnail.Size.Small);
 
                                         ProductVariable = variable;
                                         var product1 = ProductController.GetByID(Convert.ToInt32(productvariable.ProductID));
@@ -258,7 +259,7 @@ namespace IM_PJ
         public static string getProduct(string textsearch, int typeinout)
         {
             List<ProductGetOut> ps = new List<ProductGetOut>();
-            string username = HttpContext.Current.Request.Cookies["userLoginSystem"].Value;
+            string username = HttpContext.Current.Request.Cookies["usernameLoginSystem"].Value;
             var acc = AccountController.GetByUsername(username);
             if (acc != null)
             {
@@ -303,8 +304,8 @@ namespace IM_PJ
                                                 p.ProductVariableName = variablename;
                                                 p.ProductVariableValue = variablevalue;
                                                 p.ProductType = 2;
-                                                p.ProductImage = "<img src=\"" + pv.Image + "\" alt=\"\" style=\"width: 50px\" />";
-                                                p.ProductImageOrigin = pv.Image;
+                                                p.ProductImage = "<img src=\"" + Thumbnail.getURL(pv.Image, Thumbnail.Size.Small) + "\" alt=\"\" style=\"width: 50px\" />";
+                                                p.ProductImageOrigin = Thumbnail.getURL(pv.Image, Thumbnail.Size.Small);
                                                 p.QuantityInstock = total;
                                                 p.QuantityInstockString = string.Format("{0:N0}", total);
                                                 p.SKU = SKU;
@@ -345,8 +346,8 @@ namespace IM_PJ
                                         var img = ProductImageController.GetFirstByProductID(item.ID);
                                         if (img != null)
                                         {
-                                            p.ProductImage = "<img src=\"" + img.ProductImage + "\" alt=\"\" style=\"width: 50px\"  />";
-                                            p.ProductImageOrigin = img.ProductImage;
+                                            p.ProductImage = "<img src=\"" + Thumbnail.getURL(img.ProductImage, Thumbnail.Size.Small) + "\" alt=\"\" style=\"width: 50px\"  />";
+                                            p.ProductImageOrigin = Thumbnail.getURL(img.ProductImage, Thumbnail.Size.Small);
                                         }
                                         else
                                         {
@@ -411,8 +412,8 @@ namespace IM_PJ
                                             p.ProductVariableName = variablename;
                                             p.ProductVariableValue = variablevalue;
                                             p.ProductType = 2;
-                                            p.ProductImage = "<img src=\"" + pv.Image + "\" alt=\"\" style=\"width: 50px\"  />";
-                                            p.ProductImageOrigin = pv.Image;
+                                            p.ProductImage = "<img src=\"" + Thumbnail.getURL(pv.Image, Thumbnail.Size.Small) + "\" alt=\"\" style=\"width: 50px\"  />";
+                                            p.ProductImageOrigin = Thumbnail.getURL(pv.Image, Thumbnail.Size.Small);
                                             p.QuantityInstock = total;
                                             p.QuantityInstockString = string.Format("{0:N0}", total);
                                             p.SKU = SKU;
@@ -454,8 +455,8 @@ namespace IM_PJ
                                     var img = ProductImageController.GetFirstByProductID(products.ID);
                                     if (img != null)
                                     {
-                                        p.ProductImage = "<img src=\"" + img.ProductImage + "\" alt=\"\" style=\"width: 50px\"  />";
-                                        p.ProductImageOrigin = img.ProductImage;
+                                        p.ProductImage = "<img src=\"" + Thumbnail.getURL(img.ProductImage, Thumbnail.Size.Small) + "\" alt=\"\" style=\"width: 50px\"  />";
+                                        p.ProductImageOrigin = Thumbnail.getURL(img.ProductImage, Thumbnail.Size.Small);
                                     }
                                     else
                                     {
@@ -516,8 +517,8 @@ namespace IM_PJ
                                         p.ProductVariableName = variablename;
                                         p.ProductVariableValue = variablevalue;
                                         p.ProductType = 2;
-                                        p.ProductImage = "<img src=\"" + productvariable.Image + "\" alt=\"\" style=\"width:50px;\" />";
-                                        p.ProductImageOrigin = productvariable.Image;
+                                        p.ProductImage = "<img src=\"" + Thumbnail.getURL(productvariable.Image, Thumbnail.Size.Small) + "\" alt=\"\" style=\"width:50px;\" />";
+                                        p.ProductImageOrigin = Thumbnail.getURL(productvariable.Image, Thumbnail.Size.Small);
                                         p.SKU = productvariable.SKU.Trim().ToUpper();
                                         p.QuantityInstock = total;
                                         p.QuantityInstockString = string.Format("{0:N0}", total);
@@ -561,7 +562,7 @@ namespace IM_PJ
         protected void btnImport_Click(object sender, EventArgs e)
         {
             DateTime currentDate = DateTime.Now;
-            string username = Request.Cookies["userLoginSystem"].Value;
+            string username = Request.Cookies["usernameLoginSystem"].Value;
             var acc = AccountController.GetByUsername(username);
             if (acc != null)
             {
@@ -686,7 +687,7 @@ namespace IM_PJ
         protected void btnDelete_Click(object sender, EventArgs e)
         {
             DateTime currentDate = DateTime.Now;
-            string username = Request.Cookies["userLoginSystem"].Value;
+            string username = Request.Cookies["usernameLoginSystem"].Value;
             var acc = AccountController.GetByUsername(username);
             if (acc != null)
             {

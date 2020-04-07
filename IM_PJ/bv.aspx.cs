@@ -37,7 +37,7 @@ namespace IM_PJ
         {
             var category = PostCategoryController.GetAll();
             ddlCategory.Items.Clear();
-            ddlCategory.Items.Insert(0, new ListItem("Danh mục bài viết", "0"));
+            ddlCategory.Items.Insert(0, new ListItem("Danh mục", "0"));
             if (category.Count > 0)
             {
                 addItemCategory(0, "");
@@ -78,47 +78,7 @@ namespace IM_PJ
             ddlCreatedDate.SelectedValue = CreatedDate.ToString();
 
             List<PostSQL> a = new List<PostSQL>();
-            a = PostController.GetAllSql(CategoryID, TextSearch);
-            a = a.Where(p => p.Status == 1).ToList();
-
-            if (CreatedDate != "")
-            {
-                DateTime fromdate = DateTime.Today;
-                DateTime todate = DateTime.Now;
-                switch (CreatedDate)
-                {
-                    case "today":
-                        fromdate = DateTime.Today;
-                        todate = DateTime.Now;
-                        break;
-                    case "yesterday":
-                        fromdate = fromdate.AddDays(-1);
-                        todate = DateTime.Today;
-                        break;
-                    case "beforeyesterday":
-                        fromdate = DateTime.Today.AddDays(-2);
-                        todate = DateTime.Today.AddDays(-1);
-                        break;
-                    case "week":
-                        int days = DateTime.Today.DayOfWeek == DayOfWeek.Sunday ? 7 : (int)DateTime.Today.DayOfWeek;
-                        fromdate = fromdate.AddDays(-days + 1);
-                        todate = DateTime.Now;
-                        break;
-                    case "month":
-                        fromdate = new DateTime(fromdate.Year, fromdate.Month, 1);
-                        todate = DateTime.Now;
-                        break;
-                    case "7days":
-                        fromdate = DateTime.Today.AddDays(-6);
-                        todate = DateTime.Now;
-                        break;
-                    case "30days":
-                        fromdate = DateTime.Today.AddDays(-29);
-                        todate = DateTime.Now;
-                        break;
-                }
-                a = a.Where(p => p.CreatedDate >= fromdate && p.CreatedDate <= todate ).ToList();
-            }
+            a = PostController.GetAllSql(CategoryID, TextSearch, "1", "false", CreatedDate, "");
 
             pagingall(a);
         }
@@ -168,7 +128,7 @@ namespace IM_PJ
                     html.Append("          </div>");
                     html.Append("          <div class='col-xs-6'>");
                     html.Append("               <div class='row'>");
-                    html.Append("                  <a href =\"javascript:;\" class=\"btn primary-btn h45-btn\" onclick=\"getAllPostImage('" + item.ID + "');\"><i class=\"fa fa-cloud-download\" aria-hidden=\"true\"></i> Tải hình</a>");
+                    html.Append("                  <a href =\"javascript:;\" class=\"btn primary-btn h45-btn\" onclick=\"getAllPostImage(" + item.ID + ");\"><i class=\"fa fa-cloud-download\" aria-hidden=\"true\"></i> Tải hình</a>");
                     html.Append("               </div>");
                     html.Append("          </div>");
                     html.Append("     </div>");

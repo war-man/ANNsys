@@ -1,56 +1,48 @@
 ﻿using IM_PJ.Models;
-using NHST.Bussiness;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 
 namespace IM_PJ.Controllers
 {
     public class DiscountGroupController
     {
         #region CRUD
-        public static string Insert(string DiscountName, double DiscountAmount, double DiscountAmountPercent, string DiscountNote, bool IsHidden,
-            DateTime CreatedDate, string CreatedBy, double FeeRefund, double NumOfDateToChangeProduct,double NumOfProductCanChange)
+        public static string Insert(tbl_DiscountGroup data)
         {
-            using (var dbe = new inventorymanagementEntities())
+            using (var con = new inventorymanagementEntities())
             {
-                tbl_DiscountGroup ui = new tbl_DiscountGroup();
-                ui.DiscountName = DiscountName;
-                ui.DiscountAmount = DiscountAmount;
-                ui.DiscountAmountPercent = DiscountAmountPercent;
-                ui.DiscountNote = DiscountNote;
-                ui.IsHidden = IsHidden;
-                ui.CreatedDate = CreatedDate;
-                ui.CreatedBy = CreatedBy;
-                ui.FeeRefund = FeeRefund;
-                ui.NumOfDateToChangeProduct = NumOfDateToChangeProduct;
-                ui.NumOfProductCanChange = NumOfProductCanChange;
-                dbe.tbl_DiscountGroup.Add(ui);
-                dbe.SaveChanges();
-                int kq = ui.ID;
-                return kq.ToString();
+                con.tbl_DiscountGroup.Add(data);
+                con.SaveChanges();
+
+                return data.ID.ToString();
             }
         }
-        public static string Update(int ID, string DiscountName, double DiscountAmount, double DiscountAmountPercent, string DiscountNote, bool IsHidden,
-            DateTime ModifiedDate, string ModifiedBy, double FeeRefund, double NumOfDateToChangeProduct, double NumOfProductCanChange)
+        public static string Update(tbl_DiscountGroup data)
         {
-            using (var dbe = new inventorymanagementEntities())
+            using (var con = new inventorymanagementEntities())
             {
-                tbl_DiscountGroup ui = dbe.tbl_DiscountGroup.Where(a => a.ID == ID).SingleOrDefault();
-                if (ui != null)
+                var discount = con.tbl_DiscountGroup
+                    .Where(a => a.ID == data.ID)
+                    .FirstOrDefault();
+
+                if (discount != null)
                 {
-                    ui.DiscountName = DiscountName;
-                    ui.DiscountAmount = DiscountAmount;
-                    ui.DiscountAmountPercent = DiscountAmountPercent;
-                    ui.DiscountNote = DiscountNote;
-                    ui.IsHidden = IsHidden;
-                    ui.FeeRefund = FeeRefund;
-                    ui.NumOfDateToChangeProduct = NumOfDateToChangeProduct;
-                    ui.NumOfProductCanChange = NumOfProductCanChange;
-                    ui.ModifiedBy = ModifiedBy;
-                    ui.ModifiedDate = ModifiedDate;
-                    int kq = dbe.SaveChanges();
+                    discount.DiscountName = data.DiscountName;
+                    discount.DiscountAmount = data.DiscountAmount;
+                    discount.QuantityProduct = data.QuantityProduct;
+                    discount.DiscountAmountPercent = data.DiscountAmountPercent;
+                    discount.FeeRefund = data.FeeRefund;
+                    discount.NumOfDateToChangeProduct = data.NumOfDateToChangeProduct;
+                    discount.NumOfProductCanChange = data.NumOfProductCanChange;
+                    discount.RefundQuantityNoFee = data.RefundQuantityNoFee;
+                    discount.DiscountNote = data.DiscountNote;
+                    discount.IsHidden = data.IsHidden;
+                    discount.ModifiedBy = data.ModifiedBy;
+                    discount.ModifiedDate = data.ModifiedDate;
+                    discount.PermittedRead = data.PermittedRead;
+                    discount.QuantityRequired = data.QuantityRequired;
+                    int kq = con.SaveChanges();
+
                     return kq.ToString();
                 }
                 else
@@ -58,31 +50,52 @@ namespace IM_PJ.Controllers
             }
         }
         #endregion
-        #region Select        
+        #region Select
         public static tbl_DiscountGroup GetByID(int ID)
         {
-            using (var dbe = new inventorymanagementEntities())
+            using (var con = new inventorymanagementEntities())
             {
-                tbl_DiscountGroup ai = dbe.tbl_DiscountGroup.Where(a => a.ID == ID).FirstOrDefault();
-                if (ai != null)
-                {
-                    return ai;
-                }
-                else return null;
+                var discountGroup = con.tbl_DiscountGroup
+                    .Where(a => a.ID == ID)
+                    .FirstOrDefault();
 
+                return discountGroup;
             }
         }
         public static List<tbl_DiscountGroup> GetAll(string s)
         {
             using (var dbe = new inventorymanagementEntities())
             {
-                List<tbl_DiscountGroup> ags = new List<tbl_DiscountGroup>();
-                ags = dbe.tbl_DiscountGroup.Where(c => c.DiscountName.Contains(s) || c.DiscountAmountPercent.ToString().Contains(s)).OrderByDescending(x => x.DiscountAmount).ToList();
+                var ags = dbe.tbl_DiscountGroup
+                    .Where(c => c.DiscountName.Contains(s) || c.DiscountAmountPercent.ToString().Contains(s))
+                    .OrderByDescending(x => x.DiscountAmount)
+                    .ThenByDescending(x => x.QuantityProduct)
+                    .ThenByDescending(x => x.FeeRefund)
+                    .ToList();
+
                 return ags;
             }
         }
 
-     
+        public static List<tbl_DiscountGroup> getByAccount(tbl_Account acc)
+        {
+            using (var con = new inventorymanagementEntities())
+            {
+                var discountGroup = con.tbl_DiscountGroup
+                    .Where(x =>
+                        x.PermittedRead.Trim() == acc.ID.ToString() ||
+                        x.PermittedRead.StartsWith(acc.ID.ToString() + ",") ||
+                        x.PermittedRead.Contains("," + acc.ID.ToString() + ",") ||
+                        x.PermittedRead.EndsWith("," + acc.ID.ToString())
+                    )
+                    .OrderByDescending(x => x.DiscountAmount)
+                    .ThenByDescending(x => x.QuantityProduct)
+                    .ThenByDescending(x => x.FeeRefund)
+                    .ToList();
+
+                return discountGroup;
+            }
+        }
         #endregion
     }
 }

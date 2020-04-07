@@ -31,6 +31,15 @@ namespace IM_PJ {
         protected global::System.Web.UI.WebControls.TextBox txtSearchOrder;
         
         /// <summary>
+        /// ddlSearchType control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList ddlSearchType;
+        
+        /// <summary>
         /// ddlDiscount control.
         /// </summary>
         /// <remarks>
@@ -49,13 +58,22 @@ namespace IM_PJ {
         protected global::System.Web.UI.WebControls.DropDownList ddlOtherFee;
         
         /// <summary>
-        /// ddlCreatedDate control.
+        /// rOrderFromDate control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlCreatedDate;
+        protected global::Telerik.Web.UI.RadDatePicker rOrderFromDate;
+        
+        /// <summary>
+        /// rOrderToDate control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::Telerik.Web.UI.RadDatePicker rOrderToDate;
         
         /// <summary>
         /// btnSearch control.
@@ -121,6 +139,42 @@ namespace IM_PJ {
         protected global::System.Web.UI.WebControls.DropDownList ddlCreatedBy;
         
         /// <summary>
+        /// ddlCouponStatus control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList ddlCouponStatus;
+        
+        /// <summary>
+        /// ddlOrderNote control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList ddlOrderNote;
+        
+        /// <summary>
+        /// ddlShipperFilter control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList ddlShipperFilter;
+        
+        /// <summary>
+        /// ddlTransportCompany control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList ddlTransportCompany;
+        
+        /// <summary>
         /// ddlQuantityFilter control.
         /// </summary>
         /// <remarks>
@@ -164,23 +218,5 @@ namespace IM_PJ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Literal ltrList;
-        
-        /// <summary>
-        /// ltrReport control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Literal ltrReport;
-        
-        /// <summary>
-        /// hdfcreate control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.HiddenField hdfcreate;
     }
 }

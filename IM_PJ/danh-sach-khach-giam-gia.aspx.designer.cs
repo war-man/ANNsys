@@ -22,22 +22,85 @@ namespace IM_PJ {
         protected global::System.Web.UI.WebControls.Literal ltrGroupName;
         
         /// <summary>
-        /// ddlCustomer control.
+        /// ltrNumberCustomer control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlCustomer;
+        protected global::System.Web.UI.WebControls.Literal ltrNumberCustomer;
         
         /// <summary>
-        /// btnLogin control.
+        /// ltrDiscount control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnLogin;
+        protected global::System.Web.UI.WebControls.Literal ltrDiscount;
+        
+        /// <summary>
+        /// ltrQuantityRequired control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Literal ltrQuantityRequired;
+        
+        /// <summary>
+        /// ltrQuantityProduct control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Literal ltrQuantityProduct;
+        
+        /// <summary>
+        /// ltrFeeRefund control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Literal ltrFeeRefund;
+        
+        /// <summary>
+        /// ltrNumberOfDateToChnageProduct control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Literal ltrNumberOfDateToChnageProduct;
+        
+        /// <summary>
+        /// ltrNumberOfProductCanChange control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Literal ltrNumberOfProductCanChange;
+        
+        /// <summary>
+        /// ltrRefundQuantityNoFee control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Literal ltrRefundQuantityNoFee;
+        
+        /// <summary>
+        /// btnAddCustomer control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnAddCustomer;
         
         /// <summary>
         /// ltrList control.
@@ -49,13 +112,31 @@ namespace IM_PJ {
         protected global::System.Web.UI.WebControls.Literal ltrList;
         
         /// <summary>
-        /// hdfCustomerID control.
+        /// hdfDiscountGroupID control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.HiddenField hdfCustomerID;
+        protected global::System.Web.UI.WebControls.HiddenField hdfDiscountGroupID;
+        
+        /// <summary>
+        /// hdfCustomer control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField hdfCustomer;
+        
+        /// <summary>
+        /// hdfOrder control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField hdfOrder;
         
         /// <summary>
         /// btnDelete control.

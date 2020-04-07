@@ -130,6 +130,24 @@ namespace IM_PJ {
         protected global::System.Web.UI.WebControls.DropDownList ddlHideProduct;
         
         /// <summary>
+        /// ddlViewAllOrders control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList ddlViewAllOrders;
+        
+        /// <summary>
+        /// ddlViewAllReports control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList ddlViewAllReports;
+        
+        /// <summary>
         /// btnLogin control.
         /// </summary>
         /// <remarks>

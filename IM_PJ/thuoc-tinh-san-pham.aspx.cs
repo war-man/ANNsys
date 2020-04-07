@@ -1,5 +1,6 @@
 ﻿using IM_PJ.Controllers;
 using IM_PJ.Models;
+using IM_PJ.Utils;
 using MB.Extensions;
 using NHST.Bussiness;
 using System;
@@ -19,9 +20,9 @@ namespace IM_PJ
         {
             if (!IsPostBack)
             {
-                if (Request.Cookies["userLoginSystem"] != null)
+                if (Request.Cookies["usernameLoginSystem"] != null)
                 {
-                    string username = Request.Cookies["userLoginSystem"].Value;
+                    string username = Request.Cookies["usernameLoginSystem"].Value;
                     var acc = AccountController.GetByUsername(username);
                     if (acc != null)
                     {
@@ -100,15 +101,8 @@ namespace IM_PJ
                 {
                     var item = acs[i];
                     html.Append("<tr>");
-                    if (!string.IsNullOrEmpty(item.Image))
-                    {
-                        html.Append("   <td><img src=\"" + item.Image + "\"/></td>");
-                    }
-                    else
-                    {
-                        html.Append("   <td><img src=\"/App_Themes/Ann/image/placeholder.png\"/></td>");
-                    }
-                    
+                    html.Append("   <td><img src=\"" + Thumbnail.getURL(item.Image, Thumbnail.Size.Small) + "\"/></td>");
+
                     string date = string.Format("{0:dd/MM/yyyy}", item.CreatedDate);
                     string ishidden = "";
                     if (item.IsHidden != null)

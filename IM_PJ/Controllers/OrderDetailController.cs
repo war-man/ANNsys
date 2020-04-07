@@ -173,7 +173,7 @@ namespace IM_PJ.Controllers
             using (var dbe = new inventorymanagementEntities())
             {
                 List<tbl_OrderDetail> ags = new List<tbl_OrderDetail>();
-                ags = dbe.tbl_OrderDetail.Where(o => o.OrderID == OrderID).ToList();
+                ags = dbe.tbl_OrderDetail.Where(o => o.OrderID == OrderID).OrderBy(o => o.ID).ToList();
                 return ags;
             }
         }
@@ -183,6 +183,24 @@ namespace IM_PJ.Controllers
             {
                 List<tbl_OrderDetail> ags = new List<tbl_OrderDetail>();
                 ags = dbe.tbl_OrderDetail.Where(o => o.OrderID == OrderID).OrderBy(o => o.SKU).ThenByDescending(o => o.Price).ToList();
+                return ags;
+            }
+        }
+        public static List<tbl_OrderDetail> GetByProductID(int ProductID)
+        {
+            using (var dbe = new inventorymanagementEntities())
+            {
+                List<tbl_OrderDetail> ags = new List<tbl_OrderDetail>();
+                ags = dbe.tbl_OrderDetail.Where(o => o.ProductID == ProductID).ToList();
+                return ags;
+            }
+        }
+        public static List<tbl_OrderDetail> GetByProductVariableID(int ProductVariableID)
+        {
+            using (var dbe = new inventorymanagementEntities())
+            {
+                List<tbl_OrderDetail> ags = new List<tbl_OrderDetail>();
+                ags = dbe.tbl_OrderDetail.Where(o => o.ProductVariableID == ProductVariableID && o.ProductID == 0).ToList();
                 return ags;
             }
         }
@@ -224,9 +242,9 @@ namespace IM_PJ.Controllers
             sql.AppendLine(String.Format("INNER JOIN tbl_OrderDetail AS ODD"));
             sql.AppendLine(String.Format("	ON 	ORD.ID = ODD.OrderID"));
             sql.AppendLine(String.Format("WHERE"));
-            sql.AppendLine(String.Format("		CONVERT(datetime, ORD.DateDone, 121) BETWEEN CONVERT(datetime, '{0}', 121) AND CONVERT(datetime, '{1}', 121)", fromdate, todate));
+            sql.AppendLine(String.Format("		CONVERT(NVARCHAR(10), ORD.DateDone, 121) BETWEEN CONVERT(NVARCHAR(10), '{0:yyyy-MM-dd}', 121) AND CONVERT(NVARCHAR(10), '{1:yyyy-MM-dd}', 121)", fromdate, todate));
             sql.AppendLine(String.Format("	AND ORD.ExcuteStatus = 2"));
-            sql.AppendLine(String.Format("	AND ORD.PaymentStatus = 3"));
+            sql.AppendLine(String.Format("	AND (ORD.PaymentStatus = 2 OR ORD.PaymentStatus = 3 OR Ord.PaymentStatus = 4)"));
             sql.AppendLine(String.Format("GROUP BY"));
             sql.AppendLine(String.Format("		ODD.ID"));
             sql.AppendLine(String.Format(",		ODD.SKU"));

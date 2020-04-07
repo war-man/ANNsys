@@ -1,17 +1,23 @@
 ﻿using IM_PJ.Controllers;
 using IM_PJ.Models;
+using IM_PJ.Utils;
 using MB.Extensions;
+using Newtonsoft.Json;
 using NHST.Bussiness;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
+using System.Web.Http;
+using System.Web.Script.Services;
+using System.Web.Services;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Telerik.Web.UI;
-using System.IO;
 
 namespace IM_PJ
 {
@@ -21,19 +27,17 @@ namespace IM_PJ
         {
             if (!IsPostBack)
             {
-                if (Request.Cookies["userLoginSystem"] != null)
+                if (Request.Cookies["usernameLoginSystem"] != null)
                 {
-                    string username = Request.Cookies["userLoginSystem"].Value;
+                    string username = Request.Cookies["usernameLoginSystem"].Value;
                     var acc = AccountController.GetByUsername(username);
                     if (acc != null)
                     {
-                        if (acc.RoleID == 0)
+                        if (acc.RoleID == 0 || acc.RoleID == 1 || acc.Username == "nhom_zalo502")
                         {
-
-                        }
-                        else if (acc.RoleID == 1)
-                        {
-
+                            LoadSupplier();
+                            LoadCategory();
+                            LoadData();
                         }
                         else
                         {
@@ -47,9 +51,6 @@ namespace IM_PJ
                 {
                     Response.Redirect("/dang-nhap");
                 }
-                LoadSupplier();
-                LoadCategory();
-                LoadData();
             }
         }
 
@@ -57,7 +58,7 @@ namespace IM_PJ
         {
             var category = CategoryController.GetAllWithIsHidden(false);
             ddlCategory.Items.Clear();
-            ddlCategory.Items.Insert(0, new ListItem("Chọn danh mục sản phẩm", "0"));
+            ddlCategory.Items.Insert(0, new ListItem("Chọn danh mục", "0"));
             if (category.Count > 0)
             {
                 addItemCategory(0, "");
@@ -121,6 +122,12 @@ namespace IM_PJ
         }
         public void LoadData()
         {
+            int n;
+            if (String.IsNullOrEmpty(Request.QueryString["id"]) || !int.TryParse(Request.QueryString["id"], out n))
+            {
+                PJUtils.ShowMessageBoxSwAlertError("Không tìm thấy sản phẩm", "e", true, "/tat-ca-san-pham", Page);
+            }
+            
             int id = Request.QueryString["id"].ToInt(0);
             if (id > 0)
             {
@@ -131,45 +138,71 @@ namespace IM_PJ
                 }
                 else
                 {
+                    this.Title = String.Format("{0} - Sửa sản phẩm", p.ProductSKU.ToTitleCase());
+
                     ViewState["ID"] = id;
                     ViewState["cateID"] = p.CategoryID;
                     ViewState["SKU"] = p.ProductSKU;
                     hdfParentID.Value = p.CategoryID.ToString();
                     hdfsetStyle.Value = p.ProductStyle.ToString();
-                    ltrBack.Text = "<a href=\"/xem-san-pham?id=" + p.ID + "\" class=\"btn primary-btn fw-btn not-fullwidth\">Trở về</a>";
+                    ltrBack.Text = "<a href='/xem-san-pham?id=" + p.ID + "' class='btn primary-btn fw-btn not-fullwidth'><i class='fa fa-arrow-left' aria-hidden='true'></i> Trở về</a>";
+                    ltrBack2.Text = ltrBack.Text;
                     txtProductTitle.Text = p.ProductTitle;
                     pContent.Content = p.ProductContent;
                     txtProductSKU.Text = p.ProductSKU;
 
+                    pOld_Price.Text = p.Old_Price.ToString();
                     pRegular_Price.Text = p.Regular_Price.ToString();
                     pCostOfGood.Text = p.CostOfGood.ToString();
                     pRetailPrice.Text = p.Retail_Price.ToString();
-                    chkIsHidden.Checked = Convert.ToBoolean(p.IsHidden);
                     ddlSupplier.SelectedValue = p.SupplierID.ToString();
                     ddlCategory.SelectedValue = p.CategoryID.ToString();
+
+                    if (!string.IsNullOrEmpty(p.Color))
+                    {
+                        ddlColor.SelectedValue =  p.Color.Trim();
+                    }
+
                     txtMaterials.Text = p.Materials;
                     pMinimumInventoryLevel.Text = p.MinimumInventoryLevel.ToString();
                     pMaximumInventoryLevel.Text = p.MaximumInventoryLevel.ToString();
+
                     if(p.ProductImage != null)
                     {
                         ListProductThumbnail.Value = p.ProductImage;
-                        ProductThumbnail.ImageUrl = p.ProductImage;
+                        ProductThumbnail.ImageUrl = Thumbnail.getURL(p.ProductImage, Thumbnail.Size.Source);
+                    }
+
+                    if (p.ProductImageClean != null)
+                    {
+                        ListProductThumbnailClean.Value = p.ProductImageClean;
+                        ProductThumbnailClean.ImageUrl = Thumbnail.getURL(p.ProductImageClean, Thumbnail.Size.Source);
                     }
 
                     var image = ProductImageController.GetByProductID(id);
-                    imageGallery.Text = "<ul class=\"image-gallery\">";
+                    imageGallery.Text = "<ul class='image-gallery'>";
                     if (image != null)
                     {
                         foreach (var img in image)
                         {
-                            imageGallery.Text += "<li><img src='" + img.ProductImage + "' /><a href='javascript:;' data-image-id='" + img.ID + "' onclick='deleteImageGallery($(this))' class='btn-delete'><i class=\"fa fa-times\" aria-hidden=\"true\"></i> Xóa hình</a></li>";
+                            imageGallery.Text += "<li><img src='" + Thumbnail.getURL(img.ProductImage, Thumbnail.Size.Source) + "'><a href='javascript:;' data-image-id='" + img.ID + "' onclick='deleteImageGallery($(this))' class='btn-delete'><i class='fa fa-times' aria-hidden='true'></i> Xóa hình</a></li>";
                         }
                     }
                     imageGallery.Text += "</ul>";
 
-                    // Lấy tất cả biến thể ra
+                    // Hàng cần Order
+                    ddlPreOrder.SelectedValue = p.PreOrder ? "1" : "0";
 
-                    List<tbl_ProductVariable> a = new List<tbl_ProductVariable>();
+                    // Init Tags
+                    var tags = ProductTagController.get(p.ID, 0);
+
+                    if (tags.Count > 0)
+                        hdfTags.Value = JsonConvert.SerializeObject(tags);
+                    else
+                        hdfTags.Value = String.Empty;
+
+                    // Lấy tất cả biến thể ra
+                    List <tbl_ProductVariable> a = new List<tbl_ProductVariable>();
                     a = ProductVariableController.GetProductID(p.ID);
 
                     if(a.Count > 0)
@@ -184,12 +217,11 @@ namespace IM_PJ
                             double CostOfGood = Convert.ToDouble(item.CostOfGood);
                             int MinimumInventoryLevel = Convert.ToInt32(item.MinimumInventoryLevel);
                             int MaximumInventoryLevel = Convert.ToInt32(item.MaximumInventoryLevel);
-                            string VariableImage = "/App_Themes/Ann/image/placeholder.png";
-                            string deleteVariableImage = "<a href='javascript:;' onclick='deleteImageVariable($(this))' class='btn-delete hide'><i class=\"fa fa-times\" aria-hidden=\"true\"></i> Xóa hình</a>";
+                            string VariableImage = Thumbnail.getURL(item.Image, Thumbnail.Size.Source);
+                            string deleteVariableImage = "<a href='javascript:;' onclick='deleteImageVariable($(this))' class='btn-delete hide'><i class='fa fa-times' aria-hidden='true'></i> Xóa hình</a>";
                             if (!string.IsNullOrEmpty(item.Image))
                             {
-                                VariableImage = item.Image;
-                                deleteVariableImage = "<a href='javascript:;' onclick='deleteImageVariable($(this))' class='btn-delete'><i class=\"fa fa-times\" aria-hidden=\"true\"></i> Xóa hình</a>";
+                                deleteVariableImage = "<a href='javascript:;' onclick='deleteImageVariable($(this))' class='btn-delete'><i class='fa fa-times' aria-hidden='true'></i> Xóa hình</a>";
                             }
 
                             var value = ProductVariableValueController.GetByProductVariableID(item.ID);
@@ -221,7 +253,7 @@ namespace IM_PJ
                             html.AppendLine(String.Format("    <div class='col-md-12 variable-content'>"));
                             html.AppendLine(String.Format("    	<div class='row'>"));
                             html.AppendLine(String.Format("		    <div class='col-md-2'>"));
-                            html.AppendLine(String.Format("		    	<input type='file' class='productVariableImage upload-btn' onchange='imagepreview(this,$(this));' name='{0}'><img class='imgpreview' onclick='openUploadImage($(this))' data-file-name='{1}' src='{1}'>{2}", dataVariableValue, VariableImage, deleteVariableImage));
+                            html.AppendLine(String.Format("		    	<input type='file' class='productVariableImage upload-btn' onchange='imagepreview(this,$(this));' name='{0}'><img class='imgpreview' onclick='openUploadImage($(this))' data-file-name='{1}' src='{1}'>{2}", VariableSKU, VariableImage, deleteVariableImage));
                             html.AppendLine(String.Format("		    	</div>"));
                             html.AppendLine(String.Format("		    <div class='col-md-5'>"));
                             html.AppendLine(String.Format("		    	{0}", selectVariable));
@@ -243,14 +275,6 @@ namespace IM_PJ
                             html.AppendLine(String.Format("		    	    <div class='col-md-5'>Giá bán lẻ</div>"));
                             html.AppendLine(String.Format("		    	    <div class='col-md-7'><input class='form-control retailprice' type='text' value='{0}'></div>", RetailPrice));
                             html.AppendLine(String.Format("		    	</div>"));
-                            html.AppendLine(String.Format("		    	<div class='row margin-bottom-15'>"));
-                            html.AppendLine(String.Format("		    	    <div class='col-md-5'>Tồn kho ít nhất</div>"));
-                            html.AppendLine(String.Format("		    	    <div class='col-md-7'><input class='form-control minimum' type='text' value='{0}'></div>", MinimumInventoryLevel));
-                            html.AppendLine(String.Format("		    	</div>"));
-                            html.AppendLine(String.Format("		    	<div class='row margin-bottom-15'>"));
-                            html.AppendLine(String.Format("		    	    <div class='col-md-5'>Tồn kho nhiều nhất</div>"));
-                            html.AppendLine(String.Format("		    	    <div class='col-md-7'><input class='form-control maximum' type='text' value='{0}'></div>", MaximumInventoryLevel));
-                            html.AppendLine(String.Format("		    	</div>"));
                             html.AppendLine(String.Format("			</div>"));
                             html.AppendLine(String.Format("		</div>"));
                             html.AppendLine(String.Format("	</div>"));
@@ -262,35 +286,36 @@ namespace IM_PJ
                         ltrVariables.Text = html.ToString();
                     }
 
+                    string ProductInfo = "<p><strong>Ngày tạo</strong>: " + p.CreatedDate + "</p>";
+                    ProductInfo += "<p><strong>Người viết</strong>: " + p.CreatedBy + "</p>";
+                    ProductInfo += "<p><strong>Ngày cập nhật</strong>: " + p.ModifiedDate + "</p>";
+                    ProductInfo += "<p><strong>Người cập nhật</strong>: " + p.ModifiedBy + "</p>";
+                    ltrProductInfo.Text = ProductInfo;
+
                 }
             }
         }
-        public static string convertToSlug(string s)
-        {
-            Regex regex = new Regex("\\p{IsCombiningDiacriticalMarks}+");
-            string temp = s.Normalize(System.Text.NormalizationForm.FormD);
-            return regex.Replace(temp, String.Empty).Replace('\u0111', 'd').Replace('\u0110', 'D').Replace(' ', '-').ToLower();
-        }
+
         protected void btnSubmit_Click(object sender, EventArgs e)
         {
-            string username = Request.Cookies["userLoginSystem"].Value;
+            string username = Request.Cookies["usernameLoginSystem"].Value;
             var acc = AccountController.GetByUsername(username);
             int cateID = ViewState["cateID"].ToString().ToInt(0);
             int ProductID = ViewState["ID"].ToString().ToInt(0);
             if (cateID > 0)
             {
-                string ProductTitle = txtProductTitle.Text;
+                string ProductTitle = Regex.Replace(txtProductTitle.Text, @"\s*\,\s*|\s*\;\s*", " - ");
                 string ProductContent = pContent.Content;
                 string ProductSKU = ViewState["SKU"].ToString();
                 double ProductStock = 0;
                 int StockStatus = 0;
                 bool ManageStock = true;
+                double Old_Price = String.IsNullOrEmpty(pOld_Price.Text) ? 0 : Convert.ToDouble(pOld_Price.Text);
                 double Regular_Price = Convert.ToDouble(pRegular_Price.Text);
                 double CostOfGood = Convert.ToDouble(pCostOfGood.Text);
                 double Retail_Price = Convert.ToDouble(pRetailPrice.Text);
-                bool IsHidden = chkIsHidden.Checked;
                 int CategoryID = hdfParentID.Value.ToInt();
-
+                string mainColor = ddlColor.SelectedValue.ToString();
                 double MinimumInventoryLevel = 0;
                 if (pMinimumInventoryLevel.Text != "")
                 {
@@ -303,76 +328,162 @@ namespace IM_PJ
                     MaximumInventoryLevel = Convert.ToDouble(pMaximumInventoryLevel.Text);
                 }
 
-                //Phần thêm ảnh đại diện sản phẩm
+                //Phần cap nhat ảnh đại diện sản phẩm
                 string path = "/uploads/images/";
                 string ProductImage = ListProductThumbnail.Value;
                 if (ProductThumbnailImage.UploadedFiles.Count > 0)
                 {
                     foreach (UploadedFile f in ProductThumbnailImage.UploadedFiles)
                     {
-                        var o = path + ProductID + '-' + convertToSlug(Path.GetFileName(f.FileName));
-                        try
+                        string o = path + ProductID + '-' + Slug.ConvertToSlug(Path.GetFileName(f.FileName), isFile: true);
+                        if (File.Exists(Server.MapPath(o)))
                         {
-                            f.SaveAs(Server.MapPath(o));
-                            ProductImage = o;
+                            o = path + ProductID + '-' + DateTime.UtcNow.ToString("HHmmssffff") + '-' + Slug.ConvertToSlug(Path.GetFileName(f.FileName), isFile: true);
                         }
-                        catch { }
+                        f.SaveAs(Server.MapPath(o));
+                        ProductImage = Path.GetFileName(o);
+
+                        // Thumbnail
+                        Thumbnail.create(Server.MapPath(o), 85, 113);
+                        Thumbnail.create(Server.MapPath(o), 159, 212);
+                        Thumbnail.create(Server.MapPath(o), 240, 320);
+                        Thumbnail.create(Server.MapPath(o), 350, 467);
                     }
                 }
 
-                if (ProductImage != ListProductThumbnail.Value)
+                //Phần thêm ảnh đại diện sản phẩm sạch không đóng dấu
+                string ProductImageClean = ListProductThumbnailClean.Value;
+                if (ProductThumbnailImageClean.UploadedFiles.Count > 0)
                 {
-                    if (File.Exists(Server.MapPath(ListProductThumbnail.Value)))
+                    foreach (UploadedFile f in ProductThumbnailImageClean.UploadedFiles)
                     {
-                        File.Delete(Server.MapPath(ListProductThumbnail.Value));
+                        var o = path + ProductID + "-clean-" + Slug.ConvertToSlug(Path.GetFileName(f.FileName), isFile: true);
+                        if (File.Exists(Server.MapPath(o)))
+                        {
+                            o = path + ProductID + "-clean-" + DateTime.UtcNow.ToString("HHmmssffff") + '-' + Slug.ConvertToSlug(Path.GetFileName(f.FileName), isFile: true);
+                        }
+                        f.SaveAs(Server.MapPath(o));
+                        ProductImageClean = Path.GetFileName(o);
+
+                        // Thumbnail
+                        Thumbnail.create(Server.MapPath(o), 85, 113);
+                        Thumbnail.create(Server.MapPath(o), 159, 212);
+                        Thumbnail.create(Server.MapPath(o), 240, 320);
+                        Thumbnail.create(Server.MapPath(o), 350, 467);
                     }
                 }
 
-                // Delete Image Gallery
-
+                //Delete Image Gallery
                 string deleteImageGallery = hdfDeleteImageGallery.Value;
-
-                if(deleteImageGallery != "")
+                if (deleteImageGallery != "")
                 {
                     string[] deletelist = deleteImageGallery.Split(',');
 
-                    for(int i = 0; i < deletelist.Length - 1; i++)
+                    for (int i = 0; i < deletelist.Length - 1; i++)
                     {
                         var img = ProductImageController.GetByID(Convert.ToInt32(deletelist[i]));
-                        if(img != null)
+                        if (img != null)
                         {
-                            var product = ProductController.GetByID(ProductID);
-
-                            // Delete image
-                            if (!string.IsNullOrEmpty(img.ProductImage) && img.ProductImage != product.ProductImage)
-                            {
-                                string fileImage = Server.MapPath(img.ProductImage);
-                                File.Delete(fileImage);
-                            }
                             string delete = ProductImageController.Delete(img.ID);
                         }
                     }
                 }
 
-                // Update product
+                // Hàng Order
+                var preOrder = ddlPreOrder.SelectedValue == "1" ? true : false;
 
-                string kq = ProductController.Update(ProductID, CategoryID, 0, ProductTitle, ProductContent, ProductSKU, ProductStock,
-                    StockStatus, ManageStock, Regular_Price, CostOfGood, Retail_Price, ProductImage, 0,
-                    IsHidden, DateTime.Now, username, ddlSupplier.SelectedValue.ToInt(0), ddlSupplier.SelectedItem.ToString(),
-                    txtMaterials.Text, MinimumInventoryLevel, MaximumInventoryLevel);
+                // Update product
+                string kq = ProductController.Update(new tbl_Product() {
+                    ID = ProductID,
+                    CategoryID = CategoryID,
+                    ProductOldID = 0,
+                    ProductTitle = ProductTitle,
+                    ProductContent = ProductContent,
+                    ProductSKU = ProductSKU,
+                    ProductStock = ProductStock,
+                    StockStatus = StockStatus,
+                    ManageStock = ManageStock,
+                    Regular_Price = Regular_Price,
+                    CostOfGood = CostOfGood,
+                    Retail_Price = Retail_Price,
+                    ProductImage = ProductImage,
+                    ProductType = 0,
+                    IsHidden = false,
+                    ModifiedDate = DateTime.Now,
+                    ModifiedBy = username,
+                    SupplierID = ddlSupplier.SelectedValue.ToInt(0),
+                    SupplierName = ddlSupplier.SelectedItem.ToString(),
+                    Materials = txtMaterials.Text,
+                    MinimumInventoryLevel = MinimumInventoryLevel,
+                    MaximumInventoryLevel = MaximumInventoryLevel,
+                    ProductImageClean = ProductImageClean,
+                    Color = mainColor,
+                    PreOrder = preOrder,
+                    Old_Price = Old_Price
+                });
+
+                // Upload tags
+                if (!String.IsNullOrEmpty(hdfTags.Value))
+                {
+                    var tagList = JsonConvert.DeserializeObject<List<TagModel>>(hdfTags.Value);
+
+                    if (tagList.Count > 0)
+                    {
+                        // Get tag new
+                        var tagNew = TagController.insert(tagList, acc);
+
+                        var productTag = tagList
+                            .GroupJoin(
+                                tagNew,
+                                t => t.name.ToLower(),
+                                n => n.Name.ToLower(),
+                                (t, n) => new { t, n }
+                            )
+                            .SelectMany(
+                                x => x.n.DefaultIfEmpty(),
+                                (parent, child) => new ProductTag
+                                {
+                                    TagID = child != null ? child.ID : parent.t.id,
+                                    ProductID = ProductID,
+                                    ProductVariableID = 0,
+                                    SKU = ProductSKU,
+                                    CreatedBy = acc.ID,
+                                    CreatedDate = DateTime.Now
+                                }
+                            )
+                            .ToList();
+
+                        ProductTagController.update(ProductID, productTag);
+                    }
+                    else
+                    {
+                        ProductTagController.delete(ProductID);
+                    }
+                }
 
                 // Upload image gallery
-
+                string itemGallery = "";
                 if (UploadImages.HasFiles)
                 {
                     foreach (HttpPostedFile uploadedFile in UploadImages.PostedFiles)
                     {
-                        var o = path + ProductID + '-' + convertToSlug(Path.GetFileName(uploadedFile.FileName));
+                        var o = path + ProductID + '-' + Slug.ConvertToSlug(Path.GetFileName(uploadedFile.FileName), isFile: true);
+                        if (File.Exists(Server.MapPath(o)))
+                        {
+                            o = path + ProductID + '-' + DateTime.UtcNow.ToString("HHmmssffff") + '-' + Slug.ConvertToSlug(Path.GetFileName(uploadedFile.FileName), isFile: true);
+                        }
                         uploadedFile.SaveAs(Server.MapPath(o));
-                        ProductImageController.Insert(ProductID, o, false, DateTime.Now, username);
+                        itemGallery = Path.GetFileName(o);
+
+                        // Thumbnail
+                        Thumbnail.create(Server.MapPath(o), 85, 113);
+                        Thumbnail.create(Server.MapPath(o), 159, 212);
+                        Thumbnail.create(Server.MapPath(o), 240, 320);
+                        Thumbnail.create(Server.MapPath(o), 350, 467);
+                        
+                        ProductImageController.Insert(ProductID, itemGallery, false, DateTime.Now, username);
                     }
                 }
-
 
 
                 if (kq.ToInt(0) > 0)
@@ -398,7 +509,7 @@ namespace IM_PJ
                                 string costofgood = itemElement[6];
                                 string retailprice = itemElement[7];
                                 string[] datanamevalue = itemElement[8].Split('|');
-                                string imageUpload = itemElement[8];
+                                string imageUpload = itemElement[4];
                                 int _MaximumInventoryLevel = itemElement[9].ToInt(0);
                                 int _MinimumInventoryLevel = itemElement[10].ToInt(0);
                                 int stockstatus = itemElement[11].ToInt();
@@ -409,48 +520,38 @@ namespace IM_PJ
                                 var Variable = ProductVariableController.GetBySKU(productvariablesku);
                                 if (Variable != null)
                                 {
-
                                     // Update image
-
                                     string image = Variable.Image;
                                     if (imageSrc == "/App_Themes/Ann/image/placeholder.png")
                                     {
-                                        // Delete old image
-                                        if (!string.IsNullOrEmpty(Variable.Image))
-                                        {
-                                            string fileImage = Server.MapPath(Variable.Image);
-                                            File.Delete(fileImage);
-                                            image = "";
-                                        }
+                                        image = "";
                                     }
                                     else
                                     {
-                                        if (imageSrc != Variable.Image)
+                                        if (imageSrc != path + Variable.Image)
                                         {
-                                            HttpPostedFile postedFile = Request.Files["" + imageUpload + ""];
+                                            HttpPostedFile postedFile = Request.Files[imageUpload];
                                             if (postedFile != null && postedFile.ContentLength > 0)
                                             {
                                                 // Upload image
-                                                var o = path + ProductID + '-' + convertToSlug(Path.GetFileName(postedFile.FileName));
-                                                postedFile.SaveAs(Server.MapPath(o));
-                                                image = o;
+                                                var o = path + ProductID + '-' + Slug.ConvertToSlug(Path.GetFileName(postedFile.FileName), isFile: true);
 
-                                                // Delete old image
-                                                if (!string.IsNullOrEmpty(Variable.Image))
+                                                if (File.Exists(Server.MapPath(o)))
                                                 {
-                                                    string fileImage = Server.MapPath(Variable.Image);
-                                                    File.Delete(fileImage);
+                                                    o = path + ProductID + '-' + DateTime.UtcNow.ToString("HHmmssffff") + '-' + Slug.ConvertToSlug(Path.GetFileName(postedFile.FileName), isFile: true);
                                                 }
+                                                postedFile.SaveAs(Server.MapPath(o));
+                                                image = Path.GetFileName(o);
+
+                                                // Thumbnail
+                                                Thumbnail.create(Server.MapPath(o), 85, 113);
+                                                Thumbnail.create(Server.MapPath(o), 159, 212);
+                                                Thumbnail.create(Server.MapPath(o), 240, 320);
+                                                Thumbnail.create(Server.MapPath(o), 350, 467);
                                             }
                                             else
                                             {
-                                                // Delete old image
-                                                if (!string.IsNullOrEmpty(Variable.Image))
-                                                {
-                                                    string fileImage = Server.MapPath(Variable.Image);
-                                                    File.Delete(fileImage);
-                                                    image = "";
-                                                }
+                                                image = "";
                                             }
                                         }
                                     }
@@ -467,13 +568,23 @@ namespace IM_PJ
                                 {
                                     string image = "";
 
-                                    HttpPostedFile postedFile = Request.Files["" + imageUpload + ""];
+                                    HttpPostedFile postedFile = Request.Files[imageUpload];
                                     if (postedFile != null && postedFile.ContentLength > 0)
                                     {
                                         // Upload image
-                                        var o = path + ProductID + '-' + convertToSlug(Path.GetFileName(postedFile.FileName));
+                                        var o = path + ProductID + '-' + Slug.ConvertToSlug(Path.GetFileName(postedFile.FileName), isFile: true);
+                                        if (File.Exists(Server.MapPath(o)))
+                                        {
+                                            o = path + ProductID + '-' + DateTime.UtcNow.ToString("HHmmssffff") + '-' + Slug.ConvertToSlug(Path.GetFileName(postedFile.FileName), isFile: true);
+                                        }
                                         postedFile.SaveAs(Server.MapPath(o));
-                                        image = o;
+                                        image = Path.GetFileName(o);
+
+                                        // Thumbnail
+                                        Thumbnail.create(Server.MapPath(o), 85, 113);
+                                        Thumbnail.create(Server.MapPath(o), 159, 212);
+                                        Thumbnail.create(Server.MapPath(o), 240, 320);
+                                        Thumbnail.create(Server.MapPath(o), 350, 467);
                                     }
 
                                     // Insert new variable
@@ -482,7 +593,7 @@ namespace IM_PJ
                                             Convert.ToDouble(costofgood), Convert.ToDouble(retailprice), image, true, false, DateTime.Now, username,
                                             ddlSupplier.SelectedValue.ToInt(0), ddlSupplier.SelectedItem.ToString(), _MinimumInventoryLevel, _MaximumInventoryLevel);
                                 }
-                                
+
                                 // Update ProductVariableValue
 
                                 if (kq1.ToInt(0) > 0)
@@ -505,6 +616,48 @@ namespace IM_PJ
                     PJUtils.ShowMessageBoxSwAlert("Cập nhật sản phẩm thành công", "s", true, Page);
                 }
             }
+        }
+
+        [WebMethod]
+        [ScriptMethod(ResponseFormat = ResponseFormat.Json, UseHttpGet = true, XmlSerializeString = false)]
+        public static List<TagModel> GetTags(string tagName)
+        {
+            if (!String.IsNullOrEmpty(tagName) && tagName.IndexOf(',') >= 0)
+            {
+                return null;
+            }
+
+            var now = DateTime.Now;
+            var textInfo = new CultureInfo("vi-VN", false).TextInfo;
+            var tags = new List<TagModel>();
+            var tagData = TagController.get(tagName);
+
+            if (tagData.Where(x => x.name == textInfo.ToLower(tagName)).Count() > 0)
+            {
+                tags.AddRange(tagData);
+            }
+            else
+            {
+                tags.Add(new TagModel()
+                {
+                    id = 0,
+                    name = textInfo.ToLower(tagName),
+                    slug = String.Format("tag-new-{0:yyyyMMddhhmmss}", now)
+                });
+                tags.AddRange(tagData);
+            }
+
+            return tags;
+        }
+
+        [WebMethod]
+        [ScriptMethod(ResponseFormat = ResponseFormat.Json, UseHttpGet = true, XmlSerializeString = false)]
+        public static List<TagModel> GetTagListByNameList(string[] tagNameList)
+        {
+            if (tagNameList == null || tagNameList.Length == 0)
+                return null;
+
+            return TagController.get(tagNameList.ToList());
         }
     }
 }

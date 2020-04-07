@@ -24,19 +24,20 @@ namespace IM_PJ
         }
         protected void btnLogin_Click(object sender, EventArgs e)
         {
+            string username = txtUsername.Text;
             string password = PJUtils.Encrypt("scode", txtPassword.Text);
 
             var p = ConfigController.GetByTop1();
-
-            if (password == p.SecurityCode)
+            var acc = AccountController.GetByUsername(username);
+            if (password == p.SecurityCode && acc != null)
             {
-                Response.Cookies["loginHiddenPage"].Value = p.SecurityCode;
-                Response.Cookies["loginHiddenPage"].Expires = DateTime.Now.AddDays(60);
+                Response.Cookies["loginHiddenPage"].Value = username;
+                Response.Cookies["loginHiddenPage"].Expires = DateTime.Now.AddDays(90);
                 Response.Redirect("/sp");
             }
             else
             {
-                lblError.Text = "Sai mật khẩu!";
+                lblError.Text = "Sai thông tin đăng nhập!";
                 lblError.Visible = true;
             }
         }

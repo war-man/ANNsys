@@ -6,7 +6,7 @@
             <div class="row">
                 <div class="col-md-12">
                     <h3 class="page-title left">Danh sách nhóm khách hàng</h3>
-                    <div class="right above-list-btn">
+                    <div id="btnAddDiscountGroup" class="right above-list-btn">
                         <a href="/them-moi-giam-gia" class="h45-btn primary-btn btn">Thêm mới</a>
                     </div>
                 </div>
@@ -19,10 +19,12 @@
                                 <tbody>
                                     <tr>
                                         <th>Tên nhóm</th>
+                                        <th>Khách hàng</th>
                                         <th>Chiết khấu</th>
-                                        <th>Phí đổi hàng</th>
-                                        <th>Số ngày đổi hàng tối đa</th>
-                                        <th>Số lượng đổi tối đa/số ngày</th>
+                                        <th>SL tối thiểu</th>
+                                        <th>Phí đổi trả</th>
+                                        <th>Số ngày tối đa</th>
+                                        <th>Số lượng đổi/số ngày</th>
                                         <th>Ngày tạo</th>
                                         <th>Thao tác</th>
                                     </tr>
@@ -39,10 +41,9 @@
                 </div>
             </div>
         </div>
-        <script type="text/javascript">
-            <%--function searchGroup() {
-                $("#<%= btnSearch.ClientID%>").click();
-            }--%>
-        </script>
+
+        <asp:HiddenField ID="hdfPermittedEdit" runat="server" />
+        <script type="text/javascript" src="/App_Themes/Ann/js/controllers/danh-sach-nhom-khach-hang/danh-sach-nhom-khach-hang-controller.js"></script>
+        <script type="text/javascript" src="/App_Themes/Ann/js/pages/danh-sach-nhom-khach-hang/danh-sach-nhom-khach-hang.js"></script>
     </main>
 </asp:Content>

@@ -8,78 +8,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=yes">
     <meta name="format-detection" content="telephone=no">
     <meta name="robots" content="noindex, nofollow">
-    <link rel="stylesheet" href="/App_Themes/Ann/css/style.css?v=0110" media="all">
-    <link rel="stylesheet" href="/App_Themes/Ann/css/style-P.css?v=0110" media="all">
+    <link rel="stylesheet" href="/App_Themes/Ann/css/style.css?v=02042020" media="all">
+    <link rel="stylesheet" href="/App_Themes/Ann/css/style-P.css?v=02042020" media="all">
     <link href="/App_Themes/NewUI/js/select2/select2.css" rel="stylesheet" />
+    <link rel="stylesheet" href="/App_Themes/Ann/css/style-sp.css?v=02042020" media="all">
     <script type="text/javascript" src="/App_Themes/Ann/js/jquery-2.1.3.min.js"></script>
-    <style>
-        .panel-table .panel-footer {
-            padding: 5px 0;
-        }
-        .pagination li {
-            display: inline-block;
-            vertical-align: middle;
-            line-height: 20px;
-            font-weight: 600;
-            background-color: #ff8400;
-            color: #fff;
-            font-size: 15px;
-            margin-right: 10px;
-        }
-        .pagination li a {
-            color: #fff;
-            padding: 8px 11px;
-        }
-        .pagination li.current > a, .pagination li:hover > a {
-            color: #000;
-        }
-        .btn {
-            width: 100%;
-            margin-bottom: 10px;
-        }
-        .btn.btn-product {
-            background-color: #F44336;
-        }
-        .btn.btn-post {
-            background-color: #009688;
-        }
-        .btn.download-btn {
-            background-color: #000;
-            color: #fff;
-            border-radius: 0;
-            font-size: 16px;
-            text-transform: uppercase;
-        }
-        .btn.primary-btn {
-            border-radius: 0;
-            font-size: 16px;
-            text-transform: uppercase;
-        }
-        .btn.copy-btn {
-            background-color: #E91E63;
-            color: #fff;
-        }
-        .product-item {
-            margin-bottom: 40px;
-            background-color: #fff;
-            padding: 15px;
-        }
-        h3 {
-            margin-top: 10px;
-        }
-        .product-name a {
-            font-size: 18px;
-            line-height: 1.5;
-        }
-        .product-sku {
-            font-size: 18px;
-            color: #0289bc;
-        }
-        .product-price {
-            font-size: 20px;
-            color: #ff0023;
-        }
-    </style>
 </head>
 <body>
     <form id="form12" runat="server" enctype="multipart/form-data">
@@ -89,14 +22,36 @@
             <main>
                 <div class="container">
                     <div class="row">
-                        <div class="col-xs-6">
+                        <div class="col-xs-4">
                             <div class="row">
-                                <a href="/sp" class="btn primary-btn h45-btn btn-product"><i class="fa fa-sign-in" aria-hidden="true"></i> Sản phẩm</a>
+                                <a href="/sp" class="btn btn-menu primary-btn h45-btn btn-product"><i class="fa fa-sign-in" aria-hidden="true"></i> Sản phẩm</a>
                             </div>
                         </div>
-                        <div class="col-xs-6">
+                        <div class="col-xs-4">
                             <div class="row">
-                                <a href="/bv" class="btn primary-btn h45-btn btn-post"><i class="fa fa-sign-in" aria-hidden="true"></i> Bài viết</a>
+                                <a href="/bv" class="btn btn-menu primary-btn h45-btn btn-post"><i class="fa fa-sign-in" aria-hidden="true"></i> Bài viết</a>
+                            </div>
+                        </div>
+                        <div class="col-xs-4">
+                            <div class="row">
+                                <a href="/dang-ky-nhap-hang" class="btn btn-menu primary-btn h45-btn btn-order"><i class="fa fa-cart-plus" aria-hidden="true"></i> Đặt hàng</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-4">
+                            <div class="row">
+                                <a href="/kh" class="btn primary-btn h45-btn btn-customer"><i class="fa fa-sign-in" aria-hidden="true"></i> Khách hàng</a>
+                            </div>
+                        </div>
+                        <div class="col-xs-4">
+                            <div class="row">
+                                <a href="/bc" class="btn primary-btn h45-btn btn-report"><i class="fa fa-sign-in" aria-hidden="true"></i> Báo cáo</a>
+                            </div>
+                        </div>
+                        <div class="col-xs-4">
+                            <div class="row">
+                                <a href="/nhan-vien-dat-hang" class="btn primary-btn h45-btn btn-list-order"><i class="fa fa-cart-plus" aria-hidden="true"></i> DS đặt hàng</a>
                             </div>
                         </div>
                     </div>
@@ -105,33 +60,35 @@
                             <div class="filter-above-wrap clear">
                                 <div class="filter-control">
                                     <div class="row">
-                                        <div class="col-md-5">
-                                            <asp:TextBox ID="txtSearchPost" runat="server" CssClass="form-control" placeholder="Tìm bài viết" autocomplete="off"></asp:TextBox>
+                                        <div class="col-md-9 col-xs-12">
+                                            <div class="row">
+                                                <div class="col-md-6 col-xs-12 margin-bottom-15">
+                                                    <asp:TextBox ID="txtSearchPost" runat="server" CssClass="form-control" placeholder="Tìm bài viết" autocomplete="off"></asp:TextBox>
+                                                </div>
+                                                <div class="col-md-3 col-xs-6 margin-bottom-15">
+                                                    <asp:DropDownList ID="ddlCategory" runat="server" CssClass="form-control"></asp:DropDownList>
+                                                </div>
+                                                <div class="col-md-3 col-xs-6 margin-bottom-15">
+                                                    <asp:DropDownList ID="ddlCreatedDate" runat="server" CssClass="form-control">
+                                                        <asp:ListItem Value="" Text="Thời gian"></asp:ListItem>
+                                                        <asp:ListItem Value="today" Text="Hôm nay"></asp:ListItem>
+                                                        <asp:ListItem Value="yesterday" Text="Hôm qua"></asp:ListItem>
+                                                        <asp:ListItem Value="beforeyesterday" Text="Hôm kia"></asp:ListItem>
+                                                        <asp:ListItem Value="week" Text="Tuần này"></asp:ListItem>
+                                                        <asp:ListItem Value="thismonth" Text="Tháng này"></asp:ListItem>
+                                                        <asp:ListItem Value="7days" Text="7 ngày"></asp:ListItem>
+                                                        <asp:ListItem Value="30days" Text="30 ngày"></asp:ListItem>
+                                                    </asp:DropDownList>
+                                                </div>
+                                            </div>
                                         </div>
-                                        <div class="col-md-3">
-                                            <asp:DropDownList ID="ddlCategory" runat="server" CssClass="form-control"></asp:DropDownList>
-                                        </div>
-                                        <div class="col-md-2">
-                                            <asp:DropDownList ID="ddlCreatedDate" runat="server" CssClass="form-control">
-                                                <asp:ListItem Value="" Text="Tất cả thời gian"></asp:ListItem>
-                                                <asp:ListItem Value="today" Text="Hôm nay"></asp:ListItem>
-                                                <asp:ListItem Value="yesterday" Text="Hôm qua"></asp:ListItem>
-                                                <asp:ListItem Value="beforeyesterday" Text="Hôm kia"></asp:ListItem>
-                                                <asp:ListItem Value="week" Text="Tuần này"></asp:ListItem>
-                                                <asp:ListItem Value="month" Text="Tháng này"></asp:ListItem>
-                                                <asp:ListItem Value="7days" Text="7 ngày"></asp:ListItem>
-                                                <asp:ListItem Value="30days" Text="30 ngày"></asp:ListItem>
-                                            </asp:DropDownList>
-                                        </div>
-                                        <div class="col-md-2">
-                                            <div class="col-xs-6">
-                                                <div class="row">
+                                        <div class="col-md-3 col-xs-12">
+                                            <div class="row">
+                                                <div class="col-xs-6">
                                                     <a href="javascript:;" onclick="searchPost()" class="btn primary-btn h45-btn"><i class="fa fa-search"></i> Tìm kiếm</a>
                                                     <asp:Button ID="btnSearch" runat="server" CssClass="btn primary-btn h45-btn" OnClick="btnSearch_Click" Style="display: none" />
                                                 </div>
-                                            </div>
-                                            <div class="col-xs-6">
-                                                <div class="row">
+                                                <div class="col-xs-6">
                                                     <a href="/bv" class="btn primary-btn h45-btn download-btn"><i class="fa fa-times" aria-hidden="true"></i> Làm lại</a>
                                                 </div>
                                             </div>
@@ -143,6 +100,7 @@
                     </div>
                     <div class="row">
                         <div class="col-md-12">
+                            <h3>Danh sách bài viết</h3>
                             <div class="panel-table clear">
                                 <div class="clear">
                                     <div class="pagination">
@@ -161,14 +119,6 @@
                         </div>
                     </div>
                 </div>
-        
-                <script type="text/javascript">
-
-                    function searchPost() {
-                        $("#<%= btnSearch.ClientID%>").click();
-                    }
-
-                </script>
             </main>
 
             <a href="javascript:;" class="scroll-top-link" id="scroll-top"><i class="fa fa-angle-up"></i></a>
@@ -177,10 +127,22 @@
             <script src="/App_Themes/Ann/js/bootstrap.min.js"></script>
             <script src="/App_Themes/Ann/js/bootstrap-table/bootstrap-table.js"></script>
             <script src="/App_Themes/NewUI/js/select2/select2.min.js"></script>
-            <script src="/App_Themes/Ann/js/master.js?v=2011"></script>
-            <script src="/App_Themes/Ann/js/copy-post-info.js?v=2011"></script>
-            <script src="/App_Themes/Ann/js/download-post-image.js?v=2011"></script>
+            <script src="/App_Themes/Ann/js/master.js?v=02042020"></script>
+            <script src="/App_Themes/Ann/js/copy-post-info.js?v=02042020"></script>
+            <script src="/App_Themes/Ann/js/download-post-image.js?v=02042020"></script>
+
             <script type="text/javascript">
+
+                $("#<%=txtSearchPost.ClientID%>").keyup(function (e) {
+                    if (e.keyCode == 13)
+                    {
+                        $("#<%= btnSearch.ClientID%>").click();
+                    }
+                });
+
+                function searchPost() {
+                    $("#<%= btnSearch.ClientID%>").click();
+                }
 
                 $(document).ready(function () {
                     LoadSelect();

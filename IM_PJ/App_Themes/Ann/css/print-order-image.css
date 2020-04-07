@@ -1,4 +1,15 @@
-﻿.customer-name {
+﻿.sale-icon {
+    background: #F44336;
+    color: #fff;
+    padding: 5px 6px;
+    white-space: nowrap;
+    font-size: 28px;
+    border-radius: 6px;
+}
+.btn-violet:hover, .btn-violet:active {
+    background-color: #585858!important;
+}
+.customer-name {
     text-transform: capitalize;
 }
 .align-right {
@@ -38,15 +49,14 @@
 }
 .variable {
     margin-top: 20px;
-    color: #607d8b;
+    color: red;
     font-weight: bold;
 }
 .note {
-    font-size: 28px;
+    font-size: 46px;
     color: red;
-    font-style: italic;
-    margin-bottom: 15px;
-    margin-left: 15px;
+    margin-bottom: 20px;
+    margin-left: 20px;
 }
 img {
     width: 100%!important;

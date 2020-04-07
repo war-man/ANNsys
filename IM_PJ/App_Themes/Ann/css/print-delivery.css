@@ -1,0 +1,230 @@
+﻿.all {
+    width: 600px!important;
+    max-width: 88%!important;
+}
+@media print {
+    .all {
+        margin-left: 9px!important;
+    }
+    .btn {
+        display: none;
+    }
+}
+.capitalize {
+    text-transform: capitalize;
+}
+.delivery {
+  font-size: 13px;
+  color: #000;
+}
+
+.info {
+  font-size: 18px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.merge-alert {
+  font-weight: normal;
+  font-style: italic;
+  font-size: 18px;
+}
+
+img {
+  width: 60%!important;
+  margin: auto;
+}
+
+h1 {
+  margin-bottom: 10px!important;
+  font-size: 22px!important;
+  text-align: center;
+}
+
+h1.invoice-return {
+    font-size: 18px!important;
+}
+
+.refund {
+  text-align: center;
+  font-size: 40px;
+  padding-bottom: 25px;
+}
+
+.delivery .ct {
+  padding-bottom: 10px;
+}
+
+.delivery .ct-title {
+  font-weight: 500;
+  color: black;
+  display: inline-block;
+  vertical-align: top;
+}
+
+.delivery .ct-detail {
+  display: inline-block;
+  vertical-align: top;
+}
+
+.delivery .head {
+  margin-bottom: 15px;
+}
+
+.delivery .head .logo {
+  background-color: #ffffff;
+  text-align: center;
+  margin-top: 0;
+}
+
+.delivery .table-1 {
+  margin-bottom: 10px;
+  font-size: 13px;
+}
+
+.delivery .table-1 table {
+  word-break: break-word;
+  border-collapse: collapse;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  color: black;
+}
+
+.delivery .table-1 table .col-left {
+  width: 40%;
+}
+
+.delivery .table-1 table th,
+            .delivery .table-1 table td {
+  padding: 5px 10px;
+  border: 1px solid black;
+  border-right: none;
+  border-left: none;
+}
+
+.delivery .table-1 table th:nth-child(1),
+                .delivery .table-1 table td:nth-child(1) {
+  color: black;
+  font-weight: 600;
+}
+
+.delivery .table-1 table th:nth-child(2),
+                .delivery .table-1 table td:nth-child(2) {
+  text-align: left;
+  font-weight: 400;
+}
+
+.delivery .table-2 {
+  margin-bottom: 10px;
+}
+
+.delivery .table-2 table {
+  border-collapse: collapse;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  color: black;
+  word-break: break-word;
+}
+
+.delivery .table-2 table col.stt {
+  width: 10%;
+}
+
+.delivery .table-2 table col.sanpham {
+  width: 36%;
+}
+
+.delivery .table-2 table col.soluong {
+  width: 10%;
+}
+
+.delivery .table-2 table col.gia {
+  width: 20%;
+}
+
+.delivery .table-2 table col.tong {
+  width: 24%;
+}
+
+.delivery .table-2 table th,
+            .delivery .table-2 table td {
+  padding: 3px 6px 3px 3px;
+  border: 1px solid black;
+  border-left: none;
+  border-right: none;
+  text-align: left;
+}
+
+.delivery .table-2 table th {
+  background-color: #f8f8f8;
+  color: black;
+  vertical-align: middle;
+}
+
+.delivery .table-2 table td:nth-child(1) {
+  font-weight: 500;
+}
+
+.delivery .table-2 table td[colspan="4"] {
+  text-align: right;
+}
+
+.delivery .table-2 table td[colspan="5"] {
+  text-align: right;
+}
+
+.delivery .table-2 table td.strong {
+  font-weight: 600;
+}
+
+.cod-list .table-2 table tr:nth-child(odd) td {
+  border-bottom: 1px solid #fff;
+}
+
+.cod-list .table-2 table th, .cod-list .table-2 table td {
+    text-align: right;
+}
+
+.cod-list .table-2 table th:nth-child(1),
+                .cod-list .table-2 table td:nth-child(1) {
+    text-align: left;
+}
+
+.shipper-list .table-2 table th, .shipper-list .table-2 table td {
+    text-align: right;
+}
+
+.shipper-list .table-2 table th:nth-child(1) {
+    text-align: center;
+}
+.shipper-list .table-2 table th td {
+  text-align: left;
+}
+
+.shipper-list .table-2 table tr:nth-child(odd) td {
+  text-align: left;
+}
+
+.delivery .print-invoice-return table col.sanpham {
+  width: 31%;
+}
+
+.delivery .print-invoice-return table col.soluong {
+  width: 10%;
+}
+
+.delivery .print-invoice-return table col.gia {
+  width: 20%;
+}
+.delivery .print-invoice-return table col.phi {
+  width: 15%;
+}
+
+.delivery .print-invoice-return table col.tong {
+  width: 24%;
+}
+.summary {
+    margin-bottom: 10mm;
+}

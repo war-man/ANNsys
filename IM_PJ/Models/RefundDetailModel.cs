@@ -23,6 +23,8 @@ namespace IM_PJ.Models
         public double QuantityRefund { get; set; }
         public int ChangeType { get; set; }
         public double FeeRefund { get; set; }
+        public double FeeRefundDefault { get; set; }
         public double TotalFeeRefund { get; set; }
+        public string SaleDate { get; set; }
     }
 }

@@ -22,13 +22,13 @@ namespace IM_PJ {
         protected global::System.Web.UI.WebControls.Panel parent;
         
         /// <summary>
-        /// ltrOrderID control.
+        /// ltrHeading control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Literal ltrOrderID;
+        protected global::System.Web.UI.WebControls.Literal ltrHeading;
         
         /// <summary>
         /// ltrCreateBy control.
@@ -139,15 +139,6 @@ namespace IM_PJ {
         protected global::System.Web.UI.WebControls.Literal ltrList;
         
         /// <summary>
-        /// ltrTotal control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Literal ltrTotal;
-        
-        /// <summary>
         /// ltrQuantity control.
         /// </summary>
         /// <remarks>
@@ -164,6 +155,15 @@ namespace IM_PJ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Literal ltrRefund;
+        
+        /// <summary>
+        /// ltrTotal control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Literal ltrTotal;
         
         /// <summary>
         /// ddlRefundStatus control.
@@ -200,6 +200,15 @@ namespace IM_PJ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnDelete;
+        
+        /// <summary>
+        /// hdfCustomerID control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField hdfCustomerID;
         
         /// <summary>
         /// rAjax control.

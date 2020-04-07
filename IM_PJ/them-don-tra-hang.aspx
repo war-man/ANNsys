@@ -2,7 +2,7 @@
 
 <%@ Register Assembly="Telerik.Web.UI" Namespace="Telerik.Web.UI" TagPrefix="telerik" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
-    <script src="/App_Themes/Ann/js/search-customer.js?v=2110"></script>
+    <script src="/App_Themes/Ann/js/search-customer.js?v=02042020"></script>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <asp:Panel ID="parent" runat="server">
@@ -89,7 +89,7 @@
                         <div class="panel-post">
                             <div class="post-above clear">
                                 <div class="search-box left" style="width: 96%;">
-                                    <input type="text" id="txtSearch" class="form-control" placeholder="SKU (F3)">
+                                    <input type="text" id="txtSearch" class="form-control" placeholder="NHẬP MÃ SẢN PHẨM (F3)">
                                 </div>
                                 <div class="right">
                                     <a href="javascript:;" class="link-btn" onclick="searchProduct()"><i class="fa fa-search"></i></a>
@@ -177,6 +177,7 @@
             <asp:HiddenField ID="hdfTotalPrice" runat="server" Value="0" />
             <asp:HiddenField ID="hdfTotalRefund" runat="server" Value="0" />
             <asp:HiddenField ID="hdfListProduct" runat="server" />
+            <asp:HiddenField ID="hdfCustomerID" runat="server" />
         </main>
     </asp:Panel>
     <style>
@@ -628,7 +629,7 @@
                 //checkCustomer();
             }
 
-            function checkCustomer() {
+            <%--function checkCustomer() {
                 
                     var phone = $("#<%=txtPhone.ClientID%>").val();
 
@@ -660,7 +661,7 @@
                     });
                 
                 
-            }
+            }--%>
 
             var formatThousands = function (n, dp) {
                 var s = '' + (Math.floor(n)), d = n % 1, i = s.length, r = '';

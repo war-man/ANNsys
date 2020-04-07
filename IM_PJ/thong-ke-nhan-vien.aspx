@@ -8,7 +8,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
-                    <h3 class="page-title left">Nhân viên</h3>
+                    <h3 class="page-title left">Thống kê nhân viên</h3>
                     <div class="right above-list-btn">
                         <a href="/bao-cao" class="h45-btn btn" style="background-color: #ff3f4c">Trở về</a>
                     </div>
@@ -44,24 +44,24 @@
                         </div>
                     </div>
                     <div class="panel-table clear">
-                        <div class="row">
+                        <div class="row margin-bottom-15">
                             <div class="col-md-2">
                                 <div class="report-column">
                                     <div class="report-label">
-                                        Tổng doanh số:
+                                        Tổng sản lượng còn lại:
                                     </div>
                                     <div class="report-value">
-                                        <asp:Literal ID="ltrTotalSales" runat="server" EnableViewState="false"></asp:Literal>
+                                        <asp:Literal ID="ltrTotalRemainQuantity" runat="server" EnableViewState="false"></asp:Literal>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-2">
                                 <div class="report-column">
                                     <div class="report-label">
-                                        Doanh số trung bình:
+                                        SL còn lại mỗi ngày:
                                     </div>
                                     <div class="report-value">
-                                        <asp:Literal ID="ltrAverageSales" runat="server" EnableViewState="false"></asp:Literal>
+                                        <asp:Literal ID="ltrAverageRemainQuantity" runat="server" EnableViewState="false"></asp:Literal>
                                     </div>
                                 </div>
                             </div>
@@ -71,17 +71,17 @@
                                         Tổng sản lượng bán ra:
                                     </div>
                                     <div class="report-value">
-                                        <asp:Literal ID="ltrTotalOutput" runat="server" EnableViewState="false"></asp:Literal>
+                                        <asp:Literal ID="ltrTotalSoldQuantity" runat="server" EnableViewState="false"></asp:Literal>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-2">
                                 <div class="report-column">
                                     <div class="report-label">
-                                        SL bán ra trung bình:
+                                        SL bán ra mỗi ngày:
                                     </div>
                                     <div class="report-value">
-                                        <asp:Literal ID="ltrAverageOutput" runat="server" EnableViewState="false"></asp:Literal>
+                                        <asp:Literal ID="ltrAverageSoldQuantity" runat="server" EnableViewState="false"></asp:Literal>
                                     </div>
                                 </div>
                             </div>
@@ -91,17 +91,79 @@
                                         Tổng lượng hàng đổi trả:
                                     </div>
                                     <div class="report-value">
-                                        <asp:Literal ID="ltrTotalRefund" runat="server" EnableViewState="false"></asp:Literal>
+                                        <asp:Literal ID="ltrTotalRefundQuantity" runat="server" EnableViewState="false"></asp:Literal>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-2">
                                 <div class="report-column">
                                     <div class="report-label">
-                                        SL đổi trả trung bình:
+                                        SL đổi trả mỗi ngày:
                                     </div>
                                     <div class="report-value">
-                                        <asp:Literal ID="ltrAverageRefund" runat="server" EnableViewState="false"></asp:Literal>
+                                        <asp:Literal ID="ltrAverageRefundQuantity" runat="server" EnableViewState="false"></asp:Literal>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row margin-bottom-15">
+                            <div class="col-md-2">
+                                <div class="report-column">
+                                    <div class="report-label">
+                                        Tổng doanh số:
+                                    </div>
+                                    <div class="report-value">
+                                        <asp:Literal ID="ltrTotalRevenue" runat="server" EnableViewState="false"></asp:Literal>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="report-column">
+                                    <div class="report-label">
+                                        Doanh số mỗi ngày:
+                                    </div>
+                                    <div class="report-value">
+                                        <asp:Literal ID="ltrAverageRevenue" runat="server" EnableViewState="false"></asp:Literal>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="report-column">
+                                    <div class="report-label">
+                                        Tổng lợi nhuận:
+                                    </div>
+                                    <div class="report-value">
+                                        <asp:Literal ID="ltrTotalProfit" runat="server" EnableViewState="false"></asp:Literal>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="report-column">
+                                    <div class="report-label">
+                                        Phần trăm sản lượng:
+                                    </div>
+                                    <div class="report-value">
+                                        <asp:Literal ID="ltrQuantityPercentOfSystem" runat="server" EnableViewState="false"></asp:Literal>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="report-column">
+                                    <div class="report-label">
+                                        Phần trăm lợi nhuận:
+                                    </div>
+                                    <div class="report-value">
+                                        <asp:Literal ID="ltrProfitPercentOfSystem" runat="server" EnableViewState="false"></asp:Literal>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="report-column">
+                                    <div class="report-label">
+                                        Tổng số khách mới:
+                                    </div>
+                                    <div class="report-value">
+                                        <asp:Literal ID="ltrTotalNewCustomer" runat="server" EnableViewState="false"></asp:Literal>
                                     </div>
                                 </div>
                             </div>

@@ -27,5 +27,9 @@ namespace IM_PJ.Models
         public Nullable<double> FeeRefund { get; set; }
         public Nullable<double> NumOfDateToChangeProduct { get; set; }
         public Nullable<double> NumOfProductCanChange { get; set; }
+        public Nullable<int> QuantityProduct { get; set; }
+        public Nullable<int> RefundQuantityNoFee { get; set; }
+        public string PermittedRead { get; set; }
+        public Nullable<int> QuantityRequired { get; set; }
     }
 }

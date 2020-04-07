@@ -23,18 +23,20 @@ namespace IM_PJ
 
             if (!IsPostBack)
             {
-                if (Request.Cookies["userLoginSystem"] != null)
+                if (Request.Cookies["usernameLoginSystem"] != null)
                 {
-                    string username = Request.Cookies["userLoginSystem"].Value;
+                    string username = Request.Cookies["usernameLoginSystem"].Value;
                     var acc = AccountController.GetByUsername(username);
                     if (acc != null)
                     {
                         if (acc.RoleID == 0)
                         {
+                            hdfRoleID.Value = acc.RoleID.ToString();
                             hdfUsernameCurrent.Value = acc.Username;
                         }
                         else if (acc.RoleID == 2)
                         {
+                            hdfRoleID.Value = acc.RoleID.ToString();
                             hdfUsername.Value = acc.Username;
                             hdfUsernameCurrent.Value = acc.Username;
                         }
@@ -55,7 +57,7 @@ namespace IM_PJ
                         }
                         var agent = acc.AgentID;
 
-                        Response.Cookies["refundt"].Value = "1";
+                        hdSession.Value = "1";
 
                         if (agent == 1)
                         {
@@ -71,16 +73,107 @@ namespace IM_PJ
                 {
                     Response.Redirect("/dang-nhap");
                 }
-                //LoadData();
+                LoadData();
             }
         }
+
+        public void LoadData()
+        {
+            
+            // Fix bug, case setting value for pDiscount on HTML but don't change value
+            pDiscount.Value = 1;
+            pFeeShip.Value = 1;
+
+            // Init drop down list ddlFeeType
+            var feeTypes = FeeTypeController.getDropDownList();
+            feeTypes[0].Text = "Loại Phí";
+            ddlFeeType.Items.Clear();
+            ddlFeeType.Items.AddRange(feeTypes.ToArray());
+            ddlFeeType.DataBind();
+            ddlFeeType.SelectedIndex = 0;
+
+            // Init Price Type List
+            hdfFeeType.Value = FeeTypeController.getFeeTypeJSON();
+
+            // Init drop down list Excute Status
+            var excuteStatus = new List<ListItem>();
+            excuteStatus.Add(new ListItem("Đang xử lý", "1"));
+            excuteStatus.Add(new ListItem("Đã hoàn tất", "2"));
+
+            ddlExcuteStatus.Items.Clear();
+            ddlExcuteStatus.Items.AddRange(excuteStatus.ToArray());
+            ddlExcuteStatus.DataBind();
+            ddlExcuteStatus.SelectedIndex = 0;
+
+            // Init drop down list Payment Status
+            var payStatus = new List<ListItem>();
+            payStatus.Add(new ListItem("Chưa thanh toán", "1"));
+            payStatus.Add(new ListItem("Thanh toán thiếu", "2"));
+            payStatus.Add(new ListItem("Đã thanh toán", "3"));
+
+            ddlPaymentStatus.Items.Clear();
+            ddlPaymentStatus.Items.AddRange(payStatus.ToArray());
+            ddlPaymentStatus.DataBind();
+            ddlPaymentStatus.SelectedIndex = 0;
+
+            // Init drop down list Payment Type
+            var payType = new List<ListItem>();
+            payType.Add(new ListItem("Tiền mặt", "1"));
+            payType.Add(new ListItem("Chuyển khoản", "2"));
+            payType.Add(new ListItem("Thu hộ", "3"));
+            payType.Add(new ListItem("Công nợ", "4"));
+
+            ddlPaymentType.Items.Clear();
+            ddlPaymentType.Items.AddRange(payType.ToArray());
+            ddlPaymentType.DataBind();
+            ddlPaymentType.SelectedIndex = 1;
+
+            // Init drop down list Bank
+            var banks = BankController.getDropDownList();
+            banks[0].Text = "Chọn ngân hàng";
+
+            ddlBank.Items.Clear();
+            ddlBank.Items.AddRange(banks.ToArray());
+            ddlBank.DataBind();
+
+            // Init drop down list Shipping Type
+            var shipType = new List<ListItem>();
+            shipType.Add(new ListItem("Lấy trực tiếp", "1"));
+            shipType.Add(new ListItem("Bưu điện", "2"));
+            shipType.Add(new ListItem("Proship", "3"));
+            shipType.Add(new ListItem("Chuyển xe", "4"));
+            shipType.Add(new ListItem("Nhân viên giao", "5"));
+            shipType.Add(new ListItem("GHTK", "6"));
+            shipType.Add(new ListItem("Viettel", "7"));
+
+            ddlShippingType.Items.Clear();
+            ddlShippingType.Items.AddRange(shipType.ToArray());
+            ddlShippingType.DataBind();
+            ddlShippingType.SelectedIndex = 3;
+
+            // Init drop down list Bank
+            var trans = TransportCompanyController.getDropDownListTrans();
+            trans[0].Text = "Chọn chành xe";
+
+            ddlTransportCompanyID.Items.Clear();
+            
+            ddlTransportCompanyID.Items.AddRange(trans.ToArray());
+            ddlTransportCompanyID.DataBind();
+            ddlTransportCompanyID.SelectedIndex = 0;
+
+            ddlTransportCompanySubID.Items.Clear();
+            ddlTransportCompanySubID.Items.Add(new ListItem("Chọn nơi nhận", "0"));
+            ddlTransportCompanySubID.DataBind();
+            ddlTransportCompanySubID.SelectedIndex = 0;
+        }
+
         [WebMethod]
         public static string checkPrepayTransport(int ID, int SubID)
         {
             var a = TransportCompanyController.GetReceivePlaceByID(ID, SubID);
-            if(a != null)
+            if (a != null)
             {
-                if(a.Prepay == true)
+                if (a.Prepay == true)
                 {
                     return "yes";
                 }
@@ -91,28 +184,11 @@ namespace IM_PJ
             }
             return "null";
         }
+
         [WebMethod]
-        public static string getReturnOrder(string order, string remove)
+        public static string getOrderReturn(int customerID)
         {
-            JavaScriptSerializer serializer = new JavaScriptSerializer();
-            if (remove.ToInt() == 0)
-            {
-                var or = RefundGoodController.GetOrderByID(order.ToInt());
-                if (or != null)
-                {
-                    HttpContext.Current.Response.Cookies["refundt"].Value = or.ID + "|" + or.TotalPrice;
-                    return serializer.Serialize(or);
-                }
-                else
-                {
-                    return serializer.Serialize(null);
-                }
-            }
-            else
-            {
-                HttpContext.Current.Response.Cookies["refundt"].Value = "1";
-                return serializer.Serialize(null);
-            }
+            return RefundGoodController.getOrderReturnJSON(customerID);
         }
 
         public class ProductGetOut
@@ -139,7 +215,7 @@ namespace IM_PJ
         protected void btnOrder_Click(object sender, EventArgs e)
         {
             DateTime currentDate = DateTime.Now;
-            string username = Request.Cookies["userLoginSystem"].Value;
+            string username = Request.Cookies["usernameLoginSystem"].Value;
             var acc = AccountController.GetByUsername(username);
             if (acc != null)
             {
@@ -151,16 +227,16 @@ namespace IM_PJ
                     string DisCount = "0";
                     int CustomerID = 0;
 
-                    string CustomerPhone = txtPhone.Text.Trim().Replace(" ","");
-                    string CustomerName = txtFullname.Text.Trim();
+                    string CustomerPhone = Regex.Replace(txtPhone.Text.Trim(), @"[^\d]", "");
+                    string CustomerName = txtFullname.Text.Trim().ToLower().ToTitleCase();
                     string Nick = txtNick.Text.Trim();
                     string CustomerAddress = txtAddress.Text.Trim();
                     string Zalo = txtZalo.Text.Trim();
                     string Facebook = txtFacebook.Text.Trim();
-                    int PaymentStatus = hdfPaymentStatus.Value.ToInt(1);
-                    int ExcuteStatus = hdfExcuteStatus.Value.ToInt(1);
-                    int PaymentType = hdfPaymentType.Value.ToInt(1);
-                    int ShippingType = hdfShippingType.Value.ToInt(1);
+                    int PaymentStatus = ddlPaymentStatus.SelectedValue.ToInt();
+                    int ExcuteStatus = ddlExcuteStatus.SelectedValue.ToInt();
+                    int PaymentType = ddlPaymentType.SelectedValue.ToInt();
+                    int ShippingType = ddlShippingType.SelectedValue.ToInt();
 
                     var checkCustomer = CustomerController.GetByPhone(CustomerPhone);
 
@@ -178,15 +254,8 @@ namespace IM_PJ
                         }
                     }
 
-                    var Customer = CustomerController.GetByID(CustomerID);
-
-                    int TransportCompanyID = 0;
-                    int TransportCompanySubID = 0;
-                    if (Customer.ShippingType == ShippingType)
-                    {
-                        TransportCompanyID = Convert.ToInt32(Customer.TransportCompanyID);
-                        TransportCompanySubID = Convert.ToInt32(Customer.TransportCompanySubID);
-                    }
+                    int TransportCompanyID = ddlTransportCompanyID.SelectedValue.ToInt(0);
+                    int TransportCompanySubID = hdfTransportCompanySubID.Value.ToInt(0);
 
                     string totalPrice = hdfTotalPrice.Value.ToString();
                     string totalPriceNotDiscount = hdfTotalPriceNotDiscount.Value;
@@ -196,9 +265,6 @@ namespace IM_PJ
 
                     double TotalDiscount = Convert.ToDouble(pDiscount.Value) * Convert.ToDouble(hdfTotalQuantity.Value);
                     string FeeShipping = pFeeShip.Value.ToString();
-
-                    string OtherFeeName = txtOtherFeeName.Text;
-                    double OtherFeeValue = Convert.ToDouble(pOtherFee.Value);
 
                     bool IsHidden = false;
                     int WayIn = 1;
@@ -210,73 +276,141 @@ namespace IM_PJ
                         datedone = DateTime.Now.ToString();
                     }
 
-                    var ret = OrderController.Insert(AgentID, OrderType, AdditionFee, DisCount, CustomerID, CustomerName, CustomerPhone, CustomerAddress,
-                        "", totalPrice, totalPriceNotDiscount, PaymentStatus, ExcuteStatus, IsHidden, WayIn, currentDate, username, Convert.ToDouble(pDiscount.Value),
-                        TotalDiscount, FeeShipping, PaymentType, ShippingType, datedone, 0, 0, TransportCompanyID, TransportCompanySubID, OtherFeeName, OtherFeeValue, 1);
+                    var couponID = hdfCouponID.Value.ToInt(0);
+                    var couponValue = hdfCouponValue.Value.ToDecimal(0);
+
+                    var orderNew = new tbl_Order()
+                    {
+                        AgentID = AgentID,
+                        OrderType = OrderType,
+                        AdditionFee = AdditionFee,
+                        DisCount = DisCount,
+                        CustomerID = CustomerID,
+                        CustomerName = CustomerName,
+                        CustomerPhone = CustomerPhone,
+                        CustomerAddress = CustomerAddress,
+                        CustomerEmail = String.Empty,
+                        TotalPrice = totalPrice,
+                        TotalPriceNotDiscount = totalPriceNotDiscount,
+                        PaymentStatus = PaymentStatus,
+                        ExcuteStatus = ExcuteStatus,
+                        IsHidden = IsHidden,
+                        WayIn = WayIn,
+                        CreatedDate = currentDate,
+                        CreatedBy = username,
+                        DiscountPerProduct = Convert.ToDouble(pDiscount.Value),
+                        TotalDiscount = TotalDiscount,
+                        FeeShipping = FeeShipping,
+                        PaymentType = PaymentType,
+                        ShippingType = ShippingType,
+                        GuestPaid = 0,
+                        GuestChange = 0,
+                        TransportCompanyID = TransportCompanyID,
+                        TransportCompanySubID = TransportCompanySubID,
+                        OtherFeeName = String.Empty,
+                        OtherFeeValue = 0,
+                        PostalDeliveryType = 1,
+                        CouponID = couponID,
+                        CouponValue = couponValue
+                    };
+
+                    if (!String.IsNullOrEmpty(datedone))
+                        orderNew.DateDone = Convert.ToDateTime(datedone);
+
+                    var ret = OrderController.Insert(orderNew);
+
+                    // Insert Other Fee
+                    if (!String.IsNullOrEmpty(hdfOtherFees.Value))
+                    {
+                        JavaScriptSerializer serializer = new JavaScriptSerializer();
+                        var fees = serializer.Deserialize<List<Fee>>(hdfOtherFees.Value);
+                        if (fees != null)
+                        {
+                            foreach (var fee in fees)
+                            {
+                                fee.OrderID = ret.ID;
+                                fee.CreatedBy = acc.ID;
+                                fee.CreatedDate = DateTime.Now;
+                                fee.ModifiedBy = acc.ID;
+                                fee.ModifiedDate = DateTime.Now;
+                            }
+
+                            FeeController.Update(ret.ID, fees);
+                        }
+                    }
+                    // Insert Transfer Bank
+                    var bankID = ddlBank.SelectedValue.ToInt(0);
+                    if (bankID != 0)
+                    {
+                        BankTransferController.Create(ret, bankID, acc);
+                    }
+
+                    // Inactive code coupon
+                    if (orderNew.CouponID.HasValue && orderNew.CouponID.Value > 0)
+                    {
+                        CouponController.updateStatusCouponCustomer(CustomerID, orderNew.CouponID.Value, false);
+                    }
 
                     int OrderID = ret.ID;
-
                     double totalQuantity = 0;
                     if (OrderID > 0)
                     {
                         string list = hdfListProduct.Value;
-                        string[] items = list.Split(';');
-                        if (items.Length - 1 > 0)
+                        var items = list.Split(';').Where(x => !String.IsNullOrEmpty(x)).ToList();
+                        if (items.Count > 0)
+                            items.Reverse();
+
+                        foreach (var item in items)
                         {
-                            for (int i = 0; i < items.Length - 1; i++)
+                            string[] itemValue = item.Split(',');
+
+                            int ProductID = itemValue[0].ToInt();
+                            int ProductVariableID = itemValue[11].ToInt();
+                            string SKU = itemValue[1].ToString();
+                            int ProductType = itemValue[2].ToInt();
+
+                            // Tìm parentID
+                            int parentID = ProductID;
+                            var variable = ProductVariableController.GetByID(ProductVariableID);
+                            if (variable != null)
                             {
-
-                                var item = items[i];
-                                string[] itemValue = item.Split(',');
-
-                                int ProductID = itemValue[0].ToInt();
-                                int ProductVariableID = itemValue[11].ToInt();
-                                string SKU = itemValue[1].ToString();
-                                int ProductType = itemValue[2].ToInt();
-
-                                // Tìm parentID
-                                int parentID = ProductID;
-                                var variable = ProductVariableController.GetByID(ProductVariableID);
-                                if (variable != null)
-                                {
-                                    parentID = Convert.ToInt32(variable.ProductID);
-                                }
-
-                                string ProductVariableName = itemValue[3];
-                                string ProductVariableValue = itemValue[4];
-                                double Quantity = Convert.ToDouble(itemValue[5]);
-                                string ProductName = itemValue[6];
-                                string ProductImageOrigin = itemValue[7];
-                                string ProductVariable = itemValue[8];
-                                double Price = Convert.ToDouble(itemValue[9]);
-                                string ProductVariableSave = itemValue[10];
-
-                                OrderDetailController.Insert(AgentID, OrderID, SKU, ProductID, ProductVariableID, ProductVariableSave, Quantity, Price, 1, 0,
-                                    ProductType, currentDate, username, true);
-
-                                StockManagerController.Insert(
-                                    new tbl_StockManager
-                                    {
-                                        AgentID = AgentID,
-                                        ProductID = ProductID,
-                                        ProductVariableID = ProductVariableID,
-                                        Quantity = Quantity,
-                                        QuantityCurrent = 0,
-                                        Type = 2,
-                                        NoteID = "Xuất kho khi tạo đơn",
-                                        OrderID = OrderID,
-                                        Status = 3,
-                                        SKU = SKU,
-                                        CreatedDate = currentDate,
-                                        CreatedBy = username,
-                                        MoveProID = 0,
-                                        ParentID = parentID,
-                                    });
-                                totalQuantity += Quantity;
+                                parentID = Convert.ToInt32(variable.ProductID);
                             }
+
+                            string ProductVariableName = itemValue[3];
+                            string ProductVariableValue = itemValue[4];
+                            double Quantity = Convert.ToDouble(itemValue[5]);
+                            string ProductName = itemValue[6];
+                            string ProductImageOrigin = itemValue[7];
+                            string ProductVariable = itemValue[8];
+                            double Price = Convert.ToDouble(itemValue[9]);
+                            string ProductVariableSave = itemValue[10];
+
+                            OrderDetailController.Insert(AgentID, OrderID, SKU, ProductID, ProductVariableID, ProductVariableSave, Quantity, Price, 1, 0,
+                                ProductType, currentDate, username, true);
+
+                            StockManagerController.Insert(
+                                new tbl_StockManager
+                                {
+                                    AgentID = AgentID,
+                                    ProductID = ProductID,
+                                    ProductVariableID = ProductVariableID,
+                                    Quantity = Quantity,
+                                    QuantityCurrent = 0,
+                                    Type = 2,
+                                    NoteID = "Xuất kho khi tạo đơn",
+                                    OrderID = OrderID,
+                                    Status = 3,
+                                    SKU = SKU,
+                                    CreatedDate = currentDate,
+                                    CreatedBy = username,
+                                    MoveProID = 0,
+                                    ParentID = parentID,
+                                });
+                            totalQuantity += Quantity;
                         }
 
-                        string refund = Request.Cookies["refundt"].Value;
+                        string refund = hdSession.Value;
                         if (refund != "1")
                         {
                             string[] RefundID = refund.Split('|');
@@ -284,13 +418,95 @@ namespace IM_PJ
                             var updateor = OrderController.UpdateRefund(OrderID, RefundID[0].ToInt(), username);
                         }
 
-                        Response.Cookies["refundt"].Expires = DateTime.Now.AddDays(-1d);
-                        Response.Cookies.Add(Response.Cookies["refundt"]);
-
                         PJUtils.ShowMessageBoxSwAlertCallFunction("Tạo đơn hàng thành công", "s", true, "redirectTo(" + OrderID + ")", Page);
                     }
                 }
             }
+        }
+
+        [WebMethod]
+        public static string getTransferLast(int customerID)
+        {
+            return BankTransferController.getTransferLastJSON(customerID);
+        }
+
+        [WebMethod]
+        public static string getDeliveryLast(int customerID)
+        {
+            return DeliveryController.getDeliveryLast(customerID);
+        }
+
+        [WebMethod]
+        public static string getTransportSub(int transComID)
+        {
+            if (transComID > 0)
+            {
+                var data = new List<object>();
+                data.Add(new
+                {
+                    key = "0",
+                    value = "Chọn nơi nhận"
+                });
+
+                var ShipTo = TransportCompanyController.GetReceivePlace(transComID);
+
+                foreach (var p in ShipTo)
+                {
+                    data.Add(new
+                    {
+                        key = p.SubID.ToString(),
+                        value = p.ShipTo.ToTitleCase()
+                    });
+                }
+
+                JavaScriptSerializer serializer = new JavaScriptSerializer();
+
+                return serializer.Serialize(data);
+            }
+
+            return String.Empty;
+        }
+
+        [WebMethod]
+        public static string getOrderLast(int customerID)
+        {
+            return OrderController.getLastJSON(customerID);
+        }
+
+        /// <summary>
+        /// Lấy thông tin của khách hàng về số lượng order đang xử lý
+        /// và số lượng đơn hàng đổi trả chưa trừ tiền
+        /// </summary>
+        /// <param name="customerID">Mã khách hàng</param>
+        /// <param name="status">1: Đơn hàng đang xử lý | Đơn hàng chưa trừ tiền</param>
+        /// <returns></returns>
+        [WebMethod]
+        public static string checkOrderOld(int customerID, int status = 1)
+        {
+            var customer = CustomerController.GetByID(customerID);
+            var order = OrderController.GetByCustomerID(customerID, status);
+            int orderReturn = RefundGoodController.GetByCustomerID(customerID, status);
+            var serializer = new JavaScriptSerializer();
+
+            if (customer != null)
+            {
+                return serializer.Serialize(new
+                {
+                    phone = customer.CustomerPhone,
+                    numberOrder = order.Count,
+                    numberOrderReturn = orderReturn
+                });
+            }
+            else
+            {
+                return "null";
+            }
+        }
+
+        [WebMethod]
+        public static string getCoupon(int customerID, string code, int productNumber, decimal price)
+        {
+            return CouponController.getCoupon(customerID, code, productNumber, price);
         }
     }
 }

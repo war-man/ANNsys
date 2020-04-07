@@ -13,8 +13,23 @@ namespace IM_PJ.Controllers
 {
     public class PostController
     {
+        static string checkSlug(string slug, int ID = 0)
+        {
+            using (var con = new inventorymanagementEntities())
+            {
+                var product = con.tbl_Post.Where(x => x.Slug == slug && x.ID != ID).FirstOrDefault();
+                if (product != null)
+                {
+                    return checkSlug(slug + "-1", ID);
+                }
+                else
+                {
+                    return slug;
+                }
+            }
+        }
         #region CRUD
-        public static string Insert(string Title, string Content, string Image, int Featured, int CategoryID, int Status, string CreatedBy, DateTime CreatedDate)
+        public static string Insert(string Title, string Content, string Image, int Featured, int CategoryID, int Status, string PostSlug, string CreatedBy, DateTime CreatedDate)
         {
             using (var dbe = new inventorymanagementEntities())
             {
@@ -27,13 +42,17 @@ namespace IM_PJ.Controllers
                 ui.Status = Status;
                 ui.CreatedBy = CreatedBy;
                 ui.CreatedDate = CreatedDate;
+                ui.WebPublish = false;
+                ui.WebUpdate = CreatedDate;
+                ui.Slug = checkSlug(Slug.ConvertToSlug(PostSlug != "" ? PostSlug : Title));
+
                 dbe.tbl_Post.Add(ui);
                 dbe.SaveChanges();
                 int kq = ui.ID;
                 return kq.ToString();
             }
         }
-        public static string Update(int ID, string Title, string Content, string Image, int Featured, int CategoryID, int Status, string ModifiedBy, DateTime ModifiedDate)
+        public static string Update(int ID, string Title, string Content, string Image, int Featured, int CategoryID, int Status, string PostSlug, string ModifiedBy, DateTime ModifiedDate)
         {
             using (var dbe = new inventorymanagementEntities())
             {
@@ -48,8 +67,10 @@ namespace IM_PJ.Controllers
                     ui.Status = Status;
                     ui.ModifiedBy = ModifiedBy;
                     ui.ModifiedDate = ModifiedDate;
+                    ui.Slug = checkSlug(Slug.ConvertToSlug(PostSlug != "" ? PostSlug : Title), ui.ID);
+
                     int kq = dbe.SaveChanges();
-                    return kq.ToString();
+                    return ui.ID.ToString();
                 }
                 else
                     return null;
@@ -119,7 +140,7 @@ namespace IM_PJ.Controllers
                 return ags;
             }
         }
-        public static List<PostSQL> GetAllSql(int categoryID, string textsearch)
+        public static List<PostSQL> GetAllSql(int categoryID, string textsearch, string PostStatus, string WebPublish, string CreatedDate, string CreatedBy)
         {
             var list = new List<PostSQL>();
             StringBuilder sql = new StringBuilder();
@@ -171,6 +192,65 @@ namespace IM_PJ.Controllers
             if (!string.IsNullOrEmpty(textsearch))
             {
                 sql.AppendLine("    AND (POS.Title like N'%" + textsearch + "%')");
+            }
+
+            if (!string.IsNullOrEmpty(PostStatus))
+            {
+                sql.AppendLine("    AND (POS.Status = " + PostStatus.ToInt() + ")");
+            }
+
+            if (!string.IsNullOrEmpty(WebPublish))
+            {
+                sql.AppendLine("    AND (POS.WebPublish = '" + WebPublish + "')");
+            }
+
+            if (!string.IsNullOrEmpty(CreatedBy))
+            {
+                sql.AppendLine("    AND (POS.CreatedBy = '" + CreatedBy + "')");
+            }
+
+            if (!string.IsNullOrEmpty(CreatedDate))
+            {
+                DateTime fromdate = DateTime.Today;
+                DateTime todate = DateTime.Now;
+                switch (CreatedDate)
+                {
+                    case "today":
+                        fromdate = DateTime.Today;
+                        todate = DateTime.Now;
+                        break;
+                    case "yesterday":
+                        fromdate = fromdate.AddDays(-1);
+                        todate = DateTime.Today;
+                        break;
+                    case "beforeyesterday":
+                        fromdate = DateTime.Today.AddDays(-2);
+                        todate = DateTime.Today.AddDays(-1);
+                        break;
+                    case "week":
+                        int days = DateTime.Today.DayOfWeek == DayOfWeek.Sunday ? 7 : (int)DateTime.Today.DayOfWeek;
+                        fromdate = fromdate.AddDays(-days + 1);
+                        todate = DateTime.Now;
+                        break;
+                    case "thismonth":
+                        fromdate = new DateTime(fromdate.Year, fromdate.Month, 1);
+                        todate = DateTime.Now;
+                        break;
+                    case "lastmonth":
+                        var thismonth = new DateTime(fromdate.Year, fromdate.Month, 1);
+                        fromdate = thismonth.AddMonths(-1);
+                        todate = thismonth;
+                        break;
+                    case "7days":
+                        fromdate = DateTime.Today.AddDays(-6);
+                        todate = DateTime.Now;
+                        break;
+                    case "30days":
+                        fromdate = DateTime.Today.AddDays(-29);
+                        todate = DateTime.Now;
+                        break;
+                }
+                sql.AppendLine(String.Format("	AND	(CONVERT(NVARCHAR(10), POS.CreatedDate, 121) BETWEEN CONVERT(NVARCHAR(10), '{0:yyyy-MM-dd}', 121) AND CONVERT(NVARCHAR(10), '{1:yyyy-MM-dd}', 121))", fromdate, todate));
             }
 
             if (categoryID > 0)
@@ -242,6 +322,12 @@ namespace IM_PJ.Controllers
                     entity.CreatedDate = Convert.ToDateTime(reader["CreatedDate"]);
                 if (reader["Status"] != DBNull.Value)
                     entity.Status = reader["Status"].ToString().ToInt(0);
+                if (reader["WebPublish"] != DBNull.Value)
+                    entity.WebPublish = reader["WebPublish"].ToString().ToBool();
+                if (reader["WebUpdate"] != DBNull.Value)
+                    entity.WebUpdate = Convert.ToDateTime(reader["WebUpdate"]);
+                if (reader["CreatedBy"] != DBNull.Value)
+                    entity.CreatedBy = reader["CreatedBy"].ToString();
                 list.Add(entity);
             }
             reader.Close();
@@ -249,6 +335,21 @@ namespace IM_PJ.Controllers
             var list_featured = list.Where(x => x.Featured == 1).OrderByDescending(x => x.CreatedDate).ToList();
             var list_normal = list.Where(x => x.Featured == 0).OrderByDescending(x => x.CreatedDate).ToList();
             return list_featured.Concat(list_normal).ToList();
+        }
+        public static string updateWebPublish(int id, bool value)
+        {
+            using (var dbe = new inventorymanagementEntities())
+            {
+                tbl_Post ui = dbe.tbl_Post.Where(a => a.ID == id).SingleOrDefault();
+                if (ui != null)
+                {
+                    ui.WebPublish = value;
+                    int kq = dbe.SaveChanges();
+                    return kq.ToString();
+                }
+                else
+                    return null;
+            }
         }
         #endregion
         #region Class
@@ -266,6 +367,8 @@ namespace IM_PJ.Controllers
             public Nullable<System.DateTime> CreatedDate { get; set; }
             public string ModifiedBy { get; set; }
             public Nullable<System.DateTime> ModifiedDate { get; set; }
+            public bool WebPublish { get; set; }
+            public DateTime WebUpdate { get; set; }
         }
 
         #endregion

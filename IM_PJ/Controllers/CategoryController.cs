@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.Web.UI.WebControls;
 
 namespace IM_PJ.Controllers
 {
@@ -65,6 +66,15 @@ namespace IM_PJ.Controllers
 
             }
         }
+
+        public static List<tbl_Category> GetAll()
+        {
+            using (var con = new inventorymanagementEntities())
+            {
+                return con.tbl_Category.ToList();
+            }
+        }
+
         public static List<tbl_Category> GetAll(string s)
         {
             using (var dbe = new inventorymanagementEntities())
@@ -158,6 +168,59 @@ namespace IM_PJ.Controllers
                 ags = dbe.tbl_Category.Where(a => a.ParentID == ParentID).ToList();
                 return ags;
             }
+        }
+
+        public static List<tbl_Category> getCategoryChild(tbl_Category parent)
+        {
+            using (var con = new inventorymanagementEntities())
+            {
+                var result = new List<tbl_Category>();
+                result.Add(parent);
+
+                var child = con.tbl_Category
+                    .Where(x => x.ParentID.Value == parent.ID)
+                    .ToList();
+
+                if (child.Count > 0)
+                {
+                    foreach (var id in child)
+                    {
+                        result.AddRange(getCategoryChild(id));
+                    }
+                }
+
+                return result;
+            }
+        }
+        #endregion
+
+        #region Trả về danh sách drop downlist
+        public static List<ListItem> getDropDownList()
+        {
+            var dropDownList = new List<ListItem>();
+            var categories = GetByLevel(0);
+
+            foreach (var item in categories)
+            {
+                dropDownList.AddRange(createListItem(item));
+            }
+
+            return dropDownList;
+        }
+
+        private static List<ListItem> createListItem(tbl_Category parents, string strLevel = "")
+        {
+            var result = new List<ListItem>();
+            var categories = CategoryController.GetByParentID("", parents.ID);
+
+            result.Add(new ListItem(strLevel + parents.CategoryName, parents.ID.ToString()));
+
+            foreach (var item in categories)
+            {
+                result.AddRange(createListItem(item, strLevel + "---"));
+            }
+
+            return result;
         }
         #endregion
     }

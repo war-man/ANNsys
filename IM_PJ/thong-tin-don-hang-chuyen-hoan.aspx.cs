@@ -1,5 +1,6 @@
 ﻿using IM_PJ.Controllers;
 using IM_PJ.Models;
+using IM_PJ.Utils;
 using MB.Extensions;
 using NHST.Bussiness;
 using System;
@@ -23,9 +24,9 @@ namespace IM_PJ
         {
             if (!IsPostBack)
             {
-                if (Request.Cookies["userLoginSystem"] != null)
+                if (Request.Cookies["usernameLoginSystem"] != null)
                 {
-                    string username = Request.Cookies["userLoginSystem"].Value;
+                    string username = Request.Cookies["usernameLoginSystem"].Value;
                     var acc = AccountController.GetByUsername(username);
                     if (acc != null)
                     {
@@ -67,7 +68,7 @@ namespace IM_PJ
                 else
                 {
                     hdfOrderID.Value = order.ID.ToString();
-                    string username = HttpContext.Current.Request.Cookies["userLoginSystem"].Value;
+                    string username = HttpContext.Current.Request.Cookies["usernameLoginSystem"].Value;
                     var acc = AccountController.GetByUsername(username);
 
                     // check order condition
@@ -285,19 +286,15 @@ namespace IM_PJ
                                     var img = ProductImageController.GetFirstByProductID(product.ID);
                                     if (!string.IsNullOrEmpty(product.ProductImage))
                                     {
-                                        ProductImage = "<img src=\"" + product.ProductImage + "\" />";
-                                        ProductImageOrigin = product.ProductImage;
+                                        ProductImage = "<img src='" + Thumbnail.getURL(product.ProductImage, Thumbnail.Size.Small) + "'>";
+                                        ProductImageOrigin = Thumbnail.getURL(product.ProductImage, Thumbnail.Size.Source);
                                     }
                                     else if (img != null)
                                     {
-                                        ProductImage = "<img src=\"" + img.ProductImage + "\" />";
-                                        ProductImageOrigin = img.ProductImage;
+                                        ProductImage = "<img src='" + Thumbnail.getURL(img.ProductImage, Thumbnail.Size.Small) + "'>";
+                                        ProductImageOrigin = Thumbnail.getURL(img.ProductImage, Thumbnail.Size.Source);
                                     }
-                                    else
-                                    {
-                                        ProductImage = "<img src=\"/App_Themes/Ann/image/placeholder.png\" />";
-                                        ProductImageOrigin = "";
-                                    }
+
                                     ProductVariable = variable;
                                     ProductName = product.ProductTitle;
 
@@ -356,18 +353,13 @@ namespace IM_PJ
 
                                     if (!string.IsNullOrEmpty(productvariable.Image))
                                     {
-                                        ProductImage = "<img src=\"" + productvariable.Image + "\" />";
-                                        ProductImageOrigin = productvariable.Image;
+                                        ProductImage = "<img src='" + Thumbnail.getURL(productvariable.Image, Thumbnail.Size.Small) + "'>";
+                                        ProductImageOrigin = Thumbnail.getURL(productvariable.Image, Thumbnail.Size.Source);
                                     }
                                     else if (_product != null && !string.IsNullOrEmpty(_product.ProductImage))
                                     {
-                                        ProductImage = "<img src=\"" + _product.ProductImage + "\" />";
-                                        ProductImageOrigin = _product.ProductImage;
-                                    }
-                                    else
-                                    {
-                                        ProductImage = "<img src=\"/App_Themes/Ann/image/placeholder.png\" />";
-                                        ProductImageOrigin = "";
+                                        ProductImage = "<img src='" + Thumbnail.getURL(_product.ProductImage, Thumbnail.Size.Small) + "'>";
+                                        ProductImageOrigin = Thumbnail.getURL(_product.ProductImage, Thumbnail.Size.Source);
                                     }
 
                                     ProductVariable = variable;
@@ -531,7 +523,7 @@ namespace IM_PJ
         protected void btnOrder_Click(object sender, EventArgs e)
         {
             DateTime currentDate = DateTime.Now;
-            string username = Request.Cookies["userLoginSystem"].Value;
+            string username = Request.Cookies["usernameLoginSystem"].Value;
             var acc = AccountController.GetByUsername(username);
 
             if (acc != null)

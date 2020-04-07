@@ -13,6 +13,7 @@ using System.Web.UI.WebControls;
 using System.Web.Script.Serialization;
 using System.Web.Services;
 using static IM_PJ.Controllers.ProductController;
+using IM_PJ.Utils;
 
 namespace IM_PJ
 {
@@ -37,7 +38,7 @@ namespace IM_PJ
         {
             var category = CategoryController.GetAllWithIsHidden(false);
             ddlCategory.Items.Clear();
-            ddlCategory.Items.Insert(0, new ListItem("Danh mục sản phẩm", "0"));
+            ddlCategory.Items.Insert(0, new ListItem("Danh mục", "0"));
             if (category.Count > 0)
             {
                 addItemCategory(0, "");
@@ -66,6 +67,9 @@ namespace IM_PJ
             string CreatedDate = "";
             int CategoryID = 0;
             int StockStatus = 0;
+            string strColor = String.Empty;
+            string strSize = String.Empty;
+            int Page = 1;
 
             if (Request.QueryString["textsearch"] != null)
                 TextSearch = Request.QueryString["textsearch"].Trim();
@@ -75,148 +79,131 @@ namespace IM_PJ
                 CategoryID = Request.QueryString["categoryid"].ToInt();
             if (Request.QueryString["createddate"] != null)
                 CreatedDate = Request.QueryString["createddate"];
+            if (Request.QueryString["color"] != null)
+                strColor = Request.QueryString["color"].Trim();
+            if (Request.QueryString["size"] != null)
+                strSize = Request.QueryString["size"].Trim();
+            if (Request.QueryString["Page"] != null)
+                Page = Request.QueryString["Page"].ToInt();
 
             txtSearchProduct.Text = TextSearch;
+            ddlColor.SelectedValue = strColor;
+            ddlSize.SelectedValue = strSize;
             ddlCategory.SelectedValue = CategoryID.ToString();
             ddlCreatedDate.SelectedValue = CreatedDate.ToString();
             ddlStockStatus.SelectedValue = StockStatus.ToString();
 
+            // Create order fileter
+            var filter = new ProductFilterModel()
+            {
+                category = CategoryID,
+                search = TextSearch,
+                color = strColor,
+                size = strSize,
+                stockStatus = StockStatus,
+                productDate = CreatedDate
+            };
+            // Create pagination
+            var page = new PaginationMetadataModel()
+            {
+                currentPage = Page,
+                pageSize = 24
+            };
             List<ProductSQL> a = new List<ProductSQL>();
-            a = ProductController.GetAllSql(CategoryID, TextSearch);
-            if (StockStatus != 0)
-            {
-                a = a.Where(p => p.StockStatus == StockStatus).ToList();
-            }
-            if (CreatedDate != "")
-            {
-                DateTime fromdate = DateTime.Today;
-                DateTime todate = DateTime.Now;
-                switch (CreatedDate)
-                {
-                    case "today":
-                        fromdate = DateTime.Today;
-                        todate = DateTime.Now;
-                        break;
-                    case "yesterday":
-                        fromdate = fromdate.AddDays(-1);
-                        todate = DateTime.Today;
-                        break;
-                    case "beforeyesterday":
-                        fromdate = DateTime.Today.AddDays(-2);
-                        todate = DateTime.Today.AddDays(-1);
-                        break;
-                    case "week":
-                        int days = DateTime.Today.DayOfWeek == DayOfWeek.Sunday ? 7 : (int)DateTime.Today.DayOfWeek;
-                        fromdate = fromdate.AddDays(-days + 1);
-                        todate = DateTime.Now;
-                        break;
-                    case "month":
-                        fromdate = new DateTime(fromdate.Year, fromdate.Month, 1);
-                        todate = DateTime.Now;
-                        break;
-                    case "7days":
-                        fromdate = DateTime.Today.AddDays(-6);
-                        todate = DateTime.Now;
-                        break;
-                    case "30days":
-                        fromdate = DateTime.Today.AddDays(-29);
-                        todate = DateTime.Now;
-                        break;
-                }
-                a = a.Where(p => p.CreatedDate >= fromdate && p.CreatedDate <= todate ).ToList();
-            }
+            a = ProductController.GetAllSql(filter, ref page);
 
-            pagingall(a);
+            pagingall(a, page);
 
         }
         [WebMethod]
         #region Paging
-        public void pagingall(List<ProductSQL> acs)
+        public void pagingall(List<ProductSQL> acs, PaginationMetadataModel page)
         {
-            var config = ConfigController.GetByTop1();
-            string cssClass = "col-xs-6";
-            if(config.HideProduct == 1)
-            {
-                cssClass = "col-xs-4";
-            }
+            string username = Request.Cookies["loginHiddenPage"].Value;
+            var acc = AccountController.GetByUsername(username);
 
-            int PageSize = 20;
+            var config = ConfigController.GetByTop1();
+
             StringBuilder html = new StringBuilder();
             html.Append("<div class='row'>");
 
             if (acs.Count > 0)
             {
-                int TotalItems = acs.Count;
-                if (TotalItems % PageSize == 0)
-                    PageCount = TotalItems / PageSize;
-                else
-                    PageCount = TotalItems / PageSize + 1;
+                PageCount = page.totalPages;
+                Int32 Page = page.currentPage;
+                var index = 0;
 
-                Int32 Page = GetIntFromQueryString("Page");
-
-                if (Page == -1) Page = 1;
-                int FromRow = (Page - 1) * PageSize;
-                int ToRow = Page * PageSize - 1;
-                if (ToRow >= TotalItems)
-                    ToRow = TotalItems - 1;
-
-                for (int i = FromRow; i < ToRow + 1; i++)
+                foreach (var item in acs)
                 {
-                    var item = acs[i];
-                    html.Append("<div class='col-md-3 item-" + i + " product-item'>");
+                    html.Append("<div class='col-md-3 item-" + index + " product-item'>");
                     html.Append("<div class='row'>");
                     html.Append("     <div class='col-xs-12'>");
-                    html.Append("   <p><a href='/xem-sp?id=" + item.ID + "'><img src='" + item.ProductImage + "'></a></p>");
+                    html.Append("   <p><a href='/xem-sp?id=" + item.ID + "'><img src='" + Thumbnail.getURL(item.ProductImage, Thumbnail.Size.Large) + "'></a></p>");
                     html.Append("   <h3 class='product-name'><a href='/xem-sp?id=" + item.ID + "'>" + item.ProductSKU + " - " + item.ProductTitle + "</a></h3>");
-                    html.Append("   <h3 class='product-price'>📌 " + string.Format("{0:N0}", item.RegularPrice) + "</h3>");
+                    html.Append("   <h3 class='product-price'>" + string.Format("{0:N0}", item.RegularPrice) + "</h3>");
 
                     if (!string.IsNullOrEmpty(item.Materials))
                     {
                         html.Append("   <p>🔖 Chất liệu: " + item.Materials + "</p>");
                     }
 
-                    if (!string.IsNullOrEmpty(item.ProductContent))
+                    string content = Regex.Replace(item.ProductContent != null ? item.ProductContent : "", "<.*?>", "").ToString();
+                    if (content.Trim() != "")
                     {
-                        html.Append("   <p>🔖 " + Regex.Replace(item.ProductContent, @"<img\s[^>]*>(?:\s*?</img>)?", "") + "</p>");
+                        html.Append("   <p>🔖 " + content.Substring(0, content.Length > 100 ? 100 : content.Length) + "</p>");
                     }
 
-                    html.Append("   <p>🔖 " + item.ProductInstockStatus + " (" + string.Format("{0:N0}", item.TotalProductInstockQuantityLeft) + " cái)</p>");
+                    html.Append(String.Format("   <p class='product-number' data-sku='{0}' data-product-id='{1}'>🔖 {2} ({3:N0} cái)</p>", item.ProductSKU, item.ID, item.ProductInstockStatus, item.TotalProductInstockQuantityLeft));
                     html.Append("   <p>🔖 " + string.Format("{0:dd/MM/yyyy}", item.CreatedDate) + "</p>");
                     html.Append("     </div>");
                     html.Append("</div>");
 
-
                     html.Append("<div class='row'>");
                     html.Append("     <div class='col-xs-12'>");
-                    html.Append("          <div class='" + cssClass + "'>");
+                    html.Append("          <div class='col-xs-4'>");
                     html.Append("               <div class='row'>");
-                    html.Append("                  <a href=\"javascript:;\" class=\"btn primary-btn copy-btn h45-btn\" onclick=\"copyProductInfo(" + item.ID + ")\"><i class=\"fa fa-files-o\" aria-hidden=\"true\"></i> Copy</a>");
+                    html.Append("                  <a href='javascript:;' class='btn primary-btn copy-btn h45-btn' onclick='copyProductInfo(`" + item.ID + "`);'><i class='fa fa-files-o' aria-hidden='true'></i> Copy</a>");
                     html.Append("               </div>");
                     html.Append("          </div>");
-                    html.Append("          <div class='" + cssClass + "'>");
+                    html.Append("          <div class='col-xs-4'>");
                     html.Append("               <div class='row'>");
-                    html.Append("                  <a href =\"javascript:;\" class=\"btn primary-btn h45-btn\" onclick=\"getAllProductImage('" + item.ProductSKU + "');\"><i class=\"fa fa-cloud-download\" aria-hidden=\"true\"></i> Tải hình</a>");
+                    html.Append("                  <a href ='javascript:;' class='btn primary-btn h45-btn' onclick='getAllProductImage(`" + item.ProductSKU + "`);'><i class='fa fa-cloud-download' aria-hidden='true'></i> Tải</a>");
                     html.Append("               </div>");
                     html.Append("          </div>");
-
-                    if (config.HideProduct == 1)
-                    {
-                        html.Append("          <div class='col-xs-4'>");
-                        html.Append("               <div class='row'>");
-                        html.Append("                  <a href =\"javascript:;\" class=\"btn primary-btn h45-btn hidden-" + item.ID + " download-btn\" onclick=\"ShowUpProductToWeb('" + item.ProductSKU + "', '" + item.ID + "', 'false', 'false', 'hidden');\"><i class=\"fa fa-times\" aria-hidden=\"true\"></i> Ẩn</a>");
-                        html.Append("               </div>");
-                        html.Append("          </div>");
-                    }
-
+                    html.Append("          <div class='col-xs-4'>");
+                    html.Append("               <div class='row'>");
+                    html.Append("                  <a href='/dang-ky-nhap-hang?&textsearch=" + item.ProductSKU + "' class='btn primary-btn h45-btn download-btn'><i class='fa fa-cart-plus' aria-hidden='true'></i> Order</a>");
+                    html.Append("               </div>");
+                    html.Append("          </div>");
                     html.Append("     </div>");
                     html.Append("</div>");
 
+                    if (acc.RoleID == 0 || acc.RoleID == 1)
+                    {
+                        if (config.HideProduct == 1)
+                        {
+                            html.Append("<div class='row'>");
+                            html.Append("     <div class='col-xs-12'>");
+                            html.Append("          <div class='col-xs-12'>");
+                            html.Append("               <div class='row'>");
+                            if (item.IsHidden)
+                                html.Append("                  <a href ='javascript:;' class='btn primary-btn h45-btn hidden-" + item.ID + " download-btn product-hidden' onclick='ShowUpProductToWeb(`" + item.ProductSKU + "`, `" + item.ID + "`, `" + item.CategoryID + "`, `false`, `false`, `visible`);'><i class='fa fa-check' aria-hidden='true'></i> Hiện</a>");
+                            else
+                                html.Append("                  <a href ='javascript:;' class='btn primary-btn h45-btn hidden-" + item.ID + " download-btn' onclick='ShowUpProductToWeb(`" + item.ProductSKU + "`, `" + item.ID + "`, `" + item.CategoryID + "`, `false`, `false`, `hidden`);'><i class='fa fa-times' aria-hidden='true'></i> Ẩn</a>");
+                            html.Append("               </div>");
+                            html.Append("          </div>");
+                            html.Append("     </div>");
+                            html.Append("</div>");
+                        }
+                    }
+
                     html.Append("</div>");
 
-                    if((i + 1) % 4 == 0)
+                    if((index + 1) % 4 == 0)
                     {
                         html.Append("<div class='clear'></div>");
                     }
+                    index++;
                 }
             }
             else
@@ -360,6 +347,15 @@ namespace IM_PJ
                 request += "&textsearch=" + search;
             }
 
+            if (!String.IsNullOrEmpty(ddlColor.SelectedValue))
+            {
+                request += "&color=" + ddlColor.SelectedValue;
+            }
+            if (!String.IsNullOrEmpty(ddlSize.SelectedValue))
+            {
+                request += "&size=" + ddlSize.SelectedValue;
+            }
+
             if (ddlStockStatus.SelectedValue != "")
             {
                 request += "&stockstatus=" + ddlStockStatus.SelectedValue;
@@ -381,6 +377,23 @@ namespace IM_PJ
         {
             public tbl_Category cate1 { get; set; }
             public string parentName { get; set; }
+        }
+
+        [WebMethod]
+        public static bool updateHidden(int productID, bool isHidden)
+        {
+            var loginHiddenPage = HttpContext.Current.Request.Cookies["loginHiddenPage"];
+            var usernameLoginSystem = HttpContext.Current.Request.Cookies["usernameLoginSystem"];
+            tbl_Account acc;
+
+            if (loginHiddenPage != null)
+                acc = AccountController.GetByUsername(loginHiddenPage.Value);
+            else if (usernameLoginSystem != null)
+                acc = AccountController.GetByUsername(usernameLoginSystem.Value);
+            else
+                throw new Exception("Có vấn đề trong việc lấy thông tin User");
+
+            return ProductController.updateHidden(acc, productID, isHidden);
         }
     }
 }

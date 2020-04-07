@@ -69,7 +69,7 @@ namespace IM_PJ.Bussiness
                 checksum += i * (int)codes[i];
             }
 
-            codes.Add(checksum % 103);
+            codes.Add(checksum % 103 );
 
             codes.Add(Code128Code.StopCode());
 

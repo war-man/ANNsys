@@ -21,9 +21,9 @@ namespace IM_PJ
         {
             if (!IsPostBack)
             {
-                if (Request.Cookies["userLoginSystem"] != null)
+                if (Request.Cookies["usernameLoginSystem"] != null)
                 {
-                    string username = Request.Cookies["userLoginSystem"].Value;
+                    string username = Request.Cookies["usernameLoginSystem"].Value;
                     var acc = AccountController.GetByUsername(username);
                     if (acc != null)
                     {
@@ -57,7 +57,7 @@ namespace IM_PJ
         /// </summary>
         private void Initialize(int ID)
         {
-            var company = TransportCompanyController.GetTransportCompanyByID(ID);
+            var company = TransportCompanyController.GetAllTransportCompanyByID(ID);
 
             if (company == null)
             {
@@ -75,7 +75,7 @@ namespace IM_PJ
 
                 ltrEditButton.Text = "<a href=\"/sua-thong-tin-nha-xe?id=" + ID.ToString() + "\" class=\"btn primary-btn fw-btn not-fullwidth\"><i class=\"fa fa-pencil-square-o\" aria-hidden=\"true\"></i> Chỉnh sửa</a>";
 
-                var transprots = TransportCompanyController.GetReceivePlace(ID);
+                var transprots = TransportCompanyController.GetAllReceivePlace(ID);
 
                 pagingall(transprots);
             }
@@ -85,6 +85,8 @@ namespace IM_PJ
         public void pagingall(List<tbl_TransportCompany> transprots)
         {
             int PageSize = 40;
+            string username = Request.Cookies["usernameLoginSystem"].Value;
+            var acc = AccountController.GetByUsername(username);
 
             StringBuilder html = new StringBuilder();
             html.Append("<tr>");
@@ -125,16 +127,27 @@ namespace IM_PJ
                     var company = transprots[i];
                     String rowHtml = String.Empty;
 
-                    rowHtml += Environment.NewLine + String.Format("<tr>");
+                    rowHtml += Environment.NewLine + String.Format("<tr class='status-" + company.Status + "'>");
                     rowHtml += Environment.NewLine + String.Format("    <td>{0}</td>", i + 1);
-                    rowHtml += Environment.NewLine + String.Format("    <td class=\"customer-name-link capitalize\"><a href=\"/chi-tiet-noi-den-nha-xe?id={0}&subid={1}\">{2}</a></td>", company.ID, company.SubID, company.ShipTo);
-                    rowHtml += Environment.NewLine + String.Format("    <td class=\"capitalize\">{0}</td>", company.Address);
+                    rowHtml += Environment.NewLine + String.Format("    <td class=\"customer-name-link\"><a href=\"/chi-tiet-noi-den-nha-xe?id={0}&subid={1}\">{2}</a></td>", company.ID, company.SubID, company.ShipTo.ToTitleCase());
+                    rowHtml += Environment.NewLine + String.Format("    <td>{0}</td>", company.Address.ToTitleCase());
                     rowHtml += Environment.NewLine + String.Format("    <td>{0}</td>", company.Prepay ? "Trả trước" : "Trả sau");
                     rowHtml += Environment.NewLine + String.Format("    <td>{0}</td>", company.COD ? "Có" : "Không");
                     rowHtml += Environment.NewLine + String.Format("    <td>{0:dd/MM/yyyy}</td>", company.CreatedDate);
                     rowHtml += Environment.NewLine + String.Format("    <td>{0}</td>", company.CreatedBy);
                     rowHtml += Environment.NewLine + String.Format("    <td>");
                     rowHtml += Environment.NewLine + String.Format("        <a href=\"/chi-tiet-noi-den-nha-xe?id={0}&subid={1}\" title=\"Sửa thông tin nơi nhận\" class=\"btn primary-btn h45-btn\"><i class=\"fa fa-pencil-square-o\" aria-hidden=\"true\"></i></a>", company.ID, company.SubID);
+                    if (acc.RoleID == 0)
+                    {
+                        if (company.Status == 1)
+                        {
+                            rowHtml += Environment.NewLine + String.Format("        <a href=\"javascript:;\" title=\"Ẩn nhà xe\" data-id=\"{0}\" data-subid=\"{1}\" data-status=\"{2}\" onclick=\"updateStatus($(this))\" class=\"btn primary-btn h45-btn btn-red\"><i class=\"fa fa-times\" aria-hidden=\"true\"></i></a>", company.ID, company.SubID, company.Status);
+                        }
+                        else
+                        {
+                            rowHtml += Environment.NewLine + String.Format("        <a href=\"javascript:;\" title=\"Hiện nhà xe\" data-id=\"{0}\" data-subid=\"{1}\" data-status=\"{2}\" onclick=\"updateStatus($(this))\" class=\"btn primary-btn h45-btn btn-blue\"><i class=\"fa fa-refresh\" aria-hidden=\"true\"></i></a>", company.ID, company.SubID, company.Status);
+                        }
+                    }
                     rowHtml += Environment.NewLine + String.Format("    </td>");
                     rowHtml += Environment.NewLine + String.Format("</tr>");
 

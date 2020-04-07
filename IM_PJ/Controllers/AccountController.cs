@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Web;
+using System.Web.UI.WebControls;
 using WebUI.Business;
 
 namespace IM_PJ.Controllers
@@ -359,6 +360,73 @@ namespace IM_PJ.Controllers
             public int RoleID { get; set; }
             public int Status { get; set; }
             public DateTime CreatedDate { get; set; }
+        }
+
+        public static bool isPermittedLoading(tbl_Account acc, string pageName, int discountGroupID = 0)
+        {
+            var result = false;
+
+            switch (pageName)
+            {
+                case "danh-sach-nhom-khach-hang":
+                    if (acc != null)
+                        result = true;
+                    else
+                        result = false;
+                    break;
+                case "them-moi-giam-gia":
+                case "chi-tiet-giam-gia":
+                    if (acc != null && acc.ID == 1)
+                        result = true;
+                    else
+                        result = false;
+                    break;
+                case "danh-sach-khach-giam-gia":
+                    if (acc != null && discountGroupID > 0)
+                    {
+                        var discount = DiscountGroupController.getByAccount(acc)
+                            .Where(x => 
+                                (discountGroupID == 0) || 
+                                (discountGroupID != 0 && x.ID == discountGroupID)
+                            )
+                            .Where(x =>
+                                x.PermittedRead == acc.ID.ToString() ||
+                                x.PermittedRead.StartsWith(acc.ID.ToString() + ",") ||
+                                x.PermittedRead.Contains("," + acc.ID.ToString() + ",") ||
+                                x.PermittedRead.EndsWith("," + acc.ID.ToString())
+                            )
+                            .FirstOrDefault();
+
+                        if (discount != null)
+                            result = true;
+                        else
+                            result = false;
+                    }
+                    else
+                    {
+                        result = false;
+                    }
+                    break;
+                default:
+                    break;
+            }
+
+            return result;
+        }
+
+        public static List<ListItem> getDropDownList()
+        {
+            var data = new List<ListItem>();
+            data.Add(new ListItem(String.Empty, "0"));
+            using (var con = new inventorymanagementEntities())
+            {
+                foreach (var acc in con.tbl_Account.ToList())
+                {
+                    data.Add(new ListItem(acc.Username, acc.ID.ToString()));
+                }
+            }
+
+            return data;
         }
     }
 }

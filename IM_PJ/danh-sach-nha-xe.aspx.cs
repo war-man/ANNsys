@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
+using System.Web.Services;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
@@ -21,27 +22,25 @@ namespace IM_PJ
         {
             if (!IsPostBack)
             {
-                if (Request.Cookies["userLoginSystem"] != null)
+                if (Request.Cookies["usernameLoginSystem"] != null)
                 {
-                    string username = Request.Cookies["userLoginSystem"].Value;
+                    string username = Request.Cookies["usernameLoginSystem"].Value;
                     var acc = AccountController.GetByUsername(username);
-                    int agent = acc.AgentID.ToString().ToInt();
 
                     if (acc != null)
                     {
-                        if (acc.RoleID == 0)
-                        {
-                            LoadCreatedBy(agent);
-                        }
-                        else if (acc.RoleID == 2)
-                        {
-                            LoadCreatedBy(agent, acc);
-                        }
-                        else
+                        if (acc.RoleID == 1)
                         {
                             Response.Redirect("/trang-chu");
                         }
-
+                        else if (acc.RoleID == 0)
+                        {
+                            LoadStatus();
+                        }
+                        else if (acc.RoleID == 2)
+                        {
+                            LoadStatus(acc);
+                        }
                         LoadData();
                     }
                 }
@@ -51,41 +50,34 @@ namespace IM_PJ
                 }
             }
         }
-
-        public void LoadCreatedBy(int AgentID, tbl_Account acc = null)
+        public void LoadStatus(tbl_Account acc = null)
         {
             if (acc != null)
             {
-                ddlCreatedBy.Items.Clear();
-                ddlCreatedBy.Items.Insert(0, new ListItem(acc.Username, acc.Username));
+                ddlStatus.Items.Clear();
+                ddlStatus.Items.Insert(0, new ListItem("Đang hiện", "1"));
             }
             else
             {
-                var CreateBy = AccountController.GetAllNotSearch();
-                ddlCreatedBy.Items.Clear();
-                ddlCreatedBy.Items.Insert(0, new ListItem("Nhân viên tạo", ""));
-                if (CreateBy.Count > 0)
-                {
-                    foreach (var p in CreateBy)
-                    {
-                        ListItem listitem = new ListItem(p.Username, p.Username);
-                        ddlCreatedBy.Items.Add(listitem);
-                    }
-                    ddlCreatedBy.DataBind();
-                }
+                ddlStatus.Items.Clear();
+                ddlStatus.Items.Insert(0, new ListItem("Trạng thái", ""));
+                ddlStatus.Items.Insert(1, new ListItem("Đang hiện", "1"));
+                ddlStatus.Items.Insert(2, new ListItem("Đang ẩn", "0"));
             }
         }
-
         /// <summary>
         /// Setting init when load page
         /// </summary>
         private void LoadData()
         {
+            string username = Request.Cookies["usernameLoginSystem"].Value;
+            var acc = AccountController.GetByUsername(username);
+
             string TextSearch = "";
             string COD = "";
             string Prepay = "";
-            string CreatedBy = "";
             string CreatedDate = "";
+            string Status = "";
 
             if (Request.QueryString["textsearch"] != null)
             {
@@ -99,35 +91,46 @@ namespace IM_PJ
             {
                 Prepay = Request.QueryString["prepay"];
             }
-            if (Request.QueryString["createdby"] != null)
-            {
-                CreatedBy = Request.QueryString["createdby"];
-            }
             if (Request.QueryString["createddate"] != null)
             {
                 CreatedDate = Request.QueryString["createddate"];
+            }
+            if (Request.QueryString["status"] != null)
+            {
+                Status = Request.QueryString["status"];
             }
 
             txtTextSearch.Text = TextSearch;
             ddlCOD.SelectedValue = COD.ToString();
             ddlPrepay.SelectedValue = Prepay.ToString();
-            ddlCreatedBy.SelectedValue = CreatedBy.ToString();
             ddlCreatedDate.SelectedValue = CreatedDate.ToString();
+            ddlStatus.SelectedValue = Status.ToString();
 
             var rs = TransportCompanyController.Filter(TextSearch);
+
+            if (acc.RoleID == 2)
+            {
+                rs = rs.Where(x => x.Status == 1).ToList();
+            }
+
+            if (acc.RoleID == 0)
+            {
+                if (Status != "")
+                {
+                    rs = rs.Where(x => x.Status == Status.ToInt()).ToList();
+                }
+            }
 
             if (COD != "")
             {
                 rs = rs.Where(x => x.COD == COD.ToBool()).ToList();
             }
+
             if (Prepay != "")
             {
                 rs = rs.Where(x => x.Prepay == Prepay.ToBool()).ToList();
             }
-            if (CreatedBy != "")
-            {
-                rs = rs.Where(x => x.CreatedBy == CreatedBy).ToList();
-            }
+
             if (CreatedDate != "")
             {
                 DateTime fromdate = DateTime.Today;
@@ -151,7 +154,7 @@ namespace IM_PJ
                         fromdate = fromdate.AddDays(-days + 1);
                         todate = DateTime.Now;
                         break;
-                    case "month":
+                    case "thismonth":
                         fromdate = new DateTime(fromdate.Year, fromdate.Month, 1);
                         todate = DateTime.Now;
                         break;
@@ -167,7 +170,7 @@ namespace IM_PJ
                 rs = rs.Where(x => x.CreatedDate >= fromdate && x.CreatedDate <= todate).ToList();
             }
 
-            pagingall(rs);
+            pagingall(rs.Distinct().ToList());
 
             ltrNumberOfTransport.Text = rs.Count().ToString();
         }
@@ -192,25 +195,38 @@ namespace IM_PJ
                 request += "&prepay=" + ddlPrepay.SelectedValue;
             }
 
-            if (ddlCreatedBy.SelectedValue != "")
-            {
-                request += "&createdby=" + ddlCreatedBy.SelectedValue;
-            }
-
             if (ddlCreatedDate.SelectedValue != "")
             {
                 request += "&createddate=" + ddlCreatedDate.SelectedValue;
             }
 
+            if (ddlStatus.SelectedValue != "")
+            {
+                request += "&status=" + ddlStatus.SelectedValue;
+            }
+
             Response.Redirect(request);
 
         }
+        [WebMethod]
+        public static string updateStatus(int ID, int SubID)
+        {
+            string update = TransportCompanyController.UpdateStatus(ID, SubID);
 
+            if (update == "true")
+            {
+                return "true";
+            }
+            else
+            {
+                return "false";
+            }
+        }
         #region Paging
         public void pagingall(List<tbl_TransportCompany> transports)
         {
             int PageSize = 30;
-            string username = Request.Cookies["userLoginSystem"].Value;
+            string username = Request.Cookies["usernameLoginSystem"].Value;
             var acc = AccountController.GetByUsername(username);
 
             StringBuilder html = new StringBuilder();
@@ -221,7 +237,6 @@ namespace IM_PJ
             html.Append("     <th class=\"column-prepay\">Trả cước</th>");
             html.Append("     <th class=\"column-cod\">Thu hộ</th>");
             html.Append("     <th class=\"column-createddate\">Ngày tạo</th>");
-            html.Append("     <th class=\"column-createdby\">Nhân viên</th>");
             html.Append("     <th class=\"column-action\"></th>");
             html.Append("</tr>");
 
@@ -252,17 +267,27 @@ namespace IM_PJ
                     var company = transports[i];
                     String rowHtml = String.Empty;
 
-                    rowHtml += Environment.NewLine + String.Format("<tr>");
-                    rowHtml += Environment.NewLine + String.Format("    <td class=\"customer-name-link capitalize\"><a href=\"/sua-thong-tin-nha-xe?id={0}\">{1}</a></td>", company.ID, company.CompanyName);
+                    rowHtml += Environment.NewLine + String.Format("<tr class='status-" + company.Status + "'>");
+                    rowHtml += Environment.NewLine + String.Format("    <td class=\"customer-name-link\"><a href=\"/chi-tiet-nha-xe?id={0}\">{1}</a></td>", company.ID, company.CompanyName.ToTitleCase());
                     rowHtml += Environment.NewLine + String.Format("    <td>{0}</td>", company.CompanyPhone);
-                    rowHtml += Environment.NewLine + String.Format("    <td class=\"capitalize\">{0}</td>", company.CompanyAddress);
+                    rowHtml += Environment.NewLine + String.Format("    <td>{0}</td>", company.CompanyAddress.ToTitleCase());
                     rowHtml += Environment.NewLine + String.Format("    <td>{0}</td>", company.Prepay ? "Trả trước" : "Trả sau");
                     rowHtml += Environment.NewLine + String.Format("    <td>{0}</td>", company.COD ? "Có" : "Không");
                     rowHtml += Environment.NewLine + String.Format("    <td>{0:dd/MM/yyyy}</td>", company.CreatedDate);
-                    rowHtml += Environment.NewLine + String.Format("    <td>{0}</td>", company.CreatedBy);
                     rowHtml += Environment.NewLine + String.Format("    <td>");
                     rowHtml += Environment.NewLine + String.Format("        <a href=\"/chi-tiet-nha-xe?id={0}\" title=\"Quản lý nơi nhận\" class=\"btn primary-btn h45-btn\"><i class=\"fa fa-list\" aria-hidden=\"true\"></i></a>", company.ID);
                     rowHtml += Environment.NewLine + String.Format("        <a href=\"/sua-thong-tin-nha-xe?id={0}\" title=\"Sửa thông tin nhà xe\" class=\"btn primary-btn h45-btn\"><i class=\"fa fa-pencil-square-o\" aria-hidden=\"true\"></i></a>", company.ID);
+                    if (acc.RoleID == 0)
+                    {
+                        if (company.Status == 1)
+                        {
+                            rowHtml += Environment.NewLine + String.Format("        <a href=\"javascript:;\" title=\"Ẩn nhà xe\" data-id=\"{0}\" data-subid=\"{1}\" data-status=\"{2}\" onclick=\"updateStatus($(this))\" class=\"btn primary-btn h45-btn btn-red\"><i class=\"fa fa-times\" aria-hidden=\"true\"></i></a>", company.ID, company.SubID, company.Status);
+                        }
+                        else
+                        {
+                            rowHtml += Environment.NewLine + String.Format("        <a href=\"javascript:;\" title=\"Hiện nhà xe\" data-id=\"{0}\" data-subid=\"{1}\" data-status=\"{2}\" onclick=\"updateStatus($(this))\" class=\"btn primary-btn h45-btn btn-blue\"><i class=\"fa fa-refresh\" aria-hidden=\"true\"></i></a>", company.ID, company.SubID, company.Status);
+                        }
+                    }
                     rowHtml += Environment.NewLine + String.Format("    </td>");
                     rowHtml += Environment.NewLine + String.Format("</tr>");
 

@@ -8,8 +8,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=yes">
     <meta name="format-detection" content="telephone=no">
     <meta name="robots" content="noindex, nofollow">
-    <link rel="stylesheet" href="/App_Themes/Ann/css/style.css?v=0110" media="all">
-    <link rel="stylesheet" href="/App_Themes/Ann/css/style-P.css?v=0110" media="all">
+    <link rel="stylesheet" href="/App_Themes/Ann/css/style.css?v=15052019" media="all">
+    <link rel="stylesheet" href="/App_Themes/Ann/css/style-P.css?v=23082019" media="all">
+    <link href="/App_Themes/Ann/css/HoldOn.css?v=02042020" rel="stylesheet" type="text/css" />
     <link href="/App_Themes/NewUI/js/select2/select2.css" rel="stylesheet" />
     <script type="text/javascript" src="/App_Themes/Ann/js/jquery-2.1.3.min.js"></script>
     <style>
@@ -111,21 +112,7 @@
                             </div>
                             <div class="row">
                                 <div class="col-md-12">
-                                    <div class="col-xs-4">
-                                        <div class="row">
-                                            <asp:Literal ID="ltrCopyProductInfoButton" runat="server"></asp:Literal>
-                                        </div>
-                                    </div>
-                                    <div class="col-xs-4">
-                                        <div class="row">
-                                            <asp:Literal ID="ltrViewVariableListButton" runat="server"></asp:Literal>
-                                        </div>
-                                    </div>
-                                    <div class="col-xs-4">
-                                        <div class="row">
-                                            <asp:Literal ID="ltrDownloadProductImageButton" runat="server"></asp:Literal>
-                                        </div>
-                                    </div>
+                                    <asp:Literal ID="ltrButton" runat="server"></asp:Literal>
                                 </div>
                             </div>
                             <div class="row">
@@ -156,9 +143,9 @@
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="row">
-                    <a href="javascript:;" onclick="goBack()" class="btn primary-btn h45-btn"><i class="fa fa-angle-left"></i><i class="fa fa-angle-left"></i> Trở về</a>
+                    <div class="row">
+                        <a href="javascript:;" onclick="goBack()" class="btn primary-btn h45-btn"><i class="fa fa-angle-left"></i><i class="fa fa-angle-left"></i> Trở về</a>
+                    </div>
                 </div>
             </main>
 
@@ -169,8 +156,10 @@
             <script src="/App_Themes/Ann/js/bootstrap-table/bootstrap-table.js"></script>
             <script src="/App_Themes/NewUI/js/select2/select2.min.js"></script>
             <script src="/App_Themes/Ann/js/master.js?v=2011"></script>
-            <script src="/App_Themes/Ann/js/copy-product-info.js?v=2011"></script>
-            <script src="/App_Themes/Ann/js/download-product-image.js?v=2011"></script>
+            <script src="/App_Themes/Ann/js/copy-product-info.js?v=02042020"></script>
+            <script src="/App_Themes/Ann/js/download-product-image.js?v=02042020"></script>
+
+            <script src="/App_Themes/Ann/js/HoldOn.js?v=2011"></script>
 
             <script type="text/javascript">
 

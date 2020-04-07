@@ -31,18 +31,18 @@
     <tool separator="true"/>
     <tool name="MergeColumns" />
     <tool name="MergeRows" />
-    <tool separator="true"/>
+    <!--<tool separator="true"/>
     <tool name="SplitCell" />
     <tool name="SplitCellHorizontal" />
     <tool name="DeleteCell" />
-    <tool name="SetCellProperties" />
+    <tool name="SetCellProperties" />-->
     <tool name="SetTableProperties" />
     <tool separator="true"/>
     <tool name="InsertOrderedList" />
     <tool name="InsertUnorderedList"/>
   </tools>
   <cssFiles>
-    <item name="~/App_Themes/Ann/css/style-editor.css" />
+    <item name="~/App_Themes/Ann/css/style-editor.css?v=02042020" />
   </cssFiles>
 	<symbols>
 	</symbols>

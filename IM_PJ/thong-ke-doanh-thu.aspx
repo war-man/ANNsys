@@ -2,13 +2,14 @@
 
 <%@ Register Assembly="Telerik.Web.UI" Namespace="Telerik.Web.UI" TagPrefix="telerik" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
+    <script type="text/javascript" src="/App_Themes/Ann/js/Chart.min.js"></script>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <main id="main-wrap">
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
-                    <h3 class="page-title left">Doanh thu</h3>
+                    <h3 class="page-title left">Thống kê doanh thu</h3>
                     <div class="right above-list-btn">
                         <a href="/bao-cao" class="h45-btn btn" style="background-color: #ff3f4c">Trở về</a>
                     </div>
@@ -95,6 +96,11 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="row margin-bottom-15">
+                            <div class="col-md-12">
+                                <canvas id="canvas"></canvas>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -104,5 +110,66 @@
                 $("#<%= btnSearch.ClientID%>").click();
             }
         </script>
+        <asp:Literal ID="ltrChartData" runat="server" EnableViewState="false"></asp:Literal>
+        <script>
+            window.onload = function () {
+                if (typeof lineChartData !== 'undefined')
+                {
+                    var ctx = document.getElementById('canvas').getContext('2d');
+                    window.myLine = Chart.Line(ctx, {
+                        data: lineChartData,
+                        options: {
+                            responsive: true,
+                            aspectRatio: 3.5,
+                            hoverMode: 'index',
+                            stacked: false,
+                            title: {
+                                display: true,
+                                text: 'Biểu đồ doanh thu'
+                            },
+                            scales: {
+                                yAxes: [{
+                                    type: 'linear', // only linear but allow scale type registration. This allows extensions to exist solely for log scale for instance
+                                    display: true,
+                                    position: 'left',
+                                    id: 'y-axis-1',
+                                    ticks: {
+                                        beginAtZero: true,
+                                        callback: function (label, index, labels) {
+                                            return label.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                                        }
+                                    },
+                                }, {
+                                    type: 'linear', // only linear but allow scale type registration. This allows extensions to exist solely for log scale for instance
+                                    display: true,
+                                    position: 'right',
+                                    id: 'y-axis-2',
+                                    ticks: {
+                                        beginAtZero: true,
+                                        callback: function (label, index, labels) {
+                                            return label.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                                        }
+                                    },
+                                    // grid line settings
+                                    gridLines: {
+                                        drawOnChartArea: false, // only want the grid lines for one axis to show up
+                                    },
+                                }],
+                            },
+                            tooltips: {
+                                callbacks: {
+                                    label: function (tooltipItems, data) {
+                                        let label = data.datasets[tooltipItems.datasetIndex].label;
+                                        let value = tooltipItems.yLabel.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+                                        return label + ' : ' + value;
+                                    }
+                                }
+                            }
+                        }
+                    });
+                }
+		    };
+	    </script>
     </main>
 </asp:Content>

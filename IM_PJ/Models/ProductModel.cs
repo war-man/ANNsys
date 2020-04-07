@@ -20,5 +20,6 @@ namespace IM_PJ.Models
         public double CostOfGood { get; set; }
         public double RetailPrice { get; set; }
         public double QuantityCurrent { get; set; }
+        public double OldPrice { get; set; }
     }
 }

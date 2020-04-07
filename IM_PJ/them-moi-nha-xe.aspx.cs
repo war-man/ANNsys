@@ -11,9 +11,9 @@ namespace IM_PJ
         {
             if (!IsPostBack)
             {
-                if (Request.Cookies["userLoginSystem"] != null)
+                if (Request.Cookies["usernameLoginSystem"] != null)
                 {
-                    string username = Request.Cookies["userLoginSystem"].Value;
+                    string username = Request.Cookies["usernameLoginSystem"].Value;
                     var acc = AccountController.GetByUsername(username);
 
                     if (acc != null)
@@ -49,7 +49,7 @@ namespace IM_PJ
 
         protected void btnAdd_Click(object sender, EventArgs e)
         {
-            string username = Request.Cookies["userLoginSystem"].Value;
+            string username = Request.Cookies["usernameLoginSystem"].Value;
 
             tbl_TransportCompany transportCompanyNew = new tbl_TransportCompany();
 
@@ -60,6 +60,7 @@ namespace IM_PJ
             transportCompanyNew.COD = Convert.ToBoolean(this.rdbCOD.SelectedValue);
             transportCompanyNew.Note = this.pNote.Text;
             transportCompanyNew.CreatedBy = username;
+            transportCompanyNew.Status = 1;
 
             int ID = TransportCompanyController.InsertTransportCompany(transportCompanyNew);
 

@@ -31,6 +31,11 @@
                     <asp:Label ID="lblError" runat="server" Visible="false" ForeColor="Red"></asp:Label>
                 </div>
                 <div class="form-row">
+                    <asp:TextBox ID="txtUsername" runat="server" CssClass="form-control" placeholder="Tài khoản"></asp:TextBox>
+                    <asp:RequiredFieldValidator ID="RequiredFieldValidator2" runat="server" ControlToValidate="txtUsername" ErrorMessage="Không để trống"
+                        ForeColor="Red" Display="Dynamic"></asp:RequiredFieldValidator>
+                </div>
+                <div class="form-row">
                     <asp:TextBox ID="txtPassword" runat="server" CssClass="form-control" placeholder="Mật khẩu" TextMode="Password"></asp:TextBox>
                     <asp:RequiredFieldValidator ID="RequiredFieldValidator1" runat="server" ControlToValidate="txtPassword" ErrorMessage="Không để trống"
                         ForeColor="Red" Display="Dynamic"></asp:RequiredFieldValidator>

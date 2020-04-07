@@ -19,32 +19,16 @@
                                         <th>Thao tác</th>
                                     </tr>
                                     <tr>
-                                        <td><a href="thong-ke-doanh-thu">Doanh thu</a></td>
-                                        <td><a href="thong-ke-doanh-thu" class="btn primary-btn h45-btn">Chi tiết</a></td>
-                                    </tr>
-                                    <tr>
                                         <td><a href="thong-ke-loi-nhuan">Lợi nhuận</a></td>
                                         <td><a href="thong-ke-loi-nhuan" class="btn primary-btn h45-btn">Chi tiết</a></td>
                                     </tr>
                                     <tr>
-                                        <td><a href="thong-ke-so-luong-san-pham-ban-ra">Số lượng bán ra</a></td>
-                                        <td><a href="thong-ke-so-luong-san-pham-ban-ra" class="btn primary-btn h45-btn">Chi tiết</a></td>
+                                        <td><a href="thong-ke-doanh-thu">Doanh thu</a></td>
+                                        <td><a href="thong-ke-doanh-thu" class="btn primary-btn h45-btn">Chi tiết</a></td>
                                     </tr>
                                     <tr>
-                                        <td><a href="thong-ke-so-luong-hang-doi-tra">Số lượng đổi trả</a></td>
-                                        <td><a href="thong-ke-so-luong-hang-doi-tra" class="btn primary-btn h45-btn">Chi tiết</a></td>
-                                    </tr>
-                                     <tr>
-                                        <td><a href="thong-ke-phi-van-chuyen">Phí vận chuyển</a></td>
-                                        <td><a href="thong-ke-phi-van-chuyen" class="btn primary-btn h45-btn">Chi tiết</a></td>
-                                    </tr>
-                                     <tr>
-                                        <td><a href="thong-ke-chiet-khau">Chiết khấu</a></td>
-                                        <td><a href="thong-ke-chiet-khau" class="btn primary-btn h45-btn">Chi tiết</a></td>
-                                    </tr>
-                                     <tr>
-                                        <td><a href="thong-ke-so-luong-ton-kho-theo-danh-muc">Tồn kho</a></td>
-                                        <td><a href="thong-ke-so-luong-ton-kho-theo-danh-muc" class="btn primary-btn h45-btn">Chi tiết</a></td>
+                                        <td><a href="thong-ke-san-luong">Sản lượng</a></td>
+                                        <td><a href="thong-ke-san-luong" class="btn primary-btn h45-btn">Chi tiết</a></td>
                                     </tr>
                                     <tr>
                                         <td><a href="thong-ke-nhan-vien">Nhân viên</a></td>
@@ -53,6 +37,18 @@
                                     <tr>
                                         <td><a href="thong-ke-san-pham">Sản phẩm</a></td>
                                         <td><a href="thong-ke-san-pham" class="btn primary-btn h45-btn">Chi tiết</a></td>
+                                    </tr>
+                                     <tr>
+                                        <td><a href="thong-ke-so-luong-ton-kho-theo-danh-muc">Tồn kho</a></td>
+                                        <td><a href="thong-ke-so-luong-ton-kho-theo-danh-muc" class="btn primary-btn h45-btn">Chi tiết</a></td>
+                                    </tr>
+                                     <tr>
+                                        <td><a href="thong-ke-buu-dien">Thống kê bưu điện</a></td>
+                                        <td><a href="thong-ke-buu-dien" class="btn primary-btn h45-btn">Chi tiết</a></td>
+                                    </tr>
+                                    <tr>
+                                        <td><a href="thong-ke-khach-hang">Thống kê khách hàng</a></td>
+                                        <td><a href="thong-ke-khach-hang" class="btn primary-btn h45-btn">Chi tiết</a></td>
                                     </tr>
                                 </tbody>
                             </table>

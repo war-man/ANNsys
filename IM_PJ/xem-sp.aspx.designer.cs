@@ -94,31 +94,13 @@ namespace IM_PJ {
         protected global::System.Web.UI.WebControls.Literal ltrProductStock;
         
         /// <summary>
-        /// ltrCopyProductInfoButton control.
+        /// ltrButton control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Literal ltrCopyProductInfoButton;
-        
-        /// <summary>
-        /// ltrViewVariableListButton control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Literal ltrViewVariableListButton;
-        
-        /// <summary>
-        /// ltrDownloadProductImageButton control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Literal ltrDownloadProductImageButton;
+        protected global::System.Web.UI.WebControls.Literal ltrButton;
         
         /// <summary>
         /// ProductThumbnail control.

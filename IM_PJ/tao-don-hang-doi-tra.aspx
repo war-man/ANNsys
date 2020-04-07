@@ -2,7 +2,8 @@
 
 <%@ Register Assembly="Telerik.Web.UI" Namespace="Telerik.Web.UI" TagPrefix="telerik" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
-    <script src="/App_Themes/Ann/js/search-customer.js?v=2110"></script>
+    <script src="/App_Themes/Ann/js/search-customer.js?v=02042020"></script>
+    <script src="/Scripts/moment.min.js"></script>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <asp:Panel ID="parent" runat="server">
@@ -22,45 +23,43 @@
                             </div>
                             <div class="panel-body">
                                 <div class="row">
-                                    <div class="col-md-6">
+                                    <div class="col-md-4">
                                         <div class="form-group">
                                             <label>Họ tên</label>
                                             <asp:RequiredFieldValidator ID="RequiredFieldValidator1" runat="server" ControlToValidate="txtFullname" ErrorMessage="(*)" ForeColor="Red" Display="Dynamic"></asp:RequiredFieldValidator>
-                                            <asp:TextBox ID="txtFullname" CssClass="form-control" runat="server" autocomplete="off" placeholder="Họ tên thật của khách"></asp:TextBox>
+                                            <asp:TextBox ID="txtFullname" CssClass="form-control capitalize" runat="server" autocomplete="off" placeholder="Họ tên thật của khách"></asp:TextBox>
                                         </div>
                                     </div>
-                                    <div class="col-md-6">
+                                    <div class="col-md-5">
                                         <div class="form-group">
                                             <label>Điện thoại</label>
                                             <asp:RequiredFieldValidator ID="re" runat="server" ControlToValidate="txtPhone" ErrorMessage="(*)" ForeColor="Red" Display="Dynamic"></asp:RequiredFieldValidator>
                                             <asp:TextBox ID="txtPhone" CssClass="form-control" runat="server" autocomplete="off" placeholder="Số điện thoại khách hàng"></asp:TextBox>
                                         </div>
                                     </div>
-                                </div> 
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label>Nick đặt hàng</label>
-                                            <asp:RequiredFieldValidator ID="RequiredFieldValidator2" runat="server" ControlToValidate="txtNick" ErrorMessage="(*)" ForeColor="Red" Display="Dynamic"></asp:RequiredFieldValidator>
-                                            <asp:TextBox ID="txtNick" CssClass="form-control" runat="server" autocomplete="off" placeholder="Tên nick đặt hàng"></asp:TextBox>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label>Địa chỉ</label>
-                                            <asp:RequiredFieldValidator ID="RequiredFieldValidator3" runat="server" ControlToValidate="txtAddress" ErrorMessage="(*)" ForeColor="Red" Display="Dynamic"></asp:RequiredFieldValidator>
-                                            <asp:TextBox ID="txtAddress" CssClass="form-control" runat="server" autocomplete="off" placeholder="Địa chỉ khách hàng"></asp:TextBox>
-                                        </div>
-                                    </div>
-                                </div> 
-                                <div class="row">
-                                    <div class="col-md-6">
+                                    <div class="col-md-3">
                                         <div class="form-group">
                                             <label>Zalo</label>
                                             <asp:TextBox ID="txtZalo" CssClass="form-control" runat="server" autocomplete="off" placeholder="Số điện thoại Zalo"></asp:TextBox>
                                         </div>
                                     </div>
-                                    <div class="col-md-6">
+                                </div> 
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>Nick đặt hàng</label>
+                                            <asp:RequiredFieldValidator ID="RequiredFieldValidator2" runat="server" ControlToValidate="txtNick" ErrorMessage="(*)" ForeColor="Red" Display="Dynamic"></asp:RequiredFieldValidator>
+                                            <asp:TextBox ID="txtNick" CssClass="form-control capitalize" runat="server" autocomplete="off" placeholder="Tên nick đặt hàng"></asp:TextBox>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-5">
+                                        <div class="form-group">
+                                            <label>Địa chỉ</label>
+                                            <asp:RequiredFieldValidator ID="RequiredFieldValidator3" runat="server" ControlToValidate="txtAddress" ErrorMessage="(*)" ForeColor="Red" Display="Dynamic"></asp:RequiredFieldValidator>
+                                            <asp:TextBox ID="txtAddress" CssClass="form-control capitalize" runat="server" autocomplete="off" placeholder="Địa chỉ khách hàng"></asp:TextBox>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
                                         <div class="form-group">
                                             <label>Facebook</label>
                                             <div class="row">
@@ -92,11 +91,8 @@
                     <div class="col-md-12">
                         <div class="panel-post">
                             <div class="post-above clear">
-                                <div class="search-box left" style="width: 96%;">
-                                    <input type="text" id="txtSearch" class="form-control sku-input" placeholder="SKU (F3)" autocomplete="off">
-                                </div>
-                                <div class="right">
-                                    <a href="javascript:;" class="link-btn" onclick="searchProduct()"><i class="fa fa-search"></i></a>
+                                <div class="search-box left">
+                                    <input type="text" id="txtSearch" class="form-control sku-input" placeholder="NHẬP MÃ SẢN PHẨM (F3)" autocomplete="off">
                                 </div>
                             </div>
                             <div class="post-body search-product-content clear">
@@ -119,19 +115,24 @@
                                     </tbody>
                                 </table>
                             </div>
-                            <div class="post-row clear">
-                                <div class="left">Tổng cộng</div>
-                                <div class="right totalPriceOrder"></div>
+                            <div class="post-footer">
+                                <div class="post-row clear">
+                                    <div class="left">Số lượng</div>
+                                    <div class="right totalProductQuantity"></div>
+                                </div>
+                                <div class="post-row clear">
+                                    <div class="left">Số lượng miễn tiền phí</div>
+                                    <div class="right totalProductQuantityNoFee"></div>
+                                </div>
+                                <div class="post-row clear">
+                                    <div class="left">Phí đổi hàng</div>
+                                    <div class="right totalRefund"></div>
+                                </div>
+                                <div class="post-row clear">
+                                    <div class="left">Tổng tiền (đã trừ phí)</div>
+                                    <div class="right totalPriceOrder"></div>
+                                </div>
                             </div>
-                            <div class="post-row clear">
-                                <div class="left">Tổng số lượng sản phẩm</div>
-                                <div class="right totalProductQuantity"></div>
-                            </div>
-                            <div class="post-row clear">
-                                <div class="left">Phí đổi hàng</div>
-                                <div class="right totalRefund"></div>
-                            </div>
-
                         </div>
                     </div>
                 </div>
@@ -139,7 +140,7 @@
                     <div class="col-md-12">
                         <div class="panel panelborderheading">
                             <div class="panel-heading clear">
-                                <h3 class="page-title left not-margin-bot">Thông tin trạng thái đơn hàng đổi trả</h3>
+                                <h3 class="page-title left not-margin-bot">Trạng thái đơn hàng</h3>
                             </div>
                             <div class="panel-body">
                                 <div class="form-row">
@@ -193,6 +194,7 @@
                 </div>
             </div>
             <asp:Button ID="btnSave" runat="server" OnClick="btnSave_Click" Style="display: none" />
+            <asp:HiddenField ID="hdRefundGoodsID" runat="server" />
             <asp:HiddenField ID="hdfUsername" runat="server" />
             <asp:HiddenField ID="hdfUsernameCurrent" runat="server" />
             <asp:HiddenField ID="hdfOrderSaleID" runat="server" />
@@ -204,6 +206,10 @@
             <asp:HiddenField ID="hdfTotalQuantity" runat="server" Value="0" />
             <asp:HiddenField ID="hdfTotalRefund" runat="server" Value="0" />
             <asp:HiddenField ID="hdfListProduct" runat="server" />
+            <asp:HiddenField ID="hdfCustomerID" runat="server" />
+            <asp:HiddenField ID="hdfDaysExchange" runat="server" />
+            <asp:HiddenField ID="hdfRefundQuantityNoFee" runat="server" />
+            <asp:HiddenField ID="hdfRefundQuantityFee" runat="server" />
         </main>
     </asp:Panel>
     <style>
@@ -214,7 +220,7 @@
     </style>
     <telerik:RadAjaxManager ID="rAjax" runat="server">
         <AjaxSettings>
-            <telerik:AjaxSetting AjaxControlID="btnOrder">
+            <telerik:AjaxSetting AjaxControlID="btnSave">
                 <UpdatedControls>
                     <telerik:AjaxUpdatedControl ControlID="parent" LoadingPanelID="rxLoading"></telerik:AjaxUpdatedControl>
                 </UpdatedControls>
@@ -224,27 +230,23 @@
     <telerik:RadScriptBlock ID="sc" runat="server">
         <script type="text/javascript">
 
-            function redirectTo(ID) {
+            function redirectTo(ID, username) {
                 HoldOn.open();
-                $("#payall").addClass("payall-clicked");
-                window.location.href = "/xem-don-hang-doi-tra?id=" + ID;
+                window.onbeforeunload = null;
+
+                let usernameString = "";
+                if (username != "")
+                {
+                    usernameString = "&username=" + username;
+                }
+                window.location.href = "/xem-don-hang-doi-tra?id=" + ID + usernameString;
             }
 
             // check data before close page or refresh page
-            function stopNavigate(event) {
-                $(window).off('beforeunload');
-            }
-
-            $(window).bind('beforeunload', function(e) {
-                if ($("#payall").hasClass("payall-clicked")) {
-                    e = null;
-                } else {
-                    if ($(".product-result").length > 0 || $("#<%=txtPhone.ClientID%>").val() != "" || $("#<%= txtFullname.ClientID%>").val() != "")
-                        return true;
-                    else
-                        e = null;
-                }
-            });
+            window.onbeforeunload = function () {
+                if ($(".product-result").length > 0 || $("#<%=txtPhone.ClientID%>").val() != "" || $("#<%= txtFullname.ClientID%>").val() != "")
+                        return "You're leaving the site.";
+            };
 
             //disable input
             $("#<%= txtPhone.ClientID%>").prop('readonly', true);
@@ -256,8 +258,7 @@
 
             // Create model entity
             class RefundDetailModel{
-                constructor(RowIndex
-                            , ProductID
+                constructor(ProductID
                             , ProductVariableID
                             , ProductStyle
                             , ProductImage
@@ -270,8 +271,11 @@
                             , QuantityRefund
                             , ChangeType
                             , FeeRefund
-                            , TotalFeeRefund) {
-                    this.RowIndex = RowIndex;
+                            , FeeRefundDefault
+                            , TotalFeeRefund
+                            , SaleDate
+                            , OrderID) {
+                    this.RowIndex = uuid.v4();
                     this.ProductID = ProductID;
                     this.ProductVariableID = ProductVariableID;
                     this.ProductStyle = ProductStyle;
@@ -285,7 +289,10 @@
                     this.QuantityRefund = QuantityRefund;
                     this.ChangeType = ChangeType;
                     this.FeeRefund = FeeRefund;
+                    this.FeeRefundDefault = FeeRefundDefault;
                     this.TotalFeeRefund = TotalFeeRefund;
+                    this.SaleDate = SaleDate;
+                    this.OrderID = OrderID;
                 }
 
                 isTarget(RowIndex, ProductID, ProductVariableID) {
@@ -297,13 +304,9 @@
                 }
             }
 
-            // Key for row in table product refund
-            var rowIndexMax = Number(0);
-
             // Create model
             var productRefunds = [];
             var productDeleteRefunds = [];
-            
 
             function minusDiscount() {
                 swal({
@@ -315,15 +318,25 @@
                     cancelButtonText: "Để em xem lại",
                     confirmButtonText: "OK sếp!!",
                 }, function (discount) {
-                    
+                    if (typeof(discount) == "boolean") {
+                        discount = 0;
+                    }
+                    else if (typeof(discount) == "string") {
+                        discount = discount.replace(/,|\./g, "");
+                        discount = +discount || 0;
+                    }
+                    else {
+                        discount = 0;
+                    }
+
                     $("input.reducedPrice").each(function (index) {
                         oldValue = $(this).val().replace(/,/g, "");
 
-                        if (parseInt(discount) > 0) {
-                            newValue = formatThousands(parseInt(oldValue) - parseInt(discount));
+                        if (discount > 0) {
+                            newValue = formatThousands(parseInt(oldValue) - discount);
                         }
                         else {
-                            newValue = formatThousands(parseInt(oldValue) + parseInt(discount));
+                            newValue = formatThousands(parseInt(oldValue) + discount);
                         }
                         
                         $(this).val(newValue);
@@ -361,8 +374,8 @@
 
             function changeFee() {
                 swal({
-                    title: "Thay đổi phí đổi hàng",
-                    text: "Nhập phí mới cho <strong>sản phẩm đổi mẫu khác</strong> trong đơn hàng này:",
+                    title: "Nhập phí đổi hàng",
+                    text: "Nhập <strong>phí đổi sản phẩm</strong> cho đơn này:",
                     type: "input",
                     showCancelButton: true,
                     closeOnConfirm: true,
@@ -370,18 +383,37 @@
                     confirmButtonText: "Nhập thôi !!!",
                     html: true
                 }, function (newFee) {
-                    if (newFee != "") {
-                        $("input.reducedPrice").each(function (index) {
-                            oldFee = $(this).parent().parent().attr("data-feerefund");
-                            if (oldFee != "") {
-                                $(this).parent().parent().attr("data-feerefund", newFee);
-                                $(this).parent().parent().find(".feeRefund").val(formatThousands(newFee));
-                                changeRow($(this));
-                            }
-                        });
+                    if (typeof(newFee) != "boolean" && newFee != "") {
+                        newFee = newFee.replace(/,|\./g, "");
+                        newFee = +newFee || 0;
 
-                        $(".minus-discount").removeClass("hide");
-                        $(".restore-discount").addClass("hide");
+                        if (newFee >= 1000 && newFee <= 25000) {
+                            $("input.reducedPrice").each(function (index) {
+                                let row = $(this).parent().parent();
+                                let feeRefundDOM = row.find(".feeRefund");
+                                let oldFee = +feeRefundDOM.val().replace(/,/g, "") || 0;
+
+                                row.attr('data-feerefund', newFee);
+                                row.data('feerefund', newFee);
+                                row.attr('data-is-fee-refund-other', 1);
+                                row.data('is-fee-refund-other', 1);
+
+                                if (oldFee > 0) {
+                                    feeRefundDOM.val(formatThousands(newFee));
+                                    feeRefundDOM.attr('value', formatThousands(newFee));
+                                    changeRow($(this), { 'isChangeFeeOther': true });
+                                }
+                            });
+
+                            $(".minus-discount").removeClass("hide");
+                            $(".restore-discount").addClass("hide");
+                        }
+                        else {
+                            alert("Phí đổi hàng phải là số dương lớn hơn 1,000 và nhỏ hơn 25,000.");
+                        }
+                    }
+                    else {
+                        alert("Chưa nhập phí");
                     }
                 });
             }
@@ -412,25 +444,87 @@
                 }
             });
 
-            function getAllPrice() {
+            function getAllPrice(update_by_hand) {
+                if(update_by_hand === undefined)
+                    update_by_hand = false;
                 let totalPrice = 0;
                 let productQuantity = 0;
+                let productQuantityNoFee = 0;
                 let totalRefund = 0;
 
+                let isDiscount = parseInt($("#<%=hdfIsDiscount.ClientID%>").val());
+                let discount = parseFloat($("#<%=hdfDiscountAmount.ClientID%>").val());
+                let feerefund = parseFloat($("#<%=hdfCustomerFeeChange.ClientID%>").val());
+                let refundNoFee = +$("#<%=hdfRefundQuantityNoFee.ClientID%>").val() || 0;
+                let refundFee = +$("#<%=hdfRefundQuantityFee.ClientID%>").val() || 0;
+
                 productRefunds.forEach(function(item){
-                    totalPrice += item.TotalFeeRefund;
-                    productQuantity += item.QuantityRefund;
+                    let row = $("tr[data-rowIndex='" + item.RowIndex + "']");
+                    let isFeeOther = +row.attr('data-is-fee-refund-other') || 0;
+
+                    if (update_by_hand == false && item.ChangeType == 2)
+                    {
+                        if (isDiscount == 1)
+                        {
+                            item.ReducedPrice = item.Price - discount;
+                            item.FeeRefund = isFeeOther ? item.FeeRefund : feerefund;
+                        }
+                        else
+                        {
+                            item.ReducedPrice = item.Price;
+                            item.FeeRefund = isFeeOther || item.FeeRefund > 0 ? item.FeeRefund : item.FeeRefundDefault;
+                        }
+
+                        item.FeeRefund = refundNoFee >= productQuantityNoFee + item.QuantityRefund ? 0 : item.FeeRefund;
+
+                        row.attr("data-sold-price", item.ReducedPrice);
+                        row.attr("data-feerefund", item.FeeRefund);
+                    }
+
+                    // Ruler Price - ReducedPrice >= 10,000 VND
+                    if ((item.Price - item.ReducedPrice) < discount) {
+                        alert("Giá đã bán phải giảm ít nhất " + formatThousands(discount, ","));
+                        let sold_price = row.data("sold-price");
+                        row.find(".reducedPrice").val(formatThousands(sold_price, ","));
+                        item.ReducedPrice = sold_price;
+                    }
+
+                    if ((item.Price - item.ReducedPrice) > 25000) {
+                        alert("Giá đã bán không được giảm quá 25,000");
+                        let sold_price = row.data("sold-price");
+                        row.find(".reducedPrice").val(formatThousands(sold_price, ","));
+                        item.ReducedPrice = sold_price;
+                    }
 
                     if (item.ChangeType == 2){
+                        item.TotalFeeRefund = (item.ReducedPrice - item.FeeRefund) * item.QuantityRefund;
+                        totalPrice += item.TotalFeeRefund;
+                        productQuantity += item.QuantityRefund;
                         totalRefund += item.FeeRefund * item.QuantityRefund;
                     }
-                    else{
+                    else {
+                        item.TotalFeeRefund = item.ReducedPrice * item.QuantityRefund;
+                        totalPrice += item.TotalFeeRefund;
+                        productQuantity += item.QuantityRefund;
                         totalRefund += 0;
                     }
+
+                    // Đánh dấu những sản phẩm đổi trả không tính phí
+                    if (item.ChangeType == 2)
+                        productQuantityNoFee += item.FeeRefund == 0 ? item.QuantityRefund : 0;
+
+                    // Update price on browser
+                    reducedDom = row.children("td").children("input.form-control.reducedPrice")
+                    reducedDom.val(formatThousands(item.ReducedPrice))
+                    feeDom = row.children("td").children("input.form-control.feeRefund")
+                    feeDom.val(formatThousands(item.FeeRefund))
+                    totalDom = row.children("td.totalFeeRefund")
+                    totalDom.html(formatThousands(item.TotalFeeRefund))
                 });
 
                 $(".totalPriceOrder").html(formatThousands(totalPrice, ","));
                 $(".totalProductQuantity").html(formatThousands(productQuantity, ","));
+                $(".totalProductQuantityNoFee").html(formatThousands(productQuantityNoFee, ","));
                 $(".totalRefund").html(formatThousands(totalRefund, ","));
 
                 $("#<%=hdfTotalPrice.ClientID%>").val(totalPrice);
@@ -438,57 +532,175 @@
                 $("#<%=hdfTotalRefund.ClientID%>").val(totalRefund);
             }
 
+            function changeRefundType(obj){
+                let row = obj.parent().parent();
+                let RefundType = obj.val();
+                let feeRefundDom = row.find(".feeRefund");
+                if (RefundType == 2){
+                    row.find(".feeRefund").val(formatThousands(row.data("feerefund"), ","))
+                    feeRefundDom.attr('value', formatThousands(row.data("feerefund")));
+                    feeRefundDom.prop('disabled', false);
+                }
+                else
+                {
+                    feeRefundDom.val(0);
+                    feeRefundDom.attr('value', 0);
+                    feeRefundDom.prop('disabled', true);
+                }
+                changeRow(obj);
+            }
+
             function changeRowFeeRefund(obj) {
                 obj.parent().parent().attr("data-feerefund", obj.val().replace(/,/g, ""));
                 changeRow(obj);
             }
 
-            function changeRow(obj)
+            function changeRow(obj, opts)
             {
                 let row = obj.parent().parent();
-                let RowIndex = parseInt(row.attr("data-rowIndex"));
+                let RowIndex = row.attr("data-rowIndex");
                 let ProductID = parseInt(row.attr("data-productID"));
                 let ProductVariableID = parseInt(row.attr("data-productVariableID"));
-                let Price = parseFloat(row.find(".Price").html().replace(/,/g, ""));
-                let SoldPrice = parseInt(row.attr("data-sold-price"));
-                let ReducedPrice = parseFloat(row.find(".reducedPrice").val().replace(/,/g, ""));
-                let Quantity = parseFloat(row.find(".quantityRefund").val().replace(/,/g, ""));
-                let ChangeType = row.find(".changeType").val();
-                let FeeRefund = parseFloat(row.attr("data-feeRefund"));
-                let TotalFeeRefund = 0;
+                let ReducedPrice = +row.find(".reducedPrice").val().replace(/,/g, "") || 0;
+                let Quantity = +row.find(".quantityRefund").val().replace(/,/g, "") || 0;
+                let ChangeType = +row.find(".changeType").val() || 0;
+                let FeeRefund = +row.find(".feeRefund").val().replace(/,/g, "") || 0;
 
-                // Ruler Price - ReducedPrice >= 10,000 VND
-                if ((Price - ReducedPrice) > 11000) {
-                    alert("Giá đã bán không thể giảm hơn 11.000đ.");
-                    row.find(".reducedPrice").val(formatThousands(SoldPrice, ","));
-                    ReducedPrice = SoldPrice;
+                if (Quantity == 0)
+                {
+                    row.find(".quantityRefund").val(1);
+                    row.find(".quantityRefund").html(1);
+                    row.find(".quantityRefund").focus();
                 }
 
-                if (ChangeType == 2) {
-                    TotalFeeRefund = (ReducedPrice - FeeRefund) * Quantity;
+                // nếu là nhấp thây đổi phí khác thì không cần check chính sách đổi hàng
+                if (opts && opts['isChangeFeeOther'])
+                {
+                    // Cập nhật lại thông tin dòng đã edit
+                    productRefunds.forEach(function (item) {
+                        if (item.isTarget(RowIndex, ProductID, ProductVariableID)) {
+                            item.ReducedPrice = ReducedPrice;
+                            item.QuantityRefund = Quantity;
+                            item.ChangeType = ChangeType;
+                            item.FeeRefund = FeeRefund;
+                        }
+                    });
 
-                    row.find(".feeRefund").val(formatThousands(FeeRefund, ","));
-                    row.find(".totalFeeRefund").html(formatThousands(TotalFeeRefund, ","));
+                    getAllPrice(update_by_hand = true);
+
+                    return;
+                }
+
+                // Check xem số lượng đổi trả đã quá quy định chưa
+                let error = false;
+                let message = ""
+
+                let refundNoFee = +$("#<%=hdfRefundQuantityNoFee.ClientID%>").val() || 0;
+                let refundFee = +$("#<%=hdfRefundQuantityFee.ClientID%>").val() || 0;
+                let totalRefundNow = +$(".totalProductQuantity").html().replace(/,/g, "") || 0;
+                let totalRefundNoFeeNow = +$(".totalProductQuantityNoFee").html().replace(/,/g, "") || 0;
+
+                let refundFilter = productRefunds.filter(item => {
+                    return item.isTarget(RowIndex, ProductID, ProductVariableID)
+                });
+                let quantityRefundOld = +refundFilter[0].QuantityRefund || 0;
+
+                // Tính toán tổng số lượng đổi trả
+                totalRefundNow = totalRefundNow + Quantity - quantityRefundOld;
+                totalRefundNoFeeNow = totalRefundNoFeeNow + Quantity - quantityRefundOld;
+
+                // setup message
+                message += "<div class='row' style='max-height:300px; overflow: auto;'>";
+                message += "Có vấn đề khi thêm sản phẩm này!<br/>";
+                message += "<h4>Hãy xem lại trước khi xác nhận!<h4>";
+
+                // Nếu số lượng mới thêm vượt quá quy định đổi trả thì thông báo lên
+                if (totalRefundNow > (refundNoFee + refundFee))
+                {
+                    error = true;
+                    message += '<h3><span class="label label-warning" style="text-align: left">Vượt quá tổng số lượng được đổi trả:</span></h3><br/>';
+                    message += 'Số lượng được đổi: <strong>' + formatThousands(refundNoFee + refundFee, ",") + '</strong> cái<br/>';
+                    message += 'Hiện tại: <strong>' + formatThousands(totalRefundNow, ',') + '</strong> cái<br/>';
+                }
+
+                // Kiểm tra nhưng sản phâm nào thuộc đổi 2: Đổi trả sản phẩm khác và có fee là 0 đồng
+                // và số lượng nhập đổi trả miển phí lớn hơn sô lượng quy định thì thông báo
+                if (ChangeType == 2 && FeeRefund == 0 && totalRefundNoFeeNow > refundNoFee)
+                {
+                    error = true;
+                    message += '<h3><span class="label label-warning" style="text-align: left">Vượt quá số lượng đổi trả miễn phí:</span></h3><br/>';
+                    message += 'Số lượng được đổi: <strong>' + formatThousands(refundNoFee, ",") + '</strong> cái<br/>';
+                    message += 'Hiện tại: <strong>' + formatThousands(totalRefundNoFeeNow, ',') + '</strong> cái<br/>';
+                }
+
+                // kết thúc message
+                message += "</div>";
+
+                if (error)
+                {
+                    let quantityRecommend = 0;
+                    let confirmButtonText = "Vẫn thêm vào đơn";
+
+                    if (ChangeType == 2 && FeeRefund == 0 && totalRefundNoFeeNow > refundNoFee)
+                    {
+                        quantityRecommend = Quantity - (totalRefundNoFeeNow - refundNoFee);
+                        confirmButtonText = "Vẫn thêm vào đơn (" + quantityRecommend + " cái)";
+                    }
+
+                    swal({
+                        title: "Thông báo",
+                        text: message,
+                        type: "warning",
+                        showCancelButton: true,
+                        closeOnConfirm: true,
+                        cancelButtonText: "Để xem lại",
+                        confirmButtonText: confirmButtonText,
+                        html: true
+                    }, function (confirm) {
+                        if (confirm) {
+
+                            if (ChangeType == 2 && FeeRefund == 0 && totalRefundNoFeeNow > refundNoFee)
+                            {
+                                row.find(".quantityRefund").val(quantityRecommend);
+                                row.find(".quantityRefund").html(formatThousands(quantityRecommend, ","));
+                                row.find(".quantityRefund").focus();
+                                Quantity = quantityRecommend;
+                            }
+
+                            // Cập nhật lại thông tin dòng đã edit
+                            productRefunds.forEach(function (item) {
+                                if (item.isTarget(RowIndex, ProductID, ProductVariableID)) {
+                                    item.ReducedPrice = ReducedPrice;
+                                    item.QuantityRefund = Quantity;
+                                    item.ChangeType = ChangeType;
+                                    item.FeeRefund = FeeRefund;
+                                }
+                            });
+
+                            getAllPrice(update_by_hand = true);
+                        }
+                        else {
+                            if (ChangeType == 2 && FeeRefund == 0 && totalRefundNoFeeNow > refundNoFee) {
+                                row.find(".quantityRefund").val(quantityRefundOld);
+                                row.find(".quantityRefund").html(formatThousands(quantityRefundOld, ","));
+                                row.find(".quantityRefund").focus();
+                            }
+                        }
+                    });
                 }
                 else {
-                    TotalFeeRefund = ReducedPrice * Quantity;
+                    // Cập nhật lại thông tin dòng đã edit
+                    productRefunds.forEach(function (item) {
+                        if (item.isTarget(RowIndex, ProductID, ProductVariableID)) {
+                            item.ReducedPrice = ReducedPrice;
+                            item.QuantityRefund = Quantity;
+                            item.ChangeType = ChangeType;
+                            item.FeeRefund = FeeRefund;
+                        }
+                    });
 
-                    row.find(".feeRefund").val(0);
-                    row.find(".totalFeeRefund").html(formatThousands(TotalFeeRefund, ","));
+                    getAllPrice(update_by_hand = true);
                 }
-
-                productRefunds.forEach(function(item){
-                    if (item.isTarget(RowIndex, ProductID, ProductVariableID)) {
-                        item.QuantityRefund = Quantity;
-                        item.ChangeType = ChangeType;
-                        item.TotalFeeRefund = TotalFeeRefund;
-                        item.ReducedPrice = ReducedPrice;
-                        item.FeeRefund = FeeRefund;
-                        item.DiscountPricePerProduct = Price - ReducedPrice;
-                    }
-                });
-
-                getAllPrice();
             }
 
             function clickrow(obj) {
@@ -518,16 +730,16 @@
                                 + "data-variableValue='" + item.VariableValue + "' "
                                 + "data-price='" + item.Price + "' "
                                 + "data-sold-price='" + item.ReducedPrice + "' "
-                                + "data-feeRefund='" + item.FeeRefund + "' >\n";
-                html += "    <td><img src='" + item.ProductImage + "''></td>\n";
-                html += "    <td>" + item.ProductTitle + variable + "</td>\n";
+                                + "data-feeRefund='" + item.FeeRefundDefault + "' >\n";
+                html += "    <td class='image-item'><img onclick='openImage($(this))' src='/uploads/images/159x212/" + item.ProductImage + "''></td>\n";
+                html += "    <td class='name-item'><a href='/xem-san-pham?id=" + item.ProductID + "&variableid=" + item.ProductVariableID + "' target='_blank'>" + item.ProductTitle + "</a>"  + variable + "</td>\n";
                 if (item.ProductStyle == 1) {
-                    html += "    <td>" + item.ParentSKU + "</td>\n";
+                    html += "    <td class='sku-item'>" + item.ParentSKU + "</td>\n";
                 }
                 else if (item.ProductStyle == 2) {
-                    html += "    <td>" + item.ChildSKU + "</td>\n";
+                    html += "    <td class='sku-item'>" + item.ChildSKU + "</td>\n";
                 }
-                html += "    <td class='Price'>" + formatThousands(item.Price, ",") + "</td>\n";
+                html += "    <td class='price-item Price'>" + formatThousands(item.Price, ",") + "</td>\n";
                 html += "    <td>\n";
                 html += "           <input type='text' class='form-control reducedPrice' min='1' value='" + formatThousands(item.ReducedPrice, ",") + "' onblur='changeRow($(this))' onkeypress='return event.charCode >= 48 && event.charCode <= 57'/>\n";
                 html += "    </td>\n";
@@ -535,7 +747,7 @@
                 html += "           <input type='text' class='form-control quantityRefund' min='1' value='" + formatThousands(item.QuantityRefund, ",") + "' onblur='changeRow($(this))' onkeypress='return event.charCode >= 48 && event.charCode <= 57'/>\n";
                 html += "    </td>\n";
                 html += "    <td>\n";
-                html += "           <select class='form-control changeType' onchange='changeRow($(this))'>\n";
+                html += "           <select class='form-control changeType' onchange='changeRefundType($(this))'>\n";
                 if (item.ProductStyle == 1) {
                     if (item.ChangeType == 1) {
                         html += "               <option value='2'>Đổi sản phẩm khác</option>\n";
@@ -586,10 +798,15 @@
 
             // select a variable product
             function selectProduct() {
+                let products = [];
+
                 $(".search-popup").each(function (index, element) {
                     if ($(this).find(".check-popup").is(':checked')) {
                         let sku = $(this).find("td.key").html();
-                        let quantity = parseInt($(this).find("input.quantity").val());
+                        let quantity = +$(this).find("input.quantity").val() || 0;
+
+                        if (quantity == 0)
+                            return true;
 
                         let productTarget = productVariableSearch.filter(function (x) { return x.ChildSKU == sku })[0];
 
@@ -599,14 +816,18 @@
                         // update total price
                         productTarget.TotalFeeRefund = (productTarget.ReducedPrice - productTarget.FeeRefund) * productTarget.QuantityRefund;
 
-                        productRefunds.push(productTarget);
-                        addHtmlProductResult(productTarget);
+                        // Filter ra những product được chọn
+                        products.push(productTarget);
                     }
                 });
 
-                getAllPrice();
+                // Kiểm tra chính sách trả hàng
+                // Nếu thỏa thì sẽ thêm product vào table
+                // Ngược lại sẽ lên thông báo warning
+                checkPolicy(products);
+
                 closePopup();
-                $("#txtSearch").focus();
+                $("#txtSearch").val("");
             }
 
             // select all variable product
@@ -646,15 +867,13 @@
                     html += "         <td class='order-item check-column'>";
                     html += "             <input class='check-popup' data-productVariableID='" + item.ProductVariableID + "' type='checkbox' onchange='check($(this))' />";
                     html += "         </td>";
-                    html += "         <td class='image-column'><img src='" + item.ProductImage + "'></td>";
+                    html += "         <td class='image-column'><img src='/uploads/images/85x113/" + item.ProductImage + "'></td>";
                     html += "         <td class='name-column'>" + item.ProductTitle + "</td>";
                     html += "         <td class='sku-column key'>" + item.ChildSKU + "</td>";
                     html += "         <td class='variable-column'>" + item.VariableValue.replace(/\|/g, "<br>") + "</td>";
                     html += "         <td class='quantity-column'>";
                     html += "             <input type='text' class='form-control quantity in-quantity' "
                                               + "pattern='[0-9]{1,3}' "
-                                              + "onblur='changeQuantityPopup($(this))' "
-                                              + "onkeyup='pressKeyQuantityPopup($(this))' "
                                               + "onkeypress='return event.charCode >= 48 && event.charCode <= 57' "
                                               + "value='1' >";
                     html += "         </td>";
@@ -738,36 +957,33 @@
                     if (product != null) {
                         // remove product by SKU 
                         productDeleteRefunds = productDeleteRefunds.filter(function (item) {
-                            return !(item.ParentSKU = product.ParentSKU && item.ChildSKU == product.ChildSKU)
+                            return !(item.ParentSKU == product.ParentSKU && item.ChildSKU == product.ChildSKU)
                         });
 
-                        productRefunds.push(product);
-
-                        addHtmlProductResult(product);
+                        // Kiểm tra chính sách trả hàng
+                        // Nếu thỏa thì sẽ thêm product vào table
+                        // Ngược lại sẽ lên thông báo warning
+                        checkPolicy(product);
 
                         $("#txtSearch").val("");
-                        getAllPrice();
                     }
                     else {
+                        let customerID = $("#<%=hdfCustomerID.ClientID%>").val();
+
                         $.ajax({
                             type: "POST",
                             url: "/tao-don-hang-doi-tra.aspx/getProduct",
-                            data: "{sku:'" + txtSearch + "'}",
+                            data: JSON.stringify({'customerID': customerID, 'sku': txtSearch}),
                             contentType: "application/json; charset=utf-8",
                             dataType: "json",
                             success: function (msg) {
                                 let data = JSON.parse(msg.d);
-                                var discount = $("#<%=hdfDiscountAmount.ClientID%>").val();
-                                var feerefund = $("#<%=hdfCustomerFeeChange.ClientID%>").val();
 
                                 if (data != null && data.length > 0) {
                                     if (data.length > 1) {
                                         data.forEach(function (item) {
-                                            rowIndexMax = rowIndexMax + 1;
-
                                             let productVariable = new RefundDetailModel(
-                                                RowIndex = rowIndexMax
-                                                , ProductID = item.ProductID
+                                                ProductID = item.ProductID
                                                 , ProductVariableID = item.ProductVariableID
                                                 , ProductStyle = item.ProductStyle
                                                 , ProductImage = item.ProductImage
@@ -776,11 +992,14 @@
                                                 , ChildSKU = item.ChildSKU
                                                 , VariableValue = item.VariableValue
                                                 , Price = item.Price
-                                                , ReducedPrice = item.ReducedPrice - ((discount != "") ? discount : 0 )
+                                                , ReducedPrice = item.ReducedPrice
                                                 , QuantityRefund = item.QuantityRefund
                                                 , ChangeType = item.ChangeType
-                                                , FeeRefund = (feerefund != "") ? feerefund : item.FeeRefund
-                                                , TotalFeeRefund = item.TotalFeeRefund - ((discount != "") ? discount : 0) - ((feerefund != "") ? feerefund : item.FeeRefund)
+                                                , FeeRefund = item.FeeRefund
+                                                , FeeRefundDefault =  item.FeeRefund
+                                                , TotalFeeRefund = item.TotalFeeRefund
+                                                , SaleDate = item.SaleDate
+                                                , OrderID = item.OrderID
                                             );
 
                                             productVariableSearch.push(productVariable);
@@ -789,11 +1008,13 @@
                                         showProductVariable(productVariableSearch);
                                     }
                                     else {
-                                        rowIndexMax = rowIndexMax + 1;
+                                        // Check xem số lượng đổi trả đã quá quy định chưa
+                                        let refundNoFee = +$("#<%=hdfRefundQuantityNoFee.ClientID%>").val() || 0;
+                                        let refundFee = +$("#<%=hdfRefundQuantityFee.ClientID%>").val() || 0;
+                                        let totalRefundNow = +$(".totalProductQuantity").html().replace(/,/g, "") || 0;
 
                                         product = new RefundDetailModel(
-                                            RowIndex = rowIndexMax
-                                            , ProductID = data[0].ProductID
+                                            ProductID = data[0].ProductID
                                             , ProductVariableID = data[0].ProductVariableID
                                             , ProductStyle = data[0].ProductStyle
                                             , ProductImage = data[0].ProductImage
@@ -802,19 +1023,22 @@
                                             , ChildSKU = data[0].ChildSKU
                                             , VariableValue = data[0].VariableValue
                                             , Price = data[0].Price
-                                            , ReducedPrice = data[0].ReducedPrice - ((discount != "") ? discount : 0)
+                                            , ReducedPrice = data[0].ReducedPrice
                                             , QuantityRefund = data[0].QuantityRefund
                                             , ChangeType = data[0].ChangeType
-                                            , FeeRefund = (feerefund != "") ? feerefund : data[0].FeeRefund
-                                            , TotalFeeRefund = data[0].TotalFeeRefund - ((discount != "") ? discount : 0) - ((feerefund != "") ? feerefund : data[0].FeeRefund)
+                                            , FeeRefund = data[0].FeeRefund
+                                            , FeeRefundDefault = data[0].FeeRefund
+                                            , TotalFeeRefund = data[0].TotalFeeRefund
+                                            , SaleDate = data[0].SaleDate
+                                            , OrderID = data[0].OrderID
                                         );
 
-                                        productRefunds.push(product);
-
-                                        addHtmlProductResult(product);
+                                        // Kiểm tra chính sách trả hàng
+                                        // Nếu thỏa thì sẽ thêm product vào table
+                                        // Ngược lại sẽ lên thông báo warning
+                                        checkPolicy(product);
 
                                         $("#txtSearch").val("");
-                                        getAllPrice();
                                     }
                                 }
                                 else {
@@ -844,15 +1068,15 @@
 
                 if (c) {
                     let row = obj.parent().parent();
-                    let RowIndex = parseFloat(row.attr("data-rowIndex"));
+                    let RowIndex = row.attr("data-rowIndex");
                     let ProductID = parseFloat(row.attr("data-productID"));
                     let ProductVariableID = parseFloat(row.attr("data-productVariableID"));
 
                     productRefunds.forEach(function (product) {
                         if (product.isTarget(RowIndex, ProductID, ProductVariableID)) {
                             product.QuantityRefund = 1; // return default
-                            product.ChangeType = 1; // return default
-                            product.TotalFeeRefund = product.Price; // return default
+                            product.ChangeType = 2; // return default: Đổi sản phẩm khác
+                            product.TotalFeeRefund = product.Price - product.FeeRefund; // return default
                             productDeleteRefunds.push(product);
                         }
                     });
@@ -862,7 +1086,7 @@
                     });
 
                     row.remove();
-                    getAllPrice();
+                    getAllPrice(update_by_hand=true);
                 }
             }
 
@@ -875,18 +1099,19 @@
 
                     $(".product-result").remove();
 
-                    getAllPrice();
+                    getAllPrice(update_by_hand=true);
                 }
             }
 
             function payall() {
-                $("#payall").addClass("payall-clicked");
+                window.onbeforeunload = null;
 
                 var phone = $("#<%=txtPhone.ClientID%>").val();
                 var name = $("#<%= txtFullname.ClientID%>").val();
                 var nick = $("#<%= txtNick.ClientID%>").val();
                 var address = $("#<%= txtAddress.ClientID%>").val();
                 if (phone != "" && name != "" && nick != "" && address != "") {
+                    productRefunds = productRefunds.filter(item => { return item.QuantityRefund > 0});
                     if (productRefunds.length > 0) {
                         let dataJSON = '{ "RefundDetails" : [';
 
@@ -915,6 +1140,7 @@
                         swal("Thông báo", "Hãy nhập số điện thoại khách hàng!", "error");
                     }
                     else if (nick == "") {
+                        $("#<%= txtNick.ClientID%>").prop('readonly', false);
                         $("#<%= txtNick.ClientID%>").focus();
                         swal("Thông báo", "Hãy nhập Nick đặt hàng của khách hàng!", "error");
                     }
@@ -957,6 +1183,13 @@
                 if (!isBlank(dataJSON)) {
                     let refundGoodModel = jQuery.parseJSON(dataJSON);
 
+                    // Làm lại đơn hàng đổi trả
+                    $("#<%=hdRefundGoodsID.ClientID%>").val(refundGoodModel.RefundGoodsID)
+                    // Init discount for customer
+                    if (refundGoodModel.CustomerID)
+                    {
+                        getCustomerDiscount(refundGoodModel.CustomerID);
+                    }
                     // Init header search Customer
                     $("#<%=txtFullname.ClientID%>").val(refundGoodModel.CustomerName);
                     $("#<%=txtPhone.ClientID%>").val(refundGoodModel.CustomerPhone);
@@ -966,13 +1199,9 @@
                     $("#<%=txtFacebook.ClientID%>").val(refundGoodModel.CustomerFacebook);
 
                     // Init detail refund product
-                    let rowIndexMax = 0
                     refundGoodModel.RefundDetails.reverse().forEach(function (item) {
-                        rowIndexMax = rowIndexMax + 1;
-
                         let product = new RefundDetailModel(
-                                        RowIndex = rowIndexMax
-                                        , ProductID = item.ProductID
+                                        ProductID = item.ProductID
                                         , ProductVariableID = item.ProductVariableID
                                         , ProductStyle = item.ProductStyle
                                         , ProductImage = item.ProductImage
@@ -985,11 +1214,13 @@
                                         , QuantityRefund = item.QuantityRefund
                                         , ChangeType = item.ChangeType
                                         , FeeRefund = item.FeeRefund
+                                        , FeeRefundDefault = item.FeeRefundDefault
                                         , TotalFeeRefund = item.TotalFeeRefund
+                                        , SaleDate = item.SaleDate
+                                        , OrderID = item.OrderID
                                     );
 
                         productRefunds.push(product);
-
                         addHtmlProductResult(product);
 
                         getAllPrice();
@@ -1005,6 +1236,7 @@
                     $("#<%=txtRefundsNote.ClientID%>").val(refundGoodModel.Note);
 
                     // Init hiden footer
+                    $("#<%=hdfCustomerID.ClientID%>").val(refundGoodModel.CustomerID);
                     $("#<%=hdfPhone.ClientID%>").val(refundGoodModel.CustomerPhone);
                     $("#<%=hdfTotalPrice.ClientID%>").val(refundGoodModel.TotalPrice);
                     $("#<%=hdfTotalQuantity.ClientID%>").val(refundGoodModel.TotalQuantity);
@@ -1014,6 +1246,147 @@
                     $("#<%=hdfOrderSaleID.ClientID%>").val(refundGoodModel.OrderSaleID);
                 }
             });
+
+            // Kiểm tra xem hàng trả đã quá hạng chưa
+            function checkSaleDate(item) {
+                let now = new moment();
+                let daysExchange = +$("input[id$='_hdfDaysExchange']").val() || 0;
+                let dateExchangeMin = now.add(-daysExchange, 'day').format('YYYY-MM-DD');
+
+                if (item.SaleDate < dateExchangeMin)
+                    return false;
+
+                return true;
+            }
+
+            // Kiểm tra sản phẩm khi thêm vào bảng
+            function checkPolicy(product) {
+                // Phân loại product
+                let productNoOrder = [];
+                let productExpired = [];
+                let quantityRefund = 0;
+
+                if (Array.isArray(product))
+                {
+                    product.forEach(item => {
+                        quantityRefund += item.QuantityRefund;
+
+                        // Lọc ra sản phẩm chưa từng mua
+                        if (!item.OrderID)
+                            productNoOrder.push(item);
+
+                        // Lọc ra sản phẩm hết hạn đổi tra
+                        if (!checkSaleDate(item))
+                            productExpired.push(item);
+                    });
+                }
+                else
+                {
+                    quantityRefund += product.QuantityRefund;
+
+                    // Lọc ra sản phẩm chưa từng mua
+                    if (!product.OrderID)
+                        productNoOrder.push(product);
+
+                    // Lọc ra sản phẩm hết hạn đổi tra
+                    if (!checkSaleDate(product))
+                        productExpired.push(product);
+                }
+
+                let message = "";
+                let error = false;
+
+                // Check xem số lượng đổi trả đã quá quy định chưa
+                let refundNoFee = +$("#<%=hdfRefundQuantityNoFee.ClientID%>").val() || 0;
+                let refundFee = +$("#<%=hdfRefundQuantityFee.ClientID%>").val() || 0;
+                let totalRefundNow = +$(".totalProductQuantity").html().replace(/,/g, "") || 0;
+
+                // setup message
+                message += "<div class='row' style='max-height:300px; overflow: auto;'>";
+                message += "Có vấn đề khi thêm sản phẩm này!<br/>";
+                message += "<h4>Hãy xem lại trước khi xác nhận!<h4>";
+
+                // Check xem số lượng đổi trả đã quá quy định chưa
+                if ((totalRefundNow + quantityRefund) > (refundNoFee + refundFee)) {
+                    error = true;
+                    message += '<h3><span class="label label-warning" style="text-align: left">Vượt quá tổng số lượng được đổi trả:</span></h3><br/>';
+                    message += 'Số lượng được đổi: <strong>' + formatThousands(refundNoFee + refundFee, ",") + '</strong> cái<br/>';
+                    message += 'Hiện tại: <strong>' + formatThousands(totalRefundNow + quantityRefund, ',') + '</strong> cái<br/>';
+                }
+
+                // Thông báo những sản phẩm này khách hàng chưa từng mua
+                if (productNoOrder.length > 0) {
+                    error = true;
+                    message += '<h3><span class="label label-warning" style="text-align: left">Sản phẩm chưa từng mua:</span></h3><br/>';
+                    productNoOrder.forEach(item => {
+                        if (item.ProductStyle == 2)
+                            message += '<strong>' + item.ChildSKU + ' - ' + item.ProductTitle + '</strong><br/>';
+                        else
+                            message += '<strong>' + item.ParentSKU + ' - ' + item.ProductTitle + '</strong><br/>';
+                    });
+                }
+
+                // Thông báo những sản phẩm này đã hết hạng đổi trả
+                if (productExpired.length > 0) {
+                    error = true;
+                    message += '<h3><span class="label label-danger" style="text-align: left">Sản phẩm hết hạn đổi trả:</span></h3><br/>';
+                    productExpired.forEach(item => {
+                        if (item.ProductStyle == 2)
+                            message += '<a href="/thong-tin-don-hang?id=' + item.OrderID + '" target="_blank">' + item.ChildSKU + ' - ' + item.ProductTitle + '</a><br/>';
+                        else
+                            message += '<a href="/thong-tin-don-hang?id=' + item.OrderID + '" target="_blank">' + item.ParentSKU + ' - ' + item.ProductTitle + '</a><br/>';
+                    });
+                }
+
+                // kết thúc message
+                message += "</div>";
+
+                if (error)
+                {
+                    swal({
+                        title: "Thông báo",
+                        text: message,
+                        type: "warning",
+                        showCancelButton: true,
+                        closeOnConfirm: true,
+                        cancelButtonText: "Để xem lại",
+                        confirmButtonText: "Vẫn thêm vào đơn",
+                        html: true
+                    }, function (confirm) {
+                        if (confirm) {
+                            if (Array.isArray(product))
+                            {
+                                product.forEach(item => {
+                                    productRefunds.push(item);
+                                    addHtmlProductResult(item);
+                                });
+                            }
+                            else
+                            {
+                                productRefunds.push(product);
+                                addHtmlProductResult(product);
+                            }
+
+                            getAllPrice();
+                        }
+                    });
+                }
+                else
+                {
+                    if (Array.isArray(product)) {
+                        product.forEach(item => {
+                            productRefunds.push(item);
+                            addHtmlProductResult(item);
+                        });
+                    }
+                    else {
+                        productRefunds.push(product);
+                        addHtmlProductResult(product);
+                    }
+
+                    getAllPrice();
+                }
+            }
         </script>
     </telerik:RadScriptBlock>
 </asp:Content>

@@ -49,6 +49,15 @@ namespace IM_PJ {
         protected global::System.Web.UI.WebControls.DropDownList ddlPrepay;
         
         /// <summary>
+        /// ddlStatus control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList ddlStatus;
+        
+        /// <summary>
         /// ddlCreatedDate control.
         /// </summary>
         /// <remarks>
@@ -56,15 +65,6 @@ namespace IM_PJ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList ddlCreatedDate;
-        
-        /// <summary>
-        /// ddlCreatedBy control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlCreatedBy;
         
         /// <summary>
         /// btnSearch control.

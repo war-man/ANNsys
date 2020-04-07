@@ -1,4 +1,5 @@
 ﻿using IM_PJ.Models;
+using IM_PJ.Models.Pages.thong_ke_nhap_kho;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -528,6 +529,7 @@ namespace IM_PJ.Controllers
                     ui.OrderID = stock.OrderID;
                     ui.Status = stock.Status;
                     ui.SKU = stock.SKU;
+                    ui.CreatedBy = stock.CreatedBy;
                     ui.ModifiedBy = stock.ModifiedBy;
                     ui.ModifiedDate = stock.ModifiedDate;
                     int kq = dbe.SaveChanges();
@@ -535,6 +537,35 @@ namespace IM_PJ.Controllers
                 }
                 else
                     return null;
+            }
+        }
+        public static void updateCreatedByOrderID(int OrderID, string createdBy)
+        {
+            using (var dbe = new inventorymanagementEntities())
+            {
+                var ui = dbe.tbl_StockManager.Where(a => a.OrderID == OrderID).ToList();
+                ui.ForEach(a =>
+                {
+                    a.CreatedBy = createdBy;
+                    a.ModifiedDate = DateTime.Now;
+                });
+
+                dbe.SaveChanges();
+
+            }
+        }
+        public static string deleteAll(int ProductID)
+        {
+            using (var dbe = new inventorymanagementEntities())
+            {
+                List<tbl_StockManager> ui = dbe.tbl_StockManager.Where(o => o.ParentID == ProductID).ToList();
+                if (ui != null)
+                {
+                    dbe.tbl_StockManager.RemoveRange(ui);
+                    int kq = dbe.SaveChanges();
+                    return kq.ToString();
+                }
+                return "0";
             }
         }
         #endregion
@@ -586,6 +617,36 @@ namespace IM_PJ.Controllers
             {
                 List<tbl_StockManager> ags = new List<tbl_StockManager>();
                 ags = dbe.tbl_StockManager.Where(i => i.SKU == SKU).ToList();
+                return ags;
+            }
+        }
+
+        public static List<tbl_StockManager> GetByProductID(int ID)
+        {
+            using (var dbe = new inventorymanagementEntities())
+            {
+                List<tbl_StockManager> ags = new List<tbl_StockManager>();
+                ags = dbe.tbl_StockManager.Where(i => i.ProductID == ID).ToList();
+                return ags;
+            }
+        }
+
+        public static List<tbl_StockManager> GetByParentID(int ID)
+        {
+            using (var dbe = new inventorymanagementEntities())
+            {
+                List<tbl_StockManager> ags = new List<tbl_StockManager>();
+                ags = dbe.tbl_StockManager.Where(i => i.ParentID == ID).ToList();
+                return ags;
+            }
+        }
+
+        public static List<tbl_StockManager> GetByProductVariableID(int ID)
+        {
+            using (var dbe = new inventorymanagementEntities())
+            {
+                List<tbl_StockManager> ags = new List<tbl_StockManager>();
+                ags = dbe.tbl_StockManager.Where(i => i.ProductVariableID == ID).ToList();
                 return ags;
             }
         }
@@ -782,6 +843,519 @@ namespace IM_PJ.Controllers
                                 stock_max => new { stock_max.ProductID, stock_max.ProductVariableID, stock_max.CreatedDate },
                                 (stock, stock_max) => stock)
                              .ToList();
+            }
+        }
+
+        public static List<tbl_StockManager> getStock(int productID, int variableID)
+        {
+            using (var con = new inventorymanagementEntities())
+            {
+                var stockLast = con.tbl_StockManager
+                    .Where(x => x.ParentID == productID)
+                    .Where(x => variableID == 0 || x.ProductVariableID == variableID)
+                    .GroupBy(g => new { productID = g.ParentID.Value, variableID = g.ProductVariableID.Value })
+                    .Select(x => 
+                        new {
+                            productID = x.Key.productID,
+                            variableID = x.Key.variableID,
+                            last = x.Max(m => m.ID)
+                        }
+                    );
+
+                var result = con.tbl_StockManager
+                    .Join(
+                        stockLast,
+                        s => new
+                        {
+                            productID = s.ParentID.Value,
+                            variableID = s.ProductVariableID.Value,
+                            last = s.ID
+                        },
+                        l => new
+                        {
+                            productID = l.productID,
+                            variableID = l.variableID,
+                            last = l.last
+                        },
+                        (s, l) => s
+                    )
+                    .ToList();
+
+                return result;
+            }
+        }
+        #endregion
+
+        #region Lấy thông tin báo cáo nhập kho
+        private static void CalDate(string strDate, ref DateTime fromdate, ref DateTime todate)
+        {
+            switch (strDate)
+            {
+                case "today":
+                    fromdate = DateTime.Today;
+                    todate = DateTime.Now;
+                    break;
+                case "yesterday":
+                    fromdate = fromdate.AddDays(-1);
+                    todate = DateTime.Today;
+                    break;
+                case "beforeyesterday":
+                    fromdate = DateTime.Today.AddDays(-2);
+                    todate = DateTime.Today.AddDays(-1);
+                    break;
+                case "week":
+                    int days = DateTime.Today.DayOfWeek == DayOfWeek.Sunday ? 7 : (int)DateTime.Today.DayOfWeek;
+                    fromdate = fromdate.AddDays(-days + 1);
+                    todate = DateTime.Now;
+                    break;
+                case "thismonth":
+                    fromdate = new DateTime(fromdate.Year, fromdate.Month, 1);
+                    todate = DateTime.Now;
+                    break;
+                case "lastmonth":
+                    var thismonth = new DateTime(fromdate.Year, fromdate.Month, 1);
+                    fromdate = thismonth.AddMonths(-1);
+                    todate = thismonth;
+                    break;
+                case "beforelastmonth":
+                    thismonth = new DateTime(fromdate.Year, fromdate.Month, 1);
+                    fromdate = thismonth.AddMonths(-2);
+                    todate = thismonth.AddMonths(-1);
+                    break;
+                case "7days":
+                    fromdate = fromdate.AddDays(-6);
+                    todate = DateTime.Now;
+                    break;
+                case "30days":
+                    fromdate = fromdate.AddDays(-29);
+                    todate = DateTime.Now;
+                    break;
+            }
+        }
+
+        public static List<GoodsReceiptReport> getGoodsReceiptReport(ProductFilterModel filter, 
+                                                                     ref PaginationMetadataModel page,
+                                                                     ref int totalQuantityInput)
+        {
+            using (var con = new inventorymanagementEntities())
+            {
+                var stock = con.tbl_StockManager.Where(x => x.Status == 1);
+
+                #region Thực thi lấy dữ liệu
+                #region Loc theo từ khóa SKU
+                if (!String.IsNullOrEmpty(filter.search))
+                {
+                    var sku = filter.search.Trim().ToLower();
+                    stock = stock.Where(x => x.SKU.ToLower().Contains(sku));
+                }
+                #endregion
+
+                #region Lọc sản phẩm theo ngày nhập hàng
+                if (filter.fromDate.HasValue && filter.toDate.HasValue)
+                {
+                    stock = stock.Where(x => x.CreatedDate >= filter.fromDate && x.CreatedDate <= filter.toDate);
+                }
+                #endregion
+
+                #region Lọc sản phẩm theo danh mục
+                if (filter.category > 0)
+                {
+                    var category = con.tbl_Category.Where(x => x.ID == filter.category).FirstOrDefault();
+
+                    if (category != null)
+                    {
+                        var categoryID = CategoryController.getCategoryChild(category)
+                            .Select(x => x.ID)
+                            .OrderBy(o => o)
+                            .ToList();
+
+                        var product = con.tbl_Product
+                            .GroupJoin(
+                                con.tbl_ProductVariable,
+                                p => p.ID,
+                                v => v.ProductID,
+                                (p, v) => new { product = p, variable = v }
+                            )
+                            .SelectMany(
+                                x => x.variable.DefaultIfEmpty(),
+                                (parent, child) => new { product = parent.product, variable = child }
+                            )
+                            .Where(x => categoryID.Contains(x.product.CategoryID.Value))
+                            .Select(x => new
+                            {
+                                productID = x.product.ID,
+                                variableID = x.variable != null ? x.variable.ID : 0
+                            });
+
+                        stock = stock
+                            .Join(
+                                product,
+                                s => new
+                                {
+                                    productID = s.ParentID.Value,
+                                    variableID = s.ProductVariableID.Value
+                                },
+                                p => new
+                                {
+                                    productID = p.productID,
+                                    variableID = p.variableID
+                                },
+                                (s, p) => s
+                            );
+                    }
+                }
+                #endregion
+
+                #region Lọc sản phẩm theo màu
+                if (!String.IsNullOrEmpty(filter.color))
+                {
+                    var colors = con.tbl_VariableValue
+                        .Where(x => x.VariableID == 1)
+                        .Where(x => x.VariableValue.ToLower().Contains(filter.color.ToLower()))
+                        .Join(
+                            con.tbl_ProductVariableValue,
+                            vv => vv.ID,
+                            pvv => pvv.VariableValueID,
+                            (vv, pvv) => new { variableID = pvv.ProductVariableID }
+                        );
+
+                    stock = stock
+                        .Join(
+                            colors,
+                            s => s.ProductVariableID,
+                            c => c.variableID,
+                            (s, c) => s
+                        );
+                }
+                #endregion
+
+                #region Lọc sản phẩm theo size
+                if (!String.IsNullOrEmpty(filter.size))
+                {
+                    var sizes = con.tbl_VariableValue
+                        .Where(x => x.VariableID == 2)
+                        .Where(x => x.VariableValue.ToLower().Contains(filter.size.ToLower()))
+                        .Join(
+                            con.tbl_ProductVariableValue,
+                            vv => vv.ID,
+                            pvv => pvv.VariableValueID,
+                            (vv, pvv) => new { variableID = pvv.ProductVariableID }
+                        );
+
+                    stock = stock
+                        .Join(
+                            sizes,
+                            s => s.ProductVariableID,
+                            c => c.variableID,
+                            (s, c) => s
+                        );
+                }
+                #endregion
+                #endregion
+
+                #region Tính toán phân trang
+                var productFilter = stock
+                    .GroupBy(x => x.ParentID)
+                    .Select(x => new {
+                        productID = x.Key,
+                        quantityInput = x.Sum(s => s.Quantity.HasValue ? s.Quantity.Value : 0),
+                        goodsReceiptDate = x.Max(m => m.CreatedDate.Value)
+                    });
+
+                if (productFilter.Count() > 0)
+                {
+                    totalQuantityInput = Convert.ToInt32(productFilter.Sum(x => x.quantityInput));
+                }
+
+                // Calculate pagination
+                page.totalCount = productFilter.Count();
+                page.totalPages = (int)Math.Ceiling(page.totalCount / (double)page.pageSize);
+                productFilter = productFilter
+                    .OrderByDescending(o => o.goodsReceiptDate)
+                    .Skip((page.currentPage - 1) * page.pageSize)
+                    .Take(page.pageSize);
+                #endregion
+
+                #region Kêt thúc: xuất ra dữ liệu
+                var data = productFilter
+                    .Join(
+                        con.tbl_Product,
+                        f => f.productID,
+                        p => p.ID,
+                        (f, p) => new {
+                            product = p,
+                            quantityInput = f.quantityInput,
+                            goodsReceiptDate = f.goodsReceiptDate
+                        }
+                    )
+                    .Join(
+                        con.tbl_Category,
+                        p => p.product.CategoryID,
+                        c => c.ID,
+                        (p, c) => new
+                        {
+                            categoryID = c.ID,
+                            categoryName = c.CategoryName,
+                            productID = p.product.ID,
+                            variableID = 0,
+                            sku = p.product.ProductSKU,
+                            title = p.product.ProductTitle,
+                            image = p.product.ProductImage,
+                            quantityInput = p.quantityInput,
+                            goodsReceiptDate = p.goodsReceiptDate,
+                            isVariable = p.product.ProductStyle == 2 ? true : false,
+                            showHomePage = p.product.ShowHomePage,
+                            webPublish = p.product.WebPublish
+                        }
+                    )
+                    .ToList();
+
+                var result = data
+                    .Select(x =>
+                    {
+                        var productStock = getStock(x.productID, x.variableID);
+                        var quantityStock = productStock
+                            .Select(y => new
+                            {
+                                quantityCurrent = y.QuantityCurrent.HasValue ? y.QuantityCurrent.Value : 0,
+                                quantity = y.Quantity.HasValue ? y.Quantity.Value : 0,
+                                type = y.Type
+                            })
+                            .Sum(s => s.quantityCurrent + (s.quantity * (s.type == 1 ? 1 : -1)));
+
+                        return new GoodsReceiptReport()
+                        {
+                            categoryID = x.categoryID,
+                            categoryName = x.categoryName,
+                            productID = x.productID,
+                            variableID = x.variableID,
+                            sku = x.sku,
+                            title = x.title,
+                            image = x.image,
+                            quantityInput = Convert.ToInt32(x.quantityInput),
+                            quantityStock = Convert.ToInt32(quantityStock),
+                            goodsReceiptDate= x.goodsReceiptDate,
+                            isVariable = x.isVariable,
+                            showHomePage = Convert.ToInt32(x.showHomePage),
+                            webPublish = Convert.ToInt32(x.webPublish)
+                        };
+                    })
+                    .OrderByDescending(x => x.goodsReceiptDate)
+                    .ToList();
+                #endregion
+
+                return result;
+            }
+        }
+
+        public static List<GoodsReceiptReport> getSubGoodsReceipt(ProductFilterModel filter, GoodsReceiptReport main)
+        {
+            using (var con = new inventorymanagementEntities())
+            {
+                var stock = con.tbl_StockManager
+                    .Where(x => x.ParentID == main.productID)
+                    .Where(x => x.Status == 1);
+
+                #region Lọc sản phẩm theo ngày nhập hàng
+                if (filter.fromDate.HasValue && filter.toDate.HasValue)
+                {
+                    stock = stock.Where(x => x.CreatedDate >= filter.fromDate && x.CreatedDate <= filter.toDate);
+                }
+                #endregion
+
+                #region Kêt thúc: xuất ra dữ liệu
+                var variableFilter = stock
+                    .GroupBy(x => new { x.ParentID, x.ProductVariableID })
+                    .Select(x => new {
+                        productID = x.Key.ParentID,
+                        variableID = x.Key.ProductVariableID,
+                        quantityInput = x.Sum(s => s.Quantity.HasValue ? s.Quantity.Value : 0),
+                        goodsReceiptDate = x.Max(m => m.CreatedDate.Value)
+                    });
+
+                var data = variableFilter
+                    .Join(
+                        con.tbl_ProductVariable.Where(x => x.ProductID.Value == main.productID),
+                        f => new { productID = f.productID.Value, variableID = f.variableID.Value },
+                        v => new { productID = v.ProductID.Value, variableID = v.ID },
+                        (f, v) => new {
+                            categoryID = main.categoryID,
+                            categoryName = main.categoryName,
+                            productID = v.ProductID.Value,
+                            variableID = v.ID,
+                            sku = v.SKU,
+                            title = main.title,
+                            image = v.Image,
+                            quantityInput = f.quantityInput,
+                            goodsReceiptDate = f.goodsReceiptDate,
+                            isVariable = true
+                        }
+                    )
+                    .ToList();
+
+                var result = data
+                    .Select(x =>
+                    {
+                        var productStock = getStock(x.productID, x.variableID);
+                        var quantityStock = productStock
+                            .Select(y => new
+                            {
+                                quantityCurrent = y.QuantityCurrent.HasValue ? y.QuantityCurrent.Value : 0,
+                                quantity = y.Quantity.HasValue ? y.Quantity.Value : 0,
+                                type = y.Type
+                            })
+                            .Sum(s => s.quantityCurrent + (s.quantity * (s.type == 1 ? 1 : -1)));
+
+                        return new GoodsReceiptReport()
+                        {
+                            categoryID = x.categoryID,
+                            categoryName = x.categoryName,
+                            productID = x.productID,
+                            variableID = x.variableID,
+                            sku = x.sku,
+                            title = x.title,
+                            image = x.image,
+                            quantityInput = Convert.ToInt32(x.quantityInput),
+                            quantityStock = Convert.ToInt32(quantityStock),
+                            goodsReceiptDate = x.goodsReceiptDate,
+                            isVariable = x.isVariable
+                        };
+                    })
+                    .ToList();
+                #endregion
+
+                return result;
+            }
+        }
+        #endregion
+
+        #region Thực hiện xả kho với các sản phẩm tồn
+        public static bool liquidateProduct(tbl_Account acc, int productID)
+        {
+            using (var con = new inventorymanagementEntities())
+            {
+                var now = DateTime.Now;
+                var stocks = getStock(productID, 0);
+                var index = 0;
+                var dataInsert = new List<tbl_StockManager>();
+
+                foreach (var item in stocks)
+                {
+                    // Trường hợp bằng 1 làm nhập kho nên số lượng hiện tại là Số lượng có sản + số lượng thêm vào
+                    if (item.Type == 1)
+                        item.Quantity = item.QuantityCurrent + item.Quantity;
+                    else
+                        item.Quantity = item.QuantityCurrent - item.Quantity;
+
+                    item.QuantityCurrent = item.Quantity;
+                    // Xã hàng ra khỏi kho
+                    item.Type = 2;
+                    item.Status = 14;
+                    item.NoteID = "Xuất hết kho";
+                    item.CreatedBy = acc.Username;
+                    item.CreatedDate = now;
+                    item.ModifiedBy = acc.Username;
+                    item.ModifiedDate = now;
+
+                    index += 1;
+                    dataInsert.Add(item);
+
+                    if (dataInsert.Count >= 100)
+                    {
+                        try
+                        {
+                            con.tbl_StockManager.AddRange(dataInsert);
+                            con.SaveChanges();
+                            // Sau khi commit xong clear
+                            dataInsert.Clear();
+                        }
+                        catch (Exception)
+                        {
+                            return false;
+                        }
+                    }
+                }
+
+                if (dataInsert.Count >= 0)
+                {
+                    try
+                    {
+                        con.tbl_StockManager.AddRange(dataInsert);
+                        con.SaveChanges();
+                        // Sau khi commit xong clear
+                        dataInsert.Clear();
+                    }
+                    catch (Exception)
+                    {
+                        return false;
+                    }
+                }
+                return true;
+            }
+        }
+        #endregion
+
+        #region Phục hồi lại các sản phẩm đã xã kho
+        public static bool recoverLiquidatedProduct(tbl_Account acc, int productID)
+        {
+            using (var con = new inventorymanagementEntities())
+            {
+                var now = DateTime.Now;
+                // Lấy dòng mới nhất của sản phẩn trong stock ra
+                // Nếu mà không phải là status 14 thì không thực thi phục hồi lại với sản phẩm đó
+                var stocks = getStock(productID, 0).Where(x => x.Status == 14);
+                var index = 0;
+                var dataInsert = new List<tbl_StockManager>();
+
+                if (stocks.Count() == 0)
+                    throw new Exception("Sản phẩn không thể phục hồi xả hàng.");
+
+                foreach (var item in stocks)
+                {
+                    item.Type = 1;
+                    item.QuantityCurrent = 0;
+                    item.Status = 15;
+                    item.NoteID = "Phục hồi xuất hết kho";
+                    item.CreatedBy = acc.Username;
+                    item.CreatedDate = now;
+                    item.ModifiedBy = acc.Username;
+                    item.ModifiedDate = now;
+
+                    index += 1;
+                    dataInsert.Add(item);
+
+                    if (dataInsert.Count >= 100)
+                    {
+                        try
+                        {
+                            con.tbl_StockManager.AddRange(dataInsert);
+                            con.SaveChanges();
+                            // Sau khi commit xong clear
+                            dataInsert.Clear();
+                        }
+                        catch (Exception)
+                        {
+                            return false;
+                        }
+                    }
+                }
+
+                if (dataInsert.Count >= 0)
+                {
+                    try
+                    {
+                        con.tbl_StockManager.AddRange(dataInsert);
+                        con.SaveChanges();
+                        // Sau khi commit xong clear
+                        dataInsert.Clear();
+                    }
+                    catch (Exception)
+                    {
+                        return false;
+                    }
+                }
+
+                return true;
             }
         }
         #endregion

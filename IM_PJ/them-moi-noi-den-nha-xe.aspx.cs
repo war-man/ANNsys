@@ -11,9 +11,9 @@ namespace IM_PJ
         {
             if (!IsPostBack)
             {
-                if (Request.Cookies["userLoginSystem"] != null)
+                if (Request.Cookies["usernameLoginSystem"] != null)
                 {
-                    string username = Request.Cookies["userLoginSystem"].Value;
+                    string username = Request.Cookies["usernameLoginSystem"].Value;
                     var acc = AccountController.GetByUsername(username);
 
                     if (acc != null)
@@ -51,8 +51,11 @@ namespace IM_PJ
         /// <param name="ID"></param>
         private void Initialize(int ID)
         {
+            string username = Request.Cookies["usernameLoginSystem"].Value;
+            var acc = AccountController.GetByUsername(username);
+
             // Init value
-            var transportCompany = TransportCompanyController.GetTransportCompanyByID(ID);
+            var transportCompany = TransportCompanyController.GetAllTransportCompanyByID(ID);
 
             if (transportCompany != null)
             {
@@ -60,6 +63,19 @@ namespace IM_PJ
                 this.txtCompanyName.Text = transportCompany.CompanyName;
                 this.txtCompanyPhone.Text = transportCompany.CompanyPhone;
                 this.txtCompanyAddress.Text = transportCompany.CompanyAddress;
+                if (transportCompany.Prepay == true)
+                {
+                    this.rdbPrepay.SelectedValue = "true";
+                    this.rdbPrepay.Enabled = false;
+                    if (acc.RoleID == 0)
+                    {
+                        this.rdbPrepay.Enabled = true;
+                    }
+                }
+                else
+                {
+                    this.rdbPrepay.SelectedValue = "false";
+                }
             }
             else
             {
@@ -73,7 +89,7 @@ namespace IM_PJ
 
         protected void btnAdd_Click(object sender, EventArgs e)
         {
-            string username = Request.Cookies["userLoginSystem"].Value;
+            string username = Request.Cookies["usernameLoginSystem"].Value;
 
             tbl_TransportCompany receivePlaceNew = new tbl_TransportCompany();
 
@@ -86,6 +102,7 @@ namespace IM_PJ
             receivePlaceNew.Prepay = Convert.ToBoolean(this.rdbPrepay.SelectedValue);
             receivePlaceNew.COD = Convert.ToBoolean(this.rdbCOD.SelectedValue);
             receivePlaceNew.Note = this.pNote.Text;
+            receivePlaceNew.Status = 1;
             receivePlaceNew.CreatedBy = username;
 
             TransportCompanyController.InsertReceivePlace(receivePlaceNew);

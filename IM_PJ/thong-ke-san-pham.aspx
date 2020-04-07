@@ -2,6 +2,13 @@
 
 <%@ Register Assembly="Telerik.Web.UI" Namespace="Telerik.Web.UI" TagPrefix="telerik" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
+    <script type="text/javascript" src="/App_Themes/Ann/js/Chart.min.js"></script>
+    <style>
+        .fromdate-link {
+            color:#ff8400;
+            text-decoration: underline;
+        }
+    </style>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <main id="main-wrap">
@@ -19,18 +26,24 @@
                     <div class="filter-above-wrap clear">
                         <div class="filter-control">
                             <div class="row">
-                                <div class="col-md-5">
+                                <div class="col-md-3">
                                     <asp:TextBox ID="txtTextSearch" runat="server" CssClass="form-control" placeholder="Tìm sản phẩm"></asp:TextBox>
                                 </div>
-                                <div class="col-md-3">
-                                    <label>Từ ngày</label>
+                                <div class="col-md-2">
+                                    <asp:DropDownList ID="ddlCategory" runat="server" CssClass="form-control"></asp:DropDownList>
+                                </div>
+                                <div class="col-md-2">
+                                    <asp:DropDownList ID="ddlCreatedBy" runat="server" CssClass="form-control"></asp:DropDownList>
+                                </div>
+                                <div class="col-md-2">
+                                    <label>Từ ngày: <a href="javascript:;" class="fromdate-link fromdate-createddate hide">ngày tạo sản phẩm</a>, <a href="javascript:;" class="fromdate-link fromdate-today hide">hôm nay</a></label>
                                     <telerik:RadDatePicker RenderMode="Lightweight" ID="rFromDate" ShowPopupOnFocus="true" Width="100%" runat="server" DateInput-CssClass="radPreventDecorate" MinDate="01/01/2018">
                                         <DateInput DisplayDateFormat="dd/MM/yyyy" runat="server">
                                         </DateInput>
                                     </telerik:RadDatePicker>
                                 </div>
-                                <div class="col-md-3">
-                                    <label>Đến ngày</label>
+                                <div class="col-md-2">
+                                    <label>Đến ngày:</label>
                                     <telerik:RadDatePicker RenderMode="Lightweight" ID="rToDate" ShowPopupOnFocus="true" Width="100%" runat="server" DateInput-CssClass="radPreventDecorate" MinDate="01/01/2018">
                                         <DateInput DisplayDateFormat="dd/MM/yyyy" runat="server">
                                         </DateInput>
@@ -101,6 +114,16 @@
                                 <div class="col-md-3">
                                     <div class="report-column">
                                         <div class="report-label">
+                                            Lợi nhuận mỗi ngày:
+                                        </div>
+                                        <div class="report-value">
+                                            <asp:Literal ID="ltrAverageProfit" runat="server" EnableViewState="false"></asp:Literal>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="report-column">
+                                        <div class="report-label">
                                             Doanh số:
                                         </div>
                                         <div class="report-value">
@@ -118,6 +141,8 @@
                                         </div>
                                     </div>
                                 </div>
+                            </div>
+                            <div class="row margin-bottom-15">
                                 <div class="col-md-3">
                                     <div class="report-column">
                                         <div class="report-label">
@@ -129,13 +154,91 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="row margin-bottom-15">
+                                <div class="col-md-12">
+                                    <canvas id="canvas"></canvas>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+        <asp:Literal ID="ltrChartData" runat="server" EnableViewState="false"></asp:Literal>
+        <script>
+            window.onload = function () {
+                if (typeof lineChartData !== 'undefined')
+                {
+                    var ctx = document.getElementById('canvas').getContext('2d');
+                    window.myLine = Chart.Line(ctx, {
+                        data: lineChartData,
+                        options: {
+                            responsive: true,
+                            aspectRatio: 3.5,
+                            hoverMode: 'index',
+                            stacked: false,
+                            title: {
+                                display: true,
+                                text: 'Biểu đồ sản lượng'
+                            },
+                            scales: {
+                                yAxes: [{
+                                    type: 'linear', // only linear but allow scale type registration. This allows extensions to exist solely for log scale for instance
+                                    display: true,
+                                    position: 'left',
+                                    id: 'y-axis-1',
+                                    ticks: {
+                                        beginAtZero: true,
+                                        callback: function (label, index, labels) {
+                                            return label.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                                        }
+                                    }
+                                }]
+                            },
+                            tooltips: {
+                                callbacks: {
+                                    label: function (tooltipItems, data) {
+                                        let label = data.datasets[tooltipItems.datasetIndex].label;
+                                        let value = tooltipItems.yLabel.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+                                        return label + ' : ' + value;
+                                    }
+                                }
+                            }
+                        }
+                    });
+                }
+		    };
+	    </script>
         <script type="text/javascript">
-            function searchWithDateRange() {
+            $(document).ready(() => {
+                if ($("#<%= txtTextSearch.ClientID%>").val() != "")
+                {
+                    $(".fromdate-createddate").removeClass("hide");
+                    $(".fromdate-today").removeClass("hide");
+                }
+            });
+
+            $(".fromdate-createddate").click(e => {
+                var sku = $("#<%= txtTextSearch.ClientID%>").val();
+                var createdby = $("#<%= ddlCreatedBy.ClientID%>").val();
+                var categoryid = $("#<%= ddlCategory.ClientID%>").val();
+                window.location.href = "/thong-ke-san-pham?sku=" + sku + "&categoryid=" + categoryid + "&createdby=" + createdby;
+            });
+
+            $(".fromdate-today").click(e => {
+                var today = new Date();
+                var date = (today.getMonth() + 1) + '/' + today.getDate() + '/' + today.getFullYear();
+                var dateTime = date + ' 12:00:00 AM';
+
+                var sku = $("#<%= txtTextSearch.ClientID%>").val();
+                var createdby = $("#<%= ddlCreatedBy.ClientID%>").val();
+                var categoryid = $("#<%= ddlCategory.ClientID%>").val();
+                window.location.href = "/thong-ke-san-pham?sku=" + sku + "&categoryid=" + categoryid + "&createdby=" + createdby + "&fromdate=" + dateTime + "&todate=" + dateTime;
+            });
+            
+            function searchWithDateRange() 
+            {
                 $("#<%= btnSearch.ClientID%>").click();
             }
         </script>

@@ -7,6 +7,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Web;
+using System.Web.UI.WebControls;
 using WebUI.Business;
 
 namespace IM_PJ.Controllers
@@ -38,6 +39,7 @@ namespace IM_PJ.Controllers
                 companyNew.CreatedBy = company.CreatedBy;
                 companyNew.ModifiedDate = null;
                 companyNew.ModifiedBy = null;
+                companyNew.Status = company.Status;
 
                 connect.tbl_TransportCompany.Add(companyNew);
                 connect.SaveChanges();
@@ -69,6 +71,7 @@ namespace IM_PJ.Controllers
                 companyNew.CreatedBy = company.CreatedBy;
                 companyNew.ModifiedDate = null;
                 companyNew.ModifiedBy = null;
+                companyNew.Status = company.Status;
 
                 connect.tbl_TransportCompany.Add(companyNew);
                 connect.SaveChanges();
@@ -97,13 +100,32 @@ namespace IM_PJ.Controllers
                     target.COD = company.COD;
                     target.ModifiedDate = DateTime.Now;
                     target.ModifiedBy = company.ModifiedBy;
+                    target.Status = target.Status;
 
                     connect.SaveChanges();
                 }
             }
             return company.ID;
         }
+        public static string UpdateStatus(int ID, int SubID)
+        {
+            using (var connect = new inventorymanagementEntities())
+            {
+                tbl_TransportCompany target = connect.tbl_TransportCompany
+                    .Where(x => x.ID == ID && x.SubID == SubID)
+                    .SingleOrDefault();
 
+                if (target != null)
+                {
+                    target.Status = target.Status == 1 ? 0 : 1;
+                    target.ModifiedDate = DateTime.Now;
+
+                    connect.SaveChanges();
+                    return "true";
+                }
+            }
+            return "false";
+        }
         /// <summary>
         /// update receive place of transport company
         /// </summary>
@@ -125,6 +147,7 @@ namespace IM_PJ.Controllers
                     target.Note = company.Note;
                     target.ModifiedDate = DateTime.Now;
                     target.ModifiedBy = company.ModifiedBy;
+                    target.Status = target.Status;
 
                     connect.SaveChanges();
                 }
@@ -188,11 +211,28 @@ namespace IM_PJ.Controllers
             using (var connect = new inventorymanagementEntities())
             {
                 return connect.tbl_TransportCompany
+                        .Where(x => x.ID == ID && x.SubID == 0 && x.Status == 1)
+                        .SingleOrDefault();
+            }
+        }
+        public static tbl_TransportCompany GetTransportCompanyForOrderList(int ID)
+        {
+            using (var connect = new inventorymanagementEntities())
+            {
+                return connect.tbl_TransportCompany
                         .Where(x => x.ID == ID && x.SubID == 0)
                         .SingleOrDefault();
             }
         }
-
+        public static tbl_TransportCompany GetAllTransportCompanyByID(int ID)
+        {
+            using (var connect = new inventorymanagementEntities())
+            {
+                return connect.tbl_TransportCompany
+                        .Where(x => x.ID == ID && x.SubID == 0)
+                        .SingleOrDefault();
+            }
+        }
         /// <summary>
         /// get receive place by id
         /// </summary>
@@ -203,49 +243,83 @@ namespace IM_PJ.Controllers
             using (var connect = new inventorymanagementEntities())
             {
                 return connect.tbl_TransportCompany
+                        .Where(x => x.ID == ID && x.SubID == SubID && x.Status == 1)
+                        .SingleOrDefault();
+            }
+        }
+        public static tbl_TransportCompany GetReceivePlaceForOrderList(int ID, int SubID)
+        {
+            using (var connect = new inventorymanagementEntities())
+            {
+                return connect.tbl_TransportCompany
                         .Where(x => x.ID == ID && x.SubID == SubID)
                         .SingleOrDefault();
             }
         }
-
+        public static tbl_TransportCompany GetAllReceivePlaceByID(int ID, int SubID)
+        {
+            using (var connect = new inventorymanagementEntities())
+            {
+                return connect.tbl_TransportCompany
+                        .Where(x => x.ID == ID && x.SubID == SubID)
+                        .SingleOrDefault();
+            }
+        }
         public static List<tbl_TransportCompany> Filter(string TextSearch)
         {
-            var list = new List<tbl_TransportCompany>();
-            var sql = new StringBuilder();
-
-            sql.AppendLine(String.Format("SELECT * "));
-            sql.AppendLine(String.Format("FROM tbl_TransportCompany"));
-            sql.AppendLine(String.Format("WHERE SubID = 0"));
-
-            if (TextSearch != "")
+            using (var con = new inventorymanagementEntities())
             {
-                sql.AppendLine(String.Format("	AND ( (CompanyName LIKE N'%{0}%') OR (CompanyAddress LIKE N'%{0}%') OR (ShipTo LIKE N'%{0}%') OR (Address LIKE N'%{0}%') OR (CompanyPhone = '{0}') )", TextSearch));
+                if (!String.IsNullOrEmpty(TextSearch))
+                {
+                    var unsignTextSearch = UnSign.convert(TextSearch);
+
+                    var tran = con.tbl_TransportCompany
+                        .Where(x => x.SubID == 0)
+                        .OrderBy(x => x.CompanyName)
+                        .ToList();
+
+                    var tranSub = con.tbl_TransportCompany
+                        .Where(x => x.SubID != 0)
+                        .OrderBy(x => x.CompanyName)
+                        .ToList();
+
+                    var data = tran
+                        .GroupJoin(
+                            tranSub,
+                            t => t.ID,
+                            tb => tb.ID,
+                            (t, tb) => new { t, tb }
+                        )
+                        .SelectMany(
+                            x => x.tb.DefaultIfEmpty(),
+                            (parent, child) => new {
+                                transfor = parent.t,
+                                CompanyName = parent.t.CompanyName,
+                                CompanyAddress = parent.t.CompanyAddress,
+                                CompanyPhone = parent.t.CompanyPhone,
+                                ShipTo = child != null? child.ShipTo : String.Empty
+                            }
+                        )
+                        .Where(x =>
+                            UnSign.convert(x.CompanyName).Contains(unsignTextSearch) ||
+                            UnSign.convert(x.CompanyAddress).Contains(unsignTextSearch) ||
+                            UnSign.convert(x.ShipTo).Contains(unsignTextSearch) ||
+                            x.CompanyPhone == unsignTextSearch
+                        )
+                        .Select(x => x.transfor)
+                        .OrderBy(x => x.CompanyName)
+                        .ToList();
+
+                    return data;
+                }
+                else
+                {
+                    return con.tbl_TransportCompany
+                        .Where(x => x.SubID == 0)
+                        .OrderBy(x => x.CompanyName)
+                        .ToList();
+                }
             }
-
-            sql.AppendLine(String.Format("ORDER BY CompanyName"));
-
-            var reader = (IDataReader)SqlHelper.ExecuteDataReader(sql.ToString());
-            while (reader.Read())
-            {
-                var entity = new tbl_TransportCompany();
-
-                entity.ID = Convert.ToInt32(reader["ID"]);
-                entity.SubID = Convert.ToInt32(reader["ID"]);
-                entity.CompanyName = reader["CompanyName"].ToString();
-                entity.CompanyPhone = reader["CompanyPhone"].ToString();
-                entity.CompanyAddress = reader["CompanyAddress"].ToString();
-                entity.ShipTo = reader["ShipTo"].ToString();
-                entity.Address = reader["Address"].ToString();
-                entity.Prepay = Convert.ToBoolean(reader["Prepay"]);
-                entity.COD = Convert.ToBoolean(reader["COD"]);
-                entity.Note = reader["Note"].ToString();
-                entity.CreatedBy = reader["CreatedBy"].ToString();
-                entity.CreatedDate = Convert.ToDateTime(reader["CreatedDate"]);
-
-                list.Add(entity);
-            }
-            reader.Close();
-            return list;
         }
 
         /// <summary>
@@ -257,7 +331,7 @@ namespace IM_PJ.Controllers
         {
             using (var connect = new inventorymanagementEntities())
             {
-                return connect.tbl_TransportCompany.Where(x => x.SubID == 0).OrderBy(x => x.CompanyName).ToList();
+                return connect.tbl_TransportCompany.Where(x => x.SubID == 0 && x.Status == 1).OrderBy(x => x.CompanyName).ToList();
             }
         }
 
@@ -270,9 +344,31 @@ namespace IM_PJ.Controllers
         {
             using (var connect = new inventorymanagementEntities())
             {
-                return connect.tbl_TransportCompany.Where(x => x.ID == ID && x.SubID != 0).ToList();
+                return connect.tbl_TransportCompany.Where(x => x.ID == ID && x.SubID != 0 && x.Status == 1).OrderByDescending(x => x.CompanyName).ToList();
+            }
+        }
+        public static List<tbl_TransportCompany> GetAllReceivePlace(int ID)
+        {
+            using (var connect = new inventorymanagementEntities())
+            {
+                return connect.tbl_TransportCompany.Where(x => x.ID == ID && x.SubID != 0).OrderByDescending(x => x.CompanyName).ToList();
             }
         }
         #endregion
+
+        public static List<ListItem> getDropDownListTrans()
+        {
+            var data = new List<ListItem>();
+            data.Add(new ListItem(String.Empty, "0"));
+            using (var con = new inventorymanagementEntities())
+            {
+                foreach (var tran in con.tbl_TransportCompany.Where(x => x.SubID == 0 && x.Status == 1).OrderByDescending(x => x.CompanyName).ToList())
+                {
+                    data.Add(new ListItem(tran.CompanyName, tran.ID.ToString()));
+                }
+            }
+
+            return data;
+        }
     }
 }

@@ -32,7 +32,7 @@ function showProductVariable(productVariables) {
         html += "         <td class='order-item check-column'>";
         html += "             <input class='check-popup' data-productVariableID='" + item.ProductVariableID + "' type='checkbox' onchange='check($(this))' />";
         html += "         </td>";
-        html += "         <td class='image-column'><img src='" + item.ProductImage + "'></td>";
+        html += "         <td class='image-column'><img src='/uploads/images/85x113/" + item.ProductImage + "'></td>";
         html += "         <td class='name-column'>" + item.ProductTitle + "</td>";
         html += "         <td class='sku-column key'>" + item.ChildSKU + "</td>";
         html += "         <td class='variable-column'>" + item.VariableValue + "</td>";
@@ -191,10 +191,12 @@ function addHtmlProductResult(item) {
     // for page them-moi-don-hang
     if (_isStock) {
         html += "   <td class='order-item'>" + orderItem + "</td>";
+        html += "   <td class='image-item'><img onclick='openImage($(this))' src='/uploads/images/159x212/" + item.ProductImage + "'></td>";
     }
-
-    html += "   <td class='image-item'><a href='/xem-san-pham?id=" + item.ProductID + "&variableid=" + item.ProductVariableID + "' target='_blank'><img src='" + item.ProductImage + "'></a></td>";
-    html += "   <td class='name-item'><a href='/xem-san-pham?id=" + item.ProductID + "&variableid=" + item.ProductVariableID + "' target='_blank'>" + item.ProductTitle + "</a></td>";
+    else {
+        html += "   <td class='image-item'><img onclick='openImage($(this))' src='/uploads/images/85x113/" + item.ProductImage + "'></td>";
+    }
+    html += "   <td class='name-item'><a href='/xem-san-pham?id=" + item.ProductID + "&variableid=" + item.ProductVariableID + "' target='_blank'>" + (customerType == 2 && item.OldPrice > 0 ? "<span class='sale-icon'>SALE</span> " : "") + item.ProductTitle + "</a></td>";
     html += "   <td class='sku-item'>" + SKU + "</td>";
     html += "   <td class='variable-item'>" + item.VariableValue + "</td>";
 
@@ -241,10 +243,13 @@ function addHtmlProductResult(item) {
 }
 
 // reindex item order
-function reIndex() {
+function reIndex(reverse) {
+    if (reverse === undefined)
+        reverse = false;
+
     var item = $(".order-item");
     for (var i = 1; i < item.length + 1; i++) {
-        $(".order-item:eq(" + i + ")").html(i);
+        $(".order-item:eq(" + i + ")").html(reverse ? (item.length - i) : i);
     }
 }
 
@@ -373,7 +378,7 @@ function searchProductMaster(textsearch, isStock) {
     var regex = /^[\x20-\x7E]*$/;
     if (!regex.test(textsearch)) {
         $("#txtSearch").val(textsearch).select();
-        swal("Thông báo", "Hãy tắt bộ gõ tiếng việt", "error");
+        swal("Tắt bộ gõ Tiếng Việt", "Hãy tắt bộ gõ Tiếng Việt có dấu:<br><br>Nhấn phím <strong>Ctrl và Shirt</strong> cùng lúc", "error");
     }
     else {
         _productVariable = [];
@@ -403,7 +408,7 @@ function searchProductMaster(textsearch, isStock) {
                     }
                     else {
                         $("#txtSearch").val(textsearch).select();
-                        swal("Thông báo", "Không tìm thấy sản phẩm", "error");
+                        swal("Không tìm thấy", "Không tìm thấy sản phẩm", "error");
                     }
                 },
                 error: function (xmlhttprequest, textstatus, errorthrow) {
@@ -413,7 +418,7 @@ function searchProductMaster(textsearch, isStock) {
             });
         } else {
             $("#txtSearch").focus();
-            swal("Thông báo", "Hãy nhập mã sản phẩm", "error");
+            swal("Hãy nhập sản phẩm", "Hãy nhập mã sản phẩm", "error");
         }
     }
 }

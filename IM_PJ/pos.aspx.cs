@@ -26,19 +26,22 @@ namespace IM_PJ
             if (!IsPostBack)
             {
 
-                if (Request.Cookies["userLoginSystem"] != null)
+                if (Request.Cookies["usernameLoginSystem"] != null)
                 {
-                    string username = Request.Cookies["userLoginSystem"].Value;
+                    hdStatusPage.Value = "Create";
+                    string username = Request.Cookies["usernameLoginSystem"].Value;
                     var acc = AccountController.GetByUsername(username);
                     if (acc != null)
                     {
                         hdfUsernameCurrent.Value = acc.Username;
+
                         if (acc.RoleID == 0)
                         {
-
+                            hdfRoleID.Value = acc.RoleID.ToString();
                         }
-                        else if(acc.RoleID == 2)
+                        else if (acc.RoleID == 2)
                         {
+                            hdfRoleID.Value = acc.RoleID.ToString();
                             hdfUsername.Value = acc.Username;
                         }
                         else
@@ -46,7 +49,7 @@ namespace IM_PJ
                             Response.Redirect("/trang-chu");
                         }
 
-                        Response.Cookies["refund"].Value = "1";
+                        hdSession.Value = "1";
 
                         var dc = DiscountController.GetAll();
                         if (dc != null)
@@ -66,7 +69,7 @@ namespace IM_PJ
                             string listUser = "";
                             foreach (var item in CreateBy)
                             {
-                                if(item.Username != acc.Username)
+                                if (item.Username != acc.Username)
                                 {
                                     listUser += item.Username + "|";
                                 }
@@ -79,9 +82,27 @@ namespace IM_PJ
                 {
                     Response.Redirect("/dang-nhap");
                 }
+                LoadPage();
             }
         }
 
+        public void LoadPage()
+        {
+            // Fix bug, case setting value for pDiscount on HTML but don't change value
+            pDiscount.Value = 1;
+            pFeeShip.Value = 1;
+
+            // Init drop down list ddlFeeType
+            var feeTypes = FeeTypeController.getDropDownList();
+            feeTypes[0].Text = "Loại Phí";
+            ddlFeeType.Items.Clear();
+            ddlFeeType.Items.AddRange(feeTypes.ToArray());
+            ddlFeeType.DataBind();
+            ddlFeeType.SelectedIndex = 0;
+
+            // Init Price Type List
+            hdfFeeType.Value = FeeTypeController.getFeeTypeJSON();
+        }
         [WebMethod]
         public static string searchCustomerByPhone(string phone)
         {
@@ -100,7 +121,8 @@ namespace IM_PJ
         [WebMethod]
         public static string searchCustomerByText(string textsearch, string createdby = "")
         {
-            var customer = CustomerController.Find(textsearch, createdby);
+            string search = Regex.Replace(textsearch.Trim(), @"[^0-9a-zA-Z\s_ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ]+", "");
+            var customer = CustomerController.Find(search, createdby);
             if (customer.Count > 0)
             {
                 JavaScriptSerializer serializer = new JavaScriptSerializer();
@@ -108,8 +130,8 @@ namespace IM_PJ
             }
             else
             {
-                var customer_other = CustomerController.Find(textsearch);
-                if(customer_other.Count > 0)
+                var customer_other = CustomerController.Find(search);
+                if (customer_other.Count > 0)
                 {
                     JavaScriptSerializer serializer = new JavaScriptSerializer();
                     return serializer.Serialize(new { listCustomer = customer_other, employee = 1 });
@@ -122,28 +144,11 @@ namespace IM_PJ
         }
 
         [WebMethod]
-        public static string getReturnOrder(string order, string remove)
+        public static string getOrderReturn(int customerID)
         {
-            JavaScriptSerializer serializer = new JavaScriptSerializer();
-            if(remove.ToInt() == 0)
-            {
-                var or = RefundGoodController.GetOrderByID(order.ToInt());
-                if (or != null)
-                {
-                    HttpContext.Current.Response.Cookies["refund"].Value = or.ID + "|" + or.TotalPrice;
-                    return serializer.Serialize(or);
-                }
-                else
-                {
-                    return serializer.Serialize(null);
-                }
-            }
-            else
-            {
-                HttpContext.Current.Response.Cookies["refund"].Value = "1";
-                return serializer.Serialize(null);
-            }
+            return RefundGoodController.getOrderReturnJSON(customerID);
         }
+
         [WebMethod]
         public static string getCustomerDetail(int ID)
         {
@@ -171,19 +176,59 @@ namespace IM_PJ
         [WebMethod]
         public static string getCustomerDiscount(int ID)
         {
-            var d = DiscountCustomerController.getbyCustID(ID);
-            if (d.Count > 0)
-            {
-                var ci = new CustomerGroup();
+            var now = DateTime.Now;
+            var discount = DiscountCustomerController.getbyCustID(ID).FirstOrDefault();
+            var config = ConfigController.GetByTop1();
+            // Khởi tao object json
+            var ci = new CustomerGroup();
 
-                ci.Discount = d[0].DiscountAmount.ToString();
-                ci.FeeRefund = d[0].FeeRefund.ToString();
+            if (discount != null)
+            {
+                // Tính số lượng hàng trã có phí
+                var refundQuantityFee = Convert.ToInt32(discount.NumOfProductCanChange - discount.RefundQuantityNoFee);
+                // Tính số lượng hàng đổi trả trong 30 ngày
+                var fromDate = now.AddDays(-discount.NumOfDateToChangeProduct).Date;
+                var toDate = now.Date;
+                var customer = CustomerController.getRefundQuantity(ID, fromDate, toDate).FirstOrDefault();
+                var quantityNoFree = discount.RefundQuantityNoFee - (customer != null ? Convert.ToInt32(customer.refundNoFeeQuantity) : 0);
+                var quantityFree = refundQuantityFee - (customer != null ? Convert.ToInt32(customer.refundFeeQuantity) : 0);
+
+                ci.Discount = discount.DiscountAmount.ToString();
+                ci.QuantityProduct = discount.QuantityProduct;
+                ci.FeeRefund = discount.FeeRefund.ToString();
+                ci.DaysExchange = Convert.ToInt32(discount.NumOfDateToChangeProduct);
+                ci.RefundQuantityNoFee = quantityNoFree > 0 ? quantityNoFree : 0;
+                ci.RefundQuantityFee = quantityFree > 0 ? quantityFree : 0;
+
+
+                JavaScriptSerializer serializer = new JavaScriptSerializer();
+                return serializer.Serialize(ci);
+            }
+            else if (config != null)
+            {
+                // Tính số lượng hàng trã có phí
+                var refundQuantityFee = config.NumOfProductCanChange.HasValue ? Convert.ToInt32(config.NumOfProductCanChange.Value) : 0;
+                // Tính số lượng hàng đổi trả trong 30 ngày
+                var days = config.NumOfDateToChangeProduct.HasValue ? config.NumOfDateToChangeProduct.Value : 0;
+                var fromDate = now.AddDays(-days).Date;
+                var toDate = now.Date;
+                var customer = CustomerController.getRefundQuantity(ID, fromDate, toDate).FirstOrDefault();
+                var quantityFree = refundQuantityFee - (customer != null ? Convert.ToInt32(customer.refundNoFeeQuantity) : 0) - (customer != null ? Convert.ToInt32(customer.refundFeeQuantity) : 0);
+                
+
+                ci.Discount = config.FeeDiscountPerProduct.ToString();
+                ci.QuantityProduct = 0;
+                ci.FeeRefund = config.FeeChangeProduct.ToString();
+                ci.DaysExchange = Convert.ToInt32(config.NumOfDateToChangeProduct);
+                ci.RefundQuantityNoFee = 0;
+                ci.RefundQuantityFee = quantityFree > 0 ? refundQuantityFee : 0;
 
                 JavaScriptSerializer serializer = new JavaScriptSerializer();
                 return serializer.Serialize(ci);
             }
             else
             {
+
                 return "null";
             }
 
@@ -218,7 +263,11 @@ namespace IM_PJ
         public class CustomerGroup
         {
             public string Discount { get; set; }
+            public int QuantityProduct { get; set; }
             public string FeeRefund { get; set; }
+            public int DaysExchange { get; set; }
+            public int RefundQuantityNoFee { get; set; }
+            public int RefundQuantityFee { get; set; }
         }
 
         public class CustomerInfoWithDiscount
@@ -231,146 +280,222 @@ namespace IM_PJ
 
         protected void btnOrder_Click(object sender, EventArgs e)
         {
-            DateTime currentDate = DateTime.Now;
-            string username = Request.Cookies["userLoginSystem"].Value;
-            var acc = AccountController.GetByUsername(username);
-            if (acc != null)
+            try
             {
-                if (acc.RoleID == 0 || acc.RoleID == 2)
+                DateTime currentDate = DateTime.Now;
+                string username = Request.Cookies["usernameLoginSystem"].Value;
+                var acc = AccountController.GetByUsername(username);
+                if (acc != null)
                 {
-                    // Change user
-                    string OrderNote = "";
-                    if (username != hdfUsernameCurrent.Value)
+                    if (acc.RoleID == 0 || acc.RoleID == 2)
                     {
-                        OrderNote = "Được tính tiền giúp bởi " + username;
-                        username = hdfUsernameCurrent.Value;
-                    }
-
-                    int AgentID = Convert.ToInt32(acc.AgentID);
-                    int OrderType = hdfOrderType.Value.ToInt();
-                    string AdditionFee = "0";
-                    string DisCount = "0";
-                    int CustomerID = 0;
-
-                    string CustomerPhone = txtPhone.Text.Trim().Replace(" ", "");
-                    string CustomerName = txtFullname.Text.Trim();
-                    string Nick = txtNick.Text.Trim();
-                    string CustomerEmail = "";
-                    string CustomerAddress = txtAddress.Text.Trim();
-
-                    var checkCustomer = CustomerController.GetByPhone(CustomerPhone);
-
-                    if (checkCustomer != null)
-                    {
-                        CustomerID = checkCustomer.ID;
-                        string kq = CustomerController.Update(CustomerID, CustomerName, checkCustomer.CustomerPhone, CustomerAddress, "", Convert.ToInt32(checkCustomer.CustomerLevelID), Convert.ToInt32(checkCustomer.Status), checkCustomer.CreatedBy, currentDate, username, false, checkCustomer.Zalo, checkCustomer.Facebook, checkCustomer.Note, checkCustomer.ProvinceID.ToString(), Nick, checkCustomer.Avatar, Convert.ToInt32(checkCustomer.ShippingType), Convert.ToInt32(checkCustomer.PaymentType), Convert.ToInt32(checkCustomer.TransportCompanyID), Convert.ToInt32(checkCustomer.TransportCompanySubID), checkCustomer.CustomerPhone2);
-                    }
-                    else
-                    {
-                        string kq = CustomerController.Insert(CustomerName, CustomerPhone, CustomerAddress, CustomerEmail, 0, 0, currentDate, username, false, "", "", "", "", Nick);
-                        if (kq.ToInt(0) > 0)
+                        // Change user
+                        string UserHelp = "";
+                        if (username != hdfUsernameCurrent.Value)
                         {
-                            CustomerID = kq.ToInt(0);
+                            UserHelp = username;
+                            username = hdfUsernameCurrent.Value;
                         }
-                    }
 
-                    string totalPrice = hdfTotalPrice.Value.ToString();
-                    string totalPriceNotDiscount = hdfTotalPriceNotDiscount.Value;
-                    int PaymentStatus = 3;
-                    int ExcuteStatus = 2;
-                    int PaymentType = 1;
-                    int ShippingType = 1;
-                    bool IsHidden = false;
-                    int WayIn = 1;
+                        int AgentID = Convert.ToInt32(acc.AgentID);
+                        int OrderType = hdfOrderType.Value.ToInt();
+                        string AdditionFee = "0";
+                        string DisCount = "0";
+                        int CustomerID = 0;
 
-                    double DiscountPerProduct = Convert.ToDouble(pDiscount.Value);
+                        string CustomerPhone = Regex.Replace(txtPhone.Text.Trim(), @"[^\d]", "");
+                        string CustomerName = txtFullname.Text.Trim().ToLower().ToTitleCase();
+                        string CustomerEmail = "";
+                        string CustomerAddress = txtAddress.Text.Trim();
 
-                    double TotalDiscount = Convert.ToDouble(pDiscount.Value) * Convert.ToDouble(hdfTotalQuantity.Value);
-                    string FeeShipping = pFeeShip.Value.ToString();
-                    double GuestPaid = Convert.ToDouble(pGuestPaid.Value);
-                    double GuestChange = Convert.ToDouble(totalPrice) - GuestPaid;
-                    string OtherFeeName = txtOtherFeeName.Text;
-                    double OtherFeeValue = Convert.ToDouble(pOtherFee.Value);
+                        var checkCustomer = CustomerController.GetByPhone(CustomerPhone);
 
-                    var ret = OrderController.InsertOnSystem(AgentID, OrderType, AdditionFee, DisCount, CustomerID, CustomerName, CustomerPhone, CustomerAddress,
-                        CustomerEmail, totalPrice, totalPriceNotDiscount, PaymentStatus, ExcuteStatus, IsHidden, WayIn, currentDate, username, DiscountPerProduct,
-                        TotalDiscount, FeeShipping, GuestPaid, GuestChange, PaymentType, ShippingType, OrderNote, DateTime.Now, OtherFeeName, OtherFeeValue, 1);
-                    int OrderID = ret.ID;
-
-                    if (OrderID > 0)
-                    {
-                        ProductPOS POS = JsonConvert.DeserializeObject<ProductPOS>(hdfListProduct.Value);
-                        List<tbl_OrderDetail> orderDetails = new List<tbl_OrderDetail>();
-                        List<tbl_StockManager> stockManager = new List<tbl_StockManager>();
-
-                        foreach (ProductGetOut item in POS.productPOS)
+                        if (checkCustomer != null)
                         {
-                            orderDetails.Add(
-                                new tbl_OrderDetail()
-                                {
-                                    AgentID = AgentID,
-                                    OrderID = OrderID,
-                                    SKU = item.SKU,
-                                    ProductID = item.ProductType == 1 ? item.ProductID : 0,
-                                    ProductVariableID = item.ProductType == 1 ? 0 : item.ProductVariableID,
-                                    ProductVariableDescrition = item.ProductVariableSave,
-                                    Quantity = item.QuantityInstock,
-                                    Price = item.Giabanle,
-                                    Status = 1,
-                                    DiscountPrice = 0,
-                                    ProductType = item.ProductType,
-                                    CreatedDate = currentDate,
-                                    CreatedBy = username,
-                                    IsCount = true
-                                }
-                            );
-
-                            int parentID = item.ProductID;
-                            var variable = ProductVariableController.GetByID(item.ProductVariableID);
-                            if (variable != null)
+                            CustomerID = checkCustomer.ID;
+                            string kq = CustomerController.Update(CustomerID, CustomerName, checkCustomer.CustomerPhone, CustomerAddress, "", Convert.ToInt32(checkCustomer.CustomerLevelID), Convert.ToInt32(checkCustomer.Status), checkCustomer.CreatedBy, currentDate, username, false, checkCustomer.Zalo, checkCustomer.Facebook, checkCustomer.Note, checkCustomer.ProvinceID.ToString(), checkCustomer.Nick, checkCustomer.Avatar, Convert.ToInt32(checkCustomer.ShippingType), Convert.ToInt32(checkCustomer.PaymentType), Convert.ToInt32(checkCustomer.TransportCompanyID), Convert.ToInt32(checkCustomer.TransportCompanySubID), checkCustomer.CustomerPhone2);
+                        }
+                        else
+                        {
+                            string kq = CustomerController.Insert(CustomerName, CustomerPhone, CustomerAddress, CustomerEmail, 0, 0, currentDate, username, false, "", "", "", "", "");
+                            if (kq.ToInt(0) > 0)
                             {
-                                parentID = Convert.ToInt32(variable.ProductID);
+                                CustomerID = kq.ToInt(0);
+                            }
+                        }
+
+                        string totalPrice = hdfTotalPrice.Value.ToString();
+                        string totalPriceNotDiscount = hdfTotalPriceNotDiscount.Value;
+                        int PaymentStatus = 3;
+                        int ExcuteStatus = 2;
+                        int PaymentType = 1;
+                        int ShippingType = 1;
+                        bool IsHidden = false;
+                        int WayIn = 1;
+
+                        double DiscountPerProduct = Convert.ToDouble(pDiscount.Value);
+
+                        double TotalDiscount = Convert.ToDouble(pDiscount.Value) * Convert.ToDouble(hdfTotalQuantity.Value);
+                        string FeeShipping = pFeeShip.Value.ToString();
+                        double GuestPaid = Convert.ToDouble(pGuestPaid.Value);
+                        double GuestChange = Convert.ToDouble(totalPrice) - GuestPaid;
+                        var couponID = hdfCouponID.Value.ToInt(0);
+                        var couponValue = hdfCouponValue.Value.ToDecimal(0);
+
+                        tbl_Order order = new tbl_Order()
+                        {
+                            AgentID = AgentID,
+                            OrderType = OrderType,
+                            AdditionFee = AdditionFee,
+                            DisCount = DisCount,
+                            CustomerID = CustomerID,
+                            CustomerName = CustomerName,
+                            CustomerPhone = CustomerPhone,
+                            CustomerAddress = CustomerAddress,
+                            CustomerEmail = CustomerEmail,
+                            TotalPrice = totalPrice,
+                            TotalPriceNotDiscount = totalPriceNotDiscount,
+                            PaymentStatus = PaymentStatus,
+                            ExcuteStatus = ExcuteStatus,
+                            IsHidden = IsHidden,
+                            WayIn = WayIn,
+                            CreatedDate = currentDate,
+                            CreatedBy = username,
+                            DiscountPerProduct = DiscountPerProduct,
+                            TotalDiscount = TotalDiscount,
+                            FeeShipping = FeeShipping,
+                            GuestPaid = GuestPaid,
+                            GuestChange = GuestChange,
+                            PaymentType = PaymentType,
+                            ShippingType = ShippingType,
+                            OrderNote = String.Empty,
+                            DateDone = DateTime.Now,
+                            OtherFeeName = String.Empty,
+                            OtherFeeValue = 0,
+                            PostalDeliveryType = 1,
+                            UserHelp = UserHelp,
+                            CouponID = couponID,
+                            CouponValue = couponValue
+                        };
+
+                        var ret = OrderController.InsertOnSystem(order);
+
+                        int OrderID = ret.ID;
+
+                        // Insert Other Fee
+                        if (!String.IsNullOrEmpty(hdfOtherFees.Value))
+                        {
+                            JavaScriptSerializer serializer = new JavaScriptSerializer();
+                            var fees = serializer.Deserialize<List<Fee>>(hdfOtherFees.Value);
+                            if (fees != null)
+                            {
+                                foreach (var fee in fees)
+                                {
+                                    fee.OrderID = ret.ID;
+                                    fee.CreatedBy = acc.ID;
+                                    fee.CreatedDate = DateTime.Now;
+                                    fee.ModifiedBy = acc.ID;
+                                    fee.ModifiedDate = DateTime.Now;
+                                }
+
+                                FeeController.Update(ret.ID, fees);
+                            }
+                        }
+
+                        // Inactive code coupon
+                        if (order.CouponID.HasValue && order.CouponID.Value > 0)
+                        {
+                            CouponController.updateStatusCouponCustomer(CustomerID, order.CouponID.Value, false);
+                        }
+
+                        if (OrderID > 0)
+                        {
+                            ProductPOS POS = JsonConvert.DeserializeObject<ProductPOS>(hdfListProduct.Value);
+                            List<tbl_OrderDetail> orderDetails = new List<tbl_OrderDetail>();
+                            List<tbl_StockManager> stockManager = new List<tbl_StockManager>();
+
+                            // Reverser
+                            POS.productPOS.Reverse();
+
+                            foreach (ProductGetOut item in POS.productPOS)
+                            {
+                                orderDetails.Add(
+                                    new tbl_OrderDetail()
+                                    {
+                                        AgentID = AgentID,
+                                        OrderID = OrderID,
+                                        SKU = item.SKU,
+                                        ProductID = item.ProductType == 1 ? item.ProductID : 0,
+                                        ProductVariableID = item.ProductType == 1 ? 0 : item.ProductVariableID,
+                                        ProductVariableDescrition = item.ProductVariableSave,
+                                        Quantity = item.QuantityInstock,
+                                        Price = item.Giabanle,
+                                        Status = 1,
+                                        DiscountPrice = 0,
+                                        ProductType = item.ProductType,
+                                        CreatedDate = currentDate,
+                                        CreatedBy = username,
+                                        IsCount = true
+                                    }
+                                );
+
+                                int parentID = item.ProductID;
+                                var variable = ProductVariableController.GetByID(item.ProductVariableID);
+                                if (variable != null)
+                                {
+                                    parentID = Convert.ToInt32(variable.ProductID);
+                                }
+
+                                stockManager.Add(
+                                    new tbl_StockManager()
+                                    {
+                                        AgentID = AgentID,
+                                        ProductID = item.ProductType == 1 ? item.ProductID : 0,
+                                        ProductVariableID = item.ProductType == 1 ? 0 : item.ProductVariableID,
+                                        Quantity = item.QuantityInstock,
+                                        QuantityCurrent = 0,
+                                        Type = 2,
+                                        NoteID = "Xuất kho bán POS",
+                                        OrderID = OrderID,
+                                        Status = 3,
+                                        SKU = item.SKU,
+                                        CreatedDate = currentDate,
+                                        CreatedBy = username,
+                                        MoveProID = 0,
+                                        ParentID = parentID
+                                    }
+                                    );
                             }
 
-                            stockManager.Add(
-                                new tbl_StockManager()
-                                {
-                                    AgentID = AgentID,
-                                    ProductID = item.ProductType == 1 ? item.ProductID : 0,
-                                    ProductVariableID = item.ProductType == 1 ? 0 : item.ProductVariableID,
-                                    Quantity = item.QuantityInstock,
-                                    QuantityCurrent = 0,
-                                    Type = 2,
-                                    NoteID = "Xuất kho bán POS",
-                                    OrderID = OrderID,
-                                    Status = 3,
-                                    SKU = item.SKU,
-                                    CreatedDate = currentDate,
-                                    CreatedBy = username,
-                                    MoveProID = 0,
-                                    ParentID = parentID
-                                }
-                                );
+                            OrderDetailController.Insert(orderDetails);
+                            StockManagerController.Insert(stockManager);
+
+                            string refund = hdSession.Value;
+                            if (refund != "1")
+                            {
+                                string[] RefundID = refund.Split('|');
+                                var update = RefundGoodController.UpdateStatus(RefundID[0].ToInt(), username, 2, OrderID);
+                                var updateor = OrderController.UpdateRefund(OrderID, RefundID[0].ToInt(), username);
+                            }
+
+                            // Hoàn thành khởi tạo đơn hàng nên gán lại giá trị trang lúc ban đầu
+                            hdStatusPage.Value = "Create";
+                            ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "script", "$(function () { HoldOn.close(); printInvoice(" + OrderID + ") });", true);
                         }
-
-                        OrderDetailController.Insert(orderDetails);
-                        StockManagerController.Insert(stockManager);
-
-                        string refund = Request.Cookies["refund"].Value;
-                        if (refund != "1")
-                        {
-                            string[] RefundID = refund.Split('|');
-                            var update = RefundGoodController.UpdateStatus(RefundID[0].ToInt(), username, 2, OrderID);
-                            var updateor = OrderController.UpdateRefund(OrderID, RefundID[0].ToInt(), username);
-                        }
-
-                        Response.Cookies["refund"].Expires = DateTime.Now.AddDays(-1d);
-                        Response.Cookies.Add(Response.Cookies["refund"]);
-
-                        ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "script", "$(function () { printInvoice(" + OrderID + ") });", true);
                     }
                 }
             }
+            catch (Exception)
+            {
+                
+                ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "script", "$(function () { handleErrorSubmit(); });", true);
+            }
+        }
+
+        [WebMethod]
+        public static string getCoupon(int customerID, string code, int productNumber, decimal price)
+        {
+            return CouponController.getCoupon(customerID, code, productNumber, price);
         }
     }
 }

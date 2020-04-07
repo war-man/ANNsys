@@ -1,6 +1,7 @@
 ﻿using Bnails.Bussiness;
 using IM_PJ.Controllers;
 using IM_PJ.Models;
+using IM_PJ.Utils;
 using MB.Extensions;
 using Newtonsoft.Json;
 using NHST.Bussiness;
@@ -8,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Script.Services;
 using System.Web.Services;
@@ -123,7 +125,11 @@ namespace IM_PJ
             var rs = new ResponseClass();
             if (Login(username, password))
             {
-                var Product = ProductController.GetAllSql(0, SKU);
+                // Create order fileter
+                var filter = new ProductFilterModel() { search = SKU};
+                // Create pagination
+                var page = new PaginationMetadataModel();
+                var Product = ProductController.GetAllSql(filter, ref page);
 
                 if (Product.Count > 0)
                 {
@@ -132,9 +138,20 @@ namespace IM_PJ
 
                     foreach (var item in Product)
                     {
+                        item.ProductContent = String.Format("<h3>{0}</h3>", item.ProductTitle) + item.ProductContent;
+
+                        string featuredImage = "";
                         if (!string.IsNullOrEmpty(item.ProductImage))
                         {
-                            item.ProductContent += String.Format("<p><img src='/wp-content/uploads/{0}' alt='{1}'/></p>", item.ProductImage.Split('/')[3], item.ProductTitle);
+                            featuredImage = item.ProductImage;
+                            item.ProductContent += String.Format("<p><img src='/wp-content/uploads/{0}' alt='{1}'/></p>", item.ProductImage, item.ProductTitle);
+                            item.ProductImage = Thumbnail.getURL(item.ProductImage, Thumbnail.Size.Source);
+                        }
+
+                        if (!string.IsNullOrEmpty(item.ProductImageClean))
+                        {
+                            item.ProductImageClean = Thumbnail.getURL(item.ProductImageClean, Thumbnail.Size.Source);
+                            item.ProductImage = item.ProductImageClean + "|" + item.ProductImage;
                         }
 
                         var productImage = ProductImageController.GetByProductID(item.ID);
@@ -143,8 +160,11 @@ namespace IM_PJ
                         {
                             foreach (var image in productImage)
                             {
-                                item.ProductImage += "|" + image.ProductImage;
-                                item.ProductContent += String.Format("<p><img src='/wp-content/uploads/{0}' alt='{1}'/></p>", image.ProductImage.Split('/')[3], item.ProductTitle);
+                                if (image.ProductImage != featuredImage)
+                                {
+                                    item.ProductImage += "|" + Thumbnail.getURL(image.ProductImage, Thumbnail.Size.Source);
+                                    item.ProductContent += String.Format("<p><img src='/wp-content/uploads/{0}' alt='{1}'/></p>", image.ProductImage, item.ProductTitle);
+                                }
                             }
                         }
                     }
@@ -184,19 +204,33 @@ namespace IM_PJ
 
                     foreach (var item in Product)
                     {
+                        item.ProductContent = String.Format("<h3>{0}</h3>", item.ProductTitle) + item.ProductContent;
+
+                        string featuredImage = "";
                         if (!string.IsNullOrEmpty(item.ProductImage))
                         {
-                            item.ProductContent += String.Format("<p><img src='/wp-content/uploads/{0}' alt='{1}'/></p>", item.ProductImage.Split('/')[3], item.ProductTitle);
+                            featuredImage = item.ProductImage;
+                            item.ProductContent += String.Format("<p><img src='/wp-content/uploads/{0}' alt='{1}'/></p>", item.ProductImage, item.ProductTitle);
+                            item.ProductImage = Thumbnail.getURL(item.ProductImage, Thumbnail.Size.Source);
                         }
-                        
+
+                        if (!string.IsNullOrEmpty(item.ProductImageClean))
+                        {
+                            item.ProductImageClean = Thumbnail.getURL(item.ProductImageClean, Thumbnail.Size.Source);
+                            item.ProductImage = item.ProductImageClean + "|" + item.ProductImage;
+                        }
+
                         var productImage = ProductImageController.GetByProductID(item.ID);
 
                         if (productImage.Count() > 0)
                         {
                             foreach (var image in productImage)
                             {
-                                item.ProductImage += "|" + image.ProductImage;
-                                item.ProductContent += String.Format("<p><img src='/wp-content/uploads/{0}' alt='{1}'/></p>", image.ProductImage.Split('/')[3], item.ProductTitle);
+                                if (image.ProductImage != featuredImage)
+                                {
+                                    item.ProductImage += "|" + Thumbnail.getURL(image.ProductImage, Thumbnail.Size.Source);
+                                    item.ProductContent += String.Format("<p><img src='/wp-content/uploads/{0}' alt='{1}'/></p>", image.ProductImage, item.ProductTitle);
+                                }
                             }
                         }
                     }
@@ -231,6 +265,10 @@ namespace IM_PJ
                 {
                     rs.Code = APIUtils.GetResponseCode(APIUtils.ResponseCode.SUCCESS);
                     rs.Status = APIUtils.ResponseMessage.Success.ToString();
+                    foreach(var item in ProductImage)
+                    {
+                        item.ProductImage = Thumbnail.getURL(item.ProductImage, Thumbnail.Size.Source);
+                    }
                     rs.ProductImage = ProductImage;
                 }
                 else
@@ -268,19 +306,16 @@ namespace IM_PJ
                     {
                         item.Stock = PJUtils.GetSotckProduct(1, item.SKU);
 
-                        if(item.Stock > 0)
+                        if (item.Stock <= 0)
                         {
-                            item.StockStatus = 1;
+                            item.Stock = 1;
                         }
-                        else if (item.Stock == 0)
-                        {
-                            item.StockStatus = 2;
-                        }
-                        else if (item.StockStatus < 0)
-                        {
-                            item.StockStatus = 3;
-                        }
+
+                        item.StockStatus = 1;
+
+                        item.Image = Thumbnail.getURL(item.Image, Thumbnail.Size.Source);
                     }
+
                     rs.ProductVariable = ProductVariable;
                 }
                 else
@@ -422,8 +457,40 @@ namespace IM_PJ
                     bool IsHidden = false;
                     int Wayin = 2;
 
-                    var ret = OrderController.Insert(AgentID, OrderType, AdditionFee, DisCount, CustomerID, CustomerName, CustomerPhone, CustomerAddress,
-                            CustomerEmail, TotalPrice.ToString(), TotalPrice.ToString(), PaymentStatus, ExcuteStatus, IsHidden, Wayin, currentDate, CreatedBy, 0, 0, "0", 0, 0, DateTime.Now.ToString(), 0, 0, 0, 0, "", 0, 1);
+                    var orderNew = new tbl_Order() {
+                        AgentID = AgentID,
+                        OrderType = OrderType,
+                        AdditionFee = AdditionFee,
+                        DisCount = DisCount,
+                        CustomerID = CustomerID,
+                        CustomerName = CustomerName,
+                        CustomerPhone = CustomerPhone,
+                        CustomerAddress = CustomerAddress,
+                        CustomerEmail = CustomerEmail,
+                        TotalPrice = TotalPrice.ToString(),
+                        TotalPriceNotDiscount = TotalPrice.ToString(),
+                        PaymentStatus = PaymentStatus,
+                        ExcuteStatus = ExcuteStatus,
+                        IsHidden = IsHidden,
+                        WayIn = Wayin,
+                        CreatedDate = currentDate,
+                        CreatedBy = CreatedBy,
+                        DiscountPerProduct = 0,
+                        TotalDiscount = 0,
+                        FeeShipping = "0",
+                        PaymentType = 0,
+                        ShippingType = 0,
+                        DateDone = DateTime.Now,
+                        GuestPaid = 0,
+                        GuestChange = 0,
+                        TransportCompanyID = 0,
+                        TransportCompanySubID = 0,
+                        OtherFeeName = String.Empty,
+                        OtherFeeValue = 0,
+                        PostalDeliveryType = 1,
+                    };
+
+                    var ret = OrderController.Insert(orderNew);
                     int OrderID = ret.ID;
                     if (OrderID > 0)
                     {
@@ -631,9 +698,41 @@ namespace IM_PJ
                         totalleft = Convert.ToDouble(TotalPrice);
                     }
 
-                    var ret = OrderController.Insert(AgentID, OrderType.ToInt(1), AdditionFee, DisCount, CustomerID, CustomerName, CustomerPhone, CustomerAddress,
-                            CustomerEmail, totalleft.ToString(), TotalPrice.ToString(), PaymentStatus.ToInt(0), ExcuteStatus.ToInt(0), IsHidden, Wayin, currentDate, CreatedBy,
-                            amount, totalDiscount, FeeShipping.ToString(), PaymentType, ShippingType, DateTime.Now.ToString(), 0, 0, 0, 0, "", 0, 1);
+                    var orderNew = new tbl_Order()
+                    {
+                        AgentID = AgentID,
+                        OrderType = OrderType.ToInt(1),
+                        AdditionFee = AdditionFee,
+                        DisCount = DisCount,
+                        CustomerID = CustomerID,
+                        CustomerName = CustomerName,
+                        CustomerPhone = CustomerPhone,
+                        CustomerAddress = CustomerAddress,
+                        CustomerEmail = CustomerEmail,
+                        TotalPrice = totalleft.ToString(),
+                        TotalPriceNotDiscount = TotalPrice.ToString(),
+                        PaymentStatus = PaymentStatus.ToInt(0),
+                        ExcuteStatus = ExcuteStatus.ToInt(0),
+                        IsHidden = IsHidden,
+                        WayIn = Wayin,
+                        CreatedDate = currentDate,
+                        CreatedBy = CreatedBy,
+                        DiscountPerProduct = amount,
+                        TotalDiscount = totalDiscount,
+                        FeeShipping = FeeShipping.ToString(),
+                        PaymentType = PaymentType,
+                        ShippingType = ShippingType,
+                        DateDone = DateTime.Now,
+                        GuestPaid = 0,
+                        GuestChange = 0,
+                        TransportCompanyID = 0,
+                        TransportCompanySubID = 0,
+                        OtherFeeName = String.Empty,
+                        OtherFeeValue = 0,
+                        PostalDeliveryType = 1,
+                    };
+
+                    var ret = OrderController.Insert(orderNew);
                     int OrderID = ret.ID;
                     if (OrderID > 0)
                     {
@@ -999,7 +1098,81 @@ namespace IM_PJ
                 }
             }
         }
+        [WebMethod]
+        [ScriptMethod(UseHttpGet = false, ResponseFormat = ResponseFormat.Json)]
+        public void insertRegister(string name, string phone, string address, int province, string productcategory, string note, string referer, string username, string password)
+        {
+            var rs = new ResponseClass();
+            if (username == "register" && password == "register@ann")
+            {
+                int ID = 0;
 
+                Regex digitsOnly = new Regex(@"[^\d]");
+                string numberphone = digitsOnly.Replace(phone, "");
+
+                if (numberphone.Length >= 9)
+                {
+                    var checkRegister = RegisterController.GetByPhone(numberphone);
+
+                    Register register = new Register();
+
+                    if (checkRegister != null)
+                    {
+                        register.ID = checkRegister.ID;
+                        register.Name = name;
+                        register.Phone = checkRegister.Phone;
+                        register.UserID = checkRegister.UserID;
+                        register.Status = checkRegister.Status;
+                        register.Note = note;
+                        register.Address = address;
+                        register.ProductCategory = productcategory;
+                        register.ProvinceID = province;
+                        register.CreatedDate = DateTime.Now;
+                        register.Referer = referer;
+
+                        ID = RegisterController.Update(register);
+                    }
+                    else
+                    {
+                        register.Name = name;
+                        register.Phone = numberphone;
+                        register.UserID = null;
+                        register.Status = 1;
+                        register.Note = note;
+                        register.Address = address;
+                        register.ProductCategory = productcategory;
+                        register.ProvinceID = province;
+                        register.Referer = referer;
+
+                        ID = RegisterController.Insert(register);
+                    }
+                }
+
+                if(ID != 0)
+                {
+                    rs.OrderID = ID;
+                    rs.Code = APIUtils.GetResponseCode(APIUtils.ResponseCode.SUCCESS);
+                    rs.Status = APIUtils.ResponseMessage.Success.ToString();
+                    rs.Message = "Tạo mới đăng ký thành công.";
+                }
+                else
+                {
+                    rs.Code = APIUtils.GetResponseCode(APIUtils.ResponseCode.NotFound);
+                    rs.Status = APIUtils.ResponseMessage.Error.ToString();
+                    rs.Message = "Có lỗi trong quá trình tạo đăng ký.";
+                }
+            }
+            else
+            {
+                rs.Code = APIUtils.GetResponseCode(APIUtils.ResponseCode.FAILED);
+                rs.Status = APIUtils.ResponseMessage.Fail.ToString();
+            }
+
+            Context.Response.ContentType = "application/json";
+            Context.Response.Write(JsonConvert.SerializeObject(rs, Formatting.Indented));
+            Context.Response.Flush();
+            Context.Response.End();
+        }
         public class ResponseClass
         {
             [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]

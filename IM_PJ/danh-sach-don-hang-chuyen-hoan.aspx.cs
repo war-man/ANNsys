@@ -21,9 +21,9 @@ namespace IM_PJ
         {
             if (!IsPostBack)
             {
-                if (Request.Cookies["userLoginSystem"] != null)
+                if (Request.Cookies["usernameLoginSystem"] != null)
                 {
-                    string username = Request.Cookies["userLoginSystem"].Value;
+                    string username = Request.Cookies["usernameLoginSystem"].Value;
                     var acc = AccountController.GetByUsername(username);
                     int agent = acc.AgentID.ToString().ToInt();
                     
@@ -52,60 +52,72 @@ namespace IM_PJ
         }
         public void LoadData()
         {
-            string username = Request.Cookies["userLoginSystem"].Value;
+            string username = Request.Cookies["usernameLoginSystem"].Value;
             var acc = AccountController.GetByUsername(username);
             if (acc != null)
             {
-                int agentID = Convert.ToInt32(acc.AgentID);
-                int orderType = 0;
-                int paymentStatus = 0;
-                int payment = 0;
-                int ship = 0;
-                string s = "";
-                string sku = "";
-                int by = 0;
-                if (Request.QueryString["o"] != null)
-                {
-                    orderType = Request.QueryString["o"].ToInt(0);
-                }
-                if (Request.QueryString["p"] != null)
-                {
-                    paymentStatus = Request.QueryString["p"].ToInt(0);
-                }
-                if (Request.QueryString["pay"] != null)
-                {
-                    payment = Request.QueryString["pay"].ToInt(0);
-                }
-                if (Request.QueryString["sh"] != null)
-                {
-                    ship = Request.QueryString["sh"].ToInt(0);
-                }
-                if (Request.QueryString["s"] != null)
-                {
-                    s = Request.QueryString["s"].Trim();
-                }
-                if (Request.QueryString["sku"] != null)
-                {
-                    sku = Request.QueryString["sku"];
-                }
-                if (Request.QueryString["sku"] != null)
-                {
-                    sku = Request.QueryString["sku"];
-                }
-                if (Request.QueryString["by"] != null)
-                {
-                    by = Request.QueryString["by"].ToInt(0);
-                }
-                txtAgentName.Text = s;
-                ddlOrderType.SelectedValue = orderType.ToString();
-                ddlPaymentStatus.SelectedValue = paymentStatus.ToString();
-                ddlPaymentType.SelectedValue = payment.ToString();
-                ddlShippingType.SelectedValue = ship.ToString();
-                ddlCreateBy.SelectedValue = by.ToString();
-
                 if (acc.RoleID == 0 || acc.RoleID == 2)
                 {
+                    int agentID = Convert.ToInt32(acc.AgentID);
+                    int orderType = 0;
+                    int paymentStatus = 0;
+                    int payment = 0;
+                    int ship = 0;
+                    string s = "";
+                    string sku = "";
+                    int by = 0;
+                    if (Request.QueryString["o"] != null)
+                    {
+                        orderType = Request.QueryString["o"].ToInt(0);
+                    }
+                    if (Request.QueryString["p"] != null)
+                    {
+                        paymentStatus = Request.QueryString["p"].ToInt(0);
+                    }
+                    if (Request.QueryString["pay"] != null)
+                    {
+                        payment = Request.QueryString["pay"].ToInt(0);
+                    }
+                    if (Request.QueryString["sh"] != null)
+                    {
+                        ship = Request.QueryString["sh"].ToInt(0);
+                    }
+                    if (Request.QueryString["s"] != null)
+                    {
+                        s = Request.QueryString["s"].Trim();
+                    }
+                    if (Request.QueryString["sku"] != null)
+                    {
+                        sku = Request.QueryString["sku"];
+                    }
+                    if (Request.QueryString["sku"] != null)
+                    {
+                        sku = Request.QueryString["sku"];
+                    }
+                    if (Request.QueryString["by"] != null)
+                    {
+                        by = Request.QueryString["by"].ToInt(0);
+                    }
+                    txtAgentName.Text = s;
+                    ddlOrderType.SelectedValue = orderType.ToString();
+                    ddlPaymentStatus.SelectedValue = paymentStatus.ToString();
+                    ddlPaymentType.SelectedValue = payment.ToString();
+                    ddlShippingType.SelectedValue = ship.ToString();
+                    ddlCreateBy.SelectedValue = by.ToString();
+
+                
                     var rs = OrderController.SearchByStatical(orderType, paymentStatus, 4, s, agentID, payment, ship, sku);
+
+                    //DateTime year = new DateTime(2019, 10, 23);
+
+                    //var config = ConfigController.GetByTop1();
+                    //if (config.ViewAllOrders == 1)
+                    //{
+                    //    year = new DateTime(2018, 6, 22);
+                    //}
+
+                    //rs = rs.Where(x => x.CreatedDate >= year).ToList();
+
                     if (rs.Count > 0)
                     {
                         if (acc.RoleID == 0)
@@ -114,7 +126,7 @@ namespace IM_PJ
                             if (by > 0)
                             {
                                 var create = AccountController.GetByID(by);
-                                if(create != null)
+                                if (create != null)
                                 {
                                     pagingall(rs.Where(x=>x.CreatedBy == create.Username).OrderByDescending(x=>x.ModifiedDate).ToList());
                                 }
@@ -129,6 +141,8 @@ namespace IM_PJ
                             pagingall(rs.Where(x => x.CreatedBy == acc.Username).OrderByDescending(x => x.ModifiedDate).ToList());
                         }
                     }
+
+                    ltrNumberOfOrder.Text = rs.Count().ToString();
                 }
             }
         }
@@ -189,16 +203,16 @@ namespace IM_PJ
                     {
                         if (!string.IsNullOrEmpty(customer.Nick))
                         {
-                            html.Append("   <td><a class=\"customer-name-link capitalize\" href=\"/thong-tin-don-hang-chuyen-hoan?id=" + item.ID + "\">" + customer.Nick + "</a><br><span class=\"name-bottom-nick\">(" + item.CustomerName + ")</span></td>");
+                            html.Append("   <td><a class=\"customer-name-link\" href=\"/thong-tin-don-hang-chuyen-hoan?id=" + item.ID + "\">" + customer.Nick.ToTitleCase() + "</a><br><span class=\"name-bottom-nick\">(" + item.CustomerName.ToTitleCase() + ")</span></td>");
                         }
                         else
                         {
-                            html.Append("   <td><a class=\"customer-name-link capitalize\" href=\"/thong-tin-don-hang-chuyen-hoan?id=" + item.ID + "\">" + item.CustomerName + "</a></td>");
+                            html.Append("   <td><a class=\"customer-name-link\" href=\"/thong-tin-don-hang-chuyen-hoan?id=" + item.ID + "\">" + item.CustomerName.ToTitleCase() + "</a></td>");
                         }
                     }
                     else
                     {
-                        html.Append("   <td><a class=\"customer-name-link capitalize\" href=\"/thong-tin-don-hang-chuyen-hoan?id=" + item.ID + "\">" + item.CustomerName + "</a></td>");
+                        html.Append("   <td><a class=\"customer-name-link\" href=\"/thong-tin-don-hang-chuyen-hoan?id=" + item.ID + "\">" + item.CustomerName.ToTitleCase() + "</a></td>");
                     }
                     
                     var orderdetails = OrderDetailController.GetByOrderID(item.ID);

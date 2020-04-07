@@ -90,6 +90,15 @@ namespace IM_PJ.Controllers
                 return ags;
             }
         }
+        public static List<tbl_PostImage> GetToCopyByPostID(int ProductID)
+        {
+            using (var dbe = new inventorymanagementEntities())
+            {
+                List<tbl_PostImage> ags = new List<tbl_PostImage>();
+                ags = dbe.tbl_PostImage.Where(p => p.PostID == ProductID).OrderBy(o => o.ID).ToList();
+                return ags;
+            }
+        }
         public static tbl_PostImage GetFirstByPostID(int ProductID)
         {
             using (var dbe = new inventorymanagementEntities())

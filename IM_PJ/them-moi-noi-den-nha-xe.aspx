@@ -66,7 +66,7 @@
                                 <div class="row-right">
                                     <asp:RadioButtonList ID="rdbPrepay" runat="server" RepeatDirection="Horizontal" TabIndex="6">
                                         <asp:ListItem Value="true">Trả trước</asp:ListItem>
-                                        <asp:ListItem Value="false" Selected="True">Trả sau</asp:ListItem>
+                                        <asp:ListItem Value="false">Trả sau</asp:ListItem>
                                     </asp:RadioButtonList>
                                 </div>
                             </div>

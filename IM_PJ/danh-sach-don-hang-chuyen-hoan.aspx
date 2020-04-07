@@ -7,7 +7,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
-                    <h3 class="page-title left">Đơn hàng chuyển hoàn</h3>
+                    <h3 class="page-title left">Chuyển hoàn <span>(<asp:Literal ID="ltrNumberOfOrder" runat="server" EnableViewState="false"></asp:Literal>)</span></h3>
                     <div class="right above-list-btn">
                         <a href="javascript:;" onclick="addOrder()" class="h45-btn primary-btn btn">Thêm mới</a>
                     </div>
@@ -49,10 +49,12 @@
                                     <asp:DropDownList ID="ddlShippingType" runat="server" CssClass="form-control">
                                         <asp:ListItem Value="0" Text="Giao hàng"></asp:ListItem>
                                         <asp:ListItem Value="1" Text="Lấy trực tiếp"></asp:ListItem>
-                                        <asp:ListItem Value="2" Text="Chuyển bưu điện"></asp:ListItem>
-                                        <asp:ListItem Value="3" Text="Dịch vụ ship"></asp:ListItem>
+                                        <asp:ListItem Value="2" Text="Bưu điện"></asp:ListItem>
+                                        <asp:ListItem Value="3" Text="Proship"></asp:ListItem>
                                         <asp:ListItem Value="4" Text="Chuyển xe"></asp:ListItem>
                                         <asp:ListItem Value="5" Text="Nhân viên giao"></asp:ListItem>
+                                        <asp:ListItem Value="6" Text="GHTK"></asp:ListItem>
+                                        <asp:ListItem Value="7" Text="Viettel"></asp:ListItem>
                                     </asp:DropDownList>
                                 </div>
                                 <div class="col-md-2">
@@ -104,6 +106,13 @@
         </div>
         <asp:HiddenField ID="hdfcreate" runat="server" />
         <script type="text/javascript">
+            $("#<%=txtAgentName.ClientID%>").keyup(function (e) {
+                if (e.keyCode == 13)
+                {
+                    $("#<%= btnSearch.ClientID%>").click();
+                }
+            });
+
             function searchAgent() {
                 $("#<%= btnSearch.ClientID%>").click();
             }

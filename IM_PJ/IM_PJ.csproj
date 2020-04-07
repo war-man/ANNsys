@@ -16,7 +16,7 @@
     <RootNamespace>IM_PJ</RootNamespace>
     <AssemblyName>IM_PJ</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <UseIISExpress>true</UseIISExpress>
+    <UseIISExpress>false</UseIISExpress>
     <IISExpressSSLPort />
     <IISExpressAnonymousAuthentication />
     <IISExpressWindowsAuthentication />
@@ -56,12 +56,16 @@
       <HintPath>..\packages\Antlr.3.4.1.9004\lib\Antlr3.Runtime.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="AspNet.ScriptManager.bootstrap, Version=3.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\AspNet.ScriptManager.bootstrap.3.0.0\lib\net45\AspNet.ScriptManager.bootstrap.dll</HintPath>
+    <Reference Include="AspNet.ScriptManager.bootstrap, Version=3.3.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\AspNet.ScriptManager.bootstrap.3.3.0\lib\net45\AspNet.ScriptManager.bootstrap.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="AspNet.ScriptManager.jQuery, Version=1.10.2.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\AspNet.ScriptManager.jQuery.1.10.2\lib\net45\AspNet.ScriptManager.jQuery.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="CronNET, Version=1.1.4939.24773, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\CronNET.1.1.4939.24773\lib\net40\CronNET.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
@@ -72,41 +76,49 @@
       <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="ICSharpCode.SharpZipLib, Version=1.0.0.999, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpZipLib.1.0.0\lib\net45\ICSharpCode.SharpZipLib.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="LeoUtils">
       <HintPath>..\packages\LeoUtils.dll</HintPath>
+    </Reference>
+    <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="MB.Extensions">
       <HintPath>..\packages\MB.Extensions.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.AI.Agent.Intercept, Version=2.0.6.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.ApplicationInsights.Agent.Intercept.2.0.6\lib\net45\Microsoft.AI.Agent.Intercept.dll</HintPath>
+    <Reference Include="Microsoft.AI.Agent.Intercept, Version=2.4.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.ApplicationInsights.Agent.Intercept.2.4.0\lib\net45\Microsoft.AI.Agent.Intercept.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Microsoft.AI.DependencyCollector, Version=2.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.ApplicationInsights.DependencyCollector.2.2.0\lib\net45\Microsoft.AI.DependencyCollector.dll</HintPath>
+    <Reference Include="Microsoft.AI.DependencyCollector, Version=2.9.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.ApplicationInsights.DependencyCollector.2.9.0\lib\net45\Microsoft.AI.DependencyCollector.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Microsoft.AI.PerfCounterCollector, Version=2.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.ApplicationInsights.PerfCounterCollector.2.2.0\lib\net45\Microsoft.AI.PerfCounterCollector.dll</HintPath>
+    <Reference Include="Microsoft.AI.PerfCounterCollector, Version=2.9.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.ApplicationInsights.PerfCounterCollector.2.9.0\lib\net45\Microsoft.AI.PerfCounterCollector.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Microsoft.AI.ServerTelemetryChannel, Version=2.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.ApplicationInsights.WindowsServer.TelemetryChannel.2.2.0\lib\net45\Microsoft.AI.ServerTelemetryChannel.dll</HintPath>
+    <Reference Include="Microsoft.AI.ServerTelemetryChannel, Version=2.9.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.ApplicationInsights.WindowsServer.TelemetryChannel.2.9.0\lib\net45\Microsoft.AI.ServerTelemetryChannel.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Microsoft.AI.Web, Version=2.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.ApplicationInsights.Web.2.2.0\lib\net45\Microsoft.AI.Web.dll</HintPath>
+    <Reference Include="Microsoft.AI.Web, Version=2.9.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.ApplicationInsights.Web.2.9.0\lib\net45\Microsoft.AI.Web.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Microsoft.AI.WindowsServer, Version=2.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.ApplicationInsights.WindowsServer.2.2.0\lib\net45\Microsoft.AI.WindowsServer.dll</HintPath>
+    <Reference Include="Microsoft.AI.WindowsServer, Version=2.9.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.ApplicationInsights.WindowsServer.2.9.0\lib\net45\Microsoft.AI.WindowsServer.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.ApplicationBlocks.Data">
       <HintPath>..\packages\Microsoft.ApplicationBlocks.Data.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.ApplicationInsights, Version=2.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.ApplicationInsights.2.2.0\lib\net45\Microsoft.ApplicationInsights.dll</HintPath>
+    <Reference Include="Microsoft.ApplicationInsights, Version=2.11.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.ApplicationInsights.2.11.0\lib\net45\Microsoft.ApplicationInsights.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.AspNet.Identity.Core, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -165,32 +177,91 @@
     <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <Private>True</Private>
     </Reference>
+    <Reference Include="NPOI, Version=2.4.1.0, Culture=neutral, PublicKeyToken=0df73ec7942b34e1, processorArchitecture=MSIL">
+      <HintPath>..\packages\NPOI.2.4.1\lib\net45\NPOI.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="NPOI.OOXML, Version=2.4.1.0, Culture=neutral, PublicKeyToken=0df73ec7942b34e1, processorArchitecture=MSIL">
+      <HintPath>..\packages\NPOI.2.4.1\lib\net45\NPOI.OOXML.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="NPOI.OpenXml4Net, Version=2.4.1.0, Culture=neutral, PublicKeyToken=0df73ec7942b34e1, processorArchitecture=MSIL">
+      <HintPath>..\packages\NPOI.2.4.1\lib\net45\NPOI.OpenXml4Net.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="NPOI.OpenXmlFormats, Version=2.4.1.0, Culture=neutral, PublicKeyToken=0df73ec7942b34e1, processorArchitecture=MSIL">
+      <HintPath>..\packages\NPOI.2.4.1\lib\net45\NPOI.OpenXmlFormats.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="QRCoder">
       <HintPath>..\packages\QRCoder.dll</HintPath>
     </Reference>
     <Reference Include="Supremes">
       <HintPath>..\packages\Supremes.dll</HintPath>
     </Reference>
+    <Reference Include="System.Buffers, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Buffers.4.4.0\lib\netstandard1.1\System.Buffers.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Data.Entity" />
+    <Reference Include="System.Diagnostics.DiagnosticSource, Version=4.0.4.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Diagnostics.DiagnosticSource.4.6.0\lib\net45\System.Diagnostics.DiagnosticSource.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Management" />
+    <Reference Include="System.Memory, Version=4.0.1.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Memory.4.5.3\lib\netstandard1.1\System.Memory.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Net.Http.Formatting, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.3\lib\net45\System.Net.Http.Formatting.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Net.Http.WebRequest" />
+    <Reference Include="System.Runtime.Caching" />
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.4.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.5.2\lib\netstandard1.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security" />
     <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.Helpers.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Web.Http, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.WebApi.Core.5.2.3\lib\net45\System.Web.Http.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Web.Http.WebHost, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.WebApi.WebHost.5.2.3\lib\net45\System.Web.Http.WebHost.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.Mvc, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Mvc.5.2.3\lib\net45\System.Web.Mvc.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Razor.3.2.3\lib\net45\System.Web.Razor.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.WebPages, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Deployment, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.Deployment.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Xml.Linq" />
@@ -268,7 +339,15 @@
     <Content Include="App_Themes\Ann\barcode\style.css" />
     <Content Include="App_Themes\Ann\css\Barcode.css" />
     <Content Include="App_Themes\Ann\css\bootstrap.css" />
+    <Content Include="App_Themes\Ann\css\bootstrap\glyphicons-halflings-regular.svg" />
+    <Content Include="App_Themes\Ann\css\common\search-customer.css" />
     <Content Include="App_Themes\Ann\css\HoldOn.css" />
+    <Content Include="App_Themes\Ann\css\pages\chi-tiet-giam-gia\chi-tiet-giam-gia.css" />
+    <Content Include="App_Themes\Ann\css\pages\cron-job-product-status\cron-job-product-status.css" />
+    <Content Include="App_Themes\Ann\css\pages\danh-sach-don-hang\danh-sach-don-hang.css" />
+    <Content Include="App_Themes\Ann\css\pages\danh-sach-khach-giam-gia\danh-sach-khach-giam-gia.css" />
+    <Content Include="App_Themes\Ann\css\pages\them-moi-giam-gia\them-moi-giam-gia.css" />
+    <Content Include="App_Themes\Ann\css\print-delivery.css" />
     <Content Include="App_Themes\Ann\css\print-return-order-image.css" />
     <Content Include="App_Themes\Ann\css\print-order-image.css" />
     <Content Include="App_Themes\Ann\css\reset.css" />
@@ -277,6 +356,7 @@
     <Content Include="App_Themes\Ann\css\style-P.css" />
     <Content Include="App_Themes\Ann\css\style.css" />
     <Content Include="App_Themes\Ann\css\style.min.css" />
+    <Content Include="App_Themes\Ann\css\style-sp.css" />
     <Content Include="App_Themes\Ann\fonts\font-awesome-4.7\css\font-awesome.min.css" />
     <Content Include="App_Themes\Ann\fonts\font-awesome-4.7\fonts\fontawesome-webfont.svg" />
     <Content Include="App_Themes\Ann\fonts\SFUIText\font.css" />
@@ -313,11 +393,37 @@
     <Content Include="App_Themes\Ann\js\bootstrap-table\bootstrap-table.css" />
     <Content Include="App_Themes\Ann\js\bootstrap-table\bootstrap-table.js" />
     <Content Include="App_Themes\Ann\js\bootstrap.min.js" />
+    <Content Include="App_Themes\Ann\js\Chart.min.js" />
     <Content Include="App_Themes\Ann\js\chartjs.min.js" />
+    <Content Include="App_Themes\Ann\js\controllers\chi-tiet-giam-gia\chi-tiet-giam-gia-controller.js" />
+    <Content Include="App_Themes\Ann\js\controllers\common\search-customer-controller.js" />
+    <Content Include="App_Themes\Ann\js\controllers\cron-job-product-status\cron-job-product-status-controller.js" />
+    <Content Include="App_Themes\Ann\js\controllers\danh-sach-don-hang\danh-sach-don-hang-controller.js" />
+    <Content Include="App_Themes\Ann\js\controllers\danh-sach-khach-giam-gia\danh-sach-khach-giam-gia-controller.js" />
+    <Content Include="App_Themes\Ann\js\controllers\danh-sach-nhom-khach-hang\danh-sach-nhom-khach-hang-controller.js" />
+    <Content Include="App_Themes\Ann\js\controllers\them-moi-giam-gia\them-moi-giam-gia-controller.js" />
+    <Content Include="App_Themes\Ann\js\copy-invoice-url.js" />
     <Content Include="App_Themes\Ann\js\copy-post-info.js" />
+    <Content Include="App_Themes\Ann\js\copy-post-to-app.js" />
     <Content Include="App_Themes\Ann\js\download-post-image.js" />
     <Content Include="App_Themes\Ann\js\download-product-image.js" />
     <Content Include="App_Themes\Ann\js\jquery.cookie.js" />
+    <Content Include="App_Themes\Ann\js\models\common\customer-model.js" />
+    <Content Include="App_Themes\Ann\js\models\common\discount-group-model.js" />
+    <Content Include="App_Themes\Ann\js\models\common\order-model.js" />
+    <Content Include="App_Themes\Ann\js\pages\chi-tiet-giam-gia\chi-tiet-giam-gia.js" />
+    <Content Include="App_Themes\Ann\js\pages\cron-job-product-status\cron-job-product-status.js" />
+    <Content Include="App_Themes\Ann\js\pages\danh-sach-don-hang\danh-sach-don-hang.js" />
+    <Content Include="App_Themes\Ann\js\pages\danh-sach-khach-giam-gia\danh-sach-khach-giam-gia.js" />
+    <Content Include="App_Themes\Ann\js\pages\danh-sach-khach-hang\generate-coupon-for-customer.js" />
+    <Content Include="App_Themes\Ann\js\pages\danh-sach-nhom-khach-hang\danh-sach-nhom-khach-hang.js" />
+    <Content Include="App_Themes\Ann\js\pages\them-moi-giam-gia\them-moi-giam-gia.js" />
+    <Content Include="App_Themes\Ann\js\services\common\product-service.js" />
+    <Content Include="App_Themes\Ann\js\services\common\search-customer-service.js" />
+    <Content Include="App_Themes\Ann\js\services\common\utils-service.js" />
+    <Content Include="App_Themes\Ann\js\services\cron-job-product-status\cron-job-product-status-service.js" />
+    <Content Include="App_Themes\Ann\js\services\danh-sach-don-hang\danh-sach-don-hang-service.js" />
+    <Content Include="App_Themes\Ann\js\services\danh-sach-khach-giam-gia\danh-sach-khach-giam-gia-service.js" />
     <Content Include="App_Themes\Ann\js\sync-product-small.js" />
     <Content Include="App_Themes\Ann\js\sync-product.js" />
     <Content Include="App_Themes\Ann\js\HoldOn.js" />
@@ -406,22 +512,110 @@
     <Content Include="App_Themes\NewUI\js\uniform\jquery.uniform.min.js" />
     <Content Include="App_Themes\NewUI\js\waves\waves.js" />
     <Content Include="App_Themes\NewUI\js\waves\waves.min.js" />
+    <Content Include="bc.aspx" />
     <Content Include="bao-cao.aspx" />
     <Content Include="bv.aspx" />
+    <Content Include="Content\bootstrap-datetimepicker.css" />
+    <Content Include="Content\bootstrap-datetimepicker.min.css" />
+    <Content Include="Content\bootstrap-tagsinput-typeahead.css" />
+    <Content Include="Content\bootstrap-tagsinput.css" />
+    <Content Include="Content\bootstrap-theme.css" />
+    <Content Include="Content\bootstrap-theme.min.css" />
+    <Content Include="Content\bootstrap-toggle.css" />
+    <Content Include="Content\bootstrap-toggle.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\bootstrap2-toggle.css" />
+    <Content Include="Content\bootstrap2-toggle.min.css" />
+    <Content Include="Content\typeahead.css" />
+    <Content Include="danh-sach-thong-bao.aspx" />
+    <Content Include="danh-sach-bai-viet-app.aspx" />
+    <Content Include="kh.aspx" />
+    <Content Include="Models\IMModel.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>IMModel.edmx</DependentUpon>
+      <LastGenOutput>IMModel.Context.cs</LastGenOutput>
+    </Content>
+    <Content Include="Models\IMModel.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>IMModel.edmx</DependentUpon>
+      <LastGenOutput>IMModel.cs</LastGenOutput>
+    </Content>
+    <Content Include="nuoc-hoa.aspx" />
+    <Content Include="cron-job-product-status.aspx" />
+    <Content Include="tao-phien-kiem-kho.aspx" />
+    <Content Include="Scripts\bloodhound.js" />
+    <Content Include="Scripts\bootstrap-tagsinput-angular.js" />
+    <Content Include="Scripts\bootstrap-tagsinput-angular.min.js" />
+    <Content Include="Scripts\bootstrap-tagsinput.js" />
+    <Content Include="Scripts\bootstrap-tagsinput.min.js" />
+    <Content Include="Scripts\bootstrap-toggle.js" />
+    <Content Include="Scripts\bootstrap-toggle.min.js" />
+    <Content Include="Scripts\bootstrap2-toggle.js" />
+    <Content Include="Scripts\bootstrap2-toggle.min.js" />
+    <Content Include="Scripts\typeahead.bundle.js" />
+    <Content Include="Scripts\typeahead.bundle.min.js" />
+    <Content Include="Scripts\typeahead.jquery.js" />
+    <Content Include="SQL\04CREATE_FUNCTION_GetTagByProductID.sql" />
+    <Content Include="sua-thong-bao.aspx" />
+    <Content Include="sua-bai-viet-app.aspx" />
+    <Content Include="tao-thong-bao.aspx" />
+    <Content Include="tao-bai-viet-app.aspx" />
+    <Content Include="thong-ke-khach-hang.aspx" />
+    <Content Include="thong-ke-buu-dien.aspx" />
+    <Content Include="nhan-vien-dat-hang.aspx" />
+    <Content Include="danh-sach-dang-ky.aspx" />
+    <Content Include="danh-sach-nhap-hang.aspx" />
+    <Content Include="danh-sach-van-chuyen.aspx" />
+    <Content Include="danh-sach-chuyen-khoan.aspx" />
     <Content Include="FilesResources\ToolContentAccount.xml" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="login-hidden-page.aspx" />
+    <Content Include="print-delivery.aspx" />
+    <Content Include="dang-ky-nhap-hang.aspx" />
+    <Content Include="Scripts\bootstrap-datetimepicker.js" />
+    <Content Include="Scripts\bootstrap-datetimepicker.min.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
+    <Content Include="fonts\glyphicons-halflings-regular.woff" />
+    <Content Include="fonts\glyphicons-halflings-regular.ttf" />
+    <Content Include="fonts\glyphicons-halflings-regular.eot" />
+    <Content Include="Content\bootstrap.css.map" />
+    <Content Include="Content\bootstrap-theme.css.map" />
+    <Content Include="App_Code\GlyphIcon.cshtml" />
+    <Content Include="App_Themes\Ann\css\bootstrap\glyphicons-halflings-regular.eot" />
+    <Content Include="App_Themes\Ann\css\bootstrap\glyphicons-halflings-regular.ttf" />
+    <Content Include="App_Themes\Ann\css\bootstrap\glyphicons-halflings-regular.woff" />
+    <Content Include="Content\bootstrap-tagsinput.less" />
+    <EntityDeploy Include="Models\IMModel.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>IMModel.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <Content Include="Models\IMModel.edmx.diagram">
+      <DependentUpon>IMModel.edmx</DependentUpon>
+    </Content>
     <None Include="Properties\PublishProfiles\ANN.pubxml" />
+    <Content Include="Scripts\bootstrap2-toggle.min.js.map" />
+    <Content Include="Scripts\bootstrap-toggle.min.js.map" />
+    <Content Include="Scripts\bootstrap-tagsinput.min.js.map" />
+    <Content Include="Scripts\bootstrap-tagsinput-angular.min.js.map" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
+    <None Include="Scripts\jquery.validate-vsdoc.js" />
+    <Content Include="Scripts\jquery.validate.js" />
+    <Content Include="Scripts\jquery.validate.min.js" />
+    <Content Include="Scripts\jquery.validate.unobtrusive.js" />
+    <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
+    <Content Include="Scripts\moment-with-locales.js" />
+    <Content Include="Scripts\moment-with-locales.min.js" />
+    <Content Include="Scripts\moment.js" />
+    <Content Include="Scripts\moment.min.js" />
+    <Content Include="Scripts\npm.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
+    <Content Include="Scripts\uuid.js" />
     <Content Include="sua-thong-tin-nha-xe.aspx" />
     <Content Include="chi-tiet-nha-xe.aspx" />
     <Content Include="chi-tiet-noi-den-nha-xe.aspx" />
@@ -445,7 +639,6 @@
     <Content Include="dang-xuat.aspx" />
     <Content Include="danh-sach-anh-san-pham.aspx" />
     <Content Include="danh-sach-chiet-khau.aspx" />
-    <Content Include="danh-sach-chuyen-hang.aspx" />
     <Content Include="danh-sach-don-hang.aspx" />
     <Content Include="danh-sach-don-tra-hang.aspx" />
     <Content Include="danh-sach-nhom-khach-hang.aspx" />
@@ -459,6 +652,7 @@
     <Content Include="Account\Web.config" />
     <Content Include="ApplicationInsights.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="print-shipping-note.aspx" />
     <Content Include="lich-su-kho.aspx" />
@@ -476,6 +670,9 @@
     <Content Include="sp.aspx" />
     <Content Include="danh-sach-bai-viet.aspx" />
     <Content Include="tao-bai-viet.aspx" />
+    <Content Include="bao-cao-nhan-vien.aspx" />
+    <Content Include="thong-ke-nhap-kho.aspx" />
+    <Content Include="uploadf.aspx" />
     <Content Include="them-chiet-khau.aspx" />
     <Content Include="them-danh-muc.aspx" />
     <Content Include="tao-don-hang-doi-tra.aspx" />
@@ -484,24 +681,20 @@
     <Content Include="them-moi-noi-den-nha-xe.aspx" />
     <Content Include="thong-ke-san-pham.aspx" />
     <Content Include="thong-ke-nhan-vien.aspx" />
-    <Content Include="thong-ke-phi-van-chuyen.aspx" />
     <Content Include="thong-tin-don-hang-chuyen-hoan.aspx" />
     <Content Include="sua-bai-viet.aspx" />
+    <Content Include="uploads\avatars\no-avatar.png" />
+    <Content Include="xem-thong-bao.aspx" />
+    <Content Include="xem-bai-viet-app.aspx" />
     <Content Include="xem-don-hang-doi-tra.aspx" />
     <Content Include="xem-bai-viet.aspx" />
     <Content Include="xem-bv.aspx" />
+    <Content Include="xem-nuoc-hoa.aspx" />
     <Content Include="xem-sp.aspx" />
     <Content Include="xem-san-pham.aspx" />
-    <EntityDeploy Include="Models\IMModel.edmx">
-      <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>IMModel.Designer.cs</LastGenOutput>
-    </EntityDeploy>
     <Content Include="getImageByLink.aspx" />
     <Content Include="gia-tri-thuoc-tinh-san-pham.aspx" />
     <Content Include="kiem-kho.aspx" />
-    <Content Include="Models\IMModel.edmx.diagram">
-      <DependentUpon>IMModel.edmx</DependentUpon>
-    </Content>
     <Content Include="App_Themes\Ann\css\accepted.exceptions.php" />
     <Content Include="App_Themes\Ann\css\style.css.map" />
     <Content Include="App_Themes\Ann\fonts\font-awesome-4.7\fonts\fontawesome-webfont.eot" />
@@ -550,19 +743,6 @@
     <None Include="compilerconfig.json.defaults">
       <DependentUpon>compilerconfig.json</DependentUpon>
     </None>
-    <Content Include="fonts\glyphicons-halflings-regular.woff" />
-    <Content Include="fonts\glyphicons-halflings-regular.ttf" />
-    <Content Include="fonts\glyphicons-halflings-regular.eot" />
-    <Content Include="Models\IMModel.Context.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>IMModel.edmx</DependentUpon>
-      <LastGenOutput>IMModel.Context.cs</LastGenOutput>
-    </Content>
-    <Content Include="Models\IMModel.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>IMModel.edmx</DependentUpon>
-      <LastGenOutput>IMModel.cs</LastGenOutput>
-    </Content>
     <Content Include="pos.aspx" />
     <Content Include="quan-ly-dai-ly.aspx" />
     <Content Include="quan-ly-danh-muc-san-pham.aspx" />
@@ -597,7 +777,6 @@
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Site.Master" />
-    <Content Include="tao-lenh-chuyen-hang.aspx" />
     <Content Include="tao-ma-vach.aspx" />
     <Content Include="tao-san-pham.aspx" />
     <Content Include="tat-ca-nhan-vien.aspx" />
@@ -614,12 +793,9 @@
     <Content Include="them-moi-thuoc-tinh.aspx" />
     <Content Include="them-nhan-vien.aspx" />
     <Content Include="them-thuoc-tinh-san-pham.aspx" />
-    <Content Include="thong-ke-chiet-khau.aspx" />
     <Content Include="thong-ke-doanh-thu.aspx" />
-    <Content Include="thong-ke-khach-hang.aspx" />
     <Content Include="thong-ke-loi-nhuan.aspx" />
-    <Content Include="thong-ke-so-luong-hang-doi-tra.aspx" />
-    <Content Include="thong-ke-so-luong-san-pham-ban-ra.aspx" />
+    <Content Include="thong-ke-san-luong.aspx" />
     <Content Include="thong-ke-so-luong-ton-kho-theo-danh-muc.aspx" />
     <Content Include="thong-tin-anh-san-pham.aspx" />
     <Content Include="thong-tin-dai-ly.aspx" />
@@ -637,9 +813,12 @@
       <SubType>Designer</SubType>
     </Content>
     <Content Include="Bundle.config" />
-    <Content Include="packages.config" />
+    <Content Include="packages.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Site.Mobile.Master" />
     <Content Include="Scripts\jquery-1.10.2.min.map" />
+    <Content Include="DeliveryHandler.ashx" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -760,8 +939,16 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\IdentityConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="App_Start\Start.CronJob.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="bc.aspx.cs">
+      <DependentUpon>bc.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="bc.aspx.designer.cs">
+      <DependentUpon>bc.aspx</DependentUpon>
+    </Compile>
     <Compile Include="bao-cao.aspx.cs">
       <DependentUpon>bao-cao.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -769,15 +956,233 @@
     <Compile Include="bao-cao.aspx.designer.cs">
       <DependentUpon>bao-cao.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Controllers\UserController.cs" />
+    <Compile Include="Controllers\CategoryController.cs" />
+    <Compile Include="Controllers\CategoryShelfController.cs" />
+    <Compile Include="Controllers\CouponController.cs" />
+    <Compile Include="Controllers\CronJobController.cs" />
+    <Compile Include="Controllers\DeliveryProshipController.cs" />
+    <Compile Include="Controllers\DeliveryPostOfficeController.cs" />
+    <Compile Include="Controllers\NotifyCategoryController.cs" />
+    <Compile Include="Controllers\PostPublicImageController.cs" />
+    <Compile Include="Controllers\PostPublicCategoryController.cs" />
+    <Compile Include="Controllers\NotifyController.cs" />
+    <Compile Include="Controllers\PostPublicController.cs" />
+    <Compile Include="Controllers\ProductTagController.cs" />
+    <Compile Include="Controllers\RegisterController.cs" />
+    <Compile Include="Controllers\BankAccountController.cs" />
+    <Compile Include="Controllers\BankController.cs" />
+    <Compile Include="Controllers\DeliveryController.cs" />
+    <Compile Include="Controllers\BankTransferController.cs" />
+    <Compile Include="Controllers\FeeController.cs" />
+    <Compile Include="Controllers\FeeTypeController.cs" />
     <Compile Include="Controllers\PostCategoryController.cs" />
     <Compile Include="Controllers\PostController.cs" />
     <Compile Include="Controllers\PostImageController.cs" />
-    <Compile Include="login-hidden-page.aspx.cs">
-      <DependentUpon>login-hidden-page.aspx</DependentUpon>
+    <Compile Include="Controllers\RegisterProductController.cs" />
+    <Compile Include="Controllers\SessionController.cs" />
+    <Compile Include="Controllers\ShipperController.cs" />
+    <Compile Include="Controllers\TagController.cs" />
+    <Compile Include="CronJob\RunScheduleProductStatus.cs" />
+    <Compile Include="CronJob\CreateScheduleProductStatus.cs" />
+    <Compile Include="danh-sach-thong-bao.aspx.cs">
+      <DependentUpon>danh-sach-thong-bao.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="login-hidden-page.aspx.designer.cs">
-      <DependentUpon>login-hidden-page.aspx</DependentUpon>
+    <Compile Include="danh-sach-thong-bao.aspx.designer.cs">
+      <DependentUpon>danh-sach-thong-bao.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="danh-sach-bai-viet-app.aspx.cs">
+      <DependentUpon>danh-sach-bai-viet-app.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="danh-sach-bai-viet-app.aspx.designer.cs">
+      <DependentUpon>danh-sach-bai-viet-app.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Bank.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\BankAccount.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\BankTransfer.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\CheckWarehouse.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\CheckWarehouseDetail.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Common\CustomerModel.cs" />
+    <Compile Include="Models\Common\DeliveryProshipFilterModel.cs" />
+    <Compile Include="Models\Common\DeliveryPostOfficeFilterModel.cs" />
+    <Compile Include="Models\Common\DiscountGroupModel.cs" />
+    <Compile Include="Models\Common\OrderModel.cs" />
+    <Compile Include="Models\Common\TagModel.cs" />
+    <Compile Include="Models\Coupon.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\CronJob.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\CronJobProductStatu.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\CustomerCoupon.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\CustomerEditOrder.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Delivery.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\DeliveryPostOffice.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Fee.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\FeeType.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\GroupNotifyPromotion.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\IMModel.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>IMModel.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\IMModel.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\IMModel.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>IMModel.edmx</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Notification.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\NotificationCategory.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\NotifyNew.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\NotifyPromotion.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\NotifyUser.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Pages\cron-job-product-status\FilterModel.cs" />
+    <Compile Include="Models\Pages\cron-job-product-status\ProductModel.cs" />
+    <Compile Include="Models\Pages\danh-sach-nhom-khach-hang\DiscountGroupModel.cs" />
+    <Compile Include="Models\Pages\ExecuteAPI\ResponseProductStatusModel.cs" />
+    <Compile Include="Models\Pages\thong-ke-doanh-thu-khach-hang\CustomerModel.cs" />
+    <Compile Include="Models\Pages\thong-ke-doanh-thu-khach-hang\OrderInfoModel.cs" />
+    <Compile Include="Models\Pages\thong-ke-doanh-thu-khach-hang\ReportProfitCustomerModel.cs" />
+    <Compile Include="kh.aspx.cs">
+      <DependentUpon>kh.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="kh.aspx.designer.cs">
+      <DependentUpon>kh.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Models\PostCategory.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\PostPublic.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\PostPublicImage.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\ProductTag.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\ReceivedProductHistory.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Register.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\RegisterProduct.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Session.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Shipper.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Tag.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\tbl_Account.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\tbl_AccountInfo.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\tbl_Agent.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\tbl_AgentProduct.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\tbl_AgentProductVariable.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\tbl_Category.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\tbl_CheckWarehouse.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\tbl_CheckWarehouseDetail.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\tbl_Config.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\tbl_Customer.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\tbl_CustomerLevel.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\tbl_Discount.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\tbl_DiscountCustomer.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\tbl_DiscountGroup.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\tbl_LinkImnage.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\tbl_MovePro.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\tbl_MoveProdDetail.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\tbl_Order.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\tbl_OrderDetail.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\tbl_OrderReturnGood.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\tbl_Post.cs">
       <DependentUpon>IMModel.tt</DependentUpon>
@@ -788,12 +1193,192 @@
     <Compile Include="Models\tbl_PostImage.cs">
       <DependentUpon>IMModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\tbl_Product.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\tbl_ProductImage.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\tbl_ProductVariable.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\tbl_ProductVariableImage.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\tbl_ProductVariableValue.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\tbl_Province.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\tbl_RefundGoods.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\tbl_RefundGoodsDetails.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\tbl_Role.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\tbl_SessionInOu.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\tbl_StockManager.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\tbl_Supplier.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\tbl_TransportCompany.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\tbl_Variable.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\tbl_VariableValue.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\tbl_WhiteDomain.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\User.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\UserNotifyPromotion.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="nuoc-hoa.aspx.cs">
+      <DependentUpon>nuoc-hoa.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="nuoc-hoa.aspx.designer.cs">
+      <DependentUpon>nuoc-hoa.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="cron-job-product-status.aspx.cs">
+      <DependentUpon>cron-job-product-status.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="cron-job-product-status.aspx.designer.cs">
+      <DependentUpon>cron-job-product-status.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="tao-phien-kiem-kho.aspx.cs">
+      <DependentUpon>tao-phien-kiem-kho.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="tao-phien-kiem-kho.aspx.designer.cs">
+      <DependentUpon>tao-phien-kiem-kho.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="sua-thong-bao.aspx.cs">
+      <DependentUpon>sua-thong-bao.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="sua-thong-bao.aspx.designer.cs">
+      <DependentUpon>sua-thong-bao.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="sua-bai-viet-app.aspx.cs">
+      <DependentUpon>sua-bai-viet-app.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="sua-bai-viet-app.aspx.designer.cs">
+      <DependentUpon>sua-bai-viet-app.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="tao-thong-bao.aspx.cs">
+      <DependentUpon>tao-thong-bao.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="tao-thong-bao.aspx.designer.cs">
+      <DependentUpon>tao-thong-bao.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="tao-bai-viet-app.aspx.cs">
+      <DependentUpon>tao-bai-viet-app.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="tao-bai-viet-app.aspx.designer.cs">
+      <DependentUpon>tao-bai-viet-app.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="thong-ke-khach-hang.aspx.cs">
+      <DependentUpon>thong-ke-khach-hang.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="thong-ke-khach-hang.aspx.designer.cs">
+      <DependentUpon>thong-ke-khach-hang.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="thong-ke-buu-dien.aspx.cs">
+      <DependentUpon>thong-ke-buu-dien.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="thong-ke-buu-dien.aspx.designer.cs">
+      <DependentUpon>thong-ke-buu-dien.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="nhan-vien-dat-hang.aspx.cs">
+      <DependentUpon>nhan-vien-dat-hang.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="nhan-vien-dat-hang.aspx.designer.cs">
+      <DependentUpon>nhan-vien-dat-hang.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="danh-sach-dang-ky.aspx.cs">
+      <DependentUpon>danh-sach-dang-ky.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="danh-sach-dang-ky.aspx.designer.cs">
+      <DependentUpon>danh-sach-dang-ky.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="danh-sach-nhap-hang.aspx.cs">
+      <DependentUpon>danh-sach-nhap-hang.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="danh-sach-nhap-hang.aspx.designer.cs">
+      <DependentUpon>danh-sach-nhap-hang.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="danh-sach-van-chuyen.aspx.cs">
+      <DependentUpon>danh-sach-van-chuyen.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="danh-sach-van-chuyen.aspx.designer.cs">
+      <DependentUpon>danh-sach-van-chuyen.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="danh-sach-chuyen-khoan.aspx.cs">
+      <DependentUpon>danh-sach-chuyen-khoan.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="danh-sach-chuyen-khoan.aspx.designer.cs">
+      <DependentUpon>danh-sach-chuyen-khoan.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="login-hidden-page.aspx.cs">
+      <DependentUpon>login-hidden-page.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="login-hidden-page.aspx.designer.cs">
+      <DependentUpon>login-hidden-page.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Common\BusinessReportModel.cs" />
+    <Compile Include="Models\Common\AllTypeModel.cs" />
+    <Compile Include="Models\Common\PaginationMetadataModel.cs" />
+    <Compile Include="Models\Common\OrderFilterModel.cs" />
+    <Compile Include="Models\Common\ProductFilterModel.cs" />
     <Compile Include="bv.aspx.cs">
       <DependentUpon>bv.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="bv.aspx.designer.cs">
       <DependentUpon>bv.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Common\RegisterProductFilterModel.cs" />
+    <Compile Include="Models\Pages\thong-ke-nhap-kho\GoodsReceiptReport.cs" />
+    <Compile Include="print-delivery.aspx.cs">
+      <DependentUpon>print-delivery.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="print-delivery.aspx.designer.cs">
+      <DependentUpon>print-delivery.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="dang-ky-nhap-hang.aspx.cs">
+      <DependentUpon>dang-ky-nhap-hang.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="dang-ky-nhap-hang.aspx.designer.cs">
+      <DependentUpon>dang-ky-nhap-hang.aspx</DependentUpon>
     </Compile>
     <Compile Include="sua-thong-tin-nha-xe.aspx.cs">
       <DependentUpon>sua-thong-tin-nha-xe.aspx</DependentUpon>
@@ -836,18 +1421,6 @@
     <Compile Include="Models\ProfitReportModel.cs" />
     <Compile Include="Models\RefundDetailModel.cs" />
     <Compile Include="Models\RefundGoodModel.cs" />
-    <Compile Include="Models\tbl_Customer.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\tbl_Order.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\tbl_StockManager.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\tbl_TransportCompany.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
-    </Compile>
     <Compile Include="print-invoice-return.aspx.cs">
       <DependentUpon>print-invoice-return.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -949,7 +1522,6 @@
     <Compile Include="Controllers\AgentController.cs" />
     <Compile Include="Controllers\AgentProductController.cs" />
     <Compile Include="Controllers\AgentProductVariableController.cs" />
-    <Compile Include="Controllers\CategoryController.cs" />
     <Compile Include="Controllers\CheckWarehouseController.cs" />
     <Compile Include="Controllers\CheckWarehouseDetailController.cs" />
     <Compile Include="Controllers\ConfigController.cs" />
@@ -1004,13 +1576,6 @@
     </Compile>
     <Compile Include="danh-sach-chiet-khau.aspx.designer.cs">
       <DependentUpon>danh-sach-chiet-khau.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="danh-sach-chuyen-hang.aspx.cs">
-      <DependentUpon>danh-sach-chuyen-hang.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="danh-sach-chuyen-hang.aspx.designer.cs">
-      <DependentUpon>danh-sach-chuyen-hang.aspx</DependentUpon>
     </Compile>
     <Compile Include="danh-sach-don-hang.aspx.cs">
       <DependentUpon>danh-sach-don-hang.aspx</DependentUpon>
@@ -1107,120 +1672,6 @@
       <DependentUpon>MasterPage.Master</DependentUpon>
     </Compile>
     <Compile Include="Models\IdentityModels.cs" />
-    <Compile Include="Models\IMModel.Context.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>IMModel.Context.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\IMModel.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>IMModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\IMModel.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>IMModel.edmx</DependentUpon>
-    </Compile>
-    <Compile Include="Models\tbl_Account.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\tbl_AccountInfo.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\tbl_Agent.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\tbl_AgentProduct.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\tbl_AgentProductVariable.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\tbl_Category.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\tbl_CheckWarehouse.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\tbl_CheckWarehouseDetail.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\tbl_Config.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\tbl_CustomerLevel.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\tbl_Discount.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\tbl_DiscountCustomer.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\tbl_DiscountGroup.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\tbl_LinkImnage.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\tbl_MovePro.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\tbl_MoveProdDetail.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\tbl_OrderDetail.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\tbl_OrderReturnGood.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\tbl_Product.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\tbl_ProductImage.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\tbl_ProductVariable.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\tbl_ProductVariableImage.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\tbl_ProductVariableValue.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\tbl_Province.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\tbl_RefundGoods.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\tbl_RefundGoodsDetails.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\tbl_Role.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\tbl_SessionInOu.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\tbl_Supplier.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\tbl_Variable.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\tbl_VariableValue.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\tbl_WhiteDomain.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\View_ProductList.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
-    </Compile>
     <Compile Include="pos.aspx.cs">
       <DependentUpon>pos.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -1311,13 +1762,6 @@
       <DependentUpon>Site.Mobile.Master</DependentUpon>
     </Compile>
     <Compile Include="Startup.cs" />
-    <Compile Include="tao-lenh-chuyen-hang.aspx.cs">
-      <DependentUpon>tao-lenh-chuyen-hang.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="tao-lenh-chuyen-hang.aspx.designer.cs">
-      <DependentUpon>tao-lenh-chuyen-hang.aspx</DependentUpon>
-    </Compile>
     <Compile Include="tao-ma-vach.aspx.cs">
       <DependentUpon>tao-ma-vach.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -1331,6 +1775,27 @@
     </Compile>
     <Compile Include="tao-bai-viet.aspx.designer.cs">
       <DependentUpon>tao-bai-viet.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="bao-cao-nhan-vien.aspx.cs">
+      <DependentUpon>bao-cao-nhan-vien.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="bao-cao-nhan-vien.aspx.designer.cs">
+      <DependentUpon>bao-cao-nhan-vien.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="thong-ke-nhap-kho.aspx.cs">
+      <DependentUpon>thong-ke-nhap-kho.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="thong-ke-nhap-kho.aspx.designer.cs">
+      <DependentUpon>thong-ke-nhap-kho.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="uploadf.aspx.cs">
+      <DependentUpon>uploadf.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="uploadf.aspx.designer.cs">
+      <DependentUpon>uploadf.aspx</DependentUpon>
     </Compile>
     <Compile Include="tao-san-pham.aspx.cs">
       <DependentUpon>tao-san-pham.aspx</DependentUpon>
@@ -1493,13 +1958,6 @@
     <Compile Include="them-thuoc-tinh-san-pham.aspx.designer.cs">
       <DependentUpon>them-thuoc-tinh-san-pham.aspx</DependentUpon>
     </Compile>
-    <Compile Include="thong-ke-chiet-khau.aspx.cs">
-      <DependentUpon>thong-ke-chiet-khau.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="thong-ke-chiet-khau.aspx.designer.cs">
-      <DependentUpon>thong-ke-chiet-khau.aspx</DependentUpon>
-    </Compile>
     <Compile Include="thong-ke-san-pham.aspx.cs">
       <DependentUpon>thong-ke-san-pham.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -1521,13 +1979,6 @@
     <Compile Include="thong-ke-doanh-thu.aspx.designer.cs">
       <DependentUpon>thong-ke-doanh-thu.aspx</DependentUpon>
     </Compile>
-    <Compile Include="thong-ke-khach-hang.aspx.cs">
-      <DependentUpon>thong-ke-khach-hang.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="thong-ke-khach-hang.aspx.designer.cs">
-      <DependentUpon>thong-ke-khach-hang.aspx</DependentUpon>
-    </Compile>
     <Compile Include="thong-ke-loi-nhuan.aspx.cs">
       <DependentUpon>thong-ke-loi-nhuan.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -1535,26 +1986,12 @@
     <Compile Include="thong-ke-loi-nhuan.aspx.designer.cs">
       <DependentUpon>thong-ke-loi-nhuan.aspx</DependentUpon>
     </Compile>
-    <Compile Include="thong-ke-phi-van-chuyen.aspx.cs">
-      <DependentUpon>thong-ke-phi-van-chuyen.aspx</DependentUpon>
+    <Compile Include="thong-ke-san-luong.aspx.cs">
+      <DependentUpon>thong-ke-san-luong.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="thong-ke-phi-van-chuyen.aspx.designer.cs">
-      <DependentUpon>thong-ke-phi-van-chuyen.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="thong-ke-so-luong-hang-doi-tra.aspx.cs">
-      <DependentUpon>thong-ke-so-luong-hang-doi-tra.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="thong-ke-so-luong-hang-doi-tra.aspx.designer.cs">
-      <DependentUpon>thong-ke-so-luong-hang-doi-tra.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="thong-ke-so-luong-san-pham-ban-ra.aspx.cs">
-      <DependentUpon>thong-ke-so-luong-san-pham-ban-ra.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="thong-ke-so-luong-san-pham-ban-ra.aspx.designer.cs">
-      <DependentUpon>thong-ke-so-luong-san-pham-ban-ra.aspx</DependentUpon>
+    <Compile Include="thong-ke-san-luong.aspx.designer.cs">
+      <DependentUpon>thong-ke-san-luong.aspx</DependentUpon>
     </Compile>
     <Compile Include="thong-ke-so-luong-ton-kho-theo-danh-muc.aspx.cs">
       <DependentUpon>thong-ke-so-luong-ton-kho-theo-danh-muc.aspx</DependentUpon>
@@ -1633,6 +2070,27 @@
     <Compile Include="thong-tin-thuoc-tinh-san-pham.aspx.designer.cs">
       <DependentUpon>thong-tin-thuoc-tinh-san-pham.aspx</DependentUpon>
     </Compile>
+    <Compile Include="DeliveryHandler.ashx.cs">
+      <DependentUpon>DeliveryHandler.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="Utils\Log.cs" />
+    <Compile Include="Utils\Thumbnail.cs" />
+    <Compile Include="Utils\UnSign.cs" />
+    <Compile Include="Utils\Slug.cs" />
+    <Compile Include="xem-thong-bao.aspx.cs">
+      <DependentUpon>xem-thong-bao.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="xem-thong-bao.aspx.designer.cs">
+      <DependentUpon>xem-thong-bao.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="xem-bai-viet-app.aspx.cs">
+      <DependentUpon>xem-bai-viet-app.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="xem-bai-viet-app.aspx.designer.cs">
+      <DependentUpon>xem-bai-viet-app.aspx</DependentUpon>
+    </Compile>
     <Compile Include="xem-don-hang-doi-tra.aspx.cs">
       <DependentUpon>xem-don-hang-doi-tra.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -1682,6 +2140,13 @@
     <Compile Include="xem-bv.aspx.designer.cs">
       <DependentUpon>xem-bv.aspx</DependentUpon>
     </Compile>
+    <Compile Include="xem-nuoc-hoa.aspx.cs">
+      <DependentUpon>xem-nuoc-hoa.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="xem-nuoc-hoa.aspx.designer.cs">
+      <DependentUpon>xem-nuoc-hoa.aspx</DependentUpon>
+    </Compile>
     <Compile Include="xem-sp.aspx.cs">
       <DependentUpon>xem-sp.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -1700,6 +2165,11 @@
   <ItemGroup>
     <Folder Include="App_Themes\NewUI\js\sweet\.sass-cache\" />
     <Folder Include="App_Themes\NewUI\plugins\" />
+    <Folder Include="uploads\barcodes\" />
+    <Folder Include="uploads\deliveries\post_office\" />
+    <Folder Include="uploads\deliveries\proship\" />
+    <Folder Include="uploads\images\" />
+    <Folder Include="uploads\shipping-barcodes\" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
@@ -1739,8 +2209,18 @@
     <Error Condition="!Exists('..\packages\BuildWebCompiler.1.12.394\build\BuildWebCompiler.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\BuildWebCompiler.1.12.394\build\BuildWebCompiler.targets'))" />
     <Error Condition="!Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props'))" />
     <Error Condition="!Exists('..\packages\Microsoft.Net.Compilers.2.4.0\build\Microsoft.Net.Compilers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Net.Compilers.2.4.0\build\Microsoft.Net.Compilers.props'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.ApplicationInsights.DependencyCollector.2.9.0\build\Microsoft.ApplicationInsights.DependencyCollector.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.ApplicationInsights.DependencyCollector.2.9.0\build\Microsoft.ApplicationInsights.DependencyCollector.targets'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.ApplicationInsights.PerfCounterCollector.2.9.0\build\Microsoft.ApplicationInsights.PerfCounterCollector.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.ApplicationInsights.PerfCounterCollector.2.9.0\build\Microsoft.ApplicationInsights.PerfCounterCollector.targets'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.ApplicationInsights.WindowsServer.TelemetryChannel.2.9.0\build\Microsoft.ApplicationInsights.WindowsServer.TelemetryChannel.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.ApplicationInsights.WindowsServer.TelemetryChannel.2.9.0\build\Microsoft.ApplicationInsights.WindowsServer.TelemetryChannel.targets'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.ApplicationInsights.WindowsServer.2.9.0\build\Microsoft.ApplicationInsights.WindowsServer.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.ApplicationInsights.WindowsServer.2.9.0\build\Microsoft.ApplicationInsights.WindowsServer.targets'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.ApplicationInsights.Web.2.9.0\build\Microsoft.ApplicationInsights.Web.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.ApplicationInsights.Web.2.9.0\build\Microsoft.ApplicationInsights.Web.targets'))" />
   </Target>
   <Import Project="..\packages\BuildWebCompiler.1.12.394\build\BuildWebCompiler.targets" Condition="Exists('..\packages\BuildWebCompiler.1.12.394\build\BuildWebCompiler.targets')" />
+  <Import Project="..\packages\Microsoft.ApplicationInsights.DependencyCollector.2.9.0\build\Microsoft.ApplicationInsights.DependencyCollector.targets" Condition="Exists('..\packages\Microsoft.ApplicationInsights.DependencyCollector.2.9.0\build\Microsoft.ApplicationInsights.DependencyCollector.targets')" />
+  <Import Project="..\packages\Microsoft.ApplicationInsights.PerfCounterCollector.2.9.0\build\Microsoft.ApplicationInsights.PerfCounterCollector.targets" Condition="Exists('..\packages\Microsoft.ApplicationInsights.PerfCounterCollector.2.9.0\build\Microsoft.ApplicationInsights.PerfCounterCollector.targets')" />
+  <Import Project="..\packages\Microsoft.ApplicationInsights.WindowsServer.TelemetryChannel.2.9.0\build\Microsoft.ApplicationInsights.WindowsServer.TelemetryChannel.targets" Condition="Exists('..\packages\Microsoft.ApplicationInsights.WindowsServer.TelemetryChannel.2.9.0\build\Microsoft.ApplicationInsights.WindowsServer.TelemetryChannel.targets')" />
+  <Import Project="..\packages\Microsoft.ApplicationInsights.WindowsServer.2.9.0\build\Microsoft.ApplicationInsights.WindowsServer.targets" Condition="Exists('..\packages\Microsoft.ApplicationInsights.WindowsServer.2.9.0\build\Microsoft.ApplicationInsights.WindowsServer.targets')" />
+  <Import Project="..\packages\Microsoft.ApplicationInsights.Web.2.9.0\build\Microsoft.ApplicationInsights.Web.targets" Condition="Exists('..\packages\Microsoft.ApplicationInsights.Web.2.9.0\build\Microsoft.ApplicationInsights.Web.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

@@ -20,9 +20,9 @@ namespace IM_PJ
         {
             if (!IsPostBack)
             {
-                if (Request.Cookies["userLoginSystem"] != null)
+                if (Request.Cookies["usernameLoginSystem"] != null)
                 {
-                    string username = Request.Cookies["userLoginSystem"].Value;
+                    string username = Request.Cookies["usernameLoginSystem"].Value;
                     var acc = AccountController.GetByUsername(username);
                     if (acc != null)
                     {
@@ -51,11 +51,13 @@ namespace IM_PJ
                 pReturnRule2.Content = p.RetailReturnRule;
                 pCSSPrintBarcode.Text = p.CSSPrintBarcode;
                 ddlHideProduct.SelectedValue = p.HideProduct.ToString();
+                ddlViewAllOrders.SelectedValue = p.ViewAllOrders.ToString();
+                ddlViewAllReports.SelectedValue = p.ViewAllReports.ToString();
             }
         }
         protected void btnLogin_Click(object sender, EventArgs e)
         {
-            string username = Request.Cookies["userLoginSystem"].Value;
+            string username = Request.Cookies["usernameLoginSystem"].Value;
             var acc = AccountController.GetByUsername(username);
             string securityCode = txtSecurityCode.Text.Trim();
             if (acc != null)
@@ -84,7 +86,21 @@ namespace IM_PJ
                         }
                     }
 
-                    ConfigController.Update(1, Convert.ToDouble(pNumOfDateToChangeProduct.Value), Convert.ToDouble(pNumOfProductCanChange.Value), Convert.ToDouble(pFeeChangeProduct.Value), 0, pReturnRule1.Content, pReturnRule2.Content, DateTime.Now, username, pCSSPrintBarcode.Text, Convert.ToInt32(ddlHideProduct.SelectedValue));
+                    ConfigController.Update(
+                        1, 
+                        Convert.ToDouble(pNumOfDateToChangeProduct.Value), 
+                        Convert.ToDouble(pNumOfProductCanChange.Value), 
+                        Convert.ToDouble(pFeeChangeProduct.Value), 
+                        0, 
+                        pReturnRule1.Content, 
+                        pReturnRule2.Content, 
+                        DateTime.Now, 
+                        username, 
+                        pCSSPrintBarcode.Text, 
+                        Convert.ToInt32(ddlHideProduct.SelectedValue),
+                        Convert.ToInt32(ddlViewAllOrders.SelectedValue),
+                        Convert.ToInt32(ddlViewAllReports.SelectedValue)
+                        );
 
                     PJUtils.ShowMessageBoxSwAlert("Cập nhật thành công", "s", true, Page);
                 }

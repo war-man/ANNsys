@@ -1,9 +1,15 @@
-﻿<%@ Page Title="Tạo sản phẩm" Language="C#" MasterPageFile="~/MasterPage.Master" AutoEventWireup="true" CodeBehind="tao-san-pham.aspx.cs" Inherits="IM_PJ.tao_san_pham" EnableSessionState="ReadOnly" %>
+﻿<%@ Page Title="Thêm sản phẩm" Language="C#" MasterPageFile="~/MasterPage.Master" AutoEventWireup="true" CodeBehind="tao-san-pham.aspx.cs" Inherits="IM_PJ.tao_san_pham" EnableSessionState="ReadOnly" %>
 
 <%@ Register Assembly="Telerik.Web.UI" Namespace="Telerik.Web.UI" TagPrefix="telerik" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
+    <link type="text/css" rel="stylesheet" href="Content/bootstrap-tagsinput.css" />
+    <link type="text/css" rel="stylesheet" href="Content/bootstrap-tagsinput-typeahead.css" />
+    <link type="text/css" rel="stylesheet" href="Content/typeahead.css" />
     <style>
+        .select2-container {
+            width: 100%!important;
+        }
         .variableselect {
             float: left;
             width: 100%;
@@ -14,51 +20,51 @@
         .variable-select {
             float: left;
             width: 30%;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
             border: solid 1px #4a4a4a;
-            margin-left: 10px;
+            margin-right: 15px;
         }
 
-            .variable-select .variablename {
-                float: left;
-                width: 100%;
-                margin-right: 10px;
-                background: blue;
-                color: #fff;
-                text-align: center;
-                padding: 10px 0;
-                line-height: 40px;
-            }
+        .variable-select .variablename {
+            float: left;
+            width: 100%;
+            margin-right: 10px;
+            background: blue;
+            color: #fff;
+            text-align: center;
+            padding: 10px 0;
+            line-height: 40px;
+        }
 
-            .variable-select .variablevalue {
-                float: left;
-                width: 100%;
-                padding: 10px;
-            }
+        .variable-select .variablevalue {
+            float: left;
+            width: 100%;
+            padding: 10px;
+        }
 
-                .variable-select .variablevalue .variablevalue-item {
-                    float: left;
-                    width: 100%;
-                    clear: both;
-                    margin-bottom: 10px;
-                    border-bottom: solid 1px #ccc;
-                    padding-bottom: 5px;
-                }
+        .variable-select .variablevalue .variablevalue-item {
+            float: left;
+            width: 100%;
+            clear: both;
+            margin-bottom: 10px;
+            border-bottom: solid 1px #ccc;
+            padding-bottom: 5px;
+        }
 
-                    .variable-select .variablevalue .variablevalue-item:last-child {
-                        border: none;
-                    }
+        .variable-select .variablevalue .variablevalue-item:last-child {
+            border: none;
+        }
 
-                    .variable-select .variablevalue .variablevalue-item .v-value {
-                        float: left;
-                        width: 78%;
-                        line-height: 40px;
-                    }
+        .variable-select .variablevalue .variablevalue-item .v-value {
+            float: left;
+            width: 78%;
+            line-height: 40px;
+        }
 
-                    .variable-select .variablevalue .variablevalue-item .v-delete {
-                        float: left;
-                        width: 20%;
-                    }
+        .variable-select .variablevalue .variablevalue-item .v-delete {
+            float: left;
+            width: 20%;
+        }
 
         #selectvariabletitle {
             float: left;
@@ -77,13 +83,74 @@
         .width {
             width: calc(100% - 100px);
         }
+        .variable-name-select {
+            float: left; 
+            width: 30%; 
+            padding-right: 15px;
+        }
+        .variable-value-select {
+            float: left; 
+            width: 30%; 
+            padding-right: 15px;
+        }
+        .variable-button-select {
+            float: left; 
+            width: 30%;
+            padding-right: 15px;
+        }
+        .generat-variable-content {
+            float: left;
+            width: 100%;
+            margin: 20px 0;
+            display: none;
+        }
+        .generat-variable-content .item-var-gen {
+            float: left;
+            width: 100%;
+            margin: 15px 0;
+            border: dotted 1px #ccc;
+            padding: 15px 0;
+        }
+
+        .bootstrap-tagsinput {
+            width: 100%;
+        }
+
+        .bootstrap-tagsinput .label {
+            font-size: 100%;
+        }
+
+        .bootstrap-tagsinput .twitter-typeahead input {
+            margin-top: 5px;
+        }
+
+        .bootstrap-tagsinput input {
+            width: 100%
+        }
+
+        @media (max-width: 769px) {
+            .RadUpload .ruInputs li {
+                width: 100%;
+            }
+            .variable-select {
+                width: 100%;
+            }
+            #selectvariabletitle {
+                width: 100%;
+            }
+            .variable-name-select, .variable-value-select, .variable-button-select {
+                width: 100%;
+                padding-top: 15px;
+                padding-right: 0;
+            }
+        }
     </style>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <main id="main-wrap">
         <div class="container">
             <div class="row">
-                <div class="col-md-12">
+                <div class="col-md-9">
                     <div class="panel panelborderheading">
                         <div class="panel-heading clear">
                             <h3 class="page-title left not-margin-bot">Thêm sản phẩm</h3>
@@ -92,7 +159,6 @@
                             <div class="form-row">
                                 <asp:Label ID="lblError" runat="server" Visible="false" ForeColor="Red"></asp:Label>
                             </div>
-
                             <div class="form-row">
                                 <div class="row-left">
                                     Tên sản phẩm
@@ -102,7 +168,6 @@
                                     <asp:TextBox ID="txtProductTitle" runat="server" CssClass="form-control" placeholder="Tên sản phẩm" autocomplete="off"></asp:TextBox>
                                 </div>
                             </div>
-
                             <div class="form-row">
                                 <div class="row-left">
                                     Danh mục
@@ -130,7 +195,6 @@
                                     <asp:TextBox ID="txtMaterials" runat="server" CssClass="form-control" placeholder="Chất liệu"></asp:TextBox>
                                 </div>
                             </div>
-
                             <div class="form-row">
                                 <div class="row-left">
                                     Loại sản phẩm
@@ -142,7 +206,90 @@
                                     </select>
                                 </div>
                             </div>
-
+                            <div class="form-row main-color">
+                                <div class="row-left">
+                                    Màu chủ đạo
+                                </div>
+                                <div class="row-right">
+                                    <asp:DropDownList ID="ddlColor" runat="server" CssClass="form-control select2" Width="100%">
+                                        <asp:ListItem Value="" Text="Chọn màu chủ đạo"></asp:ListItem>
+                                        <asp:ListItem Value="cam" Text="Cam"></asp:ListItem>
+                                        <asp:ListItem Value="cam tươi" Text="Cam tươi"></asp:ListItem>
+                                        <asp:ListItem Value="cam đất" Text="Cam đất"></asp:ListItem>
+                                        <asp:ListItem Value="cam sữa" Text="Cam sữa"></asp:ListItem>
+                                        <asp:ListItem Value="caro" Text="Caro"></asp:ListItem>
+                                        <asp:ListItem Value="da bò" Text="Da bò"></asp:ListItem>
+                                        <asp:ListItem Value="đen" Text="Đen"></asp:ListItem>
+                                        <asp:ListItem Value="đỏ" Text="Đỏ"></asp:ListItem>
+                                        <asp:ListItem Value="đỏ đô" Text="Đỏ đô"></asp:ListItem>
+                                        <asp:ListItem Value="đỏ tươi" Text="Đỏ tươi"></asp:ListItem>
+                                        <asp:ListItem Value="dưa cải" Text="Dưa cải"></asp:ListItem>
+                                        <asp:ListItem Value="gạch tôm" Text="Gạch tôm"></asp:ListItem>
+                                        <asp:ListItem Value="hồng" Text="Hồng"></asp:ListItem>
+                                        <asp:ListItem Value="hồng cam" Text="Hồng cam"></asp:ListItem>
+                                        <asp:ListItem Value="hồng da" Text="Hồng da"></asp:ListItem>
+                                        <asp:ListItem Value="hồng dâu" Text="Hồng dâu"></asp:ListItem>
+                                        <asp:ListItem Value="hồng phấn" Text="Hồng phấn"></asp:ListItem>
+                                        <asp:ListItem Value="hồng ruốc" Text="Hồng ruốc"></asp:ListItem>
+                                        <asp:ListItem Value="hồng sen" Text="Hồng sen"></asp:ListItem>
+                                        <asp:ListItem Value="kem" Text="Kem"></asp:ListItem>
+                                        <asp:ListItem Value="kem tươi" Text="Kem tươi"></asp:ListItem>
+                                        <asp:ListItem Value="kem đậm" Text="Kem đậm"></asp:ListItem>
+                                        <asp:ListItem Value="kem nhạt" Text="Kem nhạt"></asp:ListItem>
+                                        <asp:ListItem Value="nâu" Text="Nâu"></asp:ListItem>
+                                        <asp:ListItem Value="nho" Text="Nho"></asp:ListItem>
+                                        <asp:ListItem Value="rạch tôm" Text="Rạch tôm"></asp:ListItem>
+                                        <asp:ListItem Value="sọc" Text="Sọc"></asp:ListItem>
+                                        <asp:ListItem Value="tím" Text="Tím"></asp:ListItem>
+                                        <asp:ListItem Value="tím cà" Text="Tím cà"></asp:ListItem>
+                                        <asp:ListItem Value="tím đậm" Text="Tím đậm"></asp:ListItem>
+                                        <asp:ListItem Value="tím xiêm" Text="Tím xiêm"></asp:ListItem>
+                                        <asp:ListItem Value="trắng" Text="Trắng"></asp:ListItem>
+                                        <asp:ListItem Value="trắng-đen" Text="Trắng-đen"></asp:ListItem>
+                                        <asp:ListItem Value="trắng-đỏ" Text="Trắng-đỏ"></asp:ListItem>
+                                        <asp:ListItem Value="trắng-xanh" Text="Trắng-xanh"></asp:ListItem>
+                                        <asp:ListItem Value="vàng" Text="Vàng"></asp:ListItem>
+                                        <asp:ListItem Value="vàng tươi" Text="Vàng tươi"></asp:ListItem>
+                                        <asp:ListItem Value="vàng bò" Text="Vàng bò"></asp:ListItem>
+                                        <asp:ListItem Value="vàng nghệ" Text="Vàng nghệ"></asp:ListItem>
+                                        <asp:ListItem Value="vàng nhạt" Text="Vàng nhạt"></asp:ListItem>
+                                        <asp:ListItem Value="xanh vỏ đậu" Text="Xanh vỏ đậu"></asp:ListItem>
+                                        <asp:ListItem Value="xám" Text="Xám"></asp:ListItem>
+                                        <asp:ListItem Value="xám chì" Text="Xám chì"></asp:ListItem>
+                                        <asp:ListItem Value="xám chuột" Text="Xám chuột"></asp:ListItem>
+                                        <asp:ListItem Value="xám nhạt" Text="Xám nhạt"></asp:ListItem>
+                                        <asp:ListItem Value="xám tiêu" Text="Xám tiêu"></asp:ListItem>
+                                        <asp:ListItem Value="xám xanh" Text="Xám xanh"></asp:ListItem>
+                                        <asp:ListItem Value="xanh biển" Text="Xanh biển"></asp:ListItem>
+                                        <asp:ListItem Value="xanh biển đậm" Text="Xanh biển đậm"></asp:ListItem>
+                                        <asp:ListItem Value="xanh lá chuối" Text="Xanh lá chuối"></asp:ListItem>
+                                        <asp:ListItem Value="xanh cổ vịt" Text="Xanh cổ vịt"></asp:ListItem>
+                                        <asp:ListItem Value="xanh coban" Text="Xanh coban"></asp:ListItem>
+                                        <asp:ListItem Value="xanh da" Text="Xanh da"></asp:ListItem>
+                                        <asp:ListItem Value="xanh dạ quang" Text="Xanh dạ quang"></asp:ListItem>
+                                        <asp:ListItem Value="xanh đen" Text="Xanh đen"></asp:ListItem>
+                                        <asp:ListItem Value="xanh jean" Text="Xanh jean"></asp:ListItem>
+                                        <asp:ListItem Value="xanh lá" Text="Xanh lá"></asp:ListItem>
+                                        <asp:ListItem Value="xanh lá mạ" Text="Xanh lá mạ"></asp:ListItem>
+                                        <asp:ListItem Value="xanh lính" Text="Xanh lính"></asp:ListItem>
+                                        <asp:ListItem Value="xanh lông công" Text="Xanh lông công"></asp:ListItem>
+                                        <asp:ListItem Value="xanh môn" Text="Xanh môn"></asp:ListItem>
+                                        <asp:ListItem Value="xanh ngọc" Text="Xanh ngọc"></asp:ListItem>
+                                        <asp:ListItem Value="xanh rêu" Text="Xanh rêu"></asp:ListItem>
+                                    </asp:DropDownList>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="row-left">
+                                    Loại hàng
+                                </div>
+                                <div class="row-right">
+                                    <asp:DropDownList ID="ddlPreOrder" runat="server" CssClass="form-control">
+                                        <asp:ListItem Text="Hàng có sẵn" Value="0"></asp:ListItem>
+                                        <asp:ListItem Text="Hàng order" Value="1"></asp:ListItem>
+                                    </asp:DropDownList>
+                                </div>
+                            </div>
                             <div class="form-row" id="Minimum">
                                 <div class="row-left">
                                     Tồn kho ít nhất
@@ -166,6 +313,14 @@
                                 <div class="row-right">
                                     <asp:DropDownList ID="ddlSupplier" runat="server" CssClass="form-control">
                                     </asp:DropDownList>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="row-left">
+                                    Giá cũ chưa sale
+                                </div>
+                                <div class="row-right">
+                                    <asp:TextBox type="number" min="0" autocomplete="off" ID="pOld_Price" runat="server" CssClass="form-control" placeholder="Giá sỉ cũ chưa sale"></asp:TextBox>
                                 </div>
                             </div>
                             <div class="form-row">
@@ -202,7 +357,8 @@
                                 <div class="row-right">
                                     <telerik:RadAsyncUpload Skin="Metro" runat="server" ID="ProductThumbnailImage" ChunkSize="0"
                                         Localization-Select="Chọn ảnh" AllowedFileExtensions=".jpeg,.jpg,.png"
-                                        MultipleFileSelection="Disabled" OnClientFileSelected="OnClientFileSelected1" MaxFileInputsCount="1">
+                                        MultipleFileSelection="Disabled" OnClientFileSelected="OnClientFileSelected1" 
+                                        MaxFileInputsCount="1">
                                     </telerik:RadAsyncUpload>
                                     <asp:Image runat="server" ID="ProductThumbnail" Width="200" />
                                     <asp:HiddenField runat="server" ID="ListProductThumbnail" ClientIDMode="Static" />
@@ -218,6 +374,15 @@
                                         <asp:ListItem Text="Không" Value="0"></asp:ListItem>
                                         <asp:ListItem Text="Có" Value="1"></asp:ListItem>
                                     </asp:DropDownList>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="row-left">
+                                    Tags
+                                </div>
+                                <div class="row-right">
+                                    <input type="text" id="txtTag" class="typeahead" data-role="tagsinput" />
+                                    <div id="tagList"></div>
                                 </div>
                             </div>
                             <div class="form-row">
@@ -244,6 +409,20 @@
                                     <div class="hidImage"></div>
                                 </div>
                             </div>
+                            <div class="form-row">
+                                <div class="row-left">
+                                    Ảnh đại diện sạch
+                                </div>
+                                <div class="row-right">
+                                    <telerik:RadAsyncUpload Skin="Metro" runat="server" ID="ProductThumbnailImageClean" ChunkSize="5242880"
+                                        Localization-Select="Chọn ảnh" AllowedFileExtensions=".jpeg,.jpg,.png"
+                                        MultipleFileSelection="Disabled" OnClientFileSelected="OnClientFileSelected1" MaxFileInputsCount="1">
+                                    </telerik:RadAsyncUpload>
+                                    <asp:Image runat="server" ID="ProductThumbnailClean" Width="200" />
+                                    <asp:HiddenField runat="server" ID="ListProductThumbnailClean" ClientIDMode="Static" />
+                                    <div class="hidProductThumbnailClean"></div>
+                                </div>
+                            </div>
                             <div class="form-row variable" style="display: none">
                                 <div class="row-left">
                                     Thuộc tính
@@ -251,47 +430,29 @@
                                 <div class="row-right">
                                     <asp:UpdatePanel ID="up" runat="server">
                                         <ContentTemplate>
-                                            <div style="float: left; width: 30%; margin-left: 10px;">
-                                                <asp:DropDownList runat="server" ID="ddlVariablename" CssClass="form-control" DataTextField="VariableName"
-                                                    DataValueField="ID" AppendDataBoundItems="True" AutoPostBack="True" OnSelectedIndexChanged="ddlVariablename_SelectedIndexChanged" />
+                                            <div class="variable-name-select">
+                                                <asp:DropDownList runat="server" ID="ddlVariablename" CssClass="form-control" DataTextField="VariableName" DataValueField="ID" AppendDataBoundItems="True" AutoPostBack="True" OnSelectedIndexChanged="ddlVariablename_SelectedIndexChanged" />
                                             </div>
-                                            <div style="float: left; width: 30%; margin-left: 10px;">
-                                                <asp:DropDownList runat="server" ID="ddlVariableValue" CssClass="form-control" DataTextField="VariableValue"
-                                                    DataValueField="ID" AppendDataBoundItems="True" AutoPostBack="True" />
+                                            <div class="variable-value-select">
+                                                <asp:DropDownList runat="server" ID="ddlVariableValue" CssClass="form-control select2" Width="100%" DataTextField="VariableValue" DataValueField="ID" AppendDataBoundItems="True" AutoPostBack="True" />
                                             </div>
                                         </ContentTemplate>
                                     </asp:UpdatePanel>
-                                    <div style="float: left; width: 30%; margin-left: 10px;">
+                                    <div class="variable-button-select">
                                         <a href="javascript:;" onclick="chooseVariable()" class="btn primary-btn fw-btn not-fullwidth">Chọn</a>
                                     </div>
 
-                                    <div class="variableselect" style="float: left; width: 100%">
+                                    <div class="variableselect">
                                         <span id="selectvariabletitle">Các thuộc tính đã chọn: 
-                                            <a href="javascript:;" onclick="generateVariable()" id="generateVariable" class="btn primary-btn fw-btn not-fullwidth">Thiết lập biến thể</a></span>
+                                            <a href="javascript:;" onclick="generateVariable()" id="generateVariable" class="btn primary-btn fw-btn not-fullwidth"><i class="fa fa-file-o" aria-hidden="true"></i> Thiết lập biến thể</a></span>
                                     </div>
-                                    <style>
-                                        .generat-variable-content {
-                                            float: left;
-                                            width: 100%;
-                                            margin: 20px 0;
-                                            display: none;
-                                        }
-
-                                            .generat-variable-content .item-var-gen {
-                                                float: left;
-                                                width: 100%;
-                                                margin: 15px 0;
-                                                border: dotted 1px #ccc;
-                                                padding: 15px 0;
-                                            }
-                                    </style>
                                     <div class="generat-variable-content">
                                         <div class="row">
-                                            <div class="col-md-10">
+                                            <div class="col-md-9">
                                                 <h3>Danh sách biến thể</h3>
                                             </div>
-                                            <div class="col-md-2 delete" style="display: none;">
-                                                <a href="javascript:;" onclick="deleteAllVariable()" id="delete" class="btn primary-btn fw-btn not-fullwidth">Xóa tất cả</a>
+                                            <div class="col-md-3 delete" style="display: none;">
+                                                <a href="javascript:;" onclick="deleteAllVariable()" id="delete" class="btn primary-btn fw-btn not-fullwidth"><i class="fa fa-times" aria-hidden="true"></i> Xóa tất cả</a>
                                             </div>
                                         </div>
                                         <div class="row list-item-genred">
@@ -302,15 +463,29 @@
                                 </div>
                             </div>
                             <div class="form-row">
-                                <a href="javascript:;" class="btn primary-btn fw-btn not-fullwidth" onclick="addNewProduct()">Tạo mới</a>
-                                <asp:Button ID="btnSubmit" runat="server" CssClass="btn primary-btn fw-btn not-fullwidth" Text="Tạo mới" OnClick="btnSubmit_Click" Style="display: none" />
-                                <asp:Literal ID="ltrBack" runat="server"></asp:Literal>
+                                <a href="javascript:;" class="btn primary-btn fw-btn not-fullwidth" onclick="addNewProduct()"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Xuất bản</a>
+                                <asp:Button ID="btnSubmit" runat="server" CssClass="btn primary-btn fw-btn not-fullwidth" Text="Xuất bản" OnClick="btnSubmit_Click" Style="display: none" />
+                                <a href="/tat-ca-san-pham" class="btn primary-btn fw-btn not-fullwidth"><i class="fa fa-arrow-left" aria-hidden="true"></i> Trở về</a>
                             </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="panel panelborderheading">
+                        <div class="panel-heading clear">
+                            <h3 class="page-title left not-margin-bot">Thông tin</h3>
+                        </div>
+                        <div class="panel-body">
+                             <div class="form-row">
+                                <a href="javascript:;" class="btn primary-btn fw-btn not-fullwidth" onclick="addNewProduct()"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Xuất bản</a>
+                                <a href="/tat-ca-san-pham" class="btn primary-btn fw-btn not-fullwidth"><i class="fa fa-arrow-left" aria-hidden="true"></i> Trở về</a>
+                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+
         <asp:HiddenField ID="hdfTempVariable" runat="server" />
         <asp:HiddenField ID="hdfVariableFull" runat="server" />
         <asp:HiddenField ID="hdfVariableListInsert" runat="server" />
@@ -320,10 +495,71 @@
         <asp:HiddenField ID="hdfMinimum" runat="server" />
         <asp:HiddenField ID="hdfParentID" runat="server" />
         <asp:HiddenField ID="hdfUserRole" runat="server" />
+        <asp:HiddenField ID="hdfTags" runat="server" />
     </main>
 
     <telerik:RadCodeBlock runat="server">
+        <script type="text/javascript" src="Scripts/bootstrap-tagsinput.min.js"></script>
+        <script type="text/javascript" src="Scripts/typeahead.bundle.min.js"></script>
+        <script type="text/javascript" src="Scripts/typeahead.jquery.js"></script>
         <script type="text/javascript">
+            // init Input Tag
+            let tags = new Bloodhound({
+                datumTokenizer: (tag) => {
+                    return Bloodhound.tokenizers.whitespace(tag.name);
+                },
+                queryTokenizer: Bloodhound.tokenizers.whitespace,
+                remote: {
+                    url: '/tao-san-pham.aspx/GetTags?tagName="%QUERY"',
+                    filter: (response) => {
+                        if (!response.d)
+                            return {};
+
+                        return $.map(response.d, function (item) {
+                            return {
+                                id: item.id,
+                                name: item.name,
+                                slug: item.slug,
+                            };
+                        });
+                    },
+                    ajax: {
+                        type: "GET",
+                        contentType: "application/json; charset=utf-8"
+                    }
+                }
+            });
+            tags.initialize();
+
+            let txtTagDOM = $('#txtTag');
+            txtTagDOM.tagsinput({
+                itemValue: 'slug',
+                itemText: 'name',
+                trimValue: true,
+                typeaheadjs: {
+                    name: 'tags',
+                    displayKey: 'name',
+                    source: tags.ttAdapter()
+                }
+            });
+
+            function initdropdown() {
+                $("#<%=ddlVariableValue.ClientID%>").select2();
+
+                if($("#<%=ddlVariablename.ClientID%>").val() != "0") {
+                    if ($("#<%=ddlVariableValue.ClientID%>").val() != "0") {
+                        chooseVariable();
+                    }
+                    $("#<%=ddlVariableValue.ClientID%>").select2("open");
+                }
+                else {
+                    $("#<%=ddlVariableValue.ClientID%>").val("0");
+                }
+            }
+
+            function pageLoad(sender, args) {
+                initdropdown();
+            }
 
             $(document).ready(function () {
                 var userRole = $("#<%=hdfUserRole.ClientID%>").val();
@@ -332,12 +568,45 @@
                 }
 
                 $("#<%=pRegular_Price.ClientID%>").blur(function () {
-                    var cost = parseInt($("#<%=pRegular_Price.ClientID%>").val()) - 20000;
+                    var categoryID = $("#<%=ddlCategory.ClientID%>").val();
+                    var regularPrice = parseInt($("#<%=pRegular_Price.ClientID%>").val());
+                    var cost = 0;
+                    if (categoryID == 17 || categoryID == 18 || categoryID == 19 || categoryID == 47) {
+                        cost = regularPrice - 25000;
+                    }
+                    else if (categoryID == 12) {
+                        cost = regularPrice - 40000;
+                    }
+                    else 
+                    {
+                        cost = regularPrice - 25000;
+                    }
+
                     $("input.cost-price").val(cost);
                 });
 
                 $("#<%=pRegular_Price.ClientID%>").blur(function () {
-                    var retailPrice = parseInt($("#<%=pRegular_Price.ClientID%>").val()) + 50000;
+                    var regularPrice = parseInt($("#<%=pRegular_Price.ClientID%>").val());
+                    var retailPrice = 0;
+                    if (regularPrice < 60000)
+                    {
+                        retailPrice = regularPrice + 40000;
+                    }
+                    else if (regularPrice >= 60000 && regularPrice < 100000)
+                    {
+                        retailPrice = regularPrice + 50000;
+                    }
+                    else if (regularPrice >= 100000 && regularPrice < 140000)
+                    {
+                        retailPrice = regularPrice + 60000;
+                    }
+                    else if (regularPrice >= 140000 && regularPrice < 190000) {
+                        retailPrice = regularPrice + 70000;
+                    }
+                    else if (regularPrice >= 190000) {
+                        retailPrice = regularPrice + 80000;
+                    }
+
                     $("#<%=pRetailPrice.ClientID%>").val(retailPrice);
                 });
 
@@ -345,11 +614,79 @@
                     return this.value.toUpperCase();
                 });
 
+                // Handle unique name
+                txtTagDOM.on('beforeItemAdd', function (event) {
+                    // event.item: contains the item
+                    // event.cancel: set to true to prevent the item getting added
+                    let items = txtTagDOM.tagsinput('items') || [];
+                    let exist = false;
+
+                    items.forEach((tag) => {
+                        if (tag.name === event.item.name) {
+                            exist = true;
+                            return false;
+                        }
+                    })
+
+                    if (exist)
+                        event.cancel = true;
+                });
+
+                // Handle short code taginput
+                $(".bootstrap-tagsinput").find(".tt-input").keypress((event) => {
+                    if (event.which === 13 || event.which === 44) {
+                        if (event.which === 13)
+                            event.preventDefault();
+
+                        let target = event.target;
+                        let tagName = target.value || "";
+
+                        if (!tagName)
+                            return;
+
+                        let tagNameList = tagName.split(',');
+                        let url = "";
+
+                        if (tagNameList.length > 1) {
+                            url += "/tao-san-pham.aspx/GetTagListByNameList?";
+                            url += `&tagNameList=${JSON.stringify(tagNameList)}`;
+                        }
+                        else {
+                            url += `/tao-san-pham.aspx/GetTags?tagName=${JSON.stringify(tagNameList[0])}`;
+                        }
+
+                        $.ajax({
+                            headers: {
+                                Accept: "application/json, text/javascript, */*; q=0.01",
+                                "Content-Type": "application/json; charset=utf-8"
+                            },
+                            type: "GET",
+                            url: url,
+                            success: function (response) {
+                                let data = response.d || [];
+
+                                data.forEach((item) => {
+                                    txtTagDOM.tagsinput('add', { id: item.id, name: item.name, slug: item.slug })
+                                })
+
+                                target.value = "";
+                            }
+                        })
+                    }
+                });
+
+                
             });
-            
+
             function redirectTo(ID) {
                 window.location.href = "/xem-san-pham?id=" +ID;
             }
+
+            function selectVariableValue() {
+                setTimeout(function () {
+                    $("#<%=ddlVariableValue.ClientID%>").select2("open");
+                }, 200);
+            };
 
             function chooseVariable() {
                 var vName = $("#<%=ddlVariablename.ClientID%> option:selected").val();
@@ -381,9 +718,9 @@
                                             });
                                             if (checkIsExist == false) {
                                                 var html = "";
-                                                html += "<div class=\"variablevalue-item\" data-valueid=\"" + vValue + "\" data-valuename=\"" + vValue_text + "\">";
-                                                html += "<span class=\"v-value\">" + vValue_text + "</span>";
-                                                html += "<a href=\"javascript:;\" class=\"btn primary-btn fw-btn not-fullwidth v-delete\" onclick=\"deleteValueInGroup($(this))\">Xóa</a>";
+                                                html += "<div class='variablevalue-item' data-valueid='" + vValue + "' data-valuename='" + vValue_text + "'>";
+                                                html += "<span class='v-value'>" + vValue_text + "</span>";
+                                                html += "<a href='javascript:;' class='btn primary-btn fw-btn not-fullwidth v-delete' onclick='deleteValueInGroup($(this))'>Xóa</a>";
                                                 html += "</div>";
                                                 vValueContentChild.append(html);
                                             }
@@ -397,12 +734,12 @@
                             }
                             else {
                                 var html = "";
-                                html += "<div class=\"variable-select\" data-name=\"" + vName_text + "\" data-id=\"" + vName + "\">";
-                                html += "   <div class=\"variablename\" data-name=\"" + vName_text + "\" data-id=\"" + vName + "\"><strong>" + vName_text + "</strong><a href=\"javascript:;\" style=\"float:right;margin-right:13px;\" class=\"btn primary-btn fw-btn not-fullwidth v-delete\" onclick=\"deleteGroup($(this))\">Xóa</a></div>";
-                                html += "   <div class=\"variablevalue\">";
-                                html += "       <div class=\"variablevalue-item\" data-valueid=\"" + vValue + "\" data-valuename=\"" + vValue_text + "\">";
-                                html += "           <span class=\"v-value\">" + vValue_text + "</span>";
-                                html += "           <a href=\"javascript:;\" class=\"btn primary-btn fw-btn not-fullwidth v-delete\" onclick=\"deleteValueInGroup($(this))\">Xóa</a>";
+                                html += "<div class='variable-select' data-name='" + vName_text + "' data-id='" + vName + "'>";
+                                html += "   <div class='variablename' data-name='" + vName_text + "' data-id='" + vName + "'><strong>" + vName_text + "</strong><a href='javascript:;' style='float:right;margin-right:13px;' class='btn primary-btn fw-btn not-fullwidth v-delete' onclick='deleteGroup($(this))'>Xóa</a></div>";
+                                html += "   <div class='variablevalue'>";
+                                html += "       <div class='variablevalue-item' data-valueid='" + vValue + "' data-valuename='" + vValue_text + "'>";
+                                html += "           <span class='v-value'>" + vValue_text + "</span>";
+                                html += "           <a href='javascript:;' class='btn primary-btn fw-btn not-fullwidth v-delete' onclick='deleteValueInGroup($(this))'>Xóa</a>";
                                 html += "       </div>";
                                 html += "   </div>";
                                 html += "</div>";
@@ -411,12 +748,12 @@
                         }
                         else {
                             var html = "";
-                            html += "<div class=\"variable-select\" data-name=\"" + vName_text + "\" data-id=\"" + vName + "\">";
-                            html += "   <div class=\"variablename\" data-name=\"" + vName_text + "\" data-id=\"" + vName + "\"><strong>" + vName_text + "</strong><a href=\"javascript:;\" style=\"float:right;margin-right:13px;\" class=\"btn primary-btn fw-btn not-fullwidth v-delete\" onclick=\"deleteGroup($(this))\">Xóa</a></div>";
-                            html += "   <div class=\"variablevalue\">";
-                            html += "       <div class=\"variablevalue-item\" data-valueid=\"" + vValue + "\" data-valuename=\"" + vValue_text + "\">";
-                            html += "           <span class=\"v-value\">" + vValue_text + "</span>";
-                            html += "           <a href=\"javascript:;\" class=\"btn primary-btn fw-btn not-fullwidth v-delete\" onclick=\"deleteValueInGroup($(this))\">Xóa</a>";
+                            html += "<div class='variable-select' data-name='" + vName_text + "' data-id='" + vName + "'>";
+                            html += "   <div class='variablename' data-name='" + vName_text + "' data-id='" + vName + "'><strong>" + vName_text + "</strong><a href='javascript:;' style='float:right;margin-right:13px;' class='btn primary-btn fw-btn not-fullwidth v-delete' onclick='deleteGroup($(this))'>Xóa</a></div>";
+                            html += "   <div class='variablevalue'>";
+                            html += "       <div class='variablevalue-item' data-valueid='" + vValue + "' data-valuename='" + vValue_text + "'>";
+                            html += "           <span class='v-value'>" + vValue_text + "</span>";
+                            html += "           <a href='javascript:;' class='btn primary-btn fw-btn not-fullwidth v-delete' onclick='deleteValueInGroup($(this))'>Xóa</a>";
                             html += "       </div>";
                             html += "   </div>";
                             html += "</div>";
@@ -485,14 +822,76 @@
                         var html = "";
                         //var sl = "";
                         if (data.length > 0) {
-                            html += "<select class=\"form-control slparent\" style=\"margin-top:15px;\" data-level=" + level + " onchange=\"selectCategory($(this))\">";
-                            html += "<option  value=\"0\">Chọn danh mục</option>";
+                            html += "<select class='form-control slparent' style='margin-top:15px;' data-level='" + level + "' onchange='selectCategory($(this))'>";
+                            html += "<option  value='0'>Chọn danh mục</option>";
                             for (var i = 0; i < data.length; i++) {
-                                html += "<option value=\"" + data[i].ID + "\">" + data[i].CategoryName + "</option>";
+                                html += "<option value='" + data[i].ID + "'>" + data[i].CategoryName + "</option>";
                             }
                             html += "</select>";
                         }
                         $(".parent").append(html);
+                    }
+                });
+
+                getTagList(parentID);
+            }
+
+            function getTagList(categoryID) {
+                // clear old value
+                $("#tagList").html("");
+
+                var search = "";
+                if (categoryID == 18) {
+                    search = "đồ bộ";
+                }
+                else if (categoryID == 17) {
+                    search = "đầm";
+                }
+                else if (categoryID == 3 || categoryID == 4 || categoryID == 5 || categoryID == 6) {
+                    search = "áo thun nam";
+                }
+                else if (categoryID == 19) {
+                    search = "áo thun nữ";
+                }
+
+                if (search != "") {
+                    var url = `/tao-san-pham.aspx/GetTagList?tagName=${JSON.stringify(search)}`;
+
+                    $.ajax({
+                        headers: {
+                            Accept: "application/json, text/javascript, */*; q=0.01",
+                            "Content-Type": "application/json; charset=utf-8"
+                        },
+                        type: "GET",
+                        url: url,
+                        success: function (response) {
+                            let data = response.d || [];
+
+                            data.forEach((item) => {
+                                $("#tagList").append("<span onclick='clickTagList(`" + item.name + "`)' class='tag-blue-click'>" + item.name + "</span>");
+                            })
+                        }
+                    });
+                }
+            }
+
+            function clickTagList(tagName) {
+
+                let url = `/tao-san-pham.aspx/GetTags?tagName=${JSON.stringify(tagName)}`;
+
+                $.ajax({
+                    headers: {
+                        Accept: "application/json, text/javascript, */*; q=0.01",
+                        "Content-Type": "application/json; charset=utf-8"
+                    },
+                    type: "GET",
+                    url: url,
+                    success: function (response) {
+                        let data = response.d || [];
+
+                        data.forEach((item) => {
+                            txtTagDOM.tagsinput('add', { id: item.id, name: item.name, slug: item.slug })
+                        })
                     }
                 })
             }
@@ -502,15 +901,15 @@
                 $("#<%=hdfsetStyle.ClientID%>").val(vl);
                 if (vl == 2) {
                     $(".variable").show();
+                    $(".main-color").hide();
                 }
                 else {
                     $(".variable").hide();
+                    $(".main-color").show();
                 }
             }
 
             function generateVariable() {
-                var MinimumInventoryLevel = $("#<%=pMinimumInventoryLevel.ClientID%>").val();
-                var MaximumInventoryLevel = $("#<%=pMaximumInventoryLevel.ClientID%>").val();
                 var giasi = $("#<%=pRegular_Price.ClientID%>").val();
                 var giavon = $("#<%=pCostOfGood.ClientID%>").val();
                 var giale = $("#<%=pRetailPrice.ClientID%>").val();
@@ -615,7 +1014,7 @@
                                             html += "    <div class='col-md-12 variable-content show'>";
                                             html += "    	<div class='row'>";
                                             html += "		    <div class='col-md-2'>";
-                                            html += "		    	<input type='file' class='productVariableImage upload-btn' onchange='imagepreview(this,$(this));' name='" + item.ProductVariable + "'/>";
+                                            html += "		    	<input type='file' class='productVariableImage upload-btn' onchange='imagepreview(this,$(this))' name='" + SKU + item.VariableSKUText + "'/>";
                                             html += "				<img class='imgpreview' onclick='openUploadImage($(this))' src='/App_Themes/Ann/image/placeholder.png' />";
                                             html += "				<a href='javascript:;' onclick='deleteImageVariable($(this))' class='btn-delete hide'><i class='fa fa-times' aria-hidden='true'></i> Xóa hình</a>";
                                             html += "			</div>";
@@ -637,14 +1036,6 @@
                                             html += "		    	<div class='row margin-bottom-15'>";
                                             html += "		    	    <div class='col-md-5'>Giá bán lẻ</div>";
                                             html += "		    	    <div class='col-md-7'><input class='form-control retailprice' type='text' value='" + giale + "'></div>";
-                                            html += "		    	</div>";
-                                            html += "		    	<div class='row margin-bottom-15'>";
-                                            html += "		    	    <div class='col-md-5'>Tồn kho ít nhất</div>";
-                                            html += "		    	    <div class='col-md-7'><input class='form-control minimum' type='text' value='" + MinimumInventoryLevel + "'></div>";
-                                            html += "		    	</div>";
-                                            html += "		    	<div class='row margin-bottom-15'>";
-                                            html += "		    	    <div class='col-md-5'>Tồn kho nhiều nhất</div>";
-                                            html += "		    	    <div class='col-md-7'><input class='form-control maximum' type='text' value='" + MaximumInventoryLevel + "'></div>";
                                             html += "		    	</div>";
                                             html += "		    	<div class='row margin-bottom-15'>";
                                             html += "		    	    <div class='col-md-5'></div>";
@@ -745,6 +1136,7 @@
             }
 
             function addNewProduct() {
+                
                 var listv = "";
                 var a = $("#<%= hdfsetStyle.ClientID%>").val();
                 var parent = $("#<%=hdfParentID.ClientID%>").val();
@@ -754,109 +1146,10 @@
                     var materials = $("#<%=txtMaterials.ClientID%>").val();
                     var maximum = $("#<%=pMaximumInventoryLevel.ClientID%>").val();
                     var minimum = $("#<%=pMinimumInventoryLevel.ClientID%>").val();
+                    var giacu = $("#<%=pOld_Price.ClientID%>").val() || 0;
                     var giasi = $("#<%=pRegular_Price.ClientID%>").val();
                     var giavon = $("#<%=pCostOfGood.ClientID%>").val();
                     var giale = $("#<%=pRetailPrice.ClientID%>").val();
-
-                    if (parent == "") {
-                        $("#<%=ddlCategory.ClientID%>").focus();
-                        swal("Thông báo", "Chưa chọn danh mục sản phẩm", "error");
-                    }
-                    else if (title == "") {
-                        $("#<%=txtProductTitle.ClientID%>").focus();
-                        swal("Thông báo", "Chưa nhập tên sản phẩm", "error");
-                    }
-                    else if (SKU == "") {
-                        $("#<%=txtProductSKU.ClientID%>").focus();
-                        swal("Thông báo", "Chưa nhập mã sản phẩm", "error");
-                    }
-                    else if (materials == "") {
-                        $("#<%=txtMaterials.ClientID%>").focus();
-                        swal("Thông báo", "Chưa nhập chất liệu sản phẩm", "error");
-                    }
-                    else if (giasi == "") {
-                        $("#<%=pRegular_Price.ClientID%>").focus();
-                        swal("Thông báo", "Chưa nhập giá sỉ", "error");
-                    }
-                    else if (giavon == "") {
-                        $("#<%=pCostOfGood.ClientID%>").focus();
-                        swal("Thông báo", "Chưa nhập giá vốn", "error");
-                    }
-                    else if (giale == "") {
-                        $("#<%=pRetailPrice.ClientID%>").focus();
-                        swal("Thông báo", "Chưa nhập giá lẻ", "error");
-                    }
-                    else if (parseFloat(giasi) < parseFloat(giavon)) {
-                        $("#<%=pRegular_Price.ClientID%>").focus();
-                        swal("Thông báo", "Gía sỉ không được thấp hơn giá vốn", "error");
-                    }
-                    else if (parseFloat(giasi) > parseFloat(giale)) {
-                        $("#<%=pRetailPrice.ClientID%>").focus();
-                        swal("Thông báo", "Giá lẻ không được thấp hơn giá sỉ", "error");
-                    }
-                    else {
-                        if ($(".item-var-gen").length > 0) {
-                            var checkError = false;
-                            $(".item-var-gen").each(function () {
-                                var productvariablesku = $(this).find(".productvariablesku").val();
-                                var regularprice = $(this).find(".regularprice").val();
-                                var costofgood = $(this).find(".costofgood").val();
-                                var retailprice = $(this).find(".retailprice").val();
-                                var image = $(this).find(".productVariableImage").attr("name");
-                                if (isBlank(productvariablesku) || isBlank(regularprice) || isBlank(costofgood) || isBlank(retailprice)) {
-                                    checkError = true;
-                                }
-                            });
-                            if (checkError == true) {
-                                alert('Hãy nhập đầy đủ thông tin.');
-                            }
-                            else {
-
-                                $(".item-var-gen").each(function () {
-                                    var datanameid = $(this).attr("data-name-id");
-                                    var datavalueid = $(this).attr("data-value-id");
-                                    var datanametext = $(this).attr("data-name-text");
-                                    var datavaluetext = $(this).attr("data-value-text");
-                                    var productvariablesku = $(this).find(".productvariablesku").val();
-                                    var regularprice = $(this).find(".regularprice").val();
-                                    var costofgood = $(this).find(".costofgood").val();
-                                    var retailprice = $(this).find(".retailprice").val();
-                                    var datanamevalue = $(this).attr("data-name-value");
-                                    var image = $(this).find(".productVariableImage").attr("name");
-                                    var max = $(this).find(".maximum").val();
-                                    var min = $(this).find(".minimum").val();
-                                    var StockStatus = 3;
-                                    var checked = true;
-
-                                    if (!isBlank(productvariablesku) && !isBlank(regularprice) && !isBlank(costofgood) && !isBlank(retailprice) && !isBlank(StockStatus)) {
-
-                                        listv += datanameid + ";" + datavalueid + ";" + datanametext + ";" + datavaluetext + ";" + productvariablesku + ";" + regularprice.replace(",", "") + ";" + costofgood.replace(",", "") + ";" + retailprice.replace(",", "") + ";" + datanamevalue + ";" + max + ";" + min + ";" + StockStatus + ";" + checked + ",";
-                                        $("#<%=hdfVariableListInsert.ClientID%>").val(listv);
-
-                                        HoldOn.open();
-                                        $("#<%=btnSubmit.ClientID%>").click();
-                                    }
-                                    else {
-                                        swal("Lỗi", "Hãy kiểm tra thông tin các biến thể", "error");
-                                    }
-                                });
-                            }
-                        }
-                        else {
-                            swal("Lỗi", "Chưa thiếp lập biến thể sản phẩm", "error");
-                        }
-                    }
-                }
-                else {
-                    var title = $("#<%=txtProductTitle.ClientID%>").val();
-                    var SKU = $("#<%=txtProductSKU.ClientID%>").val();
-                    var materials = $("#<%=txtMaterials.ClientID%>").val();
-                    var maximum = $("#<%=pMaximumInventoryLevel.ClientID%>").val();
-                    var minimum = $("#<%=pMinimumInventoryLevel.ClientID%>").val();
-                    var giasi = $("#<%=pRegular_Price.ClientID%>").val();
-                    var giavon = $("#<%=pCostOfGood.ClientID%>").val();
-                    var giale = $("#<%=pRetailPrice.ClientID%>").val();
-
 
                     if (parent == "") {
                         $("#<%=ddlCategory.ClientID%>").focus();
@@ -890,19 +1183,143 @@
                         $("#<%=pRegular_Price.ClientID%>").focus();
                         swal("Thông báo", "Giá sỉ không được thấp hơn giá vốn", "error");
                     }
+                    else if (parseFloat(giacu) > 0 && parseFloat(giacu) < parseFloat(giasi)) {
+                        $("#<%=pOld_Price.ClientID%>").focus();
+                        swal("Thông báo", "Giá cũ chưa sale không được thấp hơn giá sỉ", "error");
+                    }
                     else if (parseFloat(giasi) > parseFloat(giale)) {
                         $("#<%=pRetailPrice.ClientID%>").focus();
                         swal("Thông báo", "Giá lẻ không được thấp hơn giá sỉ", "error");
                     }
                     else {
-                        if (!isBlank(title) && !isBlank(SKU) && !isBlank(materials) && !isBlank(giasi) && !isBlank(giavon) && !isBlank(giale)) {
-                            listv = "";
-                            $("#<%=hdfVariableListInsert.ClientID%>").val(listv);
-                            $("#<%=btnSubmit.ClientID%>").click();
-                            HoldOn.open();
+                        HoldOn.open();
+                        if ($(".item-var-gen").length > 0) {
+                            var checkError = false;
+                            var indexError = 0;
+                            var inputError = "";
+                            $(".item-var-gen").each(function (index) {
+                                var productvariablesku = $(this).find(".productvariablesku").val();
+                                var regularprice = $(this).find(".regularprice").val();
+                                var costofgood = $(this).find(".costofgood").val();
+                                var retailprice = $(this).find(".retailprice").val();
+
+                                if (isBlank(productvariablesku) || isBlank(regularprice) || isBlank(costofgood) || isBlank(retailprice)) {
+                                    checkError = true;
+                                    indexError = index;
+                                    if (isBlank(regularprice)) {
+                                        inputError = ".regularprice";
+                                    }
+                                    else if (isBlank(costofgood)) {
+                                        inputError = ".costofgood";
+                                    }
+                                    else if (isBlank(retailprice)) {
+                                        inputError = ".retailprice";
+                                    }
+                                }
+                                else {
+                                    var datanameid = $(this).attr("data-name-id");
+                                    var datavalueid = $(this).attr("data-value-id");
+                                    var datanametext = $(this).attr("data-name-text");
+                                    var datavaluetext = $(this).attr("data-value-text");
+                                    var datanamevalue = $(this).attr("data-name-value");
+                                    var image = $(this).find(".productVariableImage").attr("name");
+                                    var StockStatus = 3;
+                                    var checked = true;
+
+                                    // nối chuỗi dữ liệu biến thể sản phẩm
+                                    listv += datanameid + ";" + datavalueid + ";" + datanametext + ";" + datavaluetext + ";" + productvariablesku + ";" + regularprice.replace(",", "") + ";" + costofgood.replace(",", "") + ";" + retailprice.replace(",", "") + ";" + datanamevalue + ";" + maximum + ";" + minimum + ";" + StockStatus + ";" + checked + ",";
+                                }
+                            });
+
+                            if (checkError == true) {
+                                // focus đến input chưa nhập dữ liệu
+                                $(".item-var-gen").eq(indexError).css("background-color", "#fff0c5");
+                                $('html, body').animate({
+                                    scrollTop: $(".item-var-gen").eq(indexError).offset().top - 150
+                                }, 500);
+                                $(".item-var-gen").eq(indexError).find(inputError).focus();
+                                HoldOn.close();
+                                swal("Thông báo", "Hãy nhập đầy đủ thông tin biến thể.", "error");
+                            }
+                            else {
+                                // Insert tagID list into hdfTags
+                                $("#<%=hdfTags.ClientID%>").val(JSON.stringify(txtTagDOM.tagsinput('items')));
+                                $("#<%=hdfVariableListInsert.ClientID%>").val(listv);
+
+                                $("#<%=btnSubmit.ClientID%>").click();
+                            }
                         }
                         else {
-                            alert("Hãy nhập đầy đủ thông tin.")
+                            HoldOn.close();
+                            swal("Lỗi", "Chưa thiếp lập biến thể sản phẩm", "error");
+                        }
+                    }
+                }
+                else {
+                    var title = $("#<%=txtProductTitle.ClientID%>").val();
+                    var SKU = $("#<%=txtProductSKU.ClientID%>").val();
+                    var materials = $("#<%=txtMaterials.ClientID%>").val();
+                    var giacu = $("#<%=pOld_Price.ClientID%>").val() || 0;
+                    var giasi = $("#<%=pRegular_Price.ClientID%>").val();
+                    var giavon = $("#<%=pCostOfGood.ClientID%>").val();
+                    var giale = $("#<%=pRetailPrice.ClientID%>").val();
+                    var maincolor = $("#<%=ddlColor.ClientID%>").val();
+
+                    if (parent == "") {
+                        $("#<%=ddlCategory.ClientID%>").focus();
+                        swal("Thông báo", "Chưa chọn danh mục sản phẩm", "error");
+                    }
+                    else if (title == "") {
+                        $("#<%=txtProductTitle.ClientID%>").focus();
+                        swal("Thông báo", "Chưa nhập tên sản phẩm", "error");
+                    }
+                    else if (SKU == "") {
+                        $("#<%=txtProductSKU.ClientID%>").focus();
+                        swal("Thông báo", "Chưa nhập mã sản phẩm", "error");
+                    }
+                    else if (materials == "") {
+                        $("#<%=txtMaterials.ClientID%>").focus();
+                        swal("Thông báo", "Chưa nhập chất liệu sản phẩm", "error");
+                    }
+                    else if (maincolor == "") {
+                        $("#<%=ddlColor.ClientID%>").focus();
+                        swal("Thông báo", "Chưa chọn màu chủ đạo", "error");
+                    }
+                    else if (giasi == "") {
+                        $("#<%=pRegular_Price.ClientID%>").focus();
+                        swal("Thông báo", "Chưa nhập giá sỉ", "error");
+                    }
+                    else if (giavon == "") {
+                        $("#<%=pCostOfGood.ClientID%>").focus();
+                        swal("Thông báo", "Chưa nhập giá vốn", "error");
+                    }
+                    else if (giale == "") {
+                        $("#<%=pRetailPrice.ClientID%>").focus();
+                        swal("Thông báo", "Chưa nhập giá lẻ", "error");
+                    }
+                    else if (parseFloat(giasi) < parseFloat(giavon)) {
+                        $("#<%=pRegular_Price.ClientID%>").focus();
+                        swal("Thông báo", "Giá sỉ không được thấp hơn giá vốn", "error");
+                    }
+                    else if (parseFloat(giacu) > 0 && parseFloat(giacu) < parseFloat(giasi)) {
+                        $("#<%=pOld_Price.ClientID%>").focus();
+                        swal("Thông báo", "Giá cũ chưa sale không được thấp hơn giá sỉ", "error");
+                    }
+                    else if (parseFloat(giasi) > parseFloat(giale)) {
+                        $("#<%=pRetailPrice.ClientID%>").focus();
+                        swal("Thông báo", "Giá lẻ không được thấp hơn giá sỉ", "error");
+                    }
+                    else {
+                        HoldOn.open();
+                        if (!isBlank(title) && !isBlank(SKU) && !isBlank(materials) && !isBlank(giasi) && !isBlank(giavon) && !isBlank(giale)) {
+                            // Insert tagID list into hdfTags
+                            $("#<%=hdfTags.ClientID%>").val(JSON.stringify(txtTagDOM.tagsinput('items')));
+                            $("#<%=hdfVariableListInsert.ClientID%>").val("");
+                            $("#<%=btnSubmit.ClientID%>").click();
+                        }
+                        else {
+                            HoldOn.close();
+                            swal("Thông báo", "Hãy nhập đầy đủ thông tin sản phẩm.", "error");
                         }
                     }
                 }
@@ -922,7 +1339,7 @@
                     dataType: "json",
                     success: function (msg) {
                         if (msg.d != "ok") {
-                            swal("Thông báo", "Trùng mã sản phẩm.. Hãy kiểm tra lại :)", "error");
+                            swal("Thông báo", "Mã sản phẩm đã tồn tại. Hãy kiểm tra lại!", "error");
                             $("#<%=txtProductSKU.ClientID%>").select().focus();
                             $("body").removeClass("stop-scrolling");
                         }

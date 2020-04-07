@@ -1,6 +1,11 @@
 ﻿<%@ Page Title="Thông tin nhà xe" Language="C#" MasterPageFile="~/MasterPage.Master" AutoEventWireup="true" CodeBehind="chi-tiet-nha-xe.aspx.cs" Inherits="IM_PJ.chi_tiet_nha_xe" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
+    <style>
+        tr.status-0 td {
+            background-color: #fed1d1!important;
+        }
+    </style>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <main id="main-wrap">
@@ -9,7 +14,7 @@
                 <div class="col-md-12">
                     <h3 class="page-title left">Danh sách nơi nhận</h3>
                     <div class="right above-list-btn">
-                        <a href="/them-moi-noi-den-nha-xe/?id=<%=hdfID.Value%>" class="h45-btn primary-btn btn">Thêm nơi nhận</a>
+                        <a href="/them-moi-noi-den-nha-xe?id=<%=hdfID.Value%>" class="h45-btn primary-btn btn">Thêm nơi nhận</a>
                     </div>
                 </div>
                 <div class="col-md-12">
@@ -109,5 +114,52 @@
             <asp:HiddenField ID="hdfID" runat="server" />
         </div>
     </main>
-
+    <script type="text/javascript">
+        function updateStatus(obj) {
+            var ID = obj.attr("data-id");
+            var SubID = obj.attr("data-subid");
+            var Status = obj.attr("data-status");
+            swal({
+                title: 'Thông báo',
+                text: 'Bạn có muốn ẩn/hiện nhà xe này?',
+                type: 'warning',
+                showCancelButton: true,
+                closeOnConfirm: true,
+                confirmButtonText: "Xác nhận",
+            }, function (confirm) {
+                if (confirm) {
+                    $.ajax({
+                        type: "POST",
+                        url: "/danh-sach-nha-xe.aspx/updateStatus",
+                        data: "{ID: " + ID + ", SubID: " + SubID + "}",
+                        contentType: "application/json; charset=utf-8",
+                        dataType: "json",
+                        success: function (msg) {
+                            if (msg.d == "true") {
+                                if (Status == 1) {
+                                    $(obj).attr("title", "Hiện nhà xe");
+                                    $(obj).attr("data-status", "0");
+                                    $(obj).removeClass("btn-red");
+                                    $(obj).addClass("btn-blue");
+                                    $(obj).html("<i class='fa fa-refresh' aria-hidden='true'></i>");
+                                    $(obj).parent().parent().removeClass("status-1").addClass("status-0");
+                                }
+                                else {
+                                    $(obj).attr("title", "Ẩn nhà xe");
+                                    $(obj).attr("data-status", "1");
+                                    $(obj).removeClass("btn-blue");
+                                    $(obj).addClass("btn-red");
+                                    $(obj).html("<i class='fa fa-times' aria-hidden='true'></i>");
+                                    $(obj).parent().parent().removeClass("status-0").addClass("status-1");
+                                }
+                            }
+                            else {
+                                alert("Lỗi");
+                            }
+                        }
+                    });
+                }
+            });
+        }
+    </script>
 </asp:Content>

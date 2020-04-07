@@ -22,9 +22,9 @@ namespace IM_PJ
         {
             if (!IsPostBack)
             {
-                if (Request.Cookies["userLoginSystem"] != null)
+                if (Request.Cookies["usernameLoginSystem"] != null)
                 {
-                    string username = Request.Cookies["userLoginSystem"].Value;
+                    string username = Request.Cookies["usernameLoginSystem"].Value;
                     var acc = AccountController.GetByUsername(username);
                     int agent = acc.AgentID.ToString().ToInt();
 
@@ -78,115 +78,83 @@ namespace IM_PJ
         }
         public void LoadData()
         {
-            string TextSearch = "";
-            string RefundFee = "";
-            int Status = 0;
-            string CreatedBy = "";
-            string CreatedDate = "";
-
-            if (Request.QueryString["textsearch"] != null)
-            {
-                TextSearch = Request.QueryString["textsearch"].Trim();
-            }
-            if (Request.QueryString["status"] != null)
-            {
-                Status = Request.QueryString["status"].ToInt();
-            }
-            if (Request.QueryString["refundfee"] != null)
-            {
-                RefundFee = Request.QueryString["refundfee"];
-            }
-            if (Request.QueryString["CreatedBy"] != null)
-            {
-                CreatedBy = Request.QueryString["createdby"];
-            }
-            if (Request.QueryString["createddate"] != null)
-            {
-                CreatedDate = Request.QueryString["createddate"];
-            }
-
-            txtSearchOrder.Text = TextSearch;
-            ddlStatus.SelectedValue = Status.ToString();
-            ddlRefundFee.SelectedValue = RefundFee.ToString();
-            ddlCreatedBy.Text = CreatedBy.ToString();
-            ddlCreatedDate.SelectedValue = CreatedDate.ToString();
-
-            List<RefundOrder> rs = new List<RefundOrder>();
-            rs = RefundGoodController.Filter(TextSearch, Status, RefundFee, CreatedBy, CreatedDate);
-
-            string username = Request.Cookies["userLoginSystem"].Value;
+            string username = Request.Cookies["usernameLoginSystem"].Value;
             var acc = AccountController.GetByUsername(username);
             if (acc != null)
             {
-                if (acc.RoleID == 0)
+                string TextSearch = "";
+                string RefundFee = "";
+                int Status = 0;
+                string CreatedBy = "";
+                string CreatedDate = "";
+
+                if (Request.QueryString["textsearch"] != null)
                 {
-                    if (CreatedBy != "")
-                    {
-                        rs = rs.Where(x => x.CreatedBy == CreatedBy).ToList();
-                        pagingall(rs);
-                    }
-                    else
-                    {
-                        pagingall(rs);
-                    }
+                    TextSearch = Request.QueryString["textsearch"].Trim();
                 }
-                else
+                if (Request.QueryString["status"] != null)
+                {
+                    Status = Request.QueryString["status"].ToInt();
+                }
+                if (Request.QueryString["refundfee"] != null)
+                {
+                    RefundFee = Request.QueryString["refundfee"];
+                }
+                if (Request.QueryString["CreatedBy"] != null)
+                {
+                    CreatedBy = Request.QueryString["createdby"];
+                }
+                if (Request.QueryString["createddate"] != null)
+                {
+                    CreatedDate = Request.QueryString["createddate"];
+                }
+
+                txtSearchOrder.Text = TextSearch;
+                ddlStatus.SelectedValue = Status.ToString();
+                ddlRefundFee.SelectedValue = RefundFee.ToString();
+                ddlCreatedBy.Text = CreatedBy.ToString();
+                ddlCreatedDate.SelectedValue = CreatedDate.ToString();
+
+                List<RefundOrder> rs = new List<RefundOrder>();
+                rs = RefundGoodController.Filter(TextSearch, Status, RefundFee, CreatedBy, CreatedDate);
+            
+                if (acc.RoleID != 0)
                 {
                     rs = rs.Where(x => x.CreatedBy == acc.Username).ToList();
-                    pagingall(rs);
+                    ddlCreatedBy.Enabled = false;
                 }
+
+                // ẩn sản phẩm theo thời gian
+                DateTime year = new DateTime(2019, 12, 15);
+
+                var config = ConfigController.GetByTop1();
                 
-
-                // THỐNG KÊ ĐƠN HÀNG
-                int TotalOrders = rs.Count;
-                int Type1Orders = 0;
-                int Type2Orders = 0;
-
-                int TotalProducts = 0;
-                double TotalMoney = 0;
-                double TotalRefundFee = 0;
-
-                for (int i = 0; i < rs.Count; i++)
+                if (config.ViewAllOrders == 1)
                 {
-                    var item = rs[i];
-
-                    // Tính tổng số sản phẩm trong tổng số đơn hàng
-                    TotalProducts += item.Quantity;
-                    // Tính tổng đơn hàng sỉ và lẻ
-
-                    if (item.Status == 2)
-                    {
-                        Type2Orders++;
-                    }
-                    if (item.Status == 1)
-                    {
-                        Type1Orders++;
-                    }
-
-                    // Tính số tiền
-                    TotalMoney += item.TotalPrice;
-                    TotalRefundFee += item.TotalRefundFee;
+                    year = new DateTime(2018, 6, 22);
                 }
 
-                ltrTotalOrders.Text = TotalOrders.ToString();
-                ltrType2Orders.Text = Type2Orders.ToString();
-                ltrType1Orders.Text = Type1Orders.ToString();
+                if (config.ViewAllReports == 0)
+                {
+                    year = DateTime.Now.AddMonths(-2);
+                }
 
-                ltrTotalProducts.Text = TotalProducts.ToString();
-                ltrTotalMoney.Text = string.Format("{0:N0}", Convert.ToDouble(TotalMoney)).ToString();
-                ltrTotalRefundFee.Text = string.Format("{0:N0}", Convert.ToDouble(TotalRefundFee)).ToString();
+                rs = rs.Where(x => x.CreatedDate >= year).ToList();
 
-                ltrNumberOfOrder.Text = TotalOrders.ToString();
+                pagingall(rs);
+
+                ltrNumberOfOrder.Text = rs.Count().ToString();
             }
         }
         #region Paging
         public void pagingall(List<RefundOrder> acs)
         {
-            string username = Request.Cookies["userLoginSystem"].Value;
+            string username = Request.Cookies["usernameLoginSystem"].Value;
             var acc = AccountController.GetByUsername(username);
 
             int PageSize = 30;
             StringBuilder html = new StringBuilder();
+            html.Append("<thead>");
             html.Append("<tr>");
             html.Append("    <th>Mã</th>");
             html.Append("    <th>Khách hàng</th>");
@@ -201,8 +169,9 @@ namespace IM_PJ
             }
             html.Append("    <th>Ngày tạo</th>");
             html.Append("    <th></th>");
-            html.Append("</tr>");
+            html.Append("</thead>");
 
+            html.Append("<tbody>");
             if (acs.Count > 0)
             {
                 int TotalItems = acs.Count;
@@ -223,42 +192,42 @@ namespace IM_PJ
                 {
                     var item = acs[i];
                     html.Append("<tr>");
-                    html.Append("   <td><a href=\"/xem-don-hang-doi-tra?id=" + item.ID + "\">" + item.ID + "</a></td>");
+                    html.Append("   <td data-title='Mã đơn'><a target='_blank' href='/xem-don-hang-doi-tra?id=" + item.ID + "'>" + item.ID + "</a></td>");
 
                     if (!string.IsNullOrEmpty(item.Nick))
                     {
-                        html.Append("   <td><a class=\"customer-name-link capitalize\" href=\"/xem-don-hang-doi-tra?id=" + item.ID + "\">" + item.Nick + "</a><br><span class=\"name-bottom-nick\">(" + item.CustomerName + ")</span></td>");
+                        html.Append("   <td data-title='Khách hàng' class='customer-td'><a target='_blank' class='customer-name-link' href='/xem-don-hang-doi-tra?id=" + item.ID + "'>" + item.Nick.ToTitleCase() + "</a><br><span class='name-bottom-nick'>(" + item.CustomerName.ToTitleCase() + ")</span></td>");
                     }
                     else
                     {
-                        html.Append("   <td><a class=\"customer-name-link capitalize\" href=\"/xem-don-hang-doi-tra?id=" + item.ID + "\">" + item.CustomerName + "</a></td>");
+                        html.Append("   <td data-title='Khách hàng' class='customer-td'><a target='_blank' class='customer-name-link' href='/xem-don-hang-doi-tra?id=" + item.ID + "'>" + item.CustomerName.ToTitleCase() + "</a></td>");
                     }
 
-                    html.Append("   <td>" + string.Format("{0:N0}", Convert.ToDouble(item.Quantity)) + "</td>");
-                    html.Append("   <td>" + string.Format("{0:N0}", Convert.ToDouble(item.TotalRefundFee)) + "</td>");
-                    html.Append("   <td><strong>" + string.Format("{0:N0}", Convert.ToDouble(item.TotalPrice)) + "</strong></td>");
-                    html.Append("   <td>" + PJUtils.RefundStatus(Convert.ToInt32(item.Status)) + "</td>");
+                    html.Append("   <td data-title='Số lượng'>" + string.Format("{0:N0}", Convert.ToDouble(item.Quantity)) + "</td>");
+                    html.Append("   <td data-title='Phí đổi hàng'>" + string.Format("{0:N0}", Convert.ToDouble(item.TotalRefundFee)) + "</td>");
+                    html.Append("   <td data-title='Tổng tiền'><strong>" + string.Format("{0:N0}", Convert.ToDouble(item.TotalPrice)) + "</strong></td>");
+                    html.Append("   <td data-title='Trạng thái'>" + PJUtils.RefundStatus(Convert.ToInt32(item.Status)) + "</td>");
 
                     if(item.OrderSaleID > 0)
                     {
-                        html.Append("   <td><a class=\"customer-name-link\" target=\"_blank\" title=\"Bấm vào xem đơn hàng trừ tiền\" href=\"/thong-tin-don-hang?id=" + item.OrderSaleID + "\">" + item.OrderSaleID + " (Xem đơn)</a></td>");
+                        html.Append("   <td data-title='Đơn trừ tiền'><a class='customer-name-link' target='_blank' title='Bấm vào xem đơn hàng trừ tiền' href='/thong-tin-don-hang?id=" + item.OrderSaleID + "'>" + item.OrderSaleID + "</a></td>");
                     }
                     else
                     {
-                        html.Append("   <td></td>");
+                        html.Append("   <td data-title='Đơn trừ tiền'></td>");
                     }
 
                     if (acc.RoleID == 0)
                     {
-                        html.Append("   <td>" + item.CreatedBy + "</td>");
+                        html.Append("   <td data-title='Nhân viên'>" + item.CreatedBy + "</td>");
                     }
 
-                    string date = string.Format("{0:dd/MM}", item.CreatedDate);
-                    html.Append("   <td>" + date + "</td>");
+                    string date = string.Format("<strong>{0:dd/MM}</strong><br>{0:HH:mm}", item.CreatedDate);
+                    html.Append("   <td data-title='Ngày tạo'>" + date + "</td>");
 
-                    html.Append("   <td>");
-                    html.Append("       <a href=\"/print-invoice-return?id=" + item.ID + "\" title=\"In hóa đơn\" target=\"_blank\" class=\"btn primary-btn h45-btn\"><i class=\"fa fa-print\" aria-hidden=\"true\"></i></a>");
-                    html.Append("       <a href=\"/print-return-order-image?id=" + item.ID + "\" title=\"Lấy ảnh đơn hàng\" target=\"_blank\" class=\"btn primary-btn btn-red h45-btn\"><i class=\"fa fa-picture-o\" aria-hidden=\"true\"></i></a>");
+                    html.Append("   <td data-title='Thao tác' class='update-button'>");
+                    html.Append("       <a href='/print-invoice-return?id=" + item.ID + "' title='In hóa đơn' target='_blank' class='btn primary-btn h45-btn'><i class='fa fa-print' aria-hidden='true'></i></a>");
+                    html.Append("       <a href='/print-return-order-image?id=" + item.ID + "' title='Lấy ảnh đơn hàng' target='_blank' class='btn primary-btn btn-red h45-btn'><i class='fa fa-picture-o' aria-hidden='true'></i></a>");
                     html.Append("   </td>");
                     html.Append("</tr>");
                 }
@@ -267,11 +236,11 @@ namespace IM_PJ
             {
                 if (acc.RoleID == 0)
                 {
-                    html.Append("<tr><td colspan=\"10\">Không tìm thấy đơn hàng...</td></tr>");
+                    html.Append("<tr><td colspan='10'>Không tìm thấy đơn hàng...</td></tr>");
                 }
                 else
                 {
-                    html.Append("<tr><td colspan=\"9\">Không tìm thấy đơn hàng...</td></tr>");
+                    html.Append("<tr><td colspan='9'>Không tìm thấy đơn hàng...</td></tr>");
                 }
             }
 
@@ -423,7 +392,7 @@ namespace IM_PJ
         public static string getOrder(int ID)
         {
             JavaScriptSerializer serializer = new JavaScriptSerializer();
-            string username = HttpContext.Current.Request.Cookies["userLoginSystem"].Value;
+            string username = HttpContext.Current.Request.Cookies["usernameLoginSystem"].Value;
             var acc = AccountController.GetByUsername(username);
             if (acc != null)
             {

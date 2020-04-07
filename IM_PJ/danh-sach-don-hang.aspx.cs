@@ -8,9 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
-using System.Web.Script.Serialization;
 using System.Web.Services;
-using System.Web.UI;
 using System.Web.UI.WebControls;
 using static IM_PJ.Controllers.OrderController;
 
@@ -22,21 +20,22 @@ namespace IM_PJ
         {
             if (!IsPostBack)
             {
-                if (Request.Cookies["userLoginSystem"] != null)
+                if (Request.Cookies["usernameLoginSystem"] != null)
                 {
-                    string username = Request.Cookies["userLoginSystem"].Value;
+                    string username = Request.Cookies["usernameLoginSystem"].Value;
                     var acc = AccountController.GetByUsername(username);
-                    int agent = acc.AgentID.ToString().ToInt();
 
                     if (acc != null)
                     {
+                        LoadShipper();
+                        LoadTransportCompany();
                         if (acc.RoleID == 0)
                         {
-                            LoadCreatedBy(agent);
+                            LoadCreatedBy();
                         }
                         else if (acc.RoleID == 2)
                         {
-                            LoadCreatedBy(agent, acc);
+                            LoadCreatedBy(acc);
                         }
                         else
                         {
@@ -51,8 +50,31 @@ namespace IM_PJ
                 LoadData();
             }
         }
+        public void LoadShipper()
+        {
+            var shipper = ShipperController.getDropDownList();
+            shipper[0].Text = "Nhân viên giao hàng";
+            ddlShipperFilter.Items.Clear();
+            ddlShipperFilter.Items.AddRange(shipper.ToArray());
+            ddlShipperFilter.DataBind();
 
-        public void LoadCreatedBy(int AgentID, tbl_Account acc = null)
+        }
+        public void LoadTransportCompany()
+        {
+            var TransportCompany = TransportCompanyController.GetTransportCompany();
+            ddlTransportCompany.Items.Clear();
+            ddlTransportCompany.Items.Insert(0, new ListItem("Chành xe", "0"));
+            if (TransportCompany.Count > 0)
+            {
+                foreach (var p in TransportCompany)
+                {
+                    ListItem listitem = new ListItem(p.CompanyName.ToTitleCase(), p.ID.ToString());
+                    ddlTransportCompany.Items.Add(listitem);
+                }
+                ddlTransportCompany.DataBind();
+            }
+        }
+        public void LoadCreatedBy(tbl_Account acc = null)
         {
             if (acc != null)
             {
@@ -61,9 +83,9 @@ namespace IM_PJ
             }
             else
             {
-                var CreateBy = AccountController.GetAllNotSearch();
+                var CreateBy = AccountController.GetAllNotSearch().Where(x => x.RoleID == 0 || x.RoleID == 2).ToList();
                 ddlCreatedBy.Items.Clear();
-                ddlCreatedBy.Items.Insert(0, new ListItem("Nhân viên", ""));
+                ddlCreatedBy.Items.Insert(0, new ListItem("Nhân viên tạo đơn", ""));
                 if (CreateBy.Count > 0)
                 {
                     foreach (var p in CreateBy)
@@ -77,28 +99,78 @@ namespace IM_PJ
         }
         public void LoadData()
         {
-            string username = Request.Cookies["userLoginSystem"].Value;
+            string username = Request.Cookies["usernameLoginSystem"].Value;
             var acc = AccountController.GetByUsername(username);
             if (acc != null)
             {
+                // ẩn sản phẩm theo thời gian
+                DateTime year = new DateTime(2019, 12, 15);
+
+                var config = ConfigController.GetByTop1();
+
+                if (config.ViewAllOrders == 1)
+                {
+                    year = new DateTime(2018, 6, 22);
+                }
+
+                if (config.ViewAllReports == 0)
+                {
+                    year = DateTime.Now.AddMonths(-2);
+                }
+
+                DateTime DateConfig = year;
+
+                DateTime OrderFromDate = DateConfig;
+                DateTime OrderToDate = DateTime.Now;
+
+                if (!String.IsNullOrEmpty(Request.QueryString["orderfromdate"]))
+                {
+                    OrderFromDate = Convert.ToDateTime(Request.QueryString["orderfromdate"]);
+                }
+
+                if (!String.IsNullOrEmpty(Request.QueryString["ordertodate"]))
+                {
+                    OrderToDate = Convert.ToDateTime(Request.QueryString["ordertodate"]).AddDays(1).AddMinutes(-1);
+                }
+
+                rOrderFromDate.SelectedDate = OrderFromDate;
+                rOrderFromDate.MinDate = DateConfig;
+                rOrderFromDate.MaxDate = DateTime.Now;
+
+                rOrderToDate.SelectedDate = OrderToDate;
+                rOrderToDate.MinDate = DateConfig;
+                rOrderToDate.MaxDate = DateTime.Now;
+
                 int OrderType = 0;
                 int PaymentStatus = 0;
-                int ExcuteStatus = 0;
+                var ExcuteStatus = new List<int>() {1, 2, 3};
                 int PaymentType = 0;
-                int ShippingType = 0;
+                var ShippingType = new List<int>();
                 string Discount = "";
                 string OtherFee = "";
+                string OrderNote = "";
                 string TextSearch = "";
                 string CreatedBy = "";
-                string CreatedDate = "";
-                string QuantityFilter = "";
-                int Quantity = 0;
-                int QuantityMin = 0;
-                int QuantityMax = 0;
+                int TransportCompany = 0;
+                int ShipperID = 0;
+                int Page = 1;
+
+                // add filter quantity
+                string Quantity = "";
+                int QuantityFrom = 0;
+                int QuantityTo = 0;
+                // add filter seach type
+                int SearchType = 0;
+                // Trạng thái mã giảm giá
+                int CouponStatus = 0;
 
                 if (Request.QueryString["textsearch"] != null)
                 {
                     TextSearch = Request.QueryString["textsearch"].Trim();
+                }
+                if (Request.QueryString["searchtype"] != null)
+                {
+                    SearchType = Request.QueryString["searchtype"].ToInt(0);
                 }
                 if (Request.QueryString["ordertype"] != null)
                 {
@@ -110,7 +182,8 @@ namespace IM_PJ
                 }
                 if (Request.QueryString["excutestatus"] != null)
                 {
-                    ExcuteStatus = Request.QueryString["excutestatus"].ToInt(0);
+                    ExcuteStatus.Clear();
+                    ExcuteStatus.Add(Request.QueryString["excutestatus"].ToInt(0));
                 }
                 if (Request.QueryString["paymenttype"] != null)
                 {
@@ -118,7 +191,7 @@ namespace IM_PJ
                 }
                 if (Request.QueryString["shippingtype"] != null)
                 {
-                    ShippingType = Request.QueryString["shippingtype"].ToInt(0);
+                    ShippingType.Add(Request.QueryString["shippingtype"].ToInt(0));
                 }
                 if (Request.QueryString["discount"] != null)
                 {
@@ -128,249 +201,140 @@ namespace IM_PJ
                 {
                     OtherFee = Request.QueryString["otherfee"].ToString();
                 }
-                if (Request.QueryString["createdby"] != null)
+                if (Request.QueryString["ordernote"] != null)
                 {
-                    CreatedBy = Request.QueryString["createdby"];
+                    OrderNote = Request.QueryString["ordernote"].ToString();
                 }
                 if (Request.QueryString["createdby"] != null)
                 {
                     CreatedBy = Request.QueryString["createdby"];
                 }
-                if(Request.QueryString["createddate"] != null)
+                if (Request.QueryString["transportcompany"] != null)
                 {
-                    CreatedDate = Request.QueryString["createddate"];
+                    TransportCompany = Request.QueryString["transportcompany"].ToInt(0);
                 }
+                if (Request.QueryString["shipperid"] != null)
+                {
+                    ShipperID = Request.QueryString["shipperid"].ToInt(0);
+                }
+
+                if (Request.QueryString["Page"] != null)
+                {
+                    Page = Request.QueryString["Page"].ToInt();
+                }
+
+                // add filter quantity
                 if (Request.QueryString["quantityfilter"] != null)
                 {
-                    QuantityFilter = Request.QueryString["quantityfilter"];
+                    Quantity = Request.QueryString["quantityfilter"];
 
-                    if (QuantityFilter == "greaterthan" || QuantityFilter == "lessthan")
+                    if (Quantity == "greaterthan")
                     {
-                        Quantity = Request.QueryString["quantity"].ToInt();
+                        QuantityFrom = Request.QueryString["quantity"].ToInt();
                     }
-                    if (QuantityFilter == "between")
+                    else if (Quantity == "lessthan")
                     {
-                        QuantityMin = Request.QueryString["quantitymin"].ToInt();
-                        QuantityMax = Request.QueryString["quantitymax"].ToInt();
+                        QuantityTo = Request.QueryString["quantity"].ToInt();
+                    }
+                    else if (Quantity == "between")
+                    {
+                        QuantityFrom = Request.QueryString["quantitymin"].ToInt();
+                        QuantityTo = Request.QueryString["quantitymax"].ToInt();
                     }
                 }
+                // Drop download có / không mã giảm giá
+                if (Request.QueryString["couponstatus"] != null)
+                    CouponStatus = Request.QueryString["couponstatus"].ToInt(0);
 
                 txtSearchOrder.Text = TextSearch;
+                ddlSearchType.SelectedValue = SearchType.ToString();
                 ddlOrderType.SelectedValue = OrderType.ToString();
-                ddlExcuteStatus.SelectedValue = ExcuteStatus.ToString();
+                ddlExcuteStatus.SelectedValue = ExcuteStatus.Count() > 1 ? "0" : ExcuteStatus.FirstOrDefault().ToString();
                 ddlPaymentStatus.SelectedValue = PaymentStatus.ToString();
                 ddlPaymentType.SelectedValue = PaymentType.ToString();
-                ddlShippingType.SelectedValue = ShippingType.ToString();
-                ddlDiscount.SelectedValue = Discount.ToString();
-                ddlOtherFee.SelectedValue = OtherFee.ToString();
-                ddlCreatedBy.SelectedValue = CreatedBy.ToString();
-                ddlCreatedDate.SelectedValue = CreatedDate.ToString();
+                ddlShippingType.SelectedValue = ShippingType.Count() > 0 ? ShippingType.FirstOrDefault().ToString() : "0";
+                ddlDiscount.SelectedValue = Discount;
+                ddlOtherFee.SelectedValue = OtherFee;
+                ddlOrderNote.SelectedValue = OrderNote;
+                ddlCreatedBy.SelectedValue = CreatedBy;
+                ddlTransportCompany.SelectedValue = TransportCompany.ToString();
+                ddlShipperFilter.SelectedValue = ShipperID.ToString();
 
-                ddlQuantityFilter.SelectedValue = QuantityFilter.ToString();
-                txtQuantity.Text = Quantity.ToString();
-                txtQuantityMin.Text = QuantityMin.ToString();
-                txtQuantityMax.Text = QuantityMax.ToString();
+                // add filter quantity
+                ddlQuantityFilter.SelectedValue = Quantity;
+                if (Quantity == "greaterthan")
+                {
+                    txtQuantity.Text = QuantityFrom.ToString();
+                    txtQuantityMin.Text = "0";
+                    txtQuantityMax.Text = "0";
+                }
+                else if (Quantity == "lessthan")
+                {
+                    txtQuantity.Text = QuantityTo.ToString();
+                    txtQuantityMin.Text = "0";
+                    txtQuantityMax.Text = "0";
+                }
+                else if (Quantity == "between")
+                {
+                    txtQuantity.Text = "0";
+                    txtQuantityMin.Text = QuantityFrom.ToString();
+                    txtQuantityMax.Text = QuantityTo.ToString();
+                }
 
+                // Drop download có / không mã giảm giá
+                ddlCouponStatus.SelectedValue = CouponStatus.ToString();
 
+                if (acc.RoleID != 0)
+                {
+                    CreatedBy = acc.Username;
+                    ddlCreatedBy.Enabled = false;
+                }
+
+                // Create order fileter
+                var filter = new OrderFilterModel()
+                {
+                    search = TextSearch,
+                    searchType = SearchType,
+                    orderType = OrderType,
+                    excuteStatus = ExcuteStatus,
+                    paymentStatus = PaymentStatus,
+                    paymentType = PaymentType,
+                    shippingType = ShippingType,
+                    discount = Discount,
+                    otherFee = OtherFee,
+                    quantity = Quantity,
+                    quantityFrom = QuantityFrom,
+                    quantityTo = QuantityTo,
+                    orderCreatedBy = CreatedBy,
+                    orderFromDate = OrderFromDate,
+                    orderToDate = OrderToDate,
+                    transportCompany = TransportCompany,
+                    shipper = ShipperID,
+                    orderNote = OrderNote,
+                    couponStatus = CouponStatus
+                };
+                // Create pagination
+                var page = new PaginationMetadataModel()
+                {
+                    currentPage = Page
+                };
                 List<OrderList> rs = new List<OrderList>();
-                rs = OrderController.Filter(TextSearch, OrderType, ExcuteStatus, PaymentStatus, PaymentType, ShippingType, Discount, OtherFee, CreatedBy, CreatedDate);
+                rs = OrderController.Filter(filter, ref page);
 
-                if (acc.RoleID == 0)
-                {
-                    hdfcreate.Value = "1";
-                    if (CreatedBy != "")
-                    {
-                        rs = rs.Where(x => x.CreatedBy == CreatedBy && x.ExcuteStatus != 4).ToList();
-                    }
-                    else
-                    {
-                        rs = rs.Where(x => x.ExcuteStatus != 4).ToList();
-                    }
-                }
-                else
-                {
-                    rs = rs.Where(x => x.CreatedBy == acc.Username && x.ExcuteStatus != 4).ToList();
-                }
+                pagingall(rs, page);
 
-                if (QuantityFilter != "")
-                {
-                    if (QuantityFilter == "greaterthan")
-                    {
-                        rs = rs.Where(p => p.Quantity >= Quantity).ToList();
-                    }
-                    else if (QuantityFilter == "lessthan")
-                    {
-                        rs = rs.Where(p => p.Quantity <= Quantity).ToList();
-                    }
-                    else if (QuantityFilter == "between")
-                    {
-                        rs = rs.Where(p => p.Quantity >= QuantityMin && p.Quantity <= QuantityMax).ToList();
-                    }
-                }
-
-                pagingall(rs);
-
-
-
-                ltrNumberOfOrder.Text = rs.Count().ToString();
-
-                // THỐNG KÊ ĐƠN HÀNG
-                int TotalOrders = rs.Count;
-                int Type1Orders = 0;
-                int Type2Orders = 0;
-                int TotalProducts = 0;
-
-                int ShippingType1 = 0;
-                int ShippingType2 = 0;
-                int ShippingType3 = 0;
-                int ShippingType4 = 0;
-
-                double TotalMoney = 0;
-                double TotalDiscount = 0;
-                double FeeShipping = 0;
-                double OtherFeeValue = 0;
-
-                for (int i = 0; i < rs.Count; i++)
-                {
-                    var item = rs[i];
-
-                    // Tính tổng số sản phẩm trong tổng số đơn hàng
-                    TotalProducts += item.Quantity;
-                    // Tính tổng đơn hàng sỉ và lẻ
-
-                    if (item.OrderType == 2)
-                    {
-                        Type2Orders++;
-                    }
-                    if (item.OrderType == 1)
-                    {
-                        Type1Orders++;
-                    }
-
-                    // Tính số đơn dựa vào kiểu vận chuyển
-                    if (item.ShippingType == 1)
-                    {
-                        ShippingType1++;
-                    }
-                    if (item.ShippingType == 2)
-                    {
-                        ShippingType2++;
-                    }
-                    if (item.ShippingType == 3)
-                    {
-                        ShippingType3++;
-                    }
-                    if (item.ShippingType == 4)
-                    {
-                        ShippingType4++;
-                    }
-
-                    // Tính số tiền
-                    TotalMoney += item.TotalPrice;
-                    TotalDiscount += item.TotalDiscount;
-                    FeeShipping += item.FeeShipping;
-                    OtherFeeValue += item.OtherFeeValue;
-                }
-
-                StringBuilder htmlReport = new StringBuilder();
-
-                htmlReport.AppendLine(String.Format("<div class='row pad'>"));
-                htmlReport.AppendLine(String.Format("    <div class='col-md-3'>"));
-                htmlReport.AppendLine(String.Format("        <label class='left pad10'>Tổng số đơn hàng: </label>"));
-                htmlReport.AppendLine(String.Format("        <div class='ordertype'>"));
-                htmlReport.AppendLine(String.Format("            {0}", TotalOrders.ToString()));
-                htmlReport.AppendLine(String.Format("        </div>"));
-                htmlReport.AppendLine(String.Format("    </div>"));
-                htmlReport.AppendLine(String.Format("    <div class='col-md-3'>"));
-                htmlReport.AppendLine(String.Format("        <label class='left pad10'>Số đơn hàng sỉ: </label>"));
-                htmlReport.AppendLine(String.Format("        <div class='ordercreateby'>"));
-                htmlReport.AppendLine(String.Format("            {0}", Type2Orders.ToString()));
-                htmlReport.AppendLine(String.Format("        </div>"));
-                htmlReport.AppendLine(String.Format("    </div>"));
-                htmlReport.AppendLine(String.Format("    <div class='col-md-3'>"));
-                htmlReport.AppendLine(String.Format("        <label class='left pad10'>Số đơn hàng lẻ: </label>"));
-                htmlReport.AppendLine(String.Format("        <div class='ordercreatedate'>"));
-                htmlReport.AppendLine(String.Format("            {0}", Type1Orders.ToString()));
-                htmlReport.AppendLine(String.Format("        </div>"));
-                htmlReport.AppendLine(String.Format("    </div>"));
-                htmlReport.AppendLine(String.Format("    <div class='col-md-3'> "));
-                htmlReport.AppendLine(String.Format("        <label class='left pad10'>Tổng sản phẩm: </label>"));
-                htmlReport.AppendLine(String.Format("        <div class='ordernote'>"));
-                htmlReport.AppendLine(String.Format("            {0}", TotalProducts.ToString()));
-                htmlReport.AppendLine(String.Format("        </div>"));
-                htmlReport.AppendLine(String.Format("    </div>"));
-                htmlReport.AppendLine(String.Format("</div>"));
-                if (acc.RoleID == 0)
-                {
-                    htmlReport.AppendLine(String.Format("<div class='row pad'>"));
-                    htmlReport.AppendLine(String.Format("    <div class='col-md-3'>"));
-                    htmlReport.AppendLine(String.Format("        <label class='left pad10'>Tổng số tiền: </label>"));
-                    htmlReport.AppendLine(String.Format("        <div class='orderquantity'>"));
-                    htmlReport.AppendLine(String.Format("            {0}", string.Format("{0:N0}", Convert.ToDouble(TotalMoney)).ToString()));
-                    htmlReport.AppendLine(String.Format("        </div>"));
-                    htmlReport.AppendLine(String.Format("    </div>"));
-                    htmlReport.AppendLine(String.Format("    <div class='col-md-3'>"));
-                    htmlReport.AppendLine(String.Format("        <label class='left pad10'>Tổng chiết khấu: </label>"));
-                    htmlReport.AppendLine(String.Format("        <div class='ordertotalprice'>"));
-                    htmlReport.AppendLine(String.Format("            {0}", string.Format("{0:N0}", Convert.ToDouble(TotalDiscount)).ToString()));
-                    htmlReport.AppendLine(String.Format("        </div>"));
-                    htmlReport.AppendLine(String.Format("    </div>"));
-                    htmlReport.AppendLine(String.Format("    <div class='col-md-3'>"));
-                    htmlReport.AppendLine(String.Format("        <label class='left pad10'>Tổng phí vận chuyển: </label>"));
-                    htmlReport.AppendLine(String.Format("        <div class='ordertotalprice'>"));
-                    htmlReport.AppendLine(String.Format("            {0}", string.Format("{0:N0}", Convert.ToDouble(FeeShipping)).ToString()));
-                    htmlReport.AppendLine(String.Format("        </div>"));
-                    htmlReport.AppendLine(String.Format("    </div>"));
-                    htmlReport.AppendLine(String.Format("    <div class='col-md-3'>"));
-                    htmlReport.AppendLine(String.Format("        <label class='left pad10'>Tổng phí khác: </label>"));
-                    htmlReport.AppendLine(String.Format("        <div class='ordertotalprice'>"));
-                    htmlReport.AppendLine(String.Format("            {0}", string.Format("{0:N0}", Convert.ToDouble(OtherFeeValue)).ToString()));
-                    htmlReport.AppendLine(String.Format("        </div>"));
-                    htmlReport.AppendLine(String.Format("    </div>"));
-                    htmlReport.AppendLine(String.Format("</div>"));
-                }
-                htmlReport.AppendLine(String.Format("<div class='row pad'>"));
-                htmlReport.AppendLine(String.Format("    <div class='col-md-3'>"));
-                htmlReport.AppendLine(String.Format("        <label class='left pad10'>Số đơn lấy trực tiếp: </label>"));
-                htmlReport.AppendLine(String.Format("        <div class='orderquantity'>"));
-                htmlReport.AppendLine(String.Format("            {0}", ShippingType1.ToString()));
-                htmlReport.AppendLine(String.Format("        </div>"));
-                htmlReport.AppendLine(String.Format("    </div>"));
-                htmlReport.AppendLine(String.Format("    <div class='col-md-3'>"));
-                htmlReport.AppendLine(String.Format("        <label class='left pad10'>Số đơn chuyển bưu điện: </label>"));
-                htmlReport.AppendLine(String.Format("        <div class='ordertotalprice'>"));
-                htmlReport.AppendLine(String.Format("            {0}", ShippingType2.ToString()));
-                htmlReport.AppendLine(String.Format("        </div>"));
-                htmlReport.AppendLine(String.Format("    </div>"));
-                htmlReport.AppendLine(String.Format("    <div class='col-md-3'>"));
-                htmlReport.AppendLine(String.Format("        <label class='left pad10'>Số đơn gửi dịch vụ: </label>"));
-                htmlReport.AppendLine(String.Format("        <div class='orderstatus'>"));
-                htmlReport.AppendLine(String.Format("            {0}", ShippingType3.ToString()));
-                htmlReport.AppendLine(String.Format("        </div>"));
-                htmlReport.AppendLine(String.Format("    </div>"));
-                htmlReport.AppendLine(String.Format("    <div class='col-md-3'> "));
-                htmlReport.AppendLine(String.Format("        <label class='left pad10'>Số đơn chuyển xe: </label>"));
-                htmlReport.AppendLine(String.Format("        <div class='ordernote'>"));
-                htmlReport.AppendLine(String.Format("            {0}", ShippingType4.ToString()));
-                htmlReport.AppendLine(String.Format("        </div>"));
-                htmlReport.AppendLine(String.Format("    </div>"));
-                htmlReport.AppendLine(String.Format("</div>"));
-
-                ltrReport.Text = htmlReport.ToString();
-                
+                ltrNumberOfOrder.Text = page.totalCount.ToString();
             }
         }
 
-
         #region Paging
-        public void pagingall(List<OrderList> acs)
+        public void pagingall(List<OrderList> acs, PaginationMetadataModel page)
         {
-            string username = Request.Cookies["userLoginSystem"].Value;
+            string username = Request.Cookies["usernameLoginSystem"].Value;
             var acc = AccountController.GetByUsername(username);
 
-            int PageSize = 30;
-
             StringBuilder html = new StringBuilder();
+            html.Append("<thead>");
             html.Append("<tr>");
             html.Append("    <th>Mã</th>");
             html.Append("    <th>Loại</th>");
@@ -389,95 +353,120 @@ namespace IM_PJ
             html.Append("    <th>Hoàn tất</th>");
             html.Append("    <th></th>");
             html.Append("</tr>");
+            html.Append("</thead>");
 
+            html.Append("<tbody>");
             if (acs.Count > 0)
             {
-                int TotalItems = acs.Count;
-                if (TotalItems % PageSize == 0)
-                    PageCount = TotalItems / PageSize;
-                else
-                    PageCount = TotalItems / PageSize + 1;
-
-                Int32 Page = GetIntFromQueryString("Page");
-
-                if (Page == -1) Page = 1;
-                int FromRow = (Page - 1) * PageSize;
-                int ToRow = Page * PageSize - 1;
-                if (ToRow >= TotalItems)
-                    ToRow = TotalItems - 1;
-
+                PageCount = page.totalPages;
+                Int32 Page = page.currentPage;
                 
-                for (int i = FromRow; i < ToRow + 1; i++)
+                foreach(var item in acs)
                 {
-                    var item = acs[i];
                     html.Append("<tr>");
-                    html.Append("   <td><a href=\"/thong-tin-don-hang?id=" + item.ID + "\">" + item.ID + "</a></td>");
-                    html.Append("   <td>" + PJUtils.OrderTypeStatus(Convert.ToInt32(item.OrderType)) + "</td>");
+                    html.Append("   <td data-title='Mã đơn'><a target='_blank' href='/thong-tin-don-hang?id=" + item.ID + "'>" + item.ID + "</a></td>");
+                    html.Append("   <td data-title='Loại đơn'>" + PJUtils.OrderTypeStatus(Convert.ToInt32(item.OrderType)) + "</td>");
 
                     if (!string.IsNullOrEmpty(item.Nick))
                     {
-                        html.Append("   <td><a class=\"col-customer-name-link capitalize\" href=\"/thong-tin-don-hang?id=" + item.ID + "\">" + item.Nick + "</a><br><span class=\"name-bottom-nick\">(" + item.CustomerName + ")</span></td>");
+                        html.Append("   <td data-title='Khách hàng' class='customer-td'><a class='col-customer-name-link' target='_blank' href='/thong-tin-don-hang?id=" + item.ID + "'>" + item.Nick.ToTitleCase() + "</a><br><span class='name-bottom-nick'>(" + item.CustomerName.ToTitleCase() + ")</span></td>");
                     }
                     else
                     {
-                        html.Append("   <td><a class=\"col-customer-name-link capitalize\" href=\"/thong-tin-don-hang?id=" + item.ID + "\">" + item.CustomerName + "</a></td>");
+                        html.Append("   <td data-title='Khách hàng' class='customer-td'><a class='col-customer-name-link' target='_blank' href='/thong-tin-don-hang?id=" + item.ID + "'>" + item.CustomerName.ToTitleCase() + "</a></td>");
                     }
 
-                    html.Append("   <td>" + item.Quantity + "</td>");
-                    html.Append("   <td>" + PJUtils.OrderExcuteStatus(Convert.ToInt32(item.ExcuteStatus)) + "</td>");
-                    html.Append("   <td>" + PJUtils.OrderPaymentStatus(Convert.ToInt32(item.PaymentStatus)) + "</td>");
-                    html.Append("   <td>" + PJUtils.PaymentType(Convert.ToInt32(item.PaymentType)) + "</td>");
-                    html.Append("   <td>" + PJUtils.ShippingType(Convert.ToInt32(item.ShippingType)) + "</td>");
-                    html.Append("   <td><strong>" + string.Format("{0:N0}", Convert.ToDouble(item.TotalPrice)) + "</strong></td>");
+                    html.Append("   <td data-title='Đã mua'>" + item.Quantity + "</td>");
+                    if (acc.RoleID == 0 && item.ExcuteStatus == 2)
+                        html.Append("   <td data-title='Xử lý'><span class='bg-green' style='cursor: pointer' onclick='onClick_spFinishStatusOrder(this, " + item.ID + ")'>Đã hoàn tất</span></td>");
+                    else
+                        html.Append("   <td data-title='Xử lý'>" + PJUtils.OrderExcuteStatus(Convert.ToInt32(item.ExcuteStatus)) + "</td>");
+                    html.Append("   <td data-title='Thanh toán'>" + PJUtils.OrderPaymentStatus(Convert.ToInt32(item.PaymentStatus)) + "</td>");
+
+                    #region Phương thức thanh toán
+                    html.Append("   <td data-title='Kiểu thanh toán' class='payment-type'>");
+                    html.Append(PJUtils.PaymentType(Convert.ToInt32(item.PaymentType)));
+                    // Đã nhận tiền chuyển khoản
+                    if(item.PaymentType == 2)
+                    {
+                        if (item.TransferStatus.HasValue && item.TransferStatus.Value == 1)
+                        {
+                            html.Append("       <br/><div class='new-status-btn'><span class='bg-green'>Đã nhận tiền</span></div>");
+                        }
+                        else
+                        {
+                            if (acc.RoleID == 0)
+                                html.Append("       <br/><a class='new-status-btn' target='_blank' href='/danh-sach-chuyen-khoan?&textsearch=" + item.ID + "'><span class='bg-black'>Cập nhật</span></a>");
+                        }
+                    }
+                    html.Append("   </td>");
+                    #endregion
+
+
+                    #region Giao hàng
+                    html.Append("   <td data-title='Giao hàng' class='shipping-type'>");
+                    html.Append(PJUtils.ShippingType(Convert.ToInt32(item.ShippingType)));
+                    // Đã giao hàng
+                    if (item.DeliveryStatus.HasValue && item.DeliveryStatus.Value == 1)
+                        html.Append("       <br/><div class='new-status-btn'><span class='bg-green'>Đã giao</span></div>");
+                    html.Append("   </td>");
+                    #endregion
+
+
+                    html.Append("   <td data-title='Tổng tiền'><strong>" + string.Format("{0:N0}", Convert.ToDouble(item.TotalPrice - item.TotalRefund)) + "</strong></td>");
 
                     if (acc.RoleID == 0)
                     {
-                        html.Append("   <td>" + item.CreatedBy + "</td>");
+                        html.Append("   <td data-title='Nhân viên tạo đơn'>" + item.CreatedBy + "</td>");
                     }
 
-                    string date = string.Format("{0:dd/MM}", item.CreatedDate);
-                    html.Append("   <td>" + date + "</td>");
+                    string date = string.Format("<strong>{0:dd/MM}</strong><br>{0:HH:mm}", item.CreatedDate);
+                    html.Append("   <td data-title='Ngày tạo đơn'>" + date + "</td>");
 
                     string datedone = "";
                     if (item.ExcuteStatus == 2)
                     {
-                        datedone = string.Format("{0:dd/MM}", item.DateDone);
+                        datedone = string.Format("<strong>{0:dd/MM}</strong><br>{0:HH:mm}", item.DateDone);
                     }
-                    html.Append("   <td>" + datedone + "</td>");
+                    html.Append("   <td data-title='Ngày hoàn tất'>" + datedone + "</td>");
 
-                    html.Append("   <td>");
-                    html.Append("       <a href=\"/print-invoice?id=" + item.ID + "\" title=\"In hóa đơn\" target=\"_blank\" class=\"btn primary-btn h45-btn\"><i class=\"fa fa-print\" aria-hidden=\"true\"></i></a>");
-                    html.Append("       <a href=\"/print-shipping-note?id=" + item.ID + "\" title=\"In phiếu gửi hàng\" target=\"_blank\" class=\"btn primary-btn btn-red h45-btn\"><i class=\"fa fa-file-text-o\" aria-hidden=\"true\"></i></a>");
-                    html.Append("       <a href=\"/chi-tiet-khach-hang?id=" + item.CustomerID + "\" title=\"Thông tin khách hàng " + item.CustomerName + "\" target=\"_blank\" class=\"btn primary-btn btn-black h45-btn\"><i class=\"fa fa-user-circle\" aria-hidden=\"true\"></i></a>");
+                    html.Append("   <td data-title='Thao tác' class='update-button'>");
+                    html.Append("       <a href='/print-invoice?id=" + item.ID + "' title='In hóa đơn' target='_blank' class='btn primary-btn h45-btn'><i class='fa fa-print' aria-hidden='true'></i></a>");
+                    html.Append("       <a href='/print-shipping-note?id=" + item.ID + "' title='In phiếu gửi hàng' target='_blank' class='btn primary-btn btn-red h45-btn'><i class='fa fa-file-text-o' aria-hidden='true'></i></a>");
+                    html.Append("       <a href='/chi-tiet-khach-hang?id=" + item.CustomerID + "' title='Thông tin khách hàng " + item.CustomerName + "' target='_blank' class='btn primary-btn btn-black h45-btn'><i class='fa fa-user-circle' aria-hidden='true'></i></a>");
+                    if (item.DeliveryStatus.HasValue && item.DeliveryStatus.Value == 1 && !string.IsNullOrEmpty(item.InvoiceImage))
+                        html.Append("       <a href='javascript:;' onclick='openImageInvoice($(this))' data-link='" + item.InvoiceImage + "' title='Biên nhận gửi hàng' class='btn primary-btn btn-blue h45-btn'><i class='fa fa-file-text-o' aria-hidden='true'></i></a>");
+                    html.Append("       <a href='javascript:;' onclick='copyInvoiceURL(" + item.ID + ", " + item.CustomerID + ")' title='Copy link hóa đơn' class='btn primary-btn btn-violet h45-btn'><i class='glyphicon glyphicon-list-alt' aria-hidden='true'></i></a>");
                     html.Append("   </td>");
                     html.Append("</tr>");
 
                     // thông tin thêm
 
                     html.Append("<tr class='tr-more-info'>");
-                    html.Append("   <td colspan='2'>");
-                    html.Append("   </td>");
-                    html.Append("   <td colspan='11'>");
+                    html.Append("<td colspan='2'></td>");
+                    html.Append("<td colspan='11'>");
 
-                    if(item.RefundsGoodsID != null)
+                    if(item.TotalRefund != 0)
                     {
-                        var refund = RefundGoodController.GetByID(Convert.ToInt32(item.RefundsGoodsID));
-                        if(refund != null)
-                        {
-                            html.Append("<span class='order-info'><strong>Trừ hàng trả:</strong> " + string.Format("{0:N0}", Convert.ToDouble(refund.TotalPrice)) + " (<a href='xem-don-hang-doi-tra?id=" + item.RefundsGoodsID + "' target='_blank'>Xem đơn " + item.RefundsGoodsID + "</a>)</span>");
-                        }
+                        html.Append("<span class='order-info'><strong>Hàng trả:</strong> -" + string.Format("{0:N0}", item.TotalRefund) + " (<a href='xem-don-hang-doi-tra?id=" + item.RefundsGoodsID + "' target='_blank'>Đơn " + item.RefundsGoodsID + "</a>)</span>");
                     }
+
                     if (item.TotalDiscount > 0)
                     {
-                        html.Append("<span class='order-info'><strong>Chiết khấu:</strong> " + string.Format("{0:N0}", Convert.ToDouble(item.TotalDiscount)) + "</span>");
+                        html.Append("<span class='order-info'><strong>Chiết khấu:</strong> -" + string.Format("{0:N0}", Convert.ToDouble(item.TotalDiscount)) + "</span>");
                     }
                     if (item.OtherFeeValue != 0)
                     {
-                        html.Append("<span class='order-info'><strong>Phí khác:</strong> " + string.Format("{0:N0}", Convert.ToDouble(item.OtherFeeValue)) + " (" + item.OtherFeeName.Trim() + ")</span>");
+                        html.Append("<span class='order-info'><strong>Phí khác:</strong> " + string.Format("{0:N0}", Convert.ToDouble(item.OtherFeeValue)) + " (<a href='#feeInfoModal' data-toggle='modal' data-backdrop='static' onclick='onClick_aFeeInfoModal(" + item.ID + ")'>" + item.OtherFeeName.Trim() + "</a>)</span>");
                     }
-                    if (item.FeeShipping > 0)
+                    if (item.ShippingType == 4)
                     {
-                        html.Append("<span class='order-info'><strong>Phí vận chuyển:</strong> " + string.Format("{0:N0}", Convert.ToDouble(item.FeeShipping)) + "</span>");
+                        if (item.TransportCompanyID != 0)
+                        {
+                            var transport = TransportCompanyController.GetTransportCompanyForOrderList(Convert.ToInt32(item.TransportCompanyID));
+                            var transportsub = TransportCompanyController.GetReceivePlaceForOrderList(Convert.ToInt32(item.TransportCompanyID), Convert.ToInt32(item.TransportCompanySubID));
+                            html.Append("<span class='order-info'><strong>Gửi xe: </strong> " + transport.CompanyName.ToTitleCase() + " (" + transportsub.ShipTo.ToTitleCase() + ")</span>");
+                        }
                     }
                     if (!string.IsNullOrEmpty(item.ShippingCode))
                     {
@@ -490,22 +479,25 @@ namespace IM_PJ
                         {
                             moreInfo = " (Chuyển " + ((item.PostalDeliveryType == 1) ? "thường" : "nhanh") + ")";
                         }
-                        html.Append("<span class='order-info'><strong>Mã vận đơn:</strong> " + item.ShippingCode + moreInfo + "</span>");
+                        html.Append("<span class='order-info'><strong>Vận đơn:</strong> " + item.ShippingCode + moreInfo + "</span>");
                     }
-                    if(item.ShippingType == 4)
+                    if (item.FeeShipping > 0)
                     {
-                        if (item.TransportCompanyID != 0)
-                        {
-                            var transport = TransportCompanyController.GetTransportCompanyByID(Convert.ToInt32(item.TransportCompanyID));
-                            var transportsub = TransportCompanyController.GetReceivePlaceByID(Convert.ToInt32(item.TransportCompanyID), Convert.ToInt32(item.TransportCompanySubID));
-                            html.Append("<span class='order-info'><strong>Gửi xe: </strong> " + transport.CompanyName + " (" + transportsub.ShipTo + ")</span>");
-                        }
+                        html.Append("<span class='order-info'><strong>Phí ship:</strong> " + string.Format("{0:N0}", Convert.ToDouble(item.FeeShipping)) + "</span>");
+                    }
+                    if ((item.ShippingType == 4 || item.ShippingType == 5) && !string.IsNullOrEmpty(item.ShipperName))
+                    {
+                        html.Append("<span class='order-info'><strong>Shipper:</strong> " + item.ShipperName + "</span>");
+                    }
+                    if (!string.IsNullOrEmpty(item.CouponCode))
+                    {
+                        html.Append(String.Format("<span class='order-info'><strong>Mã giảm giá ({0}):</strong> -{1:N0}</span>", item.CouponCode.Trim().ToUpper(), item.CouponValue));
                     }
                     if (!string.IsNullOrEmpty(item.OrderNote))
                     {
                         html.Append("<span class='order-info'><strong>Ghi chú:</strong> " + item.OrderNote + "</span>");
                     }
-                    html.Append("   </td>");
+                    html.Append("</td>");
                     html.Append("</tr>");
                 }
                 
@@ -514,32 +506,18 @@ namespace IM_PJ
             {
                 if (acc.RoleID == 0)
                 {
-                    html.Append("<tr><td colspan=\"13\">Không tìm thấy đơn hàng...</td></tr>");
+                    html.Append("<tr><td colspan='13'>Không tìm thấy đơn hàng...</td></tr>");
                 }
                 else
                 {
-                    html.Append("<tr><td colspan=\"12\">Không tìm thấy đơn hàng...</td></tr>");
+                    html.Append("<tr><td colspan='12'>Không tìm thấy đơn hàng...</td></tr>");
                 }
             }
+            html.Append("</tbody>");
 
             ltrList.Text = html.ToString();
         }
-        public static Int32 GetIntFromQueryString(String key)
-        {
-            Int32 returnValue = -1;
-            String queryStringValue = HttpContext.Current.Request.QueryString[key];
-            try
-            {
-                if (queryStringValue == null)
-                    return returnValue;
-                if (queryStringValue.IndexOf("#") > 0)
-                    queryStringValue = queryStringValue.Substring(0, queryStringValue.IndexOf("#"));
-                returnValue = Convert.ToInt32(queryStringValue);
-            }
-            catch
-            { }
-            return returnValue;
-        }
+
         private int PageCount;
         protected void DisplayHtmlStringPaging1()
         {
@@ -669,6 +647,11 @@ namespace IM_PJ
             string search = txtSearchOrder.Text.Trim();
             string request = "/danh-sach-don-hang?";
 
+            if (ddlSearchType.SelectedValue != "")
+            {
+                request += "&searchtype=" + ddlSearchType.SelectedValue;
+            }
+
             if (search != "")
             {
                 request += "&textsearch=" + search;
@@ -709,34 +692,72 @@ namespace IM_PJ
                 request += "&otherfee=" + ddlOtherFee.SelectedValue;
             }
 
+            if (ddlOrderNote.SelectedValue != "")
+            {
+                request += "&ordernote=" + ddlOrderNote.SelectedValue;
+            }
+
             if (ddlCreatedBy.SelectedValue != "")
             {
                 request += "&createdby=" + ddlCreatedBy.SelectedValue;
             }
 
-            if (ddlCreatedDate.SelectedValue != "")
+            if (rOrderFromDate.SelectedDate.HasValue)
             {
-                request += "&createddate=" + ddlCreatedDate.SelectedValue;
+                request += "&orderfromdate=" + rOrderFromDate.SelectedDate.ToString();
+            }
+
+            if (rOrderToDate.SelectedDate.HasValue)
+            {
+                request += "&ordertodate=" + rOrderToDate.SelectedDate.ToString();
             }
 
             if (ddlQuantityFilter.SelectedValue != "")
             {
                 if (ddlQuantityFilter.SelectedValue == "greaterthan" || ddlQuantityFilter.SelectedValue == "lessthan")
                 {
-                    request += "&quantityfilter=" + ddlQuantityFilter.SelectedValue + "&quantity=" + txtQuantity.Text;
+                    request += "&quantityfilter=" + ddlQuantityFilter.SelectedValue;
+                    request += "&quantity=" + (String.IsNullOrEmpty(txtQuantity.Text) ? "0" : txtQuantity.Text);
                 }
 
                 if (ddlQuantityFilter.SelectedValue == "between")
                 {
-                    request += "&quantityfilter=" + ddlQuantityFilter.SelectedValue + "&quantitymin=" + txtQuantityMin.Text + "&quantitymax=" + txtQuantityMax.Text;
+                    request += "&quantityfilter=" + ddlQuantityFilter.SelectedValue;
+                    request += "&quantitymin=" + (String.IsNullOrEmpty(txtQuantityMin.Text) ? "0" : txtQuantityMin.Text);
+                    request += "&quantitymax=" + (String.IsNullOrEmpty(txtQuantityMax.Text) ? "0" : txtQuantityMax.Text);
                 }
             }
+            if (ddlTransportCompany.SelectedValue != "0")
+            {
+                request += "&transportcompany=" + ddlTransportCompany.SelectedValue;
+            }
+            if (ddlShipperFilter.SelectedValue != "0")
+            {
+                request += "&shipperid=" + ddlShipperFilter.SelectedValue;
+            }
+            // Drop downlist có / không mã giảm giá
+            if (ddlCouponStatus.SelectedValue != "0")
+                request += "&couponstatus=" + ddlCouponStatus.SelectedValue;
+
             Response.Redirect(request);
         }
-        public class danhmuccon1
+
+        [WebMethod]
+        public static string getFeeInfo(int orderID)
         {
-            public tbl_Category cate1 { get; set; }
-            public string parentName { get; set; }
+            return FeeController.getFeesJSON(orderID);
+        }
+
+        [WebMethod]
+        public static tbl_Order changeFinishStatusOrder(int orderID)
+        {
+            string username = HttpContext.Current.Request.Cookies["usernameLoginSystem"].Value;
+            var acc = AccountController.GetByUsername(username);
+
+            if (acc == null)
+                throw new Exception("Vui lòng đăng nhập lại!");
+
+            return OrderController.UpdateExcuteStatus(orderID, (int)ExcuteStatus.Doing, acc.Username);
         }
     }
 }

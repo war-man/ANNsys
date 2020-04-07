@@ -1,5 +1,6 @@
 ﻿using IM_PJ.Controllers;
 using IM_PJ.Models;
+using IM_PJ.Utils;
 using MB.Extensions;
 using NHST.Bussiness;
 using System;
@@ -21,9 +22,9 @@ namespace IM_PJ
         {
             if (!IsPostBack)
             {
-                if (Request.Cookies["userLoginSystem"] != null)
+                if (Request.Cookies["usernameLoginSystem"] != null)
                 {
-                    string username = Request.Cookies["userLoginSystem"].Value;
+                    string username = Request.Cookies["usernameLoginSystem"].Value;
                     var acc = AccountController.GetByUsername(username);
                     if (acc != null)
                     {
@@ -69,7 +70,7 @@ namespace IM_PJ
         public static string getProduct(string textsearch)
         {
             List<ProductGetOut> ps = new List<ProductGetOut>();
-            string username = HttpContext.Current.Request.Cookies["userLoginSystem"].Value;
+            string username = HttpContext.Current.Request.Cookies["usernameLoginSystem"].Value;
             var acc = AccountController.GetByUsername(username);
             if (acc != null)
             {
@@ -121,18 +122,13 @@ namespace IM_PJ
 
                                         if (!string.IsNullOrEmpty(pv.Image))
                                         {
-                                            p.ProductImage = "<img src=\"" + pv.Image + "\" />";
-                                            p.ProductImageOrigin = pv.Image;
+                                            p.ProductImage = "<img src='" + Thumbnail.getURL(pv.Image, Thumbnail.Size.Small) + "'>";
+                                            p.ProductImageOrigin = Thumbnail.getURL(pv.Image, Thumbnail.Size.Source);
                                         }
                                         else if (!string.IsNullOrEmpty(product.ProductImage))
                                         {
-                                            p.ProductImage = "<img src=\"" + product.ProductImage + "\" />";
-                                            p.ProductImageOrigin = product.ProductImage;
-                                        }
-                                        else
-                                        {
-                                            p.ProductImage = "<img src=\"/App_Themes/Ann/image/placeholder.png\" />";
-                                            p.ProductImageOrigin = "";
+                                            p.ProductImage = "<img src='" + Thumbnail.getURL(product.ProductImage, Thumbnail.Size.Small) + "'>";
+                                            p.ProductImageOrigin = Thumbnail.getURL(product.ProductImage, Thumbnail.Size.Source);
                                         }
 
                                         p.QuantityInstock = total;
@@ -176,18 +172,13 @@ namespace IM_PJ
 
                                 if (!string.IsNullOrEmpty(products.ProductImage))
                                 {
-                                    p.ProductImage = "<img src=\"" + products.ProductImage + "\" />";
-                                    p.ProductImageOrigin = products.ProductImage;
+                                    p.ProductImage = "<img src='" + Thumbnail.getURL(products.ProductImage, Thumbnail.Size.Small) + "'>";
+                                    p.ProductImageOrigin = Thumbnail.getURL(products.ProductImage, Thumbnail.Size.Source);
                                 }
                                 else if (img != null)
                                 {
-                                    p.ProductImage = "<img src=\"" + img.ProductImage + "\" />";
-                                    p.ProductImageOrigin = img.ProductImage;
-                                }
-                                else
-                                {
-                                    p.ProductImage = "<img src=\"/App_Themes/Ann/image/placeholder.png\" />";
-                                    p.ProductImageOrigin = "";
+                                    p.ProductImage = "<img src='" + Thumbnail.getURL(img.ProductImage, Thumbnail.Size.Small) + "'>";
+                                    p.ProductImageOrigin = Thumbnail.getURL(img.ProductImage, Thumbnail.Size.Source);
                                 }
 
                                 p.SKU = SKU;
@@ -251,18 +242,13 @@ namespace IM_PJ
 
                                         if (!string.IsNullOrEmpty(value.Image))
                                         {
-                                            p.ProductImage = "<img src=\"" + value.Image + "\" />";
-                                            p.ProductImageOrigin = value.Image;
+                                            p.ProductImage = "<img src='" + Thumbnail.getURL(value.Image, Thumbnail.Size.Small) + "'>";
+                                            p.ProductImageOrigin = Thumbnail.getURL(value.Image, Thumbnail.Size.Source);
                                         }
                                         else if (!string.IsNullOrEmpty(product.ProductImage))
                                         {
-                                            p.ProductImage = "<img src=\"" + product.ProductImage + "\" />";
-                                            p.ProductImageOrigin = product.ProductImage;
-                                        }
-                                        else
-                                        {
-                                            p.ProductImage = "<img src=\"/App_Themes/Ann/image/placeholder.png\" />";
-                                            p.ProductImageOrigin = "";
+                                            p.ProductImage = "<img src='" + Thumbnail.getURL(product.ProductImage, Thumbnail.Size.Small) + "'>";
+                                            p.ProductImageOrigin = Thumbnail.getURL(product.ProductImage, Thumbnail.Size.Source);
                                         }
 
                                         p.SKU = value.SKU.Trim().ToUpper();
@@ -308,7 +294,7 @@ namespace IM_PJ
         protected void btnImport_Click(object sender, EventArgs e)
         {
             DateTime currentDate = DateTime.Now;
-            string username = Request.Cookies["userLoginSystem"].Value;
+            string username = Request.Cookies["usernameLoginSystem"].Value;
             var acc = AccountController.GetByUsername(username);
             if (acc != null)
             {

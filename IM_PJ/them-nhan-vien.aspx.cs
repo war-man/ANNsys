@@ -19,10 +19,10 @@ namespace IM_PJ
         {
             if (!IsPostBack)
             {
-                if (Request.Cookies["userLoginSystem"] != null)
+                if (Request.Cookies["usernameLoginSystem"] != null)
                 {
                     int agentID = Request.QueryString["agentid"].ToInt(0);
-                    string username = Request.Cookies["userLoginSystem"].Value;
+                    string username = Request.Cookies["usernameLoginSystem"].Value;
                     var acc = AccountController.GetByUsername(username);
                     if (acc != null)
                     {
@@ -58,7 +58,7 @@ namespace IM_PJ
         {
             DateTime currentDate = DateTime.Now;
             int agentID = Request.QueryString["agentid"].ToInt(0);
-            string username_current = Request.Cookies["userLoginSystem"].Value;
+            string username_current = Request.Cookies["usernameLoginSystem"].Value;
             bool ischeck = false;
             int username_current_role = 0;
             var acc = AccountController.GetByUsername(username_current);

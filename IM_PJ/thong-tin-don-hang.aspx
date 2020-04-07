@@ -1,9 +1,208 @@
-﻿<%@ Page Title="Thông tin đơn hàng" Language="C#" MasterPageFile="~/MasterPage.Master" AutoEventWireup="true" CodeBehind="thong-tin-don-hang.aspx.cs" Inherits="IM_PJ.thong_tin_don_hang" EnableSessionState="ReadOnly" %>
+﻿<%@ Page Title="Thông tin đơn hàng" Language="C#" MasterPageFile="~/MasterPage.Master" AutoEventWireup="true" CodeBehind="thong-tin-don-hang.aspx.cs" Inherits="IM_PJ.thong_tin_don_hang" EnableSessionState="ReadOnly" enableEventValidation="false" %>
 
 <%@ Register Assembly="Telerik.Web.UI" Namespace="Telerik.Web.UI" TagPrefix="telerik" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
-    <script src="/App_Themes/Ann/js/search-customer.js?v=2110"></script>
-    <script src="/App_Themes/Ann/js/search-product.js?v=07122018"></script>
+    <script type="text/javascript" src="/App_Themes/Ann/js/search-customer.js?v=02042020"></script>
+    <script type="text/javascript" src="/App_Themes/Ann/js/search-product.js?v=02042020"></script>
+    <script type="text/javascript" src="/App_Themes/Ann/js/copy-invoice-url.js?v=02042020"></script>
+    <script type="text/javascript" src="/App_Themes/Ann/js/pages/danh-sach-khach-hang/generate-coupon-for-customer.js?v=02042020"></script>
+    <style>
+        .panel-post {
+            margin-bottom: 20px;
+        }
+        #old-order-note ul {
+            margin-left: 15px;
+        }
+        #old-order-note a {
+            color: #ff8400;
+        }
+        .search-product-content {
+            background: #fff;
+        }
+
+        #txtSearch {
+            width: 100%;
+        }
+
+        #popup_content2 {
+            min-height: 10px;
+            position: fixed;
+            background-color: #fff;
+            top: 15%;
+            z-index: 9999;
+            left: 0;
+            -moz-border-radius: 10px;
+            -webkit-border-radius: 10px;
+            padding: 20px;
+            right: 0%;
+            margin: 0 auto;
+        }
+
+        .pad {
+            padding-bottom: 15px;
+        }
+
+        .pad10 {
+            padding-right: 10px;
+        }
+
+        .padinfo {
+            padding-bottom: 15px;
+        }
+
+        .disable {
+            pointer-events: none;
+            opacity: 0.7;
+        }
+        table.shop_table_responsive > tbody > tr:nth-of-type(2n+1) td {
+            border-bottom: solid 1px #e1e1e1!important;
+        }
+
+        .coupon .right {
+            display: flex;
+        }
+
+        @media (max-width: 769px) {
+            label {
+                margin-bottom: 0;
+            }
+
+            .btn {
+                width: 100% !important;
+                float: left;
+                margin-bottom: 10px;
+                margin-left: 0;
+            }
+            .search-box {
+                width: 70%;
+            }
+            .table-sale-order .order-item,
+            .table-sale-order .image-item,
+            .table-sale-order .image-item,
+            .table-sale-order .name-item,
+            .table-sale-order .sku-item,
+            .table-sale-order .variable-item,
+            .table-sale-order .price-item,
+            .table-sale-order .quantity-item,
+            .table-sale-order .total-item,
+            .table-sale-order .trash-item {
+                width: 100%;
+                text-align: right!important;
+            }
+            table.shop_table_responsive thead {
+	            display: none;
+            }
+            table.shop_table_responsive > tbody > tr > td:nth-of-type(1):before {
+                content: "#";
+                font-size: 20px;
+                margin-right: 2px;
+            }
+            table.shop_table_responsive > tbody > tr > td:nth-of-type(1) {
+                text-align: left!important;
+                font-size: 20px;
+                font-weight: bold;
+                height: 50px;
+            }
+            table.shop_table_responsive > tbody > tr > td:nth-of-type(2) {
+                height: auto;
+                padding-top: 0;
+                padding-bottom: 0;
+            }
+            table.shop_table_responsive > tbody > tr > td:nth-of-type(2) img {
+                width: 30%;
+            }
+            
+            table.shop_table_responsive > tbody > tr:nth-of-type(2n) td {
+                border-top: none;
+                border-bottom: none!important;
+                background: #fff;
+            }
+            table.shop_table_responsive > tbody > tr > td:first-child {
+	            border-left: none;
+                padding-left: 20px;
+            }
+            table.shop_table_responsive > tbody > tr > td:last-child {
+	            border-right: none;
+                padding-left: 20px;
+                height: 60px;
+                text-align: right!important;
+            }
+            table.shop_table_responsive > tbody > tr:nth-of-type(2n+1) td {
+                border-bottom: none!important;
+            }
+            table.shop_table_responsive > tbody > tr > td {
+	            height: 40px;
+            }
+            table.shop_table_responsive > tbody > tr > td.sku-item:before {
+                content: "Mã";
+            }
+            table.shop_table_responsive > tbody > tr > td.variable-item {
+                height: 60px;
+            }
+            table.shop_table_responsive > tbody > tr > td.variable-item:before {
+                content: "Thuộc tính";
+            }
+            table.shop_table_responsive > tbody > tr > td.price-item:before {
+                content: "Giá bán";
+            }
+            table.shop_table_responsive > tbody > tr > td.quantity-item:before {
+                content: "Số lượng";
+            }
+            table.shop_table_responsive > tbody > tr > td.soluong:before {
+                content: "Kho";
+            }
+            table.shop_table_responsive > tbody > tr > td.total-item:before {
+                content: "Thành tiền";
+            }
+            table.shop_table_responsive > tbody > tr > td.quantity-item {
+                height: 60px;
+            }
+            table.shop_table_responsive > tbody > tr > td.quantity-item input {
+                width: 50%;
+                float: right;
+            }
+            table.shop_table_responsive > tbody > tr > td.soluong {
+                height: 40px;
+            }
+            table.shop_table_responsive .bg-bronze,
+            table.shop_table_responsive .bg-red,
+            table.shop_table_responsive .bg-blue,
+            table.shop_table_responsive .bg-yellow,
+            table.shop_table_responsive .bg-black,
+            table.shop_table_responsive .bg-green {
+                display: initial;
+                float: right;
+            }
+            table.shop_table_responsive tbody td {
+	            background-color: #f8f8f8;
+	            display: block;
+	            text-align: right;
+	            border: none;
+	            padding: 20px;
+            }
+            table.shop_table_responsive > tbody > tr.tr-more-info > td {
+                height: initial;
+            }
+            table.shop_table_responsive > tbody > tr.tr-more-info > td span {
+                display: block;
+                text-align: left;
+                margin-bottom: 10px;
+                margin-right: 0;
+            }
+            table.shop_table_responsive > tbody > tr.tr-more-info > td:nth-child(2):before {
+                content: none;
+            }
+            table.shop_table_responsive tbody td:before {
+	            font-weight: 700;
+	            float: left;
+	            text-transform: uppercase;
+	            font-size: 14px;
+            }
+            table.shop_table_responsive tbody td:empty {
+                display: none;
+            }
+        }
+    </style>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <asp:Panel ID="parent" runat="server">
@@ -13,7 +212,8 @@
                     <div class="col-md-12">
                         <div class="panel panelborderheading">
                             <div class="panel-heading clear">
-                                <h3 class="page-title left not-margin-bot">Thông tin đơn hàng #<asp:Literal ID="ltrOrderID" runat="server"></asp:Literal></h3>
+                                <h3 class="page-title left not-margin-bot">
+                                    <asp:Literal ID="ltrHeading" runat="server"></asp:Literal></h3>
                             </div>
                             <div class="panel-body">
                                 <div class="row pad">
@@ -24,7 +224,7 @@
                                         </div>
                                     </div>
                                     <div class="col-md-3">
-                                        <label class="left pad10">Nhân viên tạo đơn: </label>
+                                        <label class="left pad10">Nhân viên: </label>
                                         <div class="ordercreateby">
                                             <asp:Literal ID="ltrCreateBy" runat="server"></asp:Literal>
                                         </div>
@@ -36,7 +236,7 @@
                                         </div>
                                     </div>
                                     <div class="col-md-3">
-                                        <label class="left pad10">Ngày hoàn tất: </label>
+                                        <label class="left pad10">Hoàn tất: </label>
                                         <div class="orderdatedone">
                                             <asp:Literal ID="ltrDateDone" runat="server"></asp:Literal>
                                         </div>
@@ -61,7 +261,7 @@
                                             <asp:Literal ID="ltrOrderStatus" runat="server"></asp:Literal>
                                         </div>
                                     </div>
-                                    <div class="col-md-3"> 
+                                    <div class="col-md-3">
                                         <label class="left pad10">Ghi chú: </label>
                                         <div class="ordernote">
                                             <asp:Literal ID="ltrOrderNote" runat="server"></asp:Literal>
@@ -86,54 +286,54 @@
                             </div>
                             <div class="panel-body">
                                 <div class="row">
-                                    <div class="col-md-6">
+                                    <div class="col-md-4">
                                         <div class="form-group">
                                             <label>Họ tên</label>
                                             <asp:RequiredFieldValidator ID="RequiredFieldValidator1" runat="server" ControlToValidate="txtFullname" ErrorMessage="(*)" ForeColor="Red" Display="Dynamic"></asp:RequiredFieldValidator>
                                             <asp:TextBox ID="txtFullname" CssClass="form-control capitalize" runat="server" Enabled="false" placeholder="Họ tên thật của khách (F2)" autocomplete="off"></asp:TextBox>
                                         </div>
                                     </div>
-                                    <div class="col-md-6">
+                                    <div class="col-md-5">
                                         <div class="form-group">
                                             <label>Điện thoại</label>
                                             <asp:RequiredFieldValidator ID="re" runat="server" ControlToValidate="txtPhone" ErrorMessage="(*)" ForeColor="Red" Display="Dynamic"></asp:RequiredFieldValidator>
                                             <asp:TextBox ID="txtPhone" CssClass="form-control" onblur="ajaxCheckCustomer()" runat="server" Enabled="false" placeholder="Số điện thoại khách hàng" autocomplete="off"></asp:TextBox>
                                         </div>
                                     </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label>Zalo</label>
+                                            <asp:TextBox ID="txtZalo" CssClass="form-control" runat="server" Enabled="false" placeholder="Số điện thoại Zalo" autocomplete="off"></asp:TextBox>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-md-6">
+                                    <div class="col-md-4">
                                         <div class="form-group">
                                             <label>Nick đặt hàng</label>
                                             <asp:RequiredFieldValidator ID="RequiredFieldValidator2" runat="server" ControlToValidate="txtNick" ErrorMessage="(*)" ForeColor="Red" Display="Dynamic"></asp:RequiredFieldValidator>
                                             <asp:TextBox ID="txtNick" CssClass="form-control capitalize" runat="server" Enabled="false" placeholder="Tên nick đặt hàng" autocomplete="off"></asp:TextBox>
                                         </div>
                                     </div>
-                                    <div class="col-md-6">
+                                    <div class="col-md-5">
                                         <div class="form-group">
                                             <label>Địa chỉ</label>
                                             <asp:RequiredFieldValidator ID="RequiredFieldValidator3" runat="server" ControlToValidate="txtAddress" ErrorMessage="(*)" ForeColor="Red" Display="Dynamic"></asp:RequiredFieldValidator>
                                             <asp:TextBox ID="txtAddress" CssClass="form-control capitalize" runat="server" Enabled="false" placeholder="Địa chỉ khách hàng" autocomplete="off"></asp:TextBox>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label>Zalo</label>
-                                            <asp:TextBox ID="txtZalo" CssClass="form-control" runat="server" Enabled="false" placeholder="Số điện thoại Zalo" autocomplete="off"></asp:TextBox>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
+                                    <div class="col-md-3">
                                         <div class="form-group">
                                             <label>Facebook</label>
                                             <div class="row">
-                                                <div class="col-md-10 fb">
-                                                <asp:TextBox ID="txtFacebook" CssClass="form-control" runat="server" Enabled="false" placeholder="Đường link chat Facebook" autocomplete="off"></asp:TextBox>
+                                                <div class="col-md-9 fb">
+                                                    <asp:TextBox ID="txtFacebook" CssClass="form-control" runat="server" Enabled="false" placeholder="Đường link chat Facebook" autocomplete="off"></asp:TextBox>
                                                 </div>
-                                                <div class="col-md-2">
+                                                <div class="col-md-3">
                                                     <div class="row">
-                                                        <span class="link-facebook"><asp:Literal ID="ltrFb" runat="server"></asp:Literal></span>
+                                                        <span class="link-facebook">
+                                                            <asp:Literal ID="ltrFb" runat="server"></asp:Literal>
+                                                        </span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -147,7 +347,7 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-md-12 discount-info">
-                                        <asp:Literal ID="ltrDiscountInfo" runat="server"></asp:Literal>
+                                        <br /><asp:Literal ID="ltrDiscountInfo" runat="server"></asp:Literal>
                                     </div>
                                 </div>
                             </div>
@@ -160,15 +360,12 @@
                             <asp:Literal ID="ltrCustomerType" runat="server"></asp:Literal>
                             <div class="post-above clear">
                                 <div class="search-box left">
-                                    <input type="text" id="txtSearch" class="form-control sku-input" placeholder="SKU (F3)" autocomplete="off">
-                                </div>
-                                <div class="right">
-                                    <a href="javascript:;" class="link-btn" onclick="searchProduct()"><i class="fa fa-search"></i></a>
+                                    <input type="text" id="txtSearch" class="form-control sku-input" placeholder="NHẬP MÃ SẢN PHẨM (F3)" autocomplete="off">
                                 </div>
                             </div>
                             <div class="post-body search-product-content clear">
                                 <div class="search-product-content">
-                                    <table class="table table-checkable table-product table-sale-order">
+                                    <table class="table table-checkable table-product table-sale-order shop_table_responsive">
                                         <thead>
                                             <tr>
                                                 <th class="order-item">#</th>
@@ -189,73 +386,80 @@
                                     </table>
                                 </div>
                             </div>
-                            <div class="post-row clear">
-                                <div class="left">Số lượng</div>
-                                <div class="right totalproductQuantity">
-                                    <asp:Literal ID="ltrProductQuantity" runat="server"></asp:Literal>
+                            <div class="post-footer">
+                                <div class="post-row clear">
+                                    <div class="left">Số lượng</div>
+                                    <div class="right totalproductQuantity">
+                                        <asp:Literal ID="ltrProductQuantity" runat="server"></asp:Literal>
+                                    </div>
+                                </div>
+                                <div class="post-row clear">
+                                    <div class="left">Thành tiền</div>
+                                    <div class="right totalpriceorder">
+                                        <asp:Literal ID="ltrTotalNotDiscount" runat="server"></asp:Literal>
+                                    </div>
+                                </div>
+                                <div class="post-row clear">
+                                    <div class="left">Chiết khấu</div>
+                                    <div class="right totalDiscount">
+                                        <a href="javascript:;" class="btn btn-cal-discount link-btn" onclick="refreshDiscount()"><i class="fa fa-refresh" aria-hidden="true"></i> Tính lại</a>
+                                        <telerik:RadNumericTextBox runat="server" CssClass="form-control width-notfull input-discount" Skin="MetroTouch"
+                                            ID="pDiscount" MinValue="0" NumberFormat-GroupSizes="3" Value="0" NumberFormat-DecimalDigits="0"
+                                            oninput="countTotal()" IncrementSettings-InterceptMouseWheel="false" IncrementSettings-InterceptArrowKeys="false">
+                                        </telerik:RadNumericTextBox>
+                                    </div>
+                                </div>
+                                <div class="post-row clear">
+                                    <div class="left">Sau chiết khấu</div>
+                                    <div class="right priceafterchietkhau">
+                                        <asp:Literal ID="ltrTotalAfterCK" runat="server"></asp:Literal>
+                                    </div>
+                                </div>
+                                <div class="post-row clear">
+                                    <div class="left">Phí vận chuyển</div>
+                                    <div class="right totalDiscount">
+                                        <a class="btn btn-feeship link-btn" href="javascript:;" id="calfeeship" onclick="calFeeShip()"><i class="fa fa-check-square-o" aria-hidden="true"></i> Miễn phí</a>
+                                        <telerik:RadNumericTextBox runat="server" CssClass="form-control width-notfull input-coupon input-feeship" Skin="MetroTouch"
+                                            ID="pFeeShip" MinValue="0" NumberFormat-GroupSizes="3" Value="0" NumberFormat-DecimalDigits="0"
+                                            oninput="countTotal()" IncrementSettings-InterceptMouseWheel="false" IncrementSettings-InterceptArrowKeys="false">
+                                        </telerik:RadNumericTextBox>
+                                    </div>
+                                </div>
+                                <div id="fee-list"></div>
+                                <div class="post-row clear coupon">
+                                    <div class="left">Mã giảm giá</div>
+                                    <div class="right">
+                                        <a id="btnGenerateCouponG15" class="btn btn-coupon btn-violet" title="Tạo mã giảm giá G15" onclick="generateCouponG15()"><i class="fa fa-gift"></i> Tạo mã G15</a>
+                                        <a id="btnOpenCouponModal" class="btn btn-coupon btn-violet" title="Nhập mã giảm giá" onclick="openCouponModal()"><i class="fa fa-gift"></i> Nhập mã</a>
+                                        <a href="javascript:;" id="btnRemoveCouponCode" class="btn btn-coupon link-btn hide" onclick="removeCoupon()"><i class="fa fa-times" aria-hidden="true"></i> Xóa</a>
+                                        <asp:TextBox ID="txtCouponValue" runat="server" CssClass="form-control text-right width-notfull input-coupon" value="0" disabled="disabled"></asp:TextBox>
+                                    </div>
+                                </div>
+                                <div class="post-row clear">
+                                    <div class="left"><strong>TỔNG TIỀN</strong> (đơn hàng <strong><asp:Literal ID="ltrOrderID" runat="server"></asp:Literal></strong>)</div>
+                                    <div class="right totalpriceorderall price-red">
+                                        <asp:Literal ID="ltrTotalprice" runat="server"></asp:Literal>
+                                    </div>
+                                </div>
+                                <div class="post-row clear returnorder hide">
+                                    <div class="left">
+                                        Trừ hàng trả
+                                    </div>
+                                    <div class="right">
+                                        <a href="javascript:;" class="find2 hide btn btn-return-order link-btn"></a>
+                                        <a href="javascript:;" class="find3 hide btn btn-return-order link-btn btn-edit-fee" onclick="searchReturnOrder()"><i class="fa fa-refresh" aria-hidden="true"></i> Chọn đơn khác</a>
+                                        <a href="javascript:;" class="find3 hide btn btn-feeship link-btn" onclick="deleteReturnOrder()"><i class="fa fa-times" aria-hidden="true"></i> Xóa</a>
+                                        <span class="totalpriceorderrefund"><asp:Literal runat="server" ID="ltrTotalPriceRefund"></asp:Literal></span>
+                                    </div>
+                                </div>
+                                <div class="post-row clear refund hide">
+                                    <div class="left"><strong>TỔNG TIỀN CÒN LẠI</strong></div>
+                                    <div class="right totalpricedetail">
+                                        <asp:Literal runat="server" ID="ltrtotalpricedetail"></asp:Literal>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="post-row clear">
-                                <div class="left">Thành tiền</div>
-                                <div class="right totalpriceorder">
-                                    <asp:Literal ID="ltrTotalNotDiscount" runat="server"></asp:Literal>
-                                </div>
-                            </div>
-                            <div class="post-row clear">
-                                <div class="left">Chiết khấu</div>
-                                <div class="right totalDiscount">
-                                    <telerik:RadNumericTextBox runat="server" CssClass="form-control width-notfull" Skin="MetroTouch"
-                                        ID="pDiscount" MinValue="0" NumberFormat-GroupSizes="3" Value="0" NumberFormat-DecimalDigits="0"
-                                        oninput="countTotal()" IncrementSettings-InterceptMouseWheel="false" IncrementSettings-InterceptArrowKeys="false">
-                                    </telerik:RadNumericTextBox>
-                                </div>
-                            </div>
-                            <div class="post-row clear">
-                                <div class="left">Sau chiết khấu</div>
-                                <div class="right priceafterchietkhau">
-                                    <asp:Literal ID="ltrTotalAfterCK" runat="server"></asp:Literal>
-                                </div>
-                            </div>
-                            <div class="post-row clear">
-                                <div class="left">Phí vận chuyển</div>
-                                <div class="right totalDiscount">
-                                    <a class="btn btn-feeship link-btn" href="javascript:;" id="calfeeship" onclick="calFeeShip()"><i class="fa fa-check-square-o" aria-hidden="true"></i> Miễn phí</a>
-                                    <telerik:RadNumericTextBox runat="server" CssClass="form-control width-notfull" Skin="MetroTouch"
-                                        ID="pFeeShip" MinValue="0" NumberFormat-GroupSizes="3" Value="0" NumberFormat-DecimalDigits="0"
-                                        oninput="countTotal()" IncrementSettings-InterceptMouseWheel="false" IncrementSettings-InterceptArrowKeys="false">
-                                    </telerik:RadNumericTextBox>
-                                </div>
-                            </div>
-                            <div class="post-row clear otherfee hide">
-                                <div class="left"><span class="otherfee-name"><asp:Literal ID="ltrOtherFeeName" runat="server"></asp:Literal></span><a href="javascript:;" style="text-decoration: underline; float: right; font-size: 12px; font-style: italic; padding-left: 10px;" onclick="removeOtherFee()">(Xóa)</a></div>
-                                <div class="right otherfee-value">
-                                    <asp:TextBox ID="txtOtherFeeName" CssClass="form-control" runat="server" Style="display: none" ></asp:TextBox>
-                                    <telerik:RadNumericTextBox runat="server" CssClass="form-control width-notfull" Skin="MetroTouch"
-                                        ID="pOtherFee" NumberFormat-GroupSizes="3" Value="0" NumberFormat-DecimalDigits="0"
-                                        oninput="countTotal()" IncrementSettings-InterceptMouseWheel="false" IncrementSettings-InterceptArrowKeys="false">
-                                    </telerik:RadNumericTextBox>
-                                </div>
-                            </div>
-                            <div class="post-row clear">
-                                <div class="left">Tổng tiền</div>
-                                <div class="right totalpriceorderall price-red">
-                                    <asp:Literal ID="ltrTotalprice" runat="server"></asp:Literal>
-                                </div>
-                            </div>
-                            <div class="post-row clear returnorder hide">
-                                <div class="left">Đơn hàng trả
-                                    <a href="javascript:;" class="find3 hide" style="text-decoration: underline; float: right; font-size: 12px; font-style: italic; padding-left: 10px;" onclick="searchReturnOrder()">(Tìm đơn khác)</a>
-                                    <a href="javascript:;" class="find3 hide" style="text-decoration: underline; float: right; font-size: 12px; font-style: italic; padding-left: 10px;" onclick="deleteReturnOrder()">(Bỏ qua)</a>
-                                    <a href="javascript:;" class="find2 hide" style="text-decoration: underline; float: right; font-size: 12px; font-style: italic; padding-left: 10px;"></a>
-                                </div>
-                                <div class="right totalpriceorderrefund"><asp:Literal runat="server" ID="ltrTotalPriceRefund"></asp:Literal></div>
-                            </div>
-                            <div class="post-row clear refund hide">
-                                <div class="left">Tổng tiền còn lại</div>
-                                <div class="right totalpricedetail">
-                                    <asp:Literal runat="server" ID="ltrtotalpricedetail"></asp:Literal>
-                                </div>
-                            </div>
+                            
                         </div>
                     </div>
                 </div>
@@ -295,11 +499,20 @@
                                         Phương thức thanh toán
                                     </div>
                                     <div class="row-right">
-                                        <asp:DropDownList ID="ddlPaymentType" runat="server" CssClass="form-control">
+                                        <asp:DropDownList ID="ddlPaymentType" runat="server" CssClass="form-control" onchange="onchangePaymentType($(this))">
                                             <asp:ListItem Value="1" Text="Tiền mặt"></asp:ListItem>
                                             <asp:ListItem Value="2" Text="Chuyển khoản"></asp:ListItem>
                                             <asp:ListItem Value="3" Text="Thu hộ"></asp:ListItem>
                                             <asp:ListItem Value="4" Text="Công nợ"></asp:ListItem>
+                                        </asp:DropDownList>
+                                    </div>
+                                </div>
+                                <div id="row-bank" class="form-row">
+                                    <div class="row-left">
+                                        Ngân hàng nhận tiền
+                                    </div>
+                                    <div class="row-right">
+                                        <asp:DropDownList ID="ddlBank" runat="server" CssClass="form-control">
                                         </asp:DropDownList>
                                     </div>
                                 </div>
@@ -310,34 +523,32 @@
                                     <div class="row-right">
                                         <asp:DropDownList ID="ddlShippingType" runat="server" CssClass="form-control shipping-type">
                                             <asp:ListItem Value="1" Text="Lấy trực tiếp"></asp:ListItem>
-                                            <asp:ListItem Value="2" Text="Chuyển bưu điện"></asp:ListItem>
-                                            <asp:ListItem Value="3" Text="Dịch vụ ship"></asp:ListItem>
+                                            <asp:ListItem Value="2" Text="Bưu điện"></asp:ListItem>
+                                            <asp:ListItem Value="3" Text="Proship"></asp:ListItem>
                                             <asp:ListItem Value="4" Text="Chuyển xe"></asp:ListItem>
-                                            <asp:ListItem Value="5" Text="Nhân viên giao hàng"></asp:ListItem>
+                                            <asp:ListItem Value="5" Text="Nhân viên giao"></asp:ListItem>
+                                            <asp:ListItem Value="6" Text="GHTK"></asp:ListItem>
+                                            <asp:ListItem Value="7" Text="Viettel"></asp:ListItem>
                                         </asp:DropDownList>
                                     </div>
                                 </div>
                                 <div id="row-transport-company" class="form-row transport-company">
-                                    <asp:UpdatePanel ID="up" runat="server">
-                                        <ContentTemplate>
-                                            <div class="form-row">
-                                                <div class="row-left">
-                                                    Chành xe
-                                                </div>
-                                                <div class="row-right">
-                                                    <asp:DropDownList ID="ddlTransportCompanyID" DataTextField="TransportCompanyID" DataValueField="ID" AppendDataBoundItems="True" AutoPostBack="True" OnSelectedIndexChanged="ddlTransportCompanyID_SelectedIndexChanged" runat="server" CssClass="form-control"></asp:DropDownList>
-                                                </div>
-                                            </div>
-                                            <div class="form-row">
-                                                <div class="row-left">
-                                                    Nơi nhận
-                                                </div>
-                                                <div class="row-right">
-                                                    <asp:DropDownList ID="ddlTransportCompanySubID" DataTextField="TransportCompanySubID" DataValueField="ID" AppendDataBoundItems="True" AutoPostBack="false" runat="server" CssClass="form-control"></asp:DropDownList>
-                                                </div>
-                                            </div>
-                                        </ContentTemplate>
-                                    </asp:UpdatePanel>
+                                    <div class="form-row">
+                                        <div class="row-left">
+                                            Chành xe
+                                        </div>
+                                        <div class="row-right">
+                                            <asp:DropDownList ID="ddlTransportCompanyID" runat="server" CssClass="form-control customerlist select2" Height="40px" Width="100%" onchange="onChangeTransportCompany($(this))"></asp:DropDownList>
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="row-left">
+                                            Nơi nhận
+                                        </div>
+                                        <div class="row-right">
+                                            <asp:DropDownList ID="ddlTransportCompanySubID" runat="server" CssClass="form-control customerlist select2" Height="40px" Width="100%"></asp:DropDownList>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div id="row-postal-delivery-type" class="form-row postal-delivery-type hide">
                                     <div class="row-left">
@@ -366,12 +577,20 @@
                                         <asp:TextBox ID="txtOrderNote" runat="server" CssClass="form-control" placeholder="Ghi chú"></asp:TextBox>
                                     </div>
                                 </div>
+                                <div id="row-createdby" class="form-row hide">
+                                    <div class="row-left">
+                                        Nhân viên phụ trách
+                                    </div>
+                                    <div class="row-right">
+                                        <asp:DropDownList ID="ddlCreatedBy" runat="server" CssClass="form-control createdby"></asp:DropDownList>
+                                    </div>
+                                </div>
                                 <div class="panel-post">
                                     <div class="post-table-links clear">
                                         <a href="javascript:;" class="btn link-btn" id="payall" style="background-color: #f87703; float: right" title="Hoàn tất đơn hàng" onclick="payAll()"><i class="fa fa-floppy-o"></i> Xác nhận</a>
                                         <asp:Button ID="btnOrder" runat="server" OnClick="btnOrder_Click" Style="display: none" />
                                         <a href="javascript:;" class="btn link-btn" style="background-color: #ffad00; float: right;" title="Nhập đơn hàng đổi trả" onclick="searchReturnOrder()"><i class="fa fa-refresh"></i> Đổi trả</a>
-                                        <a href="javascript:;" class="btn link-btn" style="background-color: #607D8B; float: right;" title="Thêm phí khác vào đơn hàng" onclick="addOtherFee()"><i class="fa fa-plus"></i> Thêm phí</a>
+                                        <a id="feeNewStatic" href="#feeModal" class="btn link-btn" style="background-color: #607D8B; float: right;" title="Thêm phí khác vào đơn hàng" data-toggle="modal" data-backdrop='static'><i class="fa fa-plus"></i> Thêm phí khác</a>
                                     </div>
                                     <div id="img-out"></div>
                                 </div>
@@ -379,6 +598,7 @@
                         </div>
                     </div>
                 </div>
+                <asp:Literal ID="ltrOldOrderNote" runat="server" EnableViewState="false"></asp:Literal>
             </div>
             <div id="buttonbar">
                 <div class="row">
@@ -388,13 +608,14 @@
                                 <div class="post-table-links clear">
                                     <a href="javascript:;" class="btn link-btn" style="background-color: #f87703; float: right" title="Hoàn tất đơn hàng" onclick="payAll()"><i class="fa fa-floppy-o"></i> Xác nhận</a>
                                     <a href="javascript:;" class="btn link-btn" style="background-color: #ffad00; float: right;" title="Nhập đơn hàng đổi trả" onclick="searchReturnOrder()"><i class="fa fa-refresh"></i> Đổi trả</a>
-                                    <a href="javascript:;" class="btn link-btn" style="background-color: #607D8B; float: right;" title="Thêm phí khác vào đơn hàng" onclick="addOtherFee()"><i class="fa fa-plus"></i> Thêm phí</a>
+                                    <a id="feeNewDynamic" href="#feeModal" class="btn link-btn" style="background-color: #607D8B; float: right;" title="Thêm phí khác vào đơn hàng" data-toggle="modal" data-backdrop='static'><i class="fa fa-plus"></i> Thêm phí khác</a>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+
             <asp:HiddenField ID="notAcceptChangeUser" Value="1" runat="server" />
             <asp:HiddenField ID="hdfDiscountInOrder" runat="server" />
             <asp:HiddenField ID="hdfUsername" runat="server" />
@@ -408,6 +629,7 @@
             <asp:HiddenField ID="hdfExcuteStatus" runat="server" />
             <asp:HiddenField ID="hdfIsDiscount" runat="server" />
             <asp:HiddenField ID="hdfDiscountAmount" runat="server" />
+            <asp:HiddenField ID="hdfQuantityRequirement" runat="server" />
             <asp:HiddenField ID="hdfIsMain" runat="server" />
             <asp:HiddenField ID="hdfTotalPriceNotDiscountNotFee" runat="server" />
             <asp:HiddenField ID="hdfListSearch" runat="server" />
@@ -421,53 +643,114 @@
             <asp:HiddenField ID="hdfChietKhau" runat="server" />
             <asp:HiddenField ID="hdfTongTienConLai" runat="server" />
             <asp:HiddenField ID="hdfSoLuong" runat="server" />
-            <asp:HiddenField runat="server" ID="hdfcheckR" />
+            <asp:HiddenField ID="hdfcheckR" runat="server" />
+            <asp:HiddenField ID="hdOrderInfoID" runat="server" />
+            <asp:HiddenField ID="hdSession" runat="server" />
+            <asp:HiddenField ID="hdfFeeType" runat="server" />
+            <asp:HiddenField ID="hdfOtherFees" runat="server" />
+            <asp:HiddenField ID="hdfCustomerID" runat="server" />
+            <asp:HiddenField ID="hdfTransportCompanySubID" runat="server" />
+            <asp:HiddenField ID="hdfCouponID" runat="server" />
+            <asp:HiddenField ID="hdfCouponValue" runat="server" />
+            <asp:HiddenField ID="hdfCouponProductNumber" runat="server" />
+            <asp:HiddenField ID="hdfCouponPriceMin" runat="server" />
+            <asp:HiddenField ID="hdfCouponIDOld" runat="server" />
+            <asp:HiddenField ID="hdfCouponCodeOld" runat="server" />
+            <asp:HiddenField ID="hdfCouponValueOld" runat="server" />
+            <asp:HiddenField ID="hdfCouponProductNumberOld" runat="server" />
+            <asp:HiddenField ID="hdfCouponPriceMinOld" runat="server" />
+
+            <!-- Modal -->
+            <div class="modal fade" id="feeModal" role="dialog">
+                <div class="modal-dialog">
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h4 class="modal-title">Cập nhật phí</h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row form-group">
+                                <asp:HiddenField ID="hdfUUID" runat="server" />
+                                <div class="col-xs-8">
+                                    <asp:DropDownList ID="ddlFeeType" runat="server" CssClass="form-control"></asp:DropDownList>
+                                </div>
+                                <div class="col-xs-4">
+                                    <asp:TextBox ID="txtFeePrice" runat="server" CssClass="form-control text-right" placeholder="Số tiền phí" data-type="currency" onkeypress='return event.charCode >= 48 && event.charCode <= 57'></asp:TextBox>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button id="closeFee" type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
+                            <button id="updateFee" type="button" class="btn btn-primary">Lưu</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Order Return Modal -->
+            <div class="modal fade" id="orderReturnModal" role="dialog">
+                <div class="modal-dialog modal-lg">
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h4 class="modal-title">Danh sách đổi trả hàng</h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row form-group">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Mã</th>
+                                            <th>Số lượng</th>
+                                            <th>Phí đổi hàng</th>
+                                            <th>Tổng tiền</th>
+                                            <th>Nhân viên</th>
+                                            <th>Ngày tạo</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="orderReturn">
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button id="closeOrderReturn" type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
+                            <button id="createReturnOrder" type="button" class="btn btn-primary" data-dismiss="modal">Tạo đơn hàng đổi trả</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Coupon Modal -->
+            <div class="modal fade" id="couponModal" role="dialog">
+                <div class="modal-dialog">
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h4 class="modal-title">Nhập mã giảm giá</h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row form-group">
+                                <div class="col-xs-12">
+                                    <asp:TextBox ID="txtCouponCode" runat="server" CssClass="form-control text-left" placeholder="Mã giảm giá"></asp:TextBox>
+                                </div>
+                            </div>
+                            <div id="errorCoupon" class="row form-group hide">
+                                <div class="col-xs-12 text-align-left text-danger"><p></p></div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button id="closeCoupon" type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
+                            <button id="insertCoupon" type="button" class="btn btn-primary" onclick="getCoupon()">Xác nhận</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </main>
     </asp:Panel>
-    <style>
-        .search-product-content {
-            background: #fff;
-        }
-        .search-box {
-            width: 90%;
-        }
-
-        #txtSearch {
-            width: 100%;
-        }
-
-        #popup_content2 {
-            min-height: 10px;
-            position: fixed;
-            background-color: #fff;
-            top: 15%;
-            z-index: 9999;
-            left: 0;
-            -moz-border-radius: 10px;
-            -webkit-border-radius: 10px;
-            padding: 20px;
-            right: 0%;
-            margin: 0 auto;
-        }
-
-        .pad {
-            padding-bottom: 15px;
-        }
-
-        .pad10 {
-            padding-right: 10px;
-        }
-
-        .padinfo {
-            padding-bottom: 15px;
-        }
-
-        .disable {
-            pointer-events: none;
-            opacity: 0.7;
-        }
-
-    </style>
     <telerik:RadAjaxManager ID="rAjax" runat="server">
         <AjaxSettings>
             <telerik:AjaxSetting AjaxControlID="btnOrder">
@@ -479,6 +762,8 @@
     </telerik:RadAjaxManager>
     <telerik:RadScriptBlock ID="sc" runat="server">
         <script type="text/javascript">
+            let preExcuteStatus = 0;
+
             // OrderDetailModel
             class OrderDetailModel {
                 constructor(ID, SKU, ProductID, Quantity) {
@@ -493,22 +778,241 @@
                 }
             }
 
+            // Fee Type
+            class FeeType {
+                constructor(ID, Name, IsNegativeFee) {
+                    this.ID = ID;
+                    this.Name = Name;
+                    this.IsNegativeFee = IsNegativeFee;
+                }
+            }
+
+            // FeeModel
+            class Fee {
+                constructor(UUID, FeeTypeID, FeeTypeName, FeePrice, Note) {
+                    this.UUID = UUID;
+                    this.FeeTypeID = FeeTypeID;
+                    this.FeeTypeName = FeeTypeName;
+                    this.FeePrice = FeePrice;
+                    this.Note = Note ? " (" + Note + ")" : "";
+                }
+
+                stringJSON() {
+                    return JSON.stringify(this);
+                }
+            }
+
             // orders detail remove
             var listOrderDetail = [];
+
+            // fee type list
+            var feetype = [];
+
+            // fees list
+            var fees = [];
 
             // order of item list
             var orderItem = $(".product-result").length;
 
-            // search Product by SKU
-            $("#txtSearch").keydown(function(event) {
-                if (event.which === 13) {
-                    searchProduct();
-                    event.preventDefault();
-                    return false;
-                }
-            });
+            function formatNumber(n) {
+                // format number 1000000 to 1,234,567
+                return n.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+            }
 
-            
+            function formatCurrency(input, blur) {
+                // appends $ to value, validates decimal side
+                // and puts cursor back in right position.
+
+                // get input value
+                var input_val = input.val();
+
+                // don't validate empty input
+                if (input_val === "") { return; }
+
+                // original length
+                var original_len = input_val.length;
+
+                // initial caret position 
+                var caret_pos = input.prop("selectionStart");
+
+                // check for decimal
+                if (input_val.indexOf(".") >= 0) {
+
+                    // get position of first decimal
+                    // this prevents multiple decimals from
+                    // being entered
+                    var decimal_pos = input_val.indexOf(".");
+
+                    // split number by decimal point
+                    var left_side = input_val.substring(0, decimal_pos);
+                    var right_side = input_val.substring(decimal_pos);
+
+                    // add commas to left side of number
+                    left_side = formatNumber(left_side);
+
+                    // validate right side
+                    right_side = formatNumber(right_side);
+
+                    // On blur make sure 2 numbers after decimal
+                    if (blur === "blur") {
+                        right_side += "00";
+                    }
+
+                    // Limit decimal to only 2 digits
+                    right_side = right_side.substring(0, 2);
+
+                    // join number by .
+                    input_val = left_side;
+
+                } else {
+                    // no decimal entered
+                    // add commas to number
+                    // remove all non-digits
+                    input_val = formatNumber(input_val);
+                    input_val = input_val;
+                }
+
+                // send updated string to input
+                input.val(input_val);
+
+                // put caret back in the right position
+                var updated_len = input_val.length;
+                caret_pos = updated_len - original_len + caret_pos;
+                input[0].setSelectionRange(caret_pos, caret_pos);
+            }
+
+            // Load Fee Modal
+            function loadFeeModel(obj, is_new) {
+                if (is_new === undefined)
+                    is_new = false;
+
+                let idDOM = $("#<%=hdfUUID.ClientID%>");
+                let feeTypeDOM = $("#<%=ddlFeeType.ClientID%>");
+                let feePriceDOM = $("#<%=txtFeePrice.ClientID%>");
+
+                // Init
+                idDOM.val("");
+                feeTypeDOM.val(0);
+                feePriceDOM.val("");
+                if (!is_new)
+                {
+                    let parent = obj.parent();
+                    if (parent.attr("id"))
+                        idDOM.val(parent.attr("id"));
+                    if (parent.data("feeid"))
+                        feeTypeDOM.val(parent.data("feeid"));
+                    if (parent.data("price"))
+                        feePriceDOM.val(formatNumber(parent.data("price").toString()));
+                }
+
+                if (feeTypeDOM.val() == "0")
+                {
+                    feePriceDOM.val("");
+                    feePriceDOM.attr("disabled", true);
+                }
+                else
+                {
+                    feePriceDOM.removeAttr("disabled");
+                }
+            }
+
+            function openFeeUpdateModal(obj)
+            {
+                loadFeeModel(obj);
+                $('#feeModal').modal({ show: 'true', backdrop: 'static' });
+            }
+
+            // Create Fee
+            function createFeeHTML(fee) {
+                let addHTML = "";
+
+                if (fee)
+                {
+                    let negative = fee.FeePrice > 0 ? "" : "-";
+
+                    addHTML += "<div id='" + fee.UUID + "' class='post-row clear otherfee' data-feeid='" + fee.FeeTypeID + "' data-price='" + fee.FeePrice + "'>";
+                    addHTML += "    <div class='left'>";
+                    addHTML += "        <span class='otherfee-name'><i class='fa fa-check' aria-hidden='true'></i> " + fee.FeeTypeName + fee.Note + "</span>";
+                    addHTML += "    </div>";
+                    addHTML += "    <div class='right otherfee-value' onclick='openFeeUpdateModal($(this))'>";
+                    addHTML += "        <a href='javascript:;' class='btn btn-other-fee link-btn btn-edit-fee' onclick='editOtherFee(`" + fee.UUID + "`)'>";
+                    addHTML += "            <i class='fa fa-pencil-square-o' aria-hidden='true'></i> Sửa";
+                    addHTML += "        </a>";
+                    addHTML += "        <a href='javascript:;' class='btn btn-other-fee link-btn' onclick='removeOtherFee(`" + fee.UUID + "`)'>";
+                    addHTML += "            <i class='fa fa-times' aria-hidden='true'></i> Xóa";
+                    addHTML += "        </a>";
+                    addHTML += "        <input id='feePrice' type='text' class='form-control text-right width-notfull input-coupon' placeholder='Số tiền phí' disabled='disabled' value='" + negative + formatNumber(fee.FeePrice.toString()) + "'/>";
+                    addHTML += "    </div>";
+                    addHTML += "</div>";
+                }
+
+                return addHTML;
+            }
+
+            function addFeeNew()
+            {
+                let id = $("#<%=hdfUUID.ClientID%>").val();
+                let feeid = $("#<%=ddlFeeType.ClientID%>").val();
+                let feename = $("#<%=ddlFeeType.ClientID%> :selected").text();
+                let feeprice = parseInt($("#<%=txtFeePrice.ClientID%>").val().replace(/\,/g, ''));
+                let isNegative = false;
+                feetype.forEach((item) => {
+                    if (item.ID == feeid) {
+                        isNegative = item.IsNegativeFee;
+                        return;
+                    }
+                });
+                if (isNegative) feeprice = feeprice * (-1);
+                let fee = new Fee(id, feeid, feename, feeprice);
+
+                fees.push(fee);
+                $("#fee-list").before(createFeeHTML(fee));
+                $("#<%=hdfOtherFees.ClientID%>").val(JSON.stringify(fees));
+                getAllPrice();
+            }
+
+            // Update Fee
+            function updateFee()
+            {
+                let id = $("#<%=hdfUUID.ClientID%>").val();
+                if (!id) return;
+
+                let feeid = $("#<%=ddlFeeType.ClientID%>").val();
+                let feename = $("#<%=ddlFeeType.ClientID%> :selected").text();
+                let isNegative = false;
+                feetype.forEach((item) => {
+                    if (item.ID == feeid) {
+                        isNegative = item.IsNegativeFee;
+                        return;
+                    }
+                });
+                let feeprice = $("#<%=txtFeePrice.ClientID%>").val().replace(/\,/g, '');
+                let parent = $("#" + id);
+
+                parent.data("feeid", feeid);
+                parent.data("feeprice", feeprice);
+
+                parent.find("span.otherfee-name").html(feename);
+                if (isNegative) {
+                    parent.find("#feePrice").val("-" + formatNumber(feeprice));
+                    feeprice = parseInt(feeprice) * (-1);
+                }
+                else {
+                    parent.find("#feePrice").val(formatNumber(feeprice));
+                    feeprice = parseInt(feeprice);
+                }
+                
+                fees.forEach((fee) => {
+                    if(fee.UUID == id)
+                    {
+                        fee.FeeTypeID = feeid;
+                        fee.FeeTypeName = feename;
+                        fee.FeePrice = feeprice;
+                    }
+                });
+                $("#<%=hdfOtherFees.ClientID%>").val(JSON.stringify(fees));
+                getAllPrice();
+            }
 
             // cal fee ship
             function calFeeShip() {
@@ -518,56 +1022,22 @@
                 }
                 else {
                     $("#<%=pFeeShip.ClientID%>").prop('disabled', true).css("background-color", "#eeeeee").val(0);
-                    swal("Thông báo", "Đã chọn miễn phí vận chuyển cho đơn hàng này", "success");
+                    swal("Thông báo", "Đã chọn miễn phí vận chuyển cho đơn hàng này<br><strong>Hãy ghi chú lý do miễn phí vận chuyển!!!</strong>", "success");
                     getAllPrice();
                     $("#calfeeship").html("<i class=\"fa fa-pencil-square-o\" aria-hidden=\"true\"></i> Tính phí").css("background-color", "#f87703");
                 }
-        
             }
-
-            function addOtherFee() {
-                swal({
-                    title: "Thêm phí khác",
-                    text: 'Nhập tên loại phí. Ghi cho rõ nha:',
-                    type: 'input',
-                    showCancelButton: true,
-                    closeOnConfirm: false,
-                    cancelButtonText: "Đợi em tí!",
-                    confirmButtonText: "Tiếp đê..",
-                }, function (otherFeeName) {
-                    swal({
-                        title: "Thêm phí khác",
-                        text: 'Nhập số tiền nè. Nhập số âm nếu trừ phí:',
-                        type: 'input',
-                        showCancelButton: true,
-                        closeOnConfirm: true,
-                        cancelButtonText: "Để em xem lại!",
-                        confirmButtonText: "OK nè..",
-                    }, function (otherFeeValue) {
-                        if (otherFeeValue != false) {
-                            if (!isNaN(otherFeeValue)) {
-                                $(".otherfee-name").html(otherFeeName);
-                                $("#<%=txtOtherFeeName.ClientID%>").val(otherFeeName);
-                                $("#<%=pOtherFee.ClientID%>").val(otherFeeValue).focus();
-                                $(".otherfee").removeClass("hide");
-
-                                getAllPrice();
-                            }
-                            else {
-                                alert("Sai rồi! Phải nhập phí khác là số (ví dụ: 10000 hoặc -10000)");
-                            }
-                        }
-                    });
-                });
-            }
-
-            function removeOtherFee() {
-
-                $(".otherfee").addClass("hide");
-                $(".otherfee-name").html("");
-                $("#<%=txtOtherFeeName.ClientID%>").val("");
-                $("#<%=pOtherFee.ClientID%>").val(0).focus();
+            // remove other fee by click button
+            function removeOtherFee(uuid) {
+                $("#" + uuid).remove();
+                fees = fees.filter((item) => { return item.UUID != uuid; });
+                $("#<%=hdfOtherFees.ClientID%>").val(JSON.stringify(fees));
                 countTotal();
+                //getAllPrice();
+            }
+            // edit other fee by click button
+            function editOtherFee(uuid) {
+                $("#" + uuid).find(".otherfee-value").click();
                 //getAllPrice();
             }
 
@@ -640,27 +1110,52 @@
                 }
             }
 
-            function warningGetOrderImage(ID) {
-                swal({
-                    title: "Lưu ý nè",
-                    text: "Nhớ lưu đơn hàng trước khi lấy ảnh nha!",
-                    type: "warning",
-                    showCancelButton: true,
-                    confirmButtonColor: "#DD6B55",
-                    confirmButtonText: "Đã lưu rồi sếp ơi!!",
-                    closeOnConfirm: true,
-                    cancelButtonText: "Chờ tí! Để em lưu..",
-                    html: true
-                }, function () {
-                    window.open("/print-order-image?id=" + ID, "_blank");
+            function warningGetOrderImage(ID, mergeprint) {
+                window.open("/print-order-image?id=" + ID + "&merge=" + mergeprint, "_blank");
+            }
+
+            function init() {
+                // Load Fee Type List
+                let data = JSON.parse($("#<%=hdfFeeType.ClientID%>").val());
+                data.forEach((item) => {
+                    feetype.push(new FeeType(item.ID, item.Name, item.IsNegativeFee));
                 });
+
+                // Load Fee List
+                let obj = JSON.parse($("#<%=hdfOtherFees.ClientID%>").val());
+                if ($.isArray(obj))
+                {
+                    obj.forEach((item) => {
+                        let fee = new Fee(
+                            item.UUID,
+                            item.FeeTypeID,
+                            item.FeeTypeName,
+                            item.FeePrice,
+                            item.Note
+                        );
+
+                        fees.push(fee);
+                        $("#fee-list").append(createFeeHTML(fee));
+                    });
+                }
             }
 
             $(document).ready(function () {
+                init();
 
-                if ($("#<%=pOtherFee.ClientID%>").val() != 0) {
-                    $(".otherfee").removeClass("hide");
+                // Show change createdby if role = admin
+                if ($("#<%=hdfRoleID.ClientID%>").val() == 0) {
+                    $("#row-createdby").removeClass("hide");
                 }
+
+                // search Product by SKU
+                $("#txtSearch").keydown(function (event) {
+                    if (event.which === 13) {
+                        searchProduct();
+                        event.preventDefault();
+                        return false;
+                    }
+                });
 
                 $("#<%=txtPhone.ClientID%>").keyup(function (e) {
                     if (/\D/g.test(this.value)) {
@@ -673,6 +1168,20 @@
                     if (/\D/g.test(this.value)) {
                         // Filter non-digits from input value.
                         this.value = this.value.replace(/\D/g, '');
+                    }
+                });
+
+                if ($("#<%=ddlPaymentType.ClientID%>").find(":selected").val() != 2) {
+                    $("#row-bank").addClass("hide");
+                }
+
+                $("#<%=ddlPaymentType.ClientID%>").change(function () {
+                    var selected = $(this).find(":selected").val();
+                    if (selected == 2) {
+                        $("#row-bank").removeClass("hide");
+                    }
+                    else {
+                        $("#row-bank").addClass("hide");
                     }
                 });
 
@@ -695,6 +1204,22 @@
 
                 if ($("#<%=ddlShippingType.ClientID%>").find(":selected").val() == 4) {
                     $(".transport-company").removeClass("hide");
+                    $(".shipping-code").addClass("hide");
+                }
+
+                if ($("#<%=ddlShippingType.ClientID%>").find(":selected").val() == 5) {
+                    $(".transport-company").addClass("hide");
+                    $(".shipping-code").addClass("hide");
+                }
+
+                if ($("#<%=ddlShippingType.ClientID%>").find(":selected").val() == 6) {
+                    $(".shipping-code").removeClass("hide");
+                    $(".transport-company").addClass("hide");
+                }
+
+                if ($("#<%=ddlShippingType.ClientID%>").find(":selected").val() == 7) {
+                    $(".shipping-code").addClass("hide");
+                    $(".transport-company").addClass("hide");
                 }
 
                 $("#<%=ddlShippingType.ClientID%>").change(function () {
@@ -740,7 +1265,24 @@
                             $("#<%=ddlTransportCompanyID.ClientID%>").val(0);
                             $("#<%=ddlTransportCompanySubID.ClientID%>").val(0);
                             break;
+                        case "6":
+                            $(".shipping-code").removeClass("hide");
+                            $(".postal-delivery-type").addClass("hide");
+                            $(".transport-company").addClass("hide");
+                            $("#<%=ddlPostalDeliveryType.ClientID%>").val(1);
+                            $("#<%=ddlTransportCompanyID.ClientID%>").val(0);
+                            $("#<%=ddlTransportCompanySubID.ClientID%>").val(0);
+                            break;
+                        case "7":
+                            $(".shipping-code").addClass("hide");
+                            $(".postal-delivery-type").addClass("hide");
+                            $(".transport-company").addClass("hide");
+                            $("#<%=ddlPostalDeliveryType.ClientID%>").val(1);
+                            $("#<%=ddlTransportCompanyID.ClientID%>").val(0);
+                            $("#<%=ddlTransportCompanySubID.ClientID%>").val(0);
+                            break;
                     }
+
                 });
 
                 // add class full width for txtFacebook if it's null
@@ -749,7 +1291,98 @@
                 }
 
                 // onchange drop down list excute status
+                preExcuteStatus = +$("#<%=ddlExcuteStatus.ClientID%>").val() || 0;
                 onChangeExcuteStatus();
+
+                // Jquery Dependency
+                $("input[data-type='currency']").on({
+                    keyup: function () {
+                        formatCurrency($(this));
+                    },
+                    blur: function () {
+                        formatCurrency($(this), "blur");
+                    }
+                });
+                // event create fee new
+                $("[id^='feeNew']").click(e => { loadFeeModel(e.target, true); });
+
+                // event change drop down list
+                $("#<%=ddlFeeType.ClientID%>").change(e => {
+                    let feePriceDOM = $("#<%=txtFeePrice.ClientID%>");
+                    if (e.target.value == "0")
+                    {
+                        feePriceDOM.val("");
+                        feePriceDOM.attr("disabled", true);
+                    }
+                    else
+                    {
+                        feePriceDOM.removeAttr("disabled");
+                        feePriceDOM.focus();
+                    }
+                });
+                // event press the enter key in txtFeePrice
+                $("#<%=txtFeePrice.ClientID%>").keydown(function (event) {
+                    if (event.which === 13) {
+                        $("#updateFee").click();
+                        return false;
+                    }
+                });
+                // event updateFee click
+                $("#updateFee").click(e => {
+                    let id = $("#<%=hdfUUID.ClientID%>").val();
+                    let price = $("#<%=txtFeePrice.ClientID%>").val().replace(/\,/g, '');
+
+                    if (!(price && parseInt(price) >= 1000 && parseInt(price) % 1000 == 0))
+                    {
+                        swal({
+                            title: "Thông báo",
+                            text: "Có nhập sai số tiền không đó",
+                            type: "error",
+                            html: true,
+                        }, function() {
+                            $("#<%=txtFeePrice.ClientID%>").focus();
+                        });
+                        return;
+                    }
+
+                    if (!id)
+                    {
+                        $("#<%=hdfUUID.ClientID%>").val(uuid.v4());
+                        addFeeNew();
+                    }
+                    else
+                    {
+                        updateFee();
+                    }
+
+                    $("#closeFee").click();
+                });
+
+                $("#createReturnOrder").click(() => {
+                    let customerID = $("#<%=hdfCustomerID.ClientID%>").val();
+
+                    if (!customerID) {
+                        swal("Thông báo", "Không tìm thấy ID của khách hàng này", "error");
+                    }
+                    else {
+                        createReturnOrder(customerID);
+                    }
+                });
+
+                // Init Coupon
+                let couponCodeOld = $('[id$="_hdfCouponCodeOld"]').val() || "";
+                let couponValueOld = +$('[id$="_hdfCouponValueOld"]').val() || 0;
+                if (couponCodeOld) {
+                    $('[id$="_txtCouponValue"]').val(`${couponCodeOld.trim().toUpperCase()}: -${formatThousands(couponValueOld, ',')}`);
+                    $('#btnOpenCouponModal').addClass('hide');
+                    $('#btnGenerateCouponG15').addClass('hide');
+                    $('#btnRemoveCouponCode').removeClass('hide');
+                }
+
+                $('[id$="_txtCouponCode"]').keypress((event) => {
+                    if (event.which == 13)
+                        getCoupon();
+                });
             });
 
             // key press F1 - F4
@@ -776,7 +1409,7 @@
                 $("#<%=hdfDonHangTra.ClientID%>").val(t[1]);
                 $(".find3").removeClass("hide");
                 $(".find1").addClass("hide");
-                $(".find2").html("(Xem đơn hàng " + t[0] + ")");
+                $(".find2").html("<i class='fa fa-share' aria-hidden='true'></i> Xem đơn hàng trả " + t[0]);
                 $(".find2").attr("onclick", "viewReturnOrder(" + t[0] + ")");
                 $(".find2").removeClass("hide");
                 $(".returnorder").removeClass("hide");
@@ -785,122 +1418,147 @@
             }
 
             // search return order
+            function createOrderReturnHTML(refundGood) {
+                let createdDate = "";
+                let addHTML = "";
+
+                // Format CreateDate
+                var matchs = refundGood.CreatedDate.match(/\d+/g);
+                if (matchs) {
+                    let date = new Date(parseInt(matchs[0]));
+                    if (date) {
+                        createdDate = date.format("yyyy-MM-dd");
+                    }
+                }
+                addHTML += "<tr onclick='getReturnOrder(" + JSON.stringify(refundGood) + ")' style='cursor: pointer'>";
+                addHTML += "    <td>" + refundGood.ID + "</td>";
+                addHTML += "    <td>" + formatNumber(refundGood.TotalQuantity.toString()) + "</td>";
+                addHTML += "    <td>" + formatNumber(refundGood.TotalRefundFee.toString()) + "</td>";
+                addHTML += "    <td>" + formatNumber(refundGood.TotalPrice.toString()) + "</td>";
+                addHTML += "    <td>" + refundGood.CreatedBy + "</td>";
+                addHTML += "    <td>" + createdDate + "</td>";
+                addHTML += "</tr>";
+
+                return addHTML;
+            };
+
             function searchReturnOrder() {
-                var phone = $("#<%=txtPhone.ClientID%>").val();
-                var name = $("#<%=txtFullname.ClientID%>").val();
-                if (isBlank(phone) || isBlank(name)) {
-                    swal("Thông báo", "Hãy nhập thông tin khách hàng trước!", "info");
+                let customerID = $("#<%=hdfCustomerID.ClientID%>").val();
+
+                if (isBlank(customerID)) {
+                    swal("Thông báo", "Đây là khách hàng mới mà ^_^", "info");
                 } else {
-                    var html = "";
-                    html += "<div class=\"form-group\">";
-                    html += "<label>Mã đơn hàng đổi trả: </label>";
-                    html += "<input ID=\"txtOrderRefund\" class=\"form-control fjx\"></input>";
-                    html += "<a href=\"javascript: ;\" class=\"btn link- btn\" style=\"background-color:#f87703;float:right;color:#fff;\" onclick=\"getReturnOrder()\">Tìm</a>";
-                    html += "</div>";
-                    showPopup(html);
-                    $("#txtOrderRefund").focus();
-                    $('#txtOrderRefund').keydown(function(event) {
-                        if (event.which === 13) {
-                            getReturnOrder();
-                            event.preventDefault();
-                            return false;
+                    let modalDOM = $("#orderReturnModal");
+                    let customerName = $("#<%=txtFullname.ClientID%>").val();
+
+                    // Setting title modal
+                    modalDOM.find(".modal-title").html("Danh sách đổi trả hàng (" + customerName + ")");
+                    // Clear body modal
+                    modalDOM.find("tbody[id='orderReturn']").html("");
+                    $.ajax({
+                        type: 'POST',
+                        url: '/them-moi-don-hang.aspx/getOrderReturn',
+                        data: JSON.stringify({ 'customerID': customerID }),
+                        contentType: "application/json; charset=utf-8",
+                        dataType: "json",
+                        success: (response) => {
+                            if (response.d) {
+                                let data = JSON.parse(response.d);
+                                if (data.length == 0) {
+                                    swal({
+                                        title: 'Thông báo',
+                                        text: 'Khách hàng này không có đơn đổi trả hoặc đã được trừ tiền!',
+                                        type: 'warning',
+                                        showCancelButton: true,
+                                        closeOnConfirm: true,
+                                        cancelButtonText: "Để em xem lại...",
+                                        confirmButtonText: "Tạo đơn hàng đổi trả",
+                                    }, function (confirm) {
+                                        if (confirm) createReturnOrder(customerID);
+                                    });
+                                }
+                                else {
+                                    data.forEach((item) => {
+                                        modalDOM.find("tbody[id='orderReturn']").append(createOrderReturnHTML(item))
+                                    });
+
+                                    modalDOM.modal({ show: 'true', backdrop: 'static' });
+                                }
+                            }
+                        },
+                        error: (xmlhttprequest, textstatus, errorthrow) => {
+                            swal("Thông báo", "Đã xảy ra lỗi trong quá trình lấy danh sách đơn hàng đổi trả", "error");
                         }
                     });
                 }
-            }
+            };
 
             // get return order
-            function getReturnOrder() {
-                var order = $("#txtOrderRefund").val();
-                var name = $("#<%=txtFullname.ClientID%>").val();
-                var phone = $("#<%=txtPhone.ClientID%>").val();
-                var t = document.getElementById('<%= hdfcheckR.ClientID%>').defaultValue;
-                var existorder = t.split(',');
-                if (!isBlank(order)) {
-                    $.ajax({
-                        type: "POST",
-                        url: "/thong-tin-don-hang.aspx/findReturnOrder",
-                        data: "{order:'" + order + "', remove:'0'}",
-                        contentType: "application/json; charset=utf-8",
-                        dataType: "json",
-                        success: function(msg) {
-                            if (msg.d != "null") {
-                                var data = JSON.parse(msg.d);
-                                if (data.CustomerName == name && data.CustomerPhone == phone) {
-                                    $(".subtotal").removeClass("hide");
-                                    $(".returnorder").removeClass("hide");
-                                    $(".totalpriceorderall").removeClass("price-red");
-                                    $(".totalpricedetail").addClass("price-red");
-                                    $(".find3").removeClass("hide");
-                                    $(".find1").addClass("hide");
-                                    $(".find2").html("(Xem đơn hàng " + data.ID + ")");
-                                    $(".find2").attr("onclick", "viewReturnOrder(" + data.ID + ")");
-                                    $(".find2").removeClass("hide");
-                                    var refundprice = 0;
-                                    if (parseFloat($("#<%=hdfTotalPrice.ClientID%>").val() > 0)) {
-                                        refundprice = parseFloat($("#<%=hdfTotalPrice.ClientID%>").val());
-                                    }
-                                    $(".totalpricedetail").html(formatThousands((refundprice - data.TotalPrice), ","));
-                                    $("#<%=hdfDonHangTra.ClientID%>").val(data.TotalPrice);
-                                    $(".refund").removeClass("hide");
-                                    $(".totalpriceorderrefund").html(formatThousands(data.TotalPrice, ","));
-                                    closePopup();
-                                    getAllPrice();
-                                } else {
-                                    swal("Thông báo", "Đơn hàng đổi trả không thuộc khách hàng này!", "error");
-                                }
-                            } else if (order == existorder[0]) {
-                                swal("Thông báo", "Đơn hàng đổi trả này đã thêm vào trước đó!\nHãy đổi về trạng thái 'Chưa trừ tiền' để thêm lại lần nữa!\nSau khi đổi trạng thái, trở lại giao diện này để thêm lại!", "error");
-                                viewReturnOrder(order);
-                            } else {
-                                swal("Thông báo", "Đơn hàng đổi trả không tồn tại hoặc đã được trừ tiền!", "error");
-                            }
-                        },
-                        error: function(xmlhttprequest, textstatus, errorthrow) {
-                            alert('lỗi');
+            function getReturnOrder(refundGood) {
+                if (refundGood)
+                {
+                    let totalPrice = $("#<%=hdfTotalPrice.ClientID%>").val();
+                    if (totalPrice)
+                    {
+                        totalPrice = parseFloat(totalPrice) - refundGood.TotalPrice;
+                        if (totalPrice < 0) {
+                            totalPrice = "-" + formatNumber(totalPrice.toString());
                         }
-                    });
-                } else {
-                    swal("Thông báo", "Hãy nhập thông tin khách hàng trước!", "info");
+                        else {
+                            totalPrice = formatNumber(totalPrice.toString());
+                        }
+                    }
+                    else
+                    {
+                        totalPrice = "-" + formatNumber(refundGood.TotalPrice.toString());
+                    }
+
+                    $("#<%=hdSession.ClientID%>").val(refundGood.ID + "|" + refundGood.TotalPrice);
+                    $(".subtotal").removeClass("hide");
+                    $(".returnorder").removeClass("hide");
+                    $(".totalpriceorderall").removeClass("price-red");
+                    $(".totalpricedetail").addClass("price-red");
+                    $(".find3").removeClass("hide");
+                    $(".find1").addClass("hide");
+                    $(".find2").html("<i class='fa fa-share' aria-hidden='true'></i> Xem đơn hàng trả " + refundGood.ID);
+                    $(".find2").attr("onclick", "viewReturnOrder(" + refundGood.ID + ")");
+                    $(".find2").removeClass("hide");
+                    $(".totalpricedetail").html(totalPrice);
+                    $("#<%=hdfDonHangTra.ClientID%>").val(refundGood.TotalPrice);
+                    $(".refund").removeClass("hide");
+                    $(".totalpriceorderrefund").html('-' + formatThousands(refundGood.TotalPrice, ","));
+
+                    $("#closeOrderReturn").click();
+                    getAllPrice();
                 }
             }
 
             // view return order by click button
             function viewReturnOrder(ID) {
-                var win = window.open("/thong-tin-tra-hang?id=" + ID + "", '_blank');
+                var win = window.open("/xem-don-hang-doi-tra?id=" + ID + "", '_blank');
                 win.focus();
-            }
+            };
 
             // delete return order
             function deleteReturnOrder() {
-                $.ajax({
-                    type: "POST",
-                    url: "/thong-tin-don-hang.aspx/findReturnOrder",
-                    data: "{order:'0', remove:'1'}",
-                    contentType: "application/json; charset=utf-8",
-                    dataType: "json",
-                    success: function(msg) {
-                        $(".find3").addClass("hide");
-                        $(".find1").removeClass("hide");
-                        $(".find2").addClass("hide");
-                        $(".find2").html("");
-                        $(".find2").removeAttr("onclick");
-                        $(".totalpricedetail").html("0");
-                        $("#<%=hdfDonHangTra.ClientID%>").val(0);
-                        $(".refund").addClass("hide");
-                        $(".totalpriceorderrefund").html("0");
-                        $("#txtOrderRefund").val(0);
-                        $(".returnorder").addClass("hide");
-                        $(".totalpriceorderall").addClass("price-red");
-                        $(".totalpricedetail").removeClass("price-red");
-                        swal("Thông báo", "Đã bỏ qua đơn hàng đổi trả này!", "info");
-                        getAllPrice();
-                    },
-                    error: function(xmlhttprequest, textstatus, errorthrow) {
-                        alert('lỗi');
-                    }
-                });
-            }
+                $(".find3").addClass("hide");
+                $(".find1").removeClass("hide");
+                $(".find2").addClass("hide");
+                $(".find2").html("");
+                $(".find2").removeAttr("onclick");
+                $(".totalpricedetail").html("0");
+                $("#<%=hdfDonHangTra.ClientID%>").val(0);
+                $("#<%=hdSession.ClientID%>").val(0);
+                $(".refund").addClass("hide");
+                $(".totalpriceorderrefund").html("0");
+                $("#txtOrderRefund").val(0);
+                $(".returnorder").addClass("hide");
+                $(".totalpriceorderall").addClass("price-red");
+                $(".totalpricedetail").removeClass("price-red");
+
+                swal("Thông báo", "Đã bỏ qua đơn hàng đổi trả này!", "info");
+                getAllPrice();
+            };
 
             // pay order on click button
             function payAll() {
@@ -909,10 +1567,40 @@
                 var name = $("#<%= txtFullname.ClientID%>").val();
                 var nick = $("#<%= txtNick.ClientID%>").val();
                 var address = $("#<%= txtAddress.ClientID%>").val();
-                if (phone != "" && name != "" && nick != "" && address != "") {
-                    
+                var facebooklink = $("#<%= txtFacebook.ClientID%>").val();
+                var username = $("#<%= hdfUsernameCurrent.ClientID%>").val();
+
+                if (phone == "" || name == "" || nick == "" || address == "" || (facebooklink == "" && username == "nhom_facebook"))
+                {
+                    if (name == "") {
+                        $("#<%= txtFullname.ClientID%>").focus();
+                        swal("Thông báo", "Hãy nhập tên khách hàng!", "error");
+                    }
+                    else if (phone == "") {
+                        $("#<%= txtPhone.ClientID%>").focus();
+                        swal("Thông báo", "Hãy nhập số điện thoại khách hàng!", "error");
+                    }
+                    else if (nick == "") {
+                        $("#<%= txtNick.ClientID%>").prop('disabled', false);
+                        $("#<%= txtNick.ClientID%>").focus();
+                        swal("Thông báo", "Hãy nhập Nick đặt hàng của khách hàng!", "error");
+                    }
+                    else if (facebooklink == "" && $("#<%= hdfUsernameCurrent.ClientID%>").val() == "nhom_facebook") {
+                        $("#<%= txtFacebook.ClientID%>").prop('disabled', false);
+                        $("#<%= txtFacebook.ClientID%>").focus();
+                        swal("Thông báo", "Hãy nhập link Facebook của khách này!", "error");
+                    }
+                    else if (address == "") {
+                        $("#<%= txtAddress.ClientID%>").focus();
+                        swal("Thông báo", "Hãy nhập địa chỉ khách hàng!", "error");
+                    }
+
+                }
+                else
+                {
                     // Nếu có sản phẩm trong đơn hàng
                     if ($(".product-result").length > 0) {
+                        getAllPrice(true);
                         var list = "";
                         var ordertype = $(".customer-type").val();
                         var checkoutin = false;
@@ -934,9 +1622,8 @@
                             var productvariableid = $(this).attr("data-productvariableid");
 
                             if (quantity > 0) {
-                                if (quantity > quantityInstock) {
+                                if (quantity > quantityInstock)
                                     checkoutin = true;
-                                }
 
                                 list += id + "," + sku + "," + producttype + "," + productvariablename + "," + productvariablevalue + "," + quantity + "," +
                                     productname + "," + productimageorigin + "," + productvariablesave + "," + price + "," + productvariablesave + "," +
@@ -946,10 +1633,10 @@
 
                         // Kiểm tra trạng thái xử lý
                         let excuteStatus = Number($("#<%=ddlExcuteStatus.ClientID%>").val());
+                        let shippingType = Number($("#<%=ddlShippingType.ClientID%>").val());
 
                         // Nếu chọn trạng thái hủy
                         if (excuteStatus == 3) {
-
                             // Nếu trạng thái cũ là đã hủy thì thông báo hủy rồi
                             if ($("#<%=hdfExcuteStatus.ClientID%>").val() == 3) {
                                 swal("Thông báo", "Đơn hàng này đã hủy trước đó!", "warning");
@@ -974,10 +1661,8 @@
                                             cancelButtonText: "Đợi em suy nghĩ!",
                                             confirmButtonText: "Hủy thôi..",
                                         }, function (orderNote) {
-
                                             // Kiểm tra xem có nhập lý do hủy không? Không nhập thì không cho hủy
                                             if (orderNote != "") {
-
                                                 $("#<%=txtOrderNote.ClientID %>").val(orderNote);
                                                 $("#<%=ddlPaymentStatus.ClientID %>").val(1);
                                                 deleteOrder();
@@ -992,15 +1677,11 @@
                                     }
                                 });
                             }
-                            
                         }
+                        else if (excuteStatus != 3 && $("#<%=hdfExcuteStatus.ClientID%>").val() == 3) {
                             // Khôi phục đơn hàng đã hủy
-                        else if (excuteStatus != 3 && $("#<%=hdfExcuteStatus.ClientID%>").val() == 3 ) {
-
                             // Chỉ admin mới được khôi phục đơn hàng hủy
                             if ($("#<%=hdfRoleID.ClientID%>").val() == 0) {
-
-                                $("#<%=txtOrderNote.ClientID %>").val("Đã khôi phục từ trạng thái hủy bởi " + $("#<%=hdfUsernameCurrent.ClientID%>").val());
                                 deleteOrder();
                                 $("#<%=hdfOrderType.ClientID %>").val(ordertype);
                                 $("#<%=hdfListProduct.ClientID%>").val(list);
@@ -1010,13 +1691,9 @@
                                 swal("Không thể khôi phục đơn hàng đã hủy!", "Hãy báo cáo chị Ngọc để khôi phục", "error");
                             }
                         }
-                            // Đổi trạng thái Đã hoàn tất sang trạng thái Đang xử lý
                         else if (excuteStatus == 1 && $("#<%=hdfExcuteStatus.ClientID%>").val() == 2) {
-
                             // Chỉ admin mới được đổi trạng thái Đã hoàn tất sang trạng thái Đang xử lý
                             if ($("#<%=hdfRoleID.ClientID%>").val() == 0) {
-
-                                $("#<%=txtOrderNote.ClientID %>").val("Đã đổi trạng thái từ Đã hoàn tất sang Đang xử lý bởi " + $("#<%=hdfUsernameCurrent.ClientID%>").val());
                                 deleteOrder();
                                 $("#<%=hdfOrderType.ClientID %>").val(ordertype);
                                 $("#<%=hdfListProduct.ClientID%>").val(list);
@@ -1026,20 +1703,33 @@
                                 swal("Không thể đổi trạng thái từ Đã hoàn tất sang Đang xử lý!", "Hãy báo cáo chị Ngọc để khôi phục", "error");
                             }
                         }
-                            // Nếu trạng thái không liên quan đến hủy thì xử lý..
+                        // Nếu chọn trạng thái hoàn tất và cần nhập mã vận đơn
+                        else if (excuteStatus == 2 && (shippingType == 2 || shippingType == 3 || shippingType == 6)) {
+                            let shippingCode = $("#<%=txtShippingCode.ClientID%>").val();
+                            if (shippingCode.length < 3) {
+                                $("#<%=txtShippingCode.ClientID%>").focus();
+                                swal("Thông báo", "Chưa nhập mã vận đơn!", "warning");
+                            }
+                            else {
+                                deleteOrder();
+                                $("#<%=hdfOrderType.ClientID %>").val(ordertype);
+                                $("#<%=hdfListProduct.ClientID%>").val(list);
+                                insertOrder();
+                            }
+                        }
                         else {
-                            deleteOrder(); 
+                            // Nếu trạng thái không liên quan đến hủy thì xử lý..
+                            deleteOrder();
                             $("#<%=hdfOrderType.ClientID %>").val(ordertype);
                             $("#<%=hdfListProduct.ClientID%>").val(list);
                             insertOrder();
                         }
                     }
-                        // Nếu không có sản phẩm trong đơn
                     else {
+                        // Nếu không có sản phẩm trong đơn
                         let excuteStatus = Number($("#<%=ddlExcuteStatus.ClientID%>").val());
 
                         if (excuteStatus == 3) {
-
                             swal({
                                 title: "Xác nhận",
                                 text: "Đơn hàng này sẽ bị hủy. Cưng có chắc hủy đơn này không?",
@@ -1066,10 +1756,11 @@
 
                                             deleteOrder();
 
+                                            let order_id = $("#<%=hdOrderInfoID.ClientID%>").val()
                                             $.ajax({
                                                 type: "POST",
                                                 url: "/thong-tin-don-hang.aspx/UpdateStatus",
-                                                data: "{}",
+                                                data: "{OrderId: " + order_id + "}",
                                                 contentType: "application/json; charset=utf-8",
                                                 dataType: "json",
                                                 success: function (msg) {
@@ -1089,33 +1780,14 @@
                                 }
                             });
 
-                        } else {
+                        }
+                        else {
                             $("#txtSearch").focus();
                             swal("Thông báo", "Hãy nhập sản phẩm!", "error");
                         }
                     }
-
-                } else {
-                    if (name == "") {
-                        $("#<%= txtFullname.ClientID%>").focus();
-                        swal("Thông báo", "Hãy nhập tên khách hàng!", "error");
-                    }
-                    else if (phone == "") {
-                        $("#<%= txtPhone.ClientID%>").focus();
-                        swal("Thông báo", "Hãy nhập số điện thoại khách hàng!", "error");
-                    }
-                    else if (nick == "") {
-                        $("#<%= txtNick.ClientID%>").prop('disabled', false);
-                        $("#<%= txtNick.ClientID%>").focus();
-                        swal("Thông báo", "Hãy nhập Nick đặt hàng của khách hàng!", "error");
-                        
-                    }
-                    else if (address == "") {
-                        $("#<%= txtAddress.ClientID%>").focus();
-                        swal("Thông báo", "Hãy nhập địa chỉ khách hàng!", "error");
-                    }
                 }
-            }
+            };
 
             function checkPrepayTransport(ID, SubID) {
                 var t = 0;
@@ -1138,23 +1810,24 @@
                     }
                 });
                 return t;
-            }
+            };
 
             // insert order
             function insertOrder() {
+                let transSub = $("#<%=ddlTransportCompanySubID.ClientID%>").val();
+                $("#<%=hdfTransportCompanySubID.ClientID%>").val(transSub);
+
                 var shippingtype = $(".shipping-type").val();
                 var checkAllValue = true;
                 var fs = $("#<%=pFeeShip.ClientID%>").val();
                 var feeship = parseFloat(fs.replace(/\,/g, ''));
 
-                if (shippingtype == 2 || shippingtype == 3) {
+                if (shippingtype == 2 || shippingtype == 3 || shippingtype == 6 || shippingtype == 7) {
                     if (feeship == 0 && $("#<%=pFeeShip.ClientID%>").is(":disabled") == false) {
-
                         $("#<%=pFeeShip.ClientID%>").focus();
-
                         swal({
-                            title: "Có vấn đề nờ:",
-                            text: "Chưa nhập phí vận chuyển nờ!<br><br>Hỏng lẻ miễn phí vận chuyển luôn hở?",
+                            title: "Có vấn đề:",
+                            text: "Chưa nhập phí vận chuyển!<br><br>Hỏng lẻ miễn phí vận chuyển luôn hở?",
                             type: "warning",
                             showCancelButton: true,
                             confirmButtonColor: "#DD6B55",
@@ -1163,22 +1836,18 @@
                             cancelButtonText: "Để em bấm nút miễn phí",
                             html: true
                         });
-
                         checkAllValue = false;
                     }
                 }
                 else if (shippingtype == 4) {
                     if (feeship == 0 && $("#<%=pFeeShip.ClientID%>").is(":disabled") == false) {
-
                         var ID = $("#<%=ddlTransportCompanyID.ClientID%>").val();
                         var SubID = $("#<%=ddlTransportCompanySubID.ClientID%>").val();
 
                         if (ID != 0 && SubID != 0) {
                             var checkPrepay = checkPrepayTransport(ID, SubID);
                             if (checkPrepay == 1) {
-
                                 $("#<%=pFeeShip.ClientID%>").focus();
-
                                 swal({
                                     title: "Coi nè:",
                                     text: "Chưa nhập phí vận chuyển do nhà xe này <strong>trả cước trước</strong> nè!<br><br>Hay là miễn phí vận chuyển luôn hở?",
@@ -1195,7 +1864,6 @@
                         }
                     }
                 }
-                
 
                 if (feeship > 0 && feeship < 10000) {
                     checkAllValue = false;
@@ -1214,12 +1882,12 @@
                 var ds = $("#<%=pDiscount.ClientID%>").val();
                 var discount = parseFloat(ds.replace(/\,/g, ''));
 
-                if (discount > 11000 && $("#<%=hdfRoleID.ClientID%>").val() != 0) {
+                if (discount > 15000 && $("#<%=hdfRoleID.ClientID%>").val() != 0) {
                     checkAllValue = false;
                     $("#<%=pDiscount.ClientID%>").focus();
                     swal({
                         title: "Lạ vậy:",
-                        text: "Sao chiết khấu lại lớn hơn <strong>11.000đ</strong> nè?<br><br>Nếu có lý do thì báo chị Ngọc nha!",
+                        text: "Sao chiết khấu lại lớn hơn <strong>15.000đ</strong> nè?<br><br>Nếu có lý do thì báo chị Ngọc nha!",
                         type: "warning",
                         showCancelButton: false,
                         confirmButtonColor: "#DD6B55",
@@ -1228,12 +1896,39 @@
                     });
                 }
 
+                var ddlCreatedBy = $("#<%=ddlCreatedBy.ClientID%>").val();
+                var createdBy = $("#<%=hdfUsername.ClientID%>").val();
+
+                if (createdBy != ddlCreatedBy)
+                {
+                    checkAllValue = false;
+                    swal({
+                        title: "Ê nhỏ:",
+                        text: "Chuyển đơn hàng này cho <strong>" + ddlCreatedBy + "</strong> phụ trách hở?<br>Nếu vậy thì khách này cũng chuyển cho nhân viên này phụ trách nhé!",
+                        type: "info",
+                        showCancelButton: true,
+                        closeOnConfirm: true,
+                        closeOnCancel: true,
+                        confirmButtonColor: "#DD6B55",
+                        confirmButtonText: "Đúng rồi sếp!!",
+                        cancelButtonText: "Để em xem lại..",
+                        html: true,
+                    }, function (isconfirm) {
+                        if (isconfirm)
+                        {
+                            checkAllValue = true;
+                            $("#<%=hdfUsername.ClientID%>").val(ddlCreatedBy);
+                            insertOrder();
+                        }
+                    });
+                }
+
                 if (checkAllValue == true)
                 {
                     HoldOn.open();
                     $("#<%=btnOrder.ClientID%>").click();
                 }
-            }
+            };
 
             // search product by SKU
             function searchProduct() {
@@ -1255,32 +1950,39 @@
                         orderServer.QuantityInstockString = (Number(orderServer.QuantityInstockString) + Number(orderClient.Quantity)).toString();
                     }
                 });
-            }
+            };
 
             function searchRemovedList(ProductSKU) {
                 var t = ""
-                for (i = 0; i< listOrderDetail.length; i++) {
+                for (i = 0; i < listOrderDetail.length; i++) {
                     if (listOrderDetail[i].SKU == ProductSKU) {
                         t += "data-orderdetailid=\"" + listOrderDetail[i].ID + "\"";
                     }
                 }
                 return t;
-            }
+            };
 
             function removeProductExisted(orderServer) {
                 for (index in listOrderDetail) {
                     if (listOrderDetail[index].ProductID == orderServer.ID) {
-                        listOrderDetail.splice(index,1);
+                        listOrderDetail.splice(index, 1);
                     }
                 }
+            };
+
+            function refreshDiscount() {
+                $("#<%=hdfDiscountInOrder.ClientID%>").val(0);
+                getAllPrice();
             }
 
             // get all price
-            function getAllPrice() {
+            function getAllPrice(is_payAll_call) {
+                if (is_payAll_call == undefined)
+                    is_payAll_call = false;
                 if ($(".product-result").length > 0) {
                     var totalprice = 0;
                     var productquantity = 0;
-                    $(".product-result").each(function() {
+                    $(".product-result").each(function () {
                         var price = parseFloat($(this).find(".gia-san-pham").attr("data-price"));
                         var quantity = parseFloat($(this).find(".in-quantity").val());
                         var total = price * quantity;
@@ -1292,16 +1994,17 @@
                     });
 
                     $("#<%=hdfTotalPriceNotDiscount.ClientID%>").val(totalprice);
-                    $(".totalproductQuantity").html(formatThousands(productquantity, ',') + " sản phẩm");
-                    
+                    $(".totalproductQuantity").html(formatThousands(productquantity, ',') + " cái");
+
                     $(".totalpriceorder").html(formatThousands(totalprice, ','));
                     $("#<%=hdfTotalPriceNotDiscountNotFee.ClientID%>").val(totalprice);
                     $("#<%=hdfTotalQuantity.ClientID%>").val(productquantity);
-                    var isDiscount = $("#<%=hdfIsDiscount.ClientID%>").val();
+                    var isDiscount = +$("#<%=hdfIsDiscount.ClientID%>").val() || 0;
                     var totalDiscount = 0;
                     var totalleft = 0;
                     var amount = 0;
                     var amountdiscount = 0;
+                    let quantityRequirement = +$("#<%=hdfQuantityRequirement.ClientID%>").val() || 0;
 
                     // Kiểm tra khách hàng có được chiết khấu trong nhóm ko?
                     if (isDiscount == 1) {
@@ -1326,13 +2029,14 @@
                         }
                     }
 
-                    // Nếu chiết khấu của khách hàng lớn hơn 0
-                    if (amountdiscount > 0) {
-
-                        // Nếu <chiết khấu nhóm> của khách hàng lớn hơn mức được <chiết khấu của đơn hàng> thì lấy <chiết khấu nhóm> để tính
-                        if (amount < amountdiscount) {
-                            amount = amountdiscount;
-                        }
+                    // Nếu dùng bằng tay để chỉnh chiết khấu
+                    if (is_payAll_call === true) {
+                        amount = parseInt($("#<%=pDiscount.ClientID%>").val().replace(/\,/g, ''));
+                    }
+                    else {
+                        // Nếu khách hàng năm trong nhóm chiết khấu và đạt số lượng yêu cầu không
+                        if (isDiscount && productquantity >= quantityRequirement)
+                            amount = amount >= amountdiscount ? amount : amountdiscount;
                     }
 
                     // Nếu đơn hàng được chiết khấu sau khi tính toán
@@ -1346,7 +2050,7 @@
                     }
 
                     // Nếu đơn hàng có sẵn chiết khấu và lớn hơn chiết khấu được tính phía trên
-                    if ($("#<%=hdfDiscountInOrder.ClientID%>").val() != 0 && $("#<%=hdfDiscountInOrder.ClientID%>").val() > amount ) {
+                    if ($("#<%=hdfDiscountInOrder.ClientID%>").val() != 0 && $("#<%=hdfDiscountInOrder.ClientID%>").val() > amount) {
                         var dis = $("#<%=hdfDiscountInOrder.ClientID%>").val();
                         var discount = parseFloat(dis.replace(/\,/g, ''));
                         var totalck = discount * productquantity;
@@ -1357,12 +2061,19 @@
                     var fs = $("#<%=pFeeShip.ClientID%>").val();
                     var feeship = parseFloat(fs.replace(/\,/g, ''));
 
-                    var of = $("#<%=pOtherFee.ClientID%>").val();
-                    var otherfee = parseFloat(of.replace(/\,/g, ''));
+                    let otherfee = 0;
+                    fees.forEach((item) => {
+                        otherfee += item.FeePrice;
+                    });
 
                     var priceafterchietkhau = totalleft;
-
                     var totalmoney = totalleft + feeship + otherfee;
+                    $("#<%=hdfTotalPrice.ClientID%>").val(totalmoney);
+                    // Phiếu giảm giá
+                    checkCouponCondition();
+                    let priceCoupon = +$("#<%=hdfCouponValue.ClientID%>").val() || 0;
+
+                    totalmoney -= priceCoupon;
 
                     $("#<%=pDiscount.ClientID%>").val(formatThousands(totalDiscount, ','));
 
@@ -1376,18 +2087,24 @@
 
                     $(".totalpricedetail").html(formatThousands((totalmoney - refund), ","));
                     $("#<%=hdfTongTienConLai.ClientID%>").val(totalmoney - refund);
-                } else {
+                }
+                else {
                     // update status order
                     $("#<%=ddlExcuteStatus.ClientID%>").val(3);
 
-                    $(".totalproductQuantity").html(formatThousands(0, ',') + " sản phẩm");
+                    $(".totalproductQuantity").html(formatThousands(0, ',') + " cái");
                     $(".totalpriceorder").html(formatThousands(0, ','));
                     $(".totalpriceorderall").html(formatThousands(0, ','));
                     $(".priceafterchietkhau").html(formatThousands(0, ','));
 
+                    $('[id$="_hdfTotalQuantity"]').val(formatThousands(0, ','));
+                    $('[id$="_hdfTotalPrice"]').val(formatThousands(0, ','));
+                    checkCouponCondition();
                 }
-                reIndex();
-            }
+
+                let excuteStatus = +document.querySelector('[id$="_ddlExcuteStatus"]').value || 0;
+                reIndex(excuteStatus == 1);
+            };
 
             // check empty
             function notEmpty() {
@@ -1399,11 +2116,13 @@
                     var fee = 0;
                     $("#<%=pFeeShip.ClientID%>").val(formatThousands(fee, ','));
                 }
-                if ($("#<%=pOtherFee.ClientID%>").val() == '') {
-                    var fee = 0;
-                    $("#<%=pOtherFee.ClientID%>").val(formatThousands(fee, ','));
-                }
-            }
+                fees.forEach((item) => {
+                    if (item.price == "") {
+                        item.FeePrice = 0;
+                        $("#" + item.UUID).val(0);
+                    }
+                })
+            };
 
             // count total order
             function countTotal() {
@@ -1420,16 +2139,24 @@
                 var discount = parseFloat(dis.replace(/\,/g, ''));
                 var feeship = parseFloat(fs.replace(/\,/g, ''));
 
-                var of = $("#<%=pOtherFee.ClientID%>").val();
-                var otherfee = parseFloat(of.replace(/\,/g, ''));
+                let otherfee = 0;
+                fees.forEach((item) => {
+                    otherfee += item.FeePrice;
+                });
 
                 $("#<%=hdfcheck.ClientID%>").val(discount);
+                $("#<%=hdfDiscountInOrder.ClientID%>").val(discount);
+
+                // Phiếu giảm giá
+                let priceCoupon = +$("#<%=hdfCouponValue.ClientID%>").val() || 0;
+
                 if (quantity > 0) {
-                    var totalleft = total + feeship + otherfee - discount * quantity;
+                    var totalleft = total + feeship + otherfee - discount * quantity - priceCoupon;
                     var priceafterchietkhau = total - discount * quantity;
                     $("#<%=hdfTotalQuantity.ClientID%>").val(quantity);
-                } else {
-                    var totalleft = total + feeship + otherfee - discount * totalproduct;
+                }
+                else {
+                    var totalleft = total + feeship + otherfee - discount * totalproduct - priceCoupon;
                     var priceafterchietkhau = total - discount * totalproduct;
                     $("#<%=hdfTotalQuantity.ClientID%>").val(totalproduct);
                 }
@@ -1445,14 +2172,14 @@
                 $("#<%=hdfTongTienConLai.ClientID%>").val(totalleft - refund);
 
                 $("#<%=hdfTotalPrice.ClientID%>").val(totalleft);
-            }
+            };
 
             // get product price
             function getProductPrice(obj) {
                 var customertype = obj.val();
                 if ($(".product-result").length > 0) {
                     var totalprice = 0;
-                    $(".product-result").each(function() {
+                    $(".product-result").each(function () {
                         var giasi = $(this).attr("data-giabansi");
                         var giale = $(this).attr("data-giabanle");
                         if (customertype == 1) {
@@ -1465,25 +2192,25 @@
                     });
                     getAllPrice();
                 }
-            }
+            };
 
             // press key
             function keypress(e) {
                 var keypressed = null;
                 if (window.event) {
                     keypressed = window.event.keyCode; //IE
-                } else {
+                }
+                else {
                     keypressed = e.which; //NON-IE, Standard
                 }
                 if (keypressed < 48 || keypressed > 57) {
-                    if (keypressed == 8 || keypressed == 127) {
+                    if (keypressed == 8 || keypressed == 127)
                         return;
-                    }
                     return false;
                 }
-            }
+            };
 
-            // format price
+                // format price
             var formatThousands = function(n, dp) {
                 var s = '' + (Math.floor(n)),
                     d = n % 1,
@@ -1523,22 +2250,28 @@
                         dataType: "json"
                     });
                 }
-            }
+            };
 
             function onChangeExcuteStatus() {
                 let excuteStatus = Number($("#<%=ddlExcuteStatus.ClientID%>").val());
 
                 switch (excuteStatus) {
                     case 2:
-                        $("#infor-customer").addClass("disable");
-                        $("#detail").addClass("disable");
-                        if ($("#<%=hdfExcuteStatus.ClientID%>").val() == 2) {
-                            $("#row-payment-status").removeClass("disable");
-                            $("#row-payment-type").removeClass("disable");
-                            $("#row-shipping-type").removeClass("disable");
-                            $("#row-transport-company").removeClass("disable");
-                            $("#row-shipping").removeClass("disable");
-                            $("#row-order-note").removeClass("disable");
+                        if ($("#<%=hdfExcuteStatus.ClientID%>").val() != 1)
+                        {
+                            $("#infor-customer").addClass("disable");
+                            $("#detail").addClass("disable");
+                            $("#row-payment-type").addClass("disable");
+                            $("#row-shipping-type").addClass("disable");
+                            $("#row-transport-company").addClass("disable");
+                            $("#row-postal-delivery-type").addClass("disable");
+                            $("#row-shipping").addClass("disable");
+                            $("#row-bank").addClass("disable");
+                            if ($("#<%=hdfExcuteStatus.ClientID%>").val() == 2)
+                            {
+                                $("#row-payment-status").removeClass("disable");
+                                $("#row-order-note").removeClass("disable");
+                            }
                         }
                         break;
                     case 3:
@@ -1550,12 +2283,13 @@
                         $("#row-payment-type").addClass("disable");
                         $("#row-shipping-type").addClass("disable");
                         $("#row-transport-company").addClass("disable");
+                        $("#row-postal-delivery-type").addClass("disable");
                         $("#row-shipping").addClass("disable");
                         $("#row-order-note").addClass("disable");
-
+                        $("#row-bank").addClass("disable");
+                        removeCoupon();
                         break;
                     case 1:
-                        
                         if ($("#<%=hdfExcuteStatus.ClientID%>").val() == 1) {
                             $("#infor-order").removeClass("disable");
                             $("#infor-customer").removeClass("disable");
@@ -1565,23 +2299,291 @@
                             $("#row-payment-type").removeClass("disable");
                             $("#row-shipping-type").removeClass("disable");
                             $("#row-transport-company").removeClass("disable");
+                            $("#row-postal-delivery-type").removeClass("disable");
                             $("#row-shipping").removeClass("disable");
                             $("#row-order-note").removeClass("disable");
+                            $("#row-bank").removeClass("disable");
                         }
                         else {
-                            $("#infor-customer").addClass("disable");
-                            $("#detail").addClass("disable");
-                            $("#status .panel-heading").addClass("disable");
-                            $("#row-payment-status").addClass("disable");
-                            $("#row-payment-type").addClass("disable");
-                            $("#row-shipping-type").addClass("disable");
-                            $("#row-transport-company").addClass("disable");
-                            $("#row-shipping").addClass("disable");
-                            $("#row-order-note").addClass("disable");
+                            if($("#<%=hdfRoleID.ClientID%>").val() == 0)
+                            {
+                                $("#infor-order").removeClass("disable");
+                                $("#infor-customer").removeClass("disable");
+                                $("#detail").removeClass("disable");
+                                $("#status .panel-heading").removeClass("disable");
+                                $("#row-payment-status").removeClass("disable");
+                                $("#row-payment-type").removeClass("disable");
+                                $("#row-shipping-type").removeClass("disable");
+                                $("#row-transport-company").removeClass("disable");
+                                $("#row-postal-delivery-type").removeClass("disable");
+                                $("#row-shipping").removeClass("disable");
+                                $("#row-order-note").removeClass("disable");
+                                $("#row-bank").removeClass("disable");
+                            }
+                            else
+                            {
+                                $("#infor-customer").addClass("disable");
+                                $("#detail").addClass("disable");
+                                $("#status .panel-heading").addClass("disable");
+                                $("#row-payment-type").addClass("disable");
+                                $("#row-shipping-type").addClass("disable");
+                                $("#row-transport-company").addClass("disable");
+                                $("#row-postal-delivery-type").addClass("disable");
+                                $("#row-shipping").addClass("disable");
+                                $("#row-order-note").addClass("disable");
+                                $("#row-bank").addClass("disable");
+                            }
                         }
-
                         break;
+                };
+
+                // Trường hợp trạng thái trước là (hoàn tất đơn hàng || hủy)
+                if (preExcuteStatus == 2 || preExcuteStatus == 3) {
+                    // Chuyển qua trạng thái đang xử lý
+                    if (excuteStatus == 1) {
+                        let contentProduct = document.querySelector('.content-product');
+                        let products = [...contentProduct.children];
+
+                        contentProduct.innerHTML = "";
+                        products.reverse();
+                        products.forEach((item) => contentProduct.innerHTML += item.outerHTML);
+
+                        // Cập nhật lại index
+                        for (let i = 0; i < contentProduct.children.length; i++) {
+                            let item = contentProduct.children[i];
+                            item.querySelector('.order-item').innerText = contentProduct.children.length - i;
+                        }
+                    }
                 }
+                // Trường hợp trạng thái trước là đang xử lý
+                if (preExcuteStatus == 1) {
+                    // Chuyển qua trạng thái (hoàn tất đơn hàng || hủy)
+                    if (excuteStatus == 2 || excuteStatus == 3) {
+                        let contentProduct = document.querySelector('.content-product');
+                        let products = [...contentProduct.children];
+
+                        contentProduct.innerHTML = "";
+                        products.reverse();
+                        products.forEach((item) => contentProduct.innerHTML += item.outerHTML);
+
+                        // Cập nhật lại index
+                        for (let i = 0; i < contentProduct.children.length; i++) {
+                            let item = contentProduct.children[i];
+                            item.querySelector('.order-item').innerText = i + 1;
+                        }
+                    }
+                }
+
+                preExcuteStatus = excuteStatus;
+            };
+            
+            function onChangeTransportCompany(transport) {
+                let transComID = transport.val();
+                $.ajax({
+                    url: "thong-tin-don-hang.aspx/GetTransportSub",
+                    type: "POST",
+                    data: JSON.stringify({ 'transComID': transComID }),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (msg) {
+                        let data = JSON.parse(msg.d);
+                        if (data) {
+                            let tranSubDOM = $("#<%=ddlTransportCompanySubID.ClientID%>");
+                            tranSubDOM.html("")
+                            data.forEach((item) => {
+                                tranSubDOM.append("<option value='" + item.key + "'>" + item.value + "</option>")
+                            });
+
+                            let tranSubContainerDOM = $("[id$=ddlTransportCompanySubID-container]");
+                            tranSubContainerDOM.attr("title", "Chọn nơi nhận");
+                            tranSubContainerDOM.html("Chọn nơi nhận");
+
+                            $("#<%=ddlTransportCompanySubID.ClientID%>").select2("open");
+                        }
+                    },
+                    error: function (err) {
+                        swal("Thông báo", "Đã có vấn đề trong việc cập nhật thông tin vận chuyển", "error");
+                    }
+                });
+            };
+
+            function createReturnOrder(customerID) {
+                var win = window.open('/tao-don-hang-doi-tra?customerID=' + customerID, '_blank');
+                if (win) {
+                    //Browser has allowed it to be opened
+                    win.focus();
+                } else {
+                    //Browser has blocked it
+                    swal("Thông báo", "Vui lòng cho phép cửa sổ bật lên cho trang web này", "error");
+                }
+            };
+
+            function openCouponModal() {
+                let customerID = +document.querySelector('[id$="_hdfCustomerID"]').value || 0;
+                let productNumber = +document.querySelector('[id$="_hdfTotalQuantity"]').value || 0;
+
+                if (!customerID)
+                    return swal("Thông báo", "Chưa nhập thông tin khách hàng!", "warning");
+
+                if (!productNumber)
+                    return swal("Thông báo", "Chưa nhập sản phẩm!", "warning");
+
+                let couponModalDOM = $('#couponModal');
+                let codeDOM = couponModalDOM.find("[id$='_txtCouponCode']");
+                let errorDOM = couponModalDOM.find("#errorCoupon");
+                let txtCouponValue = $('[id$="_txtCouponValue"]');
+                let hdfCouponID = $('[id$="_hdfCouponID"]');
+                let hdfCouponValue = $('[id$="_hdfCouponValue"]');
+
+                if (codeDOM)
+                    codeDOM.val('');
+
+                if (errorDOM) {
+                    errorDOM.addClass('hide');
+                    errorDOM.find('p').html('');
+                }
+
+                if (txtCouponValue)
+                    txtCouponValue.val('0');
+
+                if (hdfCouponID)
+                    hdfCouponID.val('0');
+
+                if (hdfCouponValue)
+                    hdfCouponValue.val('0');
+
+                couponModalDOM.modal({ show: 'true', backdrop: 'static', keyboard: false });
+
+                couponModalDOM.on('shown.bs.modal', function () {
+                    codeDOM.focus();
+                });
+            }
+
+            function getCoupon() {
+                let couponModalDOM = document.querySelector('#couponModal');
+                let codeDOM = document.querySelector('[id$="_txtCouponCode"]');
+                let errorDOM = document.querySelector('#errorCoupon');
+
+                let customerID = +document.querySelector('[id$="_hdfCustomerID"]').value || 0;
+                let code = codeDOM.value.trim() || "";
+                let productNumber = +document.querySelector('[id$="_hdfTotalQuantity"]').value || 0;
+                let price = +document.querySelector('[id$="_hdfTotalPrice"]').value || 0;
+
+                if (!code) {
+                    errorDOM.classList.remove('hide')
+                    errorDOM.querySelector('p').innerText = "Hãy nhập mã giảm giá!";
+
+                    codeDOM.focus();
+                    codeDOM.select();
+
+                    return;
+                }
+
+                let couponCodeOld = document.querySelector('[id$="_hdfCouponCodeOld"]').value || "";
+
+                code = code.trim().toUpperCase();
+                couponCodeOld = couponCodeOld ? couponCodeOld.trim().toUpperCase() : "";
+
+                if (code === couponCodeOld) {
+                    let couponIDOld = +document.querySelector('[id$="_hdfCouponIDOld"]').value || 0;
+                    let couponValueOld = +document.querySelector('[id$="_hdfCouponValueOld"]').value || 0;
+                    let couponProductNumberOld = +document.querySelector('[id$="_hdfCouponProductNumberOld"]').value || 0;
+                    let couponPriceMinOld = +document.querySelector('[id$="_hdfCouponPriceMin"]').value || 0;
+
+                    document.querySelector('[id$="_txtCouponValue"]').value = `${couponCodeOld}: -${formatThousands(couponValueOld, ',')}`;
+                    document.querySelector('[id$="_hdfCouponID"]').value = couponIDOld;
+                    document.querySelector('[id$="_hdfCouponValue"]').value = couponValueOld;
+                    document.querySelector('[id$="_hdfCouponProductNumber"]').value = couponProductNumberOld;
+                    document.querySelector('[id$="_hdfCouponPriceMin"]').value = couponPriceMinOld;
+
+                    couponModalDOM.querySelector('#closeCoupon').click();
+                    document.querySelector('#btnOpenCouponModal').classList.add('hide');
+                    document.querySelector('#btnRemoveCouponCode').classList.remove('hide');
+
+                    getAllPrice();
+
+                    return;
+                }
+
+                $.ajax({
+                    type: "POST",
+                    url: "/thong-tin-don-hang.aspx/getCoupon",
+                    data: JSON.stringify({ "customerID": customerID, "code": code, "productNumber": productNumber, "price": price }),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: (respon) => {
+                        let data = JSON.parse(respon.d);
+
+                        if (data) {
+                            if (!data.status) {
+                                errorDOM.classList.remove('hide')
+                                errorDOM.querySelector('p').innerText = data.message;
+
+                                codeDOM.focus();
+                                codeDOM.select();
+                            }
+                            else {
+                                document.querySelector('[id$="_txtCouponValue"]').value = `${code}: -${formatThousands(+data.value || 0, ',')}`;
+                                document.querySelector('[id$="_hdfCouponID"]').value = +data.couponID || 0;
+                                document.querySelector('[id$="_hdfCouponValue"]').value = +data.value || 0;
+                                document.querySelector('[id$="_hdfCouponProductNumber"]').value = +data.productNumber || 0;
+                                document.querySelector('[id$="_hdfCouponPriceMin"]').value = +data.priceMin || 0;
+
+                                couponModalDOM.querySelector('#closeCoupon').click();
+                                document.querySelector('#btnOpenCouponModal').classList.add('hide');
+                                document.querySelector('#btnGenerateCouponG15').classList.add('hide');
+                                document.querySelector('#btnRemoveCouponCode').classList.remove('hide');
+
+                                getAllPrice();
+                            }
+                        }
+                        else {
+                            errorDOM.classList.remove('hide')
+                            errorDOM.querySelector('p').innerText = `Mã giảm giá ${code} không tồn tại!`;
+
+                            codeDOM.focus();
+                            codeDOM.select();
+                        }
+                    },
+                    error: (xmlhttprequest, textstatus, errorthrow) => {
+                        swal("Thông báo", "Đã xảy ra lỗi trong quá trình lấy mã giảm giá", "error");
+                    }
+                });
+            }
+
+            function removeCoupon() {
+                document.querySelector('[id$="_txtCouponValue"]').value = 0;
+                document.querySelector('[id$="_hdfCouponID"]').value = 0;
+                document.querySelector('[id$="_hdfCouponValue"]').value = 0;
+                document.querySelector('[id$="_hdfCouponProductNumber"]').value = 0;
+                document.querySelector('[id$="_hdfCouponPriceMin"]').value = 0;
+                document.querySelector('#btnOpenCouponModal').classList.remove('hide');
+                document.querySelector('#btnGenerateCouponG15').classList.remove('hide');
+                document.querySelector('#btnRemoveCouponCode').classList.add('hide');
+                
+                getAllPrice();
+            }
+
+            function checkCouponCondition() {
+                let couponID = +document.querySelector('[id$="_hdfCouponID"]').value || 0;
+
+                if (couponID > 0) {
+                    let couponProductNumber = +document.querySelector('[id$="_hdfCouponProductNumber"]').value || 0;
+                    let couponPriceMin = +document.querySelector('[id$="_hdfCouponPriceMin"]').value || 0;
+                    let productNumber = +document.querySelector('[id$="_hdfTotalQuantity"]').value || 0;
+                    let price = +document.querySelector('[id$="_hdfTotalPrice"]').value || 0;
+
+                    if (!(productNumber >= couponProductNumber && price >= couponPriceMin)) {
+                        removeCoupon();
+                        return setTimeout(_ => { swal("Thông báo", "Đã xóa mã giảm giá, do không đạt yêu cầu!", "warning") }, 300);
+                    }
+                }
+            }
+
+            function generateCouponG15() {
+                let customerID = $("#<%=hdfCustomerID.ClientID%>").val();
+                let customerName = $("#<%=txtFullname.ClientID%>").val();
+                generateCouponForCustomer(customerName, customerID, "G15");
             }
         </script>
     </telerik:RadScriptBlock>

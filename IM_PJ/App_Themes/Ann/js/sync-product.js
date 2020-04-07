@@ -1,28 +1,84 @@
-﻿function ShowUpProductToWeb(sku, id, up, renew, visibility) {
-    var web = ["ann.com.vn", "khohangsiann.com", "bosiquanao.net", "quanaogiaxuong.com", "bansithoitrang.net", "quanaoxuongmay.com", "annshop.vn"];
+﻿function ShowUpProductToWeb(sku, id, category, up, renew, visibility) {
+    var web = ["ann.com.vn", "khohangsiann.com", "bosiquanao.net", "quanaogiaxuong.com", "bansithoitrang.net", "quanaoxuongmay.com", "annshop.vn", "panpan.vn"];
+    var web_dobo = ["chuyensidobo.com"];
+    var web_vaydam = ["damgiasi.vn"];
+
+    if (category == 18) {
+        web = web.concat(web_dobo);
+    }
+    if (category == 17) {
+        web = web.concat(web_vaydam);
+    }
 
     closePopup();
-    
     var html = "<div class='row'><div class='col-md-12'><h2>Đồng bộ sản phẩm " + sku + "</h2><br></div></div>";
-    if (renew == "true") {
-        html = "<div class='row'><div class='col-md-12'><h2>Đồng bộ sản phẩm " + sku + " (đang đồng bộ...) </h2><br></div></div>";
-    }
-    html += "<div class='web-list'></div><div class='row'><div class='col-md-12'><p><span><a href=\"javascript:;\" class=\"btn primary-btn h45-btn\" onclick=\"ShowUpProductToWeb('" + sku + "', '" + id + "', 'true', 'false', 'null')\"><i class=\"fa fa-upload\" aria-hidden=\"true\"></i> Up tất cả</a><a href=\"javascript:;\" class=\"btn primary-btn h45-btn btn-black print-invoice-merged\" onclick=\"ShowUpProductToWeb('" + sku + "', '" + id + "', 'false', 'true', 'null')\"><i class=\"fa fa-cloud-upload\" aria-hidden=\"true\"></i> Đăng lên tất cả web</a><a href=\"javascript:;\" class=\"btn primary-btn h45-btn btn-black print-invoice-merged\" onclick=\"ShowUpProductToWeb('" + sku + "', '" + id + "', 'false', 'true', 'null')\"><i class=\"fa fa-refresh\" aria-hidden=\"true\"></i> Làm mới hình tất cả web</a><a href=\"javascript:;\" class=\"btn primary-btn h45-btn btn-black print-invoice-merged\" onclick=\"ShowUpProductToWeb('" + sku + "', '" + id + "', 'false', 'false', 'hidden')\"><i class=\"fa fa-refresh\" aria-hidden=\"true\"></i> Ẩn tất cả</a><a href=\"javascript:;\" class=\"btn primary-btn h45-btn btn-black print-invoice-merged\" onclick=\"ShowUpProductToWeb('" + sku + "', '" + id + "', 'false', 'false', 'visible')\"><i class=\"fa fa-refresh\" aria-hidden=\"true\"></i> Hiện tất cả</a></span></p></div></div>";
+    html += "<div class='row'><div class='col-md-12'><p><span><a href=\"javascript:;\" class=\"btn primary-btn h45-btn\" onclick=\"ShowUpProductToWeb('" + sku + "', '" + id + "', '" + category + "', 'true', 'false', 'null')\"><i class=\"fa fa-upload\" aria-hidden=\"true\"></i> Up tất cả</a><a href=\"javascript:;\" class=\"btn primary-btn h45-btn btn-black print-invoice-merged\" onclick=\"ShowUpProductToWeb('" + sku + "', '" + id + "', '" + category + "', 'false', 'true', 'null')\"><i class=\"fa fa-cloud-upload\" aria-hidden=\"true\"></i> Đăng lên tất cả web</a><a href=\"javascript:;\" class=\"btn primary-btn h45-btn btn-black print-invoice-merged\" onclick=\"ShowUpProductToWeb('" + sku + "', '" + id + "', '" + category + "', 'false', 'true', 'null')\"><i class=\"fa fa-refresh\" aria-hidden=\"true\"></i> Làm mới hình tất cả web</a><a href=\"javascript:;\" class=\"btn primary-btn h45-btn btn-black print-invoice-merged\" onclick=\"ShowUpProductToWeb('" + sku + "', '" + id + "', '" + category + "', 'false', 'false', 'hidden')\"><i class=\"fa fa-refresh\" aria-hidden=\"true\"></i> Ẩn tất cả</a><a href=\"javascript:;\" class=\"btn primary-btn h45-btn btn-black print-invoice-merged\" onclick=\"ShowUpProductToWeb('" + sku + "', '" + id + "', '" + category + "', 'false', 'false', 'visible')\"><i class=\"fa fa-refresh\" aria-hidden=\"true\"></i> Hiện tất cả</a></span></p></div></div><div class='web-list'></div>";
     showPopup(html, 10);
-
     HoldOn.open();
-
-    for (var i = 0; i < web.length; i++) {
-        upProductToWeb(web[i], sku, id, up, renew, i, visibility);
+    
+    if (renew == "true")
+    {
+        syncImage(sku)
+            .then(data => {
+                if (data.message === "uploadSuccess")
+                {
+                    for (var i = 0; i < web.length; i++)
+                    {
+                        upProductToWeb(web[i], sku, id, up, renew, i, visibility, 'false');
+                    }
+                }
+                else
+                {
+                    alert("Upload ảnh chưa thành công!");
+                }
+            })
+            .catch(error => {
+                alert("Ajax Upload ảnh lỗi!");
+            });
     }
-
-    HoldOn.close();
+    else
+    {
+        for (var i = 0; i < web.length; i++)
+        {
+            upProductToWeb(web[i], sku, id, up, renew, i, visibility, 'false');
+        }
+    }
 }
 
-function upProductToWeb(web, sku, id, up, renew, i, visibility) {
+function upProductToWeb(web, sku, id, up, renew, i, visibility, syncimage) {
+    if (syncimage == 'true')
+    {
+        syncImage(sku)
+            .then(data => {
+                if (data.message === "uploadSuccess")
+                {
+                    ajaxUpProductToWeb(web, sku, id, up, renew, i, visibility);
+                }
+                else
+                {
+                    alert("Upload ảnh chưa thành công!");
+                }
+            })
+            .catch(error => {
+                alert("Ajax Upload ảnh lỗi!");
+            });
+    }
+    else
+    {
+        ajaxUpProductToWeb(web, sku, id, up, renew, i, visibility);
+    }
+}
+
+function ajaxUpProductToWeb(web, sku, id, up, renew, i, visibility) {
+    var url_web = "https://" + web + "/up-product";
+    if (web == "panpan.vn")
+    {
+        url_web = url_web + ".html";
+    }
+
     $.ajax({
         type: "POST",
-        url: "https://" + web + "/up-product",
+        url: url_web,
         data: {
             sku: sku,
             systemid: id,
@@ -34,7 +90,6 @@ function upProductToWeb(web, sku, id, up, renew, i, visibility) {
         async: true,
         datatype: "json",
         beforeSend: function () {
-            HoldOn.open();
             $(".content-upload-" + i).html("<span class='bg-yellow'>Đang xử lý</span>");
         },
         success: function (data) {
@@ -45,29 +100,29 @@ function upProductToWeb(web, sku, id, up, renew, i, visibility) {
                 var button = "";
                 if (data.content === "found") {
                     content = "<span class='bg-blue'>Tìm thấy sản phẩm</span>";
-                    button = "<a href=\"javascript:;\" class=\"btn primary-btn h45-btn\" onclick=\"upProductToWeb('" + web + "', '" + sku + "', '" + id + "', 'true', 'false', '" + i + "', 'null')\"><i class=\"fa fa-upload\" aria-hidden=\"true\"></i> Up</a>";
-                    button += "<a href=\"javascript:;\" class=\"btn primary-btn btn-black h45-btn print-invoice-merged\" onclick=\"upProductToWeb('" + web + "', '" + sku + "', '" + id + "', 'false', 'true', '" + i + "', 'null')\"><i class=\"fa fa-refresh\" aria-hidden=\"true\"></i> Làm mới hình</a>";
+                    button = "<a href=\"javascript:;\" class=\"btn primary-btn h45-btn\" onclick=\"upProductToWeb('" + web + "', '" + sku + "', '" + id + "', 'true', 'false', '" + i + "', 'null', 'false')\"><i class=\"fa fa-upload\" aria-hidden=\"true\"></i> Up</a>";
+                    button += "<a href=\"javascript:;\" class=\"btn primary-btn btn-black h45-btn print-invoice-merged\" onclick=\"upProductToWeb('" + web + "', '" + sku + "', '" + id + "', 'false', 'true', '" + i + "', 'null', 'true')\"><i class=\"fa fa-refresh\" aria-hidden=\"true\"></i> Làm mới hình</a>";
                 }
                 else if (data.content === "updone") {
                     content = "<span class='bg-green'>Up thành công</span>";
-                    button = "<a href=\"javascript:;\" class=\"btn primary-btn btn-black h45-btn\" onclick=\"upProductToWeb('" + web + "', '" + sku + "', '" + id + "', 'false', 'true', '" + i + "', 'null')\"><i class=\"fa fa-refresh\" aria-hidden=\"true\"></i> Làm mới hình</a>";
+                    button = "<a href=\"javascript:;\" class=\"btn primary-btn btn-black h45-btn\" onclick=\"upProductToWeb('" + web + "', '" + sku + "', '" + id + "', 'false', 'true', '" + i + "', 'null', 'true')\"><i class=\"fa fa-refresh\" aria-hidden=\"true\"></i> Làm mới hình</a>";
                 }
                 else if (data.content === "renewdone") {
                     content = "<span class='bg-green'>Đăng web thành công</span>";
                 }
                 else if (data.content === "hidealldone") {
                     content = "<span class='bg-green'>Ẩn web thành công</span>";
-                    button += "<a href=\"javascript:;\" class=\"btn primary-btn btn-black h45-btn print-invoice-merged\" onclick=\"upProductToWeb('" + web + "', '" + sku + "', '" + id + "', 'false', 'true', '" + i + "', 'null')\"><i class=\"fa fa-refresh\" aria-hidden=\"true\"></i> Làm mới hình</a>";
+                    button += "<a href=\"javascript:;\" class=\"btn primary-btn btn-black h45-btn print-invoice-merged\" onclick=\"upProductToWeb('" + web + "', '" + sku + "', '" + id + "', 'false', 'true', '" + i + "', 'null', 'true')\"><i class=\"fa fa-refresh\" aria-hidden=\"true\"></i> Làm mới hình</a>";
                 }
                 else if (data.content === "visiblealldone") {
                     content = "<span class='bg-green'>Hiện web thành công</span>";
-                    button = "<a href=\"javascript:;\" class=\"btn primary-btn h45-btn\" onclick=\"upProductToWeb('" + web + "', '" + sku + "', '" + id + "', 'true', 'false', '" + i + "', 'null')\"><i class=\"fa fa-upload\" aria-hidden=\"true\"></i> Up</a>";
-                    button += "<a href=\"javascript:;\" class=\"btn primary-btn btn-black h45-btn print-invoice-merged\" onclick=\"upProductToWeb('" + web + "', '" + sku + "', '" + id + "', 'false', 'true', '" + i + "', 'null')\"><i class=\"fa fa-refresh\" aria-hidden=\"true\"></i> Làm mới hình</a>";
+                    button = "<a href=\"javascript:;\" class=\"btn primary-btn h45-btn\" onclick=\"upProductToWeb('" + web + "', '" + sku + "', '" + id + "', 'true', 'false', '" + i + "', 'null', 'false')\"><i class=\"fa fa-upload\" aria-hidden=\"true\"></i> Up</a>";
+                    button += "<a href=\"javascript:;\" class=\"btn primary-btn btn-black h45-btn print-invoice-merged\" onclick=\"upProductToWeb('" + web + "', '" + sku + "', '" + id + "', 'false', 'true', '" + i + "', 'null', 'true')\"><i class=\"fa fa-refresh\" aria-hidden=\"true\"></i> Làm mới hình</a>";
                 }
                 button += "<a href=\"https://" + web + "/?s=" + sku + "&post_type=product\" target=\"_blank\" class=\"btn primary-btn btn-black h45-btn print-invoice-merged\"><i class=\"fa fa-link\" aria-hidden=\"true\"></i> Xem</a>";
                 button += "<a href=\"https://" + web + "/wp-admin/edit.php?s=" + sku + "&post_type=product\" target=\"_blank\" class=\"btn primary-btn btn-black h45-btn print-invoice-merged\"><i class=\"fa fa-pencil-square-o\" aria-hidden=\"true\"></i> Sửa</a>";
-                button += "<a href=\"javascript:;\" class=\"btn primary-btn h45-btn print-invoice-merged\" onclick=\"upProductToWeb('" + web + "', '" + sku + "', '" + id + "', 'false', 'false', '" + i + "', 'hidden')\"><i class=\"fa fa-pencil-square-o\" aria-hidden=\"true\"></i> Ẩn</a>";
-                button += "<a href=\"javascript:;\" class=\"btn primary-btn h45-btn print-invoice-merged\" onclick=\"upProductToWeb('" + web + "', '" + sku + "', '" + id + "', 'false', 'false', '" + i + "', 'visible')\"><i class=\"fa fa-pencil-square-o\" aria-hidden=\"true\"></i> Hiện</a>";
+                button += "<a href=\"javascript:;\" class=\"btn primary-btn h45-btn print-invoice-merged\" onclick=\"upProductToWeb('" + web + "', '" + sku + "', '" + id + "', 'false', 'false', '" + i + "', 'hidden', 'false')\"><i class=\"fa fa-pencil-square-o\" aria-hidden=\"true\"></i> Ẩn</a>";
+                button += "<a href=\"javascript:;\" class=\"btn primary-btn h45-btn print-invoice-merged\" onclick=\"upProductToWeb('" + web + "', '" + sku + "', '" + id + "', 'false', 'false', '" + i + "', 'visible', 'false')\"><i class=\"fa fa-pencil-square-o\" aria-hidden=\"true\"></i> Hiện</a>";
             }
             else {
                 if (data.content === "uperror") {
@@ -78,7 +133,7 @@ function upProductToWeb(web, sku, id, up, renew, i, visibility) {
                 }
                 else if (data.content === "notfound") {
                     content = "<span class='bg-blue'>Chưa tìm thấy sản phẩm</span>";
-                    button = "<a href=\"javascript:;\" class=\"btn primary-btn h45-btn\" onclick=\"upProductToWeb('" + web + "', '" + sku + "', '" + id + "', 'false', 'true', '" + i + "')\"><i class=\"fa fa-cloud-upload\" aria-hidden=\"true\"></i> Đăng web</a>";
+                    button = "<a href=\"javascript:;\" class=\"btn primary-btn h45-btn\" onclick=\"upProductToWeb('" + web + "', '" + sku + "', '" + id + "', 'true', 'true', '" + i + "', 'visible', 'true')\"><i class=\"fa fa-cloud-upload\" aria-hidden=\"true\"></i> Đăng web</a>";
                 }
             }
 
@@ -104,5 +159,49 @@ function upProductToWeb(web, sku, id, up, renew, i, visibility) {
             }
 
         }
+    });
+}
+
+function syncImage(sku) {
+    return new Promise((resolve, reject) => {
+        $.ajax({
+            type: "POST",
+            url: "https://ann.com.vn/sync-image",
+            data: {
+                sku: sku,
+                key: "828327"
+            },
+            datatype: "json",
+            beforeSend: function () {
+                HoldOn.open();
+            },
+            success: function (data) {
+                resolve(data);
+            },
+            error: function () {
+                HoldOn.close();
+                reject(error);
+            }
+        });
+
+        $.ajax({
+            type: "POST",
+            url: "https://damgiasi.vn/sync-image",
+            data: {
+                sku: sku,
+                key: "828327"
+            },
+            datatype: "json",
+            beforeSend: function () {
+                HoldOn.open();
+            },
+            success: function (data) {
+                resolve(data);
+            },
+            error: function () {
+                HoldOn.close();
+                reject(error);
+            }
+        });
     });
 }

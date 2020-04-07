@@ -23,19 +23,50 @@ namespace IM_PJ
         {
             if (!IsPostBack)
             {
-                if (Request.Cookies["userLoginSystem"] != null)
+                if (Request.Cookies["usernameLoginSystem"] != null)
                 {
-                    string username = Request.Cookies["userLoginSystem"].Value;
+                    string username = Request.Cookies["usernameLoginSystem"].Value;
                     var acc = AccountController.GetByUsername(username);
                     if (acc != null)
                     {
-                        LoadData();
-                        LoadCategory();
+                        if (acc.RoleID == 0 || acc.Username == "nhom_zalo502")
+                        {
+                            LoadData();
+                            LoadCreatedBy();
+                            LoadCategory();
+                        }
+                        else
+                        {
+                            Response.Redirect("/trang-chu");
+                        }
                     }
                 }
                 else
                 {
                     Response.Redirect("/dang-nhap");
+                }
+            }
+        }
+        public void LoadCreatedBy(tbl_Account acc = null)
+        {
+            if (acc != null)
+            {
+                ddlCreatedBy.Items.Clear();
+                ddlCreatedBy.Items.Insert(0, new ListItem(acc.Username, acc.Username));
+            }
+            else
+            {
+                var CreateBy = AccountController.GetAllNotSearch().Where(x => x.RoleID == 0 || x.RoleID == 2).ToList();
+                ddlCreatedBy.Items.Clear();
+                ddlCreatedBy.Items.Insert(0, new ListItem("Người viết bài", ""));
+                if (CreateBy.Count > 0)
+                {
+                    foreach (var p in CreateBy)
+                    {
+                        ListItem listitem = new ListItem(p.Username, p.Username);
+                        ddlCreatedBy.Items.Add(listitem);
+                    }
+                    ddlCreatedBy.DataBind();
                 }
             }
         }
@@ -68,20 +99,22 @@ namespace IM_PJ
         }
         public void LoadData()
         {
-            string username = Request.Cookies["userLoginSystem"].Value;
+            string username = Request.Cookies["usernameLoginSystem"].Value;
             var acc = AccountController.GetByUsername(username);
             if (acc != null)
             {
-                if (acc.RoleID == 0)
+                if (acc.RoleID == 0 || acc.Username == "nhom_zalo502")
                 {
-                    ltrAddPost.Text = "<a href=\"/tao-bai-viet\" class=\"h45-btn btn primary-btn\">Thêm mới</a>";
+                    ltrAddPost.Text = "<a href='/tao-bai-viet' class='h45-btn btn primary-btn'>Thêm mới</a>";
                 }
             }
             
             string TextSearch = "";
             string CreatedDate = "";
+            string CreatedBy = "";
             int CategoryID = 0;
             string Status = "";
+            string WebPublish = "";
 
             if (Request.QueryString["textsearch"] != null)
                 TextSearch = Request.QueryString["textsearch"].Trim();
@@ -91,64 +124,20 @@ namespace IM_PJ
                 CategoryID = Request.QueryString["categoryid"].ToInt();
             if (Request.QueryString["createddate"] != null)
                 CreatedDate = Request.QueryString["createddate"];
-
+            if (Request.QueryString["webpublish"] != null)
+                WebPublish = Request.QueryString["webpublish"];
+            if (Request.QueryString["createdby"] != null)
+                CreatedBy = Request.QueryString["createdby"];
 
             txtSearchPost.Text = TextSearch;
             ddlCategory.SelectedValue = CategoryID.ToString();
             ddlCreatedDate.SelectedValue = CreatedDate.ToString();
             ddlStatus.SelectedValue = Status.ToString();
+            ddlWebPublish.SelectedValue = WebPublish.ToString();
+            ddlCreatedBy.SelectedValue = CreatedBy;
 
             List<PostSQL> a = new List<PostSQL>();
-            a = PostController.GetAllSql(CategoryID, TextSearch);
-
-            if (Status != "")
-            {
-                a = a.Where(p => p.Status == Status.ToInt()).ToList();
-            }
-            else
-            {
-                a = a.Where(p => p.Status == 1).ToList();
-            }
-
-            if (CreatedDate != "")
-            {
-                DateTime fromdate = DateTime.Today;
-                DateTime todate = DateTime.Now;
-                switch (CreatedDate)
-                {
-                    case "today":
-                        fromdate = DateTime.Today;
-                        todate = DateTime.Now;
-                        break;
-                    case "yesterday":
-                        fromdate = fromdate.AddDays(-1);
-                        todate = DateTime.Today;
-                        break;
-                    case "beforeyesterday":
-                        fromdate = DateTime.Today.AddDays(-2);
-                        todate = DateTime.Today.AddDays(-1);
-                        break;
-                    case "week":
-                        int days = DateTime.Today.DayOfWeek == DayOfWeek.Sunday ? 7 : (int)DateTime.Today.DayOfWeek;
-                        fromdate = fromdate.AddDays(-days + 1);
-                        todate = DateTime.Now;
-                        break;
-                    case "month":
-                        fromdate = new DateTime(fromdate.Year, fromdate.Month, 1);
-                        todate = DateTime.Now;
-                        break;
-                    case "7days":
-                        fromdate = DateTime.Today.AddDays(-6);
-                        todate = DateTime.Now;
-                        break;
-                    case "30days":
-                        fromdate = DateTime.Today.AddDays(-29);
-                        todate = DateTime.Now;
-                        break;
-                }
-
-                a = a.Where(p => p.CreatedDate >= fromdate && p.CreatedDate <= todate).ToList();
-            }
+            a = PostController.GetAllSql(CategoryID, TextSearch, Status, WebPublish, CreatedDate, CreatedBy);
 
             pagingall(a);
 
@@ -179,6 +168,19 @@ namespace IM_PJ
             return serializer.Serialize(images.Distinct().ToList());
         }
         [WebMethod]
+        public static string updateWebPublish(int id, bool value)
+        {
+            string update = PostController.updateWebPublish(id, value);
+            if (update != null)
+            {
+                return "true";
+            }
+            else
+            {
+                return "false";
+            }
+        }
+        [WebMethod]
         public static string deletePost(int id)
         {
             var post = PostController.GetByID(id);
@@ -186,32 +188,19 @@ namespace IM_PJ
 
             if (post != null)
             {
-                // Delete thumbnail image
-                if (!string.IsNullOrEmpty(post.Image))
-                {
-                    string fileImage = HttpContext.Current.Server.MapPath(post.Image);
-                    File.Delete(fileImage);
-                }
-
                 // Delete image gallery
-
                 var postImage = PostImageController.GetByPostID(post.ID);
-
-                if(postImage.Count > 0)
+                if (postImage.Count > 0)
                 {
                     foreach (var img in postImage)
                     {
                         if (!string.IsNullOrEmpty(img.Image))
                         {
-                            string fileImage = HttpContext.Current.Server.MapPath(img.Image);
-                            File.Delete(fileImage);
-
                             // Delete in database
                             string deletePostImage = PostImageController.Delete(img.ID);
                         }
                     }
                 }
-                
 
                 string deletePost = PostController.Delete(id);
 
@@ -244,15 +233,59 @@ namespace IM_PJ
 
             return html.ToString();
         }
-        public class ProductVariable
+
+        [WebMethod]
+        public static string copyPostToApp(int id)
         {
-            public string VariableName { get; set; }
-            public string VariableValue { get; set; }
+            var post = PostController.GetByID(id);
+            if (post != null)
+            {
+                var newPostPublic = new PostPublic()
+                {
+                    CategoryID = 0,
+                    CategorySlug = "",
+                    Title = post.Title,
+                    Thumbnail = post.Image,
+                    Summary = "",
+                    Content = post.Content,
+                    Action = "view_more",
+                    ActionValue = PostPublicController.checkSlug(post.Slug),
+                    AtHome = false,
+                    IsPolicy = false,
+                    CreatedDate = DateTime.Now,
+                    CreatedBy = post.CreatedBy,
+                    ModifiedDate = DateTime.Now,
+                    ModifiedBy = post.CreatedBy
+                };
+
+                var newpost = PostPublicController.Insert(newPostPublic);
+
+                if (newpost != null)
+                {
+                    // Copy image gallery
+                    var postImage = PostImageController.GetToCopyByPostID(post.ID);
+                    if (postImage.Count > 0)
+                    {
+                        foreach (var img in postImage)
+                        {
+                            if (!string.IsNullOrEmpty(img.Image))
+                            {
+                                string newImage = PostPublicImageController.Insert(newpost.ID, img.Image, newpost.CreatedBy, DateTime.Now);
+                            }
+                        }
+                    }
+
+                    return newpost.ID.ToString();
+                }
+            }
+
+            return "false";
         }
+
         #region Paging
         public void pagingall(List<PostSQL> acs)
         {
-            string username = Request.Cookies["userLoginSystem"].Value;
+            string username = Request.Cookies["usernameLoginSystem"].Value;
             var acc = AccountController.GetByUsername(username);
 
             int PageSize = 30;
@@ -261,8 +294,10 @@ namespace IM_PJ
             html.Append("    <th class='image-column'>Ảnh</th>");
             html.Append("    <th class='name-column'>Tiêu đề</th>");
             html.Append("    <th class='sku-column'>Nổi bật</th>");
-            html.Append("    <th class='stock-status-column'>Trạng thái</th>");
+            html.Append("    <th class='stock-status-column'>Trang nội bộ</th>");
             html.Append("    <th class='category-column'>Danh mục</th>");
+            html.Append("    <th class='category-column'>Trang xem hàng</th>");
+            html.Append("    <th class='date-column'>Người viết</th>");
             html.Append("    <th class='date-column'>Ngày tạo</th>");
             html.Append("    <th class='action-column'></th>");
             html.Append("</tr>");
@@ -287,23 +322,19 @@ namespace IM_PJ
                 {
                     var item = acs[i];
                     html.Append("<tr class='item-" + item.ID + "'>");
-
                     html.Append("<td>");
-                    html.Append("   <a href=\"/xem-bai-viet?id=" + item.ID + "\"><img src=\"" + item.Image + "\"/></a>");
-                    html.Append("   <a href=\"javascript:;\" onclick=\"copyPostInfo(" + item.ID + ")\" class=\"btn download-btn h45-btn\"><i class=\"fa fa-files-o\"></i> Copy</a>");
+                    html.Append("   <a target='_blank' href='/xem-bai-viet?id=" + item.ID + "'><img src='" + item.Image + "'/></a>");
+                    html.Append("   <a href='javascript:;' onclick='copyPostInfo(" + item.ID + ")' class='btn download-btn h45-btn'><i class='fa fa-files-o'></i> Copy</a>");
                     html.Append("</td>");
-
-                    html.Append("   <td class=\"customer-name-link\"><a href=\"/xem-bai-viet?id=" + item.ID + "\">" + item.Title + "</a></td>");
-
+                    html.Append("   <td class='customer-name-link'><a target='_blank' href='/xem-bai-viet?id=" + item.ID + "'>" + item.Title + "</a></td>");
                     if (item.Featured == 1)
                     {
-                        html.Append("   <td>Có</td>");
+                        html.Append("   <td><span class='bg-blue'>Nổi bật</span></td>");
                     }
                     else
                     {
-                        html.Append("   <td>Không</td>");
+                        html.Append("   <td></td>");
                     }
-
                     if (item.Status == 1)
                     {
                         html.Append("   <td>Đang hiện</td>");
@@ -312,14 +343,22 @@ namespace IM_PJ
                     {
                         html.Append("   <td>Đang ẩn</td>");
                     }
-
                     html.Append("   <td>" + item.CategoryName + "</td>");
+                    if (item.WebPublish == false)
+                    {
+                        html.Append("   <td data-title='Trang xem hàng'><span id='showWebPublish_" + item.ID + "'><a href='javascript:;' data-post-id='" + item.ID + "' data-update='true' class='bg-black bg-button' onclick='updateShowWebPublish($(this))'>Đang ẩn</a></span></td>");
+                    }
+                    else
+                    {
+                        html.Append("   <td data-title='Trang xem hàng'><span id='showWebPublish_" + item.ID + "'><a href='javascript:;' data-post-id='" + item.ID + "' data-update='false' class='bg-green bg-button' onclick='updateShowWebPublish($(this))'>Đang hiện</a></span></td>");
+                    }
+                    html.Append("   <td>" + item.CreatedBy + "</td>");
                     string date = string.Format("{0:dd/MM/yyyy}", item.CreatedDate);
                     html.Append("   <td>" + date + "</td>");
-
                     html.Append("   <td>");
-                    html.Append("       <a href=\"javascript:;\" title=\"Download tất cả hình bài viết này\" class=\"btn primary-btn h45-btn\" onclick=\"getAllPostImage('" + item.ID + "');\"><i class=\"fa fa-file-image-o\" aria-hidden=\"true\"></i></a>");
-                    html.Append("       <a href=\"javascript:;\" title=\"Xóa bài này\" class=\"btn primary-btn h45-btn\" onclick=\"deletePost('" + item.ID + "');\"><i class=\"fa fa-times\" aria-hidden=\"true\"></i></a>");
+                    html.Append("       <a href='javascript:;' title='Tải hình bài viết này' class='btn primary-btn h45-btn' onclick='getAllPostImage(" + item.ID + ");'><i class='fa fa-file-image-o' aria-hidden='true'></i> Tải</a>");
+                    html.Append("       <a href='javascript:;' title='Xóa bài này' class='btn primary-btn btn-red h45-btn' onclick='deletePost(" + item.ID + ");'><i class='fa fa-times' aria-hidden='true'></i> Xóa</a>");
+                    html.Append("       <a target='_blank' href='/sua-bai-viet?id=" + item.ID + "' title='Sửa bài này' class='btn primary-btn btn-blue h45-btn'><i class='fa fa-pencil-square-o' aria-hidden='true'></i> Sửa</a>");
                     html.Append("  </td>");
                     html.Append("</tr>");
 
@@ -328,7 +367,7 @@ namespace IM_PJ
             }
             else
             {
-                html.Append("<tr><td colspan=\"11\">Không tìm thấy bài viết...</td></tr>");
+                html.Append("<tr><td colspan='9'>Không tìm thấy bài viết...</td></tr>");
             }
 
             ltrList.Text = html.ToString();
@@ -494,9 +533,19 @@ namespace IM_PJ
                 request += "&categoryid=" + ddlCategory.SelectedValue;
             }
 
+            if (ddlWebPublish.SelectedValue != "")
+            {
+                request += "&webpublish=" + ddlWebPublish.SelectedValue;
+            }
+
             if (ddlCreatedDate.SelectedValue != "")
             {
                 request += "&createddate=" + ddlCreatedDate.SelectedValue;
+            }
+
+            if (ddlCreatedBy.SelectedValue != "")
+            {
+                request += "&createdby=" + ddlCreatedBy.SelectedValue;
             }
 
             Response.Redirect(request);

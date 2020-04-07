@@ -79,164 +79,7 @@ namespace NHST.Bussiness
             StreamReader read = new StreamReader(decStream);
             return (read.ReadToEnd());
         }
-
-        public static bool SendMail(string strFrom, string pass, string strTo, string strSubject, string strMsg, string cc)
-        {
-            try
-            {
-                // Create the mail message
-                MailMessage objMailMsg = new MailMessage(strFrom, strTo);
-
-                objMailMsg.BodyEncoding = Encoding.UTF8;
-                objMailMsg.Subject = strSubject;
-                objMailMsg.CC.Add(cc);
-                objMailMsg.IsBodyHtml = true;
-                objMailMsg.Body = strMsg;
-                SmtpClient objSMTPClient = new SmtpClient();
-
-                objSMTPClient.Host = "202.43.110.136";
-                objSMTPClient.Port = 25;
-                objSMTPClient.EnableSsl = false;
-                objSMTPClient.DeliveryMethod = System.Net.Mail.SmtpDeliveryMethod.Network;
-                objSMTPClient.Credentials = new NetworkCredential(strFrom, pass);
-                objSMTPClient.Timeout = 20000;
-                objSMTPClient.Send(objMailMsg);
-                return true;
-
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-        }
-        public static bool SendMailGmail(string strFrom, string pass, string strTo, string strSubject, string strMsg, string cc)
-        {
-            try
-            {
-                string fromAddress = strFrom;
-                string mailPassword = pass;       // Mail id password from where mail will be sent.
-                string messageBody = strMsg;
-
-
-                // Create smtp connection.
-                SmtpClient client = new SmtpClient();
-                client.Port = 587;//outgoing port for the mail.
-                client.Host = "smtp.gmail.com";
-                client.EnableSsl = true;
-                client.Timeout = 10000;
-                client.DeliveryMethod = SmtpDeliveryMethod.Network;
-                client.UseDefaultCredentials = true;
-                client.Credentials = new System.Net.NetworkCredential(fromAddress, mailPassword);
-
-
-                // Fill the mail form.
-                var send_mail = new MailMessage();
-                send_mail.IsBodyHtml = true;
-                //address from where mail will be sent.
-                send_mail.From = new MailAddress(strFrom);
-                //address to which mail will be sent.           
-                send_mail.To.Add(new MailAddress(strTo));
-                //subject of the mail.
-                send_mail.Subject = strSubject;
-                send_mail.Body = messageBody;
-                client.Send(send_mail);
-
-
-
-                // Create the mail message
-                //MailMessage objMailMsg = new MailMessage(strFrom, strTo);
-
-                //objMailMsg.BodyEncoding = Encoding.UTF8;
-                //objMailMsg.Subject = strSubject;
-                ////objMailMsg.CC.Add(cc);
-                //objMailMsg.IsBodyHtml = true;
-                //objMailMsg.Body = strMsg;
-                //SmtpClient objSMTPClient = new SmtpClient();
-
-                //objSMTPClient.Host = "smtp.gmail.com";
-                //objSMTPClient.Port = 587;
-                //objSMTPClient.EnableSsl = true;
-                //objSMTPClient.DeliveryMethod = System.Net.Mail.SmtpDeliveryMethod.Network;
-                //objSMTPClient.Credentials = new NetworkCredential(strFrom, pass);
-                //objSMTPClient.Timeout = 20000;
-                //objSMTPClient.Send(objMailMsg);
-                return true;
-
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-        }
-        public static DataTable ToDataTable<T>(List<T> items)
-        {
-            DataTable dataTable = new DataTable(typeof(T).Name);
-
-            //Get all the properties
-            PropertyInfo[] Props = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance);
-            foreach (PropertyInfo prop in Props)
-            {
-                //Setting column names as Property names
-                dataTable.Columns.Add(prop.Name);
-            }
-            foreach (T item in items)
-            {
-                var values = new object[Props.Length];
-                for (int i = 0; i < Props.Length; i++)
-                {
-                    //inserting property values to datatable rows
-                    values[i] = Props[i].GetValue(item, null);
-                }
-                dataTable.Rows.Add(values);
-            }
-            //put a breakpoint here and check datatable
-            return dataTable;
-        }
-
-        public static void ExportToExcel(DataTable dt)
-        {
-
-            if (dt.Rows.Count > 0)
-            {
-
-                string filename = "ProjectReport_" + DateTime.Now.Date + ".xls";
-
-                string excelHeader = "Project Report";
-
-                System.IO.StringWriter tw = new System.IO.StringWriter();
-
-                System.Web.UI.HtmlTextWriter hw = new System.Web.UI.HtmlTextWriter(tw);
-
-                DataGrid dgGrid = new DataGrid();
-
-                dgGrid.DataSource = dt;
-
-                dgGrid.DataBind();
-
-                // Report Header
-                hw.WriteLine("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">");
-                hw.WriteLine("<b><u><font size='3'> " + excelHeader + " </font></u></b>");
-
-                //Get the HTML for the control.
-
-                dgGrid.RenderControl(hw);
-
-                //Write the HTML back to the browser.
-
-                //Response.ContentType = “application/vnd.ms-excel”;
-
-                HttpContext.Current.Response.ContentType = "application/vnd.ms-excel";
-
-                HttpContext.Current.Response.AppendHeader("Content-Disposition", "attachment; filename=" + filename + "");
-
-                HttpContext.Current.Response.ContentEncoding = System.Text.Encoding.UTF8;
-                //this.EnableViewState = false;
-
-                HttpContext.Current.Response.Write(tw.ToString());
-
-                HttpContext.Current.Response.End();
-            }
-        }
+        
         public static void ShowMsg(string txt, bool? isRefresh, System.Web.UI.Page page)
         {
             //isRefresh = isRefresh == null;
@@ -359,36 +202,6 @@ namespace NHST.Bussiness
             }
             JavaScript.AfterPageLoad(page).ExecuteCustomScript("swal({ title: 'Thông báo', text:' " + txt + "', type: '" + p + "', showCancelButton: true, confirmButtonText:' " + txtConfirm + "', closeOnConfirm: true, html: true}" + (Convert.ToBoolean(isCall.ToString()) ? ", function () { " + functionName + " });" : ");"));
         }
-        public static string GetIcon(object o)
-        {
-            if (o == null)
-                return "/no_thumbnails.gif";
-            if (!string.IsNullOrEmpty(o.ToString()))
-                return o.ToString();
-            return "/no_thumbnails.gif";
-        }
-        public static string SubString(string title, int length)
-        {
-            if (string.IsNullOrEmpty(title))
-                return "";
-
-            if (!title.Contains(" "))
-            {
-                if (title.Length > length)
-                    title = title.Substring(0, length - 1) + "...";
-            }
-            else if (title.Length >= length)
-            {
-                int i = length - 1;
-                while (title.Substring(i--, 1) != " " && i > 0) ;
-                if (i == 0)
-                    return title.Substring(0, length - 4) + " ...";
-                else
-                    return title.Substring(0, i + 1) + " ...";
-            }
-
-            return title;
-        }
         public static string RandomString(int numberrandom)
         {
             //var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -427,64 +240,16 @@ namespace NHST.Bussiness
                 return true;
             return false;
         }
-        public static string StatusToRequest(object i)
-        {
-            if (i != null)
-            {
-                if (i.ToString() == "1")
-                {
-                    return "<span class='yellow'>Chưa kích hoạt</span>";
-                }
-                else if (i.ToString() == "2")
-                {
-                    return "<span class='blue'>Đã kích hoạt</span>";
-                }
-                else
-                {
-                    return "<span class='red'>Đang bị khóa</span>";
-                }
-
-            }
-            else return "<span class='red'>Đang bị khóa</span>";
-        }
-        public static string IntToRequestAdmin(int i)
-        {
-            if (i == 0)
-                return "<span class=\"bg-red\">Chưa đặt cọc</span>";
-            else if (i == 1)
-                return "<span class=\"bg-black\">Hủy đơn hàng</span>";
-            else if (i == 2)
-                return "<span class=\"bg-bronze\">Đã đặt cọc</span>";
-            else if (i == 3)
-                return "<span class=\"bg-green\">Chờ duyệt đơn</span>";
-            else if (i == 4)
-                return "<span class=\"bg-green\">Đã duyệt đơn</span>";
-            else if (i == 5)
-                return "<span class=\"bg-green\">Đã đặt hàng</span>";
-            else if (i == 6)
-                return "<span class=\"bg-green\">Đã nhận hàng tại TQ</span>";
-            else if (i == 7)
-                return "<span class=\"bg-green\">Đã nhận hàng tại VN</span>";
-            else if (i == 8)
-                return "<span class=\"bg-yellow\">Chờ thanh toán</span>";
-            else if (i == 9)
-                return "<span class=\"bg-blue\">Khách đã thanh toán</span>";
-            else if (i == 10)
-                return "<span class=\"bg-blue\">Khách đã nhận hàng</span>";
-            else
-                return "";
-
-        }
         public static string OrderTypeStatus(int OrderType)
         {
             string ret = "";
             if (OrderType == 1)
             {
-                ret = "<span class=\"bg-yellow\">Lẻ</span>";
+                ret = "<span class='bg-yellow'>Lẻ</span>";
             }
             else
             {
-                ret = "<span class=\"bg-blue\">Sỉ</span>";
+                ret = "<span class='bg-blue'>Sỉ</span>";
 
             }
             return ret;
@@ -494,15 +259,20 @@ namespace NHST.Bussiness
             string ret = "";
             if (PaymentStatus == 1)
             {
-                ret = "<span class=\"bg-black\">Chưa thanh toán</span>";
+                ret = "<span class='bg-black'>Chưa thanh toán</span>";
             }
             else if (PaymentStatus == 2)
             {
-                ret = "<span class=\"bg-red\">Thanh toán thiếu</span>";
+                ret = "<span class='bg-red'>Thanh toán thiếu</span>";
             }
-            else
+            else if (PaymentStatus == 3)
             {
-                ret = "<span class=\"bg-blue\">Đã thanh toán</span>";
+                ret = "<span class='bg-blue'>Đã thanh toán</span>";
+
+            }
+            else if (PaymentStatus == 4)
+            {
+                ret = "<span class='bg-blue-hoki'>Đã duyệt</span>";
 
             }
             return ret;
@@ -512,24 +282,24 @@ namespace NHST.Bussiness
             string ret = "";
             if (PaymentType == 1)
             {
-                ret = "<span class=\"bg-black\">Tiền mặt</span>";
+                ret = "<span class='bg-black'>Tiền mặt</span>";
             }
             else if (PaymentType == 2)
             {
-                ret = "<span class=\"bg-red\">Chuyển khoản</span>";
+                ret = "<span class='bg-red'>Chuyển khoản</span>";
             }
             else if (PaymentType == 3)
             {
-                ret = "<span class=\"bg-yellow\">Thu hộ</span>";
+                ret = "<span class='bg-yellow'>Thu hộ</span>";
             }
             else if (PaymentType == 4)
             {
-                ret = "<span class=\"bg-blue\">Công nợ</span>";
+                ret = "<span class='bg-blue'>Công nợ</span>";
 
             }
             else
             {
-                ret = "<span class=\"bg-red\">Chưa xác định</span>";
+                ret = "<span class='bg-red'>Chưa xác định</span>";
             }
             return ret;
         }
@@ -538,27 +308,35 @@ namespace NHST.Bussiness
             string ret = "";
             if (ShippingType == 1)
             {
-                ret = "<span class=\"bg-black\">Lấy trực tiếp</span>";
+                ret = "<span class='bg-black'>Lấy trực tiếp</span>";
             }
             else if (ShippingType == 2)
             {
-                ret = "<span class=\"bg-red\">Chuyển bưu điện</span>";
+                ret = "<span class='bg-red'>Bưu điện</span>";
             }
             else if (ShippingType == 3)
             {
-                ret = "<span class=\"bg-yellow\">Dịch vụ ship</span>";
+                ret = "<span class='bg-yellow'>Proship</span>";
             }
             else if (ShippingType == 4)
             {
-                ret = "<span class=\"bg-blue\">Chuyển xe</span>";
+                ret = "<span class='bg-blue'>Chuyển xe</span>";
             }
             else if (ShippingType == 5)
             {
-                ret = "<span class=\"bg-bronze\">Nhân viên giao</span>";
+                ret = "<span class='bg-bronze'>Nhân viên giao</span>";
+            }
+            else if (ShippingType == 6)
+            {
+                ret = "<span class='bg-orange'>GHTK</span>";
+            }
+            else if (ShippingType == 7)
+            {
+                ret = "<span class='bg-blue-hoki'>Viettel</span>";
             }
             else
             {
-                ret = "<span class=\"bg-red\">Chưa xác định</span>";
+                ret = "<span class='bg-red'>Chưa xác định</span>";
             }
             return ret;
         }
@@ -567,19 +345,19 @@ namespace NHST.Bussiness
             string ret = "";
             if (ExcuteStatus == 1)
             {
-                ret = "<span class=\"bg-yellow\">Đang xử lý</span>";
+                ret = "<span class='bg-yellow'>Đang xử lý</span>";
             }
             else if (ExcuteStatus == 2)
             {
-                ret = "<span class=\"bg-green\">Đã hoàn tất</span>";
+                ret = "<span class='bg-green'>Đã hoàn tất</span>";
             }
             else if(ExcuteStatus == 3)
             {
-                ret = "<span class=\"bg-red\">Đã hủy</span>";
+                ret = "<span class='bg-red'>Đã hủy</span>";
             }
             else if(ExcuteStatus == 4)
             {
-                ret = "<span class=\"bg-brown\">Chuyển hoàn</span>";
+                ret = "<span class='bg-brown'>Chuyển hoàn</span>";
             }
             return ret;
         }
@@ -589,11 +367,11 @@ namespace NHST.Bussiness
             string ret = "";
             if (Status == 1)
             {
-                ret = "<span class=\"bg-red\">Chưa trừ tiền</span>";
+                ret = "<span class='bg-red'>Chưa trừ tiền</span>";
             }
             else
             {
-                ret = "<span class=\"bg-green\">Đã trừ tiền</span>";
+                ret = "<span class='bg-green'>Đã trừ tiền</span>";
 
             }
             return ret;
@@ -646,248 +424,7 @@ namespace NHST.Bussiness
             }
             return ret;
         }
-        public static string IntToRequestClient(int i)
-        {
-            //if (i == 0)
-            //    return "<span class=\"bg-red\">Chưa đặt cọc</span>";
-            //else if (i == 1)
-            //    return "<span class=\"bg-black\">Hủy đơn hàng</span>";
-            //else if (i == 2)
-            //    return "<span class=\"bg-bronze\">Đã đặt cọc</span>";
-            //else if (i >= 3 && i < 8)
-            //    return "<span class=\"bg-green\">Đang xử lý</span>";
-            //else if (i == 8)
-            //    return "<span class=\"bg-yellow\">Chờ thanh toán</span>";
-            //else if (i == 9)
-            //    return "<span class=\"bg-blue\">Đã xong</span>";
-            //else if (i == 10)
-            //    return "<span class=\"bg-blue\">Đã giao hàng</span>";
-            //else
-            //    return "";
-            if (i == 0)
-                return "<span class=\"bg-red\">Chưa đặt cọc</span>";
-            else if (i == 1)
-                return "<span class=\"bg-black\">Hủy đơn hàng</span>";
-            else if (i == 2)
-                return "<span class=\"bg-bronze\">Đã đặt cọc</span>";
-            else if (i == 3)
-                return "<span class=\"bg-green\">Chờ duyệt đơn</span>";
-            else if (i == 4)
-                return "<span class=\"bg-green\">Đã duyệt đơn</span>";
-            else if (i == 5)
-                return "<span class=\"bg-green\">Đã đặt hàng</span>";
-            else if (i == 6)
-                return "<span class=\"bg-green\">Đã nhận hàng tại TQ</span>";
-            else if (i == 7)
-                return "<span class=\"bg-green\">Đã nhận hàng tại VN</span>";
-            else if (i == 8)
-                return "<span class=\"bg-yellow\">Chờ thanh toán</span>";
-            else if (i == 9)
-                return "<span class=\"bg-blue\">Khách đã thanh toán</span>";
-            else if (i == 10)
-                return "<span class=\"bg-blue\">Khách đã nhận hàng</span>";
-            else
-                return "";
-
-
-        }
-        public static string BoolToRequest(object i)
-        {
-            if (i != null)
-            {
-                return ConvertStringToBool(i.ToString()) == true ? "<span class='red'>Đang yêu cầu</span>" : "<span class='blue'>Không</span>";
-            }
-            else return "<span class='blue'>Không</span>";
-        }
-        public static string ShowStatusPayHistory(int status)
-        {
-            if (status == 2)
-                return "<span class=\"bg-bronze\">Đặt cọc</span>";
-            else if (status == 3)
-                return "<span class=\"bg-yellow\">Đặt cọc</span>";
-            else if (status == 12)
-                return "<span class=\"bg-red\">Sản phẩm hết hàng hoặc giảm giá trả lại cọc</span>";
-            else
-                return "<span class=\"bg-blue\">Thanh toán</span>";
-        }
-
-        public static string ShowStockStatus(int status)
-        {
-            if (status == 1)
-                return "<span class=\"bg-green\">Còn hàng</span>";
-            else if (status == 2)
-                return "<span class=\"bg-red\">Hết hàng</span>";
-            else
-                return "<span class=\"bg-yellow\">Đang chờ nhập hàng</span>";
-        }
-        public static string BoolToStatus(string i)
-        {
-            return ConvertStringToBool(i) == true ? "<span class='show-stat-s'>Hiện</span>" : "<span class='show-stat-w'>Ẩn</span>";
-
-        }
-        public static string GetTradeType(int TradeType)
-        {
-            if (TradeType == 1)
-            {
-                return "Xác nhận đơn hàng";
-            }
-            else if (TradeType == 2)
-            {
-                return "Nhận lại tiền xác nhận đơn hàng";
-            }
-            else if (TradeType == 3)
-            {
-                return "Thanh toán đơn hàng";
-            }
-            else if (TradeType == 4)
-            {
-                return "Nạp tiền";
-            }
-            else if (TradeType == 5)
-            {
-                return "Rút tiền";
-            }
-            else if (TradeType == 6)
-            {
-                return "Hủy lệnh rút tiền";
-            }
-            else
-            {
-                return "...";
-            }
-
-
-        }
-        public static string GetHistoryPayWalletTradeType(int TradeType)
-        {
-            if (TradeType == 1)
-            {
-                return "Đặt cọc";
-            }
-            else if (TradeType == 2)
-            {
-                return "Nhận lại tiền đặt cọc";
-            }
-            else if (TradeType == 3)
-            {
-                return "Thanh toán hóa đơn";
-            }
-            else if (TradeType == 4)
-            {
-                return "Nạp tiền";
-            }
-            else if (TradeType == 5)
-            {
-                return "Rút tiền";
-            }
-            else if (TradeType == 6)
-            {
-                return "Hủy lệnh rút tiền";
-            }
-            else if (TradeType == 7)
-            {
-                return "Nhận tiền khiếu nại đơn hàng";
-            }
-            else
-            {
-                return "...";
-            }
-
-
-        }
-        public static string BoolToStatusShow(string i)
-        {
-            return ConvertStringToBool(i) == true ? "<span class='show-stat-w'>Ẩn</span>" : "<span class='show-stat-s'>Hiện</span>";
-
-        }
-        public static string ReturnStatusWithdraw(int status)
-        {
-            if (status == 1)
-            {
-                return "<span class='bg-red'>Đang chờ duyệt</span>";
-            }
-            else if (status == 2)
-            {
-                return "<span class='bg-blue'>Đã duyệt</span>";
-            }
-            else
-            {
-                return "Hủy lệnh";
-            }
-        }
-        public static string ReturnRoleName(string name)
-        {
-            if (name == "Store")
-            {
-                return "<span class='yellow'>Cửa hàng</span>";
-            }
-            else if (name == "Customer")
-            {
-                return "<span class=''>Người dùng</span>";
-            }
-            return name;
-        }
-        public static string ReturnSymbol(int Type)
-        {
-            if (Type == 1)
-            {
-                return "-";
-            }
-            else
-                return "+";
-        }
-
-        public static string ReturnStatusRequest(string status)
-        {
-            if (status == "1")
-            {
-                return "<span class='red'>Đang chờ</span>";
-            }
-            else if (status == "2")
-            {
-                return "<span class='blue'>Đã hoàn tất</span>";
-            }
-            else
-            {
-                return "<span class='orange'>Đã hủy</span>";
-            }
-
-        }
-        public static string ReturnStatusOrder(int status)
-        {
-            if (status == 0)
-            {
-                return "<span class='bg-black'>Đã hủy</span>";
-            }
-            else if (status == 1)
-            {
-                return "<span class='bg-red'>Chưa đặt cọc</span>";
-            }
-            else if (status == 2)
-            {
-                return "<span class='bg-blue'>Đã xác nhận</span>";
-            }
-            else if (status == 3)
-            {
-                return "<span class='bg-orange'>Đang đặt hàng</span>";
-            }
-            else if (status == 4)
-            {
-                return "<span class='bg-yellow'>Đã đặt hàng</span>";
-            }
-            else if (status == 5)
-            {
-                return "<span class='bg-bronze'>Đã về kho Sài Gòn</span>";
-            }
-            else if (status == 6)
-            {
-                return "<span class='bg-bronze'>Yêu cầu giao hàng</span>";
-            }
-            else
-            {
-                return "<span class='bg-green'>Đã nhận hàng</span>";
-            }
-        }
+        
         public static string ReturnStatusMovePro(int status)
         {
             if (status == 1)
@@ -903,68 +440,7 @@ namespace NHST.Bussiness
                 return "<span class='bg-blue'>Đã hoàn tất</span>";
             }
         }
-        public static List<countries> loadprefix()
-        {
-            string file = HttpContext.Current.Server.MapPath("~/Models/phonecode.json");
-            //deserialize JSON from file  
-            string Json = System.IO.File.ReadAllText(file);
-
-            JavaScriptSerializer ser = new JavaScriptSerializer();
-            var personlist = ser.Deserialize<List<countries>>(Json);
-            List<countries> cs = new List<countries>();
-            foreach (var item in personlist)
-            {
-                countries c = new countries();
-                c.name = item.name;
-                c.dial_code = item.dial_code;
-                c.code = item.code;
-                cs.Add(c);
-            }
-            return cs;
-        }
-        public class countries
-        {
-            public string name { get; set; }
-            public string dial_code { get; set; }
-            public string code { get; set; }
-        }
-        public static string getBetween(string strSource, string strStart, string strEnd)
-        {
-            int Start, End;
-            if (strSource.Contains(strStart) && strSource.Contains(strEnd))
-            {
-                Start = strSource.IndexOf(strStart, 0) + strStart.Length;
-                End = strSource.IndexOf(strEnd, Start);
-                return strSource.Substring(Start, End - Start);
-            }
-            else
-            {
-                return "";
-            }
-        }
-
-        public static string IntToStringStatusPackage(int status)
-        {
-            if (status == 0)
-                return "<span class=\"bg-bronze\">Mới tạo</span>";
-            else if (status == 1)
-                return "<span class=\"bg-green\">Đang chuyển về VN</span>";
-            else if (status == 2)
-                return "<span class=\"bg-blue\">Đã nhận hàng tại VN</span>";
-            else
-                return "<span class=\"bg-red\">Đã hủy</span>";
-        }
-        public static string IntToStringStatusSmallPackage(int status)
-        {
-            if (status == 1)
-                return "Đã nhận hàng tại TQ";
-            else if (status == 2)
-                return "Đang chuyển về VN";
-            else if (status == 3)
-                return "Đã nhận hàng tại VN";
-            else
-                return "Đã giao cho khách";
-        }
+        
         public static string RemoveHTMLTags(string content)
         {
             var cleaned = string.Empty;
@@ -1274,6 +750,58 @@ namespace NHST.Bussiness
             return myImage;
         }
 
+        public static System.Drawing.Image MakeShippingBarcode(string inputData, int barWeight, bool addQuietZone)
+        {
+            // get the Code128 codes to represent the message
+            var content = new Code128Content(inputData);
+            var codes = content.Codes;
+
+            var width = (((codes.Length - 3) * 11) + 35) * barWeight;
+            var height = Convert.ToInt32(Math.Ceiling(Convert.ToSingle(width) * .15F));
+
+            if (addQuietZone)
+            {
+                width += 2 * CQuietWidth * barWeight; // on both sides
+            }
+
+            // get surface to draw on
+            System.Drawing.Image myImage = new Bitmap(width, height);
+            using (var gr = Graphics.FromImage(myImage))
+            {
+                // set to white so we don't have to fill the spaces with white
+                gr.FillRectangle(Brushes.White, 0, 0, width, height);
+
+                // skip quiet zone
+                var cursor = addQuietZone ? CQuietWidth * barWeight : 0;
+
+                for (var codeIdx = 0; codeIdx < codes.Length; codeIdx++)
+                {
+                    var code = codes[codeIdx];
+
+                    // take the bars two at a time: a black and a white
+                    for (var bar = 0; bar < 8; bar += 2)
+                    {
+                        var barWidth = CPatterns[code, bar] * barWeight;
+                        var spcWidth = CPatterns[code, bar + 1] * barWeight;
+
+                        // if width is zero, don't try to draw it
+                        if (barWidth > 0)
+                        {
+                            gr.FillRectangle(Brushes.Black, cursor, 0, barWidth, height);
+                        }
+
+                        // note that we never need to draw the space, since we 
+                        // initialized the graphics to all white
+
+                        // advance cursor beyond this pair
+                        cursor += barWidth + spcWidth;
+                    }
+                }
+            }
+
+            return myImage;
+        }
+
         public static string GenQRCode(string code)
         {
             string IMG = "/uploads/QRCode/" + code + ".jpg";
@@ -1323,36 +851,7 @@ namespace NHST.Bussiness
             HttpContext.Current.Response.Clear();
 
         }
-        public static string TranslateText(string input, string languagePair)
-        {
-            string url = String.Format("http://www.google.com/translate_t?hl=en&ie=UTF8&text={0}&langpair={1}", input, languagePair);
-            var request = (HttpWebRequest)WebRequest.Create(url);
-            request.UserAgent = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/47.0.2526.106 Safari/537.36";
-            request.Method = "GET";
-            var content = String.Empty;
-            HttpStatusCode statusCode;
-            using (var response = request.GetResponse())
-            using (var stream = response.GetResponseStream())
-            {
-                var contentType = response.ContentType;
-                Encoding encoding = null;
-                if (contentType != null)
-                {
-                    var match = Regex.Match(contentType, @"(?<=charset\=).*");
-                    if (match.Success)
-                        encoding = Encoding.GetEncoding(match.ToString());
-                }
-
-                encoding = encoding ?? Encoding.UTF8;
-
-                statusCode = ((HttpWebResponse)response).StatusCode;
-                using (var reader = new StreamReader(stream, encoding))
-                    content = reader.ReadToEnd();
-            }
-            var doc = Dcsoup.Parse(content);
-            var scoreDiv = doc.Select("html").Select("span[id=result_box]").Html;
-            return scoreDiv;
-        }
+        
         public static string GenBarCode(string Code, string physicalPath)
         {
             string filePath = string.Format("{0}{1}.jpg", physicalPath, Code);
@@ -1581,6 +1080,21 @@ namespace NHST.Bussiness
                 }
             }
             return currentQuantity;
+        }
+
+        public static string DeliveryStatus(int status)
+        {
+            switch (status)
+            {
+                case 1:
+                    return String.Format("<span class='bg-green'>Đã giao</span>");
+                case 2:
+                    return String.Format("<span class='bg-red'>Chưa giao</span>");
+                case 3:
+                    return String.Format("<span class='bg-blue'>Đang giao</span>");
+                default:
+                    return String.Empty;
+            }
         }
     }
 
