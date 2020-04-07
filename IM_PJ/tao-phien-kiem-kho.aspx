@@ -1,4 +1,4 @@
-﻿<%@ Page Title="Nhập kho sản phẩm" Language="C#" MasterPageFile="~/MasterPage.Master" AutoEventWireup="true" CodeBehind="tao-phien-kiem-kho.aspx.cs" Inherits="IM_PJ.tao_phien_kiem_kho" EnableSessionState="ReadOnly" %>
+﻿<%@ Page Title="Tạo phiên kiểm kho" Language="C#" MasterPageFile="~/MasterPage.Master" AutoEventWireup="true" CodeBehind="tao-phien-kiem-kho.aspx.cs" Inherits="IM_PJ.tao_phien_kiem_kho" EnableSessionState="ReadOnly" %>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <main id="main-wrap">
         <div class="container">
@@ -28,6 +28,9 @@
                                 <a href="javascript:;" class="btn primary-btn fw-btn not-fullwidth" style="margin-right: 10px" onclick="searchProduct()"><i class="fa fa-search" aria-hidden="true"></i> Tìm</a>
                             </div>
                             <div class="form-row">
+                                <div class="col-md-4 col-xs-8">
+                                    <asp:TextBox runat="server" ID="txtTestName" CssClass="form-control" placeholder="Tên đợt kiểm tra kho" />
+                                </div>
                             </div>
                             <div class="form-row">
                                 <h3 class="no-margin float-left">Kết quả tìm kiếm: <span class="result-numsearch"></span></h3>
@@ -39,13 +42,13 @@
                                 <table class="table table-checkable table-product import-stock">
                                     <thead>
                                         <tr>
-                                            <th class="select-column">
+                                            <th class="select-column" style="text-align: left!important">
                                                 <input type="checkbox" id="check-all" class="check-popup"/>
                                             </th>
                                             <th class="name-column">Sản phẩm</th>
                                             <th class="sku-column">Mã</th>
                                             <th class="stock-column">Kho</th>
-                                            <th class="trash-column"></th>
+                                            <th class="trash-column"><a href="javascript:;" onclick="deleteAllRow()"><i class="fa fa-trash"></i></a></th>
                                         </tr>
                                     </thead>
                                     <tbody class="content-product">
@@ -204,30 +207,39 @@
             }
         }
 
+        function deleteAllRow() {
+            let products = $(".product-result");
+
+            products.each((index, element) => {
+                let checked = element.querySelector('.check-popup').checked;
+                
+                if (checked) element.remove();
+            });
+
+            if ($(".check-popup").is(':checked'))
+                $(".check-popup").prop('checked', false);
+        }
+
         function registerCheckWarehouse() {
             if ($(".product-result").length > 0) {
                 HoldOn.open();
 
                 let list = [];
                 $(".product-result").each(function () {
-                    var id = +$(this).attr("data-id") || 0;
-                    var sku = $(this).attr("data-sku") || '';
-                    var productStyle = +$(this).attr("data-productStyle") || 1;
-                    var productname = $(this).attr("data-productname") || '';
-                    var quantity = +$(this).attr("data-warehouse-quantity").val() || 0;
-                    var checked = $(this).find(".check-popup").is(':checked') || false;
-                    
-                    if (checked) {
-                        let data = {
-                            ID: id,
-                            SKU: sku,
-                            ProductStyle: productStyle,
-                            ProductName: productname,
-                            WarehouseQuantity: quantity
-                        };
+                    let id = +$(this).attr("data-id") || 0;
+                    let sku = $(this).attr("data-sku") || '';
+                    let productStyle = +$(this).attr("data-productStyle") || 1;
+                    let productname = $(this).attr("data-productname") || '';
+                    let quantity = +$(this).attr("data-warehouse-quantity") || 0;
+                    let data = {
+                        ID: id,
+                        SKU: sku,
+                        ProductStyle: productStyle,
+                        ProductName: productname,
+                        WarehouseQuantity: quantity
+                    };
 
-                        list.push(data);
-                    }
+                    list.push(data);
                 });
  
                 $("#<%=hdfvalue.ClientID%>").val(JSON.stringify(list));

@@ -2,6 +2,7 @@
 using IM_PJ.Models;
 using IM_PJ.Utils;
 using MB.Extensions;
+using Newtonsoft.Json;
 using NHST.Bussiness;
 using System;
 using System.Collections.Generic;
@@ -128,7 +129,6 @@ namespace IM_PJ
                         (s, d) => s
                     )
                     .OrderBy(o => o.ParentID)
-                    .ThenBy(o => o.ProductID)
                     .ThenBy(o => o.ProductVariableID)
                     .ThenBy(o => o.CreatedDate);
 
@@ -137,15 +137,13 @@ namespace IM_PJ
                     .Select(x => new
                     {
                         parentID = x.ParentID.Value,
-                        productID = x.ProductID.Value,
                         productVariableID = x.ProductVariableID.Value,
                         createDate = x.CreatedDate
                     })
-                    .GroupBy(x => new { x.parentID, x.productID, x.productVariableID })
+                    .GroupBy(x => new { x.parentID, x.productVariableID })
                     .Select(g => new
                     {
                         parentID = g.Key.parentID,
-                        productID = g.Key.productID,
                         productVariableID = g.Key.productVariableID,
                         doneAt = g.Max(x => x.createDate)
                     });
@@ -157,14 +155,12 @@ namespace IM_PJ
                         last => new
                         {
                             parentID = last.parentID,
-                            productID = last.productID,
                             productVariableID = last.productVariableID,
                             doneAt = last.doneAt
                         },
                         rec => new
                         {
                             parentID = rec.ParentID.Value,
-                            productID = rec.ProductID.Value,
                             productVariableID = rec.ProductVariableID.Value,
                             doneAt = rec.CreatedDate
                         },
@@ -257,35 +253,167 @@ namespace IM_PJ
             DateTime currentDate = DateTime.Now;
             string username = Request.Cookies["usernameLoginSystem"].Value;
             var acc = AccountController.GetByUsername(username);
-            if (acc != null)
+            if (acc == null)
+                return;
+
+            using (var con = new inventorymanagementEntities())
             {
-                int AgentID = Convert.ToInt32(acc.AgentID);
-                string list = hdfvalue.Value;
-
-                string[] items = list.Split(';');
-                if (items.Length - 1 > 0)
+                var now = DateTime.Now;
+                var checkWarehouse = new CheckWarehouse()
                 {
-                    for (int i = 0; i < items.Length - 1; i++)
+                    Name = String.Format("{0}-{1:yyyy/MM/dd hh:mm:ss}", txtTestName.Text.Trim(), now),
+                    Active = true,
+                    CreatedDate = now,
+                    CreatedBy = acc.Username,
+                    ModifiedDate = now,
+                    ModifiedBy = acc.Username
+                };
+
+                con.CheckWarehouses.Add(checkWarehouse);
+                con.SaveChanges();
+
+                var data = JsonConvert.DeserializeObject<List<ProductGetOut>>(hdfvalue.Value);
+                var details = new List<CheckWarehouseDetail>();
+
+                #region Xử lý với sản phẩm không có biến thể
+                var products = data.Where(x => x.ProductStyle == 1).ToList();
+
+                foreach (var item in products)
+                {
+                    var temp = new CheckWarehouseDetail()
                     {
-                        var item = items[i];
-                        string[] itemValue = item.Split(',');
-                        int ID = itemValue[0].ToInt();
-                        string SKU = itemValue[1];
-                        int producttype = itemValue[2].ToInt();
-                        string ProductVariableName = itemValue[3];
-                        string ProductVariableValue = itemValue[4];
-                        double Quantity = Convert.ToDouble(itemValue[5]);
-                        string ProductName = itemValue[6];
-                        string ProductImageOrigin = itemValue[7];
-                        string ProductVariable = itemValue[8];
-                        var productV = ProductVariableController.GetByID(ID);
-                        string parentSKU = "";
-                        parentSKU = productV.ParentSKU;
+                        CheckWarehouseID = checkWarehouse.ID,
+                        ProductID = item.ID,
+                        ProductVariableID = 0,
+                        ProductSKU = item.SKU,
+                        QuantityOld = Convert.ToInt32(item.WarehouseQuantity),
+                        CreatedDate = now,
+                        CreatedBy = acc.Username,
+                        ModifiedDate = now,
+                        ModifiedBy = acc.Username
+                    };
+                    details.Add(temp);
 
+                    if (details.Count == 100)
+                    {
+                        con.CheckWarehouseDetails.AddRange(details);
+                        con.SaveChanges();
 
-                        PJUtils.ShowMessageBoxSwAlert("Nhập kho thành công!", "s", true, Page);
+                        details.Clear();
                     }
                 }
+
+                if (details.Count > 0)
+                {
+                    con.CheckWarehouseDetails.AddRange(details);
+                    con.SaveChanges();
+
+                    details.Clear();
+                }
+                #endregion
+
+                #region Xử lý với sản phẩm có biến thể
+                var productVariables = data.Except(products).ToList();
+
+                #region Lấy thông tin  stock
+                var productIDs = productVariables.Select(x => x.ID).Distinct().ToList();
+
+                // Lọc ra những dòng stock cần lấy
+                var stockFilter = con.tbl_StockManager.Where(x => productIDs.Contains(x.ParentID.Value))
+                    .OrderBy(o => o.ParentID)
+                    .ThenBy(o => o.ProductVariableID)
+                    .ThenBy(o => o.CreatedDate);
+
+                // Lấy dòng stock cuối cùng
+                var stockLast = stockFilter
+                    .Select(x => new
+                    {
+                        parentID = x.ParentID.Value,
+                        productVariableID = x.ProductVariableID.Value,
+                        createDate = x.CreatedDate
+                    })
+                    .GroupBy(x => new { x.parentID, x.productVariableID })
+                    .Select(g => new
+                    {
+                        parentID = g.Key.parentID,
+                        productVariableID = g.Key.productVariableID,
+                        doneAt = g.Max(x => x.createDate)
+                    });
+
+                // Thông tin stock
+                var stocks = stockLast
+                    .Join(
+                        stockFilter,
+                        last => new
+                        {
+                            parentID = last.parentID,
+                            productVariableID = last.productVariableID,
+                            doneAt = last.doneAt
+                        },
+                        rec => new
+                        {
+                            parentID = rec.ParentID.Value,
+                            productVariableID = rec.ProductVariableID.Value,
+                            doneAt = rec.CreatedDate
+                        },
+                        (last, rec) => new
+                        {
+                            parentID = last.parentID,
+                            productVariableID = last.productVariableID,
+                            sku = rec.SKU,
+                            quantity = rec.Quantity.HasValue ? rec.Quantity.Value : 0,
+                            quantityCurrent = rec.QuantityCurrent.HasValue ? rec.QuantityCurrent.Value : 0,
+                            type = rec.Type.HasValue ? rec.Type.Value : 0
+                        }
+                    )
+                    .Select(x => new
+                    {
+                        productID = x.parentID,
+                        productVariableID = x.productVariableID,
+                        sku = x.sku,
+                        calQuantity = x.type == 1 ?
+                            (x.quantityCurrent + x.quantity) :
+                            (x.type == 2 ? x.quantityCurrent - x.quantity : 0D)
+                    })
+                    .OrderBy(o => o.productID)
+                    .ThenBy(o => o.productVariableID);
+                #endregion
+
+                foreach (var item in stocks)
+                {
+                    var temp = new CheckWarehouseDetail()
+                    {
+                        CheckWarehouseID = checkWarehouse.ID,
+                        ProductID = item.productID,
+                        ProductVariableID = item.productVariableID,
+                        ProductSKU = item.sku,
+                        QuantityOld = Convert.ToInt32(item.calQuantity),
+                        CreatedDate = now,
+                        CreatedBy = acc.Username,
+                        ModifiedDate = now,
+                        ModifiedBy = acc.Username
+                    };
+                    details.Add(temp);
+
+                    if (details.Count == 100)
+                    {
+                        con.CheckWarehouseDetails.AddRange(details);
+                        con.SaveChanges();
+
+                        details.Clear();
+                    }
+                }
+
+                if (details.Count > 0)
+                {
+                    con.CheckWarehouseDetails.AddRange(details);
+                    con.SaveChanges();
+
+                    details.Clear();
+                }
+                #endregion
+
+                PJUtils.ShowMessageBoxSwAlert("Nhập kho thành công!", "s", true, Page);
             }
         }
     }
