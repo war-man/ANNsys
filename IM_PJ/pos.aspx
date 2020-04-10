@@ -120,9 +120,9 @@
                             </div>
                             <div class="post-table-links clear">
                                 <a href="javascript:;" class="btn link-btn" style="background-color: #ffad00" onclick="searchReturnOrder()" title="Nhập đơn hàng đổi trả"><i class="fa fa-refresh"></i> Đổi trả</a>
-                                <a href="javascript:;" class="btn link-btn" style="background-color: #00a2b7" onclick="showShipping()" title="Nhập phí vận chuyển"><i class="fa fa-truck"></i> Vận chuyển</a>
+                                <a href="javascript:;" class="btn link-btn" style="background-color: #00a2b7" onclick="showShipping()" title="Nhập phí vận chuyển"><i class="fa fa-truck"></i> Ship</a>
                                 <a href="javascript:;" class="btn link-btn" style="background-color: #453288" onclick="showDiscount()" title="Nhập chiết khấu mỗi cái"><i class="fa fa-tag"></i> Chiết khấu</a>
-                                <a id="feeNewStatic" href="#feeModal" class="btn link-btn" style="background-color: #607D8B;" data-toggle="modal" data-backdrop='static' title="Thêm phí khác vào đơn hàng"><i class="fa fa-plus"></i> Thêm phí</a>
+                                <a id="feeNewStatic" href="#feeModal" class="btn link-btn" style="background-color: #607D8B;" data-toggle="modal" data-backdrop='static' title="Thêm phí khác vào đơn hàng"><i class="fa fa-plus"></i> Phí</a>
                             </div>
                             <div class="post-table-links clear">
                                 <a href="javascript:;" class="btn link-btn btn-complete-order" onclick="payAll()" title="Hoàn tất đơn hàng"><i class="fa fa-floppy-o"></i> Thanh toán (F9)</a>

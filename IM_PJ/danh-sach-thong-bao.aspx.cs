@@ -114,6 +114,7 @@ namespace IM_PJ
             string CreatedBy = "";
             int CategoryID = 0;
             string AtHome = "";
+            string orderBy = "";
 
             if (Request.QueryString["textsearch"] != null)
                 TextSearch = Request.QueryString["textsearch"].Trim();
@@ -125,15 +126,18 @@ namespace IM_PJ
                 AtHome = Request.QueryString["athome"];
             if (Request.QueryString["createdby"] != null)
                 CreatedBy = Request.QueryString["createdby"];
+            if (Request.QueryString["orderby"] != null)
+                orderBy = Request.QueryString["orderby"];
 
             txtSearchPost.Text = TextSearch;
             ddlCategory.SelectedValue = CategoryID.ToString();
             ddlCreatedDate.SelectedValue = CreatedDate;
             ddlAtHome.SelectedValue = AtHome;
             ddlCreatedBy.SelectedValue = CreatedBy;
+            ddlOrderBy.SelectedValue = orderBy;
 
             List<NotifyNewSQL> a = new List<NotifyNewSQL>();
-            a = NotifyController.GetAllSql(CategoryID, TextSearch, AtHome, CreatedDate, CreatedBy);
+            a = NotifyController.GetAllSql(CategoryID, TextSearch, AtHome, CreatedDate, CreatedBy, orderBy);
 
             pagingall(a);
 
@@ -177,6 +181,19 @@ namespace IM_PJ
             }
 
             return result;
+        }
+        [WebMethod]
+        public static string upTopAppUpdate(int id)
+        {
+            string update = NotifyController.upTopAppUpdate(id);
+            if (update != null)
+            {
+                return "true";
+            }
+            else
+            {
+                return "false";
+            }
         }
         #region Paging
         public void pagingall(List<NotifyNewSQL> acs)
@@ -234,12 +251,12 @@ namespace IM_PJ
                     string date = string.Format("{0:dd/MM/yyyy}", item.CreatedDate);
                     html.Append("   <td>" + date + "</td>");
                     html.Append("   <td>");
-                    html.Append("       <a href='javascript:;' title='Xóa bài này' class='btn primary-btn btn-red h45-btn' onclick='deletePost(" + item.ID + ");'><i class='fa fa-times' aria-hidden='true'></i> Xóa</a>");
+                    html.Append("       <a href='javascript:;' title='Xóa bài này' class='btn primary-btn btn-red h45-btn' data-id='" + item.ID + "' onclick='deletePost($(this));'><i class='fa fa-times' aria-hidden='true'></i> Xóa</a>");
                     html.Append("       <a target='_blank' href='/sua-thong-bao?id=" + item.ID + "' title='Sửa bài này' class='btn primary-btn btn-blue h45-btn'><i class='fa fa-pencil-square-o' aria-hidden='true'></i> Sửa</a>");
+                    html.Append("       <a href='javascript:;' title='Up bài này' class='btn primary-btn btn-green h45-btn' data-id='" + item.ID + "' onclick='upTopAppUpdate($(this));'><i class='fa fa-arrow-up' aria-hidden='true'></i> Up</a>");
                     html.Append("  </td>");
                     html.Append("</tr>");
                 }
-
             }
             else
             {
@@ -417,6 +434,11 @@ namespace IM_PJ
             if (ddlCreatedBy.SelectedValue != "")
             {
                 request += "&createdby=" + ddlCreatedBy.SelectedValue;
+            }
+
+            if (ddlOrderBy.SelectedValue != "")
+            {
+                request += "&orderby=" + ddlOrderBy.SelectedValue;
             }
 
             Response.Redirect(request);

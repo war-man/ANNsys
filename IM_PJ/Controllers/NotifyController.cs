@@ -130,7 +130,7 @@ namespace IM_PJ.Controllers
                 return ags;
             }
         }
-        public static List<NotifyNewSQL> GetAllSql(int categoryID, string textSearch, string AtHome, string CreatedDate, string CreatedBy)
+        public static List<NotifyNewSQL> GetAllSql(int categoryID, string textSearch, string AtHome, string CreatedDate, string CreatedBy, string orderBy)
         {
             var list = new List<NotifyNewSQL>();
             StringBuilder sql = new StringBuilder();
@@ -268,7 +268,25 @@ namespace IM_PJ.Controllers
             sql.AppendLine("     ) AS c");
             sql.AppendLine("     ON c.ID = p.CategoryID");
             sql.AppendLine("     ORDER BY");
-            sql.AppendLine("             p.ID");
+            if (!String.IsNullOrEmpty(orderBy))
+            {
+                switch (orderBy)
+                {
+                    case ProductOrderBy.latestOnApp:
+                        sql.AppendLine("             p.AppUpdate DESC");
+                        break;
+                    case ProductOrderBy.latestOnSystem:
+                        sql.AppendLine("             p.ID DESC");
+                        break;
+                    default:
+                        sql.AppendLine("             p.ID DESC");
+                        break;
+                }
+            }
+            else
+            {
+                sql.AppendLine("             p.ID DESC");
+            }
             sql.AppendLine("     ;");
             sql.AppendLine(String.Empty);
             sql.AppendLine(" END");
@@ -305,11 +323,13 @@ namespace IM_PJ.Controllers
                     entity.CreatedDate = Convert.ToDateTime(reader["CreatedDate"]);
                 if (reader["AtHome"] != DBNull.Value)
                     entity.AtHome = reader["AtHome"].ToString().ToBool();
+                if (reader["AppUpdate"] != DBNull.Value)
+                    entity.AppUpdate = Convert.ToDateTime(reader["AppUpdate"]);
                 list.Add(entity);
             }
             reader.Close();
 
-            return list.OrderByDescending(x => x.CreatedDate).ToList();
+            return list.ToList();
         }
         public static string updateAtHome(int id, bool value)
         {
@@ -319,6 +339,21 @@ namespace IM_PJ.Controllers
                 if (ui != null)
                 {
                     ui.AtHome = value;
+                    int kq = dbe.SaveChanges();
+                    return kq.ToString();
+                }
+                else
+                    return null;
+            }
+        }
+        public static string upTopAppUpdate(int id)
+        {
+            using (var dbe = new inventorymanagementEntities())
+            {
+                NotifyNew ui = dbe.NotifyNews.Where(a => a.ID == id).SingleOrDefault();
+                if (ui != null)
+                {
+                    ui.AppUpdate = DateTime.Now;
                     int kq = dbe.SaveChanges();
                     return kq.ToString();
                 }
@@ -345,6 +380,7 @@ namespace IM_PJ.Controllers
             public Nullable<System.DateTime> CreatedDate { get; set; }
             public string ModifiedBy { get; set; }
             public Nullable<System.DateTime> ModifiedDate { get; set; }
+            public Nullable<System.DateTime> AppUpdate { get; set; }
         }
 
         #endregion

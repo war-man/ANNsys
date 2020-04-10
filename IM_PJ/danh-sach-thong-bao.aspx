@@ -36,7 +36,11 @@
                                     <asp:TextBox ID="txtSearchPost" runat="server" CssClass="form-control" placeholder="Tìm bài viết" autocomplete="off"></asp:TextBox>
                                 </div>
                                 <div class="col-md-2 col-xs-6">
-                                    <asp:DropDownList ID="ddlCategory" runat="server" CssClass="form-control"></asp:DropDownList>
+                                    <asp:DropDownList ID="ddlOrderBy" runat="server" CssClass="form-control">
+                                        <asp:ListItem Value="" Text="Sắp xếp"></asp:ListItem>
+                                        <asp:ListItem Value="latestOnApp" Text="Mới nhất trên app"></asp:ListItem>
+                                        <asp:ListItem Value="latestOnSystem" Text="Mới nhất trên hệ thống"></asp:ListItem>
+                                    </asp:DropDownList>
                                 </div>
                                 <div class="col-md-2 col-xs-6">
                                     <asp:DropDownList ID="ddlAtHome" runat="server" CssClass="form-control">
@@ -64,6 +68,17 @@
                                     <a href="javascript:;" onclick="searchPost()" class="btn primary-btn h45-btn"><i class="fa fa-search"></i></a>
                                     <asp:Button ID="btnSearch" runat="server" CssClass="btn primary-btn h45-btn" OnClick="btnSearch_Click" Style="display: none" />
                                     <a href="/danh-sach-thong-bao" class="btn primary-btn h45-btn"><i class="fa fa-times" aria-hidden="true"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="filter-above-wrap clear">
+                        <div class="filter-control">
+                            <div class="row">
+                                <div class="col-md-3 col-xs-6">
+                                    <asp:DropDownList ID="ddlCategory" runat="server" CssClass="form-control"></asp:DropDownList>
+                                </div>
+                                <div class="col-md-9 col-xs-6">
                                 </div>
                             </div>
                         </div>
@@ -125,8 +140,36 @@
                 $("#<%= btnSearch.ClientID%>").click();
             }
 
-            function deletePost(id)
+            function upTopAppUpdate(obj) {
+                var postID = obj.attr("data-id");
+
+                $.ajax({
+                    type: "POST",
+                    url: "/danh-sach-thong-bao.aspx/upTopAppUpdate",
+                    data: "{id: " + postID + "}",
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    beforeSend: function () {
+                        HoldOn.open();
+                    },
+                    success: function (msg) {
+                        if (msg.d == "true") {
+                            swal("Thông báo", "Up thành công!", "success");
+                        }
+                        else {
+                            alert("Lỗi");
+                        }
+                    },
+                    complete: function () {
+                        HoldOn.close();
+                    }
+                });
+            }
+
+            function deletePost(obj)
             {
+                let id = obj.attr("data-id");
+
                 swal({
                     title: "Xác nhận",
                     text: "Bạn muốn xóa bài viết này?",

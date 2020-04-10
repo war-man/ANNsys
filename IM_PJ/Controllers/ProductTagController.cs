@@ -90,6 +90,56 @@ namespace IM_PJ.Controllers
             }
         }
 
+        public static ProductTag get(int productID, ProductTag prodTag)
+        {
+            using (var con = new inventorymanagementEntities())
+            {
+                var productTags = con.ProductTags
+                    .Where(x => x.TagID == prodTag.TagID)
+                    .Where(x => x.ProductID == productID)
+                    .Where(x => x.ProductVariableID == 0)
+                    .FirstOrDefault();
+
+                return productTags;
+            }
+        }
+
+        public static List<ProductTag> get(int productID, List<ProductTag> prodTags)
+        {
+            using (var con = new inventorymanagementEntities())
+            {
+                var tagIDs = prodTags.Select(x => x.ID).Distinct().ToList();
+
+                var productTags = con.ProductTags
+                    .Where(x => tagIDs.Contains(x.TagID))
+                    .Where(x => x.ProductID == productID)
+                    .Where(x => x.ProductVariableID == 0)
+                    .ToList();
+
+                return productTags;
+            }
+        }
+        public static List<ProductTag> delete(int productID, List<ProductTag> prodTags)
+        {
+            using (var con = new inventorymanagementEntities())
+            {
+                var tagIDs = prodTags.Select(x => x.ID).Distinct().ToList();
+
+                var productTags = con.ProductTags
+                    .Where(x => tagIDs.Contains(x.TagID))
+                    .Where(x => x.ProductID == productID)
+                    .Where(x => x.ProductVariableID == 0)
+                    .ToList();
+
+                if (productTags.Count > 0)
+                {
+                    con.ProductTags.RemoveRange(productTags);
+                    con.SaveChanges();
+                }
+
+                return productTags;
+            }
+        }
         public static List<ProductTag> delete(int productID)
         {
             using (var con = new inventorymanagementEntities())
@@ -149,6 +199,40 @@ namespace IM_PJ.Controllers
         public static List<TagModel> get(string sku)
         {
             return get(sku);
+        }
+
+        /// <summary>
+        /// Thực hiện tạo tag nếu sản phẩm có tag
+        /// và remove nêu đã có
+        /// </summary>
+        /// <param name="productID"></param>
+        /// <param name="prodTag"></param>
+        /// <returns></returns>
+        public static CheckTagStatus checkAndUnCheck(ProductTag prodTag)
+        {
+            using (var con = new inventorymanagementEntities())
+            {
+                var prodTagDB = con.ProductTags
+                    .Where(x => x.TagID == prodTag.TagID)
+                    .Where(x => x.ProductID == prodTag.ProductID)
+                    .Where(x => x.ProductVariableID == 0)
+                    .FirstOrDefault();
+
+                if (prodTagDB == null)
+                {
+                    con.ProductTags.Add(prodTag);
+                    con.SaveChanges();
+
+                    return CheckTagStatus.@checked;
+                }
+                else
+                {
+                    con.ProductTags.Remove(prodTagDB);
+                    con.SaveChanges();
+
+                    return CheckTagStatus.unChecked;
+                }
+            }
         }
     }
 }

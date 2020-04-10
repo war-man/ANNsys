@@ -215,7 +215,7 @@
                                 </div>
                                 <div class="col-md-2 col-xs-4">
                                     <a id="chooseShipper" href="javascript:;" class="btn primary-btn fw-btn width-100" onclick="openChooseShipperModal()">
-                                        <i class="fa fa-user-plus" aria-hidden="true"></i> Chọn người giao
+                                        <i class="fa fa-user-plus" aria-hidden="true"></i> Chọn shipper
                                     </a>
                                 </div>
                                 <div class="col-md-2 col-xs-4">
@@ -311,7 +311,7 @@
                         </div>
                         <div class="row form-group">
                             <div class="col-md-3 col-xs-4">
-                                <p>Người giao</p>
+                                <p>Shipper</p>
                             </div>
                             <div class="col-md-9 col-xs-8">
                                 <asp:DropDownList ID="ddlShipperModal" runat="server" CssClass="form-control"></asp:DropDownList>
@@ -339,7 +339,7 @@
                         </div>
                         <div class="row form-group">
                             <div class="col-md-3 col-xs-4">
-                                <p>Thu hộ</p>
+                                <p>COD</p>
                             </div>
                             <div class="col-md-9 col-xs-8">
                                 <asp:TextBox ID="txtColOfOrd" runat="server" CssClass="form-control text-right" placeholder="Số tiền thu hộ" data-type="currency" onkeypress='return event.charCode >= 48 && event.charCode <= 57'></asp:TextBox>
@@ -347,7 +347,7 @@
                         </div>
                         <div class="row form-group">
                             <div class="col-md-3 col-xs-4">
-                                <p>Phí</p>
+                                <p>Ship</p>
                             </div>
                             <div class="col-md-9 col-xs-8">
                                 <asp:TextBox ID="txtCosOfDel" runat="server" CssClass="form-control text-right" placeholder="Phí vận chuyển" data-type="currency" onkeypress='return event.charCode >= 48 && event.charCode <= 57'></asp:TextBox>
