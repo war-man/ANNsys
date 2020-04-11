@@ -42,5 +42,7 @@ namespace IM_PJ.Models
         public double price { get; set; }
         // Sản phẩm Order
         public string preOrder { get; set; }
+        public int tag { get; set; } = 0;
+        public string orderBy { get; set; } = String.Empty;
     }
 }

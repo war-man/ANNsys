@@ -134,7 +134,7 @@
                     <div class="filter-above-wrap clear">
                         <div class="filter-control">
                             <div class="row">
-                                <div class="col-md-3 col-xs-6">
+                                <div class="col-md-3 col-xs-12">
                                     <asp:TextBox ID="txtSearchProduct" runat="server" CssClass="form-control" placeholder="Tìm sản phẩm" autocomplete="off"></asp:TextBox>
                                 </div>
                                 <div class="col-md-2 col-xs-6">
@@ -176,10 +176,66 @@
                     <div class="filter-above-wrap clear">
                         <div class="filter-control">
                             <div class="row">
+                                <div class="col-md-3 col-xs-6">
+                                    <asp:DropDownList ID="ddlOrderBy" runat="server" CssClass="form-control" Width="100%">
+                                        <asp:ListItem Value="" Text="Sắp xếp"></asp:ListItem>
+                                        <asp:ListItem Value="latestOnApp" Text="Mới nhất trên app"></asp:ListItem>
+                                        <asp:ListItem Value="latestOnSystem" Text="Mới nhất trên hệ thống"></asp:ListItem>
+                                        <asp:ListItem Value="stockDesc" Text="Kho giảm dần"></asp:ListItem>
+                                        <asp:ListItem Value="stockAsc" Text="Kho tăng dần"></asp:ListItem>
+                                    </asp:DropDownList>
+                                </div>
                                 <div class="col-md-2 col-xs-6">
-                                    <asp:DropDownList ID="ddlCategory" runat="server" CssClass="form-control"></asp:DropDownList>
+                                    <asp:DropDownList ID="ddlStockStatus" runat="server" CssClass="form-control">
+                                        <asp:ListItem Value="" Text="Trạng thái kho"></asp:ListItem>
+                                        <asp:ListItem Value="1" Text="Còn hàng"></asp:ListItem>
+                                        <asp:ListItem Value="2" Text="Hết hàng"></asp:ListItem>
+                                        <asp:ListItem Value="3" Text="Nhập hàng"></asp:ListItem>
+                                    </asp:DropDownList>
+                                </div>
+                                <div class="col-md-2 col-xs-6">
+                                    <asp:DropDownList ID="ddlQuantityFilter" runat="server" CssClass="form-control" onchange="changeQuantityFilter($(this))">
+                                        <asp:ListItem Value="" Text="Số lượng kho"></asp:ListItem>
+                                        <asp:ListItem Value="greaterthan" Text="Số lượng lớn hơn"></asp:ListItem>
+                                        <asp:ListItem Value="lessthan" Text="Số lượng nhỏ hơn"></asp:ListItem>
+                                        <asp:ListItem Value="between" Text="Số lượng trong khoảng"></asp:ListItem>
+                                    </asp:DropDownList>
+                                </div>
+                                <div class="col-md-2 col-xs-6 greaterthan lessthan">
+                                    <asp:TextBox ID="txtQuantity" runat="server" CssClass="form-control" placeholder="Số lượng" autocomplete="off"></asp:TextBox>
+                                </div>
+                                <div class="col-md-2 col-xs-6 between hide">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <asp:TextBox ID="txtQuantityMin" runat="server" CssClass="form-control" placeholder="Min" autocomplete="off"></asp:TextBox>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <asp:TextBox ID="txtQuantityMax" runat="server" CssClass="form-control" placeholder="Max" autocomplete="off"></asp:TextBox>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-2 col-xs-6">
+                                    <asp:DropDownList ID="ddlPreOrder" runat="server" CssClass="form-control">
+                                        <asp:ListItem Value="" Text="Loại hàng"></asp:ListItem>
+                                        <asp:ListItem Value="0" Text="Hàng có sẵn"></asp:ListItem>
+                                        <asp:ListItem Value="1" Text="Hàng order"></asp:ListItem>
+                                    </asp:DropDownList>
                                 </div>
                                 <div class="col-md-1 col-xs-6">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="filter-above-wrap clear">
+                        <div class="filter-control">
+                            <div class="row">
+                                <div class="col-md-3 col-xs-6">
+                                    <asp:DropDownList ID="ddlCategory" runat="server" CssClass="form-control"></asp:DropDownList>
+                                </div>
+                                <div class="col-md-2 col-xs-6">
+                                    <asp:DropDownList ID="ddlTag" runat="server" CssClass="form-control select2" Width="100%"></asp:DropDownList>
+                                </div>
+                                <div class="col-md-2 col-xs-6">
                                     <asp:DropDownList ID="ddlColor" runat="server" CssClass="form-control select2" Width="100%">
                                         <asp:ListItem Value="" Text="Màu"></asp:ListItem>
                                         <asp:ListItem Value="cam" Text="Cam"></asp:ListItem>
@@ -247,7 +303,7 @@
                                         <asp:ListItem Value="xanh rêu" Text="Xanh rêu"></asp:ListItem>
                                     </asp:DropDownList>
                                 </div>
-                                <div class="col-md-1 col-xs-6">
+                                <div class="col-md-2 col-xs-6">
                                     <asp:DropDownList ID="ddlSize" runat="server" CssClass="form-control">
                                         <asp:ListItem Value="" Text="Size"></asp:ListItem>
                                         <asp:ListItem Value="s" Text="Size S"></asp:ListItem>
@@ -267,41 +323,7 @@
                                         <asp:ListItem Value="38" Text="Size 38"></asp:ListItem>
                                     </asp:DropDownList>
                                 </div>
-                                <div class="col-md-2 col-xs-6">
-                                    <asp:DropDownList ID="ddlStockStatus" runat="server" CssClass="form-control">
-                                        <asp:ListItem Value="" Text="Trạng thái kho"></asp:ListItem>
-                                        <asp:ListItem Value="1" Text="Còn hàng"></asp:ListItem>
-                                        <asp:ListItem Value="2" Text="Hết hàng"></asp:ListItem>
-                                        <asp:ListItem Value="3" Text="Nhập hàng"></asp:ListItem>
-                                    </asp:DropDownList>
-                                </div>
-                                <div class="col-md-2 col-xs-6">
-                                    <asp:DropDownList ID="ddlQuantityFilter" runat="server" CssClass="form-control" onchange="changeQuantityFilter($(this))">
-                                        <asp:ListItem Value="" Text="Số lượng kho"></asp:ListItem>
-                                        <asp:ListItem Value="greaterthan" Text="Số lượng lớn hơn"></asp:ListItem>
-                                        <asp:ListItem Value="lessthan" Text="Số lượng nhỏ hơn"></asp:ListItem>
-                                        <asp:ListItem Value="between" Text="Số lượng trong khoảng"></asp:ListItem>
-                                    </asp:DropDownList>
-                                </div>
-                                <div class="col-md-2 col-xs-6 greaterthan lessthan">
-                                    <asp:TextBox ID="txtQuantity" runat="server" CssClass="form-control" placeholder="Số lượng" autocomplete="off"></asp:TextBox>
-                                </div>
-                                <div class="col-md-2 col-xs-6 between hide">
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <asp:TextBox ID="txtQuantityMin" runat="server" CssClass="form-control" placeholder="Min" autocomplete="off"></asp:TextBox>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <asp:TextBox ID="txtQuantityMax" runat="server" CssClass="form-control" placeholder="Max" autocomplete="off"></asp:TextBox>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-2 col-xs-6">
-                                    <asp:DropDownList ID="ddlPreOrder" runat="server" CssClass="form-control">
-                                        <asp:ListItem Value="" Text="Loại hàng"></asp:ListItem>
-                                        <asp:ListItem Value="0" Text="Hàng có sẵn"></asp:ListItem>
-                                        <asp:ListItem Value="1" Text="Hàng order"></asp:ListItem>
-                                    </asp:DropDownList>
+                                <div class="col-md-4 col-xs-6">
                                 </div>
                             </div>
                         </div>
@@ -331,10 +353,10 @@
             </div>
         </div>
 
-        <script src="/App_Themes/Ann/js/copy-product-info.js?v=02042020"></script>
-        <script src="/App_Themes/Ann/js/sync-product.js?v=02042020"></script>
-        <script src="/App_Themes/Ann/js/download-product-image.js?v=02042020"></script>
-        <script src="/App_Themes/Ann/js/services/common/product-service.js?v=02042020"></script>
+        <script src="/App_Themes/Ann/js/copy-product-info.js?v=10042020"></script>
+        <script src="/App_Themes/Ann/js/sync-product.js?v=10042020"></script>
+        <script src="/App_Themes/Ann/js/download-product-image.js?v=10042020"></script>
+        <script src="/App_Themes/Ann/js/services/common/product-service.js?v=10042020"></script>
         
         <script type="text/javascript">
             $("#<%=txtSearchProduct.ClientID%>").keyup(function (e) {
@@ -395,6 +417,29 @@
             function searchProduct()
             {
                 $("#<%= btnSearch.ClientID%>").click();
+            }
+
+            function updateHotProduct(obj) {
+                let productID = obj.attr("data-id");
+
+                $.ajax({
+                    type: "POST",
+                    url: "/tat-ca-san-pham.aspx/updateHotProduct",
+                    data: "{productID: " + productID + "}",
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (msg) {
+                        if (msg.d == "hot") {
+                            $(obj).html("<i class='fa fa-star' aria-hidden='true'></i>");
+                        }
+                        else if (msg.d == "noHot") {
+                            $(obj).html("<i class='fa fa-star-o' aria-hidden='true'></i>");
+                        }
+                        else if (msg.d == "productNotfound") {
+                            alert("Lỗi không tìm thấy sản phẩm");
+                        }
+                    }
+                });
             }
             
             function updateShowHomePage(obj)
@@ -482,12 +527,14 @@
                 });
             }
 
-            function updateWebUpdate(ID)
+            function upTopWebUpdate(obj)
             {
+                var productID = obj.attr("data-id");
+
                 $.ajax({
                     type: "POST",
-                    url: "/tat-ca-san-pham.aspx/updateWebUpdate",
-                    data: "{id: '" + ID + "'}",
+                    url: "/tat-ca-san-pham.aspx/upTopWebUpdate",
+                    data: "{id: " + productID + "}",
                     contentType: "application/json; charset=utf-8",
                     dataType: "json",
                     beforeSend: function () {

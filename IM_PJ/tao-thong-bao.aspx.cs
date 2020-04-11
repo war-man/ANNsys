@@ -145,7 +145,8 @@ namespace IM_PJ
                     CreatedDate = currentDate,
                     CreatedBy = acc.Username,
                     ModifiedDate = currentDate,
-                    ModifiedBy = acc.Username
+                    ModifiedBy = acc.Username,
+                    AppUpdate = currentDate
                 };
 
                 var post = NotifyController.Insert(newNotify);

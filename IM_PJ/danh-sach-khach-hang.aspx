@@ -94,7 +94,7 @@
             </div>
         </div>
 
-        <script type="text/javascript" src="/App_Themes/Ann/js/pages/danh-sach-khach-hang/generate-coupon-for-customer.js?v=02042020"></script>
+        <script type="text/javascript" src="/App_Themes/Ann/js/pages/danh-sach-khach-hang/generate-coupon-for-customer.js?v=10042020"></script>
         <script type="text/javascript">
             $("#<%=txtTextSearch.ClientID%>").keyup(function (e) {
                 if (e.keyCode == 13)

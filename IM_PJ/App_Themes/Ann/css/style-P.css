@@ -1,4 +1,9 @@
-﻿.p-paterials {
+﻿.update-hot-product {
+    color: #428bca!important;
+    font-size: 22px;
+    margin-right: 5px;
+}
+.p-paterials {
     font-size: 13px;
     margin-top: 7px;
 }

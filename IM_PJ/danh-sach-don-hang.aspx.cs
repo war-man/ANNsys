@@ -53,7 +53,7 @@ namespace IM_PJ
         public void LoadShipper()
         {
             var shipper = ShipperController.getDropDownList();
-            shipper[0].Text = "Nhân viên giao hàng";
+            shipper[0].Text = "Shipper";
             ddlShipperFilter.Items.Clear();
             ddlShipperFilter.Items.AddRange(shipper.ToArray());
             ddlShipperFilter.DataBind();
@@ -337,12 +337,12 @@ namespace IM_PJ
             html.Append("<thead>");
             html.Append("<tr>");
             html.Append("    <th>Mã</th>");
-            html.Append("    <th>Loại</th>");
+            html.Append("    <th></th>");
             html.Append("    <th class='col-customer'>Khách hàng</th>");
             html.Append("    <th>Mua</th>");
             html.Append("    <th>Xử lý</th>");
             html.Append("    <th>Thanh toán</th>");
-            html.Append("    <th>Thanh toán</th>");
+            html.Append("    <th>Kiểu thanh toán</th>");
             html.Append("    <th>Giao hàng</th>");
             html.Append("    <th>Tổng tiền</th>");
             if (acc.RoleID == 0)
@@ -417,18 +417,18 @@ namespace IM_PJ
 
                     if (acc.RoleID == 0)
                     {
-                        html.Append("   <td data-title='Nhân viên tạo đơn'>" + item.CreatedBy + "</td>");
+                        html.Append("   <td data-title='Nhân viên'>" + item.CreatedBy + "</td>");
                     }
 
                     string date = string.Format("<strong>{0:dd/MM}</strong><br>{0:HH:mm}", item.CreatedDate);
-                    html.Append("   <td data-title='Ngày tạo đơn'>" + date + "</td>");
+                    html.Append("   <td data-title='Ngày tạo'>" + date + "</td>");
 
                     string datedone = "";
                     if (item.ExcuteStatus == 2)
                     {
                         datedone = string.Format("<strong>{0:dd/MM}</strong><br>{0:HH:mm}", item.DateDone);
                     }
-                    html.Append("   <td data-title='Ngày hoàn tất'>" + datedone + "</td>");
+                    html.Append("   <td data-title='Hoàn tất'>" + datedone + "</td>");
 
                     html.Append("   <td data-title='Thao tác' class='update-button'>");
                     html.Append("       <a href='/print-invoice?id=" + item.ID + "' title='In hóa đơn' target='_blank' class='btn primary-btn h45-btn'><i class='fa fa-print' aria-hidden='true'></i></a>");
@@ -441,14 +441,13 @@ namespace IM_PJ
                     html.Append("</tr>");
 
                     // thông tin thêm
-
                     html.Append("<tr class='tr-more-info'>");
                     html.Append("<td colspan='2'></td>");
                     html.Append("<td colspan='11'>");
 
                     if(item.TotalRefund != 0)
                     {
-                        html.Append("<span class='order-info'><strong>Hàng trả:</strong> -" + string.Format("{0:N0}", item.TotalRefund) + " (<a href='xem-don-hang-doi-tra?id=" + item.RefundsGoodsID + "' target='_blank'>Đơn " + item.RefundsGoodsID + "</a>)</span>");
+                        html.Append("<span class='order-info'><strong>Đổi trả:</strong> -" + string.Format("{0:N0}", item.TotalRefund) + " (<a href='xem-don-hang-doi-tra?id=" + item.RefundsGoodsID + "' target='_blank'>Đơn " + item.RefundsGoodsID + "</a>)</span>");
                     }
 
                     if (item.TotalDiscount > 0)
@@ -483,7 +482,7 @@ namespace IM_PJ
                     }
                     if (item.FeeShipping > 0)
                     {
-                        html.Append("<span class='order-info'><strong>Phí ship:</strong> " + string.Format("{0:N0}", Convert.ToDouble(item.FeeShipping)) + "</span>");
+                        html.Append("<span class='order-info'><strong>Ship:</strong> " + string.Format("{0:N0}", Convert.ToDouble(item.FeeShipping)) + "</span>");
                     }
                     if ((item.ShippingType == 4 || item.ShippingType == 5) && !string.IsNullOrEmpty(item.ShipperName))
                     {
@@ -491,7 +490,7 @@ namespace IM_PJ
                     }
                     if (!string.IsNullOrEmpty(item.CouponCode))
                     {
-                        html.Append(String.Format("<span class='order-info'><strong>Mã giảm giá ({0}):</strong> -{1:N0}</span>", item.CouponCode.Trim().ToUpper(), item.CouponValue));
+                        html.Append(String.Format("<span class='order-info'><strong>Coupon ({0}):</strong> -{1:N0}</span>", item.CouponCode.Trim().ToUpper(), item.CouponValue));
                     }
                     if (!string.IsNullOrEmpty(item.OrderNote))
                     {

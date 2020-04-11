@@ -140,4 +140,22 @@ namespace IM_PJ.Models
         Yes = 1, // Trạng thái có mã giảm giá
         No = 2 // Trạng thái không có mã giảm giá
     }
+
+    public class ProductOrderBy
+    {
+        // Mới nhất trên app
+        public const string latestOnApp = "latestOnApp";
+        // Mới nhất trên hệ thống
+        public const string latestOnSystem = "latestOnSystem";
+        // Kho giảm dần
+        public const string stockDesc = "stockDesc";
+        // Kho tăng dần
+        public const string stockAsc = "stockAsc";
+    }
+
+    public enum CheckTagStatus
+    {
+        @checked = 1,
+        unChecked = 2
+    }
 }

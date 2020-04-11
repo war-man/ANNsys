@@ -211,7 +211,7 @@ namespace IM_PJ.Controllers
                     return null;
             }
         }
-        public static string updateWebUpdate(int id)
+        public static string upTopWebUpdate(int id)
         {
             using (var dbe = new inventorymanagementEntities())
             {
@@ -1377,6 +1377,7 @@ namespace IM_PJ.Controllers
                     sql.AppendLine(String.Format("  AND PRQ.QuantityLeft BETWEEN {0} AND {1}", filter.quantityFrom, filter.quantityTo));
                 sql.AppendLine(");");
 
+                sql.AppendLine(String.Empty);
                 sql.AppendLine("DELETE #ProductQuantity");
                 sql.AppendLine("WHERE NOT EXISTS (");
                 sql.AppendLine("    SELECT");
@@ -1388,6 +1389,38 @@ namespace IM_PJ.Controllers
                 sql.AppendLine("    AND p.ID = ParentID");
                 sql.AppendLine(");");
             }
+            #endregion
+
+
+            #region Lọc lại dữ liệu liên quan tag
+            if (filter.tag != 0)
+            {
+                sql.AppendLine(String.Empty);
+                sql.AppendLine("    SELECT");
+                sql.AppendLine("        T.ProductID");
+                sql.AppendLine("    INTO #ProductTag");
+                sql.AppendLine("    FROM ");
+                sql.AppendLine("        ProductTag AS T");
+                sql.AppendLine("    INNER JOIN #Product AS P");
+                sql.AppendLine("    ON  T.ProductID = P.ID");
+                sql.AppendLine("    WHERE");
+                sql.AppendLine(String.Format("        T.TagID = {0}", filter.tag));
+                sql.AppendLine("    GROUP BY T.ProductID;");
+
+                sql.AppendLine(String.Empty);
+                sql.AppendLine("DELETE #Product");
+                sql.AppendLine("FROM ");
+                sql.AppendLine("    #Product AS P");
+                sql.AppendLine("WHERE NOT EXISTS (");
+                sql.AppendLine("    SELECT");
+                sql.AppendLine("        NULL AS DUMMY");
+                sql.AppendLine("    FROM");
+                sql.AppendLine("        #ProductTag AS T");
+                sql.AppendLine("    WHERE");
+                sql.AppendLine("        P.ID = T.ProductID");
+                sql.AppendLine(");");
+            }
+
             #endregion
 
             #region Tính toán phân trang
@@ -1405,8 +1438,38 @@ namespace IM_PJ.Controllers
             sql.AppendLine("     INTO #ProductPagination");
             sql.AppendLine("     FROM");
             sql.AppendLine("             #Product AS p");
+            if (!String.IsNullOrEmpty(filter.orderBy) && (filter.orderBy == ProductOrderBy.stockAsc || filter.orderBy == ProductOrderBy.stockDesc))
+            {
+                sql.AppendLine("     LEFT JOIN #ProductQuantity AS PRQ");
+                sql.AppendLine("         ON  p.ProductStyle = PRQ.ProductStyle");
+                sql.AppendLine("         AND p.ID = PRQ.ParentID");
+            }
             sql.AppendLine("     ORDER BY");
-            sql.AppendLine("             p.ID DESC");
+            if (!String.IsNullOrEmpty(filter.orderBy))
+            {
+                switch (filter.orderBy)
+                {
+                    case ProductOrderBy.latestOnApp:
+                        sql.AppendLine("             p.WebUpdate DESC");
+                        break;
+                    case ProductOrderBy.latestOnSystem:
+                        sql.AppendLine("             p.ID DESC");
+                        break;
+                    case ProductOrderBy.stockDesc:
+                        sql.AppendLine("             ISNULL(PRQ.QuantityLeft, 0) DESC");
+                        break;
+                    case ProductOrderBy.stockAsc:
+                        sql.AppendLine("             ISNULL(PRQ.QuantityLeft, 0) ASC");
+                        break;
+                    default:
+                        sql.AppendLine("             p.ID DESC");
+                        break;
+                }
+            }
+            else
+            {
+                sql.AppendLine("             p.ID DESC");
+            }
             sql.AppendLine("     OFFSET @pageSize * (@currentPage - 1) ROWS");
             sql.AppendLine("     FETCH NEXT @pageSize ROWS ONLY");
             sql.AppendLine("     ;");
@@ -1538,7 +1601,7 @@ namespace IM_PJ.Controllers
                 list.Add(entity);
             }
             reader.Close();
-            return list.OrderByDescending(x => x.ID).ToList();
+            return list;
         }
 
         public static ProductStockReport getProductStockReport(string SKU, int CategoryID)

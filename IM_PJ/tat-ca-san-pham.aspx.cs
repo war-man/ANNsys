@@ -36,12 +36,28 @@ namespace IM_PJ
                     {
                         LoadData();
                         LoadCategory();
+                        LoadTag();
                     }
                 }
                 else
                 {
                     Response.Redirect("/dang-nhap");
                 }
+            }
+        }
+        public void LoadTag()
+        {
+            var tag = TagController.getAll();
+            ddlTag.Items.Clear();
+            ddlTag.Items.Insert(0, new ListItem("Tag", "0"));
+            if (tag.Count > 0)
+            {
+                foreach (var t in tag)
+                {
+                    ListItem item = new ListItem(t.Name, t.ID.ToString());
+                    ddlTag.Items.Add(item);
+                }
+                ddlTag.DataBind();
             }
         }
         public void LoadCategory()
@@ -111,20 +127,22 @@ namespace IM_PJ
                 rToDate.MinDate = DateConfig;
                 rToDate.MaxDate = DateTime.Now;
 
-                string TextSearch = "";
+                string TextSearch = String.Empty;
                 int CategoryID = 0;
                 int StockStatus = 0;
-                string ShowHomePage = "";
-                string WebPublish = "";
+                string ShowHomePage = String.Empty;
+                string WebPublish = String.Empty;
                 string strColor = String.Empty;
                 string strSize = String.Empty;
                 int Page = 1;
                 // add filter quantity
-                string Quantity = "";
+                string Quantity = String.Empty;
                 int QuantityFrom = 0;
                 int QuantityTo = 0;
                 // add filter preOrder
                 var preOrder = String.Empty;
+                string orderBy = String.Empty;
+                int tag = 0;
 
                 if (Request.QueryString["textsearch"] != null)
                     TextSearch = Request.QueryString["textsearch"].Trim();
@@ -164,6 +182,14 @@ namespace IM_PJ
                         QuantityTo = Request.QueryString["quantitymax"].ToInt();
                     }
                 }
+                if (Request.QueryString["orderby"] != null)
+                {
+                    orderBy = Request.QueryString["orderby"];
+                }
+                if (Request.QueryString["tag"] != null)
+                {
+                    tag = Request.QueryString["tag"].ToInt();
+                }
 
                 txtSearchProduct.Text = TextSearch;
                 ddlCategory.SelectedValue = CategoryID.ToString();
@@ -197,8 +223,12 @@ namespace IM_PJ
                 // Add filter preOrder
                 if (!String.IsNullOrEmpty(Request.QueryString["preOrder"]))
                     preOrder = Request.QueryString["preOrder"];
+                ddlPreOrder.SelectedValue = preOrder;
 
-                // Create order fileter
+                ddlTag.SelectedValue = tag.ToString();
+                ddlOrderBy.SelectedValue = orderBy;
+
+                // Create order filter
                 var filter = new ProductFilterModel()
                 {
                     category = CategoryID,
@@ -213,7 +243,9 @@ namespace IM_PJ
                     toDate = toDate,
                     showHomePage = ShowHomePage,
                     webPublish = WebPublish,
-                    preOrder = preOrder
+                    preOrder = preOrder,
+                    tag = tag,
+                    orderBy = orderBy
                 };
                 // Create pagination
                 var page = new PaginationMetadataModel()
@@ -236,7 +268,34 @@ namespace IM_PJ
             }
         }
         [WebMethod]
-        
+        public static string updateHotProduct(int productID)
+        {
+            var product = ProductController.GetByID(productID);
+            if (product == null)
+            {
+                return "productNotfound";
+            }
+
+            var hotTag = new ProductTag() {
+                TagID = 8,
+                ProductID = product.ID,
+                ProductVariableID = 0,
+                SKU = product.ProductSKU,
+                CreatedBy = acc.ID,
+                CreatedDate = DateTime.Now
+            };
+            var result = ProductTagController.checkAndUnCheck(hotTag);
+
+            if (result == CheckTagStatus.@checked)
+            {
+                return "hot";
+            }
+            else
+            {
+                return "noHot";
+            }
+        }
+        [WebMethod]
         public static string getAllProductImage(string sku)
         {
             List<string> result = new List<string>();
@@ -424,9 +483,9 @@ namespace IM_PJ
             }
         }
         [WebMethod]
-        public static string updateWebUpdate(int id)
+        public static string upTopWebUpdate(int id)
         {
-            string update = ProductController.updateWebUpdate(id);
+            string update = ProductController.upTopWebUpdate(id);
             if (update != null)
             {
                 return "true";
@@ -742,12 +801,19 @@ namespace IM_PJ
                 foreach (var item in acs)
                 {
                     html.AppendLine("<tr>");
-
                     html.AppendLine("<td>");
                     html.AppendLine("   <a target='_blank' href='/xem-san-pham?id=" + item.ID + "'><img src='" + Thumbnail.getURL(item.ProductImage, Thumbnail.Size.Small) + "'></a>");
                     html.AppendLine("   <a href='javascript:;' onclick='copyProductInfo(" + item.ID + ")' class='btn download-btn h45-btn'><i class='fa fa-files-o'></i> Copy</a>");
                     html.AppendLine("</td>");
                     html.AppendLine("   <td>");
+                    if (!String.IsNullOrEmpty(item.Tags) && item.Tags.Contains("hot"))
+                    {
+                        html.AppendLine("       <a class='update-hot-product' href='javascript:;' data-id='" + item.ID + "' onclick='updateHotProduct($(this))'><i class='fa fa-star' aria-hidden='true'></i></a>");
+                    }
+                    else
+                    {
+                        html.AppendLine("       <a class='update-hot-product' href='javascript:;' data-id='" + item.ID + "' onclick='updateHotProduct($(this))'><i class='fa fa-star-o' aria-hidden='true'></i></a>");
+                    }
                     html.AppendLine("       <a target='_blank' class='customer-name-link' href='/xem-san-pham?id=" + item.ID + "'>" + (item.OldPrice > 0 ? "<span class='sale-icon'>SALE</span> " : "") + item.ProductTitle + "</a>");
                     html.AppendLine("       <p class='p-paterials'><strong>Chất liệu:</strong> " + item.Materials + "<p>");
 
@@ -757,7 +823,10 @@ namespace IM_PJ
 
                         foreach (var tag in tagList)
                         {
-                            html.AppendLine(String.Format("       <span class='tag-blue'>{0}</span>", tag.ToLower()));
+                            if (tag != "hot")
+                            {
+                                html.AppendLine(String.Format("       <span class='tag-blue'>{0}</span>", tag.ToLower()));
+                            }
                         }
                     }
                     html.AppendLine("   </td>");
@@ -801,13 +870,17 @@ namespace IM_PJ
 
                     if (acc.RoleID == 0 || acc.Username == "nhom_zalo502")
                     {
-                        html.AppendLine("       <a href='javascript:;' title='Đồng bộ sản phẩm' class='up-product-" + item.ID + " btn btn-green primary-btn h45-btn " + (item.ShowHomePage == 1 ? "" : "hide") + "' onclick='ShowUpProductToWeb(`" + item.ProductSKU + "`, `" + item.ID + "`, `" + item.CategoryID + "`, `false`, `false`, `null`);'><i class='fa fa-refresh' aria-hidden='true'></i></a>");
-                        html.AppendLine("       <a href='javascript:;' title='Up sản phẩm lên đầu trang' class='webupdate-product-" + item.ID + " btn primary-btn btn-violet h45-btn " + (item.WebPublish == true ? "" : "hide") + "' onclick='updateWebUpdate(`" + item.ID + "`);'><i class='fa fa-upload' aria-hidden='true'></i></a>");
-                        if (item.TotalProductInstockQuantityLeft > 0)
-                            html.AppendLine("       <a href='javascript:;' title='Xả hết kho' class='liquidation-product-" + item.ID + " btn primary-btn btn-red h45-btn' onclick='liquidateProduct(" + item.CategoryID + ", " + item.ID + ", `" + item.ProductSKU + "`);'><i class='glyphicon glyphicon-trash' aria-hidden='true'></i></a>");
-                        else if(item.Liquidated)
-                            html.AppendLine("       <a href='javascript:;' title='Phục hồi xả kho' class='recover-liquidation-product-" + item.ID + " btn primary-btn btn-green h45-btn' onclick='recoverLiquidatedProduct(" + item.CategoryID + ", " + item.ID + ", `" + item.ProductSKU + "`);'><i class='glyphicon glyphicon-repeat' aria-hidden='true'></i></a>");
+                        html.AppendLine("       <a href='javascript:;' title='Up sản phẩm lên đầu trang' class='btn primary-btn btn-violet h45-btn' data-id='" + item.ID + "' onclick='upTopWebUpdate($(this));'><i class='fa fa-arrow-up' aria-hidden='true'></i></a>");
                         html.AppendLine("       <a target='_blank' href='/thong-tin-san-pham?id=" + item.ID + "' title='Sửa sản phẩm' class='btn btn-blue primary-btn h45-btn'><i class='fa fa-pencil-square-o' aria-hidden='true'></i></a>");
+                        html.AppendLine("       <a href='javascript:;' title='Đồng bộ sản phẩm' class='up-product-" + item.ID + " btn btn-green primary-btn h45-btn " + (item.ShowHomePage == 1 ? "" : "hide") + "' onclick='ShowUpProductToWeb(`" + item.ProductSKU + "`, `" + item.ID + "`, `" + item.CategoryID + "`, `false`, `false`, `null`);'><i class='fa fa-refresh' aria-hidden='true'></i></a>");
+                        if (item.TotalProductInstockQuantityLeft > 0)
+                        {
+                            html.AppendLine("       <a href='javascript:;' title='Xả hết kho' class='liquidation-product-" + item.ID + " btn primary-btn btn-red h45-btn' onclick='liquidateProduct(" + item.CategoryID + ", " + item.ID + ", `" + item.ProductSKU + "`);'><i class='glyphicon glyphicon-trash' aria-hidden='true'></i></a>");
+                        }
+                        else if (item.Liquidated)
+                        {
+                            html.AppendLine("       <a href='javascript:;' title='Phục hồi xả kho' class='recover-liquidation-product-" + item.ID + " btn primary-btn btn-green h45-btn' onclick='recoverLiquidatedProduct(" + item.CategoryID + ", " + item.ID + ", `" + item.ProductSKU + "`);'><i class='glyphicon glyphicon-repeat' aria-hidden='true'></i></a>");
+                        }
                     }
 
                     html.AppendLine("  </td>");
@@ -968,12 +1041,12 @@ namespace IM_PJ
             string search = txtSearchProduct.Text;
             string request = "/tat-ca-san-pham?";
 
-            if (search != "")
+            if (!String.IsNullOrEmpty(search))
             {
                 request += "&textsearch=" + search;
             }
 
-            if (ddlStockStatus.SelectedValue != "")
+            if (!String.IsNullOrEmpty(ddlStockStatus.SelectedValue))
             {
                 request += "&stockstatus=" + ddlStockStatus.SelectedValue;
             }
@@ -993,17 +1066,17 @@ namespace IM_PJ
                 request += "&todate=" + rToDate.SelectedDate.ToString();
             }
 
-            if (ddlShowHomePage.SelectedValue != "")
+            if (!String.IsNullOrEmpty(ddlShowHomePage.SelectedValue))
             {
                 request += "&showhomepage=" + ddlShowHomePage.SelectedValue;
             }
 
-            if (ddlWebPublish.SelectedValue != "")
+            if (!String.IsNullOrEmpty(ddlWebPublish.SelectedValue))
             {
                 request += "&webpublish=" + ddlWebPublish.SelectedValue;
             }
 
-            if (ddlQuantityFilter.SelectedValue != "")
+            if (!String.IsNullOrEmpty(ddlQuantityFilter.SelectedValue))
             {
                 if (ddlQuantityFilter.SelectedValue == "greaterthan" || ddlQuantityFilter.SelectedValue == "lessthan")
                 {
@@ -1025,9 +1098,22 @@ namespace IM_PJ
             {
                 request += "&size=" + ddlSize.SelectedValue;
             }
+
             // Add filter preOrder
             if (!String.IsNullOrEmpty(ddlPreOrder.SelectedValue))
                 request += "&preOrder=" + ddlPreOrder.SelectedValue;
+
+            // Add filter tag
+            if (ddlTag.SelectedValue != "0")
+            {
+                request += "&tag=" + ddlTag.SelectedValue;
+            }
+
+            // Add filter order by
+            if (!String.IsNullOrEmpty(ddlOrderBy.SelectedValue))
+            {
+                request += "&orderby=" + ddlOrderBy.SelectedValue;
+            }
 
             Response.Redirect(request);
         }

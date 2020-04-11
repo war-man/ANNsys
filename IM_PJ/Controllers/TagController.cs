@@ -63,7 +63,17 @@ namespace IM_PJ.Controllers
                 return tagNew;
             }
         }
+        public static List<Tag> getAll()
+        {
+            using (var con = new inventorymanagementEntities())
+            {
+                var tags = con.Tags
+                    .OrderBy(o => o.Name)
+                    .ToList();
 
+                return tags;
+            }
+        }
         public static List<TagModel> get(string tagName)
         {
             using (var con = new inventorymanagementEntities())

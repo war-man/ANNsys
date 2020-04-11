@@ -298,6 +298,7 @@ warning 6002: The table/view 'inventorymanagement.dbo.NotificationCategory' does
           <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="ModifiedDate" Type="datetime" Nullable="false" />
           <Property Name="ModifiedBy" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="AppUpdate" Type="datetime" />
         </EntityType>
         <EntityType Name="NotifyPromotion">
           <Key>
@@ -1571,6 +1572,7 @@ warning 6002: The table/view 'inventorymanagement.dbo.NotificationCategory' does
           <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="ModifiedDate" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="ModifiedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="AppUpdate" Type="DateTime" Precision="3" />
         </EntityType>
         <EntityType Name="NotifyPromotion">
           <Key>
@@ -2884,6 +2886,7 @@ warning 6002: The table/view 'inventorymanagement.dbo.NotificationCategory' does
           <EntitySetMapping Name="NotifyNews">
             <EntityTypeMapping TypeName="inventorymanagementModel.NotifyNew">
               <MappingFragment StoreEntitySet="NotifyNews">
+                <ScalarProperty Name="AppUpdate" ColumnName="AppUpdate" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="CategoryID" ColumnName="CategoryID" />
                 <ScalarProperty Name="CategorySlug" ColumnName="CategorySlug" />
