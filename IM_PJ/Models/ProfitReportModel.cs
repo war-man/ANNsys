@@ -19,5 +19,6 @@ namespace IM_PJ.Models
         public double TotalRefundPrice { get; set; }
         public double TotalRefundCost { get; set; }
         public double TotalRefundFee { get; set; }
+        public double TotalCouponValue { get; set; }
     }
 }

@@ -208,6 +208,20 @@
                                 </div>
                             </div>
                             <div class="row margin-bottom-15">
+                                <div class="col-md-4">
+                                    <div class="report-column">
+                                        <div class="report-label">
+                                            Tổng giảm giá:
+                                        </div>
+                                        <div class="report-value">
+                                            <asp:Literal ID="ltrTotalCouponValue" runat="server" EnableViewState="false"></asp:Literal>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-8">
+                                </div>
+                            </div>
+                            <div class="row margin-bottom-15">
                                 <div class="col-md-12">
                                     <canvas id="canvas"></canvas>
                                 </div>

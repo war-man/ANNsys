@@ -71,10 +71,12 @@ namespace IM_PJ
             double TotalRefundCost = reportModel.Sum(x => x.TotalRefundCost);
             double TotalCost = TotalSaleCost - TotalRefundCost;
 
+            double TotalCouponValue = reportModel.Sum(x => x.TotalCouponValue);
+
             double TotalSaleDiscount = reportModel.Sum(x => x.TotalSaleDiscount);
             double TotalRefundFee = reportModel.Sum(x => x.TotalRefundFee);
             //double TotalProfit = TotalRevenue - TotalCost - TotalSaleDiscount + TotalRefundFee;
-            double TotalProfit = (TotalSalePrice - TotalSaleCost) - TotalSaleDiscount - (TotalRefundPrice - TotalRefundCost) + TotalRefundFee;
+            double TotalProfit = (TotalSalePrice - TotalSaleCost) - TotalSaleDiscount - (TotalRefundPrice - TotalRefundCost) + TotalRefundFee - TotalCouponValue;
             double TotalProfitPerDay = TotalProfit / day;
             double TotalProfitPerOrder = 0;
 
@@ -87,11 +89,11 @@ namespace IM_PJ
             {
                 TotalProfitPerOrder = Math.Ceiling(TotalProfit / TotalNumberOfOrder);
             }
-
             
             double TotalActualRevenue = TotalSalePrice - TotalRefundPrice - TotalSaleDiscount;
             double TotalOtherFee = reportModel.Sum(x => x.TotalOtherFee);
             double TotalShippingFee = reportModel.Sum(x => x.TotalShippingFee);
+            
 
             ltrTotalProfit.Text = string.Format("{0:N0}", TotalProfit);
             ltrProfitPerDay.Text = string.Format("{0:N0}", TotalProfitPerDay);
@@ -112,6 +114,7 @@ namespace IM_PJ
             ltrTotalActualRevenue.Text = string.Format("{0:N0}", TotalActualRevenue);
             ltrTotalOtherFee.Text = string.Format("{0:N0}", TotalOtherFee);
             ltrTotalShippingFee.Text = string.Format("{0:N0}", TotalShippingFee);
+            ltrTotalCouponValue.Text = string.Format("{0:N0}", TotalCouponValue);
 
             if (day > 1)
             {

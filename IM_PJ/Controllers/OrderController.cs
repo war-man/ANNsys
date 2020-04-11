@@ -2428,7 +2428,8 @@ namespace IM_PJ.Controllers
                             TotalDiscount = order.TotalDiscount,
                             TotalOtherFee = order.OtherFeeValue,
                             TotalShippingFee = order.FeeShipping,
-                            DateDone = order.DateDone
+                            DateDone = order.DateDone,
+                            TotalCouponValue = order.CouponValue
                         })
                         .OrderBy(x => x.SKU)
                     .Join(
@@ -2449,7 +2450,8 @@ namespace IM_PJ.Controllers
                             TotalDiscount = order.TotalDiscount,
                             TotalOtherFee = order.TotalOtherFee,
                             TotalShippingFee = order.TotalShippingFee,
-                            DateDone = order.DateDone.Value
+                            DateDone = order.DateDone.Value,
+                            TotalCouponValue = order.TotalCouponValue
                         })
                     .ToList();
 
@@ -2507,6 +2509,7 @@ namespace IM_PJ.Controllers
                         TotalDiscount = Convert.ToDouble(x.TotalDiscount.HasValue ? x.TotalDiscount.Value : 0),
                         TotalOtherFee = Convert.ToDouble(x.TotalOtherFee.HasValue ? x.TotalOtherFee.Value : 0),
                         TotalShippingFee = Convert.ToDouble(String.IsNullOrEmpty(x.TotalShippingFee) ? "0" : x.TotalShippingFee),
+                        TotalCouponValue = Convert.ToDouble(x.TotalCouponValue.HasValue ? x.TotalCouponValue.Value : 0),
                     }
                     )
                     .GroupBy(g => new { DateDone = g.DateDone, OrderID = g.OrderID })
@@ -2520,7 +2523,8 @@ namespace IM_PJ.Controllers
                         TotalSaleCost = x.Sum(s => s.SaleCost),
                         TotalSaleDiscount = x.Max(m => m.TotalDiscount),
                         TotalOtherFee = x.Max(m => m.TotalOtherFee),
-                        TotalShippingFee = x.Max(m => m.TotalShippingFee)
+                        TotalShippingFee = x.Max(m => m.TotalShippingFee),
+                        TotalCouponValue = x.Max(m => m.TotalCouponValue)
                     }
                     )
                     .GroupBy(g => g.DateDone)
@@ -2533,7 +2537,8 @@ namespace IM_PJ.Controllers
                         TotalSaleCost = x.Sum(s => s.TotalSaleCost),
                         TotalSaleDiscount = x.Sum(s => s.TotalSaleDiscount),
                         TotalOtherFee = x.Sum(s => s.TotalOtherFee),
-                        TotalShippingFee = x.Sum(s => s.TotalShippingFee)
+                        TotalShippingFee = x.Sum(s => s.TotalShippingFee),
+                        TotalCouponValue = x.Sum(s => s.TotalCouponValue),
                     })
                     .ToList();
                 #endregion
@@ -2593,6 +2598,7 @@ namespace IM_PJ.Controllers
                                 TotalSaleDiscount = parent.o.TotalSaleDiscount,
                                 TotalOtherFee = parent.o.TotalOtherFee,
                                 TotalShippingFee = parent.o.TotalShippingFee,
+                                TotalCouponValue = parent.o.TotalCouponValue
                             };
 
                             if (child != null)
