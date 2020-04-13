@@ -77,7 +77,10 @@
         }
 
         function getCheckWarehouse() {
-            let checkWarehouseID = $("#ddlCheckWarehouse").val();
+            let checkWarehouseID = +$("#ddlCheckWarehouse").val() || 0;
+
+            if (!checkWarehouseID)
+                return;
 
             $("#<%=hdfCheckHouseID.ClientID%>").val(checkWarehouseID);
 
