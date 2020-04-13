@@ -175,6 +175,15 @@ namespace IM_PJ {
         protected global::System.Web.UI.WebControls.Literal ltrTotalOtherFee;
         
         /// <summary>
+        /// ltrTotalCouponValue control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Literal ltrTotalCouponValue;
+        
+        /// <summary>
         /// ltrChartData control.
         /// </summary>
         /// <remarks>
