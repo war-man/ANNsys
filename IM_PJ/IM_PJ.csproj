@@ -424,6 +424,7 @@
     <Content Include="App_Themes\Ann\js\services\cron-job-product-status\cron-job-product-status-service.js" />
     <Content Include="App_Themes\Ann\js\services\danh-sach-don-hang\danh-sach-don-hang-service.js" />
     <Content Include="App_Themes\Ann\js\services\danh-sach-khach-giam-gia\danh-sach-khach-giam-gia-service.js" />
+    <Content Include="App_Themes\Ann\js\sync-product-v2.js" />
     <Content Include="App_Themes\Ann\js\sync-product-small.js" />
     <Content Include="App_Themes\Ann\js\sync-product.js" />
     <Content Include="App_Themes\Ann\js\HoldOn.js" />
@@ -543,6 +544,8 @@
     </Content>
     <Content Include="nuoc-hoa.aspx" />
     <Content Include="cron-job-product-status.aspx" />
+    <Content Include="SQL\05CREATE_STORE_PROCEDURE_BackupOrder.sql" />
+    <Content Include="SQL\05CREATE_STORE_PROCEDURE_ClearStock.sql" />
     <Content Include="thuc-hien-kiem-kho.aspx" />
     <Content Include="thong-tin-kiem-kho.aspx" />
     <Content Include="tao-phien-kiem-kho.aspx" />

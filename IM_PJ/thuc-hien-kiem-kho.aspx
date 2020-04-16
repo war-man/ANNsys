@@ -122,30 +122,14 @@
                             <div class="filter-above-wrap clear">
                                 <div class="filter-control">
                                     <div class="row">
-                                        <div class="col-md-9 col-xs-12">
-                                            <div class="row">
-                                                <div class="col-md-6 col-xs-12 margin-bottom-15">
-                                                    <input type="text" id="txtStaffName" class="form-control" disabled="disabled" readonly>
-                                                </div>
-                                                <div class="col-md-6 col-xs-12 margin-bottom-15">
-                                                    <select id="dllCheckWarehouse" class="form-control">
-                                                    </select>
-                                                </div>
-                                            </div>
+                                        <div class="col-md-6 col-xs-12 margin-bottom-15">
+                                            <select id="dllCheckWarehouse" class="form-control">
+                                            </select>
                                         </div>
-                                        <div class="col-md-3 col-xs-12">
-                                            <div class="row">
-                                                <div class="col-xs-6">
-                                                    <a href="javascript:;" id="btnExecute" onclick="execute()" class="btn primary-btn h45-btn">
-                                                        <i class="fa fa-search"></i>Kiểm kho
-                                                    </a>
-                                                </div>
-                                                <div class="col-xs-6">
-                                                    <a href="/thuc-hien-kiem-kho" class="btn primary-btn h45-btn download-btn">
-                                                        <i class="fa fa-times" aria-hidden="true"></i>Làm lại
-                                                    </a>
-                                                </div>
-                                            </div>
+                                        <div class="col-md-6 col-xs-12 margin-bottom-15">
+                                            <a href="javascript:;" id="btnExecute" onclick="execute()" class="btn primary-btn h45-btn">
+                                                <i class="fa fa-search"></i>Kiểm kho
+                                            </a>
                                         </div>
                                     </div>
                                 </div>
@@ -167,11 +151,13 @@
                         </div>
                         <div class="col-md-6 col-xs-12 margin-bottom-15 body_update" hidden>
                             <div class="row">
-                                <div class="col-md-9 col-xs-9">
-                                    <label id="productName"></label>
+                                <div class="col-md-6 col-xs-6">
+                                    <label>Số lượng kho</label>
+                                    <input type="number" id="txtQuantityOld" class="form-control" disabled="disabled" readonly>
                                 </div>
-                                <div class="col-md-3 col-xs-3">
-                                    <input type="number" id="txtQuantity" class="form-control" tabindex="5">
+                                <div class="col-md-6 col-xs-6">
+                                    <label>Số lượng kiểm</label>
+                                    <input type="number" id="txtQuantityNew" class="form-control">
                                 </div>
                             </div>
                         </div>
@@ -181,20 +167,17 @@
                             </a>
                         </div>
                     </div>
-                    <div class="row" data-show-histories="false">
+                    <div class="row staff-history title-datatable" hidden>
                         <div class="col-xs-12 margin-bottom-15">
                             <h4>Lịch sử kiểm kho</h4>
                         </div>
                     </div>
-                    <div class="row" data-show-histories="false">
+                    <div class="row staff-history title-datatable" hidden>
                         <div class="col-xl-12">
                             <table id="tbStaffHistories" class="table table-striped table-bordered">
                                 <thead>
                                     <tr>
-                                        <th class="text-center history-index" rowspan="2">#</th>
-                                        <th class="text-center history-name" colspan="3">Kiểm kho</th>
-                                    </tr>
-                                    <tr>
+                                        <th class="text-center history-index">#</th>
                                         <th class="text-center history-sku">SKU</th>
                                         <th class="text-center history-quantity">Số lượng</th>
                                         <th class="text-center history-date">Ngày</th>
@@ -204,15 +187,13 @@
                         </div>
                     </div>
                 </div>
-
-
             </main>
 
             <!-- Optional JavaScript -->
             <!-- jQuery first, then Popper.js, then Bootstrap JS -->
             <!-- <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
-    integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
-    crossorigin="anonymous"></script> -->
+                    integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+                    crossorigin="anonymous"></script> -->
             <!-- Fix bug: Select2 chạy được trên jquery 3.3.1 -->
             <script src="https://code.jquery.com/jquery-3.3.1.min.js"
                 integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
@@ -232,124 +213,71 @@
             <!-- DataTable -->
             <script type="text/javascript" src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
             <script type="text/javascript" src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js"></script>
-            <!-- <script type="text/javascript" src="https://cdn.datatables.net/fixedheader/3.1.6/js/dataTables.fixedHeader.min.js"></script> -->
+            <script type="text/javascript" src="https://cdn.datatables.net/fixedheader/3.1.6/js/dataTables.fixedHeader.min.js"></script>
 
             <script>
                 let tbStaffHistories;
 
                 $(document).ready(() => {
-                    let account = getAccount();
-
                     // init page
                     initCheckWarehouseSelect2();
-                    initStaffHistories();
                     initSearch();
                     initQuantity();
-
-                    $('#txtStaffName').val(account);
-                    $('#dllCheckWarehouse').select2('open');
                 })
 
-                function getAccount () {
+                function getAccount() {
                     let staffName = $.cookie("loginHiddenPage");
 
                     return staffName;
                 }
 
                 function initCheckWarehouseSelect2() {
+                    let urlParams = new URLSearchParams(window.location.search);
+                    let checkID = +urlParams.get('checkID') || 0;
+
+                    if (checkID > 0) {
+                        let titleAlert = 'Lấy thông tin phiên kiểm kho';
+
+                        return $.ajax({
+                            method: 'GET',
+                            url: '/api/v1/check-warehouse/' + checkID,
+                            success: (data, textStatus, xhr) => {
+                                let checkWarehouse = {
+                                    id: data.id,
+                                    text: data.name
+                                };
+                                let newOption = new Option(checkWarehouse.text, checkWarehouse.id, false, false);
+                                $('#dllCheckWarehouse').append(newOption).trigger('change');
+
+                                execute();
+                            },
+                            error: (xhr, textStatus, error) => {
+                                alter400(titleAlert);
+                            }
+                        });
+                    }
+
                     $('#dllCheckWarehouse').select2({
                         placeholder: 'Danh sách kiểm kho',
                         ajax: {
                             delay: 500,
-                            method: 'POST',
-                            url: '/thuc-hien-kiem-kho.aspx/getSelect2',
-                            contentType: "application/json; charset=utf-8",
-                            dataType: "json",
+                            method: 'GET',
+                            url: '/api/v1/check-warehouse/select2',
                             data: (params) => {
+                                if (!params.term)
+                                    return;
+
                                 var query = {
-                                    search: params.term || null
+                                    search: params.term
                                 }
 
-                                return JSON.stringify(query);
-                            },
-                            processResults: (dataJSON) => {
-                                let data = JSON.parse(dataJSON.d);
-                                if (!data)
-                                    return {
-                                        results: []
-                                    };
-
-                                return { results: data.results }
+                                return query;
                             }
                         }
                     });
+                    $('#dllCheckWarehouse').select2('open');
                 }
 
-                function initStaffHistories() {
-                    let account = getAccount();
-
-                    tbStaffHistories = $('#tbStaffHistories').DataTable({
-                        autoWidth: false,
-                        lengthChange: false,
-                        searching: false,
-                        ordering: false,
-                        // fixedHeader: true,
-                        pagingType: "first_last_numbers",
-                        pageLength: 10,
-                        serverSide: true,
-                        ajax: {
-                            method: 'POST',
-                            url: '/thuc-hien-kiem-kho.aspx/getStaffHistories',
-                            headers: {
-                                'staff': account
-                            },
-                            contentType: "application/json; charset=utf-8",
-                            dataType: "json",
-                            data: (params) => {
-                                var query = {
-                                    draw: params.draw,
-                                    page: Math.trunc(params.start / params.length) + 1,
-                                    pageSize: params.length
-                                }
-
-                                return JSON.stringify(query);
-                            },
-                            dataSrc: (dataJSON) => {
-                                let response = JSON.parse(dataJSON.d);
-                                
-                                return response.data;
-                            }
-                        },
-                        columns: [
-                          { data: 'index'},
-                          { data: 'sku'},
-                          { data: 'quantity'},
-                          { data: 'checkedDate'}
-                        ],
-                        createdRow: (row, data, dataIndex) => {
-                            let classNew = (data.index - 1) % 2 === 0 ? '#f8f8f8' : '#fff';
-
-                            $(row).removeAttr("class");
-                            $(row).css('background-color', classNew);
-
-                            if (data.row === 1) {
-                              $('td:eq(0)', row).attr('rowspan', 2).css('background-color', classNew);
-                              $('td:eq(1)', row).attr('colspan', 3).css('background-color', classNew).html(data.checkedName);
-                              $('td:eq(2)', row).remove();
-                              $('td:eq(2)', row).remove();
-                            }
-                            else if (data.row === 2) {
-                                $('td:eq(0)', row).remove();
-                                $('td:eq(0)', row).css('background-color', classNew);
-                                $('td:eq(1)', row).addClass('text-center').css('background-color', classNew);
-                                $('td:eq(2)', row).addClass('text-center').css('background-color', classNew);
-                            } else {
-                                $(row).remove();
-                            }
-                        }
-                    });
-                }
-  
                 function initSearch() {
                     $('#txtSKU').keypress((event) => {
                         if (event.charCode === 13) {
@@ -359,7 +287,7 @@
                 }
 
                 function initQuantity() {
-                    $('#txtQuantity').keypress((event) => {
+                    $('#txtQuantityNew').keypress((event) => {
                         if (event.charCode === 13) {
                             updateQuantity();
                         }
@@ -371,6 +299,50 @@
                     $('#btnExecute').attr('disabled', true);
                     $('#body').removeAttr('hidden');
                     $('#txtSKU').focus();
+                    initStaffHistories();
+                    $(".staff-history").each((index, elem) => {
+                        elem.removeAttribute('hidden');
+                    });
+                }
+
+                function initStaffHistories() {
+                    let account = getAccount();
+                    let checkID = +$('#dllCheckWarehouse').val() || 0;
+                    let url = '/api/v1/check-warehouse/' + checkID + '/staff-histories/data-table';
+
+                    tbStaffHistories = $('#tbStaffHistories').DataTable({
+                        autoWidth: false,
+                        lengthChange: false,
+                        searching: false,
+                        ordering: false,
+                        fixedHeader: true,
+                        pagingType: "first_last_numbers",
+                        pageLength: 10,
+                        serverSide: true,
+                        ajax: {
+                            method: 'GET',
+                            url: url,
+                            headers: {
+                                'staff': account
+                            },
+                            data: (params) => {
+                                var query = {
+                                    draw: params.draw,
+                                    page: Math.trunc(params.start / params.length) + 1,
+                                    pageSize: params.length
+                                }
+
+                                return query;
+                            },
+                            dataSrc: "data"
+                        },
+                        columns: [
+                          { data: 'index' },
+                          { data: 'sku' },
+                          { data: 'quantity' },
+                          { data: 'checkedDate' }
+                        ],
+                    });
                 }
 
                 function searchProduct() {
@@ -382,26 +354,16 @@
                         return
 
                     let titleAlert = 'Tìm kiếm sản phẩm';
-      
+                    let url = '/api/v1/check-warehouse/' + checkID + '/check-product/' + sku;
+
                     $.ajax({
-                        method: 'POST',
-                        url: '/thuc-hien-kiem-kho.aspx/checkProduct',
+                        method: 'GET',
+                        url: url,
                         headers: {
                             'staff': account
                         },
-                        headers: {
-                            'staff': account
-                        },
-                        contentType: "application/json; charset=utf-8",
-                        dataType: "json",
-                        data: JSON.stringify({checkID: checkID, sku: sku}),
-                        success: (dataJSON, textStatus, xhr) => {
-                            let response = JSON.parse(dataJSON.d);
-
-                            if (!response)
-                                alter400(titleAlert);
-
-                            if (response.statusCode === 200) {
+                        success: (data, textStatus, xhr) => {
+                            if (xhr.status === 200) {
                                 // input text search
                                 $('#txtSKU').attr('disabled', true);
                                 $('#btnSearch').attr('disabled', true);
@@ -411,24 +373,25 @@
                                     elem.removeAttribute('hidden');
                                 })
 
-                                $("#productName").html(sku + ' - ' + response.data.ProductTitle);
-                                $('#txtQuantity').focus();
-                            }
-                            else if (response.statusCode === 204) {
-                                alter204(titleAlert, 'Thông báo không tìm thấy sản phẩm');
-                            }
-                            else if (response.statusCode === 400) {
-                                alter400(titleAlert, response);
-                            }
-                            else if (response.statusCode === 403) {
-                                alter403(titleAlert);
+                                console.log(data);
+                                $("#txtQuantityOld").val(data.quantityOld);
+                                $("#txtQuantityNew").val(data.quantityNew);
+                                $('#txtQuantityNew').focus();
                             }
                             else {
                                 alter400(titleAlert);
                             }
                         },
                         error: (xhr, textStatus, error) => {
-                            alter400(titleAlert);
+                            if (xhr.status === 400) {
+                                alter400(titleAlert, xhr.responseJSON)
+                            }
+                            else if (xhr.status === 403) {
+                                alert403(titleAlert);
+                            }
+                            else {
+                                alter400(titleAlert);
+                            }
                         }
                     })
                 }
@@ -437,29 +400,25 @@
                     let account = getAccount();
                     let checkID = +$('#dllCheckWarehouse').val() || 0;
                     let sku = $('#txtSKU').val()
-                    let quantity = +$('#txtQuantity').val() || -1;
+                    let quantity = +$('#txtQuantityNew').val() || -1;
 
                     if (!account || !checkID || !sku || quantity < 0)
                         return;
 
                     let titleAlert = 'Cập số lượng sản phẩm';
-      
+                    let url = '/api/v1/check-warehouse/' + checkID + '/update-quantity';
+
                     $.ajax({
                         method: 'POST',
-                        url: '/thuc-hien-kiem-kho.aspx/updateQuantity',
+                        url: url,
                         headers: {
                             'staff': account
                         },
-                        contentType: "application/json; charset=utf-8",
+                        contentType: 'application/json',
                         dataType: "json",
-                        data: JSON.stringify({ checkID: checkID, sku: sku, quantity: quantity }),
-                        success: (dataJSON, textStatus, xhr) => {
-                            let response = JSON.parse(dataJSON.d);
-
-                            if (!response)
-                                alter400(titleAlert);
-
-                            if (response.statusCode === 200) {
+                        data: JSON.stringify({ sku: sku, quantity: quantity }),
+                        success: (data, textStatus, xhr) => {
+                            if (xhr.status === 200) {
                                 // refresh Histories Table 
                                 tbStaffHistories.ajax.reload();
 
@@ -469,7 +428,7 @@
                                 })
 
                                 $("#productName").html('');
-            
+
                                 // search
                                 $('#txtSKU').attr('disabled', false);
                                 $('#txtSKU').val('');
@@ -477,34 +436,22 @@
                                 $('#txtSKU').focus();
                                 $('#btnSearch').attr('disabled', false);
                             }
-                            else if (response.statusCode === 204) {
-                                alter204(titleAlert, 'Thông báo không tìm thấy sản phẩm');
-                            }
-                            else if (response.statusCode === 400) {
-                                alter400(titleAlert, response);
-                            }
-                            else if (response.statusCode === 403) {
-                                alter403(titleAlert);
-                            }
                             else {
-                                alter400(title=titleAlert);
+                                alter400(title = titleAlert);
                             }
                         },
                         error: (xhr, textStatus, error) => {
-                            alter400(titleAlert);
+                            if (xhr.status === 400) {
+                                alter400(titleAlert, xhr.responseJSON)
+                            }
+                            else if (xhr.status === 403) {
+                                alert403(titleAlert);
+                            }
+                            else {
+                                alter400(titleAlert);
+                            }
                         }
                     })
-                }
-
-                function alter204(title, message) {
-                    title = (typeof title !== 'undefined') ? title : 'Thông báo lỗi';
-                    message = (typeof message !== 'undefined') ? message : '';
-
-                    swal({
-                        title: title,
-                        text: message,
-                        icon: "error",
-                    });
                 }
 
                 function alter400(title, responseJSON) {
