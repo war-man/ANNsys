@@ -2,48 +2,44 @@ CREATE PROCEDURE HandleProductImage
 AS
 BEGIN
     DECLARE @Now DateTime;
+	SET @Now = GETDATE(); 
 
     -- Lay nhung product chua update image
     SELECT
-        P.*
+		P.ID AS ProductID
+    ,   0 AS VariationID
+	,	P.ProductSKU AS SKU
+	,	N'tbl_Product' AS FromTable
+	,	P.ProductImage AS FromImage
+	,	N'DELETE' AS [Action]
+	,	N'tbl_ProductImage' AS ToTable
+	,	PI.ProductImage AS ToImage
+	,	N'Xóa những hình ảnh avatar của product có tồn tại trong product image' AS Note
+	,	@Now AS CreatedDate
     INTO #ProductImage
     FROM tbl_Product AS P
+	INNER JOIN tbl_ProductImage AS PI
+	ON P.ID = PI.ProductID
+	AND P.ProductImage = PI.ProductImage
     WHERE 
         P.ProductImage IS NOT NULL
         AND LEN(P.ProductImage) > 0
-        AND NOT EXISTS (
-            SELECT
-                NULL AS DUMMY
-            FROM
-                tbl_ProductImage AS PI
-            WHERE
-                P.ID = PI.ProductID
-                AND SUBSTRING(P.ProductImage, 0, PATINDEX('%.[a-z]%', P.ProductImage)) = SUBSTRING(PI.ProductImage, 0, PATINDEX('%.[a-z]%', PI.ProductImage))
-        )
     ORDER BY
         P.ID
     ;
 
     -- Cap nhat vao trong Product Image
-    SET @Now = GETDATE(); 
-    INSERT INTO tbl_ProductImage (
-        ProductID
-    ,   ProductImage
-    ,   IsHidden
-    ,   CreatedDate
-    ,   CreatedBy
-    ,   ModifiedDate
-    ,   ModifiedBy
-    )
-    SELECT
-        #PI.ID
-    ,   #PI.ProductImage
-    ,   0
-    ,   @Now
-    ,   N'admin'
-    ,   @Now
-    ,   N'admin'
-    FROM  #ProductImage AS #PI
+    DELETE tbl_ProductImage 
+	FROM tbl_ProductImage AS PI
+	WHERE EXISTS (
+		SELECT
+			NULL AS DUMMY
+		FROM
+			#ProductImage AS #PI
+		WHERE
+			PI.ProductID = #PI.ProductID
+			AND PI.ProductImage = #PI.ToImage
+	)
     ;
 
     -- Cap nhat thong tin log
@@ -60,16 +56,16 @@ BEGIN
     ,   CreatedDate
     )
     SELECT 
-        #PI.ID
-    ,   0
-    ,   #PI.ProductSKU
-    ,   N'tbl_Product'
-    ,   #PI.ProductImage
-    ,   N'ADD'
-    ,   N'tbl_ProductImage'
-    ,   NULL
-    ,   N'Thêm ảnh sản phẩm với những sản phẩm có hình ảnh nhưng lại không tồn tại trong Product Image Table'
-    ,   @Now
+        #PI.ProductID
+    ,   #PI.VariationID
+    ,   #PI.SKU
+    ,   #PI.FromTable
+    ,   #PI.FromImage
+    ,   #PI.[Action]
+    ,   #PI.ToTable
+    ,   #PI.ToImage
+    ,   #PI.Note
+    ,   #PI.CreatedDate
     FROM  #ProductImage AS #PI
     ;
     
@@ -79,7 +75,7 @@ BEGIN
     FROM
         [ANNShopHistory].[dbo].[ResultHandleProductImage]
     WHERE
-        [Action] = N'ADD'
+        [Action] = N'DELETE'
         AND CreatedDate = @Now
     ;
 

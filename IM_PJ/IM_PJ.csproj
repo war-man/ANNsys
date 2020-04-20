@@ -546,6 +546,7 @@
     <Content Include="cron-job-product-status.aspx" />
     <Content Include="SQL\05CREATE_STORE_PROCEDURE_BackupOrder.sql" />
     <Content Include="SQL\05CREATE_STORE_PROCEDURE_ClearStock.sql" />
+    <Content Include="SQL\05CREATE_STORE_PROCEDURE_HandleProductImage.sql" />
     <Content Include="thuc-hien-kiem-kho.aspx" />
     <Content Include="thong-tin-kiem-kho.aspx" />
     <Content Include="tao-phien-kiem-kho.aspx" />

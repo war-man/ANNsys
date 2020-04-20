@@ -240,10 +240,17 @@ namespace IM_PJ
             var post = PostController.GetByID(id);
             if (post != null)
             {
+                var postCategory = PostCategoryController.GetByID(post.CategoryID.Value);
+                PostCategory postPublicCategory = new PostCategory();
+                if (postCategory != null)
+                {
+                    postPublicCategory = PostPublicCategoryController.GetByName(postCategory.Title);
+                }
+
                 var newPostPublic = new PostPublic()
                 {
-                    CategoryID = 0,
-                    CategorySlug = "",
+                    CategoryID = postPublicCategory != null ? postPublicCategory.ID : 0,
+                    CategorySlug = postPublicCategory != null ? postPublicCategory.Slug : "",
                     Title = post.Title,
                     Thumbnail = post.Image,
                     Summary = "",

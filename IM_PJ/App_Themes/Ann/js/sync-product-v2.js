@@ -1,187 +1,139 @@
-﻿function ShowUpProductToWeb(sku, id, category, up, renew, visibility) {
-    var web = ["pqstore.vn"];
-    //var web_dobo = ["chuyensidobo.com"];
-    //var web_vaydam = ["damgiasi.vn"];
-
-    //if (category == 18) {
-    //    web = web.concat(web_dobo);
-    //}
-    //if (category == 17) {
-    //    web = web.concat(web_vaydam);
-    //}
-
+﻿function showProductSyncModal(productSKU, productID, categoryID) {
+    var web = ["pqstore.vn", "quanaogiaxuong.com", "annshop.vn"];
     closePopup();
-    var html = "<div class='row'><div class='col-md-12'><h2>Đồng bộ sản phẩm " + sku + "</h2><br></div></div>";
-    html += "<div class='row'><div class='col-md-12'><p><span><a href='javascript:;' class='btn primary-btn h45-btn' onclick='ShowUpProductToWeb(`" + sku + "`, `" + id + "`, `" + category + "`, `true`, `false`, `null`)'><i class='fa fa-upload' aria-hidden='true'></i> Up tất cả</a><a href='javascript:;' class='btn primary-btn h45-btn btn-black print-invoice-merged' onclick='ShowUpProductToWeb(`" + sku + "`, `" + id + "`, `" + category + "`, `false`, `true`, `null`)'><i class='fa fa-cloud-upload' aria-hidden='true'></i> Đăng lên tất cả web</a><a href='javascript:;' class='btn primary-btn h45-btn btn-black print-invoice-merged' onclick='ShowUpProductToWeb(`" + sku + "`, `" + id + "`, `" + category + "`, `false`, `true`, `null`)'><i class='fa fa-refresh' aria-hidden='true'></i> Làm mới hình tất cả web</a><a href='javascript:;' class='btn primary-btn h45-btn btn-black print-invoice-merged' onclick='ShowUpProductToWeb(`" + sku + "`, `" + id + "`, `" + category + "`, `false`, `false`, `hidden`)'><i class='fa fa-refresh' aria-hidden='true'></i> Ẩn tất cả</a><a href='javascript:;' class='btn primary-btn h45-btn btn-black print-invoice-merged' onclick='ShowUpProductToWeb(`" + sku + "`, `" + id + "`, `" + category + "`, `false`, `false`, `visible`)'><i class='fa fa-refresh' aria-hidden='true'></i> Hiện tất cả</a></span></p></div></div><div class='web-list'></div>";
-    showPopup(html, 10);
+
+    var html = "<div class='row'><div class='col-md-12'><h2>Đồng bộ sản phẩm " + productSKU + "</h2><br></div></div>";
+    html += "<div class='row'>";
+    html += "    <div class='col-md-12' data-web='all' data-product-sku='" + productSKU + "' data-product-id='" + productID + "'>";
+    html += "        	<a href='javascript:;' class='btn primary-btn h45-btn' onclick='upProduct($(this))'><i class='fa fa-upload' aria-hidden='true'></i> Up tất cả</a>";
+    html += "        	<a href='javascript:;' class='btn primary-btn h45-btn btn-black print-invoice-merged' onclick='copyProduct($(this))'><i class='fa fa-cloud-upload' aria-hidden='true'></i> Đăng lên tất cả web</a>";
+    html += "        	<a href='javascript:;' class='btn primary-btn h45-btn btn-black print-invoice-merged' onclick='renewProduct($(this))'><i class='fa fa-refresh' aria-hidden='true'></i> Làm mới sản phẩm tất cả web</a>";
+    html += "        	<a href='javascript:;' class='btn primary-btn h45-btn btn-black print-invoice-merged' onclick='toggleProduct($(this), `hide`)'><i class='fa fa-refresh' aria-hidden='true'></i> Ẩn tất cả</a>";
+    html += "        	<a href='javascript:;' class='btn primary-btn h45-btn btn-black print-invoice-merged' onclick='toggleProduct($(this), `show`)'><i class='fa fa-refresh' aria-hidden='true'></i> Hiện tất cả</a>";
+    html += "    </div>";
+    html += "</div>";
+    html += "<div class='web-list'></div>";
+
+    showPopup(html, 9);
     HoldOn.open();
     
-    if (renew == "true")
-    {
-        for (var i = 0; i < web.length; i++)
-        {
-            checkProduct(web[i], sku, id, up, renew, i, visibility, 'false');
-        }
-    }
-    else
-    {
-        for (var i = 0; i < web.length; i++)
-        {
-            checkProduct(web[i], id, sku);
-        }
+    for (var i = 0; i < web.length; i++) {
+        checkProduct(web[i], productID, productSKU);
     }
 }
 
-function checkProduct(web, id, sku) {
-
+function checkProduct(web, productID, productSKU) {
     $.ajax({
         type: "GET",
-        url: "http://ann-product-sync.com/api/v1/product/" + id,
+        url: "http://ann-product-sync.com/api/v1/product/" + productID,
         headers: {
-            'domain': 'https://' + web + '/wp-json/wc/v3/',
-            'user': 'ck_122f779b24b395477fa9cae87aed72b2ed09f5de',
-            'pass': 'cs_b2b23553086c6bd6c037cb95301e1181251568ab',
-            'price_type': 'Retail Price'
+            'domain': web,
         },
         async: true,
         datatype: "json",
-        beforeSend: function () {
-            $(".content-upload-" + i).html("<span class='bg-yellow'>Đang xử lý</span>");
-        },
         success: function (data) {
             HoldOn.close();
 
+            var content = "";
+            var button = "";
+
             if (data.length > 0) {
-                var content = "";
-                var button = "";
                 content = "<span class='bg-blue'>Tìm thấy sản phẩm</span>";
-                button = "<a href='javascript:;' class='btn primary-btn h45-btn' onclick='upProductToWeb(`" + web + "`, `" + sku + "`, `" + id + "`, `true`, 'false', `" + i + "`, `null`, `false`)'><i class='fa fa-upload' aria-hidden='true'></i> Up</a>";
-                button += "<a href='javascript:;' class='btn primary-btn btn-black h45-btn print-invoice-merged' onclick='upProductToWeb(`" + web + "`, `" + sku + "`, `" + id + "`, `false`, `true`, `" + i + "`, `null`, `true`)'><i class='fa fa-refresh' aria-hidden='true'></i> Làm mới hình</a>";
-                button += "<a href='https://" + web + "/?s=" + sku + "&post_type=product' target='_blank' class='btn primary-btn btn-black h45-btn print-invoice-merged'><i class='fa fa-link' aria-hidden='true'></i> Xem</a>";
-                button += "<a href='https://" + web + "/wp-admin/edit.php?s=" + sku + "&post_type=product' target='_blank' class='btn primary-btn btn-black h45-btn print-invoice-merged'><i class='fa fa-pencil-square-o' aria-hidden='true'></i> Sửa</a>";
-                button += "<a href='javascript:;' class='btn primary-btn h45-btn print-invoice-merged' onclick='upProductToWeb(`" + web + "`, `" + sku + "`, `" + id + "`, `false`, `false`, `" + i + "`, `hidden`, `false`)'><i class='fa fa-pencil-square-o' aria-hidden='true'></i> Ẩn</a>";
-                button += "<a href='javascript:;' class='btn primary-btn h45-btn print-invoice-merged' onclick='upProductToWeb(`" + web + "`, `" + sku + "`, `" + id + "`, `false`, `false`, `" + i + "`, `visible`, `false`)'><i class='fa fa-pencil-square-o' aria-hidden='true'></i> Hiện</a>";
+                button = "<a href='javascript:;' onclick='upProduct()' class='btn primary-btn h45-btn'><i class='fa fa-upload' aria-hidden='true'></i> Up</a>";
+                button += "<a href='javascript:;' onclick='renewProduct()' class='btn primary-btn btn-black h45-btn print-invoice-merged'><i class='fa fa-refresh' aria-hidden='true'></i> Làm mới</a>";
+                button += "<a href='https://" + web + "/?s=" + productSKU + "&post_type=product' target='_blank' class='btn primary-btn btn-black h45-btn print-invoice-merged'><i class='fa fa-link' aria-hidden='true'></i> Xem</a>";
+                button += "<a href='https://" + web + "/wp-admin/edit.php?s=" + productSKU + "&post_type=product' target='_blank' class='btn primary-btn btn-black h45-btn print-invoice-merged'><i class='fa fa-pencil-square-o' aria-hidden='true'></i> Sửa</a>";
+                button += "<a href='javascript:;' onclick='toggleProduct(`hide`)' class='btn primary-btn h45-btn print-invoice-merged'><i class='fa fa-pencil-square-o' aria-hidden='true'></i> Ẩn</a>";
+                button += "<a href='javascript:;' onclick='toggleProduct(`show`)' class='btn primary-btn h45-btn print-invoice-merged'><i class='fa fa-pencil-square-o' aria-hidden='true'></i> Hiện</a>";
             }
             else {
                 content = "<span class='bg-blue'>Chưa tìm thấy sản phẩm</span>";
-                button = "<a href='javascript:;' class='btn primary-btn h45-btn' onclick='upProductToWeb(`" + web + "`, `" + sku + "`, `" + id + "`, `true`, `true`, `" + i + "`, `visible`, `true`)'><i class='fa fa-cloud-upload' aria-hidden='true'></i> Đăng web</a>";
+                button = "<a href='javascript:;' class='btn primary-btn h45-btn' onclick='copyProduct()'><i class='fa fa-cloud-upload' aria-hidden='true'></i> Đăng web</a>";
             }
 
-            web_item = "<div class='col-md-3'><p><i class='fa fa-arrow-right' aria-hidden='true'></i> " + web + "</p></div><div class='col-md-3'><p><span class='content-upload-" + i + "'>" + content + "</span></p></div><div class='col-md-6'><p>" + button + "</p></div>";
+            webItem = "<div class='col-md-3'>" + web + "</div>";
+            webItem += "<div class='col-md-3'>" + content + "</div>";
+            webItem += "<div class='col-md-6' data-web='" + web + "' data-product-sku='" + productSKU + "' data-product-id='" + productID + "'>" + button + "</div>";
 
-            if ($("div").hasClass("upload-" + i) === true) {
-                $(".upload-" + i).html(web_item);
-            }
-            else {
-                $(".web-list").append("<div class='row upload-" + i + "'>" + web_item + "</div>");
-            }
+            $(".web-list").append("<div class='row' data-web='" + web + "'>" + webItem + "</div>");
 
         },
         error: function () {
 
-            web_item = "<div class='col-md-3'><p><i class='fa fa-arrow-right' aria-hidden='true'></i> " + web + "</p></div><div class='col-md-9'><p><span class='bg-red'>Lỗi kết nối trang con</span></p></div>";
+            webItem = "<div class='col-md-3'>" + web + "</div>";
+            webItem += "<div class='col-md-9'><span class='bg-red'>Lỗi kết nối trang con</span></div>";
 
-            if ($("div").hasClass("upload-" + i) === true) {
-                $(".upload-" + i).html(web_item);
-            }
-            else {
-                $(".web-list").append("<div class='row upload-" + i + "'>" + web_item + "</div>");
-            }
-
+            $(".web-list").append("<div class='row' data-web='" + web + "'>" + webItem + "</div>");
         }
     });
-
 }
 
-function ajaxUpProductToWeb(web, sku, id, up, renew, i, visibility) {
+function copyProduct(obj) {
+    let web = obj.parent().attr("data-web");
+    let productID = obj.parent().attr("data-product-id");
+    let productSKU = obj.parent().attr("data-product-sku");
 
+    if (web == "all") {
+        web = ["pqstore.vn", "quanaogiaxuong.com", "annshop.vn"];
+        for (var i = 0; i < web.length; i++) {
+            ajaxCopyProduct(web[i], productID, productSKU);
+        }
+    }
+    else {
+        ajaxCopyProduct(web, productID, productSKU);
+    }
+}
+
+function ajaxCopyProduct(web, productID, productSKU) {
     $.ajax({
         type: "POST",
-        url: url_web,
+        url: "http://ann-product-sync.com/api/v1/product/" + productID,
         headers: {
-            'Authorization': 'Basic xxxxxxxxxxxxx',
-            'X-CSRF-TOKEN': 'xxxxxxxxxxxxxxxxxxxx',
-            'Content-Type': 'application/json'
-        },
-        data: {
-            sku: sku,
-            systemid: id,
-            up: up,
-            renew: renew,
-            visibility: visibility,
-            key: '828327'
+            'domain': web,
         },
         async: true,
         datatype: "json",
-        beforeSend: function () {
-            $(".content-upload-" + i).html("<span class='bg-yellow'>Đang xử lý</span>");
-        },
-        success: function (data) {
+        success: function (data, textStatus, xhr) {
             HoldOn.close();
 
-            if (data.success === "true") {
-                var content = "";
-                var button = "";
-                if (data.content === "found") {
-                    content = "<span class='bg-blue'>Tìm thấy sản phẩm</span>";
-                    button = "<a href=\"javascript:;\" class=\"btn primary-btn h45-btn\" onclick=\"upProductToWeb('" + web + "', '" + sku + "', '" + id + "', 'true', 'false', '" + i + "', 'null', 'false')\"><i class=\"fa fa-upload\" aria-hidden=\"true\"></i> Up</a>";
-                    button += "<a href=\"javascript:;\" class=\"btn primary-btn btn-black h45-btn print-invoice-merged\" onclick=\"upProductToWeb('" + web + "', '" + sku + "', '" + id + "', 'false', 'true', '" + i + "', 'null', 'true')\"><i class=\"fa fa-refresh\" aria-hidden=\"true\"></i> Làm mới hình</a>";
-                }
-                else if (data.content === "updone") {
-                    content = "<span class='bg-green'>Up thành công</span>";
-                    button = "<a href=\"javascript:;\" class=\"btn primary-btn btn-black h45-btn\" onclick=\"upProductToWeb('" + web + "', '" + sku + "', '" + id + "', 'false', 'true', '" + i + "', 'null', 'true')\"><i class=\"fa fa-refresh\" aria-hidden=\"true\"></i> Làm mới hình</a>";
-                }
-                else if (data.content === "renewdone") {
-                    content = "<span class='bg-green'>Đăng web thành công</span>";
-                }
-                else if (data.content === "hidealldone") {
-                    content = "<span class='bg-green'>Ẩn web thành công</span>";
-                    button += "<a href=\"javascript:;\" class=\"btn primary-btn btn-black h45-btn print-invoice-merged\" onclick=\"upProductToWeb('" + web + "', '" + sku + "', '" + id + "', 'false', 'true', '" + i + "', 'null', 'true')\"><i class=\"fa fa-refresh\" aria-hidden=\"true\"></i> Làm mới hình</a>";
-                }
-                else if (data.content === "visiblealldone") {
-                    content = "<span class='bg-green'>Hiện web thành công</span>";
-                    button = "<a href=\"javascript:;\" class=\"btn primary-btn h45-btn\" onclick=\"upProductToWeb('" + web + "', '" + sku + "', '" + id + "', 'true', 'false', '" + i + "', 'null', 'false')\"><i class=\"fa fa-upload\" aria-hidden=\"true\"></i> Up</a>";
-                    button += "<a href=\"javascript:;\" class=\"btn primary-btn btn-black h45-btn print-invoice-merged\" onclick=\"upProductToWeb('" + web + "', '" + sku + "', '" + id + "', 'false', 'true', '" + i + "', 'null', 'true')\"><i class=\"fa fa-refresh\" aria-hidden=\"true\"></i> Làm mới hình</a>";
-                }
-                button += "<a href=\"https://" + web + "/?s=" + sku + "&post_type=product\" target=\"_blank\" class=\"btn primary-btn btn-black h45-btn print-invoice-merged\"><i class=\"fa fa-link\" aria-hidden=\"true\"></i> Xem</a>";
-                button += "<a href=\"https://" + web + "/wp-admin/edit.php?s=" + sku + "&post_type=product\" target=\"_blank\" class=\"btn primary-btn btn-black h45-btn print-invoice-merged\"><i class=\"fa fa-pencil-square-o\" aria-hidden=\"true\"></i> Sửa</a>";
-                button += "<a href=\"javascript:;\" class=\"btn primary-btn h45-btn print-invoice-merged\" onclick=\"upProductToWeb('" + web + "', '" + sku + "', '" + id + "', 'false', 'false', '" + i + "', 'hidden', 'false')\"><i class=\"fa fa-pencil-square-o\" aria-hidden=\"true\"></i> Ẩn</a>";
-                button += "<a href=\"javascript:;\" class=\"btn primary-btn h45-btn print-invoice-merged\" onclick=\"upProductToWeb('" + web + "', '" + sku + "', '" + id + "', 'false', 'false', '" + i + "', 'visible', 'false')\"><i class=\"fa fa-pencil-square-o\" aria-hidden=\"true\"></i> Hiện</a>";
-            }
-            else {
-                if (data.content === "uperror") {
-                    content = "<span class='bg-red'>Lỗi khi up sản phẩm</span>";
-                }
-                else if (data.content === "renewerror") {
-                    content = "<span class='bg-red'>Lỗi khi đăng lên web</span>";
-                }
-                else if (data.content === "notfound") {
-                    content = "<span class='bg-blue'>Chưa tìm thấy sản phẩm</span>";
-                    button = "<a href=\"javascript:;\" class=\"btn primary-btn h45-btn\" onclick=\"upProductToWeb('" + web + "', '" + sku + "', '" + id + "', 'true', 'true', '" + i + "', 'visible', 'true')\"><i class=\"fa fa-cloud-upload\" aria-hidden=\"true\"></i> Đăng web</a>";
-                }
+            // Thành công
+            if (xhr.status === 200) {
+
+            } else if (xhr.status === 400) {
+
             }
 
-            web_item = "<div class='col-md-3'><p><i class=\"fa fa-arrow-right\" aria-hidden=\"true\"></i> " + web + "</p></div><div class='col-md-3'><p><span class='content-upload-" + i + "'>" + content + "</span></p></div><div class='col-md-6'><p>" + button + "</p></div>";
+            var content = "";
+            var button = "";
 
-            if ($("div").hasClass("upload-" + i) === true) {
-                $(".upload-" + i).html(web_item);
+
+            if (data.length > 0) {
+                content = "<span class='bg-green'>Đăng web thành công</span>";
+                button = "<a href='javascript:;' onclick='upProduct()' class='btn primary-btn h45-btn'><i class='fa fa-upload' aria-hidden='true'></i> Up</a>";
+                button += "<a href='javascript:;' onclick='renewProduct()' class='btn primary-btn btn-black h45-btn print-invoice-merged'><i class='fa fa-refresh' aria-hidden='true'></i> Làm mới</a>";
+                button += "<a href='https://" + web + "/?s=" + productSKU + "&post_type=product' target='_blank' class='btn primary-btn btn-black h45-btn print-invoice-merged'><i class='fa fa-link' aria-hidden='true'></i> Xem</a>";
+                button += "<a href='https://" + web + "/wp-admin/edit.php?s=" + productSKU + "&post_type=product' target='_blank' class='btn primary-btn btn-black h45-btn print-invoice-merged'><i class='fa fa-pencil-square-o' aria-hidden='true'></i> Sửa</a>";
+                button += "<a href='javascript:;' onclick='toggleProduct(`hide`)' class='btn primary-btn h45-btn print-invoice-merged'><i class='fa fa-pencil-square-o' aria-hidden='true'></i> Ẩn</a>";
+                button += "<a href='javascript:;' onclick='toggleProduct(`show`)' class='btn primary-btn h45-btn print-invoice-merged'><i class='fa fa-pencil-square-o' aria-hidden='true'></i> Hiện</a>";
             }
             else {
-                $(".web-list").append("<div class='row upload-" + i + "'>" + web_item + "</div>");
+                content = "<span class='bg-red'>Đăng web thất bại</span>";
+                button = "<a href='javascript:;' class='btn primary-btn h45-btn' onclick='copyProduct()'><i class='fa fa-cloud-upload' aria-hidden='true'></i> Đăng web</a>";
             }
+
+            webItem = "<div class='col-md-3'>" + web + "</div>";
+            webItem += "<div class='col-md-3'>" + content + "</div>";
+            webItem += "<div class='col-md-6' data-web='" + web + "' data-product-sku='" + productSKU + "' data-product-id='" + productID + "'>" + button + "</div>";
+
+            $(".web-list").append("<div class='row' data-web='" + web + "'>" + webItem + "</div>");
 
         },
         error: function () {
 
-            web_item = "<div class='col-md-3'><p><i class=\"fa fa-arrow-right\" aria-hidden=\"true\"></i> " + web + "</p></div><div class='col-md-9'><p><span class='bg-red'>Lỗi kết nối trang con</span></p></div>";
+            webItem = "<div class='col-md-3'><i class='fa fa-arrow-right' aria-hidden='true'></i> " + web + "</div>";
+            webItem += "<div class='col-md-9'><span class='bg-red'>Lỗi kết nối trang con</span></div>";
 
-            if ($("div").hasClass("upload-" + i) === true) {
-                $(".upload-" + i).html(web_item);
-            }
-            else {
-                $(".web-list").append("<div class='row upload-" + i + "'>" + web_item + "</div>");
-            }
-
+            $(".web-list").append("<div class='row' data-web='" + web + "'>" + webItem + "</div>");
         }
     });
 }
