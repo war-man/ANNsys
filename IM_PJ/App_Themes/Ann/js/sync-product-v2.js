@@ -1,28 +1,52 @@
-﻿function showProductSyncModal(productSKU, productID, categoryID) {
-    var web = ["pqstore.vn", "quanaogiaxuong.com", "annshop.vn"];
+﻿var webList = ["quanaogiaxuong.com", "bansithoitrang.net", "panpan.vn", "quanaoxuongmay.com", "annshop.vn"];
+
+function showProductSyncModal(productSKU, productID, categoryID) {
     closePopup();
 
-    var html = "<div class='row'><div class='col-md-12'><h2>Đồng bộ sản phẩm " + productSKU + "</h2><br></div></div>";
-    html += "<div class='row'>";
+    var html = "";
+    html += "<div class='row'><div class='col-md-12'><h2>Đồng bộ sản phẩm " + productSKU + "</h2><br></div></div>";
+    html += "<div class='row item-website'>";
     html += "    <div class='col-md-12' data-web='all' data-product-sku='" + productSKU + "' data-product-id='" + productID + "'>";
-    html += "        	<a href='javascript:;' class='btn primary-btn h45-btn' onclick='upProduct($(this))'><i class='fa fa-upload' aria-hidden='true'></i> Up tất cả</a>";
-    html += "        	<a href='javascript:;' class='btn primary-btn h45-btn btn-black print-invoice-merged' onclick='copyProduct($(this))'><i class='fa fa-cloud-upload' aria-hidden='true'></i> Đăng lên tất cả web</a>";
-    html += "        	<a href='javascript:;' class='btn primary-btn h45-btn btn-black print-invoice-merged' onclick='renewProduct($(this))'><i class='fa fa-refresh' aria-hidden='true'></i> Làm mới sản phẩm tất cả web</a>";
-    html += "        	<a href='javascript:;' class='btn primary-btn h45-btn btn-black print-invoice-merged' onclick='toggleProduct($(this), `hide`)'><i class='fa fa-refresh' aria-hidden='true'></i> Ẩn tất cả</a>";
-    html += "        	<a href='javascript:;' class='btn primary-btn h45-btn btn-black print-invoice-merged' onclick='toggleProduct($(this), `show`)'><i class='fa fa-refresh' aria-hidden='true'></i> Hiện tất cả</a>";
+    html += "       <span>";
+    html += "        	<a href='javascript:;' class='btn primary-btn' onclick='postProduct($(this))'><i class='fa fa-cloud-upload' aria-hidden='true'></i> Đăng tất cả</a>";
+    html += "        	<a href='javascript:;' class='btn primary-btn' onclick='upTopProduct($(this))'><i class='fa fa-upload' aria-hidden='true'></i> Up top tất cả</a>";
+    html += "        	<a href='javascript:;' class='btn primary-btn btn-black' onclick='renewProduct($(this))'><i class='fa fa-refresh' aria-hidden='true'></i> Làm mới tất cả</a>";
+    html += "        	<a href='javascript:;' class='btn primary-btn btn-black' onclick='toggleProduct($(this), `hide`)'><i class='fa fa-refresh' aria-hidden='true'></i> Ẩn tất cả</a>";
+    html += "        	<a href='javascript:;' class='btn primary-btn' onclick='toggleProduct($(this), `show`)'><i class='fa fa-refresh' aria-hidden='true'></i> Hiện tất cả</a>";
+    html += "       </span>";
     html += "    </div>";
     html += "</div>";
     html += "<div class='web-list'></div>";
 
-    showPopup(html, 9);
+    showPopup(html, 8);
     HoldOn.open();
     
-    for (var i = 0; i < web.length; i++) {
-        checkProduct(web[i], productID, productSKU);
+    for (var i = 0; i < webList.length; i++) {
+
+        var button = "";
+        button += "<span class='btn-not-found hide'>";
+        button += "<a href='javascript:;' class='btn primary-btn' onclick='postProduct($(this))'>Đăng web</a>";
+        button += "</span>";
+        button += "<span class='btn-had-found hide'>";
+        button += "<a href='javascript:;' onclick='upTopProduct($(this))' class='btn primary-btn'>Up top</a>";
+        button += "<a href='javascript:;' onclick='renewProduct($(this))' class='btn primary-btn btn-black'>Làm mới</a>";
+        button += "<a href='https://" + webList[i] + "/?s=" + productSKU + "&post_type=product' target='_blank' class='btn primary-btn btn-black'>Xem</a>";
+        button += "<a href='https://" + webList[i] + "/wp-admin/edit.php?s=" + productSKU + "&post_type=product' target='_blank' class='btn primary-btn btn-black'>Sửa</a>";
+        button += "<a href='javascript:;' onclick='toggleProduct($(this), `hide`)' class='btn primary-btn btn-black'>Ẩn</a>";
+        button += "<a href='javascript:;' onclick='toggleProduct($(this), `show`)' class='btn primary-btn'>Hiện</a>";
+        button += "</span>";
+
+        var webItem = "";
+        webItem += "<div class='col-md-3 item-name'>" + webList[i] + "</div>";
+        webItem += "<div class='col-md-3 item-status'><span class='bg-yellow'>Đang kết nối web...</span></div>";
+        webItem += "<div class='col-md-6 item-button' data-web='" + webList[i] + "' data-product-sku='" + productSKU + "' data-product-id='" + productID + "'>" + button + "</div>";
+        $(".web-list").append("<div class='row item-website' data-web='" + webList[i] + "'>" + webItem + "</div>");
+
+        getProduct(webList[i], productID);
     }
 }
 
-function checkProduct(web, productID, productSKU) {
+function getProduct(web, productID) {
     $.ajax({
         type: "GET",
         url: "http://ann-product-sync.com/api/v1/product/" + productID,
@@ -34,57 +58,37 @@ function checkProduct(web, productID, productSKU) {
         success: function (data) {
             HoldOn.close();
 
-            var content = "";
-            var button = "";
-
             if (data.length > 0) {
-                content = "<span class='bg-blue'>Tìm thấy sản phẩm</span>";
-                button = "<a href='javascript:;' onclick='upProduct()' class='btn primary-btn h45-btn'><i class='fa fa-upload' aria-hidden='true'></i> Up</a>";
-                button += "<a href='javascript:;' onclick='renewProduct()' class='btn primary-btn btn-black h45-btn print-invoice-merged'><i class='fa fa-refresh' aria-hidden='true'></i> Làm mới</a>";
-                button += "<a href='https://" + web + "/?s=" + productSKU + "&post_type=product' target='_blank' class='btn primary-btn btn-black h45-btn print-invoice-merged'><i class='fa fa-link' aria-hidden='true'></i> Xem</a>";
-                button += "<a href='https://" + web + "/wp-admin/edit.php?s=" + productSKU + "&post_type=product' target='_blank' class='btn primary-btn btn-black h45-btn print-invoice-merged'><i class='fa fa-pencil-square-o' aria-hidden='true'></i> Sửa</a>";
-                button += "<a href='javascript:;' onclick='toggleProduct(`hide`)' class='btn primary-btn h45-btn print-invoice-merged'><i class='fa fa-pencil-square-o' aria-hidden='true'></i> Ẩn</a>";
-                button += "<a href='javascript:;' onclick='toggleProduct(`show`)' class='btn primary-btn h45-btn print-invoice-merged'><i class='fa fa-pencil-square-o' aria-hidden='true'></i> Hiện</a>";
+                $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-blue'>Tìm thấy sản phẩm</span>");
+                $("*[data-web='" + web + "']").find(".item-button").find(".btn-had-found").removeClass("hide");
             }
             else {
-                content = "<span class='bg-blue'>Chưa tìm thấy sản phẩm</span>";
-                button = "<a href='javascript:;' class='btn primary-btn h45-btn' onclick='copyProduct()'><i class='fa fa-cloud-upload' aria-hidden='true'></i> Đăng web</a>";
+                $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-blue'>Chưa tìm thấy sản phẩm</span>");
+                $("*[data-web='" + web + "']").find(".item-button").find(".btn-not-found").removeClass("hide");
             }
-
-            webItem = "<div class='col-md-3'>" + web + "</div>";
-            webItem += "<div class='col-md-3'>" + content + "</div>";
-            webItem += "<div class='col-md-6' data-web='" + web + "' data-product-sku='" + productSKU + "' data-product-id='" + productID + "'>" + button + "</div>";
-
-            $(".web-list").append("<div class='row' data-web='" + web + "'>" + webItem + "</div>");
-
         },
         error: function () {
-
-            webItem = "<div class='col-md-3'>" + web + "</div>";
-            webItem += "<div class='col-md-9'><span class='bg-red'>Lỗi kết nối trang con</span></div>";
-
-            $(".web-list").append("<div class='row' data-web='" + web + "'>" + webItem + "</div>");
+            HoldOn.close();
+            $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-red'>Lỗi kết nối trang con</span>");
         }
     });
 }
 
-function copyProduct(obj) {
-    let web = obj.parent().attr("data-web");
-    let productID = obj.parent().attr("data-product-id");
-    let productSKU = obj.parent().attr("data-product-sku");
+function postProduct(obj) {
+    let web = obj.parent().parent().attr("data-web");
+    let productID = obj.parent().parent().attr("data-product-id");
 
     if (web == "all") {
-        web = ["pqstore.vn", "quanaogiaxuong.com", "annshop.vn"];
-        for (var i = 0; i < web.length; i++) {
-            ajaxCopyProduct(web[i], productID, productSKU);
+        for (var i = 0; i < webList.length; i++) {
+            ajaxPostProduct(webList[i], productID);
         }
     }
     else {
-        ajaxCopyProduct(web, productID, productSKU);
+        ajaxPostProduct(web, productID);
     }
 }
 
-function ajaxCopyProduct(web, productID, productSKU) {
+function ajaxPostProduct(web, productID) {
     $.ajax({
         type: "POST",
         url: "http://ann-product-sync.com/api/v1/product/" + productID,
@@ -93,47 +97,243 @@ function ajaxCopyProduct(web, productID, productSKU) {
         },
         async: true,
         datatype: "json",
+        beforeSend: function () {
+            HoldOn.open();
+            $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-yellow'>Đang đăng lên web...</span>");
+            $("*[data-web='" + web + "']").find(".item-button").find(".btn-not-found").addClass("hide");
+            $("*[data-web='" + web + "']").find(".item-button").find(".btn-had-found").addClass("hide");
+        },
         success: function (data, textStatus, xhr) {
             HoldOn.close();
 
             // Thành công
             if (xhr.status === 200) {
-
-            } else if (xhr.status === 400) {
-
-            }
-
-            var content = "";
-            var button = "";
-
-
-            if (data.length > 0) {
-                content = "<span class='bg-green'>Đăng web thành công</span>";
-                button = "<a href='javascript:;' onclick='upProduct()' class='btn primary-btn h45-btn'><i class='fa fa-upload' aria-hidden='true'></i> Up</a>";
-                button += "<a href='javascript:;' onclick='renewProduct()' class='btn primary-btn btn-black h45-btn print-invoice-merged'><i class='fa fa-refresh' aria-hidden='true'></i> Làm mới</a>";
-                button += "<a href='https://" + web + "/?s=" + productSKU + "&post_type=product' target='_blank' class='btn primary-btn btn-black h45-btn print-invoice-merged'><i class='fa fa-link' aria-hidden='true'></i> Xem</a>";
-                button += "<a href='https://" + web + "/wp-admin/edit.php?s=" + productSKU + "&post_type=product' target='_blank' class='btn primary-btn btn-black h45-btn print-invoice-merged'><i class='fa fa-pencil-square-o' aria-hidden='true'></i> Sửa</a>";
-                button += "<a href='javascript:;' onclick='toggleProduct(`hide`)' class='btn primary-btn h45-btn print-invoice-merged'><i class='fa fa-pencil-square-o' aria-hidden='true'></i> Ẩn</a>";
-                button += "<a href='javascript:;' onclick='toggleProduct(`show`)' class='btn primary-btn h45-btn print-invoice-merged'><i class='fa fa-pencil-square-o' aria-hidden='true'></i> Hiện</a>";
+                if (data.id > 0) {
+                    $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-green'>Đăng web thành công</span>");
+                    $("*[data-web='" + web + "']").find(".item-button").find(".btn-not-found").addClass("hide");
+                    $("*[data-web='" + web + "']").find(".item-button").find(".btn-had-found").removeClass("hide");
+                }
+                else {
+                    $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-red'>Đăng web thất bại</span>");
+                    $("*[data-web='" + web + "']").find(".item-button").find(".btn-not-found").removeClass("hide");
+                    $("*[data-web='" + web + "']").find(".item-button").find(".btn-had-found").addClass("hide");
+                }
             }
             else {
-                content = "<span class='bg-red'>Đăng web thất bại</span>";
-                button = "<a href='javascript:;' class='btn primary-btn h45-btn' onclick='copyProduct()'><i class='fa fa-cloud-upload' aria-hidden='true'></i> Đăng web</a>";
+                $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-red'>Lỗi kết nối trang con</span>");
             }
-
-            webItem = "<div class='col-md-3'>" + web + "</div>";
-            webItem += "<div class='col-md-3'>" + content + "</div>";
-            webItem += "<div class='col-md-6' data-web='" + web + "' data-product-sku='" + productSKU + "' data-product-id='" + productID + "'>" + button + "</div>";
-
-            $(".web-list").append("<div class='row' data-web='" + web + "'>" + webItem + "</div>");
-
         },
-        error: function () {
+        error: function (xhr, textStatus, error) {
+            HoldOn.close();
 
-            webItem = "<div class='col-md-3'><i class='fa fa-arrow-right' aria-hidden='true'></i> " + web + "</div>";
-            webItem += "<div class='col-md-9'><span class='bg-red'>Lỗi kết nối trang con</span></div>";
+            if (xhr.status === 500) {
+                let data = xhr.responseJSON;
+                $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-red'>" + data.message + "</span>");
+            }
+            else {
+                $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-red'>Lỗi kết nối trang con</span>");
+            }
+        }
+    });
+}
 
-            $(".web-list").append("<div class='row' data-web='" + web + "'>" + webItem + "</div>");
+function upTopProduct(obj) {
+    let web = obj.parent().parent().attr("data-web");
+    let productID = obj.parent().parent().attr("data-product-id");
+
+    if (web == "all") {
+        for (var i = 0; i < webList.length; i++) {
+            ajaxUpTopProduct(webList[i], productID);
+        }
+    }
+    else {
+        ajaxUpTopProduct(web, productID);
+    }
+}
+
+function ajaxUpTopProduct(web, productID) {
+    $.ajax({
+        type: "POST",
+        url: "http://ann-product-sync.com/api/v1/product/" + productID + "/uptop",
+        headers: {
+            'domain': web,
+        },
+        async: true,
+        datatype: "json",
+        beforeSend: function () {
+            HoldOn.open();
+            $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-yellow'>Đang up lên đầu web...</span>");
+            $("*[data-web='" + web + "']").find(".item-button").find(".btn-not-found").addClass("hide");
+            $("*[data-web='" + web + "']").find(".item-button").find(".btn-had-found").addClass("hide");
+        },
+        success: function (data, textStatus, xhr) {
+            HoldOn.close();
+
+            // Thành công
+            if (xhr.status === 200) {
+                if (data.id > 0) {
+                    $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-green'>Up lên đầu web thành công</span>");
+                    $("*[data-web='" + web + "']").find(".item-button").find(".btn-not-found").addClass("hide");
+                    $("*[data-web='" + web + "']").find(".item-button").find(".btn-had-found").removeClass("hide");
+                }
+                else {
+                    $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-red'>Up lên đầu web thất bại</span>");
+                    $("*[data-web='" + web + "']").find(".item-button").find(".btn-not-found").removeClass("hide");
+                    $("*[data-web='" + web + "']").find(".item-button").find(".btn-had-found").addClass("hide");
+                }
+            }
+            else {
+                $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-red'>Lỗi kết nối trang con</span>");
+            }
+        },
+        error: function (xhr, textStatus, error) {
+            HoldOn.close();
+            let data = xhr.responseJSON;
+            if (xhr.status === 500) {
+                $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-red'>" + data.message + "</span>");
+            }
+            else if (xhr.status === 400) {
+                $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-red'>" + data.message + "</span>");
+            }
+            else {
+                $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-red'>Lỗi kết nối trang con</span>");
+            }
+        }
+    });
+}
+
+function renewProduct(obj) {
+    let web = obj.parent().parent().attr("data-web");
+    let productID = obj.parent().parent().attr("data-product-id");
+
+    if (web == "all") {
+        for (var i = 0; i < webList.length; i++) {
+            ajaxRenewProductt(webList[i], productID);
+        }
+    }
+    else {
+        ajaxRenewProductt(web, productID);
+    }
+}
+
+function ajaxRenewProductt(web, productID) {
+    $.ajax({
+        type: "POST",
+        url: "http://ann-product-sync.com/api/v1/product/" + productID + "/renew",
+        headers: {
+            'domain': web,
+        },
+        async: true,
+        datatype: "json",
+        beforeSend: function () {
+            HoldOn.open();
+            $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-yellow'>Đang làm mới sản phẩm...</span>");
+            $("*[data-web='" + web + "']").find(".item-button").find(".btn-not-found").addClass("hide");
+            $("*[data-web='" + web + "']").find(".item-button").find(".btn-had-found").addClass("hide");
+        },
+        success: function (data, textStatus, xhr) {
+            HoldOn.close();
+
+            // Thành công
+            if (xhr.status === 200) {
+                if (data.id > 0) {
+                    $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-green'>Làm mới sản phẩm thành công</span>");
+                    $("*[data-web='" + web + "']").find(".item-button").find(".btn-not-found").addClass("hide");
+                    $("*[data-web='" + web + "']").find(".item-button").find(".btn-had-found").removeClass("hide");
+                }
+                else {
+                    $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-red'>Làm mới sản phẩm thất bại</span>");
+                    $("*[data-web='" + web + "']").find(".item-button").find(".btn-not-found").removeClass("hide");
+                    $("*[data-web='" + web + "']").find(".item-button").find(".btn-had-found").addClass("hide");
+                }
+            }
+            else {
+                $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-red'>Lỗi kết nối trang con</span>");
+            }
+        },
+        error: function (xhr, textStatus, error) {
+            HoldOn.close();
+            let data = xhr.responseJSON;
+            if (xhr.status === 500) {
+                $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-red'>" + data.message + "</span>");
+            }
+            else if (xhr.status === 400) {
+                $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-red'>" + data.message + "</span>");
+            }
+            else {
+                $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-red'>Lỗi kết nối trang con</span>");
+            }
+        }
+    });
+}
+
+function toggleProduct(obj, toggle) {
+    let web = obj.parent().parent().attr("data-web");
+    let productID = obj.parent().parent().attr("data-product-id");
+
+    if (web == "all") {
+        for (var i = 0; i < webList.length; i++) {
+            ajaxToggleProduct(webList[i], productID, toggle);
+        }
+    }
+    else {
+        ajaxToggleProduct(web, productID, toggle);
+    }
+}
+
+function ajaxToggleProduct(web, productID, toggle) {
+    let status = "ẩn";
+    if (toggle === "show") {
+        status = "hiện";
+    }
+
+    $.ajax({
+        type: "POST",
+        url: "http://ann-product-sync.com/api/v1/product/" + productID + "/" + toggle,
+        headers: {
+            'domain': web,
+        },
+        async: true,
+        datatype: "json",
+        beforeSend: function () {
+            HoldOn.open();
+            
+            $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-yellow'>Đang " + status + " sản phẩm</span>");
+            $("*[data-web='" + web + "']").find(".item-button").find(".btn-not-found").addClass("hide");
+            $("*[data-web='" + web + "']").find(".item-button").find(".btn-had-found").addClass("hide");
+        },
+        success: function (data, textStatus, xhr) {
+            HoldOn.close();
+
+            // Thành công
+            if (xhr.status === 200) {
+                if (data.id > 0) {
+                    $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-green'>Đã " + status + " sản phẩm thành công</span>");
+                    $("*[data-web='" + web + "']").find(".item-button").find(".btn-not-found").addClass("hide");
+                    $("*[data-web='" + web + "']").find(".item-button").find(".btn-had-found").removeClass("hide");
+                }
+                else {
+                    $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-red'>Đã " + status + " sản phẩm thất bại</span>");
+                    $("*[data-web='" + web + "']").find(".item-button").find(".btn-not-found").removeClass("hide");
+                    $("*[data-web='" + web + "']").find(".item-button").find(".btn-had-found").addClass("hide");
+                }
+            }
+            else {
+                $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-red'>Lỗi kết nối trang con</span>");
+            }
+        },
+        error: function (xhr, textStatus, error) {
+            HoldOn.close();
+            let data = xhr.responseJSON;
+            if (xhr.status === 500) {
+                $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-red'>" + data.message + "</span>");
+            }
+            else if (xhr.status === 400) {
+                $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-red'>" + data.message + "</span>");
+            }
+            else {
+                $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-red'>Lỗi kết nối trang con</span>");
+            }
         }
     });
 }
