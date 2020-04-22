@@ -51,7 +51,7 @@ function showProductSyncModal(productSKU, productID, categoryID) {
 function getProduct(web, productID) {
     $.ajax({
         type: "GET",
-        url: "http://ann-product-sync.com/api/v1/product/" + productID,
+        url: "/api/v1/product/" + productID,
         headers: {
             'domain': web,
         },
