@@ -257,7 +257,7 @@
 
     <script type="text/javascript" src="Scripts/bootstrap-tagsinput.min.js"></script>
 
-    <script src="/App_Themes/Ann/js/sync-product.js?v=10042020"></script>
+    <script src="/App_Themes/Ann/js/sync-product-v2.js?v=10042020"></script>
     <script src="/App_Themes/Ann/js/copy-product-info.js?v=10042020"></script>pt>
     <script src="/App_Themes/Ann/js/download-product-image.js?v=10042020"></script>
     <script>
