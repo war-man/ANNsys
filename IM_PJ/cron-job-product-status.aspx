@@ -187,7 +187,7 @@
 
         <script type="text/javascript" src="/Scripts/bootstrap-toggle.min.js"></script>
         <script type="text/javascript" src="/App_Themes/Ann/js/services/common/utils-service.js?v=10042020"></script>
-        <script type="text/javascript" src="/App_Themes/Ann/js/sync-product.js?v=10042020"></script>
+        <script type="text/javascript" src="/App_Themes/Ann/js/sync-product-v2.js?v=10042020"></script>
         <script type="text/javascript" src="/App_Themes/Ann/js/services/cron-job-product-status/cron-job-product-status-service.js?v=10042020"></script>
         <script type="text/javascript" src="/App_Themes/Ann/js/controllers/cron-job-product-status/cron-job-product-status-controller.js?v=10042020"></script>
         <script type="text/javascript" src="/App_Themes/Ann/js/pages/cron-job-product-status/cron-job-product-status.js?v=10042020"></script>
