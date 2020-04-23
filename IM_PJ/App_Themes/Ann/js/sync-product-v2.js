@@ -1,4 +1,4 @@
-﻿var API = "/api/v1/product/";
+﻿var API = "/api/v1/woocommerce/product/";
 //var webList = ["ann.com.vn", "khohangsiann.com", "bosiquanao.net", "quanaogiaxuong.com", "bansithoitrang.net", "panpan.vn", "quanaoxuongmay.com", "annshop.vn"];
 var webList = ["annshop.vn"];
 

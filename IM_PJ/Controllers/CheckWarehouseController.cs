@@ -136,7 +136,7 @@ namespace IM_PJ.Controllers
                       checkedName = x.header.Name,
                       sku = x.body.ProductSKU,
                       quantity = x.body.QuantityNew.HasValue ? x.body.QuantityNew.Value : 0,
-                      checkedDate = x.body.ModifiedDate
+                      checkedDate = x.body.ModifiedDate.Value
                   })
                   .OrderByDescending(o => o.checkedDate);
 

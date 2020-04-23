@@ -187,6 +187,32 @@ namespace IM_PJ
                     }
                 }
 
+                // tạo phiên bản cho wordpress
+                if (post != null)
+                {
+                    var webWordpress = WebWordpressController.GetAll();
+                    foreach (var item in webWordpress)
+                    {
+                        var newPostWordpress = new PostWordpress()
+                        {
+                            PostPublicID = post.ID,
+                            WebWordpress = item.Web,
+                            PostWordpressID = 0,
+                            CategoryID = post.CategoryID,
+                            Title = post.Title,
+                            Summary = post.Summary,
+                            Content = post.Content,
+                            Thumbnail = post.Thumbnail,
+                            CreatedDate = post.CreatedDate,
+                            CreatedBy = acc.Username,
+                            ModifiedDate = post.ModifiedDate,
+                            ModifiedBy = acc.Username
+                        };
+
+                        var postWordpress = PostWordpressController.Insert(newPostWordpress);
+                    }
+                }
+
                 if (post != null)
                 {
                     PJUtils.ShowMessageBoxSwAlertCallFunction("Tạo bài viết thành công", "s", true, "redirectTo(" + post.ID.ToString() + ")", Page);

@@ -15,32 +15,26 @@ namespace IM_PJ.Models
 using System;
     using System.Collections.Generic;
     
-public partial class tbl_OrderDetail
+public partial class PostWordpress
 {
 
     public int ID { get; set; }
 
-    public Nullable<int> AgentID { get; set; }
+    public int PostPublicID { get; set; }
 
-    public Nullable<int> OrderID { get; set; }
+    public string WebWordpress { get; set; }
 
-    public string SKU { get; set; }
+    public int PostWordpressID { get; set; }
 
-    public Nullable<int> ProductID { get; set; }
+    public Nullable<int> CategoryID { get; set; }
 
-    public Nullable<int> ProductVariableID { get; set; }
+    public string Title { get; set; }
 
-    public string ProductVariableDescrition { get; set; }
+    public string Summary { get; set; }
 
-    public Nullable<double> Quantity { get; set; }
+    public string Content { get; set; }
 
-    public Nullable<double> Price { get; set; }
-
-    public Nullable<int> Status { get; set; }
-
-    public Nullable<double> DiscountPrice { get; set; }
-
-    public Nullable<int> ProductType { get; set; }
+    public string Thumbnail { get; set; }
 
     public Nullable<System.DateTime> CreatedDate { get; set; }
 
@@ -49,8 +43,6 @@ public partial class tbl_OrderDetail
     public Nullable<System.DateTime> ModifiedDate { get; set; }
 
     public string ModifiedBy { get; set; }
-
-    public Nullable<bool> IsCount { get; set; }
 
 }
 

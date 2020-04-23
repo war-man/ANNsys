@@ -15,26 +15,28 @@ namespace IM_PJ.Models
 using System;
     using System.Collections.Generic;
     
-public partial class CustomerCoupon
+public partial class WebWordpress
 {
 
     public int ID { get; set; }
 
-    public int CustomerID { get; set; }
+    public string Web { get; set; }
 
-    public int CouponID { get; set; }
+    public string WPKey { get; set; }
 
-    public System.DateTime StartDate { get; set; }
+    public string WPSecret { get; set; }
 
-    public System.DateTime EndDate { get; set; }
+    public string WPToken { get; set; }
+
+    public string WPTokenSecret { get; set; }
+
+    public string WCKey { get; set; }
+
+    public string WCSecret { get; set; }
+
+    public string WCPriceType { get; set; }
 
     public bool Active { get; set; }
-
-    public System.DateTime CreatedDate { get; set; }
-
-    public System.DateTime ModifiedDate { get; set; }
-
-    public string Phone { get; set; }
 
 }
 

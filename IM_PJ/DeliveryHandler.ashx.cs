@@ -64,7 +64,6 @@ namespace IM_PJ
                     {
                         OrderID = delivery.OrderID,
                         ShipperID = delivery.ShipperID,
-                        ShippingType = delivery.ShippingType,
                         CreatedDate = delivery.CreatedDate,
                         DeliveryTimes = delivery.Times.Value,
                         DeliveryStatus = delivery.Status,

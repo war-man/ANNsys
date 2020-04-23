@@ -70,14 +70,14 @@
           <Property Name="CheckWarehouseID" Type="int" Nullable="false" />
           <Property Name="ProductID" Type="int" Nullable="false" />
           <Property Name="ProductVariableID" Type="int" Nullable="false" />
-          <Property Name="ProductSKU" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="ProductSKU" Type="nvarchar" MaxLength="255" Nullable="false" />
           <Property Name="QuantityOld" Type="int" Nullable="false" />
           <Property Name="QuantityNew" Type="int" />
-          <Property Name="Note" Type="nvarchar(max)" />
-          <Property Name="CreatedDate" Type="datetime" Nullable="false" />
-          <Property Name="CreatedBy" Type="nvarchar" MaxLength="255" Nullable="false" />
-          <Property Name="ModifiedDate" Type="datetime" Nullable="false" />
-          <Property Name="ModifiedBy" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="Note" Type="nvarchar" MaxLength="255" />
+          <Property Name="CreatedDate" Type="datetime" />
+          <Property Name="CreatedBy" Type="nvarchar" MaxLength="255" />
+          <Property Name="ModifiedDate" Type="datetime" />
+          <Property Name="ModifiedBy" Type="nvarchar" MaxLength="255" />
         </EntityType>
         <EntityType Name="Coupon">
           <Key>
@@ -389,6 +389,24 @@ warning 6002: The table/view 'inventorymanagement.dbo.NotificationCategory' does
           <Property Name="CreatedDate" Type="datetime" />
           <Property Name="ModifiedBy" Type="nvarchar(max)" />
           <Property Name="ModifiedDate" Type="datetime" />
+        </EntityType>
+        <EntityType Name="PostWordpress">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="PostPublicID" Type="int" Nullable="false" />
+          <Property Name="WebWordpress" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="PostWordpressID" Type="int" Nullable="false" />
+          <Property Name="CategoryID" Type="int" />
+          <Property Name="Title" Type="nvarchar" MaxLength="255" />
+          <Property Name="Summary" Type="nvarchar(max)" />
+          <Property Name="Content" Type="nvarchar(max)" />
+          <Property Name="Thumbnail" Type="nvarchar" MaxLength="255" />
+          <Property Name="CreatedDate" Type="datetime" />
+          <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="ModifiedDate" Type="datetime" />
+          <Property Name="ModifiedBy" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="ProductTag">
           <Key>
@@ -1243,6 +1261,21 @@ warning 6002: The table/view 'inventorymanagement.dbo.NotificationCategory' does
           <Property Name="ModifiedDate" Type="datetime" Nullable="false" />
           <Property Name="ModifiedBy" Type="nvarchar" MaxLength="50" Nullable="false" />
         </EntityType>
+        <EntityType Name="WebWordpress">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Web" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="WPKey" Type="nvarchar" MaxLength="255" />
+          <Property Name="WPSecret" Type="nvarchar" MaxLength="255" />
+          <Property Name="WPToken" Type="nvarchar" MaxLength="255" />
+          <Property Name="WPTokenSecret" Type="nvarchar" MaxLength="255" />
+          <Property Name="WCKey" Type="nvarchar" MaxLength="255" />
+          <Property Name="WCSecret" Type="nvarchar" MaxLength="255" />
+          <Property Name="WCPriceType" Type="nvarchar" MaxLength="255" />
+          <Property Name="Active" Type="bit" Nullable="false" />
+        </EntityType>
         <EntityContainer Name="inventorymanagementModelStoreContainer">
           <EntitySet Name="Bank" EntityType="Self.Bank" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="BankAccount" EntityType="Self.BankAccount" Schema="dbo" store:Type="Tables" />
@@ -1266,6 +1299,7 @@ warning 6002: The table/view 'inventorymanagement.dbo.NotificationCategory' does
           <EntitySet Name="PostCategory" EntityType="Self.PostCategory" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PostPublic" EntityType="Self.PostPublic" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PostPublicImage" EntityType="Self.PostPublicImage" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PostWordpress" EntityType="Self.PostWordpress" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ProductTag" EntityType="Self.ProductTag" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ReceivedProductHistory" EntityType="Self.ReceivedProductHistory" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Register" EntityType="Self.Register" Schema="dbo" store:Type="Tables" />
@@ -1314,6 +1348,7 @@ warning 6002: The table/view 'inventorymanagement.dbo.NotificationCategory' does
           <EntitySet Name="tbl_WhiteDomain" EntityType="Self.tbl_WhiteDomain" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="User" EntityType="Self.User" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserNotifyPromotion" EntityType="Self.UserNotifyPromotion" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="WebWordpress" EntityType="Self.WebWordpress" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="NotificationCategory" EntityType="Self.NotificationCategory" store:Type="Tables" store:Schema="dbo">
             <DefiningQuery>SELECT 
     [NotificationCategory].[ID] AS [ID], 
@@ -1553,26 +1588,6 @@ warning 6002: The table/view 'inventorymanagement.dbo.NotificationCategory' does
           <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="ModifiedDate" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="ModifiedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
-        </EntityType>
-        <EntityType Name="NotifyNew">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="CategoryID" Type="Int32" Nullable="false" />
-          <Property Name="CategorySlug" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="Title" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="Thumbnail" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Summary" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="Content" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="Action" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="ActionValue" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="AtHome" Type="Boolean" Nullable="false" />
-          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="ModifiedDate" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="ModifiedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="AppUpdate" Type="DateTime" Precision="3" />
         </EntityType>
         <EntityType Name="NotifyPromotion">
           <Key>
@@ -2544,7 +2559,6 @@ warning 6002: The table/view 'inventorymanagement.dbo.NotificationCategory' does
           <EntitySet Name="FeeTypes" EntityType="Self.FeeType" />
           <EntitySet Name="GroupNotifyPromotions" EntityType="Self.GroupNotifyPromotion" />
           <EntitySet Name="Notifications" EntityType="Self.Notification" />
-          <EntitySet Name="NotifyNews" EntityType="Self.NotifyNew" />
           <EntitySet Name="NotifyPromotions" EntityType="Self.NotifyPromotion" />
           <EntitySet Name="NotifyUsers" EntityType="Self.NotifyUser" />
           <EntitySet Name="PostCategories" EntityType="Self.PostCategory" />
@@ -2599,8 +2613,11 @@ warning 6002: The table/view 'inventorymanagement.dbo.NotificationCategory' does
           <EntitySet Name="UserNotifyPromotions" EntityType="Self.UserNotifyPromotion" />
           <EntitySet Name="NotificationCategories" EntityType="Self.NotificationCategory" />
           <EntitySet Name="PostPublicImages" EntityType="inventorymanagementModel.PostPublicImage" />
+          <EntitySet Name="PostWordpresses" EntityType="inventorymanagementModel.PostWordpress" />
+          <EntitySet Name="WebWordpresses" EntityType="inventorymanagementModel.WebWordpress" />
           <EntitySet Name="CheckWarehouses" EntityType="inventorymanagementModel.CheckWarehouse" />
           <EntitySet Name="CheckWarehouseDetails" EntityType="inventorymanagementModel.CheckWarehouseDetail" />
+          <EntitySet Name="NotifyNews" EntityType="inventorymanagementModel.NotifyNew" />
         </EntityContainer>
         <EntityType Name="PostPublicImage">
           <Key>
@@ -2613,6 +2630,39 @@ warning 6002: The table/view 'inventorymanagement.dbo.NotificationCategory' does
           <Property Name="CreatedDate" Type="DateTime" Precision="3" />
           <Property Name="ModifiedBy" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="PostWordpress">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="PostPublicID" Type="Int32" Nullable="false" />
+          <Property Name="WebWordpress" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="PostWordpressID" Type="Int32" Nullable="false" />
+          <Property Name="CategoryID" Type="Int32" />
+          <Property Name="Title" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Summary" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Content" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Thumbnail" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+          <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
+          <Property Name="ModifiedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="WebWordpress">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Web" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="WPKey" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="WPSecret" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="WPToken" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="WPTokenSecret" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="WCKey" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="WCSecret" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="WCPriceType" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Active" Type="Boolean" Nullable="false" />
         </EntityType>
         <EntityType Name="CheckWarehouse">
           <Key>
@@ -2634,14 +2684,34 @@ warning 6002: The table/view 'inventorymanagement.dbo.NotificationCategory' does
           <Property Name="CheckWarehouseID" Type="Int32" Nullable="false" />
           <Property Name="ProductID" Type="Int32" Nullable="false" />
           <Property Name="ProductVariableID" Type="Int32" Nullable="false" />
-          <Property Name="ProductSKU" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ProductSKU" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="QuantityOld" Type="Int32" Nullable="false" />
           <Property Name="QuantityNew" Type="Int32" />
-          <Property Name="Note" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Note" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+          <Property Name="CreatedBy" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
+          <Property Name="ModifiedBy" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="NotifyNew">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CategoryID" Type="Int32" Nullable="false" />
+          <Property Name="CategorySlug" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Title" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Thumbnail" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Summary" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Content" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Action" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="ActionValue" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="AtHome" Type="Boolean" Nullable="false" />
           <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="CreatedBy" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedBy" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="ModifiedDate" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="ModifiedBy" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="ModifiedBy" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="AppUpdate" Type="DateTime" Precision="3" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -2876,27 +2946,6 @@ warning 6002: The table/view 'inventorymanagement.dbo.NotificationCategory' does
                 <ScalarProperty Name="Phone" ColumnName="Phone" />
                 <ScalarProperty Name="Kind" ColumnName="Kind" />
                 <ScalarProperty Name="NotifyID" ColumnName="NotifyID" />
-                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
-                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
-                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
-                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="NotifyNews">
-            <EntityTypeMapping TypeName="inventorymanagementModel.NotifyNew">
-              <MappingFragment StoreEntitySet="NotifyNews">
-                <ScalarProperty Name="AppUpdate" ColumnName="AppUpdate" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-                <ScalarProperty Name="CategoryID" ColumnName="CategoryID" />
-                <ScalarProperty Name="CategorySlug" ColumnName="CategorySlug" />
-                <ScalarProperty Name="Title" ColumnName="Title" />
-                <ScalarProperty Name="Thumbnail" ColumnName="Thumbnail" />
-                <ScalarProperty Name="Summary" ColumnName="Summary" />
-                <ScalarProperty Name="Content" ColumnName="Content" />
-                <ScalarProperty Name="Action" ColumnName="Action" />
-                <ScalarProperty Name="ActionValue" ColumnName="ActionValue" />
-                <ScalarProperty Name="AtHome" ColumnName="AtHome" />
                 <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
                 <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
                 <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
@@ -3916,6 +3965,41 @@ warning 6002: The table/view 'inventorymanagement.dbo.NotificationCategory' does
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="PostWordpresses">
+            <EntityTypeMapping TypeName="inventorymanagementModel.PostWordpress">
+              <MappingFragment StoreEntitySet="PostWordpress">
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="Thumbnail" ColumnName="Thumbnail" />
+                <ScalarProperty Name="Content" ColumnName="Content" />
+                <ScalarProperty Name="Summary" ColumnName="Summary" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="CategoryID" ColumnName="CategoryID" />
+                <ScalarProperty Name="PostWordpressID" ColumnName="PostWordpressID" />
+                <ScalarProperty Name="WebWordpress" ColumnName="WebWordpress" />
+                <ScalarProperty Name="PostPublicID" ColumnName="PostPublicID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="WebWordpresses">
+            <EntityTypeMapping TypeName="inventorymanagementModel.WebWordpress">
+              <MappingFragment StoreEntitySet="WebWordpress">
+                <ScalarProperty Name="Active" ColumnName="Active" />
+                <ScalarProperty Name="WCPriceType" ColumnName="WCPriceType" />
+                <ScalarProperty Name="WCSecret" ColumnName="WCSecret" />
+                <ScalarProperty Name="WCKey" ColumnName="WCKey" />
+                <ScalarProperty Name="WPTokenSecret" ColumnName="WPTokenSecret" />
+                <ScalarProperty Name="WPToken" ColumnName="WPToken" />
+                <ScalarProperty Name="WPSecret" ColumnName="WPSecret" />
+                <ScalarProperty Name="WPKey" ColumnName="WPKey" />
+                <ScalarProperty Name="Web" ColumnName="Web" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="CheckWarehouses">
             <EntityTypeMapping TypeName="inventorymanagementModel.CheckWarehouse">
               <MappingFragment StoreEntitySet="CheckWarehouse">
@@ -3947,7 +4031,28 @@ warning 6002: The table/view 'inventorymanagement.dbo.NotificationCategory' does
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-        </EntityContainerMapping>
+          <EntitySetMapping Name="NotifyNews">
+            <EntityTypeMapping TypeName="inventorymanagementModel.NotifyNew">
+              <MappingFragment StoreEntitySet="NotifyNews">
+                <ScalarProperty Name="AppUpdate" ColumnName="AppUpdate" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="AtHome" ColumnName="AtHome" />
+                <ScalarProperty Name="ActionValue" ColumnName="ActionValue" />
+                <ScalarProperty Name="Action" ColumnName="Action" />
+                <ScalarProperty Name="Content" ColumnName="Content" />
+                <ScalarProperty Name="Summary" ColumnName="Summary" />
+                <ScalarProperty Name="Thumbnail" ColumnName="Thumbnail" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="CategorySlug" ColumnName="CategorySlug" />
+                <ScalarProperty Name="CategoryID" ColumnName="CategoryID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>
   </edmx:Runtime>
