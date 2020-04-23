@@ -1,4 +1,6 @@
-﻿var webList = ["ann.com.vn", "khohangsiann.com", "bosiquanao.net", "quanaogiaxuong.com", "bansithoitrang.net", "panpan.vn", "quanaoxuongmay.com", "annshop.vn"];
+﻿var API = "/api/v1/product/";
+//var webList = ["ann.com.vn", "khohangsiann.com", "bosiquanao.net", "quanaogiaxuong.com", "bansithoitrang.net", "panpan.vn", "quanaoxuongmay.com", "annshop.vn"];
+var webList = ["annshop.vn"];
 
 function showProductSyncModal(productSKU, productID, categoryID) {
     closePopup();
@@ -51,7 +53,7 @@ function showProductSyncModal(productSKU, productID, categoryID) {
 function getProduct(web, productID) {
     $.ajax({
         type: "GET",
-        url: "/api/v1/product/" + productID,
+        url: API + productID,
         headers: {
             'domain': web,
         },
@@ -94,7 +96,7 @@ function postProduct(obj) {
 function ajaxPostProduct(web, productID) {
     $.ajax({
         type: "POST",
-        url: "http://ann-product-sync.com/api/v1/product/" + productID,
+        url: API + productID,
         headers: {
             'domain': web,
         },
@@ -158,7 +160,7 @@ function upTopProduct(obj) {
 function ajaxUpTopProduct(web, productID) {
     $.ajax({
         type: "POST",
-        url: "http://ann-product-sync.com/api/v1/product/" + productID + "/uptop",
+        url: API + productID + "/uptop",
         headers: {
             'domain': web,
         },
@@ -223,7 +225,7 @@ function renewProduct(obj) {
 function ajaxRenewProductt(web, productID) {
     $.ajax({
         type: "POST",
-        url: "http://ann-product-sync.com/api/v1/product/" + productID + "/renew",
+        url: API + productID + "/renew",
         headers: {
             'domain': web,
         },
@@ -294,7 +296,7 @@ function ajaxToggleProduct(web, productID, toggle) {
 
     $.ajax({
         type: "POST",
-        url: "http://ann-product-sync.com/api/v1/product/" + productID + "/" + toggle,
+        url: API + productID + "/" + toggle,
         headers: {
             'domain': web,
         },
@@ -375,7 +377,7 @@ function ajaxDeleteProduct(web, productID) {
 
     $.ajax({
         type: "DELETE",
-        url: "http://ann-product-sync.com/api/v1/product/" + productID,
+        url: API + productID,
         headers: {
             'domain': web,
         },
