@@ -14,6 +14,7 @@ using System.Web.Script.Serialization;
 using System.Web.Services;
 using System.IO;
 using static IM_PJ.Controllers.PostPublicController;
+using Newtonsoft.Json;
 
 namespace IM_PJ
 {
@@ -140,6 +141,17 @@ namespace IM_PJ
             ltrNumberOfPost.Text = a.Count().ToString();
         }
         [WebMethod]
+        public static string getPostWordpressByPostPublicID(int postPublicID)
+        {
+            var postWordpressList = PostWordpressController.GetAllByPostPublicID(postPublicID);
+            if (postWordpressList.Count > 0)
+            {
+                return JsonConvert.SerializeObject(postWordpressList);
+            }
+
+            return null;
+        }
+        [WebMethod]
         public static string updateAtHome(int id, bool value)
         {
             string update = PostPublicController.updateAtHome(id, value);
@@ -250,6 +262,7 @@ namespace IM_PJ
                     html.Append("   <td>");
                     html.Append("       <a href='javascript:;' title='Xóa bài này' class='btn primary-btn btn-red h45-btn' onclick='deletePost(" + item.ID + ");'><i class='fa fa-times' aria-hidden='true'></i> Xóa</a>");
                     html.Append("       <a target='_blank' href='/sua-bai-viet-app?id=" + item.ID + "' title='Sửa bài này' class='btn primary-btn btn-blue h45-btn'><i class='fa fa-pencil-square-o' aria-hidden='true'></i> Sửa</a>");
+                    html.AppendLine("       <a href='javascript:;' title='Đồng bộ bài viết' class='btn btn-green primary-btn h45-btn' onclick='showPostSyncModal(" + item.ID + ");'><i class='fa fa-refresh' aria-hidden='true'></i></a>");
                     html.Append("  </td>");
                     html.Append("</tr>");
                 }
