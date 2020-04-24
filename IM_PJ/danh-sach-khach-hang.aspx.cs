@@ -171,9 +171,24 @@ namespace IM_PJ
                 ltrNumberOfCustomer.Text = rs.Count().ToString();
             }
         }
-
         [WebMethod]
-        public static string generateCouponForCustomer(int customerID, string couponCode, bool checkUser = false)
+        public static string generateCouponG20(int customerID)
+        {
+            var coupon = CouponController.getByName("G20");
+            if (coupon != null)
+            {
+                //generate coupon for customer
+                var customerCoupon = CouponController.insertCustomerCoupon(customerID, coupon.ID);
+                if (customerCoupon != null)
+                {
+                    return "true";
+                }
+            }
+
+            return "false";
+        }
+        [WebMethod]
+        public static string checkCouponG20(int customerID)
         {
             // check customer
             var customer = CustomerController.GetByID(customerID);
@@ -183,7 +198,56 @@ namespace IM_PJ
             }
 
             // check coupon
-            var coupon = CouponController.getByName(couponCode);
+            var coupon = CouponController.getByName("G20");
+            if (coupon == null)
+            {
+                return "couponNotFound";
+            }
+            else
+            {
+                if (coupon.Active == false)
+                {
+                    return "couponNotActived";
+                }
+            }
+
+            // check user app
+            var userPhone = UserController.getByPhone(customer.CustomerPhone);
+            var userPhone2 = UserController.getByPhone(customer.CustomerPhone2);
+            if (userPhone == null && userPhone2 == null)
+            {
+                return "userNotFound";
+            }
+
+            // kiểm tra đã tạo mã cho khách này chưa
+            var customerCoupon = CouponController.getCouponByCustomer(coupon.ID, customer.ID, customer.CustomerPhone);
+            if (customerCoupon.Count == 0)
+            {
+                return "noCouponGeneratedYet";
+            }
+
+            // kiểm tra mã đã tạo còn cái nào actice không
+            int activeCoupon = customerCoupon.Where(x => x.Active == true).Count();
+            if (activeCoupon > 0)
+            {
+                return "activeCouponExists";
+            }
+
+            return "false";
+        }
+
+        [WebMethod]
+        public static string generateCouponG15(int customerID, bool checkUser = false)
+        {
+            // check customer
+            var customer = CustomerController.GetByID(customerID);
+            if (customer == null)
+            {
+                return "customerNotFound";
+            }
+
+            // check coupon
+            var coupon = CouponController.getByName("G15");
             if (coupon == null)
             {
                 return "couponNotFound";

@@ -429,7 +429,8 @@
                                 <div class="post-row clear coupon">
                                     <div class="left">Mã giảm giá</div>
                                     <div class="right">
-                                        <a id="btnGenerateCouponG15" class="btn btn-coupon btn-violet" title="Tạo mã giảm giá G15" onclick="generateCouponG15()"><i class="fa fa-gift"></i> Tạo mã G15</a>
+                                        <a id="btnGenerateCouponG15" class="btn btn-coupon btn-violet hide" title="Tạo mã giảm giá G15" onclick="couponG15()"><i class="fa fa-gift"></i> Tạo mã G15</a>
+                                        <a id="btnGenerateCouponG20" class="btn btn-coupon btn-violet" title="Kiểm tra mã giảm giá G20" onclick="couponG20()"><i class="fa fa-gift"></i> Kiểm tra mã G20</a>
                                         <a id="btnOpenCouponModal" class="btn btn-coupon btn-violet" title="Nhập mã giảm giá" onclick="openCouponModal()"><i class="fa fa-gift"></i> Nhập mã</a>
                                         <a href="javascript:;" id="btnRemoveCouponCode" class="btn btn-coupon link-btn hide" onclick="removeCoupon()"><i class="fa fa-times" aria-hidden="true"></i> Xóa</a>
                                         <asp:TextBox ID="txtCouponValue" runat="server" CssClass="form-control text-right width-notfull input-coupon" value="0" disabled="disabled"></asp:TextBox>
@@ -1375,7 +1376,7 @@
                 if (couponCodeOld) {
                     $('[id$="_txtCouponValue"]').val(`${couponCodeOld.trim().toUpperCase()}: -${formatThousands(couponValueOld, ',')}`);
                     $('#btnOpenCouponModal').addClass('hide');
-                    $('#btnGenerateCouponG15').addClass('hide');
+                    $('#btnGenerateCouponG20').addClass('hide');
                     $('#btnRemoveCouponCode').removeClass('hide');
                 }
 
@@ -2531,7 +2532,7 @@
 
                                 couponModalDOM.querySelector('#closeCoupon').click();
                                 document.querySelector('#btnOpenCouponModal').classList.add('hide');
-                                document.querySelector('#btnGenerateCouponG15').classList.add('hide');
+                                document.querySelector('#btnGenerateCouponG20').classList.add('hide');
                                 document.querySelector('#btnRemoveCouponCode').classList.remove('hide');
 
                                 getAllPrice();
@@ -2558,7 +2559,7 @@
                 document.querySelector('[id$="_hdfCouponProductNumber"]').value = 0;
                 document.querySelector('[id$="_hdfCouponPriceMin"]').value = 0;
                 document.querySelector('#btnOpenCouponModal').classList.remove('hide');
-                document.querySelector('#btnGenerateCouponG15').classList.remove('hide');
+                document.querySelector('#btnGenerateCouponG20').classList.remove('hide');
                 document.querySelector('#btnRemoveCouponCode').classList.add('hide');
                 
                 getAllPrice();
@@ -2580,10 +2581,15 @@
                 }
             }
 
-            function generateCouponG15() {
+            function couponG15() {
                 let customerID = $("#<%=hdfCustomerID.ClientID%>").val();
                 let customerName = $("#<%=txtFullname.ClientID%>").val();
-                generateCouponForCustomer(customerName, customerID, "G15");
+                generateCouponG15(customerName, customerID);
+            }
+            function couponG20() {
+                let customerID = $("#<%=hdfCustomerID.ClientID%>").val();
+                let customerName = $("#<%=txtFullname.ClientID%>").val();
+                generateCouponG20(customerName, customerID);
             }
         </script>
     </telerik:RadScriptBlock>
