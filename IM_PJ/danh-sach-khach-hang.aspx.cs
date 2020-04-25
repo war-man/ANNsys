@@ -233,6 +233,13 @@ namespace IM_PJ
                 return "activeCouponExists";
             }
 
+            // kiểm tra khách đã sử dụng bao nhiêu mã
+            int inactiveCoupon = customerCoupon.Where(x => x.Active == false).Count();
+            if (inactiveCoupon == 1)
+            {
+                return "couponUsageLimitExceeded";
+            }
+
             return "false";
         }
 
@@ -386,7 +393,6 @@ namespace IM_PJ
                     }
 
                     html.Append("   <td>");
-                    html.Append("       <a href='javascript:;' onclick='generateCouponForCustomer(`" + item.CustomerName.ToLower().ToTitleCase() + "`, " + item.ID + ", `G15`);' title='Tạo mã giảm giá 15k - G15' class='btn primary-btn h45-btn btn-violet'><i class='fa fa-gift' aria-hidden='true'></i></a>");
                     html.Append("       <a href='/danh-sach-don-hang?searchtype=1&textsearch=" + item.CustomerPhone + "' title='Xem đơn hàng' class='btn primary-btn h45-btn'><i class='fa fa-shopping-cart' aria-hidden='true'></i></a>");
                     html.Append("       <a href='/thong-ke-khach-hang?textsearch=" + item.CustomerPhone + "' title='Xem thống kê khách hàng' class='btn primary-btn btn-blue h45-btn' target='_blank'><i class='fa fa-line-chart' aria-hidden='true'></i></a>");
                     html.Append("   </td>");

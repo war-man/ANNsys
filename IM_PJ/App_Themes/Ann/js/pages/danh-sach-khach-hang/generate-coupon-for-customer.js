@@ -31,13 +31,31 @@ function checkCouponG20(customerID, couponCode) {
                 alert("Không tìm thấy mã giảm giá!");
             }
             else if (msg.d === "couponNotActived") {
-                alert("Mã giảm giá chưa kích hoạt!");
+                swal({
+                    title: "Thông báo:",
+                    text: "Mã giảm giá chưa kích hoạt!",
+                    type: "error",
+                    showCloseButton: true,
+                    html: true,
+                });
             }
             else if (msg.d === "userNotFound") {
-                alert("Số điện thoại này chưa đăng ký app!");
+                swal({
+                    title: "Thông báo:",
+                    text: "Số điện thoại này chưa đăng ký app!<br>Hãy hướng dẫn khách tải app và đăng ký!",
+                    type: "error",
+                    showCloseButton: true,
+                    html: true,
+                });
             }
             else if (msg.d === "activeCouponExists") {
-                alert("Đang có sẵn mã giảm giá cho khách! Hãy nhập mã vào đơn hàng!");
+                swal({
+                    title: "Thông báo:",
+                    text: "Đang có sẵn mã giảm giá G20 cho khách!<br>Hãy nhập mã vào đơn hàng!",
+                    type: "success",
+                    showCloseButton: true,
+                    html: true,
+                });
             }
             else if (msg.d === "noCouponGeneratedYet") {
                 swal({
@@ -54,6 +72,15 @@ function checkCouponG20(customerID, couponCode) {
                         sweetAlert.close();
                         ajaxGenerateCouponG20(customerID);
                     }
+                });
+            }
+            else if (msg.d === "couponUsageLimitExceeded") {
+                swal({
+                    title: "Thông báo:",
+                    text: "<strong>Khách đã sử dụng hết số lần mã giảm giá G20!</strong>",
+                    type: "warning",
+                    showCloseButton: true,
+                    html: true,
                 });
             }
             else {

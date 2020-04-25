@@ -155,7 +155,8 @@
                                 <div class="post-row clear coupon">
                                     <div class="left">Mã giảm giá</div>
                                     <div class="right">
-                                        <a id="btnGenerateCouponG15" class="btn btn-coupon btn-violet" title="Tạo mã giảm giá G15" onclick="generateCouponG15()"><i class="fa fa-gift"></i> Tạo mã G15</a>
+                                        <a id="btnGenerateCouponG15" class="btn btn-coupon btn-violet hide" title="Tạo mã giảm giá G15" onclick="couponG15()"><i class="fa fa-gift"></i> G15</a>
+                                        <a id="btnGenerateCouponG20" class="btn btn-coupon btn-violet" title="Kiểm tra mã giảm giá G20" onclick="couponG20()"><i class="fa fa-gift"></i> G20</a>
                                         <a id="btnOpenCouponModal" class="btn btn-coupon btn-violet" title="Nhập mã giảm giá" onclick="openCouponModal()"><i class="fa fa-gift"></i> Nhập mã</a>
                                         <a href="javascript:;" id="btnRemoveCouponCode" class="btn btn-coupon link-btn hide" onclick="removeCoupon()"><i class="fa fa-times" aria-hidden="true"></i> Xóa</a>
                                         <asp:TextBox ID="txtCouponValue" runat="server" CssClass="form-control text-right width-notfull input-coupon" value="0" disabled="disabled"></asp:TextBox>
@@ -1879,6 +1880,7 @@
                                 couponModalDOM.querySelector('#closeCoupon').click();
                                 document.querySelector('#btnOpenCouponModal').classList.add('hide');
                                 document.querySelector('#btnRemoveCouponCode').classList.remove('hide');
+                                document.querySelector('#btnGenerateCouponG20').classList.add('hide');
 
                                 getAllPrice();
                             }
@@ -1905,6 +1907,7 @@
                 document.querySelector('[id$="_hdfCouponPriceMin"]').value = 0;
                 document.querySelector('#btnOpenCouponModal').classList.remove('hide');
                 document.querySelector('#btnRemoveCouponCode').classList.add('hide');
+                document.querySelector('#btnGenerateCouponG20').classList.remove('hide');
 
                 getAllPrice();
             }
@@ -1925,14 +1928,23 @@
                 }
             }
 
-            function generateCouponG15() {
-                let customerName = $("#<%=txtFullname.ClientID%>").val();
+            function couponG15() {
                 let customerID = +document.querySelector('[id$="_hdfCustomerID"]').value || 0;
+                let customerName = $("#<%=txtFullname.ClientID%>").val();
 
                 if (!customerID)
                     return swal("Thông báo", "Chưa nhập thông tin khách hàng! Hoặc đây là khách hàng mới...", "warning");
 
-                generateCouponForCustomer(customerName, customerID, "G15");
+                generateCoupon15(customerName, customerID, "G15");
+            }
+
+            function couponG20() {
+                let customerID = +document.querySelector('[id$="_hdfCustomerID"]').value || 0;
+                let customerName = $("#<%=txtFullname.ClientID%>").val();
+                if (!customerID)
+                    return swal("Thông báo", "Chưa nhập thông tin khách hàng! Hoặc đây là khách hàng mới...", "warning");
+
+                generateCouponG20(customerName, customerID);
             }
         </script>
     </telerik:RadScriptBlock>
