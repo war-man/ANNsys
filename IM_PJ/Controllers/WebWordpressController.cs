@@ -18,7 +18,7 @@ namespace IM_PJ.Controllers
             using (var dbe = new inventorymanagementEntities())
             {
                 List<WebWordpress> ags = new List<WebWordpress>();
-                ags = dbe.WebWordpress.Where(x => x.Active == true).OrderByDescending(x => x.ID).ToList();
+                ags = dbe.WebWordpresses.Where(x => x.Active == true).OrderByDescending(x => x.ID).ToList();
                 return ags;
             }
         }

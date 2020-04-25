@@ -71,13 +71,13 @@
         <EntityTypeShape EntityType="inventorymanagementModel.tbl_WhiteDomain" Width="1.5" PointX="10.75" PointY="24.75" IsExpanded="true" />
         <EntityTypeShape EntityType="inventorymanagementModel.User" Width="1.5" PointX="24.75" PointY="13.75" IsExpanded="true" />
         <EntityTypeShape EntityType="inventorymanagementModel.UserNotifyPromotion" Width="1.5" PointX="24.75" PointY="17.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="inventorymanagementModel.NotificationCategory" Width="1.5" PointX="24.75" PointY="21.75" IsExpanded="true" />
         <EntityTypeShape EntityType="inventorymanagementModel.PostPublicImage" Width="1.5" PointX="3.375" PointY="25.75" />
-        <EntityTypeShape EntityType="inventorymanagementModel.PostWordpress" Width="1.5" PointX="0.75" PointY="26.75" />
         <EntityTypeShape EntityType="inventorymanagementModel.WebWordpress" Width="1.5" PointX="27.75" PointY="0.75" />
         <EntityTypeShape EntityType="inventorymanagementModel.CheckWarehouse" Width="1.5" PointX="13.375" PointY="25.75" />
         <EntityTypeShape EntityType="inventorymanagementModel.CheckWarehouseDetail" Width="1.5" PointX="25.375" PointY="25.75" />
         <EntityTypeShape EntityType="inventorymanagementModel.NotifyNew" Width="1.5" PointX="27.375" PointY="4.75" />
+        <EntityTypeShape EntityType="inventorymanagementModel.PostClone" Width="1.5" PointX="27.375" PointY="9.75" />
+        <EntityTypeShape EntityType="inventorymanagementModel.NotificationCategory" Width="1.5" PointX="25.375" PointY="21.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

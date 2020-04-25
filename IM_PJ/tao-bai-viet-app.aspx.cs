@@ -193,11 +193,11 @@ namespace IM_PJ
                     var webWordpress = WebWordpressController.GetAll();
                     foreach (var item in webWordpress)
                     {
-                        var newPostWordpress = new PostWordpress()
+                        var newPostClone = new PostClone()
                         {
                             PostPublicID = post.ID,
-                            WebWordpress = item.Web,
-                            PostWordpressID = 0,
+                            Web = item.Web,
+                            PostWebID = 0,
                             CategoryID = post.CategoryID,
                             Title = post.Title,
                             Summary = post.Summary,
@@ -209,7 +209,7 @@ namespace IM_PJ
                             ModifiedBy = acc.Username
                         };
 
-                        var postWordpress = PostWordpressController.Insert(newPostWordpress);
+                        var postClone = PostCloneController.Insert(newPostClone);
                     }
                 }
 

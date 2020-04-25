@@ -964,7 +964,7 @@
       <DependentUpon>bao-cao.aspx</DependentUpon>
     </Compile>
     <Compile Include="Controllers\WebWordpressController.cs" />
-    <Compile Include="Controllers\PostWordpressController.cs" />
+    <Compile Include="Controllers\PostCloneController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Controllers\CategoryController.cs" />
     <Compile Include="Controllers\CategoryShelfController.cs" />
@@ -1108,13 +1108,13 @@
     <Compile Include="Models\PostCategory.cs">
       <DependentUpon>IMModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\PostClone.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\PostPublic.cs">
       <DependentUpon>IMModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\PostPublicImage.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\PostWordpress.cs">
       <DependentUpon>IMModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ProductTag.cs">

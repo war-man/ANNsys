@@ -12,22 +12,21 @@ namespace IM_PJ.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class tbl_TransportCompany
+    public partial class PostClone
     {
         public int ID { get; set; }
-        public int SubID { get; set; }
-        public string CompanyName { get; set; }
-        public string CompanyPhone { get; set; }
-        public string CompanyAddress { get; set; }
-        public string ShipTo { get; set; }
-        public string Address { get; set; }
-        public bool Prepay { get; set; }
-        public bool COD { get; set; }
-        public string Note { get; set; }
+        public int PostPublicID { get; set; }
+        public string Web { get; set; }
+        public int PostWebID { get; set; }
+        public Nullable<int> CategoryID { get; set; }
+        public string CategoryName { get; set; }
+        public string Title { get; set; }
+        public string Summary { get; set; }
+        public string Content { get; set; }
+        public string Thumbnail { get; set; }
         public Nullable<System.DateTime> CreatedDate { get; set; }
         public string CreatedBy { get; set; }
         public Nullable<System.DateTime> ModifiedDate { get; set; }
         public string ModifiedBy { get; set; }
-        public Nullable<int> Status { get; set; }
     }
 }

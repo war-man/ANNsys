@@ -141,15 +141,65 @@ namespace IM_PJ
             ltrNumberOfPost.Text = a.Count().ToString();
         }
         [WebMethod]
-        public static string getPostWordpressByPostPublicID(int postPublicID)
+        public static string getCloneByPostPublicID(int postPublicID)
         {
-            var postWordpressList = PostWordpressController.GetAllByPostPublicID(postPublicID);
-            if (postWordpressList.Count > 0)
+            var postWordpressList = PostCloneController.GetAllByPostPublicID(postPublicID);
+            if (postWordpressList != null)
             {
                 return JsonConvert.SerializeObject(postWordpressList);
             }
 
-            return null;
+            return "null";
+        }
+        [WebMethod]
+        public static string createCloneByPostPublicID(string web, int postPublicID)
+        {
+            // Kiểm tra post clone tồn tại chưa
+            var postClone = PostCloneController.GetByPostPublicIDAndWeb(web, postPublicID);
+            if (postClone != null)
+            {
+                return "existPostClone";
+            }
+
+            // Kiểm tra post public tồn tại không
+            var postPublic = PostPublicController.GetByID(postPublicID);
+            if (postClone != null)
+            {
+                return "notExistPostPublic";
+            }
+
+            string categoryName = "";
+            // Lấy danh mục bài viết
+            if (postPublic.CategoryID != 0)
+            {
+                var category = PostPublicCategoryController.GetByID(postPublic.CategoryID);
+                categoryName = category.Name;
+            }
+
+            // Tạo post clone
+            var newPostClone = new PostClone()
+            {
+                PostPublicID = postPublicID,
+                Web = web,
+                PostWebID = 0,
+                CategoryID = postPublic.CategoryID,
+                CategoryName = categoryName,
+                Title = postPublic.Title,
+                Content = postPublic.Content,
+                Summary = postPublic.Summary,
+                Thumbnail = postPublic.Thumbnail,
+                CreatedDate = DateTime.Now,
+                CreatedBy = postPublic.CreatedBy,
+                ModifiedBy = postPublic.ModifiedBy
+            };
+            var createPostClone = PostCloneController.Insert(newPostClone);
+
+            if (createPostClone != null)
+            {
+                return JsonConvert.SerializeObject(createPostClone);
+            }
+
+            return "null";
         }
         [WebMethod]
         public static string updateAtHome(int id, bool value)

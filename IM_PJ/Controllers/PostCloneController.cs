@@ -11,30 +11,31 @@ using WebUI.Business;
 
 namespace IM_PJ.Controllers
 {
-    public class PostWordpressController
+    public class PostCloneController
     {
-        public static PostWordpress Insert(PostWordpress data)
+        public static PostClone Insert(PostClone data)
         {
             using (var con = new inventorymanagementEntities())
             {
-                con.PostWordpress.Add(data);
+                con.PostClones.Add(data);
                 con.SaveChanges();
 
                 return data;
             }
         }
 
-        public static PostWordpress Update(PostWordpress data)
+        public static PostClone Update(PostClone data)
         {
             using (var con = new inventorymanagementEntities())
             {
-                var post = con.PostWordpress.Where(o => o.ID == data.ID).FirstOrDefault();
+                var post = con.PostClones.Where(o => o.ID == data.ID).FirstOrDefault();
                 if (post != null)
                 {
                     post.PostPublicID = data.PostPublicID;
-                    post.WebWordpress = data.WebWordpress;
-                    post.PostWordpressID = data.PostWordpressID;
+                    post.Web = data.Web;
+                    post.PostWebID = data.PostWebID;
                     post.CategoryID = data.CategoryID;
+                    post.CategoryName = data.CategoryName;
                     post.Title = data.Title;
                     post.Summary = data.Summary;
                     post.Content = data.Content;
@@ -55,10 +56,10 @@ namespace IM_PJ.Controllers
         {
             using (var dbe = new inventorymanagementEntities())
             {
-                PostWordpress ui = dbe.PostWordpress.Where(o => o.ID == ID).FirstOrDefault();
+                PostClone ui = dbe.PostClones.Where(o => o.ID == ID).FirstOrDefault();
                 if (ui != null)
                 {
-                    dbe.PostWordpress.Remove(ui);
+                    dbe.PostClones.Remove(ui);
                     int kq = dbe.SaveChanges();
                     return kq.ToString();
                 }
@@ -66,34 +67,50 @@ namespace IM_PJ.Controllers
                     return null;
             }
         }
-        public static PostWordpress GetByID(int ID)
+        public static PostClone GetByID(int ID)
         {
             using (var dbe = new inventorymanagementEntities())
             {
-                PostWordpress ai = dbe.PostWordpress.Where(a => a.ID == ID).SingleOrDefault();
+                PostClone ai = dbe.PostClones.Where(a => a.ID == ID).SingleOrDefault();
                 if (ai != null)
                 {
                     return ai;
                 }
-                else return null;
 
+                return null;
             }
         }
-        public static List<PostWordpress> GetAllByPostPublicID(int postPublicID)
+        public static List<PostClone> GetAllByPostPublicID(int postPublicID)
         {
             using (var dbe = new inventorymanagementEntities())
             {
-                List<PostWordpress> ags = new List<PostWordpress>();
-                ags = dbe.PostWordpress.Where(p => p.PostPublicID == postPublicID).OrderByDescending(o => o.ID).ToList();
-                return ags;
+                List<PostClone> result = new List<PostClone>();
+                result = dbe.PostClones.Where(p => p.PostPublicID == postPublicID).OrderByDescending(o => o.ID).ToList();
+                if (result.Count > 0)
+                {
+                    return result;
+                }
+                return null;
             }
         }
-        public static List<PostWordpress> GetAllByPostWebWordpress(string webWordpres)
+        public static PostClone GetByPostPublicIDAndWeb(string web, int postPublicID)
         {
             using (var dbe = new inventorymanagementEntities())
             {
-                List<PostWordpress> ags = new List<PostWordpress>();
-                ags = dbe.PostWordpress.Where(p => p.WebWordpress == webWordpres).OrderByDescending(o => o.ID).ToList();
+                PostClone result = dbe.PostClones.Where(p => p.Web == web && p.PostPublicID == postPublicID).FirstOrDefault();
+                if (result != null)
+                {
+                    return result;
+                }
+                return null;
+            }
+        }
+        public static List<PostClone> GetAllByPostWebWordpress(string web)
+        {
+            using (var dbe = new inventorymanagementEntities())
+            {
+                List<PostClone> ags = new List<PostClone>();
+                ags = dbe.PostClones.Where(p => p.Web == web).OrderByDescending(o => o.ID).ToList();
                 return ags;
             }
         }
