@@ -95,6 +95,8 @@
             </div>
         </div>
 
+        <script src="/App_Themes/Ann/js/sync-post.js?v=10042020"></script>
+
         <script type="text/javascript">
             $("#<%=txtSearchPost.ClientID%>").keyup(function (e) {
                 if (e.keyCode == 13)

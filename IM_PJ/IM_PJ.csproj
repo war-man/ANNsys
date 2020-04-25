@@ -424,6 +424,7 @@
     <Content Include="App_Themes\Ann\js\services\cron-job-product-status\cron-job-product-status-service.js" />
     <Content Include="App_Themes\Ann\js\services\danh-sach-don-hang\danh-sach-don-hang-service.js" />
     <Content Include="App_Themes\Ann\js\services\danh-sach-khach-giam-gia\danh-sach-khach-giam-gia-service.js" />
+    <Content Include="App_Themes\Ann\js\sync-post.js" />
     <Content Include="App_Themes\Ann\js\sync-product-v2.js" />
     <Content Include="App_Themes\Ann\js\sync-product-small.js" />
     <Content Include="App_Themes\Ann\js\sync-product.js" />

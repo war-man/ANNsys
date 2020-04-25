@@ -112,6 +112,7 @@ namespace IM_PJ
                     QuantityOld = x.QuantityOld,
                     QuantityNew = x.QuantityNew,
                     ModifiedDate = x.CreatedDate == x.ModifiedDate ? String.Empty : x.ModifiedDate.ToString(),
+                    //ModifiedDate = x.CreatedDate == x.ModifiedDate ? String.Empty : x.ModifiedDate.ToString("yyyy-MM-dd hh:mm:ss"),
                     ModifiedBy = x.CreatedBy == x.ModifiedBy ? String.Empty : x.ModifiedBy
                 }).ToList();
 
