@@ -1,9 +1,8 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="thuc-hien-kiem-kho.aspx.cs" Inherits="IM_PJ.thuc_hien_kiem_kho" EnableSessionState="ReadOnly" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="dang-ky-ghtk.aspx.cs" Inherits="IM_PJ.dang_ky_ghtk" EnableSessionState="ReadOnly" %>
 
 <!DOCTYPE html>
 <html>
 <head runat="server">
-    <title>Đăng ký giao hàng tiết kiệm</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=yes">
     <meta name="format-detection" content="telephone=no">
@@ -20,6 +19,7 @@
     <!-- https://select2.org/getting-started/installation -->
     <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet" />
 
+    <title>Đăng ký Giao Hàng Tiết Kiệm</title>
     <style>
         table {
             border-collapse: collapse;
@@ -77,8 +77,7 @@
                 <div class="container">
                     <div class="row">
                         <div class="col-xl-12">
-                            <h2>
-                            Nhập thông tin đơn hàng</h3>
+                            <h2>Nhập thông tin đơn hàng</h2>
                         </div>
                     </div>
                     <div class="row mb-5">
@@ -89,19 +88,19 @@
                             <div class="form-group">
                                 <div class="input-group mb-3">
                                     <div class="input-group-prepend">
-                                        <span class="input-group-text" id="inputGroup-sizing-default"><i class="fa fa-phone"></i></span>
+                                        <span class="input-group-text" id="inputGroup-tel"><i class="fa fa-phone"></i></span>
                                     </div>
                                     <input type="text" id="tel" class="form-control" aria-label="Sizing example input"
-                                        aria-describedby="inputGroup-sizing-default" placeholder="Nhập SĐT">
+                                        aria-describedby="inputGroup-tel" placeholder="Nhập SĐT">
                                 </div>
                             </div>
                             <div class="form-group">
                                 <div class="input-group mb-3">
                                     <div class="input-group-prepend">
-                                        <span class="input-group-text" id="inputGroup-sizing-default"><i class="fa fa-user"></i></span>
+                                        <span class="input-group-text" id="inputGroup-name"><i class="fa fa-user"></i></span>
                                     </div>
                                     <input type="text" id="name" class="form-control" aria-label="Sizing example input"
-                                        aria-describedby="inputGroup-sizing-default" placeholder="Tên khách hàng">
+                                        aria-describedby="inputGroup-name" placeholder="Tên khách hàng">
                                 </div>
                             </div>
                             <div class="form-group">
@@ -119,10 +118,10 @@
                             <div class="form-group">
                                 <div class="input-group mb-3">
                                     <div class="input-group-prepend">
-                                        <span class="input-group-text" id="inputGroup-sizing-default"><i class="fa fa-home"></i></span>
+                                        <span class="input-group-text" id="inputGroup-address"><i class="fa fa-home"></i></span>
                                     </div>
                                     <input type="text" id="address" class="form-control" aria-label="Sizing example input"
-                                        aria-describedby="inputGroup-sizing-default" placeholder="Địa chỉ chi tiết (nhà/ngõ/đường...)">
+                                        aria-describedby="inputGroup-address" placeholder="Địa chỉ chi tiết (nhà/ngõ/đường...)">
                                 </div>
                             </div>
                             <br />
@@ -151,25 +150,25 @@
                                 <div class="col-xl-8">
                                     <div class="input-group">
                                         <div class="input-group-prepend">
-                                            <span class="input-group-text" id="inputGroup-sizing-default"><i class="fa fa-home"></i></span>
+                                            <span class="input-group-text" id="inputGroup-pick-address"><i class="fa fa-home"></i></span>
                                         </div>
                                         <input type="text" id="pick_address" class="form-control" aria-label="Sizing example input"
-                                            aria-describedby="inputGroup-sizing-default" disabled="disabled" readonly>
+                                            aria-describedby="inputGroup-pick-address" disabled="disabled" readonly>
                                     </div>
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <lable for="pick_work_shift" class="col-5 col-xl-4 col-form-label">Dự kiến lấy hàng</lable>
+                                <label for="pick_work_shift" class="col-5 col-xl-4 col-form-label">Dự kiến lấy hàng</label>
                                 <div class="col-7 col-xl-8">
                                     <select id="pick_work_shift" class="form-control"></select>
                                 </div>
                             </div>
-                            <div class="form-group row">
-                                <lable for="deliver_work_shift" class="col-5 col-xl-4 col-form-label">Dự kiến giao hàng</lable>
+                            <%--<div class="form-group row">
+                                <label for="deliver_work_shift" class="col-5 col-xl-4 col-form-label">Dự kiến giao hàng</label>
                                 <div class="col-7 col-xl-8">
                                     <select id="deliver_work_shift" class="form-control"></select>
                                 </div>
-                            </div>
+                            </div>--%>
                         </div>
                         <div class="col-12 col-xl-6">
                             <div class="form-group">
@@ -242,7 +241,7 @@
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <lable for="pick_money" class="col-4 col-xl-3 col-form-label">Tiền thu hộ</lable>
+                                <label for="pick_money" class="col-4 col-xl-3 col-form-label">Tiền thu hộ</label>
                                 <div class="input-group col-8 col-xl-9">
                                     <input type="text" id="pick_money" class="form-control text-right" value="0" disabled="disabled" readonly>
                                     <div class="input-group-append">
@@ -251,7 +250,7 @@
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <lable for="value" class="col-4 col-xl-3 col-form-label">Giá trị hàng</lable>
+                                <label for="value" class="col-4 col-xl-3 col-form-label">Giá trị hàng</label>
                                 <div class="input-group col-8 col-xl-9">
                                     <input type="text" id="value" class="form-control text-right" value="0" disabled="disabled" readonly>
                                     <div class="input-group-append">
@@ -260,7 +259,7 @@
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <lable for="total_money" class="col-4 col-xl-3 col-form-label">Tổng tiền thu</lable>
+                                <label for="total_money" class="col-4 col-xl-3 col-form-label">Tổng tiền thu</label>
                                 <div class="input-group col-8 col-xl-9">
                                     <input type="text" id="total_money" class="form-control text-right" value="0" disabled="disabled" readonly>
                                     <div class="input-group-append">
@@ -287,9 +286,9 @@
                         </div>
                     </div>
                     <div class="fixed-bottom">
-                        <div clas="form-group row">
+                        <div class="form-group row">
                             <div class="col-xl-12">
-                                <button class="form-control btn-primary" onclick="_checkSubmit()">Đăng ký đơn hàng (F5)</button>
+                                <button class="form-control btn-primary" onclick="_checkSubmit()">Đăng ký đơn hàng (F3)</button>
                             </div>
                         </div>
                     </div>
@@ -299,8 +298,8 @@
             <!-- Optional JavaScript -->
             <!-- jQuery first, then Popper.js, then Bootstrap JS -->
             <!-- <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
-    integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
-    crossorigin="anonymous"></script> -->
+                integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+                crossorigin="anonymous"></script> -->
             <!-- Fix bug: Select2 chạy được trên jquery 3.3.1 -->
             <script src="https://code.jquery.com/jquery-3.3.1.min.js"
                 integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
@@ -323,10 +322,10 @@
                   _order,
                   _weight_min,
                   _product,
-                  _personal, 
+                  _personal,
                   _postOffice;
 
-                $(document).ready(function() {
+                $(document).ready(function () {
                     _initParameterLocal();
                     _initReceiveInfo();
                     _initReceiverAddress();
@@ -338,8 +337,8 @@
                     _initPage();
                 });
 
-                $(document).bind('keydown', function(e) {
-                    if (e.which === 116)
+                $(document).bind('keydown', function (e) {
+                    if (e.which === 114)
                         return _checkSubmit();
                 })
 
@@ -355,7 +354,7 @@
                         pick_name: null,
                         pick_money: 0,
                         pick_address_id: null,
-                        pick_address:  null,
+                        pick_address: null,
                         pick_province: null,
                         pick_district: null,
                         pick_ward: null,
@@ -378,9 +377,9 @@
                         is_freeship: _feeShipment == 0 ? 0 : 1,
                         weight_option: 'kilogram',
                         pick_work_shift: null,
-                        deliver_work_shift: null,
+                        //deliver_work_shift: null,
                         pick_date: null,
-                        deliver_date: null,
+                        //deliver_date: null,
                         value: 0,
                         opm: null,
                         pick_option: null,
@@ -397,15 +396,15 @@
                 }
 
                 function _initReceiveInfo() {
-                    $("#tel").change(function() {
+                    $("#tel").change(function () {
                         _order.tel = $(this).val();
                     })
 
-                    $("#name").change(function() {
+                    $("#name").change(function () {
                         _order.name = $(this).val();
                     })
 
-                    $("#address").change(function() {
+                    $("#address").change(function () {
                         _order.address = $(this).val();
                     })
                 }
@@ -417,27 +416,27 @@
                         ajax: {
                             delay: 500,
                             method: 'GET',
-                            url: 'https://localhost:5001/api/v1/delivery-save/provinces/select2',
+                            url: '/api/v1/delivery-save/provinces/select2',
                             data: (params) => {
                                 var query = {
                                     search: params.term,
                                     page: params.page || 1
                                 }
-            
+
                                 return query;
                             }
                         }
                     });
-      
+
                     // Danh sách quận / huyện
                     $('#ddlDistrict').attr('disabled', true);
                     $('#ddlDistrict').attr('readonly', 'readonly');
-                    $('#ddlDistrict').select2({placeholder: '(Bấm để chọn quận / huyện)'});
-      
+                    $('#ddlDistrict').select2({ placeholder: '(Bấm để chọn quận / huyện)' });
+
                     // Danh sách phường / xã
                     $('#ddlWard').attr('disabled', true);
                     $('#ddlWard').attr('readonly', 'readonly');
-                    $('#ddlWard').select2({placeholder: '(Bấm để chọn phường / xã)'});
+                    $('#ddlWard').select2({ placeholder: '(Bấm để chọn phường / xã)' });
                 }
 
                 function _onChangeReceiverAddress() {
@@ -454,13 +453,13 @@
                             ajax: {
                                 delay: 500,
                                 method: 'GET',
-                                url: 'https://localhost:5001/api/v1/delivery-save/province/' + data.id + '/districts/select2',
+                                url: '/api/v1/delivery-save/province/' + data.id + '/districts/select2',
                                 data: (params) => {
                                     var query = {
                                         search: params.term,
                                         page: params.page || 1
                                     }
-              
+
                                     return query;
                                 }
                             }
@@ -471,7 +470,7 @@
                         $('#ddlWard').attr('disabled', true);
                         $('#ddlWard').attr('readonly', 'readonly');
                         $('#ddlWard').val(null).trigger('change');
-                        $('#ddlWard').select2({placeholder: '(Bấm để chọn phường / xã)'});
+                        $('#ddlWard').select2({ placeholder: '(Bấm để chọn phường / xã)' });
 
                         // Cập nhật order
                         _order.province_id = data.id;
@@ -491,13 +490,13 @@
                             ajax: {
                                 delay: 500,
                                 method: 'GET',
-                                url: 'https://localhost:5001/api/v1/delivery-save/district/' + data.id + '/wards/select2',
+                                url: '/api/v1/delivery-save/district/' + data.id + '/wards/select2',
                                 data: (params) => {
                                     var query = {
                                         search: params.term,
                                         page: params.page || 1
                                     }
-              
+
                                     return query;
                                 }
                             }
@@ -522,20 +521,20 @@
                         _calculateFee();
                     });
                 }
-    
+
                 function _initShipment() {
-                    $('input:radio[name="shipment_type"]').change(function() { 
-        
+                    $('input:radio[name="shipment_type"]').change(function () {
+
                         if ($(this).val() == 'shop') {
                             if (_personal) {
-                                return  _onChangeShipment('shop')
+                                return _onChangeShipment('shop')
                             }
-          
+
                             let titleAlert = 'Lấy thông tin cá nhân của shop';
 
                             $.ajax({
                                 method: 'GET',
-                                url: 'https://localhost:5001/api/v1/delivery-save/personal',
+                                url: '/api/v1/delivery-save/personal',
                                 success: (data, textStatus, xhr) => {
                                     if (xhr.status == 200 && data) {
                                         _personal = data;
@@ -552,12 +551,12 @@
                             if (_postOffice) {
                                 return _onChangeShipment('post_office');
                             }
-          
+
                             let titleAlert = 'Lấy thông tin của buc cục Giao Hàng Tiết Kiệm';
 
                             $.ajax({
                                 method: 'GET',
-                                url: 'https://localhost:5001/api/v1/delivery-save/post-office',
+                                url: '/api/v1/delivery-save/post-office',
                                 success: (data, textStatus, xhr) => {
                                     if (xhr.status == 200 && data) {
                                         _postOffice = data;
@@ -575,91 +574,106 @@
 
                     // Cài đặt drop dơwn list pick_work_shift
                     let now = new Date();
+                    let strNow = "";
                     let hours = now.getHours();
                     let pick_work_shift = [];
 
+                    strNow = now.toISOString().substring(0, 10).replace(/-/g, '/');
+
                     if (hours <= 11) {
-                        pick_work_shift.push({id: 2, text: "Chiều nay"});
-                        pick_work_shift.push({id: 3, text: "Tối nay"});
-                        pick_work_shift.push({id: 1, text: "Sáng mai"});
+                        pick_work_shift.push({ id: 2, text: "Chiều nay" });
+                        pick_work_shift.push({ id: 3, text: "Tối nay" });
+                        pick_work_shift.push({ id: 1, text: "Sáng mai" });
+
+                        _order.pick_date = strNow;
+                        _order.pick_work_shift = 2;
                     }
                     else if (hours <= 15) {
-                        pick_work_shift.push({id: 3, text: "Tối nay"});
-                        pick_work_shift.push({id: 1, text: "Sáng mai"});
-                        pick_work_shift.push({id: 2, text: "Chiều mai"});
+                        pick_work_shift.push({ id: 3, text: "Tối nay" });
+                        pick_work_shift.push({ id: 1, text: "Sáng mai" });
+                        pick_work_shift.push({ id: 2, text: "Chiều mai" });
+
+                        _order.pick_date = strNow;
+                        _order.pick_work_shift = 3;
                     }
                     else {
-                        pick_work_shift.push({id: 1, text: "Sáng mai"});
-                        pick_work_shift.push({id: 2, text: "Chiều mai"});
-                        pick_work_shift.push({id: 3, text: "Tối mai"});
+                        pick_work_shift.push({ id: 1, text: "Sáng mai" });
+                        pick_work_shift.push({ id: 2, text: "Chiều mai" });
+                        pick_work_shift.push({ id: 3, text: "Tối mai" });
+
+                        let tomorrow = new Date();
+                        tomorrow.setDate(tomorrow.getDate() + 1);
+                        strTomorrow = tomorrow.toISOString().substring(0, 10).replace(/-/g, '/');
+                        _order.pick_date = strTomorrow;
+                        _order.pick_work_shift = 1;
                     }
 
                     $("#pick_work_shift").select2({
                         minimumResultsForSearch: Infinity,
                         data: pick_work_shift
                     });
-                    $("#deliver_work_shift").select2({
-                        allowClear: true,
-                    });
+                    //$("#deliver_work_shift").select2({
+                    //    allowClear: true,
+                    //});
                     _onChangePickWorkShift(pick_work_shift[0].text);
-      
+
 
                     $('#pick_work_shift').on('select2:select', function (e) {
                         let data = e.params.data;
-        
+
                         _onChangePickWorkShift(data.text);
                     });
 
-                    $('#deliver_work_shift').on('select2:select', function (e) {
-                        let data = e.params.data;
-                        let now = new Date();
-                        let tomorrow = new Date();
-                        let dateAfterTomorrow = new Date();
-                        let strNow = "";
-                        let strTomorrow = "";
-                        let strDateAfterTomorrow = "";
-        
-                        tomorrow.setDate(tomorrow.getDate() + 1);
-                        dateAfterTomorrow.setDate(tomorrow.getDate() + 2);
-                        strNow = now.toISOString().substring(0,10).replace(/-/g, '/');
-                        strTomorrow = tomorrow.toISOString().substring(0,10).replace(/-/g, '/');
-                        strDateAfterTomorrow = dateAfterTomorrow.toISOString().substring(0,10).replace(/-/g, '/');
+                    //$('#deliver_work_shift').on('select2:select', function (e) {
+                    //    let data = e.params.data;
+                    //    let now = new Date();
+                    //    let tomorrow = new Date();
+                    //    let dateAfterTomorrow = new Date();
+                    //    let strNow = "";
+                    //    let strTomorrow = "";
+                    //    let strDateAfterTomorrow = "";
 
-                        switch(data.text) {
-                            case "Tối nay":
-                                _order.deliver_date = _order.pick_date
-                                _order.deliver_work_shift = 3;
-                                break;
-                            case "Sáng mai":
-                                _order.deliver_date = strTomorrow;
-                                _order.deliver_work_shift = 1;
-                                break;
-                            case "Chiều mai":
-                                _order.deliver_date = strTomorrow;
-                                _order.deliver_work_shift = 2;
-                                break;
-                            case "Tối mai":
-                                _order.deliver_date = strTomorrow;
-                                _order.deliver_work_shift = 3;
-                                break;
-                            case "Sáng ngày kia":
-                                _order.deliver_date = strDateAfterTomorrow;
-                                _order.deliver_work_shift = 1;
-                                break;
-                            case "Chiều ngày kia":
-                                _order.deliver_date = strDateAfterTomorrow;
-                                _order.deliver_work_shift = 2;
-                                break;
-                            case "Tối ngày kia":
-                                _order.deliver_date = strDateAfterTomorrow;
-                                _order.deliver_work_shift = 3;
-                                break;
-                            default:
-                                break;
-                        }
-                    });
+                    //    tomorrow.setDate(tomorrow.getDate() + 1);
+                    //    dateAfterTomorrow.setDate(tomorrow.getDate() + 2);
+                    //    strNow = now.toISOString().substring(0, 10).replace(/-/g, '/');
+                    //    strTomorrow = tomorrow.toISOString().substring(0, 10).replace(/-/g, '/');
+                    //    strDateAfterTomorrow = dateAfterTomorrow.toISOString().substring(0, 10).replace(/-/g, '/');
+
+                    //    switch (data.text) {
+                    //        case "Tối nay":
+                    //            _order.deliver_date = _order.pick_date
+                    //            _order.deliver_work_shift = 3;
+                    //            break;
+                    //        case "Sáng mai":
+                    //            _order.deliver_date = strTomorrow;
+                    //            _order.deliver_work_shift = 1;
+                    //            break;
+                    //        case "Chiều mai":
+                    //            _order.deliver_date = strTomorrow;
+                    //            _order.deliver_work_shift = 2;
+                    //            break;
+                    //        case "Tối mai":
+                    //            _order.deliver_date = strTomorrow;
+                    //            _order.deliver_work_shift = 3;
+                    //            break;
+                    //        case "Sáng ngày kia":
+                    //            _order.deliver_date = strDateAfterTomorrow;
+                    //            _order.deliver_work_shift = 1;
+                    //            break;
+                    //        case "Chiều ngày kia":
+                    //            _order.deliver_date = strDateAfterTomorrow;
+                    //            _order.deliver_work_shift = 2;
+                    //            break;
+                    //        case "Tối ngày kia":
+                    //            _order.deliver_date = strDateAfterTomorrow;
+                    //            _order.deliver_work_shift = 3;
+                    //            break;
+                    //        default:
+                    //            break;
+                    //    }
+                    //});
                 }
-    
+
                 function _initTableProduct() {
                     // https://select2.org/searching#single-select
                     $("#ddlProduct").select2({
@@ -667,7 +681,7 @@
                         minimumResultsForSearch: Infinity,
                         ajax: {
                             method: 'GET',
-                            url: 'https://localhost:5001/api/v1/delivery-save/products/select2'
+                            url: '/api/v1/delivery-save/products/select2'
                         },
                         width: '100%'
                     });
@@ -677,38 +691,38 @@
                         _product.name = data.text;
                     });
 
-                    $("#weight").blur(function() {
+                    $("#weight").blur(function () {
                         let weight = $(this).val();
 
                         if (weight === undefined || weight === null || weight === '')
                             return _alterError(
-                              "Lỗi nhập trọng lượng sản phẩm", 
+                              "Lỗi nhập trọng lượng sản phẩm",
                               { message: "Vui lòng nhập giá trị trọng lượng sản phẩm" }
                             ).then(() => $("#weight").focus());
-            
-        
+
+
                         // Chuyển kiểu string thành float 
                         weight = parseFloat(weight);
 
                         if (weight < _weight_min)
                             return _alterError(
-                              "Lỗi nhập trọng lượng sản phẩm", 
+                              "Lỗi nhập trọng lượng sản phẩm",
                               { message: "Giá trị thấp nhất của trọng lượng sản phẩm là " + _weight_min + "kg" }
                             ).then(() => $("#weight").focus());
-        
+
                         let $shipmentShop = $("#shipment_shop");
                         let $shipmentPostOffice = $("#shipment_post_office");
 
                         if (weight < 10) {
                             $shipmentPostOffice.prop('checked', false);
                             $shipmentPostOffice.attr('disabled', true);
-        
+
                             $shipmentShop.removeAttr('disabled');
                             $shipmentShop.prop('checked', true).trigger('change');
                         } else {
                             $shipmentShop.prop('checked', false);
                             $shipmentShop.attr('disabled', true);
-        
+
                             $shipmentPostOffice.removeAttr('disabled');
                             $shipmentPostOffice.prop('checked', true).trigger('change');
                         }
@@ -719,14 +733,14 @@
                 }
 
                 function _initFee() {
-                    $('input:radio[name="feeship"]').change(function() { 
+                    $('input:radio[name="feeship"]').change(function () {
                         _order.is_freeship = +$(this).val() == 0 ? 0 : 1;
                         _calculateMoney();
                     });
                 }
 
                 function _initNote() {
-                    $("#note").change(function() {
+                    $("#note").change(function () {
                         _order.note = $(this).val();
                     });
                 }
@@ -746,17 +760,17 @@
                             icon: "error",
                         })
                           .then(() => {
-                              window.location.href = "http://hethongann.com/danh-sach-don-hang";
+                              window.location.href = "/danh-sach-don-hang";
                           });
 
                     let titleAlert = "Lấy thông tin đơn giao hàng"
-      
+
                     $.ajax({
                         method: 'GET',
-                        url: "https://localhost:5001/api/v1/order/" + orderID + "/delivery-save",
+                        url: "/api/v1/order/" + orderID + "/delivery-save",
                         success: (response, textStatus, xhr) => {
                             let data = response.data;
-          
+
                             // tel
                             $("#tel").val(data.customerPhone).trigger('change');
                             // customer_id
@@ -776,11 +790,13 @@
                             $("#client_id").val(data.orderID);
                             // province
                             if (data.customerProvinceID) {
+                                _order.province_id = data.customerProvinceID;
                                 _order.province = data.customerProvinceName;
                                 let newOption = new Option(data.customerProvinceName, data.customerProvinceID, false, false);
                                 $('#ddlProvince').append(newOption).trigger('change');
                             }
                             if (data.customerProvinceID && data.customerDistrictID) {
+                                _order.district_id = data.customerDistrictID;
                                 _order.district = data.customerDistrictName;
 
                                 // Danh sách quận / huyện
@@ -790,8 +806,9 @@
                                 $('#ddlDistrict').append(newOption).trigger('change');
                             }
                             if (data.customerProvinceID && data.customerDistrictID && data.customerWardID) {
+                                _order.ward_id = data.customerWardID;
                                 _order.ward = data.customerWardName;
-            
+
                                 // Danh sách quận / huyện
                                 let newOption = new Option(data.customerWardName, data.customerWardID, false, false);
                                 $('#ddlWard').removeAttr('disabled');
@@ -799,7 +816,7 @@
                                 $('#ddlWard').append(newOption).trigger('change');
                             }
                             if (data.weight) {
-                                _weight_min = data.weight;
+                                _weight_min = parseFloat(data.weight);
                                 $("#weight").val(_weight_min).trigger('blur');
                             }
                             if (data.feeShop) {
@@ -815,20 +832,19 @@
                                 $("#feeship_receiver").removeAttr("disabled");
                                 $("#divFeeShop").hide();
                             }
-                            if (data.note) 
+                            if (data.note)
                                 $("#note").val(data.note).trigger('change');
                         },
                         error: (xhr, textStatus, error) => {
                             return _alterError(titleAlert, xhr.responseJSON)
                               .then(() => {
-                                  window.location.href = "http://hethongann.com/danh-sach-don-hang";
+                                  window.location.href = "/danh-sach-don-hang";
                               });
                         }
                     });
                 }
 
-                function _onChangeShipment(shipment) 
-                {
+                function _onChangeShipment(shipment) {
                     if (shipment == 'shop') {
                         // Cập nhật vô order
                         _order.pick_name = _personal.contactName;
@@ -853,87 +869,87 @@
                 }
 
                 function _onChangePickWorkShift(pick_work_shift) {
-                    let deliver_work_shift = [];
+                    //let deliver_work_shift = [];
                     let now = new Date();
                     let tomorrow = new Date();
-                    let dateAfterTomorrow = new Date();
+                    //let dateAfterTomorrow = new Date();
                     let strNow = "";
                     let strTomorrow = "";
-                    let strDateAfterTomorrow = "";
+                    //let strDateAfterTomorrow = "";
 
                     tomorrow.setDate(tomorrow.getDate() + 1);
-                    dateAfterTomorrow.setDate(tomorrow.getDate() + 2);
-                    strNow = now.toISOString().substring(0,10).replace(/-/g, '/');
-                    strTomorrow = tomorrow.toISOString().substring(0,10).replace(/-/g, '/');
-                    strDateAfterTomorrow = dateAfterTomorrow.toISOString().substring(0,10).replace(/-/g, '/');
+                    //dateAfterTomorrow.setDate(tomorrow.getDate() + 2);
+                    strNow = now.toISOString().substring(0, 10).replace(/-/g, '/');
+                    strTomorrow = tomorrow.toISOString().substring(0, 10).replace(/-/g, '/');
+                    //strDateAfterTomorrow = dateAfterTomorrow.toISOString().substring(0, 10).replace(/-/g, '/');
 
                     if (pick_work_shift == "Chiều nay") {
-                        deliver_work_shift.push({id: 3, text: "Tối nay"});
-                        deliver_work_shift.push({id: 1, text: "Sáng mai"});
-                        deliver_work_shift.push({id: 2, text: "Chiều mai"});
+                        //deliver_work_shift.push({ id: 3, text: "Tối nay" });
+                        //deliver_work_shift.push({ id: 1, text: "Sáng mai" });
+                        //deliver_work_shift.push({ id: 2, text: "Chiều mai" });
 
                         _order.pick_date = strNow;
                         _order.pick_work_shift = 2;
-                        _order.deliver_date = strNow;
-                        _order.deliver_work_shift = 3;
+                        //_order.deliver_date = strNow;
+                        //_order.deliver_work_shift = 3;
                     }
                     else if (pick_work_shift == "Tối nay") {
-                        deliver_work_shift.push({id: 1, text: "Sáng mai"});
-                        deliver_work_shift.push({id: 2, text: "Chiều mai"});
-                        deliver_work_shift.push({id: 3, text: "Tối mai"});
-        
+                        //deliver_work_shift.push({ id: 1, text: "Sáng mai" });
+                        //deliver_work_shift.push({ id: 2, text: "Chiều mai" });
+                        //deliver_work_shift.push({ id: 3, text: "Tối mai" });
+
                         _order.pick_date = strNow;
                         _order.pick_work_shift = 3;
-                        _order.deliver_date = strTomorrow;
-                        _order.deliver_work_shift = 1;
+                        //_order.deliver_date = strTomorrow;
+                        //_order.deliver_work_shift = 1;
                     }
                     else if (pick_work_shift == "Sáng mai") {
-                        deliver_work_shift.push({id: 2, text: "Chiều mai"});
-                        deliver_work_shift.push({id: 3, text: "Tối mai"});
-                        deliver_work_shift.push({id: 1, text: "Sáng ngày kia"});
+                        //deliver_work_shift.push({ id: 2, text: "Chiều mai" });
+                        //deliver_work_shift.push({ id: 3, text: "Tối mai" });
+                        //deliver_work_shift.push({ id: 1, text: "Sáng ngày kia" });
 
                         _order.pick_date = strTomorrow;
                         _order.pick_work_shift = 1;
-                        _order.deliver_date = strTomorrow;
-                        _order.deliver_work_shift = 2;
+                        //_order.deliver_date = strTomorrow;
+                        //_order.deliver_work_shift = 2;
                     }
                     else if (pick_work_shift == "Chiều mai") {
-                        deliver_work_shift.push({id: 3, text: "Tối mai"});
-                        deliver_work_shift.push({id: 1, text: "Sáng ngày kia"});
-                        deliver_work_shift.push({id: 2, text: "Chiều ngày kia"});
+                        //deliver_work_shift.push({ id: 3, text: "Tối mai" });
+                        //deliver_work_shift.push({ id: 1, text: "Sáng ngày kia" });
+                        //deliver_work_shift.push({ id: 2, text: "Chiều ngày kia" });
 
                         _order.pick_date = strTomorrow;
                         _order.pick_work_shift = 2;
-                        _order.deliver_date = strTomorrow;
-                        _order.deliver_work_shift = 3;
+                        //_order.deliver_date = strTomorrow;
+                        //_order.deliver_work_shift = 3;
                     }
                     else if (pick_work_shift == "Tối mai") {
-                        deliver_work_shift.push({id: 1, text: "Sáng ngày kia"});
-                        deliver_work_shift.push({id: 2, text: "Chiều ngày kia"});
-                        deliver_work_shift.push({id: 3, text: "Tối ngày kia"});
+                        //deliver_work_shift.push({ id: 1, text: "Sáng ngày kia" });
+                        //deliver_work_shift.push({ id: 2, text: "Chiều ngày kia" });
+                        //deliver_work_shift.push({ id: 3, text: "Tối ngày kia" });
 
                         _order.pick_date = strTomorrow;
                         _order.pick_work_shift = 3;
-                        _order.deliver_date = strDateAfterTomorrow;
-                        _order.deliver_work_shift = 1;
+                        //_order.deliver_date = strDateAfterTomorrow;
+                        //_order.deliver_work_shift = 1;
                     }
 
-                    let $deliver_work_shift = $('#deliver_work_shift');
-      
-                    // https://github.com/select2/select2/issues/2830
-                    //clear chosen items
-                    $deliver_work_shift.val(null).trigger('change');
+                    //let $deliver_work_shift = $('#deliver_work_shift');
 
-                    //destroy select2
-                    $deliver_work_shift.select2("destroy");        
+                    //// https://github.com/select2/select2/issues/2830
+                    ////clear chosen items
+                    //$deliver_work_shift.val(null).trigger('change');
 
-                    //remove options physically from the HTML
-                    $deliver_work_shift.find("option").remove();
+                    ////destroy select2
+                    //$deliver_work_shift.select2("destroy");
 
-                    $deliver_work_shift.select2({
-                        minimumResultsForSearch: Infinity,
-                        data: deliver_work_shift
-                    });
+                    ////remove options physically from the HTML
+                    //$deliver_work_shift.find("option").remove();
+
+                    //$deliver_work_shift.select2({
+                    //    minimumResultsForSearch: Infinity,
+                    //    data: deliver_work_shift
+                    //});
                 }
 
                 function _checkSubmit() {
@@ -974,7 +990,7 @@
                             text: "Địa chỉ khách hàng chưa được nhập",
                             icon: "error",
                         })
-                          .then(() => { $('#address').focus(); });  
+                          .then(() => { $('#address').focus(); });
                     if (!_product.name)
                         return swal({
                             title: titleAlert,
@@ -984,15 +1000,15 @@
                           .then(() => { $("#ddlProduct").select2('open'); });
 
                     _submit();
-                }  
-    
+                }
+
                 function _calculateFee() {
                     if (!_order.pick_province || !_order.pick_district || !_order.province || !_order.district) {
                         _fee = 0;
                         $("#feeship").html("0 VND");
                     }
                     else {
-                        let url = "https://localhost:5001/api/v1/delivery-save/fee",
+                        let url = "/api/v1/delivery-save/fee",
                           query = "?";
 
                         if (_order.pick_address_id)
@@ -1033,7 +1049,7 @@
                                         _calculateMoney();
                                     }
                                     else {
-                                        _alterError(titleAlert, {message: data.message});
+                                        _alterError(titleAlert, { message: data.message });
                                     }
                                 } else {
                                     _alterError(titleAlert);
@@ -1083,8 +1099,8 @@
                         method: 'POST',
                         contentType: 'application/json',
                         dataType: "json",
-                        data: JSON.stringify({products: [_product], order: _order}),
-                        url: "https://localhost:5001/api/v1/delivery-save/register-order",
+                        data: JSON.stringify({ products: [_product], order: _order }),
+                        url: "/api/v1/delivery-save/register-order",
                         success: (data, textStatus, xhr) => {
                             if (xhr.status == 200 && data) {
                                 if (data.success)
@@ -1094,10 +1110,10 @@
                                         icon: "success",
                                     })
                                     .then(() => {
-                                        window.location.href = "http://hethongann.com/danh-sach-don-hang";
+                                        window.location.href = "/danh-sach-don-hang";
                                     });
                                 else
-                                    _alterError(titleAlert, {message: data.message});
+                                    _alterError(titleAlert, { message: data.message });
                             } else {
                                 _alterError(titleAlert);
                             }
@@ -1129,7 +1145,7 @@
 
                 function _formatThousand(value) {
                     nfObject = new Intl.NumberFormat('en-US');
-      
+
                     return nfObject.format(value);
                 }
             </script>

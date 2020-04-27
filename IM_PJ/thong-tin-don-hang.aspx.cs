@@ -609,6 +609,9 @@ namespace IM_PJ
                     ltrPrint.Text += "<a href='javascript:;' onclick='warningGetOrderImage(" + ID + ", 1)' class='btn primary-btn btn-green fw-btn not-fullwidth print-invoice-merged'><i class='fa fa-picture-o' aria-hidden='true'></i> Lấy ảnh đơn hàng gộp</a>";
                     ltrPrint.Text += "<a href='javascript:;' onclick='warningShippingNote(" + ID + ")' class='btn primary-btn btn-red fw-btn not-fullwidth print-invoice-merged'><i class='fa fa-file-text-o' aria-hidden='true'></i> In phiếu gửi hàng</a>";
                     ltrPrint.Text += "<a href='javascript:;' onclick='copyInvoiceURL(" + ID + ", " + order.CustomerID + ")' class='btn primary-btn btn-violet fw-btn not-fullwidth print-invoice-merged'><i class='fa fa-files-o' aria-hidden='true'></i> Copy link hóa đơn</a>";
+                    if (String.IsNullOrEmpty(order.ShippingCode) && order.ExcuteStatus == 2 && order.PaymentStatus != 1 && order.ShippingType == 6)
+                        ltrPrint.Text += "<a href='/dang-ky-ghtk?orderID=" +ID + "' class='btn primary-btn btn-blue fw-btn not-fullwidth print-invoice-merged'><i class='fa fa-picture-o' aria-hidden='true'></i> GHTK</a>";
+
                     if (order.ShippingType == 3 && !string.IsNullOrEmpty(order.ShippingCode))
                     {
                         ltrPrint.Text += "<a href='https://proship.vn/quan-ly-van-don/?isInvoiceFilter=1&generalInfo=" + order.ShippingCode + "' target='_blank' class='btn primary-btn fw-btn not-fullwidth print-invoice-merged'><i class='fa fa-file-text-o' aria-hidden='true'></i> Xem đơn dịch vụ Proship</a>";

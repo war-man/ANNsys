@@ -548,6 +548,7 @@
     <Content Include="SQL\05CREATE_STORE_PROCEDURE_BackupOrder.sql" />
     <Content Include="SQL\05CREATE_STORE_PROCEDURE_ClearStock.sql" />
     <Content Include="SQL\05CREATE_STORE_PROCEDURE_HandleProductImage.sql" />
+    <Content Include="dang-ky-ghtk.aspx" />
     <Content Include="thuc-hien-kiem-kho.aspx" />
     <Content Include="thong-tin-kiem-kho.aspx" />
     <Content Include="tao-phien-kiem-kho.aspx" />
@@ -1277,6 +1278,13 @@
     </Compile>
     <Compile Include="cron-job-product-status.aspx.designer.cs">
       <DependentUpon>cron-job-product-status.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="dang-ky-ghtk.aspx.cs">
+      <DependentUpon>dang-ky-ghtk.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="dang-ky-ghtk.aspx.designer.cs">
+      <DependentUpon>dang-ky-ghtk.aspx</DependentUpon>
     </Compile>
     <Compile Include="thuc-hien-kiem-kho.aspx.cs">
       <DependentUpon>thuc-hien-kiem-kho.aspx</DependentUpon>
