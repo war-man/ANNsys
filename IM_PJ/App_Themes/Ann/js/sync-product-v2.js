@@ -7,8 +7,8 @@ function showProductSyncModal(productSKU, productID, categoryID) {
 
     var html = "";
     html += "<div class='row'><div class='col-md-12'><h2>Đồng bộ sản phẩm " + productSKU + "</h2><br></div></div>";
-    html += "<div class='row item-website'>";
-    html += "    <div class='col-md-12' data-web='all' data-product-sku='" + productSKU + "' data-product-id='" + productID + "'>";
+    html += "<div class='row'>";
+    html += "    <div class='col-md-12 item-website' data-web='all' data-product-sku='" + productSKU + "' data-product-id='" + productID + "'>";
     html += "       <span>";
     html += "        	<a href='javascript:;' class='btn primary-btn btn-green' onclick='postProduct($(this))'><i class='fa fa-cloud-upload' aria-hidden='true'></i> Đăng tất cả</a>";
     html += "        	<a href='javascript:;' class='btn primary-btn btn-blue' onclick='upTopProduct($(this))'><i class='fa fa-upload' aria-hidden='true'></i> Up top tất cả</a>";
