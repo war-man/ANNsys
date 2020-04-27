@@ -610,7 +610,7 @@ namespace IM_PJ
                     ltrPrint.Text += "<a href='javascript:;' onclick='warningShippingNote(" + ID + ")' class='btn primary-btn btn-red fw-btn not-fullwidth print-invoice-merged'><i class='fa fa-file-text-o' aria-hidden='true'></i> In phiếu gửi hàng</a>";
                     ltrPrint.Text += "<a href='javascript:;' onclick='copyInvoiceURL(" + ID + ", " + order.CustomerID + ")' class='btn primary-btn btn-violet fw-btn not-fullwidth print-invoice-merged'><i class='fa fa-files-o' aria-hidden='true'></i> Copy link hóa đơn</a>";
                     if (String.IsNullOrEmpty(order.ShippingCode) && order.ExcuteStatus == 2 && order.PaymentStatus != 1 && order.ShippingType == 6)
-                        ltrPrint.Text += "<a href='/dang-ky-ghtk?orderID=" +ID + "' class='btn primary-btn btn-blue fw-btn not-fullwidth print-invoice-merged'><i class='fa fa-picture-o' aria-hidden='true'></i> GHTK</a>";
+                        ltrPrint.Text += "<a target='_blank' href='/dang-ky-ghtk?orderID=" +ID + "' class='btn primary-btn btn-blue fw-btn not-fullwidth print-invoice-merged'><i class='fa fa-upload' aria-hidden='true'></i> Đẩy đơn GHTK</a>";
 
                     if (order.ShippingType == 3 && !string.IsNullOrEmpty(order.ShippingCode))
                     {

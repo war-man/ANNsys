@@ -1705,7 +1705,7 @@
                             }
                         }
                         // Nếu chọn trạng thái hoàn tất và cần nhập mã vận đơn
-                        else if (excuteStatus == 2 && (shippingType == 2 || shippingType == 3 || shippingType == 6)) {
+                        else if (excuteStatus == 2 && (shippingType == 2 || shippingType == 3)) {
                             let shippingCode = $("#<%=txtShippingCode.ClientID%>").val();
                             if (shippingCode.length < 3) {
                                 $("#<%=txtShippingCode.ClientID%>").focus();
@@ -1823,7 +1823,7 @@
                 var fs = $("#<%=pFeeShip.ClientID%>").val();
                 var feeship = parseFloat(fs.replace(/\,/g, ''));
 
-                if (shippingtype == 2 || shippingtype == 3 || shippingtype == 6 || shippingtype == 7) {
+                if (shippingtype == 2 || shippingtype == 3 || shippingtype == 7) {
                     if (feeship == 0 && $("#<%=pFeeShip.ClientID%>").is(":disabled") == false) {
                         $("#<%=pFeeShip.ClientID%>").focus();
                         swal({

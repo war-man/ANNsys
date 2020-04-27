@@ -1157,7 +1157,7 @@
                 var fs = $("#<%=pFeeShip.ClientID%>").val();
                 var feeship = parseFloat(fs.replace(/\,/g, ''));
                 if (excuteStatus == 2) {
-                    if (shippingtype == 2 || shippingtype == 3 || shippingtype == 6 || shippingtype == 7) {
+                    if (shippingtype == 2 || shippingtype == 3 || shippingtype == 7) {
                         if (feeship == 0 && $("#<%=pFeeShip.ClientID%>").is(":disabled") == false) {
                             $("#<%=txtShippingFeeModal.ClientID%>").select();
                             swal({

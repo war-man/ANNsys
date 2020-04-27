@@ -19,8 +19,24 @@
     <!-- https://select2.org/getting-started/installation -->
     <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet" />
 
-    <title>Đăng ký Giao Hàng Tiết Kiệm</title>
+    <title>Tạo đơn GHTK</title>
     <style>
+        .bg07 {
+            background-image: url(https://dev.ghtk.vn/img/bg/07.png);
+        }
+        .top-bar {
+            background-color: #088a4b!important;
+            margin-bottom: 15px;
+        }
+        .container-bg {
+            background: #fff;
+        }
+        .btn-submit {
+            background: #0093a8!important;
+            border-color: #0093a8!important;
+
+            margin-bottom: 15px;
+        }
         table {
             border-collapse: collapse;
             width: 100%;
@@ -31,23 +47,21 @@
         }
 
         .table > tbody > tr > .index {
-            width: 10%;
-            text-align: center;
+            width: 30%;
             vertical-align: middle;
         }
 
         .table > tbody > tr > .product-name {
-            width: 90%;
+            width: 70%;
         }
 
         .table > tbody > tr > .label-weight {
-            width: 10%;
-            text-align: center;
+            width: 30%;
             vertical-align: middle;
         }
 
         .table > tbody > tr > .input-weight {
-            width: 45%;
+            width: 70%;
         }
 
         .table > tbody > tr > .label-weight-unit {
@@ -68,22 +82,20 @@
         }
     </style>
 </head>
-<body>
+<body class="bg07">
     <form id="form12" runat="server" enctype="multipart/form-data">
         <asp:ScriptManager runat="server" ID="scr">
         </asp:ScriptManager>
         <div>
             <main>
-                <div class="container">
-                    <div class="row">
-                        <div class="col-xl-12">
-                            <h2>Nhập thông tin đơn hàng</h2>
-                        </div>
+                <div class="container container-bg">
+                    <div class="row top-bar">
+                        <img width="250" src="https://dev.ghtk.vn/customer/img/logo-slogan.png">
                     </div>
-                    <div class="row mb-5">
+                    <div class="row">
                         <div class="col-12 col-xl-6">
                             <div class="form-group">
-                                <h4>Thông tin người nhận hàng</h4>
+                                <h4>Thông tin người nhận</h4>
                             </div>
                             <div class="form-group">
                                 <div class="input-group mb-3">
@@ -178,36 +190,28 @@
                                 <table class="table table-bordered">
                                     <tbody>
                                         <tr class="odd">
-                                            <td class="index">1</td>
-                                            <td class="product-name" colspan="4">
+                                            <td class="index">Tên hàng</td>
+                                            <td class="product-name">
                                                 <select id="ddlProduct" class="form-control"></select>
                                             </td>
                                         </tr>
                                         <tr class="odd">
-                                            <td class="label-weight">KL</td>
+                                            <td class="label-weight">Khối lượng</td>
                                             <td class="input-weight">
-                                                <input type="number" id="weight" class="form-control text-right">
+                                                <input type="number" min="0" step="0.1" id="weight" class="form-control text-right">
                                             </td>
-                                            <td class="label-weight-unit">KG</td>
-                                            <td class="label-number">SL</td>
-                                            <td class="input-number text-right">1</td>
                                         </tr>
                                     </tbody>
                                 </table>
                             </div>
                             <div class="form-group row">
-                                <div class="col-xl-12">
-                                    <label>Hình thức vận chuyển (Đường bộ)</label>
+                                <div class="col-4 col-xl-4">
+                                    <label>Phí ship GHTK</label>
                                 </div>
-                            </div>
-                            <div class="form-group row">
-                                <div class="col-3 col-xl-3">
-                                    <label>Phí ship</label>
-                                </div>
-                                <div class="col-9 col-xl-9">
+                                <div class="col-8 col-xl-8">
                                     <div class="row">
                                         <div class="col-5 col-xl-3">
-                                            <label id="feeship">0 VND</label>
+                                            <label id="feeship">0</label>
                                         </div>
                                         <div class="col-7 col-xl-9">
                                             <div class="custom-control custom-radio custom-control-inline">
@@ -223,13 +227,13 @@
                                 </div>
                             </div>
                             <div id="divFeeShop" class="form-group row">
-                                <div class="col-3 col-xl-3">
-                                    <label>Phí đã nhập</label>
+                                <div class="col-4 col-xl-4">
+                                    <label>Phí nhân viên nhập</label>
                                 </div>
-                                <div class="col-9 col-xl-9">
+                                <div class="col-8 col-xl-8">
                                     <div class="row">
                                         <div class="col-5 col-xl-3">
-                                            <label id="labelFeeShop">0 VND</label>
+                                            <label id="labelFeeShop">0</label>
                                         </div>
                                         <div class="col-7 col-xl-9">
                                             <div class="custom-control custom-radio custom-control-inline">
@@ -244,33 +248,24 @@
                                 <label for="pick_money" class="col-4 col-xl-3 col-form-label">Tiền thu hộ</label>
                                 <div class="input-group col-8 col-xl-9">
                                     <input type="text" id="pick_money" class="form-control text-right" value="0" disabled="disabled" readonly>
-                                    <div class="input-group-append">
-                                        <span class="input-group-text">VND</span>
-                                    </div>
                                 </div>
                             </div>
                             <div class="form-group row">
                                 <label for="value" class="col-4 col-xl-3 col-form-label">Giá trị hàng</label>
                                 <div class="input-group col-8 col-xl-9">
                                     <input type="text" id="value" class="form-control text-right" value="0" disabled="disabled" readonly>
-                                    <div class="input-group-append">
-                                        <span class="input-group-text">VND</span>
-                                    </div>
                                 </div>
                             </div>
                             <div class="form-group row">
                                 <label for="total_money" class="col-4 col-xl-3 col-form-label">Tổng tiền thu</label>
                                 <div class="input-group col-8 col-xl-9">
                                     <input type="text" id="total_money" class="form-control text-right" value="0" disabled="disabled" readonly>
-                                    <div class="input-group-append">
-                                        <span class="input-group-text">VND</span>
-                                    </div>
                                 </div>
                             </div>
                             <div class="form-group row">
                                 <div class="input-group col-xl-12">
                                     <div class="input-group-prepend">
-                                        <span class="input-group-text">Mã đơn KH</span>
+                                        <span class="input-group-text">Mã đơn hàng</span>
                                     </div>
                                     <input type="text" id="client_id" class="form-control" disabled="disabled" readonly>
                                 </div>
@@ -280,16 +275,14 @@
                                     <div class="input-group-prepend">
                                         <span class="input-group-text"><i class="fa fa-file-o"></i></span>
                                     </div>
-                                    <input type="text" id="note" class="form-control" maxlength="120" placeholder="Hãy thêm thông tin để GHTK phục vụ tốt hơn.">
+                                    <input type="text" id="note" class="form-control" maxlength="120" value="Khách được kiểm tra hàng khi nhận hàng" placeholder="Hãy thêm thông tin để GHTK phục vụ tốt hơn.">
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="fixed-bottom">
-                        <div class="form-group row">
-                            <div class="col-xl-12">
-                                <button class="form-control btn-primary" onclick="_checkSubmit()">Đăng ký đơn hàng (F3)</button>
-                            </div>
+                    <div class="row">
+                        <div class="col-xl-12">
+                            <button class="form-control btn-primary btn-submit" onclick="_checkSubmit()"><i class="fa fa-upload" aria-hidden="true"></i> Đồng bộ đơn hàng (F3)</button>
                         </div>
                     </div>
                 </div>
@@ -388,7 +381,7 @@
                     }
 
                     // Product Table
-                    _weight_min = 0.1;
+                    _weight_min = 0.3;
                     _product = {
                         name: null,
                         weight: _weight_min,
@@ -412,7 +405,7 @@
                 function _initReceiverAddress() {
                     // Danh sách tỉnh / thành phố
                     $('#ddlProvince').select2({
-                        placeholder: '(Bấm để chọn tỉnh / thành phố)',
+                        placeholder: '(Bấm để chọn tỉnh/thành phố)',
                         ajax: {
                             delay: 500,
                             method: 'GET',
@@ -431,12 +424,12 @@
                     // Danh sách quận / huyện
                     $('#ddlDistrict').attr('disabled', true);
                     $('#ddlDistrict').attr('readonly', 'readonly');
-                    $('#ddlDistrict').select2({ placeholder: '(Bấm để chọn quận / huyện)' });
+                    $('#ddlDistrict').select2({ placeholder: '(Bấm để chọn quận/huyện)' });
 
                     // Danh sách phường / xã
                     $('#ddlWard').attr('disabled', true);
                     $('#ddlWard').attr('readonly', 'readonly');
-                    $('#ddlWard').select2({ placeholder: '(Bấm để chọn phường / xã)' });
+                    $('#ddlWard').select2({ placeholder: '(Bấm để chọn phường/xã)' });
                 }
 
                 function _onChangeReceiverAddress() {
@@ -449,7 +442,7 @@
                         $('#ddlDistrict').removeAttr('readonly');
                         $('#ddlDistrict').val(null).trigger('change');
                         $('#ddlDistrict').select2({
-                            placeholder: '(Bấm để chọn tỉnh / thành phố)',
+                            placeholder: '(Bấm để chọn tỉnh/thành phố)',
                             ajax: {
                                 delay: 500,
                                 method: 'GET',
@@ -470,7 +463,7 @@
                         $('#ddlWard').attr('disabled', true);
                         $('#ddlWard').attr('readonly', 'readonly');
                         $('#ddlWard').val(null).trigger('change');
-                        $('#ddlWard').select2({ placeholder: '(Bấm để chọn phường / xã)' });
+                        $('#ddlWard').select2({ placeholder: '(Bấm để chọn phường/xã)' });
 
                         // Cập nhật order
                         _order.province_id = data.id;
@@ -486,7 +479,7 @@
                         $('#ddlWard').removeAttr('readonly');
                         $('#ddlWard').val(null).trigger('change');
                         $('#ddlWard').select2({
-                            placeholder: '(Bấm để chọn phường / xã)',
+                            placeholder: '(Bấm để chọn phường/xã)',
                             ajax: {
                                 delay: 500,
                                 method: 'GET',
@@ -552,7 +545,7 @@
                                 return _onChangeShipment('post_office');
                             }
 
-                            let titleAlert = 'Lấy thông tin của buc cục Giao Hàng Tiết Kiệm';
+                            let titleAlert = 'Lấy thông tin của buc cục GHTK';
 
                             $.ajax({
                                 method: 'GET',
@@ -677,7 +670,7 @@
                 function _initTableProduct() {
                     // https://select2.org/searching#single-select
                     $("#ddlProduct").select2({
-                        placeholder: 'Tên sản phẩm',
+                        placeholder: 'Chọn tên hàng hóa',
                         minimumResultsForSearch: Infinity,
                         ajax: {
                             method: 'GET',
@@ -696,24 +689,24 @@
 
                         if (weight === undefined || weight === null || weight === '')
                             return _alterError(
-                              "Lỗi nhập trọng lượng sản phẩm",
-                              { message: "Vui lòng nhập giá trị trọng lượng sản phẩm" }
+                              "Lỗi nhập khối lượng gói hàng",
+                              { message: "Hãy nhập khối lượng gói hàng" }
                             ).then(() => $("#weight").focus());
 
 
                         // Chuyển kiểu string thành float 
                         weight = parseFloat(weight);
 
-                        if (weight < _weight_min)
+                        if (weight < (_weight_min - 0.3))
                             return _alterError(
-                              "Lỗi nhập trọng lượng sản phẩm",
-                              { message: "Giá trị thấp nhất của trọng lượng sản phẩm là " + _weight_min + "kg" }
+                              "Lỗi nhập khối lượng gói hàng",
+                              { message: "Khối lượng gói hàng tối thiểu là " + (_weight_min - 0.3) + "kg" }
                             ).then(() => $("#weight").focus());
 
                         let $shipmentShop = $("#shipment_shop");
                         let $shipmentPostOffice = $("#shipment_post_office");
 
-                        if (weight < 10) {
+                        if (weight < 5) {
                             $shipmentPostOffice.prop('checked', false);
                             $shipmentPostOffice.attr('disabled', true);
 
@@ -824,7 +817,7 @@
                                 $("#feeship_shop").attr("disabled", true);
                                 $("#feeship_receiver").attr("disabled", true);
                                 $("#divFeeShop").show();
-                                $("#labelFeeShop").html(_formatThousand(data.feeShop) + " VND");
+                                $("#labelFeeShop").html(_formatThousand(data.feeShop));
                                 $("#feeShop").prop('checked', true).trigger('change');
                             }
                             else {
@@ -958,7 +951,7 @@
                     if (!_order.tel)
                         return swal({
                             title: titleAlert,
-                            text: "Số điện thoại khách hàng chưa được nhập",
+                            text: "Số điện thoại khách hàng chưa nhập",
                             icon: "error",
                         })
                           .then(() => { $('#tel').focus(); });
@@ -966,35 +959,35 @@
                     if (!_order.province)
                         return swal({
                             title: titleAlert,
-                            text: "Địa chỉ tỉnh / thành khách hàng chưa được chọn",
+                            text: "Địa chỉ tỉnh/thành khách hàng chưa chọn",
                             icon: "error",
                         })
                           .then(() => { $("#ddlProvince").select2('open'); });
                     if (_order.province && !_order.district)
                         return swal({
                             title: titleAlert,
-                            text: "Địa chỉ quận / huyện khách hàng chưa được chọn",
+                            text: "Địa chỉ quận/huyện khách hàng chưa chọn",
                             icon: "error",
                         })
                           .then(() => { $("#ddlDistrict").select2('open'); });
                     if (_order.province && _order.district && !_order.ward)
                         return swal({
                             title: titleAlert,
-                            text: "Địa chỉ phường / xã khách hàng chưa được chọn",
+                            text: "Địa chỉ phường/xã khách hàng chưa chọn",
                             icon: "error",
                         })
                           .then(() => { $("#ddlDistrict").select2('open'); });
                     if (!_order.address)
                         return swal({
                             title: titleAlert,
-                            text: "Địa chỉ khách hàng chưa được nhập",
+                            text: "Địa chỉ khách hàng chưa nhập",
                             icon: "error",
                         })
                           .then(() => { $('#address').focus(); });
                     if (!_product.name)
                         return swal({
                             title: titleAlert,
-                            text: "Bạn chưa chọn loại sản phẩm để giao hàng",
+                            text: "Chưa chọn loại sản phẩm",
                             icon: "error",
                         })
                           .then(() => { $("#ddlProduct").select2('open'); });
@@ -1005,7 +998,7 @@
                 function _calculateFee() {
                     if (!_order.pick_province || !_order.pick_district || !_order.province || !_order.district) {
                         _fee = 0;
-                        $("#feeship").html("0 VND");
+                        $("#feeship").html("0");
                     }
                     else {
                         let url = "/api/v1/delivery-save/fee",
@@ -1045,7 +1038,7 @@
                                 if (xhr.status == 200 && data) {
                                     if (data.success) {
                                         _fee = data.fee.fee;
-                                        $("#feeship").html(_formatThousand(_fee) + " VND");
+                                        $("#feeship").html(_formatThousand(_fee));
                                         _calculateMoney();
                                     }
                                     else {
@@ -1093,7 +1086,7 @@
                 }
 
                 function _submit() {
-                    let titleAlert = "Thực hiện đăng ký Giao Hàng Tiết Kiệm";
+                    let titleAlert = "Đồng bộ đơn hàng GHTK";
 
                     $.ajax({
                         method: 'POST',
@@ -1106,7 +1099,7 @@
                                 if (data.success)
                                     swal({
                                         title: titleAlert,
-                                        text: "Đăng ký thành công",
+                                        text: "Đồng bộ thành công",
                                         icon: "success",
                                     })
                                     .then(() => {
