@@ -83,7 +83,7 @@
     </style>
 </head>
 <body class="bg07">
-    <form id="form12" runat="server" enctype="multipart/form-data" onsubmit="function(e) {e.preventDefault(); return false;}">
+    <form id="form12" runat="server" enctype="multipart/form-data">
         <asp:ScriptManager runat="server" ID="scr">
         </asp:ScriptManager>
         <div>
@@ -275,7 +275,7 @@
                                     <div class="input-group-prepend">
                                         <span class="input-group-text"><i class="fa fa-file-o"></i></span>
                                     </div>
-                                    <input type="text" id="note" class="form-control" maxlength="120" value="Khách được kiểm tra hàng khi nhận hàng" placeholder="Hãy thêm thông tin để GHTK phục vụ tốt hơn.">
+                                    <input type="text" id="note" class="form-control" maxlength="120" value="Vui lòng cho khách kiểm tra hàng và nhận hàng về nếu có" placeholder="Hãy thêm thông tin để GHTK phục vụ tốt hơn.">
                                 </div>
                             </div>
                         </div>
@@ -319,6 +319,10 @@
                   _postOffice;
 
                 $(document).ready(function () {
+                    $("#form12").submit(function (e) {
+                        e.preventDefault();
+                        return false;
+                    });
                     _initParameterLocal();
                     _initReceiveInfo();
                     _initReceiverAddress();
@@ -399,6 +403,7 @@
 
                     $("#address").change(function () {
                         _order.address = $(this).val();
+                        _updateAddress();
                     })
                 }
 
@@ -422,14 +427,10 @@
                     });
 
                     // Danh sách quận / huyện
-                    $('#ddlDistrict').attr('disabled', true);
-                    $('#ddlDistrict').attr('readonly', 'readonly');
-                    $('#ddlDistrict').select2({ placeholder: '(Bấm để chọn quận/huyện)' });
+                    _disabledDDLDistrict(true);
 
                     // Danh sách phường / xã
-                    $('#ddlWard').attr('disabled', true);
-                    $('#ddlWard').attr('readonly', 'readonly');
-                    $('#ddlWard').select2({ placeholder: '(Bấm để chọn phường/xã)' });
+                    _disabledDDLWard(true);
                 }
 
                 function _onChangeReceiverAddress() {
@@ -437,70 +438,34 @@
                     $('#ddlProvince').on('select2:select', (e) => {
                         let data = e.params.data;
 
-                        // Danh sách quận / huyện
-                        $('#ddlDistrict').removeAttr('disabled');
-                        $('#ddlDistrict').removeAttr('readonly');
-                        $('#ddlDistrict').val(null).trigger('change');
-                        $('#ddlDistrict').select2({
-                            placeholder: '(Bấm để chọn tỉnh/thành phố)',
-                            ajax: {
-                                delay: 500,
-                                method: 'GET',
-                                url: '/api/v1/delivery-save/province/' + data.id + '/districts/select2',
-                                data: (params) => {
-                                    var query = {
-                                        search: params.term,
-                                        page: params.page || 1
-                                    }
-
-                                    return query;
-                                }
-                            }
-                        });
-                        $('#ddlDistrict').select2('open');
-
-                        // Danh sách phường / xã
-                        $('#ddlWard').attr('disabled', true);
-                        $('#ddlWard').attr('readonly', 'readonly');
-                        $('#ddlWard').val(null).trigger('change');
-                        $('#ddlWard').select2({ placeholder: '(Bấm để chọn phường/xã)' });
-
                         // Cập nhật order
                         _order.province_id = data.id;
                         _order.province = data.text;
+                        _updateAddress();
+
+                        // Danh sách quận / huyện
+                        _disabledDDLDistrict(false);
+                        $('#ddlDistrict').select2('open');
+
+                        // Danh sách phường / xã
+                        _disabledDDLWard(true);
                     });
 
                     // Danh sách quận / huyện
                     $('#ddlDistrict').on('select2:select', (e) => {
                         let data = e.params.data;
 
-                        // Danh sách quận / huyện
-                        $('#ddlWard').removeAttr('disabled');
-                        $('#ddlWard').removeAttr('readonly');
-                        $('#ddlWard').val(null).trigger('change');
-                        $('#ddlWard').select2({
-                            placeholder: '(Bấm để chọn phường/xã)',
-                            ajax: {
-                                delay: 500,
-                                method: 'GET',
-                                url: '/api/v1/delivery-save/district/' + data.id + '/wards/select2',
-                                data: (params) => {
-                                    var query = {
-                                        search: params.term,
-                                        page: params.page || 1
-                                    }
-
-                                    return query;
-                                }
-                            }
-                        });
-                        $('#ddlWard').select2('open');
-
                         // Cập nhật order
                         _order.district_id = data.id;
                         _order.district = data.text;
+                        _updateAddress();
+
                         // Tính tiền phí Ship
                         _calculateFee();
+
+                        // Danh sách quận / huyện
+                        _disabledDDLWard(false);
+                        $('#ddlWard').select2('open');
                     })
 
                     // Danh sách quận / huyện
@@ -510,6 +475,7 @@
                         // Cập nhật order
                         _order.ward_id = data.id;
                         _order.ward = data.text;
+                        _updateAddress();
                         // Tính tiền phí Ship
                         _calculateFee();
                     });
@@ -679,6 +645,7 @@
                     $('#ddlProduct').on('select2:select', (e) => {
                         let data = e.params.data;
                         _product.name = data.text;
+                        _calculateFee();
                     });
 
                     $("#weight").blur(function () {
@@ -774,8 +741,6 @@
                             // customer_id
                             // name
                             $("#name").val(data.customerName).trigger('change');
-                            // address
-                            $("#address").val(data.customerAddress).trigger('change');
                             // pick_money
                             _order.pick_money = data.money;
                             $("#pick_money").val(_formatThousand(data.money));
@@ -788,31 +753,41 @@
                             $("#client_id").val(data.orderID);
                             // province
                             if (data.customerProvinceID) {
+                                // Danh sách tỉnh / thành
                                 _order.province_id = data.customerProvinceID;
                                 _order.province = data.customerProvinceName;
+
                                 let newOption = new Option(data.customerProvinceName, data.customerProvinceID, false, false);
                                 $('#ddlProvince').append(newOption).trigger('change');
-                            }
-                            if (data.customerProvinceID && data.customerDistrictID) {
-                                _order.district_id = data.customerDistrictID;
-                                _order.district = data.customerDistrictName;
 
                                 // Danh sách quận / huyện
+                                _disabledDDLDistrict(false);
+                            }
+                            if (data.customerProvinceID && data.customerDistrictID) {
+                                // Danh sách quận / huyện
+                                _order.district_id = data.customerDistrictID;
+                                _order.district = data.customerDistrictName;
+                                
                                 let newOption = new Option(data.customerDistrictName, data.customerDistrictID, false, false);
                                 $('#ddlDistrict').removeAttr('disabled');
                                 $('#ddlDistrict').removeAttr('readonly');
                                 $('#ddlDistrict').append(newOption).trigger('change');
+
+                                // Danh sách phường / xã
+                                _disabledDDLWard(false);
                             }
                             if (data.customerProvinceID && data.customerDistrictID && data.customerWardID) {
+                                // Danh sách quận / huyện
                                 _order.ward_id = data.customerWardID;
                                 _order.ward = data.customerWardName;
-
-                                // Danh sách quận / huyện
+                                
                                 let newOption = new Option(data.customerWardName, data.customerWardID, false, false);
                                 $('#ddlWard').removeAttr('disabled');
                                 $('#ddlWard').removeAttr('readonly');
                                 $('#ddlWard').append(newOption).trigger('change');
                             }
+                            // address
+                            $("#address").val(data.customerAddress).trigger('change');
                             if (data.weight) {
                                 _weight_min = parseFloat(data.weight);
                                 $("#weight").val(_weight_min).trigger('blur');
@@ -961,6 +936,7 @@
                     //    minimumResultsForSearch: Infinity,
                     //    data: deliver_work_shift
                     //});
+                    _calculateFee();
                 }
 
                 function _checkSubmit() {
@@ -1010,6 +986,7 @@
                         })
                           .then(() => { $("#ddlProduct").select2('open'); });
 
+                    _calculateFee();
                     _submit();
                 }
 
@@ -1166,6 +1143,95 @@
                     nfObject = new Intl.NumberFormat('en-US');
 
                     return nfObject.format(value);
+                }
+
+                function _disabledDDLDistrict(disabled) {
+                    if (disabled) {
+                        $('#ddlDistrict').attr('disabled', true);
+                        $('#ddlDistrict').attr('readonly', 'readonly');
+                        $('#ddlDistrict').select2({ placeholder: '(Bấm để chọn quận/huyện)' });
+                    }
+                    else {
+                        $('#ddlDistrict').removeAttr('disabled');
+                        $('#ddlDistrict').removeAttr('readonly');
+                        $('#ddlDistrict').val(null).trigger('change');
+                        $('#ddlDistrict').select2({
+                            placeholder: '(Bấm để chọn tỉnh/thành phố)',
+                            ajax: {
+                                delay: 500,
+                                method: 'GET',
+                                url: '/api/v1/delivery-save/province/' + _order.province_id + '/districts/select2',
+                                data: (params) => {
+                                    var query = {
+                                        search: params.term,
+                                        page: params.page || 1
+                                    }
+
+                                    return query;
+                                }
+                            }
+                        });
+                    }
+                }
+
+                function _disabledDDLWard(disabled) {
+                    if (disabled) {
+                        $('#ddlWard').attr('disabled', true);
+                        $('#ddlWard').attr('readonly', 'readonly');
+                        $('#ddlWard').select2({ placeholder: '(Bấm để chọn phường/xã)' });
+                    }
+                    else {
+                        $('#ddlWard').removeAttr('disabled');
+                        $('#ddlWard').removeAttr('readonly');
+                        $('#ddlWard').val(null).trigger('change');
+                        $('#ddlWard').select2({
+                            placeholder: '(Bấm để chọn phường/xã)',
+                            ajax: {
+                                delay: 500,
+                                method: 'GET',
+                                url: '/api/v1/delivery-save/district/' + _order.district_id + '/wards/select2',
+                                data: (params) => {
+                                    var query = {
+                                        search: params.term,
+                                        page: params.page || 1
+                                    }
+
+                                    return query;
+                                }
+                            }
+                        });
+                    }
+                }
+                function _updateAddress() {
+                    if (!_order || !_order.tel || (!_order.province_id && !_order.district_id && !_order.ward_id && !_order.address))
+                        return;
+
+                    let titleAlert = "Cập nhật thông tin địa chỉ khách hàng";
+                    let dataJSON = JSON.stringify({
+                        provinceID: _order.province_id,
+                        districtID: _order.district_id,
+                        wardID: _order.ward_id,
+                        address: _order.address
+                    });
+
+                    $.ajax({
+                        method: 'POST',
+                        contentType: 'application/json',
+                        dataType: "json",
+                        data: dataJSON,
+                        url: "/api/v1/customer/" + _order.tel + "/update-address",
+                        success: (response, textStatus, xhr) => {
+                            if (xhr.status == 200 && response.success) {
+                                
+                            } else {
+                                _alterError(titleAlert);
+                            }
+                        },
+                        error: (xhr, textStatus, error) => {
+                            _alterError(titleAlert, xhr.responseJSON);
+                        }
+                    });
+                    _calculateFee();
                 }
             </script>
         </div>

@@ -618,7 +618,7 @@ namespace IM_PJ
                     }
                     if (order.ShippingType == 6 && !String.IsNullOrEmpty(order.ShippingCode))
                     {
-                        ltrPrint.Text += "<a target='_blank' href='https://khachhang.giaohangtietkiem.vn/khachhang?code=" + order.ShippingCode + "' class='btn primary-btn btn-green fw-btn not-fullwidth print-invoice-merged'><i class='fa fa-upload' aria-hidden='true'></i> Đã đẩy đơn GHTK</a>";
+                        ltrPrint.Text += "<a target='_blank' href='https://khachhang.giaohangtietkiem.vn/khachhang?code=" + order.ShippingCode + "' class='btn primary-btn btn-green fw-btn not-fullwidth print-invoice-merged'><i class='fa fa-upload' aria-hidden='true'></i> Xem đơn GHTK</a>";
                     }
                     if (order.ShippingType == 3 && !String.IsNullOrEmpty(order.ShippingCode))
                     {
