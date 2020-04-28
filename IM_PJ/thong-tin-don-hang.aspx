@@ -2,10 +2,10 @@
 
 <%@ Register Assembly="Telerik.Web.UI" Namespace="Telerik.Web.UI" TagPrefix="telerik" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
-    <script type="text/javascript" src="/App_Themes/Ann/js/search-customer.js?v=26042020"></script>
-    <script type="text/javascript" src="/App_Themes/Ann/js/search-product.js?v=26042020"></script>
-    <script type="text/javascript" src="/App_Themes/Ann/js/copy-invoice-url.js?v=26042020"></script>
-    <script type="text/javascript" src="/App_Themes/Ann/js/pages/danh-sach-khach-hang/generate-coupon-for-customer.js?v=26042020"></script>
+    <script type="text/javascript" src="/App_Themes/Ann/js/search-customer.js?v=28042020"></script>
+    <script type="text/javascript" src="/App_Themes/Ann/js/search-product.js?v=28042020"></script>
+    <script type="text/javascript" src="/App_Themes/Ann/js/copy-invoice-url.js?v=28042020"></script>
+    <script type="text/javascript" src="/App_Themes/Ann/js/pages/danh-sach-khach-hang/generate-coupon-for-customer.js?v=28042020"></script>
     <style>
         .panel-post {
             margin-bottom: 20px;
@@ -418,6 +418,7 @@
                                 <div class="post-row clear">
                                     <div class="left">Phí vận chuyển</div>
                                     <div class="right totalDiscount">
+                                        <a class="btn btn-feeship link-btn btn-green hide" href="javascript:;" id="getShipGHTK" onclick="getShipGHTK()"><i class="fa fa-check-square-o" aria-hidden="true"></i> Lấy phí GHTK</a>
                                         <a class="btn btn-feeship link-btn" href="javascript:;" id="calfeeship" onclick="calFeeShip()"><i class="fa fa-check-square-o" aria-hidden="true"></i> Miễn phí</a>
                                         <telerik:RadNumericTextBox runat="server" CssClass="form-control width-notfull input-coupon input-feeship" Skin="MetroTouch"
                                             ID="pFeeShip" MinValue="0" NumberFormat-GroupSizes="3" Value="0" NumberFormat-DecimalDigits="0"
@@ -459,8 +460,15 @@
                                         <asp:Literal runat="server" ID="ltrtotalpricedetail"></asp:Literal>
                                     </div>
                                 </div>
+                                <div class="post-row clear weight-input hide">
+                                    <div class="left">Khối lượng đơn hàng (kg)</div>
+                                    <div class="right">
+                                        <telerik:RadNumericTextBox runat="server" CssClass="form-control width-notfull input-weight" Skin="MetroTouch"
+                                            ID="txtWeight" MinValue="0" Value="0" NumberFormat-DecimalDigits="1" IncrementSettings-InterceptMouseWheel="false" IncrementSettings-InterceptArrowKeys="false">
+                                        </telerik:RadNumericTextBox>
+                                    </div>
+                                </div>
                             </div>
-                            
                         </div>
                     </div>
                 </div>
@@ -660,7 +668,7 @@
             <asp:HiddenField ID="hdfCouponValueOld" runat="server" />
             <asp:HiddenField ID="hdfCouponProductNumberOld" runat="server" />
             <asp:HiddenField ID="hdfCouponPriceMinOld" runat="server" />
-
+            <asp:HiddenField ID="hdfShippingType" runat="server" />
             <!-- Modal -->
             <div class="modal fade" id="feeModal" role="dialog">
                 <div class="modal-dialog">
@@ -1025,7 +1033,7 @@
                     $("#<%=pFeeShip.ClientID%>").prop('disabled', true).css("background-color", "#eeeeee").val(0);
                     swal("Thông báo", "Đã chọn miễn phí vận chuyển cho đơn hàng này<br><strong>Hãy ghi chú lý do miễn phí vận chuyển!!!</strong>", "success");
                     getAllPrice();
-                    $("#calfeeship").html("<i class=\"fa fa-pencil-square-o\" aria-hidden=\"true\"></i> Tính phí").css("background-color", "#f87703");
+                    $("#calfeeship").html("<i class='fa fa-pencil-square-o' aria-hidden='true'></i> Tính phí").css("background-color", "#f87703");
                 }
             }
             // remove other fee by click button
@@ -1080,6 +1088,22 @@
                                 window.open("/print-shipping-note?id=" + ID, "_blank");
                             }
                         }
+                    });
+                }
+                else if ($("#<%=ddlShippingType.ClientID%>").find(":selected").val() == 6 && $("#<%=ddlPaymentType.ClientID%>").find(":selected").val() != 3) {
+                    swal({
+                        title: "Ê nhỏ:",
+                        text: "Đơn hàng này gửi GHTK nhưng <strong>Không Thu Hộ</strong> hở?",
+                        type: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#DD6B55",
+                        confirmButtonText: "Đúng rồi sếp!!",
+                        closeOnConfirm: false,
+                        cancelButtonText: "Để em xem lại..",
+                        html: true
+                    }, function (isConfirm) {
+                        sweetAlert.close();
+                        window.open("/print-shipping-note?id=" + ID, "_blank");
                     });
                 }
                 else {
@@ -1144,8 +1168,10 @@
             $(document).ready(function () {
                 init();
 
+                let roleID = $("#<%=hdfRoleID.ClientID%>").val();
+
                 // Show change createdby if role = admin
-                if ($("#<%=hdfRoleID.ClientID%>").val() == 0) {
+                if (roleID == 0) {
                     $("#row-createdby").removeClass("hide");
                 }
 
@@ -1216,6 +1242,8 @@
                 if ($("#<%=ddlShippingType.ClientID%>").find(":selected").val() == 6) {
                     $(".shipping-code").removeClass("hide");
                     $(".transport-company").addClass("hide");
+                    $(".weight-input").removeClass("hide");
+                    $("#getShipGHTK").removeClass("hide");
                 }
 
                 if ($("#<%=ddlShippingType.ClientID%>").find(":selected").val() == 7) {
@@ -1234,6 +1262,11 @@
                             $("#<%=ddlPostalDeliveryType.ClientID%>").val(1);
                             $("#<%=ddlTransportCompanyID.ClientID%>").val(0);
                             $("#<%=ddlTransportCompanySubID.ClientID%>").val(0);
+                            $("#getShipGHTK").addClass("hide");
+                            $(".weight-input").addClass("hide");
+                            if ($("#<%=ddlPaymentType.ClientID%> option[value='1']").length == 0 && roleID != 0) {
+                                $("#<%=ddlPaymentType.ClientID%>").append('<option value="1">Tiền mặt</option>');
+                            }
                             break;
                         case "2":
                             $(".shipping-code").removeClass("hide");
@@ -1241,6 +1274,11 @@
                             $(".transport-company").addClass("hide");
                             $("#<%=ddlTransportCompanyID.ClientID%>").val(0);
                             $("#<%=ddlTransportCompanySubID.ClientID%>").val(0);
+                            $("#getShipGHTK").addClass("hide");
+                            $(".weight-input").addClass("hide");
+                            if (roleID != 0) {
+                                $("#<%=ddlPaymentType.ClientID%> option[value='1']").remove();
+                            }
                             break;
                         case "3":
                             $(".shipping-code").removeClass("hide");
@@ -1249,6 +1287,11 @@
                             $("#<%=ddlPostalDeliveryType.ClientID%>").val(1);
                             $("#<%=ddlTransportCompanyID.ClientID%>").val(0);
                             $("#<%=ddlTransportCompanySubID.ClientID%>").val(0);
+                            $("#getShipGHTK").addClass("hide");
+                            $(".weight-input").addClass("hide");
+                            if (roleID != 0) {
+                                $("#<%=ddlPaymentType.ClientID%> option[value='1']").remove();
+                            }
                             break;
                         case "4":
                             $(".shipping-code").addClass("hide");
@@ -1256,6 +1299,11 @@
                             $(".transport-company").removeClass("hide");
                             $("#<%=txtShippingCode.ClientID%>").val("");
                             $("#<%=ddlPostalDeliveryType.ClientID%>").val(1);
+                            $("#getShipGHTK").addClass("hide");
+                            $(".weight-input").addClass("hide");
+                            if (roleID != 0) {
+                                $("#<%=ddlPaymentType.ClientID%> option[value='1']").remove();
+                            }
                             break;
                         case "5":
                             $(".shipping-code").addClass("hide");
@@ -1265,6 +1313,11 @@
                             $("#<%=ddlPostalDeliveryType.ClientID%>").val(1);
                             $("#<%=ddlTransportCompanyID.ClientID%>").val(0);
                             $("#<%=ddlTransportCompanySubID.ClientID%>").val(0);
+                            $("#getShipGHTK").addClass("hide");
+                            $(".weight-input").addClass("hide");
+                            if (roleID != 0) {
+                                $("#<%=ddlPaymentType.ClientID%> option[value='1']").remove();
+                            }
                             break;
                         case "6":
                             $(".shipping-code").removeClass("hide");
@@ -1273,6 +1326,11 @@
                             $("#<%=ddlPostalDeliveryType.ClientID%>").val(1);
                             $("#<%=ddlTransportCompanyID.ClientID%>").val(0);
                             $("#<%=ddlTransportCompanySubID.ClientID%>").val(0);
+                            $(".weight-input").removeClass("hide");
+                            $("#getShipGHTK").removeClass("hide");
+                            if (roleID != 0) {
+                                $("#<%=ddlPaymentType.ClientID%> option[value='1']").remove();
+                            }
                             break;
                         case "7":
                             $(".shipping-code").addClass("hide");
@@ -1281,6 +1339,11 @@
                             $("#<%=ddlPostalDeliveryType.ClientID%>").val(1);
                             $("#<%=ddlTransportCompanyID.ClientID%>").val(0);
                             $("#<%=ddlTransportCompanySubID.ClientID%>").val(0);
+                            $("#getShipGHTK").addClass("hide");
+                            $(".weight-input").addClass("hide");
+                            if (roleID != 0) {
+                                $("#<%=ddlPaymentType.ClientID%> option[value='1']").remove();
+                            }
                             break;
                     }
 
@@ -1757,7 +1820,7 @@
 
                                             deleteOrder();
 
-                                            let order_id = $("#<%=hdOrderInfoID.ClientID%>").val()
+                                            let order_id = $("#<%=hdOrderInfoID.ClientID%>").val();
                                             $.ajax({
                                                 type: "POST",
                                                 url: "/thong-tin-don-hang.aspx/UpdateStatus",
@@ -2596,6 +2659,20 @@
                     return swal("Thông báo", "Chưa nhập thông tin khách hàng! Hoặc đây là khách hàng mới...", "warning");
 
                 generateCouponG20(customerName, customerID);
+            }
+
+            function getShipGHTK() {
+                let orderID = $("#<%=hdOrderInfoID.ClientID%>").val();
+                let weight = $("#<%=txtWeight.ClientID%>").val();
+                if (weight == 0) {
+                    $("#<%=txtWeight.ClientID%>").focus();
+                    return swal("Thông báo", "Chưa nhập khối lượng đơn hàng!", "warning");
+                }
+                let shippingType = $("#<%=hdfShippingType.ClientID%>").val();
+                if (shippingType != 6) {
+                    return swal("Thông báo", "Đơn hàng này trước đó không phải ship GHTK<br>Nếu vừa đổi sang GHTK thì hãy lưu lại đơn rồi lấy phí...", "warning");
+                }
+                window.open("/dang-ky-ghtk?orderID=" + orderID + "&weight=" + weight, "_blank");
             }
         </script>
     </telerik:RadScriptBlock>

@@ -470,13 +470,17 @@ namespace IM_PJ
                     if (!string.IsNullOrEmpty(item.ShippingCode))
                     {
                         string moreInfo = "";
-                        if (item.ShippingType == 3)
+                        if (item.ShippingType == 3 && !String.IsNullOrEmpty(item.ShippingCode))
                         {
                             moreInfo = " (<a href='https://proship.vn/quan-ly-van-don/?isInvoiceFilter=1&amp;generalInfo=" + item.ShippingCode + "' target='_blank'>Xem</a>)";
                         }
                         if (item.ShippingType == 2)
                         {
                             moreInfo = " (Chuyển " + ((item.PostalDeliveryType == 1) ? "thường" : "nhanh") + ")";
+                        }
+                        if (item.ShippingType == 6 && !String.IsNullOrEmpty(item.ShippingCode))
+                        {
+                            moreInfo = " (<a href='https://khachhang.giaohangtietkiem.vn/khachhang?code=" + item.ShippingCode + "' target='_blank'>Xem</a>)";
                         }
                         html.Append("<span class='order-info'><strong>Vận đơn:</strong> " + item.ShippingCode + moreInfo + "</span>");
                     }

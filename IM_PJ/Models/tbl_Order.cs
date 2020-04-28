@@ -57,5 +57,7 @@ namespace IM_PJ.Models
         public string VerifiedBy { get; set; }
         public Nullable<int> CouponID { get; set; }
         public Nullable<decimal> CouponValue { get; set; }
+        public Nullable<int> GHTKFee { get; set; }
+        public Nullable<double> Weight { get; set; }
     }
 }

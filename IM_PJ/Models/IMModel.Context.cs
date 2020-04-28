@@ -98,5 +98,6 @@ namespace IM_PJ.Models
         public virtual DbSet<NotifyNew> NotifyNews { get; set; }
         public virtual DbSet<PostClone> PostClones { get; set; }
         public virtual DbSet<NotificationCategory> NotificationCategories { get; set; }
+        public virtual DbSet<DeliverySaveAddress> DeliverySaveAddresses { get; set; }
     }
 }

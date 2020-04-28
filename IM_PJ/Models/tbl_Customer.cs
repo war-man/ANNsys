@@ -40,5 +40,7 @@ namespace IM_PJ.Models
         public string CustomerPhoneBackup { get; set; }
         public string UnSignedNick { get; set; }
         public string UnSignedName { get; set; }
+        public Nullable<int> DistrictId { get; set; }
+        public Nullable<int> WardId { get; set; }
     }
 }

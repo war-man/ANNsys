@@ -230,7 +230,7 @@ namespace IM_PJ
                     string CustomerPhone = Regex.Replace(txtPhone.Text.Trim(), @"[^\d]", "");
                     string CustomerName = txtFullname.Text.Trim().ToLower().ToTitleCase();
                     string Nick = txtNick.Text.Trim();
-                    string CustomerAddress = txtAddress.Text.Trim();
+                    string CustomerAddress = txtAddress.Text.Trim().ToTitleCase();
                     string Zalo = txtZalo.Text.Trim();
                     string Facebook = txtFacebook.Text.Trim();
                     int PaymentStatus = ddlPaymentStatus.SelectedValue.ToInt();

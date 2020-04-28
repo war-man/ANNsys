@@ -1051,6 +1051,9 @@
     <Compile Include="Models\DeliveryPostOffice.cs">
       <DependentUpon>IMModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\DeliverySaveAddress.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\Fee.cs">
       <DependentUpon>IMModel.tt</DependentUpon>
     </Compile>

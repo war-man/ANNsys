@@ -83,7 +83,7 @@
     </style>
 </head>
 <body class="bg07">
-    <form id="form12" runat="server" enctype="multipart/form-data">
+    <form id="form12" runat="server" enctype="multipart/form-data" onsubmit="function(e) {e.preventDefault(); return false;}">
         <asp:ScriptManager runat="server" ID="scr">
         </asp:ScriptManager>
         <div>
@@ -218,10 +218,10 @@
                                                 <input type="radio" id="feeship_shop" name="feeship" class="custom-control-input" value="1" checked="checked">
                                                 <label class="custom-control-label" for="feeship_shop">Shop trả</label>
                                             </div>
-                                            <div class="custom-control custom-radio custom-control-inline">
+                                            <%--<div class="custom-control custom-radio custom-control-inline">
                                                 <input type="radio" id="feeship_receiver" name="feeship" class="custom-control-input" value="0">
                                                 <label class="custom-control-label" for="feeship_receiver">Khách trả</label>
-                                            </div>
+                                            </div>--%>
                                         </div>
                                     </div>
                                 </div>
@@ -282,7 +282,7 @@
                     </div>
                     <div class="row">
                         <div class="col-xl-12">
-                            <button class="form-control btn-primary btn-submit" onclick="_checkSubmit()"><i class="fa fa-upload" aria-hidden="true"></i> Đồng bộ đơn hàng (F3)</button>
+                            <button id="btnRegister" class="form-control btn-primary btn-submit" type="button" onclick="_checkSubmit()" disabled="disabled">Đơn hàng chưa hoàn tất...</button>
                         </div>
                     </div>
                 </div>
@@ -568,37 +568,34 @@
                     // Cài đặt drop dơwn list pick_work_shift
                     let now = new Date();
                     let strNow = "";
-                    let hours = now.getHours();
+                    let hours = now.getHours() + 1;
                     let pick_work_shift = [];
 
                     strNow = now.toISOString().substring(0, 10).replace(/-/g, '/');
 
-                    if (hours <= 11) {
+                    if (hours <= 10) {
+                        pick_work_shift.push({ id: 1, text: "Sáng nay" });
                         pick_work_shift.push({ id: 2, text: "Chiều nay" });
                         pick_work_shift.push({ id: 3, text: "Tối nay" });
-                        pick_work_shift.push({ id: 1, text: "Sáng mai" });
+
+                        _order.pick_date = strNow;
+                        _order.pick_work_shift = 1;
+                    }
+                    else if (hours <= 16) {
+                        pick_work_shift.push({ id: 1, text: "Chiều nay" });
+                        pick_work_shift.push({ id: 2, text: "Tối nay" });
+                        pick_work_shift.push({ id: 3, text: "Sáng mai" });
 
                         _order.pick_date = strNow;
                         _order.pick_work_shift = 2;
                     }
-                    else if (hours <= 15) {
-                        pick_work_shift.push({ id: 3, text: "Tối nay" });
-                        pick_work_shift.push({ id: 1, text: "Sáng mai" });
-                        pick_work_shift.push({ id: 2, text: "Chiều mai" });
+                    else {
+                        pick_work_shift.push({ id: 1, text: "Tối nay" });
+                        pick_work_shift.push({ id: 2, text: "Sáng mai" });
+                        pick_work_shift.push({ id: 3, text: "Chiều mai" });
 
                         _order.pick_date = strNow;
                         _order.pick_work_shift = 3;
-                    }
-                    else {
-                        pick_work_shift.push({ id: 1, text: "Sáng mai" });
-                        pick_work_shift.push({ id: 2, text: "Chiều mai" });
-                        pick_work_shift.push({ id: 3, text: "Tối mai" });
-
-                        let tomorrow = new Date();
-                        tomorrow.setDate(tomorrow.getDate() + 1);
-                        strTomorrow = tomorrow.toISOString().substring(0, 10).replace(/-/g, '/');
-                        _order.pick_date = strTomorrow;
-                        _order.pick_work_shift = 1;
                     }
 
                     $("#pick_work_shift").select2({
@@ -745,7 +742,10 @@
                     // Lấy thông tin query parameter
                     let urlParams = new URLSearchParams(window.location.search);
                     let orderID = +urlParams.get('orderID') || 0;
-
+                    let weight = +urlParams.get('weight') || 0;
+                    if (weight != 0) {
+                        $("#weight").val(weight).trigger('blur');
+                    }
                     if (orderID == 0)
                         return swal({
                             title: "Lỗi",
@@ -756,13 +756,18 @@
                               window.location.href = "/danh-sach-don-hang";
                           });
 
-                    let titleAlert = "Lấy thông tin đơn giao hàng"
+                    let titleAlert = "Lấy thông tin đơn giao hàng";
 
                     $.ajax({
                         method: 'GET',
                         url: "/api/v1/order/" + orderID + "/delivery-save",
                         success: (response, textStatus, xhr) => {
                             let data = response.data;
+
+                            if (data.executeStatus == 2) {
+                                $("#btnRegister").removeAttr("disabled");
+                                $("#btnRegister").html('<i class="fa fa-upload" aria-hidden="true"></i> Đồng bộ đơn hàng (F3)');
+                            }
 
                             // tel
                             $("#tel").val(data.customerPhone).trigger('change');
@@ -811,6 +816,9 @@
                             if (data.weight) {
                                 _weight_min = parseFloat(data.weight);
                                 $("#weight").val(_weight_min).trigger('blur');
+                                if (weight != 0) {
+                                    $("#weight").val(weight).trigger('blur');
+                                }
                             }
                             if (data.feeShop) {
                                 _feeShop = data.feeShop;
@@ -876,7 +884,17 @@
                     strTomorrow = tomorrow.toISOString().substring(0, 10).replace(/-/g, '/');
                     //strDateAfterTomorrow = dateAfterTomorrow.toISOString().substring(0, 10).replace(/-/g, '/');
 
-                    if (pick_work_shift == "Chiều nay") {
+                    if (pick_work_shift == "Sáng nay") {
+                        //deliver_work_shift.push({ id: 3, text: "Tối nay" });
+                        //deliver_work_shift.push({ id: 1, text: "Sáng mai" });
+                        //deliver_work_shift.push({ id: 2, text: "Chiều mai" });
+
+                        _order.pick_date = strNow;
+                        _order.pick_work_shift = 1;
+                        //_order.deliver_date = strNow;
+                        //_order.deliver_work_shift = 3;
+                    }
+                    else if (pick_work_shift == "Chiều nay") {
                         //deliver_work_shift.push({ id: 3, text: "Tối nay" });
                         //deliver_work_shift.push({ id: 1, text: "Sáng mai" });
                         //deliver_work_shift.push({ id: 2, text: "Chiều mai" });
@@ -1037,6 +1055,14 @@
                             success: (data, textStatus, xhr) => {
                                 if (xhr.status == 200 && data) {
                                     if (data.success) {
+                                        if (_feeShipment == 1) {
+                                            _order.pick_money = _order.pick_money - _fee;
+                                            _order.value = _order.pick_money;
+                                        }
+                                        else if (_feeShipment == 2) {
+                                            _order.pick_money = _order.pick_money - _feeShop;
+                                            _order.value = _order.pick_money;
+                                        }
                                         _fee = data.fee.fee;
                                         $("#feeship").html(_formatThousand(_fee));
                                         _calculateMoney();
@@ -1062,12 +1088,11 @@
                     let feeShipment = +$("input:radio[name='feeship']:checked").val() || 0;
                     let total_money = 0;
 
-                    if (_feeShipment == 2) {
-                        _order.pick_money = _order.pick_money - _feeShop;
-                        _order.value = _order.pick_money;
-                    }
-
                     if (feeShipment == 1) {
+                        //total_money = _order.pick_money;
+                        // Thay đổi logic. Shop trả sẻ cộng tiền phí vào thu hộ
+                        _order.pick_money = _order.pick_money + _fee;
+                        _order.value = _order.pick_money;
                         total_money = _order.pick_money;
                     }
                     else if (feeShipment == 2) {
@@ -1097,22 +1122,23 @@
                         success: (data, textStatus, xhr) => {
                             if (xhr.status == 200 && data) {
                                 if (data.success)
-                                    swal({
+                                    return swal({
                                         title: titleAlert,
                                         text: "Đồng bộ thành công",
                                         icon: "success",
                                     })
                                     .then(() => {
-                                        window.location.href = "/danh-sach-don-hang";
+                                        let label = data.order['label'];
+                                        window.location.href = "https://khachhang.giaohangtietkiem.vn/khachhang?code=" + label;
                                     });
                                 else
-                                    _alterError(titleAlert, { message: data.message });
+                                    return _alterError(titleAlert, { message: data.message });
                             } else {
-                                _alterError(titleAlert);
+                                return _alterError(titleAlert);
                             }
                         },
                         error: (xhr, textStatus, error) => {
-                            _alterError(titleAlert);
+                            return _alterError(titleAlert);
                         }
                     });
                 }

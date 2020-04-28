@@ -145,6 +145,9 @@ namespace IM_PJ
                     // Init Price Type List
                     hdfFeeType.Value = FeeTypeController.getFeeTypeJSON();
 
+                    // Init shipping type
+                    hdfShippingType.Value = order.ShippingType.ToString();
+
                     // hidden TransportCompanySubID
                     hdfTransportCompanySubID.Value = order.TransportCompanySubID.ToString();
 
@@ -176,7 +179,7 @@ namespace IM_PJ
                     int AgentID = Convert.ToInt32(order.AgentID);
                     txtPhone.Text = order.CustomerPhone;
                     txtFullname.Text = order.CustomerName.ToLower().ToTitleCase();
-                    txtAddress.Text = order.CustomerAddress;
+                    txtAddress.Text = order.CustomerAddress.ToTitleCase();
                     var cus = CustomerController.GetByID(order.CustomerID.Value);
                     if (cus != null)
                     {
@@ -552,7 +555,7 @@ namespace IM_PJ
                     ltrTotalprice.Text = string.Format("{0:N0}", Convert.ToDouble(order.TotalPrice));
                     pDiscount.Value = order.DiscountPerProduct;
                     pFeeShip.Value = Convert.ToDouble(order.FeeShipping);
-
+                    txtWeight.Value = order.Weight.HasValue ? order.Weight.Value : 0;
                     // Get fee info
                     hdfOtherFees.Value = FeeController.getFeesJSON(ID);
 
@@ -603,18 +606,23 @@ namespace IM_PJ
                     }
 
                     ltrOrderType.Text = PJUtils.OrderType(Convert.ToInt32(order.OrderType));
-                    ltrPrint.Text = "<a href='javascript:;' onclick='warningPrintInvoice(" + ID + ")' class='btn primary-btn fw-btn not-fullwidth'><i class='fa fa-print' aria-hidden='true'></i> In hóa đơn</a>";
-                    ltrPrint.Text += "<a href='/print-invoice?id=" + ID + "&merge=1' target='_blank' class='btn primary-btn btn-black fw-btn not-fullwidth print-invoice-merged'><i class='fa fa-print' aria-hidden='true'></i> In hóa đơn gộp</a>";
-                    ltrPrint.Text += "<a href='javascript:;' onclick='warningGetOrderImage(" + ID + ", 0)' class='btn primary-btn btn-blue fw-btn not-fullwidth print-invoice-merged'><i class='fa fa-picture-o' aria-hidden='true'></i> Lấy ảnh đơn hàng</a>";
-                    ltrPrint.Text += "<a href='javascript:;' onclick='warningGetOrderImage(" + ID + ", 1)' class='btn primary-btn btn-green fw-btn not-fullwidth print-invoice-merged'><i class='fa fa-picture-o' aria-hidden='true'></i> Lấy ảnh đơn hàng gộp</a>";
-                    ltrPrint.Text += "<a href='javascript:;' onclick='warningShippingNote(" + ID + ")' class='btn primary-btn btn-red fw-btn not-fullwidth print-invoice-merged'><i class='fa fa-file-text-o' aria-hidden='true'></i> In phiếu gửi hàng</a>";
-                    ltrPrint.Text += "<a href='javascript:;' onclick='copyInvoiceURL(" + ID + ", " + order.CustomerID + ")' class='btn primary-btn btn-violet fw-btn not-fullwidth print-invoice-merged'><i class='fa fa-files-o' aria-hidden='true'></i> Copy link hóa đơn</a>";
-                    if (String.IsNullOrEmpty(order.ShippingCode) && order.ExcuteStatus == 2 && order.PaymentStatus != 1 && order.ShippingType == 6)
-                        ltrPrint.Text += "<a target='_blank' href='/dang-ky-ghtk?orderID=" +ID + "' class='btn primary-btn btn-blue fw-btn not-fullwidth print-invoice-merged'><i class='fa fa-upload' aria-hidden='true'></i> Đẩy đơn GHTK</a>";
-
-                    if (order.ShippingType == 3 && !string.IsNullOrEmpty(order.ShippingCode))
+                    ltrPrint.Text = "<a href='javascript:;' onclick='warningPrintInvoice(" + ID + ")' class='btn primary-btn fw-btn not-fullwidth'><i class='fa fa-print' aria-hidden='true'></i> Hóa đơn</a>";
+                    ltrPrint.Text += "<a href='/print-invoice?id=" + ID + "&merge=1' target='_blank' class='btn primary-btn btn-black fw-btn not-fullwidth print-invoice-merged'><i class='fa fa-print' aria-hidden='true'></i> Hóa đơn gộp</a>";
+                    ltrPrint.Text += "<a href='javascript:;' onclick='warningGetOrderImage(" + ID + ", 0)' class='btn primary-btn btn-blue fw-btn not-fullwidth print-invoice-merged'><i class='fa fa-picture-o' aria-hidden='true'></i> Ảnh đơn hàng</a>";
+                    ltrPrint.Text += "<a href='javascript:;' onclick='warningGetOrderImage(" + ID + ", 1)' class='btn primary-btn btn-green fw-btn not-fullwidth print-invoice-merged'><i class='fa fa-picture-o' aria-hidden='true'></i> Ảnh đơn hàng gộp</a>";
+                    ltrPrint.Text += "<a href='javascript:;' onclick='warningShippingNote(" + ID + ")' class='btn primary-btn btn-red fw-btn not-fullwidth print-invoice-merged'><i class='fa fa-file-text-o' aria-hidden='true'></i> Phiếu gửi hàng</a>";
+                    ltrPrint.Text += "<a href='javascript:;' onclick='copyInvoiceURL(" + ID + ", " + order.CustomerID + ")' class='btn primary-btn btn-violet fw-btn not-fullwidth print-invoice-merged'><i class='fa fa-files-o' aria-hidden='true'></i> Link hóa đơn</a>";
+                    if (String.IsNullOrEmpty(order.ShippingCode) && order.ExcuteStatus == 2 && order.ShippingType == 6)
                     {
-                        ltrPrint.Text += "<a href='https://proship.vn/quan-ly-van-don/?isInvoiceFilter=1&generalInfo=" + order.ShippingCode + "' target='_blank' class='btn primary-btn fw-btn not-fullwidth print-invoice-merged'><i class='fa fa-file-text-o' aria-hidden='true'></i> Xem đơn dịch vụ Proship</a>";
+                        ltrPrint.Text += "<a target='_blank' href='/dang-ky-ghtk?orderID=" + ID + "' class='btn primary-btn btn-green fw-btn not-fullwidth print-invoice-merged'><i class='fa fa-upload' aria-hidden='true'></i> Đẩy đơn GHTK</a>";
+                    }
+                    if (order.ShippingType == 6 && !String.IsNullOrEmpty(order.ShippingCode))
+                    {
+                        ltrPrint.Text += "<a target='_blank' href='https://khachhang.giaohangtietkiem.vn/khachhang?code=" + order.ShippingCode + "' class='btn primary-btn btn-green fw-btn not-fullwidth print-invoice-merged'><i class='fa fa-upload' aria-hidden='true'></i> Đã đẩy đơn GHTK</a>";
+                    }
+                    if (order.ShippingType == 3 && !String.IsNullOrEmpty(order.ShippingCode))
+                    {
+                        ltrPrint.Text += "<a target='_blank' href='https://proship.vn/quan-ly-van-don/?isInvoiceFilter=1&generalInfo=" + order.ShippingCode + "' class='btn primary-btn fw-btn not-fullwidth print-invoice-merged'><i class='fa fa-file-text-o' aria-hidden='true'></i> Xem đơn Proship</a>";
                     }
                 }
             }
@@ -835,9 +843,9 @@ namespace IM_PJ
                             int CustomerID = 0;
 
                             string CustomerPhone = Regex.Replace(txtPhone.Text.Trim(), @"[^\d]", "");
-                            string CustomerName = txtFullname.Text.Trim();
+                            string CustomerName = txtFullname.Text.Trim().ToTitleCase();
                             string Nick = txtNick.Text.Trim();
-                            string CustomerAddress = txtAddress.Text.Trim();
+                            string CustomerAddress = txtAddress.Text.Trim().ToTitleCase();
                             string Zalo = txtZalo.Text.Trim();
                             string Facebook = txtFacebook.Text.Trim();
 
@@ -891,6 +899,7 @@ namespace IM_PJ
                             }
                             double TotalDiscount = Convert.ToDouble(pDiscount.Value) * Convert.ToDouble(sl);
                             string FeeShipping = pFeeShip.Value.ToString();
+                            double Weight = Convert.ToDouble(txtWeight.Value);
 
                             string datedone = "";
                             if (order.DateDone != null)
@@ -968,7 +977,8 @@ namespace IM_PJ
                                 OtherFeeValue = 0,
                                 PostalDeliveryType = PostalDeliveryType,
                                 CouponID = couponID,
-                                CouponValue = couponValue
+                                CouponValue = couponValue,
+                                Weight = Weight
                             };
 
                             if (!String.IsNullOrEmpty(datedone))

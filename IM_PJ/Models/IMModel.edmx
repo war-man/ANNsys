@@ -202,6 +202,19 @@
           <Property Name="Review" Type="int" Nullable="false" />
           <Property Name="OrderStatus" Type="int" Nullable="false" />
         </EntityType>
+        <EntityType Name="DeliverySaveAddress">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="PID" Type="int" />
+          <Property Name="Type" Type="int" Nullable="false" />
+          <Property Name="Region" Type="int" />
+          <Property Name="Alias" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="IsPicked" Type="bit" Nullable="false" />
+          <Property Name="IsDelivered" Type="bit" Nullable="false" />
+        </EntityType>
         <EntityType Name="Fee">
           <Key>
             <PropertyRef Name="UUID" />
@@ -693,6 +706,8 @@
           <Property Name="CustomerPhoneBackup" Type="nvarchar" MaxLength="15" />
           <Property Name="UnSignedNick" Type="varchar" MaxLength="255" />
           <Property Name="UnSignedName" Type="varchar" MaxLength="255" />
+          <Property Name="DistrictId" Type="int" />
+          <Property Name="WardId" Type="int" />
         </EntityType>
         <EntityType Name="tbl_CustomerLevel">
           <Key>
@@ -854,6 +869,8 @@
           <Property Name="VerifiedBy" Type="nvarchar" MaxLength="255" />
           <Property Name="CouponID" Type="int" />
           <Property Name="CouponValue" Type="money" />
+          <Property Name="GHTKFee" Type="int" />
+          <Property Name="Weight" Type="float" />
         </EntityType>
         <EntityType Name="tbl_OrderDetail">
           <Key>
@@ -1281,6 +1298,7 @@
           <EntitySet Name="CustomerEditOrder" EntityType="Self.CustomerEditOrder" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Delivery" EntityType="Self.Delivery" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="DeliveryPostOffice" EntityType="Self.DeliveryPostOffice" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="DeliverySaveAddress" EntityType="Self.DeliverySaveAddress" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Fee" EntityType="Self.Fee" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="FeeType" EntityType="Self.FeeType" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="GroupNotifyPromotion" EntityType="Self.GroupNotifyPromotion" Schema="dbo" store:Type="Tables" />
@@ -1939,6 +1957,8 @@
           <Property Name="CustomerPhoneBackup" Type="String" MaxLength="15" FixedLength="false" Unicode="true" />
           <Property Name="UnSignedNick" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
           <Property Name="UnSignedName" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="DistrictId" Type="Int32" />
+          <Property Name="WardId" Type="Int32" />
         </EntityType>
         <EntityType Name="tbl_CustomerLevel">
           <Key>
@@ -2100,6 +2120,8 @@
           <Property Name="VerifiedBy" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="CouponID" Type="Int32" />
           <Property Name="CouponValue" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="GHTKFee" Type="Int32" />
+          <Property Name="Weight" Type="Double" />
         </EntityType>
         <EntityType Name="tbl_OrderDetail">
           <Key>
@@ -2573,6 +2595,7 @@
           <EntitySet Name="NotifyNews" EntityType="inventorymanagementModel.NotifyNew" />
           <EntitySet Name="PostClones" EntityType="inventorymanagementModel.PostClone" />
           <EntitySet Name="NotificationCategories" EntityType="inventorymanagementModel.NotificationCategory" />
+          <EntitySet Name="DeliverySaveAddresses" EntityType="inventorymanagementModel.DeliverySaveAddress" />
         </EntityContainer>
         <EntityType Name="PostPublicImage">
           <Key>
@@ -2684,6 +2707,19 @@
           <Property Name="CreatedBy" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="ModifiedDate" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="ModifiedBy" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="DeliverySaveAddress">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="PID" Type="Int32" />
+          <Property Name="Type" Type="Int32" Nullable="false" />
+          <Property Name="Region" Type="Int32" />
+          <Property Name="Alias" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="IsPicked" Type="Boolean" Nullable="false" />
+          <Property Name="IsDelivered" Type="Boolean" Nullable="false" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -3290,6 +3326,8 @@
           <EntitySetMapping Name="tbl_Customer">
             <EntityTypeMapping TypeName="inventorymanagementModel.tbl_Customer">
               <MappingFragment StoreEntitySet="tbl_Customer">
+                <ScalarProperty Name="WardId" ColumnName="WardId" />
+                <ScalarProperty Name="DistrictId" ColumnName="DistrictId" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="Nick" ColumnName="Nick" />
                 <ScalarProperty Name="CustomerName" ColumnName="CustomerName" />
@@ -3442,6 +3480,8 @@
           <EntitySetMapping Name="tbl_Order">
             <EntityTypeMapping TypeName="inventorymanagementModel.tbl_Order">
               <MappingFragment StoreEntitySet="tbl_Order">
+                <ScalarProperty Name="Weight" ColumnName="Weight" />
+                <ScalarProperty Name="GHTKFee" ColumnName="GHTKFee" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="AgentID" ColumnName="AgentID" />
                 <ScalarProperty Name="OrderType" ColumnName="OrderType" />
@@ -4022,6 +4062,20 @@
                 <ScalarProperty Name="Slug" ColumnName="Slug" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="Icon" ColumnName="Icon" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="DeliverySaveAddresses">
+            <EntityTypeMapping TypeName="inventorymanagementModel.DeliverySaveAddress">
+              <MappingFragment StoreEntitySet="DeliverySaveAddress">
+                <ScalarProperty Name="IsDelivered" ColumnName="IsDelivered" />
+                <ScalarProperty Name="IsPicked" ColumnName="IsPicked" />
+                <ScalarProperty Name="Alias" ColumnName="Alias" />
+                <ScalarProperty Name="Region" ColumnName="Region" />
+                <ScalarProperty Name="Type" ColumnName="Type" />
+                <ScalarProperty Name="PID" ColumnName="PID" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>

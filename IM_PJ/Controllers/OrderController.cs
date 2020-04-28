@@ -162,6 +162,7 @@ namespace IM_PJ.Controllers
                     orderOld.PostalDeliveryType = data.PostalDeliveryType;
                     orderOld.CouponID = data.CouponID;
                     orderOld.CouponValue = data.CouponValue;
+                    orderOld.Weight = data.Weight;
                     con.SaveChanges();
 
                     return orderOld;

@@ -97,6 +97,10 @@
     font-weight: 500!important;
     font-size: 18px!important;
 }
+.input-weight {
+    font-weight: 500!important;
+    font-size: 18px!important;
+}
 #feePrice {
     cursor: pointer;
     border-color: #cdcdcd;

@@ -337,6 +337,15 @@ namespace IM_PJ {
         protected global::System.Web.UI.WebControls.Literal ltrtotalpricedetail;
         
         /// <summary>
+        /// txtWeight control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::Telerik.Web.UI.RadNumericTextBox txtWeight;
+        
+        /// <summary>
         /// ddlExcuteStatus control.
         /// </summary>
         /// <remarks>
@@ -839,6 +848,15 @@ namespace IM_PJ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.HiddenField hdfCouponPriceMinOld;
+        
+        /// <summary>
+        /// hdfShippingType control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField hdfShippingType;
         
         /// <summary>
         /// hdfUUID control.
