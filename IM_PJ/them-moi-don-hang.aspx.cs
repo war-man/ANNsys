@@ -76,7 +76,6 @@ namespace IM_PJ
                 LoadData();
             }
         }
-
         public void LoadData()
         {
             
@@ -231,38 +230,36 @@ namespace IM_PJ
                     string CustomerName = txtFullname.Text.Trim().ToLower().ToTitleCase();
                     string Nick = txtNick.Text.Trim();
                     string CustomerAddress = txtAddress.Text.Trim().ToTitleCase();
-                    string Zalo = txtZalo.Text.Trim();
+                    string Zalo = "";
                     string Facebook = txtFacebook.Text.Trim();
                     int PaymentStatus = ddlPaymentStatus.SelectedValue.ToInt();
                     int ExcuteStatus = ddlExcuteStatus.SelectedValue.ToInt();
                     int PaymentType = ddlPaymentType.SelectedValue.ToInt();
                     int ShippingType = ddlShippingType.SelectedValue.ToInt();
+                    int ProvinceID = ddlProvince.SelectedValue.ToInt();
+                    int DistrictID = ddlDistrict.SelectedValue.ToInt();
+                    int WardID = ddlWard.SelectedValue.ToInt();
+                    int TransportCompanyID = ddlTransportCompanyID.SelectedValue.ToInt(0);
+                    int TransportCompanySubID = hdfTransportCompanySubID.Value.ToInt(0);
 
                     var checkCustomer = CustomerController.GetByPhone(CustomerPhone);
-
                     if (checkCustomer != null)
                     {
                         CustomerID = checkCustomer.ID;
-                        string kq = CustomerController.Update(CustomerID, CustomerName, checkCustomer.CustomerPhone, CustomerAddress, "", Convert.ToInt32(checkCustomer.CustomerLevelID), Convert.ToInt32(checkCustomer.Status), checkCustomer.CreatedBy, currentDate, username, false, Zalo, Facebook, checkCustomer.Note, checkCustomer.ProvinceID.ToString(), Nick, checkCustomer.Avatar, Convert.ToInt32(checkCustomer.ShippingType), Convert.ToInt32(checkCustomer.PaymentType), Convert.ToInt32(checkCustomer.TransportCompanyID), Convert.ToInt32(checkCustomer.TransportCompanySubID), checkCustomer.CustomerPhone2);
+                        string kq = CustomerController.Update(CustomerID, CustomerName, checkCustomer.CustomerPhone, CustomerAddress, "", Convert.ToInt32(checkCustomer.CustomerLevelID), Convert.ToInt32(checkCustomer.Status), checkCustomer.CreatedBy, currentDate, username, false, Zalo, Facebook, checkCustomer.Note, checkCustomer.ProvinceID.ToString(), Nick, checkCustomer.Avatar, Convert.ToInt32(checkCustomer.ShippingType), Convert.ToInt32(checkCustomer.PaymentType), Convert.ToInt32(checkCustomer.TransportCompanyID), Convert.ToInt32(checkCustomer.TransportCompanySubID), checkCustomer.CustomerPhone2, ProvinceID, DistrictID, WardID);
                     }
                     else
                     {
-                        string kq = CustomerController.Insert(CustomerName, CustomerPhone, CustomerAddress, "", 0, 0, currentDate, username, false, Zalo, Facebook, "", "", Nick, "", ShippingType, PaymentType);
+                        string kq = CustomerController.Insert(CustomerName, CustomerPhone, CustomerAddress, "", 0, 0, currentDate, username, false, Zalo, Facebook, "", "", Nick, "", ShippingType, PaymentType, TransportCompanyID, TransportCompanySubID, "", ProvinceID, DistrictID, WardID);
                         if (kq.ToInt(0) > 0)
                         {
                             CustomerID = kq.ToInt();
                         }
                     }
 
-                    int TransportCompanyID = ddlTransportCompanyID.SelectedValue.ToInt(0);
-                    int TransportCompanySubID = hdfTransportCompanySubID.Value.ToInt(0);
-
                     string totalPrice = hdfTotalPrice.Value.ToString();
                     string totalPriceNotDiscount = hdfTotalPriceNotDiscount.Value;
-                    
-
                     double DiscountPerProduct = Convert.ToDouble(pDiscount.Value);
-
                     double TotalDiscount = Convert.ToDouble(pDiscount.Value) * Convert.ToDouble(hdfTotalQuantity.Value);
                     string FeeShipping = pFeeShip.Value.ToString();
 

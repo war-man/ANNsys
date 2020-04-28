@@ -5,6 +5,7 @@
     <script src="/App_Themes/Ann/js/search-customer.js?v=28042020"></script>
     <script src="/App_Themes/Ann/js/search-product.js?v=28042020"></script>
     <script type="text/javascript" src="/App_Themes/Ann/js/pages/danh-sach-khach-hang/generate-coupon-for-customer.js?v=28042020"></script>
+
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <style>
@@ -24,14 +25,14 @@
                             </div>
                             <div class="panel-body">
                                 <div class="row">
-                                    <div class="col-md-4">
+                                    <div class="col-md-3">
                                         <div class="form-group">
                                             <label>Họ tên</label>
                                             <asp:RequiredFieldValidator ID="RequiredFieldValidator1" runat="server" ControlToValidate="txtFullname" ErrorMessage="(*)" ForeColor="Red" Display="Dynamic"></asp:RequiredFieldValidator>
                                             <asp:TextBox ID="txtFullname" CssClass="form-control capitalize" runat="server" placeholder="Họ tên thật (F2)" autocomplete="off"></asp:TextBox>
                                         </div>
                                     </div>
-                                    <div class="col-md-5">
+                                    <div class="col-md-3">
                                         <div class="form-group">
                                             <label>Điện thoại</label>
                                             <asp:RequiredFieldValidator ID="re" runat="server" ControlToValidate="txtPhone" ErrorMessage="(*)" ForeColor="Red" Display="Dynamic"></asp:RequiredFieldValidator>
@@ -40,24 +41,9 @@
                                     </div>
                                     <div class="col-md-3">
                                         <div class="form-group">
-                                            <label>Zalo</label>
-                                            <asp:TextBox ID="txtZalo" CssClass="form-control" autocomplete="off" runat="server" placeholder="Số Điện Thoại Zalo"></asp:TextBox>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <div class="form-group">
                                             <label>Nick đặt hàng</label>
                                             <asp:RequiredFieldValidator ID="RequiredFieldValidator2" runat="server" ControlToValidate="txtNick" ErrorMessage="(*)" ForeColor="Red" Display="Dynamic"></asp:RequiredFieldValidator>
                                             <asp:TextBox ID="txtNick" CssClass="form-control capitalize" autocomplete="off" runat="server" placeholder="Nick đặt hàng"></asp:TextBox>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-5">
-                                        <div class="form-group">
-                                            <label>Địa chỉ</label>
-                                            <asp:RequiredFieldValidator ID="RequiredFieldValidator3" runat="server" ControlToValidate="txtAddress" ErrorMessage="(*)" ForeColor="Red" Display="Dynamic"></asp:RequiredFieldValidator>
-                                            <asp:TextBox ID="txtAddress" CssClass="form-control capitalize" autocomplete="off" runat="server" placeholder="Địa chỉ"></asp:TextBox>
                                         </div>
                                     </div>
                                     <div class="col-md-3">
@@ -73,6 +59,33 @@
                                                     </div>
                                                 </div>
                                             </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label>Tỉnh thành</label>
+                                            <asp:DropDownList ID="ddlProvince" runat="server" CssClass="form-control"></asp:DropDownList>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label>Quận huyện</label>
+                                            <asp:DropDownList ID="ddlDistrict" runat="server" CssClass="form-control"></asp:DropDownList>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label>Phường xã</label>
+                                            <asp:DropDownList ID="ddlWard" runat="server" CssClass="form-control"></asp:DropDownList>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label>Địa chỉ</label>
+                                            <asp:RequiredFieldValidator ID="RequiredFieldValidator3" runat="server" ControlToValidate="txtAddress" ErrorMessage="(*)" ForeColor="Red" Display="Dynamic"></asp:RequiredFieldValidator>
+                                            <asp:TextBox ID="txtAddress" CssClass="form-control capitalize" autocomplete="off" runat="server" placeholder="Địa chỉ"></asp:TextBox>
                                         </div>
                                     </div>
                                 </div>
@@ -459,7 +472,7 @@
             right: 0%;
             margin: 0 auto;
         }
-        .select2-container.select2-container--default.select2-container--open{
+        *.select2-container.select2-container--default.select2-container--open{
             z-index: 99991;
         }
     </style>
@@ -473,6 +486,16 @@
         </AjaxSettings>
     </telerik:RadAjaxManager>
     <telerik:RadScriptBlock ID="sc" runat="server">
+        <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+
+        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+                integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+                crossorigin="anonymous"></script>
+            <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+                integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+                crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+
         <script type="text/javascript">
             "use strict";
 
@@ -728,8 +751,12 @@
             }
 
             $(document).ready(() => {
-                
+
+                _initReceiverAddress();
+                _onChangeReceiverAddress();
+
                 init();
+                
 
                 // search Product by SKU
                 $("#txtSearch").keydown(function (event) {
@@ -742,12 +769,6 @@
 
                 // event key up txtPhone
                 $("#<%=txtPhone.ClientID%>").keyup(function (e) {
-                    if (/\D/g.test(this.value))
-                        // Filter non-digits from input value.
-                        this.value = this.value.replace(/\D/g, '');
-                });
-                // event key up txtZalo
-                $("#<%=txtZalo.ClientID%>").keyup(function (e) {
                     if (/\D/g.test(this.value))
                         // Filter non-digits from input value.
                         this.value = this.value.replace(/\D/g, '');
@@ -1946,6 +1967,125 @@
 
                 generateCouponG20(customerName, customerID);
             }
+
+            function _initReceiverAddress() {
+                // Danh sách tỉnh / thành phố
+                $("#<%=ddlProvince.ClientID%>").select2({
+                    width: "100%",
+                    placeholder: '(Bấm để chọn tỉnh/thành phố)',
+                    ajax: {
+                        delay: 500,
+                        method: 'GET',
+                        url: '/api/v1/delivery-save/provinces/select2',
+                        data: (params) => {
+                            var query = {
+                                search: params.term,
+                                page: params.page || 1
+                            }
+
+                            return query;
+                        }
+                    }
+                });
+
+                // Danh sách quận / huyện
+                _disabledDDLDistrict(true);
+
+                // Danh sách phường / xã
+                _disabledDDLWard(true);
+            }
+
+            function _onChangeReceiverAddress() {
+                // // Danh sách tỉnh / thành phố
+                $("#<%=ddlProvince.ClientID%>").on('select2:select', (e) => {
+                    let data = e.params.data;
+
+                    _disabledDDLDistrict(false, data.id);
+                    $("#<%=ddlDistrict.ClientID%>").select2('open');
+
+                    _disabledDDLWard(true, data.id);
+                });
+
+                // Danh sách quận / huyện
+                $("#<%=ddlDistrict.ClientID%>").on('select2:select', (e) => {
+                    let data = e.params.data;
+
+                    _disabledDDLWard(false, data.id);
+                    $("#<%=ddlWard.ClientID%>").select2('open');
+                });
+
+                // Danh sách phường / xã
+                $("#<%=ddlWard.ClientID%>").on('select2:select', (e) => {
+                    $("#<%=txtAddress.ClientID%>").focus();
+                });
+            }
+
+            function _disabledDDLDistrict(disabled, provinceID) {
+                if (disabled) {
+                    $("#<%=ddlDistrict.ClientID%>").attr('disabled', true);
+                    $("#<%=ddlDistrict.ClientID%>").attr('readonly', 'readonly');
+                    $("#<%=ddlDistrict.ClientID%>").select2({
+                        width: "100%",
+                        placeholder: '(Bấm để chọn quận/huyện)'
+                    });
+                }
+                else {
+                    $("#<%=ddlDistrict.ClientID%>").removeAttr('disabled');
+                    $("#<%=ddlDistrict.ClientID%>").removeAttr('readonly');
+                    $("#<%=ddlDistrict.ClientID%>").val(null).trigger('change');
+                    $("#<%=ddlDistrict.ClientID%>").select2({
+                        width: "100%",
+                        placeholder: '(Bấm để chọn tỉnh/thành phố)',
+                        ajax: {
+                            delay: 500,
+                            method: 'GET',
+                            url: '/api/v1/delivery-save/province/' + provinceID + '/districts/select2',
+                            data: (params) => {
+                                var query = {
+                                    search: params.term,
+                                    page: params.page || 1
+                                }
+
+                                return query;
+                            }
+                        }
+                    });
+                }
+            }
+
+            function _disabledDDLWard(disabled, districtID) {
+                if (disabled) {
+                    $("#<%=ddlWard.ClientID%>").attr('disabled', true);
+                    $("#<%=ddlWard.ClientID%>").attr('readonly', 'readonly');
+                    $("#<%=ddlWard.ClientID%>").select2({
+                        width: "100%",
+                        placeholder: '(Bấm để chọn phường/xã)'
+                    });
+                }
+                else {
+                    $("#<%=ddlWard.ClientID%>").removeAttr('disabled');
+                    $("#<%=ddlWard.ClientID%>").removeAttr('readonly');
+                    $("#<%=ddlWard.ClientID%>").val(null).trigger('change');
+                    $("#<%=ddlWard.ClientID%>").select2({
+                        width: "100%",
+                        placeholder: '(Bấm để chọn phường/xã)',
+                        ajax: {
+                            delay: 500,
+                            method: 'GET',
+                            url: '/api/v1/delivery-save/district/' + districtID + '/wards/select2',
+                            data: (params) => {
+                                var query = {
+                                    search: params.term,
+                                    page: params.page || 1
+                                }
+
+                                return query;
+                            }
+                        }
+                    });
+                }
+            }
+
         </script>
     </telerik:RadScriptBlock>
 

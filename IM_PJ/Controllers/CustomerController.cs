@@ -16,7 +16,7 @@ namespace IM_PJ.Controllers
     {
         #region CRUD
         public static string Insert(string CustomerName, string CustomerPhone, string CustomerAddress, string CustomerEmail, int CustomerLevelID, int Status,
-            DateTime CreatedDate, string CreatedBy, bool IsHidden, string Zalo, string Facebook, string Note, string Province, string Nick, string Avatar = "", int ShippingType = 0, int PaymentType = 0, int TransportCompanyID = 0, int TransportCompanySubID = 0, string CustomerPhone2 = "")
+            DateTime CreatedDate, string CreatedBy, bool IsHidden, string Zalo, string Facebook, string Note, string Province, string Nick, string Avatar = "", int ShippingType = 0, int PaymentType = 0, int TransportCompanyID = 0, int TransportCompanySubID = 0, string CustomerPhone2 = "", int ProvinceID = 0, int DistrictID = 0, int WardID = 0)
         {
             using (var dbe = new inventorymanagementEntities())
             {
@@ -53,6 +53,9 @@ namespace IM_PJ.Controllers
                 ui.TransportCompanyID = TransportCompanyID;
                 ui.TransportCompanySubID = TransportCompanySubID;
                 ui.CustomerPhone2 = CustomerPhone2;
+                ui.ProvinceID = ProvinceID;
+                ui.DistrictId = DistrictID;
+                ui.WardId = WardID;
                 try
                 {
                     dbe.tbl_Customer.Add(ui);
@@ -73,7 +76,7 @@ namespace IM_PJ.Controllers
             }
         }
         public static string Update(int ID, string CustomerName, string CustomerPhone, string CustomerAddress, string CustomerEmail, int CustomerLevelID, int Status,
-           string CreatedBy, DateTime ModifiedDate, string ModifiedBy, bool IsHidden, string Zalo, string Facebook, string Note, string Province, string Nick, string Avatar, int ShippingType, int PaymentType, int TransportCompanyID, int TransportCompanySubID, string CustomerPhone2)
+           string CreatedBy, DateTime ModifiedDate, string ModifiedBy, bool IsHidden, string Zalo, string Facebook, string Note, string Province, string Nick, string Avatar, int ShippingType, int PaymentType, int TransportCompanyID, int TransportCompanySubID, string CustomerPhone2, int ProvinceID, int DistrictID, int WardID)
         {
             using (var dbe = new inventorymanagementEntities())
             {
@@ -102,6 +105,9 @@ namespace IM_PJ.Controllers
                     ui.TransportCompanyID = TransportCompanyID;
                     ui.TransportCompanySubID = TransportCompanySubID;
                     ui.CustomerPhone2 = CustomerPhone2;
+                    ui.ProvinceID = ProvinceID;
+                    ui.DistrictId = DistrictID;
+                    ui.WardId = WardID;
 
                     if (!string.IsNullOrEmpty(Province))
                         ui.ProvinceID = Province.ToInt();

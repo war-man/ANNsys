@@ -313,7 +313,7 @@ namespace IM_PJ
                         if (checkCustomer != null)
                         {
                             CustomerID = checkCustomer.ID;
-                            string kq = CustomerController.Update(CustomerID, CustomerName, checkCustomer.CustomerPhone, CustomerAddress, "", Convert.ToInt32(checkCustomer.CustomerLevelID), Convert.ToInt32(checkCustomer.Status), checkCustomer.CreatedBy, currentDate, username, false, checkCustomer.Zalo, checkCustomer.Facebook, checkCustomer.Note, checkCustomer.ProvinceID.ToString(), checkCustomer.Nick, checkCustomer.Avatar, Convert.ToInt32(checkCustomer.ShippingType), Convert.ToInt32(checkCustomer.PaymentType), Convert.ToInt32(checkCustomer.TransportCompanyID), Convert.ToInt32(checkCustomer.TransportCompanySubID), checkCustomer.CustomerPhone2);
+                            string kq = CustomerController.Update(CustomerID, CustomerName, checkCustomer.CustomerPhone, CustomerAddress, "", Convert.ToInt32(checkCustomer.CustomerLevelID), Convert.ToInt32(checkCustomer.Status), checkCustomer.CreatedBy, currentDate, username, false, checkCustomer.Zalo, checkCustomer.Facebook, checkCustomer.Note, checkCustomer.ProvinceID.ToString(), checkCustomer.Nick, checkCustomer.Avatar, Convert.ToInt32(checkCustomer.ShippingType), Convert.ToInt32(checkCustomer.PaymentType), Convert.ToInt32(checkCustomer.TransportCompanyID), Convert.ToInt32(checkCustomer.TransportCompanySubID), checkCustomer.CustomerPhone2, checkCustomer.ProvinceID.Value, checkCustomer.DistrictId.Value, checkCustomer.WardId.Value);
                         }
                         else
                         {

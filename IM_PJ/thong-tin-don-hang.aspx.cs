@@ -859,7 +859,7 @@ namespace IM_PJ
                             if (Customer != null)
                             {
                                 CustomerID = Customer.ID;
-                                string kq = CustomerController.Update(CustomerID, CustomerName, Customer.CustomerPhone, CustomerAddress, "", Convert.ToInt32(Customer.CustomerLevelID), Convert.ToInt32(Customer.Status), username, currentDate, acc.Username, false, Zalo, Facebook, Customer.Note, Customer.ProvinceID.ToString(), Nick, Customer.Avatar, ShippingType, PaymentType, TransportCompanyID, TransportCompanySubID, Customer.CustomerPhone2);
+                                string kq = CustomerController.Update(CustomerID, CustomerName, Customer.CustomerPhone, CustomerAddress, "", Convert.ToInt32(Customer.CustomerLevelID), Convert.ToInt32(Customer.Status), username, currentDate, acc.Username, false, Zalo, Facebook, Customer.Note, Customer.ProvinceID.ToString(), Nick, Customer.Avatar, ShippingType, PaymentType, TransportCompanyID, TransportCompanySubID, Customer.CustomerPhone2, Customer.ProvinceID.Value, Customer.DistrictId.Value, Customer.WardId.Value);
                             }
                             else
                             {

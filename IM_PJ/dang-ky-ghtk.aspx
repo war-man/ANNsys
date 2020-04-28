@@ -468,7 +468,7 @@
                         $('#ddlWard').select2('open');
                     })
 
-                    // Danh sách quận / huyện
+                    // Danh sách phường / xã
                     $('#ddlWard').on('select2:select', (e) => {
                         let data = e.params.data;
 

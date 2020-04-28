@@ -266,7 +266,7 @@ namespace IM_PJ
                                 }
                             }
 
-                            CustomerController.Update(id, txtCustomerName.Text, CustomerPhone, txtSupplierAddress.Text, "", 0, 1, ddlUser.SelectedItem.ToString(), DateTime.Now, username, chkIsHidden.Checked, Regex.Replace(txtZalo.Text.Trim(), @"[^\d]", ""), txtFacebook.Text, note, ddlProvince.SelectedValue, txtNick.Text, Avatar, ShippingType, PaymentType, TransportCompanyID, TransportCompanySubID, CustomerPhone2);
+                            CustomerController.Update(id, txtCustomerName.Text, CustomerPhone, txtSupplierAddress.Text, "", 0, 1, ddlUser.SelectedItem.ToString(), DateTime.Now, username, chkIsHidden.Checked, Regex.Replace(txtZalo.Text.Trim(), @"[^\d]", ""), txtFacebook.Text, note, ddlProvince.SelectedValue, txtNick.Text, Avatar, ShippingType, PaymentType, TransportCompanyID, TransportCompanySubID, CustomerPhone2, 0, 0, 0);
                             PJUtils.ShowMessageBoxSwAlert(warning, "s", true, Page);
                         }
                     }
