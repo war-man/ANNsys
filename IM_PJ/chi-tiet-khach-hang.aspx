@@ -1,6 +1,7 @@
-﻿<%@ Page Title="Chi tiết khách hàng" Language="C#" MasterPageFile="~/MasterPage.Master" AutoEventWireup="true" CodeBehind="chi-tiet-khach-hang.aspx.cs" Inherits="IM_PJ.chi_tiet_khach_hang" EnableSessionState="ReadOnly" %>
+﻿<%@ Page Title="Chi tiết khách hàng" Language="C#" MasterPageFile="~/MasterPage.Master" AutoEventWireup="true" CodeBehind="chi-tiet-khach-hang.aspx.cs" Inherits="IM_PJ.chi_tiet_khach_hang" EnableSessionState="ReadOnly" EnableEventValidation="false"%>
 <%@ Register Assembly="Telerik.Web.UI" Namespace="Telerik.Web.UI" TagPrefix="telerik" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
+    <script src="/App_Themes/Ann/js/search-customer.js?v=28042020"></script>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <main id="main-wrap">
@@ -18,7 +19,6 @@
                             <div class="form-row">
                                 <div class="row-left">
                                     Họ tên
-                                    <asp:RequiredFieldValidator ID="rq" runat="server" ControlToValidate="txtCustomerName" ForeColor="Red" SetFocusOnError="true" ErrorMessage="(*)" Display="Dynamic"></asp:RequiredFieldValidator>
                                 </div>
                                 <div class="row-right">
                                     <asp:TextBox ID="txtCustomerName" runat="server" CssClass="form-control" placeholder="Họ tên khách hàng" autocomplete="off"></asp:TextBox>
@@ -74,20 +74,34 @@
                             </div>
                             <div class="form-row">
                                 <div class="row-left">
-                                    Địa chỉ
-                                    <asp:RequiredFieldValidator ID="RequiredFieldValidator2" runat="server" ControlToValidate="txtSupplierAddress" ForeColor="Red" SetFocusOnError="true" ErrorMessage="(*)" Display="Dynamic"></asp:RequiredFieldValidator>
+                                    Tỉnh thành
                                 </div>
                                 <div class="row-right">
-                                    <asp:TextBox ID="txtSupplierAddress" runat="server" CssClass="form-control" placeholder="Địa chỉ" autocomplete="off"></asp:TextBox>
+                                    <asp:DropDownList ID="ddlProvince" runat="server" CssClass="form-control"></asp:DropDownList>
                                 </div>
                             </div>
                             <div class="form-row">
                                 <div class="row-left">
-                                    Tỉnh thành
+                                    Quận huyện
                                 </div>
                                 <div class="row-right">
-                                    <asp:DropDownList ID="ddlProvince" runat="server" CssClass="form-control" AutoPostBack="True">
-                                    </asp:DropDownList>
+                                    <asp:DropDownList ID="ddlDistrict" runat="server" CssClass="form-control"></asp:DropDownList>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="row-left">
+                                    Phường xã
+                                </div>
+                                <div class="row-right">
+                                    <asp:DropDownList ID="ddlWard" runat="server" CssClass="form-control"></asp:DropDownList>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="row-left">
+                                    Địa chỉ
+                                </div>
+                                <div class="row-right">
+                                    <asp:TextBox ID="txtAddress" runat="server" CssClass="form-control" placeholder="Địa chỉ" autocomplete="off"></asp:TextBox>
                                 </div>
                             </div>
                             <div class="form-row">
@@ -182,7 +196,8 @@
                                 </div>
                             </div>
                             <div class="form-row">
-                                <asp:Button ID="btnSubmit" runat="server" CssClass="btn primary-btn fw-btn not-fullwidth" Text="Cập nhật" OnClick="btnSubmit_Click" />
+                                <a href="javascript:;" class="btn primary-btn fw-btn not-fullwidth" id="payall" title="Hoàn tất đơn hàng" onclick="submit()"><i class="fa fa-floppy-o"></i> Xác nhận</a>
+                                <asp:Button ID="btnSubmit" runat="server" OnClick="btnSubmit_Click" Style="display: none" />
                                 <a href="/danh-sach-khach-hang" class="btn primary-btn fw-btn not-fullwidth">Trở về</a>
                             </div>
                         </div>
@@ -191,8 +206,14 @@
             </div>
         </div>
     </main>
-    <script>
 
+    <asp:HiddenField ID="hdfProvinceID" runat="server" />
+    <asp:HiddenField ID="hdfDistrictID" runat="server" />
+    <asp:HiddenField ID="hdfWardID" runat="server" />
+
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+
+    <script>
         function OnClientFileSelected1(sender, args) {
                 if ($telerik.isIE) return;
                 else {
@@ -208,6 +229,10 @@
         }
 
         $(document).ready(function () {
+
+            _initReceiverAddress();
+            _onChangeReceiverAddress();
+            _getCustomerAddress($("#<%=txtCustomerPhone.ClientID%>").val());
 
             $("#<%=txtZalo.ClientID%>").keyup(function (e) {
                 if (/\D/g.test(this.value)) {
@@ -252,5 +277,83 @@
                 }
             });
         });
+
+        function submit() {
+            var name = $("#<%=txtCustomerName.ClientID%>").val();
+            var phone = $("#<%=txtCustomerPhone.ClientID%>").val();
+            var nick = $("#<%=txtNick.ClientID%>").val();
+            var province = $("#<%=ddlProvince.ClientID%>").val();
+            var district = $("#<%=ddlDistrict.ClientID%>").val();
+            var ward = $("#<%=ddlWard.ClientID%>").val();
+            var address = $("#<%=txtAddress.ClientID%>").val();
+
+            if (name === "") {
+                $("#<%=txtCustomerName.ClientID%>").focus();
+                swal("Thông báo", "Chưa nhập tên", "error");
+            }
+            else if (phone === "") {
+                $("#<%=txtCustomerPhone.ClientID%>").focus();
+                swal("Thông báo", "Chưa nhập số điện thoại", "error");
+            }
+            else if (nick === "") {
+                $("#<%=txtNick.ClientID%>").focus();
+                swal("Thông báo", "Chưa nhập nick đặt hàng", "error");
+            }
+            else if (province === "0" || province === null || province === "") {
+                swal({
+                    title: "Nhỏ ơi:",
+                    text: "Chưa chọn tỉnh thành",
+                    type: "warning",
+                    showCancelButton: false,
+                    confirmButtonText: "Để em xem lại!!",
+                    closeOnConfirm: false,
+                    html: true
+                }, function (isConfirm) {
+                    if (isConfirm) {
+                        sweetAlert.close();
+                        $("#<%=ddlProvince.ClientID%>").select2('open');
+                    }
+                });
+            }
+            else if (district === "0" || district === null || district === "") {
+                swal({
+                    title: "Nhỏ ơi:",
+                    text: "Chưa chọn quận huyện",
+                    type: "warning",
+                    showCancelButton: false,
+                    confirmButtonText: "Để em xem lại!!",
+                    closeOnConfirm: false,
+                    html: true
+                }, function (isConfirm) {
+                    if (isConfirm) {
+                        sweetAlert.close();
+                        $("#<%=ddlDistrict.ClientID%>").select2('open');
+                    }
+                });
+            }
+            else if (ward === "0" || ward === null || ward === "") {
+                swal({
+                    title: "Nhỏ ơi:",
+                    text: "Chưa chọn phường xã",
+                    type: "warning",
+                    showCancelButton: false,
+                    confirmButtonText: "Để em xem lại!!",
+                    closeOnConfirm: false,
+                    html: true
+                }, function (isConfirm) {
+                    if (isConfirm) {
+                        sweetAlert.close();
+                        $("#<%=ddlWard.ClientID%>").select2('open');
+                    }
+                });
+            }
+            else if (address === "") {
+                $("#<%=txtAddress.ClientID%>").focus();
+                swal("Thông báo", "Chưa nhập địa chỉ", "error");
+            }
+            else {
+                $("#<%=btnSubmit.ClientID%>").click();
+            }
+        }
     </script>
 </asp:Content>

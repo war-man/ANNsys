@@ -16,7 +16,7 @@ namespace IM_PJ.Controllers
     {
         #region CRUD
         public static string Insert(string CustomerName, string CustomerPhone, string CustomerAddress, string CustomerEmail, int CustomerLevelID, int Status,
-            DateTime CreatedDate, string CreatedBy, bool IsHidden, string Zalo, string Facebook, string Note, string Province, string Nick, string Avatar = "", int ShippingType = 0, int PaymentType = 0, int TransportCompanyID = 0, int TransportCompanySubID = 0, string CustomerPhone2 = "", int ProvinceID = 0, int DistrictID = 0, int WardID = 0)
+            DateTime CreatedDate, string CreatedBy, bool IsHidden, string Zalo, string Facebook, string Note, string Nick, string Avatar = "", int ShippingType = 0, int PaymentType = 0, int TransportCompanyID = 0, int TransportCompanySubID = 0, string CustomerPhone2 = "", int ProvinceID = 0, int DistrictID = 0, int WardID = 0)
         {
             using (var dbe = new inventorymanagementEntities())
             {
@@ -25,29 +25,18 @@ namespace IM_PJ.Controllers
                 ui.UnSignedName = UnSign.convert(CustomerName);
                 ui.CustomerPhone = CustomerPhone;
                 ui.CustomerAddress = CustomerAddress;
-                if (!string.IsNullOrEmpty(CustomerEmail))
-                    ui.CustomerEmail = CustomerEmail;
+                ui.CustomerEmail = CustomerEmail;
                 ui.CustomerLevelID = CustomerLevelID;
                 ui.Status = Status;
                 ui.CreatedDate = CreatedDate;
                 ui.CreatedBy = CreatedBy;
                 ui.IsHidden = IsHidden;
-
-                if (!string.IsNullOrEmpty(Zalo))
-                    ui.Zalo = Zalo;
-                if (!string.IsNullOrEmpty(Facebook))
-                    ui.Facebook = Facebook;
-                if (!string.IsNullOrEmpty(Note))
-                    ui.Note = Note;
-                if (!string.IsNullOrEmpty(Province))
-                    ui.ProvinceID = Province.ToInt();
-
+                ui.Zalo = Zalo;
+                ui.Facebook = Facebook;
+                ui.Note = Note;
                 ui.Nick = Nick;
                 ui.UnSignedNick = UnSign.convert(Nick);
-
-                if (!string.IsNullOrEmpty(Avatar))
-                    ui.Avatar = Avatar;
-
+                ui.Avatar = Avatar;
                 ui.ShippingType = ShippingType;
                 ui.PaymentType = PaymentType;
                 ui.TransportCompanyID = TransportCompanyID;
@@ -56,6 +45,7 @@ namespace IM_PJ.Controllers
                 ui.ProvinceID = ProvinceID;
                 ui.DistrictId = DistrictID;
                 ui.WardId = WardID;
+
                 try
                 {
                     dbe.tbl_Customer.Add(ui);
@@ -76,7 +66,7 @@ namespace IM_PJ.Controllers
             }
         }
         public static string Update(int ID, string CustomerName, string CustomerPhone, string CustomerAddress, string CustomerEmail, int CustomerLevelID, int Status,
-           string CreatedBy, DateTime ModifiedDate, string ModifiedBy, bool IsHidden, string Zalo, string Facebook, string Note, string Province, string Nick, string Avatar, int ShippingType, int PaymentType, int TransportCompanyID, int TransportCompanySubID, string CustomerPhone2, int ProvinceID, int DistrictID, int WardID)
+           string CreatedBy, DateTime ModifiedDate, string ModifiedBy, bool IsHidden, string Zalo, string Facebook, string Note, string Nick, string Avatar, int ShippingType, int PaymentType, int TransportCompanyID, int TransportCompanySubID, string CustomerPhone2, int ProvinceID, int DistrictID, int WardID)
         {
             using (var dbe = new inventorymanagementEntities())
             {
@@ -109,8 +99,6 @@ namespace IM_PJ.Controllers
                     ui.DistrictId = DistrictID;
                     ui.WardId = WardID;
 
-                    if (!string.IsNullOrEmpty(Province))
-                        ui.ProvinceID = Province.ToInt();
                     int kq = dbe.SaveChanges();
                     return kq.ToString();
                 }

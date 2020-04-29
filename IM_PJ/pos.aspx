@@ -1,4 +1,4 @@
-﻿<%@ Page Title="Máy tính tiền" Language="C#" MasterPageFile="~/MasterPage.Master" AutoEventWireup="true" CodeBehind="pos.aspx.cs" Inherits="IM_PJ.pos" EnableSessionState="ReadOnly" %>
+﻿<%@ Page Title="Máy tính tiền" Language="C#" MasterPageFile="~/MasterPage.Master" AutoEventWireup="true" CodeBehind="pos.aspx.cs" Inherits="IM_PJ.pos" EnableSessionState="ReadOnly" EnableEventValidation="false" %>
 
 <%@ Register Assembly="Telerik.Web.UI" Namespace="Telerik.Web.UI" TagPrefix="telerik" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
@@ -25,20 +25,47 @@
                                 <a href="/danh-sach-don-hang" class="change-user" target="_blank" title="Danh sách đơn hàng"><i class="fa fa-list-ul" aria-hidden="true"></i></a>
                             </div>
                             <div class="panel-body">
-                                <div class="form-group">
-                                    <label>Họ tên</label>
-                                    <asp:RequiredFieldValidator ID="RequiredFieldValidator1" runat="server" ControlToValidate="txtFullname" ErrorMessage="(*)" ForeColor="Red" Display="Dynamic"></asp:RequiredFieldValidator>
-                                    <asp:TextBox ID="txtFullname" CssClass="form-control capitalize" runat="server" placeholder="(F2)" autocomplete="off"></asp:TextBox>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Họ tên</label>
+                                            <asp:TextBox ID="txtFullname" CssClass="form-control capitalize" runat="server" placeholder="(F2)" autocomplete="off"></asp:TextBox>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Điện thoại</label>
+                                            <asp:TextBox ID="txtPhone" CssClass="form-control" onblur="ajaxCheckCustomer()" runat="server" autocomplete="off"></asp:TextBox>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="form-group">
-                                    <label>Điện thoại</label>
-                                    <asp:RequiredFieldValidator ID="re" runat="server" ControlToValidate="txtPhone" ErrorMessage="(*)" ForeColor="Red" Display="Dynamic"></asp:RequiredFieldValidator>
-                                    <asp:TextBox ID="txtPhone" CssClass="form-control" onblur="ajaxCheckCustomer()" runat="server" autocomplete="off"></asp:TextBox>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Tỉnh thành</label>
+                                            <asp:DropDownList ID="ddlProvince" runat="server" CssClass="form-control"></asp:DropDownList>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Quận huyện</label>
+                                            <asp:DropDownList ID="ddlDistrict" runat="server" CssClass="form-control"></asp:DropDownList>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="form-group">
-                                    <label>Địa chỉ</label>
-                                    <asp:RequiredFieldValidator ID="RequiredFieldValidator2" runat="server" ControlToValidate="txtAddress" ErrorMessage="(*)" ForeColor="Red" Display="Dynamic"></asp:RequiredFieldValidator>
-                                    <asp:TextBox ID="txtAddress" CssClass="form-control capitalize" runat="server" autocomplete="off"></asp:TextBox>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Phường xã</label>
+                                            <asp:DropDownList ID="ddlWard" runat="server" CssClass="form-control"></asp:DropDownList>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Địa chỉ</label>
+                                            <asp:TextBox ID="txtAddress" CssClass="form-control capitalize" runat="server" autocomplete="off"></asp:TextBox>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="form-row view-detail" style="display: none">
                                 </div>
@@ -196,6 +223,9 @@
             <asp:HiddenField ID="hdfCouponValue" runat="server" />
             <asp:HiddenField ID="hdfCouponProductNumber" runat="server" />
             <asp:HiddenField ID="hdfCouponPriceMin" runat="server" />
+            <asp:HiddenField ID="hdfProvinceID" runat="server" />
+            <asp:HiddenField ID="hdfDistrictID" runat="server" />
+            <asp:HiddenField ID="hdfWardID" runat="server" />
 
             <!-- Modal -->
             <div class="modal fade" id="feeModal" role="dialog">
@@ -366,6 +396,9 @@
         </AjaxSettings>
     </telerik:RadAjaxManager>
     <telerik:RadScriptBlock ID="sc" runat="server">
+
+        <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+
         <script type="text/javascript">
             "use strict";
 
@@ -600,9 +633,13 @@
 
             // focus to searchProduct input when page on ready
             $(document).ready(function () {
+
+                _initReceiverAddress();
+                _onChangeReceiverAddress();
+
                 // Init Page
-                $("#<%=pDiscount.ClientID%>").val(0)
-                $("#<%=pFeeShip.ClientID%>").val(0)
+                $("#<%=pDiscount.ClientID%>").val(0);
+                $("#<%=pFeeShip.ClientID%>").val(0);
 
                 // Load Fee Type List
                 let data = JSON.parse($("#<%=hdfFeeType.ClientID%>").val());
@@ -1195,76 +1232,121 @@
                 var phone = $("#<%=txtPhone.ClientID%>").val();
                 var name = $("#<%=txtFullname.ClientID%>").val();
                 var address = $("#<%=txtAddress.ClientID%>").val();
-                if (phone != "" && name != "" && address != "" && phone.length <= 15) {
-                    if ($(".product-result").length > 0) {
-                        let orderDetails = "";
-                        let ordertype = $(".customer-type").val();
+                var province = $("#<%=ddlProvince.ClientID%>").val();
+                var district = $("#<%=ddlDistrict.ClientID%>").val();
+                var ward = $("#<%=ddlWard.ClientID%>").val();
 
-                        orderDetails += '{ "productPOS" : ['
-
-                        $(".product-result").each(function () {
-                            let productID = $(this).attr("data-productid");
-                            let productVariableID = $(this).attr("data-productvariableid");
-                            let sku = $(this).attr("data-sku");
-                            let producttype = $(this).attr("data-producttype");
-                            let productvariablename = $(this).attr("data-productvariablename");
-                            let productvariablevalue = $(this).attr("data-productvariablevalue");
-                            let quantity = $(this).find(".in-quantity").val();
-                            let productname = $(this).attr("data-productname");
-                            let productimageorigin = $(this).attr("data-productimageorigin");
-                            let productvariable = $(this).attr("data-productvariable");
-                            let price = $(this).find(".gia-san-pham").attr("data-price");
-                            let productvariablesave = $(this).attr("data-productvariablesave");
-
-                            if (quantity > 0) {
-                                let order = new OrderDetail(
-                                        productID
-                                        , productVariableID
-                                        , sku
-                                        , producttype
-                                        , productvariablename
-                                        , productvariablevalue
-                                        , quantity
-                                        , productname
-                                        , productimageorigin
-                                        , price
-                                        , productvariablesave
-                                );
-
-                                orderDetails += order.stringJSON() + ",";
-                            }
-                        });
-
-                        orderDetails = orderDetails.replace(/.$/, "") + "]}";
-
-                        $("#<%=hdfOrderType.ClientID %>").val(ordertype);
-                        $("#<%=hdfListProduct.ClientID%>").val(orderDetails);
-                        $(".totalquantity").addClass("hide");
-
-                        if (insertOrder() == true) {
-                            showConfirmOrder();
+                if (name === "") {
+                    $("#<%= txtFullname.ClientID%>").focus();
+                    swal("Thông báo", "Hãy nhập tên khách hàng!", "error");
+                }
+                else if (phone === "") {
+                    $("#<%= txtPhone.ClientID%>").focus();
+                    swal("Thông báo", "Hãy nhập số điện thoại khách hàng!", "error");
+                }
+                else if (province === "0" || province === null || province === "") {
+                    swal({
+                        title: "Thông báo",
+                        text: "Chưa chọn tỉnh thành",
+                        type: "warning",
+                        showCancelButton: false,
+                        confirmButtonText: "Để em xem lại!!",
+                        closeOnConfirm: false,
+                        html: true
+                    }, function (isConfirm) {
+                        if (isConfirm) {
+                            sweetAlert.close();
+                            $("#<%=ddlProvince.ClientID%>").select2('open');
                         }
-                        
-                    } else {
-                        $("#txtSearch").focus();
-                        swal("Thông báo", "Hãy nhập sản phẩm!", "error");
-                    }
-                } else {
-                    if (name == "") {
-                        $("#<%= txtFullname.ClientID%>").focus();
-                        swal("Thông báo", "Hãy nhập tên khách hàng!", "error");
-                    }
-                    else if (phone == "") {
-                        $("#<%= txtPhone.ClientID%>").focus();
-                        swal("Thông báo", "Hãy nhập số điện thoại khách hàng!", "error");
-                    }
-                    else if(phone.length > 15){
-                        $("#<%= txtPhone.ClientID%>").focus();
-                        swal("Thông báo", "Số điện thoại không được nhập quá 15 ký tự!", "error");
-                    }
-                    else if (address == "") {
-                        $("#<%= txtAddress.ClientID%>").focus();
-                        swal("Thông báo", "Hãy nhập địa chỉ khách hàng!", "error");
+                    });
+                }
+                else if (district === "0" || district === null || district === "") {
+                    swal({
+                        title: "Thông báo",
+                        text: "Chưa chọn quận huyện",
+                        type: "warning",
+                        showCancelButton: false,
+                        confirmButtonText: "Để em xem lại!!",
+                        closeOnConfirm: false,
+                        html: true
+                    }, function (isConfirm) {
+                        if (isConfirm) {
+                            sweetAlert.close();
+                            $("#<%=ddlDistrict.ClientID%>").select2('open');
+                        }
+                    });
+                }
+                else if (ward === "0" || ward === null || ward === "") {
+                    swal({
+                        title: "Thông báo",
+                        text: "Chưa chọn phường xã",
+                        type: "warning",
+                        showCancelButton: false,
+                        confirmButtonText: "Để em xem lại!!",
+                        closeOnConfirm: false,
+                        html: true
+                    }, function (isConfirm) {
+                        if (isConfirm) {
+                            sweetAlert.close();
+                            $("#<%=ddlWard.ClientID%>").select2('open');
+                        }
+                    });
+                }
+                else if (address === "") {
+                    $("#<%= txtAddress.ClientID%>").focus();
+                    swal("Thông báo", "Hãy nhập địa chỉ khách hàng!", "error");
+                }
+                else if ($(".product-result").length == 0) {
+                    $("#txtSearch").focus();
+                    swal("Thông báo", "Hãy nhập sản phẩm!", "error");
+                }
+                else {
+                    let orderDetails = "";
+                    let ordertype = $(".customer-type").val();
+
+                    orderDetails += '{ "productPOS" : ['
+
+                    $(".product-result").each(function () {
+                        let productID = $(this).attr("data-productid");
+                        let productVariableID = $(this).attr("data-productvariableid");
+                        let sku = $(this).attr("data-sku");
+                        let producttype = $(this).attr("data-producttype");
+                        let productvariablename = $(this).attr("data-productvariablename");
+                        let productvariablevalue = $(this).attr("data-productvariablevalue");
+                        let quantity = $(this).find(".in-quantity").val();
+                        let productname = $(this).attr("data-productname");
+                        let productimageorigin = $(this).attr("data-productimageorigin");
+                        let productvariable = $(this).attr("data-productvariable");
+                        let price = $(this).find(".gia-san-pham").attr("data-price");
+                        let productvariablesave = $(this).attr("data-productvariablesave");
+
+                        if (quantity > 0) {
+                            let order = new OrderDetail(
+                                    productID
+                                    , productVariableID
+                                    , sku
+                                    , producttype
+                                    , productvariablename
+                                    , productvariablevalue
+                                    , quantity
+                                    , productname
+                                    , productimageorigin
+                                    , price
+                                    , productvariablesave
+                            );
+
+                            orderDetails += order.stringJSON() + ",";
+                        }
+                    });
+
+                    orderDetails = orderDetails.replace(/.$/, "") + "]}";
+
+                    $("#<%=hdfOrderType.ClientID %>").val(ordertype);
+                    $("#<%=hdfListProduct.ClientID%>").val(orderDetails);
+                    $(".totalquantity").addClass("hide");
+
+                    if (insertOrder() == true) {
+                        showConfirmOrder();
                     }
                 }
             }

@@ -1,4 +1,4 @@
-﻿<%@ Page Title="Thêm đơn trả hàng" Language="C#" MasterPageFile="~/MasterPage.Master" AutoEventWireup="true" CodeBehind="tao-don-hang-doi-tra.aspx.cs" Inherits="IM_PJ.tao_don_hang_doi_tra" EnableSessionState="ReadOnly" %>
+﻿<%@ Page Title="Thêm đơn trả hàng" Language="C#" MasterPageFile="~/MasterPage.Master" AutoEventWireup="true" CodeBehind="tao-don-hang-doi-tra.aspx.cs" Inherits="IM_PJ.tao_don_hang_doi_tra" EnableSessionState="ReadOnly" EnableEventValidation="false"%>
 
 <%@ Register Assembly="Telerik.Web.UI" Namespace="Telerik.Web.UI" TagPrefix="telerik" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
@@ -23,40 +23,22 @@
                             </div>
                             <div class="panel-body">
                                 <div class="row">
-                                    <div class="col-md-4">
+                                    <div class="col-md-3">
                                         <div class="form-group">
                                             <label>Họ tên</label>
-                                            <asp:RequiredFieldValidator ID="RequiredFieldValidator1" runat="server" ControlToValidate="txtFullname" ErrorMessage="(*)" ForeColor="Red" Display="Dynamic"></asp:RequiredFieldValidator>
                                             <asp:TextBox ID="txtFullname" CssClass="form-control capitalize" runat="server" autocomplete="off" placeholder="Họ tên thật của khách"></asp:TextBox>
                                         </div>
                                     </div>
-                                    <div class="col-md-5">
+                                    <div class="col-md-3">
                                         <div class="form-group">
                                             <label>Điện thoại</label>
-                                            <asp:RequiredFieldValidator ID="re" runat="server" ControlToValidate="txtPhone" ErrorMessage="(*)" ForeColor="Red" Display="Dynamic"></asp:RequiredFieldValidator>
                                             <asp:TextBox ID="txtPhone" CssClass="form-control" runat="server" autocomplete="off" placeholder="Số điện thoại khách hàng"></asp:TextBox>
                                         </div>
                                     </div>
                                     <div class="col-md-3">
                                         <div class="form-group">
-                                            <label>Zalo</label>
-                                            <asp:TextBox ID="txtZalo" CssClass="form-control" runat="server" autocomplete="off" placeholder="Số điện thoại Zalo"></asp:TextBox>
-                                        </div>
-                                    </div>
-                                </div> 
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <div class="form-group">
                                             <label>Nick đặt hàng</label>
-                                            <asp:RequiredFieldValidator ID="RequiredFieldValidator2" runat="server" ControlToValidate="txtNick" ErrorMessage="(*)" ForeColor="Red" Display="Dynamic"></asp:RequiredFieldValidator>
                                             <asp:TextBox ID="txtNick" CssClass="form-control capitalize" runat="server" autocomplete="off" placeholder="Tên nick đặt hàng"></asp:TextBox>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-5">
-                                        <div class="form-group">
-                                            <label>Địa chỉ</label>
-                                            <asp:RequiredFieldValidator ID="RequiredFieldValidator3" runat="server" ControlToValidate="txtAddress" ErrorMessage="(*)" ForeColor="Red" Display="Dynamic"></asp:RequiredFieldValidator>
-                                            <asp:TextBox ID="txtAddress" CssClass="form-control capitalize" runat="server" autocomplete="off" placeholder="Địa chỉ khách hàng"></asp:TextBox>
                                         </div>
                                     </div>
                                     <div class="col-md-3">
@@ -72,6 +54,32 @@
                                                     </div>
                                                 </div>
                                             </div>
+                                        </div>
+                                    </div>
+                                </div> 
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label>Tỉnh thành</label>
+                                            <asp:DropDownList ID="ddlProvince" runat="server" CssClass="form-control"></asp:DropDownList>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label>Quận huyện</label>
+                                            <asp:DropDownList ID="ddlDistrict" runat="server" CssClass="form-control"></asp:DropDownList>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label>Phường xã</label>
+                                            <asp:DropDownList ID="ddlWard" runat="server" CssClass="form-control"></asp:DropDownList>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label>Địa chỉ</label>
+                                            <asp:TextBox ID="txtAddress" CssClass="form-control capitalize" runat="server" autocomplete="off" placeholder="Địa chỉ khách hàng"></asp:TextBox>
                                         </div>
                                     </div>
                                 </div>
@@ -210,6 +218,9 @@
             <asp:HiddenField ID="hdfDaysExchange" runat="server" />
             <asp:HiddenField ID="hdfRefundQuantityNoFee" runat="server" />
             <asp:HiddenField ID="hdfRefundQuantityFee" runat="server" />
+            <asp:HiddenField ID="hdfProvinceID" runat="server" />
+            <asp:HiddenField ID="hdfDistrictID" runat="server" />
+            <asp:HiddenField ID="hdfWardID" runat="server" />
         </main>
     </asp:Panel>
     <style>
@@ -228,6 +239,8 @@
         </AjaxSettings>
     </telerik:RadAjaxManager>
     <telerik:RadScriptBlock ID="sc" runat="server">
+        <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+
         <script type="text/javascript">
 
             function redirectTo(ID, username) {
@@ -253,9 +266,9 @@
             $("#<%= txtFullname.ClientID%>").prop('readonly', true);
             $("#<%= txtAddress.ClientID%>").prop('readonly', true);
             $("#<%= txtNick.ClientID%>").prop('readonly', true);
-            $("#<%= txtZalo.ClientID%>").prop('readonly', true);
             $("#<%= txtFacebook.ClientID%>").prop('readonly', true);
-
+            $("select[id$='_ddlProvince']").attr('disabled', true);
+            $("select[id$='_ddlProvince']").attr('readonly', 'readonly');
             // Create model entity
             class RefundDetailModel{
                 constructor(ProductID
@@ -1178,6 +1191,10 @@
             }
 
             $(document).ready(function () {
+
+                _initReceiverAddress();
+                _onChangeReceiverAddress();
+
                 let dataJSON = $("#<%=hdfListProduct.ClientID%>").val();
 
                 if (!isBlank(dataJSON)) {
@@ -1195,7 +1212,6 @@
                     $("#<%=txtPhone.ClientID%>").val(refundGoodModel.CustomerPhone);
                     $("#<%=txtNick.ClientID%>").val(refundGoodModel.CustomerNick);
                     $("#<%=txtAddress.ClientID%>").val(refundGoodModel.CustomerAddress);
-                    $("#<%=txtZalo.ClientID%>").val(refundGoodModel.CustomerZalo);
                     $("#<%=txtFacebook.ClientID%>").val(refundGoodModel.CustomerFacebook);
 
                     // Init detail refund product

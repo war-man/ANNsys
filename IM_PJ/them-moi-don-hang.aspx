@@ -1,11 +1,10 @@
-﻿<%@ Page Title="Thêm mới đơn hàng" Language="C#" MasterPageFile="~/MasterPage.Master" AutoEventWireup="true" CodeBehind="them-moi-don-hang.aspx.cs" Inherits="IM_PJ.them_moi_don_hang" EnableSessionState="ReadOnly" enableEventValidation="false"%>
+﻿<%@ Page Title="Thêm mới đơn hàng" Language="C#" MasterPageFile="~/MasterPage.Master" AutoEventWireup="true" CodeBehind="them-moi-don-hang.aspx.cs" Inherits="IM_PJ.them_moi_don_hang" EnableSessionState="ReadOnly" EnableEventValidation="false"%>
 
 <%@ Register Assembly="Telerik.Web.UI" Namespace="Telerik.Web.UI" TagPrefix="telerik" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
     <script src="/App_Themes/Ann/js/search-customer.js?v=28042020"></script>
     <script src="/App_Themes/Ann/js/search-product.js?v=28042020"></script>
     <script type="text/javascript" src="/App_Themes/Ann/js/pages/danh-sach-khach-hang/generate-coupon-for-customer.js?v=28042020"></script>
-
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <style>
@@ -28,21 +27,18 @@
                                     <div class="col-md-3">
                                         <div class="form-group">
                                             <label>Họ tên</label>
-                                            <asp:RequiredFieldValidator ID="RequiredFieldValidator1" runat="server" ControlToValidate="txtFullname" ErrorMessage="(*)" ForeColor="Red" Display="Dynamic"></asp:RequiredFieldValidator>
                                             <asp:TextBox ID="txtFullname" CssClass="form-control capitalize" runat="server" placeholder="Họ tên thật (F2)" autocomplete="off"></asp:TextBox>
                                         </div>
                                     </div>
                                     <div class="col-md-3">
                                         <div class="form-group">
                                             <label>Điện thoại</label>
-                                            <asp:RequiredFieldValidator ID="re" runat="server" ControlToValidate="txtPhone" ErrorMessage="(*)" ForeColor="Red" Display="Dynamic"></asp:RequiredFieldValidator>
                                             <asp:TextBox ID="txtPhone" CssClass="form-control" autocomplete="off" onblur="ajaxCheckCustomer()" runat="server" placeholder="Số Điện Thoại"></asp:TextBox>
                                         </div>
                                     </div>
                                     <div class="col-md-3">
                                         <div class="form-group">
                                             <label>Nick đặt hàng</label>
-                                            <asp:RequiredFieldValidator ID="RequiredFieldValidator2" runat="server" ControlToValidate="txtNick" ErrorMessage="(*)" ForeColor="Red" Display="Dynamic"></asp:RequiredFieldValidator>
                                             <asp:TextBox ID="txtNick" CssClass="form-control capitalize" autocomplete="off" runat="server" placeholder="Nick đặt hàng"></asp:TextBox>
                                         </div>
                                     </div>
@@ -84,7 +80,6 @@
                                     <div class="col-md-3">
                                         <div class="form-group">
                                             <label>Địa chỉ</label>
-                                            <asp:RequiredFieldValidator ID="RequiredFieldValidator3" runat="server" ControlToValidate="txtAddress" ErrorMessage="(*)" ForeColor="Red" Display="Dynamic"></asp:RequiredFieldValidator>
                                             <asp:TextBox ID="txtAddress" CssClass="form-control capitalize" autocomplete="off" runat="server" placeholder="Địa chỉ"></asp:TextBox>
                                         </div>
                                     </div>
@@ -251,6 +246,9 @@
             <asp:HiddenField ID="hdfCouponValue" runat="server" />
             <asp:HiddenField ID="hdfCouponProductNumber" runat="server" />
             <asp:HiddenField ID="hdfCouponPriceMin" runat="server" />
+            <asp:HiddenField ID="hdfProvinceID" runat="server" />
+            <asp:HiddenField ID="hdfDistrictID" runat="server" />
+            <asp:HiddenField ID="hdfWardID" runat="server" />
 
             <!-- Fee Modal -->
             <div class="modal fade" id="feeModal" role="dialog">
@@ -487,14 +485,6 @@
     </telerik:RadAjaxManager>
     <telerik:RadScriptBlock ID="sc" runat="server">
         <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
-
-        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
-                integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
-                crossorigin="anonymous"></script>
-            <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
-                integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
-                crossorigin="anonymous"></script>
-        <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
 
         <script type="text/javascript">
             "use strict";
@@ -1080,78 +1070,121 @@
                 var nick = $("#<%= txtNick.ClientID%>").val();
                 var address = $("#<%= txtAddress.ClientID%>").val();
                 var facebooklink = $("#<%= txtFacebook.ClientID%>").val();
+                var province = $("#<%=ddlProvince.ClientID%>").val();
+                var district = $("#<%=ddlDistrict.ClientID%>").val();
+                var ward = $("#<%=ddlWard.ClientID%>").val();
 
-                if (phone == "" || name == "" || nick == "" || address == "" || (facebooklink == "" && $("#<%= hdfUsernameCurrent.ClientID%>").val() == "nhom_facebook") )
+                if (name === "")
                 {
-                    if (name == "")
-                    {
-                        $("#<%= txtFullname.ClientID%>").focus();
-                        swal("Thông báo", "Hãy nhập tên khách hàng!", "error");
-                    }
-                    else if (phone == "")
-                    {
-                        $("#<%= txtPhone.ClientID%>").focus();
-                        swal("Thông báo", "Hãy nhập số điện thoại khách hàng!", "error");
-                    }
-                    else if (nick == "")
-                    {
-                        $("#<%= txtNick.ClientID%>").focus();
-                        swal("Thông báo", "Hãy nhập Nick đặt hàng của khách hàng!", "error");
-                    }
-                    else if (facebooklink == "" && $("#<%= hdfUsernameCurrent.ClientID%>").val() == "nhom_facebook")
-                    {
-                        $("#<%= txtFacebook.ClientID%>").prop('disabled', false);
-                        $("#<%= txtFacebook.ClientID%>").focus();
-                        swal("Thông báo", "Hãy nhập link Facebook của khách này!", "error");
-                    }
-                    else if (address == "")
-                    {
-                        $("#<%= txtAddress.ClientID%>").focus();
-                        swal("Thông báo", "Hãy nhập địa chỉ khách hàng!", "error");
-                    }
-                } 
-                else
+                    $("#<%= txtFullname.ClientID%>").focus();
+                    swal("Thông báo", "Hãy nhập tên khách hàng!", "error");
+                }
+                else if (phone === "")
                 {
-                    if ($(".product-result").length > 0)
+                    $("#<%= txtPhone.ClientID%>").focus();
+                    swal("Thông báo", "Hãy nhập số điện thoại khách hàng!", "error");
+                }
+                else if (nick === "")
+                {
+                    $("#<%= txtNick.ClientID%>").focus();
+                    swal("Thông báo", "Hãy nhập Nick đặt hàng của khách hàng!", "error");
+                }
+                else if (facebooklink === "" && $("#<%= hdfUsernameCurrent.ClientID%>").val() == "nhom_facebook")
+                {
+                    $("#<%= txtFacebook.ClientID%>").focus();
+                    swal("Thông báo", "Hãy nhập link Facebook của khách này!", "error");
+                }
+                else if (province === "0" || province === null || province === "") {
+                    swal({
+                        title: "Thông báo",
+                        text: "Chưa chọn tỉnh thành",
+                        type: "warning",
+                        showCancelButton: false,
+                        confirmButtonText: "Để em xem lại!!",
+                        closeOnConfirm: false,
+                        html: true
+                    }, function (isConfirm) {
+                        if (isConfirm) {
+                            sweetAlert.close();
+                            $("#<%=ddlProvince.ClientID%>").select2('open');
+                        }
+                    });
+                }
+                else if (district === "0" || district === null || district === "") {
+                    swal({
+                        title: "Thông báo",
+                        text: "Chưa chọn quận huyện",
+                        type: "warning",
+                        showCancelButton: false,
+                        confirmButtonText: "Để em xem lại!!",
+                        closeOnConfirm: false,
+                        html: true
+                    }, function (isConfirm) {
+                        if (isConfirm) {
+                            sweetAlert.close();
+                            $("#<%=ddlDistrict.ClientID%>").select2('open');
+                        }
+                    });
+                }
+                else if (ward === "0" || ward === null || ward === "") {
+                    swal({
+                        title: "Thông báo",
+                        text: "Chưa chọn phường xã",
+                        type: "warning",
+                        showCancelButton: false,
+                        confirmButtonText: "Để em xem lại!!",
+                        closeOnConfirm: false,
+                        html: true
+                    }, function (isConfirm) {
+                        if (isConfirm) {
+                            sweetAlert.close();
+                            $("#<%=ddlWard.ClientID%>").select2('open');
+                        }
+                    });
+                }
+                else if (address === "")
+                {
+                    $("#<%= txtAddress.ClientID%>").focus();
+                    swal("Thông báo", "Hãy nhập địa chỉ khách hàng!", "error");
+                }
+                else if ($(".product-result").length == 0)
+                {
+                    $("#txtSearch").focus();
+                    swal("Thông báo", "Hãy nhập sản phẩm!", "error");
+                }
+                else {
+                    getAllPrice(true);
+                    var list = "";
+                    var count = 0;
+                    var ordertype = $(".customer-type").val();
+                    $(".product-result").each(function() {
+                        var id = $(this).attr("data-productid");
+                        var sku = $(this).attr("data-sku");
+                        var producttype = $(this).attr("data-producttype");
+                        var productvariablename = $(this).attr("data-productvariablename");
+                        var productvariablevalue = $(this).attr("data-productvariablevalue");
+                        var productname = $(this).attr("data-productname");
+                        var productimageorigin = $(this).attr("data-productimageorigin");
+                        var productvariable = $(this).attr("data-productvariable");
+                        var price = $(this).find(".gia-san-pham").attr("data-price");
+                        var productvariablesave = $(this).attr("data-productvariablesave");
+                        var quantity = parseFloat($(this).find(".in-quantity").val());
+                        var quantityInstock = parseFloat($(this).attr("data-quantityinstock"));
+                        var productvariableid = $(this).attr("data-productvariableid");
+
+                        if (quantity > 0)
+                        {
+                            list += id + "," + sku + "," + producttype + "," + productvariablename + "," + productvariablevalue + "," + quantity + "," +
+                                productname + "," + productimageorigin + "," + productvariablesave + "," + price + "," + productvariablesave + "," + productvariableid + ";";
+                            count++;
+                        }
+                    });
+                    if (count > 0)
                     {
-                        getAllPrice(true);
-                        var list = "";
-                        var count = 0;
-                        var ordertype = $(".customer-type").val();
-                        $(".product-result").each(function() {
-                            var id = $(this).attr("data-productid");
-                            var sku = $(this).attr("data-sku");
-                            var producttype = $(this).attr("data-producttype");
-                            var productvariablename = $(this).attr("data-productvariablename");
-                            var productvariablevalue = $(this).attr("data-productvariablevalue");
-                            var productname = $(this).attr("data-productname");
-                            var productimageorigin = $(this).attr("data-productimageorigin");
-                            var productvariable = $(this).attr("data-productvariable");
-                            var price = $(this).find(".gia-san-pham").attr("data-price");
-                            var productvariablesave = $(this).attr("data-productvariablesave");
-                            var quantity = parseFloat($(this).find(".in-quantity").val());
-                            var quantityInstock = parseFloat($(this).attr("data-quantityinstock"));
-                            var productvariableid = $(this).attr("data-productvariableid");
+                        $("#<%=hdfOrderType.ClientID %>").val(ordertype);
+                        $("#<%=hdfListProduct.ClientID%>").val(list);
 
-                            if (quantity > 0)
-                            {
-                                list += id + "," + sku + "," + producttype + "," + productvariablename + "," + productvariablevalue + "," + quantity + "," +
-                                    productname + "," + productimageorigin + "," + productvariablesave + "," + price + "," + productvariablesave + "," + productvariableid + ";";
-                                count++;
-                            }
-                        });
-                        if (count > 0)
-                        {
-                            $("#<%=hdfOrderType.ClientID %>").val(ordertype);
-                            $("#<%=hdfListProduct.ClientID%>").val(list);
-
-                            $("#orderInfoModal").modal({ show: 'true', backdrop: 'static' });
-                        }
-                        else
-                        {
-                            $("#txtSearch").focus();
-                            swal("Thông báo", "Hãy nhập sản phẩm!", "error");
-                        }
+                        $("#orderInfoModal").modal({ show: 'true', backdrop: 'static' });
                     }
                     else
                     {
@@ -1304,13 +1337,13 @@
             function deleteProduct() {
                 swal({
                     title: "Hết sức lưu ý:",
-                    text: "Em muốn xóa hết sản phẩm trong đơn thiệt hả?",
+                    text: "Em muốn xóa hết sản phẩm trong đơn hả?",
                     type: "warning",
                     showCancelButton: true,
                     confirmButtonColor: "#DD6B55",
                     confirmButtonText: "Chính xác sếp ơi!!",
                     closeOnConfirm: false,
-                    cancelButtonText: "Em bấm lộn zồi..",
+                    cancelButtonText: "Em bấm lộn rồi..",
                     html: true
                 }, function (isConfirm) {
                     if (isConfirm) {
@@ -1966,124 +1999,6 @@
                     return swal("Thông báo", "Chưa nhập thông tin khách hàng! Hoặc đây là khách hàng mới...", "warning");
 
                 generateCouponG20(customerName, customerID);
-            }
-
-            function _initReceiverAddress() {
-                // Danh sách tỉnh / thành phố
-                $("#<%=ddlProvince.ClientID%>").select2({
-                    width: "100%",
-                    placeholder: '(Bấm để chọn tỉnh/thành phố)',
-                    ajax: {
-                        delay: 500,
-                        method: 'GET',
-                        url: '/api/v1/delivery-save/provinces/select2',
-                        data: (params) => {
-                            var query = {
-                                search: params.term,
-                                page: params.page || 1
-                            }
-
-                            return query;
-                        }
-                    }
-                });
-
-                // Danh sách quận / huyện
-                _disabledDDLDistrict(true);
-
-                // Danh sách phường / xã
-                _disabledDDLWard(true);
-            }
-
-            function _onChangeReceiverAddress() {
-                // // Danh sách tỉnh / thành phố
-                $("#<%=ddlProvince.ClientID%>").on('select2:select', (e) => {
-                    let data = e.params.data;
-
-                    _disabledDDLDistrict(false, data.id);
-                    $("#<%=ddlDistrict.ClientID%>").select2('open');
-
-                    _disabledDDLWard(true, data.id);
-                });
-
-                // Danh sách quận / huyện
-                $("#<%=ddlDistrict.ClientID%>").on('select2:select', (e) => {
-                    let data = e.params.data;
-
-                    _disabledDDLWard(false, data.id);
-                    $("#<%=ddlWard.ClientID%>").select2('open');
-                });
-
-                // Danh sách phường / xã
-                $("#<%=ddlWard.ClientID%>").on('select2:select', (e) => {
-                    $("#<%=txtAddress.ClientID%>").focus();
-                });
-            }
-
-            function _disabledDDLDistrict(disabled, provinceID) {
-                if (disabled) {
-                    $("#<%=ddlDistrict.ClientID%>").attr('disabled', true);
-                    $("#<%=ddlDistrict.ClientID%>").attr('readonly', 'readonly');
-                    $("#<%=ddlDistrict.ClientID%>").select2({
-                        width: "100%",
-                        placeholder: '(Bấm để chọn quận/huyện)'
-                    });
-                }
-                else {
-                    $("#<%=ddlDistrict.ClientID%>").removeAttr('disabled');
-                    $("#<%=ddlDistrict.ClientID%>").removeAttr('readonly');
-                    $("#<%=ddlDistrict.ClientID%>").val(null).trigger('change');
-                    $("#<%=ddlDistrict.ClientID%>").select2({
-                        width: "100%",
-                        placeholder: '(Bấm để chọn tỉnh/thành phố)',
-                        ajax: {
-                            delay: 500,
-                            method: 'GET',
-                            url: '/api/v1/delivery-save/province/' + provinceID + '/districts/select2',
-                            data: (params) => {
-                                var query = {
-                                    search: params.term,
-                                    page: params.page || 1
-                                }
-
-                                return query;
-                            }
-                        }
-                    });
-                }
-            }
-
-            function _disabledDDLWard(disabled, districtID) {
-                if (disabled) {
-                    $("#<%=ddlWard.ClientID%>").attr('disabled', true);
-                    $("#<%=ddlWard.ClientID%>").attr('readonly', 'readonly');
-                    $("#<%=ddlWard.ClientID%>").select2({
-                        width: "100%",
-                        placeholder: '(Bấm để chọn phường/xã)'
-                    });
-                }
-                else {
-                    $("#<%=ddlWard.ClientID%>").removeAttr('disabled');
-                    $("#<%=ddlWard.ClientID%>").removeAttr('readonly');
-                    $("#<%=ddlWard.ClientID%>").val(null).trigger('change');
-                    $("#<%=ddlWard.ClientID%>").select2({
-                        width: "100%",
-                        placeholder: '(Bấm để chọn phường/xã)',
-                        ajax: {
-                            delay: 500,
-                            method: 'GET',
-                            url: '/api/v1/delivery-save/district/' + districtID + '/wards/select2',
-                            data: (params) => {
-                                var query = {
-                                    search: params.term,
-                                    page: params.page || 1
-                                }
-
-                                return query;
-                            }
-                        }
-                    });
-                }
             }
 
         </script>

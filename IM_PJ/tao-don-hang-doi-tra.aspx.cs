@@ -275,9 +275,13 @@ namespace IM_PJ
                     string CustomerName = txtFullname.Text;
                     string Nick = txtNick.Text.Trim();
                     string CustomerAddress = txtAddress.Text.Trim();
-                    string Zalo = txtZalo.Text.Trim();
+                    string Zalo = "";
                     string Facebook = txtFacebook.Text.Trim();
                     string RefundNote = txtRefundsNote.Text;
+
+                    int ProvinceID = hdfProvinceID.Value.ToInt(0);
+                    int DistrictID = hdfDistrictID.Value.ToInt(0);
+                    int WardID = hdfWardID.Value.ToInt(0);
 
                     if (!string.IsNullOrEmpty(CustomerPhone))
                     {
@@ -287,7 +291,7 @@ namespace IM_PJ
                         {
                             int custID = checkCustomer.ID;
 
-                            string kq = CustomerController.Update(custID, CustomerName, checkCustomer.CustomerPhone, CustomerAddress, "", Convert.ToInt32(checkCustomer.CustomerLevelID), Convert.ToInt32(checkCustomer.Status), checkCustomer.CreatedBy, currentDate, username, false, Zalo, Facebook, checkCustomer.Note, checkCustomer.ProvinceID.ToString(), Nick, checkCustomer.Avatar, Convert.ToInt32(checkCustomer.ShippingType), Convert.ToInt32(checkCustomer.PaymentType), Convert.ToInt32(checkCustomer.TransportCompanyID), Convert.ToInt32(checkCustomer.TransportCompanySubID), checkCustomer.CustomerPhone2, checkCustomer.ProvinceID.Value, checkCustomer.DistrictId.Value, checkCustomer.WardId.Value);
+                            string kq = CustomerController.Update(custID, CustomerName, checkCustomer.CustomerPhone, CustomerAddress, "", checkCustomer.CustomerLevelID.Value, checkCustomer.Status.Value, checkCustomer.CreatedBy, currentDate, username, false, Zalo, Facebook, checkCustomer.Note, Nick, checkCustomer.Avatar, checkCustomer.ShippingType.Value, checkCustomer.PaymentType.Value, checkCustomer.TransportCompanyID.Value, checkCustomer.TransportCompanySubID.Value, checkCustomer.CustomerPhone2, ProvinceID, DistrictID, WardID);
 
                             double totalPrice = Convert.ToDouble(hdfTotalPrice.Value);
                             double totalQuantity = Convert.ToDouble(hdfTotalQuantity.Value);

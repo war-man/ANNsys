@@ -150,7 +150,7 @@ namespace IM_PJ
                         }
                         
 
-                        CustomerController.Insert(txtCustomerName.Text, phone, txtAddress.Text, "", 0, 1, DateTime.Now, username, false, txtZalo.Text, txtFacebook.Text, txtNote.Text, ddlProvince.SelectedValue, txtNick.Text, Avatar, ShippingType, PaymentType, TransportCompanyID, TransportCompanySubID, txtCustomerPhone2.Text);
+                        CustomerController.Insert(txtCustomerName.Text, phone, txtAddress.Text, "", 0, 1, DateTime.Now, username, false, txtZalo.Text, txtFacebook.Text, txtNote.Text, txtNick.Text, Avatar, ShippingType, PaymentType, TransportCompanyID, TransportCompanySubID, txtCustomerPhone2.Text);
 
                         PJUtils.ShowMessageBoxSwAlert("Tạo khách hàng thành công", "s", true, Page);
                     }

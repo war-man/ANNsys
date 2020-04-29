@@ -236,9 +236,9 @@ namespace IM_PJ
                     int ExcuteStatus = ddlExcuteStatus.SelectedValue.ToInt();
                     int PaymentType = ddlPaymentType.SelectedValue.ToInt();
                     int ShippingType = ddlShippingType.SelectedValue.ToInt();
-                    int ProvinceID = ddlProvince.SelectedValue.ToInt();
-                    int DistrictID = ddlDistrict.SelectedValue.ToInt();
-                    int WardID = ddlWard.SelectedValue.ToInt();
+                    int ProvinceID = hdfProvinceID.Value.ToInt(0);
+                    int DistrictID = hdfDistrictID.Value.ToInt(0);
+                    int WardID = hdfWardID.Value.ToInt(0);
                     int TransportCompanyID = ddlTransportCompanyID.SelectedValue.ToInt(0);
                     int TransportCompanySubID = hdfTransportCompanySubID.Value.ToInt(0);
 
@@ -246,11 +246,11 @@ namespace IM_PJ
                     if (checkCustomer != null)
                     {
                         CustomerID = checkCustomer.ID;
-                        string kq = CustomerController.Update(CustomerID, CustomerName, checkCustomer.CustomerPhone, CustomerAddress, "", Convert.ToInt32(checkCustomer.CustomerLevelID), Convert.ToInt32(checkCustomer.Status), checkCustomer.CreatedBy, currentDate, username, false, Zalo, Facebook, checkCustomer.Note, checkCustomer.ProvinceID.ToString(), Nick, checkCustomer.Avatar, Convert.ToInt32(checkCustomer.ShippingType), Convert.ToInt32(checkCustomer.PaymentType), Convert.ToInt32(checkCustomer.TransportCompanyID), Convert.ToInt32(checkCustomer.TransportCompanySubID), checkCustomer.CustomerPhone2, ProvinceID, DistrictID, WardID);
+                        string kq = CustomerController.Update(CustomerID, CustomerName, checkCustomer.CustomerPhone, CustomerAddress, "", checkCustomer.CustomerLevelID.Value, checkCustomer.Status.Value, checkCustomer.CreatedBy, currentDate, username, false, Zalo, Facebook, checkCustomer.Note, Nick, checkCustomer.Avatar, checkCustomer.ShippingType.Value, checkCustomer.PaymentType.Value, checkCustomer.TransportCompanyID.Value, checkCustomer.TransportCompanySubID.Value, checkCustomer.CustomerPhone2, ProvinceID, DistrictID, WardID);
                     }
                     else
                     {
-                        string kq = CustomerController.Insert(CustomerName, CustomerPhone, CustomerAddress, "", 0, 0, currentDate, username, false, Zalo, Facebook, "", "", Nick, "", ShippingType, PaymentType, TransportCompanyID, TransportCompanySubID, "", ProvinceID, DistrictID, WardID);
+                        string kq = CustomerController.Insert(CustomerName, CustomerPhone, CustomerAddress, "", 0, 0, currentDate, username, false, Zalo, Facebook, "", Nick, "", ShippingType, PaymentType, TransportCompanyID, TransportCompanySubID, "", ProvinceID, DistrictID, WardID);
                         if (kq.ToInt(0) > 0)
                         {
                             CustomerID = kq.ToInt();

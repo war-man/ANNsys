@@ -176,6 +176,8 @@ namespace IM_PJ
                     // hidden OrderID
                     hdOrderInfoID.Value = ID.ToString();
 
+                    
+
                     int AgentID = Convert.ToInt32(order.AgentID);
                     txtPhone.Text = order.CustomerPhone;
                     txtFullname.Text = order.CustomerName.ToLower().ToTitleCase();
@@ -188,12 +190,6 @@ namespace IM_PJ
                         {
                             txtNick.Enabled = true;
                         }
-                        
-                        txtZalo.Text = cus.Zalo;
-                        if (string.IsNullOrEmpty(cus.Zalo))
-                        {
-                            txtZalo.Enabled = true;
-                        }
 
                         txtFacebook.Text = cus.Facebook;
                         if (!string.IsNullOrEmpty(cus.Facebook))
@@ -204,6 +200,9 @@ namespace IM_PJ
                         {
                             txtFacebook.Enabled = true;
                         }
+                        hdfProvinceID.Value = cus.ProvinceID.ToString();
+                        hdfDistrictID.Value = cus.DistrictId.ToString();
+                        hdfWardID.Value = cus.WardId.ToString();
                     }
 
                     // Title
@@ -846,8 +845,12 @@ namespace IM_PJ
                             string CustomerName = txtFullname.Text.Trim().ToTitleCase();
                             string Nick = txtNick.Text.Trim();
                             string CustomerAddress = txtAddress.Text.Trim().ToTitleCase();
-                            string Zalo = txtZalo.Text.Trim();
+                            string Zalo = "";
                             string Facebook = txtFacebook.Text.Trim();
+
+                            int ProvinceID = hdfProvinceID.Value.ToInt(0);
+                            int DistrictID = hdfDistrictID.Value.ToInt(0);
+                            int WardID = hdfWardID.Value.ToInt(0);
 
                             int PaymentType = ddlPaymentType.SelectedValue.ToInt(0);
                             int ShippingType = ddlShippingType.SelectedValue.ToInt(0);
@@ -859,11 +862,11 @@ namespace IM_PJ
                             if (Customer != null)
                             {
                                 CustomerID = Customer.ID;
-                                string kq = CustomerController.Update(CustomerID, CustomerName, Customer.CustomerPhone, CustomerAddress, "", Convert.ToInt32(Customer.CustomerLevelID), Convert.ToInt32(Customer.Status), username, currentDate, acc.Username, false, Zalo, Facebook, Customer.Note, Customer.ProvinceID.ToString(), Nick, Customer.Avatar, ShippingType, PaymentType, TransportCompanyID, TransportCompanySubID, Customer.CustomerPhone2, Customer.ProvinceID.Value, Customer.DistrictId.Value, Customer.WardId.Value);
+                                string kq = CustomerController.Update(CustomerID, CustomerName, Customer.CustomerPhone, CustomerAddress, "", Customer.CustomerLevelID.Value, Customer.Status.Value, username, currentDate, acc.Username, false, Zalo, Facebook, Customer.Note, Nick, Customer.Avatar, ShippingType, PaymentType, TransportCompanyID, TransportCompanySubID, Customer.CustomerPhone2, ProvinceID, DistrictID, WardID);
                             }
                             else
                             {
-                                string kq = CustomerController.Insert(CustomerName, CustomerPhone, CustomerAddress, "", 0, 0, currentDate, username, false, Zalo, Facebook, "", "", Nick, "", ShippingType, PaymentType, TransportCompanyID, TransportCompanySubID);
+                                string kq = CustomerController.Insert(CustomerName, CustomerPhone, CustomerAddress, "", 0, 0, currentDate, username, false, Zalo, Facebook, "", Nick, "", ShippingType, PaymentType, TransportCompanyID, TransportCompanySubID, "", ProvinceID, DistrictID, WardID);
                                 if (kq.ToInt(0) > 0)
                                 {
                                     CustomerID = kq.ToInt(0);
@@ -873,8 +876,8 @@ namespace IM_PJ
                             string totalPrice = hdfTotalPrice.Value.ToString();
 
                             string totalPriceNotDiscount = hdfTotalPriceNotDiscount.Value;
-                            int PaymentStatusOld = Convert.ToInt32(order.PaymentStatus);
-                            int ExcuteStatusOld = Convert.ToInt32(order.ExcuteStatus);
+                            int PaymentStatusOld = order.PaymentStatus.Value;
+                            int ExcuteStatusOld = order.ExcuteStatus.Value;
                             int PaymentStatus = ddlPaymentStatus.SelectedValue.ToInt(0);
                             int ExcuteStatus = ddlExcuteStatus.SelectedValue.ToInt(0);
 
@@ -964,8 +967,8 @@ namespace IM_PJ
                                 DiscountPerProduct = Convert.ToDouble(pDiscount.Value),
                                 TotalDiscount = TotalDiscount,
                                 FeeShipping = FeeShipping,
-                                GuestPaid = Convert.ToDouble(order.GuestPaid),
-                                GuestChange = Convert.ToDouble(order.GuestChange),
+                                GuestPaid = order.GuestPaid.Value,
+                                GuestChange = order.GuestChange.Value,
                                 PaymentType = PaymentType,
                                 ShippingType = ShippingType,
                                 OrderNote = OrderNote,

@@ -356,38 +356,38 @@ function selectCustomer() {
             }, function (confirm) {
                 if (confirm) {
                     $("input[id$='_txtPhone']").val(phone).prop('readonly', true);
-                    $("input[id$='_txtFullname']").val(name).prop('readonly', true);
+                    $("input[id$='_txtFullname']").val(name);
 
                     if (nick != "") {
-                        $("input[id$='_txtNick']").val(nick).prop('readonly', true);
+                        $("input[id$='_txtNick']").val(nick);
                     }
                     else {
-                        $("input[id$='_txtNick']").val("").prop('readonly', false);
+                        $("input[id$='_txtNick']").val("");
                     }
 
                     if (address != "") {
-                        $("input[id$='_txtAddress']").val(address).prop('readonly', true);
+                        $("input[id$='_txtAddress']").val(address);
                     }
                     else {
-                        $("input[id$='_txtAddress']").val("").prop('readonly', false);
+                        $("input[id$='_txtAddress']").val("");
                     }
 
                     if (zalo != "") {
-                        $("input[id$='_txtZalo']").val(zalo).prop('readonly', true);
+                        $("input[id$='_txtZalo']").val(zalo);
                     }
                     else {
-                        $("input[id$='_txtZalo']").val("").prop('readonly', false);
+                        $("input[id$='_txtZalo']").val("");
                     }
 
                     $("input[id$='_txtFacebook']").parent().removeClass("width-100");
 
                     if (facebook === "null") {
-                        $("input[id$='_txtFacebook']").val("").prop('readonly', false);
+                        $("input[id$='_txtFacebook']").val("");
                         $(".link-facebook").hide();
                         $("input[id$='_txtFacebook']").parent().addClass("width-100");
                     }
                     else {
-                        $("input[id$='_txtFacebook']").val(facebook).prop('readonly', true);
+                        $("input[id$='_txtFacebook']").val(facebook);
                         $("input[id$='_txtFacebook']").parent().removeClass("width-100");
                         $(".link-facebook").html("<a href=\"" + facebook + "\" class=\"btn primary-btn fw-btn not-fullwidth\" target=\"_blank\">Xem</a>").show();
                     }
@@ -395,6 +395,8 @@ function selectCustomer() {
                     var button = "<a href=\"javascript:;\" class=\"btn primary-btn fw-btn not-fullwidth\" onclick=\"viewCustomerDetail('" + id + "')\"><i class=\"fa fa-address-card-o\" aria-hidden=\"true\"></i> Xem</a>";
                     button += "<a href=\"javascript:;\" class=\"btn primary-btn fw-btn not-fullwidth clear-btn\" onclick=\"clearCustomerDetail()\"><i class=\"fa fa-times\" aria-hidden=\"true\"></i> Bỏ</a>";
                     $(".view-detail").html(button).show();
+
+                    _getCustomerAddress(phone);
 
                     getCustomerDiscount(id);
 
@@ -419,38 +421,38 @@ function selectCustomer() {
         }
         else {
             $("input[id$='_txtPhone']").val(phone).prop('readonly', true);
-            $("input[id$='_txtFullname']").val(name).prop('readonly', true);
+            $("input[id$='_txtFullname']").val(name);
 
             if (nick != "") {
-                $("input[id$='_txtNick']").val(nick).prop('readonly', true);
+                $("input[id$='_txtNick']").val(nick);
             }
             else {
-                $("input[id$='_txtNick']").val("").prop('readonly', false);
+                $("input[id$='_txtNick']").val("");
             }
 
             if (address != "") {
-                $("input[id$='_txtAddress']").val(address).prop('readonly', true);
+                $("input[id$='_txtAddress']").val(address);
             }
             else {
-                $("input[id$='_txtAddress']").val("").prop('readonly', false);
+                $("input[id$='_txtAddress']").val("");
             }
 
             if (zalo != "") {
-                $("input[id$='_txtZalo']").val(zalo).prop('readonly', true);
+                $("input[id$='_txtZalo']").val(zalo);
             }
             else {
-                $("input[id$='_txtZalo']").val("").prop('readonly', false);
+                $("input[id$='_txtZalo']").val("");
             }
 
             $("input[id$='_txtFacebook']").parent().removeClass("width-100");
 
             if (facebook === "null") {
-                $("input[id$='_txtFacebook']").val("").prop('readonly', false);
+                $("input[id$='_txtFacebook']").val("");
                 $(".link-facebook").hide();
                 $("input[id$='_txtFacebook']").parent().addClass("width-100");
             }
             else {
-                $("input[id$='_txtFacebook']").val(facebook).prop('readonly', true);
+                $("input[id$='_txtFacebook']").val(facebook);
                 $("input[id$='_txtFacebook']").parent().removeClass("width-100");
                 $(".link-facebook").html("<a href=\"" + facebook + "\" class=\"btn primary-btn fw-btn not-fullwidth\" target=\"_blank\">Xem</a>").show();
             }
@@ -460,6 +462,8 @@ function selectCustomer() {
             button += "<a href=\"danh-sach-don-hang?searchtype=1&textsearch=" + phone + "\" class=\"btn primary-btn fw-btn not-fullwidth edit-customer-btn\" target=\"_blank\"><i class=\"fa fa-history\" aria-hidden=\"true\"></i> Lịch sử</a>";
             button += "<a href=\"javascript:;\" class=\"btn primary-btn fw-btn not-fullwidth clear-btn\" onclick=\"clearCustomerDetail()\"><i class=\"fa fa-times\" aria-hidden=\"true\"></i> Bỏ</a>";
             $(".view-detail").html(button).show();
+
+            _getCustomerAddress(phone);
 
             getCustomerDiscount(id);
 
@@ -556,12 +560,12 @@ function refreshCustomerInfo(ID) {
                     var facebook = data.Facebook;
                     var id = data.ID;
                     $("input[id$='_txtPhone']").val(phone).prop('readonly', true);
-                    $("input[id$='_txtFullname']").val(name).prop('readonly', true);
-                    $("input[id$='_txtNick']").val(nick).prop('readonly', true);
-                    $("input[id$='_txtAddress']").val(address).prop('readonly', true);
-                    $("input[id$='_txtZalo']").val(zalo).prop('readonly', true);
+                    $("input[id$='_txtFullname']").val(name);
+                    $("input[id$='_txtNick']").val(nick);
+                    $("input[id$='_txtAddress']").val(address);
+                    $("input[id$='_txtZalo']").val(zalo);
                     $("input[id$='_txtFacebook']").parent().removeClass("width-100");
-                    $("input[id$='_txtFacebook']").val(facebook).prop('readonly', true);
+                    $("input[id$='_txtFacebook']").val(facebook);
                     if (facebook === null) {
                         $(".link-facebook").hide();
                         $("input[id$='_txtFacebook']").parent().addClass("width-100");
@@ -574,6 +578,9 @@ function refreshCustomerInfo(ID) {
                 } else {
                     swal("Thông báo", "Không tìm thấy khách hàng", "error");
                 }
+
+                _getCustomerAddress(phone);
+
                 getCustomerDiscount(id);
             },
             error: function (xmlhttprequest, textstatus, errorthrow) {
@@ -590,11 +597,11 @@ function refreshCustomerInfo(ID) {
 function clearCustomerDetail() {
 
     $("input[id$='_txtPhone']").val("").prop('readonly', false).prop('disabled', false);
-    $("input[id$='_txtFullname']").val("").prop('readonly', false).prop('disabled', false);
-    $("input[id$='_txtNick']").val("").prop('readonly', false).prop('disabled', false);
-    $("input[id$='_txtAddress']").val("").prop('readonly', false).prop('disabled', false);
-    $("input[id$='_txtZalo']").val("").prop('readonly', false).prop('disabled', false);
-    $("input[id$='_txtFacebook']").val("").prop('readonly', false).prop('disabled', false);
+    $("input[id$='_txtFullname']").val("");
+    $("input[id$='_txtNick']").val("");
+    $("input[id$='_txtAddress']").val("");
+    $("input[id$='_txtZalo']").val("");
+    $("input[id$='_txtFacebook']").val("");
     $(".view-detail").html("").hide();
     $(".discount-info").html("").hide();
     $(".refund-info").html("").hide();
@@ -613,17 +620,19 @@ function clearCustomerDetail() {
         removeCoupon();
     }
 
+    _clearCustomerAddress();
+
     getAllPrice();
 }
 
 function selectCustomerDetail(data) {
     $("input[id$='_txtPhone']").val(data.CustomerPhone).prop('readonly', true);
-    $("input[id$='_txtFullname']").val(data.CustomerName).prop('readonly', true);
-    $("input[id$='_txtNick']").val(data.Nick).prop('readonly', true);
-    $("input[id$='_txtAddress']").val(data.CustomerAddress).prop('readonly', true);
-    $("input[id$='_txtZalo']").val(data.Zalo).prop('readonly', true);
+    $("input[id$='_txtFullname']").val(data.CustomerName);
+    $("input[id$='_txtNick']").val(data.Nick);
+    $("input[id$='_txtAddress']").val(data.CustomerAddress);
+    $("input[id$='_txtZalo']").val(data.Zalo);
     $("input[id$='_txtFacebook']").parent().removeClass("width-100");
-    $("input[id$='_txtFacebook']").val(data.Facebook).prop('readonly', true);
+    $("input[id$='_txtFacebook']").val(data.Facebook);
     if (!data.Facebook) {
         $(".link-facebook").hide();
         $("input[id$='_txtFacebook']").parent().addClass("width-100");
@@ -645,6 +654,8 @@ function selectCustomerDetail(data) {
     
     button += "<a href=\"javascript:;\" class=\"btn primary-btn fw-btn not-fullwidth clear-btn\" onclick=\"clearCustomerDetail()\"><i class=\"fa fa-times\" aria-hidden=\"true\"></i> Bỏ</a>";
     $(".view-detail").html(button).show();
+
+    _getCustomerAddress(data.CustomerPhone);
 
     getCustomerDiscount(data.ID);
 
@@ -756,4 +767,190 @@ function ajaxCheckCustomer() {
 
     }
     
+}
+
+
+// Customer Address
+function _initReceiverAddress() {
+    
+    $("select[id$='_ddlProvince']").val(null).trigger('change');
+    // Danh sách tỉnh / thành phố
+    $("select[id$='_ddlProvince']").select2({
+        width: "100%",
+        placeholder: 'Chọn tỉnh thành',
+        ajax: {
+            delay: 500,
+            method: 'GET',
+            url: '/api/v1/delivery-save/provinces/select2',
+            data: (params) => {
+                var query = {
+                    search: params.term,
+                    page: params.page || 1
+                }
+
+                return query;
+            }
+        }
+    });
+
+    // Danh sách quận / huyện
+    _disabledDDLDistrict(true, 0);
+
+    // Danh sách phường / xã
+    _disabledDDLWard(true, 0);
+}
+
+function _onChangeReceiverAddress() {
+    // // Danh sách tỉnh / thành phố
+    $("select[id$='_ddlProvince']").on('select2:select', (e) => {
+        let data = e.params.data;
+        $("input[id$='_hdfProvinceID']").val(data.id);
+        $("input[id$='_hdfDistrictID']").val(0);
+        $("input[id$='_hdfWardID']").val(0);
+        _disabledDDLDistrict(false, data.id);
+        $("select[id$='_ddlDistrict']").select2('open');
+
+        _disabledDDLWard(true, data.id);
+    });
+
+    // Danh sách quận / huyện
+    $("select[id$='_ddlDistrict']").on('select2:select', (e) => {
+        let data = e.params.data;
+
+        $("input[id$='_hdfDistrictID']").val(data.id);
+        $("input[id$='_hdfWardID']").val(0);
+        _disabledDDLWard(false, data.id);
+        $("select[id$='_ddlWard']").select2('open');
+    });
+
+    // Danh sách phường / xã
+    $("select[id$='_ddlWard']").on('select2:select', (e) => {
+        let data = e.params.data;
+
+        $("input[id$='_hdfWardID']").val(data.id);
+    });
+}
+
+function _disabledDDLDistrict(disabled, provinceID) {
+    if (disabled) {
+        $("select[id$='_ddlDistrict']").attr('disabled', true);
+        $("select[id$='_ddlDistrict']").attr('readonly', 'readonly');
+        $("select[id$='_ddlDistrict']").val(null).trigger('change');
+        $("select[id$='_ddlDistrict']").select2({
+            width: "100%",
+            placeholder: 'Chọn quận huyện'
+        });
+    }
+    else {
+        $("select[id$='_ddlDistrict']").removeAttr('disabled');
+        $("select[id$='_ddlDistrict']").removeAttr('readonly');
+        $("select[id$='_ddlDistrict']").val(null).trigger('change');
+        $("select[id$='_ddlDistrict']").select2({
+            width: "100%",
+            placeholder: 'Chọn quận huyện',
+            ajax: {
+                delay: 500,
+                method: 'GET',
+                url: '/api/v1/delivery-save/province/' + provinceID + '/districts/select2',
+                data: (params) => {
+                    var query = {
+                        search: params.term,
+                        page: params.page || 1
+                    }
+
+                    return query;
+                }
+            }
+        });
+    }
+}
+
+function _disabledDDLWard(disabled, districtID) {
+    if (disabled) {
+        $("select[id$='_ddlWard']").attr('disabled', true);
+        $("select[id$='_ddlWard']").attr('readonly', 'readonly');
+        $("select[id$='_ddlWard']").val(null).trigger('change');
+        $("select[id$='_ddlWard']").select2({
+            width: "100%",
+            placeholder: 'Chọn phường xã'
+        });
+    }
+    else {
+        $("select[id$='_ddlWard']").removeAttr('disabled');
+        $("select[id$='_ddlWard']").removeAttr('readonly');
+        $("select[id$='_ddlWard']").val(null).trigger('change');
+        $("select[id$='_ddlWard']").select2({
+            width: "100%",
+            placeholder: 'Chọn phường xã',
+            ajax: {
+                delay: 500,
+                method: 'GET',
+                url: '/api/v1/delivery-save/district/' + districtID + '/wards/select2',
+                data: (params) => {
+                    var query = {
+                        search: params.term,
+                        page: params.page || 1
+                    }
+
+                    return query;
+                }
+            }
+        });
+    }
+}
+
+function _getCustomerAddress(customerPhone) {
+    $.ajax({
+        method: 'GET',
+        url: "/api/v1/customer/" + customerPhone + "/address",
+        success: (data, textStatus, xhr) => {
+            // province
+            if (data.provinceID) {
+                let newOption = new Option(data.provinceName, data.provinceID, false, false);
+                $("select[id$='_ddlProvince']").find("option").remove();
+                $("select[id$='_ddlProvince']").append(newOption).trigger('change');
+
+                $("input[id$='_hdfProvinceID']").val(data.provinceID);
+                // Danh sách quận / huyện
+                _disabledDDLDistrict(false, data.provinceID);
+            }
+            if (data.provinceID && data.districtID) {
+                let newOption = new Option(data.districtName, data.districtID, false, false);
+                $("select[id$='_ddlDistrict']").removeAttr('disabled');
+                $("select[id$='_ddlDistrict']").removeAttr('readonly');
+                $("select[id$='_ddlDistrict']").find("option").remove();
+                $("select[id$='_ddlDistrict']").append(newOption).trigger('change');
+
+                $("input[id$='_hdfProvinceID']").val(data.provinceID);
+                $("input[id$='_hdfDistrictID']").val(data.districtID);
+                // Danh sách phường / xã
+                _disabledDDLWard(false, data.districtID);
+            }
+            if (data.provinceID && data.districtID && data.wardID) {
+                let newOption = new Option(data.wardName, data.wardID, false, false);
+                $("select[id$='_ddlWard']").removeAttr('disabled');
+                $("select[id$='_ddlWard']").removeAttr('readonly');
+                $("select[id$='_ddlWard']").find("option").remove();
+                $("select[id$='_ddlWard']").append(newOption).trigger('change');
+
+                $("input[id$='_hdfProvinceID']").val(data.provinceID);
+                $("input[id$='_hdfDistrictID']").val(data.districtID);
+                $("input[id$='_hdfWardID']").val(data.wardID);
+            }
+        },
+        error: (xhr, textStatus, error) => {
+        }
+    });
+}
+
+function _clearCustomerAddress() {
+    $("input[id$='_hdfProvinceID']").val(0);
+    $("input[id$='_hdfDistrictID']").val(0);
+    $("input[id$='_hdfWardID']").val(0);
+
+    $("select[id$='_ddlProvince']").find("option").remove();
+    $("select[id$='_ddlDistrict']").find("option").remove();
+    $("select[id$='_ddlWard']").find("option").remove();
+    _disabledDDLDistrict(true, 0);
+    _disabledDDLWard(true, 0);
 }

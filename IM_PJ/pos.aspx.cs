@@ -94,7 +94,7 @@ namespace IM_PJ
 
             // Init drop down list ddlFeeType
             var feeTypes = FeeTypeController.getDropDownList();
-            feeTypes[0].Text = "Loại Phí";
+            feeTypes[0].Text = "Loại phí";
             ddlFeeType.Items.Clear();
             ddlFeeType.Items.AddRange(feeTypes.ToArray());
             ddlFeeType.DataBind();
@@ -308,16 +308,22 @@ namespace IM_PJ
                         string CustomerEmail = "";
                         string CustomerAddress = txtAddress.Text.Trim().ToTitleCase();
 
+                        int ProvinceID = hdfProvinceID.Value.ToInt(0);
+                        int DistrictID = hdfDistrictID.Value.ToInt(0);
+                        int WardID = hdfWardID.Value.ToInt(0);
+
                         var checkCustomer = CustomerController.GetByPhone(CustomerPhone);
+
+                        string kq = "";
 
                         if (checkCustomer != null)
                         {
                             CustomerID = checkCustomer.ID;
-                            string kq = CustomerController.Update(CustomerID, CustomerName, checkCustomer.CustomerPhone, CustomerAddress, "", Convert.ToInt32(checkCustomer.CustomerLevelID), Convert.ToInt32(checkCustomer.Status), checkCustomer.CreatedBy, currentDate, username, false, checkCustomer.Zalo, checkCustomer.Facebook, checkCustomer.Note, checkCustomer.ProvinceID.ToString(), checkCustomer.Nick, checkCustomer.Avatar, Convert.ToInt32(checkCustomer.ShippingType), Convert.ToInt32(checkCustomer.PaymentType), Convert.ToInt32(checkCustomer.TransportCompanyID), Convert.ToInt32(checkCustomer.TransportCompanySubID), checkCustomer.CustomerPhone2, checkCustomer.ProvinceID.Value, checkCustomer.DistrictId.Value, checkCustomer.WardId.Value);
+                            kq = CustomerController.Update(CustomerID, CustomerName, checkCustomer.CustomerPhone, CustomerAddress, "", checkCustomer.CustomerLevelID.Value, checkCustomer.Status.Value, checkCustomer.CreatedBy, currentDate, username, false, checkCustomer.Zalo, checkCustomer.Facebook, checkCustomer.Note, checkCustomer.Nick, checkCustomer.Avatar, checkCustomer.ShippingType.Value, checkCustomer.PaymentType.Value, checkCustomer.TransportCompanyID.Value, checkCustomer.TransportCompanySubID.Value, checkCustomer.CustomerPhone2, ProvinceID, DistrictID, WardID);
                         }
                         else
                         {
-                            string kq = CustomerController.Insert(CustomerName, CustomerPhone, CustomerAddress, CustomerEmail, 0, 0, currentDate, username, false, "", "", "", "", "");
+                            kq = CustomerController.Insert(CustomerName, CustomerPhone, CustomerAddress, CustomerEmail, 0, 0, currentDate, username, false, "", "", "", "", "", 0, 0, 0, 0, "", ProvinceID, DistrictID, WardID);
                             if (kq.ToInt(0) > 0)
                             {
                                 CustomerID = kq.ToInt(0);
@@ -330,6 +336,7 @@ namespace IM_PJ
                         int ExcuteStatus = 2;
                         int PaymentType = 1;
                         int ShippingType = 1;
+
                         bool IsHidden = false;
                         int WayIn = 1;
 

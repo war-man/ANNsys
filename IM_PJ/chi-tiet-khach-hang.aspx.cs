@@ -27,7 +27,7 @@ namespace IM_PJ
                     var acc = AccountController.GetByUsername(username);
                     if (acc != null)
                     {
-                        if (acc.RoleID == 1)
+                        if (acc.RoleID != 0 && acc.RoleID != 2)
                         {
                             Response.Redirect("/dang-nhap");
                         }
@@ -41,23 +41,6 @@ namespace IM_PJ
                 LoadTransportCompany();
                 LoadData();
                 LoadDLL();
-                LoadProvince();
-            }
-        }
-
-        public void LoadProvince()
-        {
-            var pro = ProvinceController.GetAll();
-            ddlProvince.Items.Clear();
-            ddlProvince.Items.Insert(0, new ListItem("Chọn tỉnh thành", "0"));
-            if (pro.Count > 0)
-            {
-                foreach (var p in pro)
-                {
-                    ListItem listitem = new ListItem(p.ProvinceName, p.ID.ToString());
-                    ddlProvince.Items.Add(listitem);
-                }
-                ddlProvince.DataBind();
             }
         }
 
@@ -147,7 +130,7 @@ namespace IM_PJ
                     txtCustomerPhone.Text = d.CustomerPhone;
                     txtCustomerPhone2.Text = d.CustomerPhone2;
                     txtCustomerPhoneBackup.Text = d.CustomerPhoneBackup;
-                    txtSupplierAddress.Text = d.CustomerAddress;
+                    txtAddress.Text = d.CustomerAddress;
                     txtNick.Text = d.Nick;
                     chkIsHidden.Checked = Convert.ToBoolean(d.IsHidden);
                     txtZalo.Text = d.Zalo;
@@ -166,6 +149,10 @@ namespace IM_PJ
                     ListAvatarImage.Value = d.Avatar;
 
                     ddlUser.SelectedValue = d.CreatedBy;
+
+                    hdfProvinceID.Value = d.ProvinceID.ToString();
+                    hdfDistrictID.Value = d.DistrictId.ToString();
+                    hdfWardID.Value = d.WardId.ToString();
                 }
             }
         }
@@ -173,103 +160,101 @@ namespace IM_PJ
         protected void btnSubmit_Click(object sender, EventArgs e)
         {
             string username = Request.Cookies["usernameLoginSystem"].Value;
-            var acc = AccountController.GetByUsername(username);
-            if (acc != null)
+
+            int id = ViewState["ID"].ToString().ToInt(0);
+            if (id > 0)
             {
-                if (acc.RoleID == 0 || acc.RoleID == 2)
+                var d = CustomerController.GetByID(id);
+                if (d != null)
                 {
-                    int id = ViewState["ID"].ToString().ToInt(0);
-                    if (id > 0)
+                    //Phần thêm ảnh đại diện khách hàng
+                    string path = "/uploads/avatars/";
+                    string Avatar = ListAvatarImage.Value;
+                    if (UploadAvatarImage.UploadedFiles.Count > 0)
                     {
-                        var d = CustomerController.GetByID(id);
-                        if (d != null)
+                        foreach (UploadedFile f in UploadAvatarImage.UploadedFiles)
                         {
-                            //Phần thêm ảnh đại diện khách hàng
-                            string path = "/uploads/avatars/";
-                            string Avatar = ListAvatarImage.Value;
-                            if (UploadAvatarImage.UploadedFiles.Count > 0)
+                            var o = path + Guid.NewGuid() + f.GetExtension();
+                            try
                             {
-                                foreach (UploadedFile f in UploadAvatarImage.UploadedFiles)
-                                {
-                                    var o = path + Guid.NewGuid() + f.GetExtension();
-                                    try
-                                    {
-                                        f.SaveAs(Server.MapPath(o));
-                                        Avatar = o;
-                                    }
-                                    catch { }
-                                }
+                                f.SaveAs(Server.MapPath(o));
+                                Avatar = o;
                             }
-
-                            if (Avatar != ListAvatarImage.Value)
-                            {
-                                if (File.Exists(Server.MapPath(ListAvatarImage.Value)))
-                                {
-                                    File.Delete(Server.MapPath(ListAvatarImage.Value));
-                                }
-                            }
-
-                            int PaymentType = ddlPaymentType.SelectedValue.ToInt(0);
-                            int ShippingType = ddlShippingType.SelectedValue.ToInt(0);
-                            int TransportCompanyID = ddlTransportCompanyID.SelectedValue.ToInt(0);
-                            int TransportCompanySubID = ddlTransportCompanySubID.SelectedValue.ToInt(0);
-                            string note = txtNote.Text;
-
-                            string warning = "Cập nhật khách hàng thành công";
-                            string CustomerPhone = d.CustomerPhone;
-                            string NewCustomerPhone = Regex.Replace(txtCustomerPhone.Text.Trim(), @"[^\d]", "");
-                            // kiểm tra số điện thoại mới
-                            if (NewCustomerPhone != d.CustomerPhone)
-                            {
-                                // kiểm tra số điện thoại mới có khả dụng ko?
-                                var c = CustomerController.GetByPhone(NewCustomerPhone);
-                                if(c!= null && c.ID != d.ID)
-                                {
-                                    warning = "Số điện thoại này đã tồn tại của khách khác!";
-                                }
-                                else
-                                {
-                                    warning = "Cập nhật khách hàng thành công! Số điện thoại khách hàng đã được đổi.<br>Lưu ý: Các đơn hàng cũ của khách này cũng đã được đổi số điện thoại.";
-                                    note = "Số điện thoại cũ: " + d.CustomerPhone + ". " + note;
-
-                                    CustomerPhone = NewCustomerPhone;
-
-                                    // đổi số mới cho đơn hàng cũ
-                                    var orders = OrderController.GetByCustomerID(d.ID);
-                                    foreach(var order in orders)
-                                    {
-                                        string update = OrderController.UpdateCustomerPhone(order.ID, CustomerPhone);
-                                    }
-
-                                    // đổi số mới cho đơn hàng đổi trả cũ
-                                    var refundorders = RefundGoodController.GetByCustomerID(d.ID);
-                                    foreach (var refundorder in refundorders)
-                                    {
-                                        string update = RefundGoodController.UpdateCustomerPhone(refundorder.ID, CustomerPhone);
-                                    }
-                                }
-                            }
-
-                            string CustomerPhone2 = "";
-                            string NewCustomerPhone2 = Regex.Replace(txtCustomerPhone2.Text.Trim(), @"[^\d]", "");
-                            if (NewCustomerPhone2 != "")
-                            {
-                                // kiểm tra số điện thoại 2 mới
-                                var b = CustomerController.GetByPhone(NewCustomerPhone2);
-                                if (b == null)
-                                {
-                                    CustomerPhone2 = NewCustomerPhone2;
-                                }
-                                else
-                                {
-                                    warning = "Số điện thoại 2 đã tồn tại của khách khác!";
-                                }
-                            }
-
-                            CustomerController.Update(id, txtCustomerName.Text, CustomerPhone, txtSupplierAddress.Text, "", 0, 1, ddlUser.SelectedItem.ToString(), DateTime.Now, username, chkIsHidden.Checked, Regex.Replace(txtZalo.Text.Trim(), @"[^\d]", ""), txtFacebook.Text, note, ddlProvince.SelectedValue, txtNick.Text, Avatar, ShippingType, PaymentType, TransportCompanyID, TransportCompanySubID, CustomerPhone2, 0, 0, 0);
-                            PJUtils.ShowMessageBoxSwAlert(warning, "s", true, Page);
+                            catch { }
                         }
                     }
+
+                    if (Avatar != ListAvatarImage.Value)
+                    {
+                        if (File.Exists(Server.MapPath(ListAvatarImage.Value)))
+                        {
+                            File.Delete(Server.MapPath(ListAvatarImage.Value));
+                        }
+                    }
+
+                    int PaymentType = ddlPaymentType.SelectedValue.ToInt(0);
+                    int ShippingType = ddlShippingType.SelectedValue.ToInt(0);
+                    int TransportCompanyID = ddlTransportCompanyID.SelectedValue.ToInt(0);
+                    int TransportCompanySubID = ddlTransportCompanySubID.SelectedValue.ToInt(0);
+                    string note = txtNote.Text;
+                    int ProvinceID = hdfProvinceID.Value.ToInt(0);
+                    int DistrictID = hdfDistrictID.Value.ToInt(0);
+                    int WardID = hdfWardID.Value.ToInt(0);
+
+                    string warning = "Cập nhật khách hàng thành công";
+
+                    string CustomerPhone = d.CustomerPhone;
+                    string NewCustomerPhone = Regex.Replace(txtCustomerPhone.Text.Trim(), @"[^\d]", "");
+                    // kiểm tra số điện thoại mới
+                    if (NewCustomerPhone != d.CustomerPhone)
+                    {
+                        // kiểm tra số điện thoại mới có khả dụng ko?
+                        var c = CustomerController.GetByPhone(NewCustomerPhone);
+                        if (c != null && c.ID != d.ID)
+                        {
+                            warning = "Số điện thoại này đã tồn tại của khách khác!";
+                        }
+                        else
+                        {
+                            warning = "Cập nhật khách hàng thành công! Số điện thoại khách hàng đã được đổi.<br>Lưu ý: Các đơn hàng cũ của khách này cũng đã được đổi số điện thoại.";
+                            note = "Số điện thoại cũ: " + d.CustomerPhone + ". " + note;
+
+                            CustomerPhone = NewCustomerPhone;
+
+                            // đổi số mới cho đơn hàng cũ
+                            var orders = OrderController.GetByCustomerID(d.ID);
+                            foreach (var order in orders)
+                            {
+                                string update = OrderController.UpdateCustomerPhone(order.ID, CustomerPhone);
+                            }
+
+                            // đổi số mới cho đơn hàng đổi trả cũ
+                            var refundorders = RefundGoodController.GetByCustomerID(d.ID);
+                            foreach (var refundorder in refundorders)
+                            {
+                                string update = RefundGoodController.UpdateCustomerPhone(refundorder.ID, CustomerPhone);
+                            }
+                        }
+                    }
+
+                    string CustomerPhone2 = "";
+                    string NewCustomerPhone2 = Regex.Replace(txtCustomerPhone2.Text.Trim(), @"[^\d]", "");
+                    if (NewCustomerPhone2 != "")
+                    {
+                        // kiểm tra số điện thoại 2 mới
+                        var b = CustomerController.GetByPhone(NewCustomerPhone2);
+                        if (b == null)
+                        {
+                            CustomerPhone2 = NewCustomerPhone2;
+                        }
+                        else
+                        {
+                            warning = "Số điện thoại 2 đã tồn tại của khách khác!";
+                        }
+                    }
+
+                    CustomerController.Update(id, txtCustomerName.Text, CustomerPhone, txtAddress.Text, "", 0, 1, ddlUser.SelectedItem.ToString(), DateTime.Now, username, chkIsHidden.Checked, Regex.Replace(txtZalo.Text.Trim(), @"[^\d]", ""), txtFacebook.Text, note, txtNick.Text, Avatar, ShippingType, PaymentType, TransportCompanyID, TransportCompanySubID, CustomerPhone2, ProvinceID, DistrictID, WardID);
+                    PJUtils.ShowMessageBoxSwAlert(warning, "s", true, Page);
                 }
             }
         }

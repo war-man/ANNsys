@@ -1,4 +1,4 @@
-﻿<%@ Page Title="Thông tin đơn hàng" Language="C#" MasterPageFile="~/MasterPage.Master" AutoEventWireup="true" CodeBehind="thong-tin-don-hang.aspx.cs" Inherits="IM_PJ.thong_tin_don_hang" EnableSessionState="ReadOnly" enableEventValidation="false" %>
+﻿<%@ Page Title="Thông tin đơn hàng" Language="C#" MasterPageFile="~/MasterPage.Master" AutoEventWireup="true" CodeBehind="thong-tin-don-hang.aspx.cs" Inherits="IM_PJ.thong_tin_don_hang" EnableSessionState="ReadOnly" EnableEventValidation="false" %>
 
 <%@ Register Assembly="Telerik.Web.UI" Namespace="Telerik.Web.UI" TagPrefix="telerik" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
@@ -286,40 +286,22 @@
                             </div>
                             <div class="panel-body">
                                 <div class="row">
-                                    <div class="col-md-4">
+                                    <div class="col-md-3">
                                         <div class="form-group">
                                             <label>Họ tên</label>
-                                            <asp:RequiredFieldValidator ID="RequiredFieldValidator1" runat="server" ControlToValidate="txtFullname" ErrorMessage="(*)" ForeColor="Red" Display="Dynamic"></asp:RequiredFieldValidator>
-                                            <asp:TextBox ID="txtFullname" CssClass="form-control capitalize" runat="server" Enabled="false" placeholder="Họ tên thật của khách (F2)" autocomplete="off"></asp:TextBox>
+                                            <asp:TextBox ID="txtFullname" CssClass="form-control capitalize" runat="server" Enabled="true" placeholder="Họ tên thật của khách (F2)" autocomplete="off"></asp:TextBox>
                                         </div>
                                     </div>
-                                    <div class="col-md-5">
+                                    <div class="col-md-3">
                                         <div class="form-group">
                                             <label>Điện thoại</label>
-                                            <asp:RequiredFieldValidator ID="re" runat="server" ControlToValidate="txtPhone" ErrorMessage="(*)" ForeColor="Red" Display="Dynamic"></asp:RequiredFieldValidator>
                                             <asp:TextBox ID="txtPhone" CssClass="form-control" onblur="ajaxCheckCustomer()" runat="server" Enabled="false" placeholder="Số điện thoại khách hàng" autocomplete="off"></asp:TextBox>
                                         </div>
                                     </div>
                                     <div class="col-md-3">
                                         <div class="form-group">
-                                            <label>Zalo</label>
-                                            <asp:TextBox ID="txtZalo" CssClass="form-control" runat="server" Enabled="false" placeholder="Số điện thoại Zalo" autocomplete="off"></asp:TextBox>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <div class="form-group">
                                             <label>Nick đặt hàng</label>
-                                            <asp:RequiredFieldValidator ID="RequiredFieldValidator2" runat="server" ControlToValidate="txtNick" ErrorMessage="(*)" ForeColor="Red" Display="Dynamic"></asp:RequiredFieldValidator>
-                                            <asp:TextBox ID="txtNick" CssClass="form-control capitalize" runat="server" Enabled="false" placeholder="Tên nick đặt hàng" autocomplete="off"></asp:TextBox>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-5">
-                                        <div class="form-group">
-                                            <label>Địa chỉ</label>
-                                            <asp:RequiredFieldValidator ID="RequiredFieldValidator3" runat="server" ControlToValidate="txtAddress" ErrorMessage="(*)" ForeColor="Red" Display="Dynamic"></asp:RequiredFieldValidator>
-                                            <asp:TextBox ID="txtAddress" CssClass="form-control capitalize" runat="server" Enabled="false" placeholder="Địa chỉ khách hàng" autocomplete="off"></asp:TextBox>
+                                            <asp:TextBox ID="txtNick" CssClass="form-control capitalize" runat="server" Enabled="true" placeholder="Tên nick đặt hàng" autocomplete="off"></asp:TextBox>
                                         </div>
                                     </div>
                                     <div class="col-md-3">
@@ -327,7 +309,7 @@
                                             <label>Facebook</label>
                                             <div class="row">
                                                 <div class="col-md-9 fb">
-                                                    <asp:TextBox ID="txtFacebook" CssClass="form-control" runat="server" Enabled="false" placeholder="Đường link chat Facebook" autocomplete="off"></asp:TextBox>
+                                                    <asp:TextBox ID="txtFacebook" CssClass="form-control" runat="server" Enabled="true" placeholder="Đường link chat Facebook" autocomplete="off"></asp:TextBox>
                                                 </div>
                                                 <div class="col-md-3">
                                                     <div class="row">
@@ -337,6 +319,32 @@
                                                     </div>
                                                 </div>
                                             </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label>Tỉnh thành</label>
+                                            <asp:DropDownList ID="ddlProvince" runat="server" CssClass="form-control"></asp:DropDownList>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label>Quận huyện</label>
+                                            <asp:DropDownList ID="ddlDistrict" runat="server" CssClass="form-control"></asp:DropDownList>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label>Phường xã</label>
+                                            <asp:DropDownList ID="ddlWard" runat="server" CssClass="form-control"></asp:DropDownList>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label>Địa chỉ</label>
+                                            <asp:TextBox ID="txtAddress" CssClass="form-control capitalize" runat="server" Enabled="true" placeholder="Địa chỉ khách hàng" autocomplete="off"></asp:TextBox>
                                         </div>
                                     </div>
                                 </div>
@@ -669,6 +677,9 @@
             <asp:HiddenField ID="hdfCouponProductNumberOld" runat="server" />
             <asp:HiddenField ID="hdfCouponPriceMinOld" runat="server" />
             <asp:HiddenField ID="hdfShippingType" runat="server" />
+            <asp:HiddenField ID="hdfProvinceID" runat="server" />
+            <asp:HiddenField ID="hdfDistrictID" runat="server" />
+            <asp:HiddenField ID="hdfWardID" runat="server" />
             <!-- Modal -->
             <div class="modal fade" id="feeModal" role="dialog">
                 <div class="modal-dialog">
@@ -770,6 +781,9 @@
         </AjaxSettings>
     </telerik:RadAjaxManager>
     <telerik:RadScriptBlock ID="sc" runat="server">
+
+        <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+
         <script type="text/javascript">
             let preExcuteStatus = 0;
 
@@ -1166,6 +1180,11 @@
             }
 
             $(document).ready(function () {
+
+                _initReceiverAddress();
+                _onChangeReceiverAddress();
+                _getCustomerAddress($("#<%=txtPhone.ClientID%>").val());
+
                 init();
 
                 let roleID = $("#<%=hdfRoleID.ClientID%>").val();
@@ -1185,13 +1204,6 @@
                 });
 
                 $("#<%=txtPhone.ClientID%>").keyup(function (e) {
-                    if (/\D/g.test(this.value)) {
-                        // Filter non-digits from input value.
-                        this.value = this.value.replace(/\D/g, '');
-                    }
-                });
-
-                $("#<%=txtZalo.ClientID%>").keyup(function (e) {
                     if (/\D/g.test(this.value)) {
                         // Filter non-digits from input value.
                         this.value = this.value.replace(/\D/g, '');
@@ -1633,32 +1645,77 @@
                 var address = $("#<%= txtAddress.ClientID%>").val();
                 var facebooklink = $("#<%= txtFacebook.ClientID%>").val();
                 var username = $("#<%= hdfUsernameCurrent.ClientID%>").val();
+                var province = $("#<%=ddlProvince.ClientID%>").val();
+                var district = $("#<%=ddlDistrict.ClientID%>").val();
+                var ward = $("#<%=ddlWard.ClientID%>").val();
 
-                if (phone == "" || name == "" || nick == "" || address == "" || (facebooklink == "" && username == "nhom_facebook"))
-                {
-                    if (name == "") {
-                        $("#<%= txtFullname.ClientID%>").focus();
-                        swal("Thông báo", "Hãy nhập tên khách hàng!", "error");
-                    }
-                    else if (phone == "") {
-                        $("#<%= txtPhone.ClientID%>").focus();
-                        swal("Thông báo", "Hãy nhập số điện thoại khách hàng!", "error");
-                    }
-                    else if (nick == "") {
-                        $("#<%= txtNick.ClientID%>").prop('disabled', false);
-                        $("#<%= txtNick.ClientID%>").focus();
-                        swal("Thông báo", "Hãy nhập Nick đặt hàng của khách hàng!", "error");
-                    }
-                    else if (facebooklink == "" && $("#<%= hdfUsernameCurrent.ClientID%>").val() == "nhom_facebook") {
-                        $("#<%= txtFacebook.ClientID%>").prop('disabled', false);
-                        $("#<%= txtFacebook.ClientID%>").focus();
-                        swal("Thông báo", "Hãy nhập link Facebook của khách này!", "error");
-                    }
-                    else if (address == "") {
-                        $("#<%= txtAddress.ClientID%>").focus();
-                        swal("Thông báo", "Hãy nhập địa chỉ khách hàng!", "error");
-                    }
-
+                if (name === "") {
+                    $("#<%= txtFullname.ClientID%>").focus();
+                    swal("Thông báo", "Hãy nhập tên khách hàng!", "error");
+                }
+                else if (phone === "") {
+                    $("#<%= txtPhone.ClientID%>").focus();
+                    swal("Thông báo", "Hãy nhập số điện thoại khách hàng!", "error");
+                }
+                else if (nick === "") {
+                    $("#<%= txtNick.ClientID%>").focus();
+                    swal("Thông báo", "Hãy nhập Nick đặt hàng của khách hàng!", "error");
+                }
+                else if (facebooklink === "" && $("#<%= hdfUsernameCurrent.ClientID%>").val() === "nhom_facebook") {
+                    $("#<%= txtFacebook.ClientID%>").focus();
+                    swal("Thông báo", "Hãy nhập link Facebook của khách này!", "error");
+                }
+                else if (province === "0" || province === null || province === "") {
+                    swal({
+                        title: "Thông báo",
+                        text: "Chưa chọn tỉnh thành",
+                        type: "warning",
+                        showCancelButton: false,
+                        confirmButtonText: "Để em xem lại!!",
+                        closeOnConfirm: false,
+                        html: true
+                    }, function (isConfirm) {
+                        if (isConfirm) {
+                            sweetAlert.close();
+                            $("#<%=ddlProvince.ClientID%>").select2('open');
+                        }
+                    });
+                }
+                else if (district === "0" || district === null || district === "") {
+                    swal({
+                        title: "Thông báo",
+                        text: "Chưa chọn quận huyện",
+                        type: "warning",
+                        showCancelButton: false,
+                        confirmButtonText: "Để em xem lại!!",
+                        closeOnConfirm: false,
+                        html: true
+                    }, function (isConfirm) {
+                        if (isConfirm) {
+                            sweetAlert.close();
+                            $("#<%=ddlDistrict.ClientID%>").select2('open');
+                        }
+                    });
+                }
+                else if (ward === "0" || ward === null || ward === "") {
+                    swal({
+                        title: "Thông báo",
+                        text: "Chưa chọn phường xã",
+                        type: "warning",
+                        showCancelButton: false,
+                        confirmButtonText: "Để em xem lại!!",
+                        closeOnConfirm: false,
+                        html: true
+                    }, function (isConfirm) {
+                        if (isConfirm) {
+                            sweetAlert.close();
+                            $("#<%=ddlWard.ClientID%>").select2('open');
+                        }
+                    });
+                }
+                else if (address === "") {
+                    $("#<%= txtAddress.ClientID%>").focus();
+                    swal("Thông báo", "Hãy nhập địa chỉ khách hàng!", "error");
                 }
                 else
                 {
@@ -1850,6 +1907,8 @@
                             swal("Thông báo", "Hãy nhập sản phẩm!", "error");
                         }
                     }
+
+
                 }
             };
 
@@ -2674,6 +2733,7 @@
                 }
                 window.open("/dang-ky-ghtk?orderID=" + orderID + "&weight=" + weight, "_blank");
             }
+
         </script>
     </telerik:RadScriptBlock>
 </asp:Content>
