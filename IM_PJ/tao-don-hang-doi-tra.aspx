@@ -2,7 +2,7 @@
 
 <%@ Register Assembly="Telerik.Web.UI" Namespace="Telerik.Web.UI" TagPrefix="telerik" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
-    <script src="/App_Themes/Ann/js/search-customer.js?v=28042020"></script>
+    <script src="/App_Themes/Ann/js/search-customer.js?v=30042020"></script>
     <script src="/Scripts/moment.min.js"></script>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
@@ -1198,6 +1198,7 @@
                 let dataJSON = $("#<%=hdfListProduct.ClientID%>").val();
 
                 if (!isBlank(dataJSON)) {
+
                     let refundGoodModel = jQuery.parseJSON(dataJSON);
 
                     // Làm lại đơn hàng đổi trả
@@ -1213,6 +1214,14 @@
                     $("#<%=txtNick.ClientID%>").val(refundGoodModel.CustomerNick);
                     $("#<%=txtAddress.ClientID%>").val(refundGoodModel.CustomerAddress);
                     $("#<%=txtFacebook.ClientID%>").val(refundGoodModel.CustomerFacebook);
+
+                    _getCustomerAddress(refundGoodModel.CustomerPhone);
+                    $("input[id$='_txtFullname']").prop('readonly', false);
+                    $("input[id$='_txtAddress']").prop('readonly', false);
+                    $("input[id$='_txtNick']").prop('readonly', false);
+                    $("input[id$='_txtFacebook']").prop('readonly', false);
+                    $("select[id$='_ddlProvince']").attr('disabled', false);
+                    $("select[id$='_ddlProvince']").attr('readonly', false);
 
                     // Init detail refund product
                     refundGoodModel.RefundDetails.reverse().forEach(function (item) {

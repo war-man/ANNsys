@@ -346,7 +346,7 @@ function selectCustomer() {
         if (createdby !== username) {
             swal({
                 title: 'Lưu ý',
-                text: 'Chọn khách hàng này đồng nghĩa em đang tính tiền giúp nhân viên <strong>' + createdby + '</strong>.<br><br>Đồng ý không???',
+                text: 'Chọn khách hàng này đồng nghĩa em đang tính tiền giúp <strong>' + createdby + '</strong>.<br><br>Đồng ý không???',
                 type: 'warning',
                 showCancelButton: true,
                 closeOnConfirm: false,
@@ -357,28 +357,9 @@ function selectCustomer() {
                 if (confirm) {
                     $("input[id$='_txtPhone']").val(phone).prop('readonly', true);
                     $("input[id$='_txtFullname']").val(name);
-
-                    if (nick != "") {
-                        $("input[id$='_txtNick']").val(nick);
-                    }
-                    else {
-                        $("input[id$='_txtNick']").val("");
-                    }
-
-                    if (address != "") {
-                        $("input[id$='_txtAddress']").val(address);
-                    }
-                    else {
-                        $("input[id$='_txtAddress']").val("");
-                    }
-
-                    if (zalo != "") {
-                        $("input[id$='_txtZalo']").val(zalo);
-                    }
-                    else {
-                        $("input[id$='_txtZalo']").val("");
-                    }
-
+                    $("input[id$='_txtNick']").val(nick);
+                    $("input[id$='_txtAddress']").val(address);
+                    $("input[id$='_txtZalo']").val(zalo);
                     $("input[id$='_txtFacebook']").parent().removeClass("width-100");
 
                     if (facebook === "null") {
@@ -422,28 +403,9 @@ function selectCustomer() {
         else {
             $("input[id$='_txtPhone']").val(phone).prop('readonly', true);
             $("input[id$='_txtFullname']").val(name);
-
-            if (nick != "") {
-                $("input[id$='_txtNick']").val(nick);
-            }
-            else {
-                $("input[id$='_txtNick']").val("");
-            }
-
-            if (address != "") {
-                $("input[id$='_txtAddress']").val(address);
-            }
-            else {
-                $("input[id$='_txtAddress']").val("");
-            }
-
-            if (zalo != "") {
-                $("input[id$='_txtZalo']").val(zalo);
-            }
-            else {
-                $("input[id$='_txtZalo']").val("");
-            }
-
+            $("input[id$='_txtNick']").val(nick);
+            $("input[id$='_txtAddress']").val(address);
+            $("input[id$='_txtZalo']").val(zalo);
             $("input[id$='_txtFacebook']").parent().removeClass("width-100");
 
             if (facebook === "null") {
@@ -482,6 +444,18 @@ function selectCustomer() {
             checkOrderOld(id);
 
             $("#txtSearch").focus();
+        }
+
+
+        // xử lý riêng màn hình tao-don-hang-doi-tra
+        var page = window.location.pathname;
+        if (page === "/tao-don-hang-doi-tra" || page === "/xem-don-hang-doi-tra") {
+            $("input[id$='_txtFullname']").prop('readonly', false);
+            $("input[id$='_txtAddress']").prop('readonly', false);
+            $("input[id$='_txtNick']").prop('readonly', false);
+            $("input[id$='_txtFacebook']").prop('readonly', false);
+            $("select[id$='_ddlProvince']").attr('disabled', false);
+            $("select[id$='_ddlProvince']").attr('readonly', false);
         }
 
     });

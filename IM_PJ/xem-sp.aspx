@@ -10,7 +10,7 @@
     <meta name="robots" content="noindex, nofollow">
     <link rel="stylesheet" href="/App_Themes/Ann/css/style.css?v=15052019" media="all">
     <link rel="stylesheet" href="/App_Themes/Ann/css/style-P.css?v=23082019" media="all">
-    <link href="/App_Themes/Ann/css/HoldOn.css?v=28042020" rel="stylesheet" type="text/css" />
+    <link href="/App_Themes/Ann/css/HoldOn.css?v=30042020" rel="stylesheet" type="text/css" />
     <link href="/App_Themes/NewUI/js/select2/select2.css" rel="stylesheet" />
     <script type="text/javascript" src="/App_Themes/Ann/js/jquery-2.1.3.min.js"></script>
     <style>
@@ -93,38 +93,33 @@
             <main>
                 <div class="container">
                     <div class="row">
-                        <a href="javascript:;" onclick="goBack()" class="btn primary-btn h45-btn"><i class="fa fa-angle-left"></i><i class="fa fa-angle-left"></i> Trở về</a>
+                        <div class="col-md-3"></div>
+                        <div class="col-md-6">
+                            <a href="javascript:;" onclick="goBack()" class="btn primary-btn h45-btn"><i class="fa fa-angle-left"></i><i class="fa fa-angle-left"></i> Trở về</a>
+                        </div>
+                        <div class="col-md-3"></div>
                     </div>
                     <div class="row">
-                        <div class="col-md-12 product-item">
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="product-info">
-                                        <h3 class="product-name"><asp:Literal ID="ltrProductName" runat="server"></asp:Literal></h3>
-                                        <asp:Literal ID="ltrRegularPrice" runat="server"></asp:Literal>
-                                        <asp:Literal ID="ltrRetailPrice" runat="server"></asp:Literal>
-                                        <asp:Literal ID="ltrMaterials" runat="server"></asp:Literal>
-                                        <asp:Literal ID="ltrContent" runat="server"></asp:Literal>
-                                        <asp:Literal ID="ltrVariable" runat="server"></asp:Literal>
-                                        <asp:Literal ID="ltrProductStock" runat="server"></asp:Literal>
-                                    </div>
-                                </div>
+                        <div class="col-md-3"></div>
+                        <div class="col-md-6 product-item">
+                            <div class="product-info">
+                                <h3 class="product-name"><asp:Literal ID="ltrProductName" runat="server"></asp:Literal></h3>
+                                <asp:Literal ID="ltrRegularPrice" runat="server"></asp:Literal>
+                                <asp:Literal ID="ltrRetailPrice" runat="server"></asp:Literal>
+                                <asp:Literal ID="ltrMaterials" runat="server"></asp:Literal>
+                                <asp:Literal ID="ltrContent" runat="server"></asp:Literal>
+                                <asp:Literal ID="ltrVariable" runat="server"></asp:Literal>
+                                <asp:Literal ID="ltrProductStock" runat="server"></asp:Literal>
                             </div>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <asp:Literal ID="ltrButton" runat="server"></asp:Literal>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <asp:Literal ID="ProductThumbnail" runat="server"></asp:Literal>
-                                    <asp:Literal ID="imageGallery" runat="server"></asp:Literal>
-                                </div>
-                            </div>
+                            <asp:Literal ID="ltrButton" runat="server"></asp:Literal>
+                            <asp:Literal ID="ProductThumbnail" runat="server"></asp:Literal>
+                            <asp:Literal ID="imageGallery" runat="server"></asp:Literal>
                         </div>
+                        <div class="col-md-3"></div>
                     </div>
                     <div class="row tableview" id="variableTable">
-                        <div class="col-md-12">
+                        <div class="col-md-3"></div>
+                        <div class="col-md-6">
                             <div class="panel-table clear">
                                 <asp:Literal ID="ltrVariableList" runat="server"></asp:Literal>
                                 <div class="clear">
@@ -142,9 +137,7 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="row">
-                        <a href="javascript:;" onclick="goBack()" class="btn primary-btn h45-btn"><i class="fa fa-angle-left"></i><i class="fa fa-angle-left"></i> Trở về</a>
+                        <div class="col-md-3"></div>
                     </div>
                 </div>
             </main>
@@ -156,8 +149,8 @@
             <script src="/App_Themes/Ann/js/bootstrap-table/bootstrap-table.js"></script>
             <script src="/App_Themes/NewUI/js/select2/select2.min.js"></script>
             <script src="/App_Themes/Ann/js/master.js?v=2011"></script>
-            <script src="/App_Themes/Ann/js/copy-product-info.js?v=28042020"></script>
-            <script src="/App_Themes/Ann/js/download-product-image.js?v=28042020"></script>
+            <script src="/App_Themes/Ann/js/copy-product-info.js?v=30042020"></script>
+            <script src="/App_Themes/Ann/js/download-product-image.js?v=30042020"></script>
 
             <script src="/App_Themes/Ann/js/HoldOn.js?v=2011"></script>
 

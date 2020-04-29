@@ -141,8 +141,12 @@ namespace IM_PJ
                         error += "<p>Không tìm thấy đơn hàng đổi trả " + order.RefundsGoodsID.ToString() + " (có thể đã bị xóa khi làm lại đơn đổi trả). Thêm lại đơn hàng đổi trả nhé!</p>";
                     }
                 }
-                
-                string CustomerAddress = order.CustomerAddress.ToTitleCase();
+                var customer = CustomerController.GetByID(order.CustomerID.Value);
+
+                var Province = ProvinceController.GetByID(customer.ProvinceID.Value);
+                var District = ProvinceController.GetByID(customer.DistrictId.Value);
+                var Ward = ProvinceController.GetByID(customer.WardId.Value);
+                string CustomerAddress = order.CustomerAddress.ToTitleCase() + ", " + Ward.Name + ", " + District.Name + ", " + Province.Name;
                 string DeliveryInfo = "";
                 string ShippingFeeInfo = "";
                 string ShipperFeeInfo = "";
@@ -212,7 +216,14 @@ namespace IM_PJ
                         var shipto = TransportCompanyController.GetReceivePlaceForOrderList(company.ID, subID);
                         if (shipto != null && subID > 0)
                         {
-                            CustomerAddress = "<span class='phone'>" + shipto.ShipTo.ToTitleCase() + "</span>";
+                            if (!String.IsNullOrEmpty(Province.Name))
+                            {
+                                CustomerAddress = "<span class='phone'>" + shipto.ShipTo.ToTitleCase() + " (" + Province.Name + ")</span>";
+                            }
+                            else
+                            {
+                                CustomerAddress = "<span class='phone'>" + shipto.ShipTo.ToTitleCase()+ "</span>";
+                            }
                         }
                         else
                         {
@@ -286,7 +297,7 @@ namespace IM_PJ
 
                 // Lấy số điện thoại 2 nếu có
                 string CustomerPhone = order.CustomerPhone;
-                var customer = CustomerController.GetByID(Convert.ToInt32(order.CustomerID));
+                
                 if (!string.IsNullOrEmpty(customer.CustomerPhone2))
                 {
                     CustomerPhone += " - " + customer.CustomerPhone2;

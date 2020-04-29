@@ -185,7 +185,7 @@ namespace IM_PJ.Controllers
                     var pro = ProvinceController.GetByID(provinceID);
                     if (pro != null)
                     {
-                        entity.Province = pro.ProvinceName;
+                        entity.Province = pro.Name;
                     }
                     else
                     {
@@ -306,7 +306,7 @@ namespace IM_PJ.Controllers
                 // Get customer of province
                 result = customers
                     .GroupJoin(
-                        dbe.tbl_Province,
+                        dbe.DeliverySaveAddresses,
                         cus => cus.ProvinceID,
                         pro => pro.ID,
                         (customer, province) => new { customer, province }
@@ -331,7 +331,7 @@ namespace IM_PJ.Controllers
                             PaymentType = parent.customer.PaymentType.HasValue ? parent.customer.PaymentType.Value : 0,
                             TransportCompanyID = parent.customer.TransportCompanyID.HasValue ? parent.customer.TransportCompanyID.Value : 0,
                             TransportCompanySubID = parent.customer.TransportCompanySubID.HasValue ? parent.customer.TransportCompanySubID.Value : 0,
-                            ProvinceName = child != null ? child.ProvinceName : String.Empty
+                            ProvinceName = child != null ? child.Name : String.Empty
                         }
                     )
                     .OrderBy(x => x.ID)
@@ -476,7 +476,6 @@ namespace IM_PJ.Controllers
 
             using (var dbe = new inventorymanagementEntities())
             {
-
                 result = dbe.tbl_Customer
                     .Where(x => string.IsNullOrEmpty(CreatedBy) || (!string.IsNullOrEmpty(CreatedBy) && x.CreatedBy == CreatedBy))
                     .Where(x => x.CreatedDate >= fromDate && x.CreatedDate <= toDate)

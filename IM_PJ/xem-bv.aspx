@@ -8,8 +8,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=yes">
     <meta name="format-detection" content="telephone=no">
     <meta name="robots" content="noindex, nofollow">
-    <link rel="stylesheet" href="/App_Themes/Ann/css/style.css?v=28042020" media="all">
-    <link rel="stylesheet" href="/App_Themes/Ann/css/style-P.css?v=28042020" media="all">
+    <link rel="stylesheet" href="/App_Themes/Ann/css/style.css?v=30042020" media="all">
+    <link rel="stylesheet" href="/App_Themes/Ann/css/style-P.css?v=30042020" media="all">
     <link href="/App_Themes/NewUI/js/select2/select2.css" rel="stylesheet" />
     <script type="text/javascript" src="/App_Themes/Ann/js/jquery-2.1.3.min.js"></script>
     <style>
@@ -92,43 +92,26 @@
             <main>
                 <div class="container">
                     <div class="row">
-                        <a href="javascript:;" onclick="goBack()" class="btn primary-btn h45-btn"><i class="fa fa-angle-left"></i><i class="fa fa-angle-left"></i> Trở về</a>
+                        <div class="col-md-3"></div>
+                        <div class="col-md-6">
+                            <a href="javascript:;" onclick="goBack()" class="btn primary-btn h45-btn"><i class="fa fa-angle-left"></i><i class="fa fa-angle-left"></i> Trở về</a>
+                        </div>
+                        <div class="col-md-3"></div>
                     </div>
                     <div class="row">
-                        <div class="col-md-12 product-item">
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="post-info">
-                                        <h3 class="product-name"><asp:Literal ID="ltrProductName" runat="server"></asp:Literal></h3>
-                                        <asp:Literal ID="ltrContent" runat="server"></asp:Literal>
-                                    </div>
-                                </div>
+                        <div class="col-md-3"></div>
+                        <div class="col-md-6 product-item">
+                            <div class="post-info">
+                                <h3 class="product-name"><asp:Literal ID="ltrProductName" runat="server"></asp:Literal></h3>
+                                <asp:Literal ID="ltrContent" runat="server"></asp:Literal>
                             </div>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="col-xs-6">
-                                        <div class="row">
-                                            <asp:Literal ID="ltrCopyProductInfoButton" runat="server"></asp:Literal>
-                                        </div>
-                                    </div>
-                                    <div class="col-xs-6">
-                                        <div class="row">
-                                            <asp:Literal ID="ltrDownloadProductImageButton" runat="server"></asp:Literal>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <asp:Literal ID="PostThumbnail" runat="server"></asp:Literal>
-                                    <asp:Literal ID="imageGallery" runat="server"></asp:Literal>
-                                </div>
-                            </div>
+                            <asp:Literal ID="ltrCopyProductInfoButton" runat="server"></asp:Literal>
+                            <asp:Literal ID="ltrDownloadProductImageButton" runat="server"></asp:Literal>
+                            <asp:Literal ID="PostThumbnail" runat="server"></asp:Literal>
+                            <asp:Literal ID="imageGallery" runat="server"></asp:Literal>
                         </div>
+                        <div class="col-md-3"></div>
                     </div>
-                </div>
-                <div class="row">
-                    <a href="javascript:;" onclick="goBack()" class="btn primary-btn h45-btn"><i class="fa fa-angle-left"></i><i class="fa fa-angle-left"></i> Trở về</a>
                 </div>
             </main>
 
@@ -138,9 +121,9 @@
             <script src="/App_Themes/Ann/js/bootstrap.min.js"></script>
             <script src="/App_Themes/Ann/js/bootstrap-table/bootstrap-table.js"></script>
             <script src="/App_Themes/NewUI/js/select2/select2.min.js"></script>
-            <script src="/App_Themes/Ann/js/master.js?v=28042020"></script>
-            <script src="/App_Themes/Ann/js/copy-post-info.js?v=28042020"></script>
-            <script src="/App_Themes/Ann/js/download-post-image.js?v=28042020"></script>
+            <script src="/App_Themes/Ann/js/master.js?v=30042020"></script>
+            <script src="/App_Themes/Ann/js/copy-post-info.js?v=30042020"></script>
+            <script src="/App_Themes/Ann/js/download-post-image.js?v=30042020"></script>
 
             <script type="text/javascript">
 

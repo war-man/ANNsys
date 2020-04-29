@@ -2,7 +2,7 @@
 
 <%@ Register Assembly="Telerik.Web.UI" Namespace="Telerik.Web.UI" TagPrefix="telerik" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
-    <script src="/App_Themes/Ann/js/search-customer.js?v=28042020"></script>
+    <script src="/App_Themes/Ann/js/search-customer.js?v=30042020"></script>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <asp:Panel ID="parent" runat="server">
@@ -196,6 +196,7 @@
                 </div>
             </div>
             <asp:HiddenField ID="hdfCustomerID" runat="server" />
+            <asp:HiddenField ID="hdfCustomerPhone" runat="server" />
         </main>
     </asp:Panel>
     <style>
@@ -220,8 +221,23 @@
         </AjaxSettings>
     </telerik:RadAjaxManager>
 
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+
     <script>
         "use strict";
+
+        $(document).ready(function () {
+
+            _initReceiverAddress();
+            _onChangeReceiverAddress();
+            _getCustomerAddress($("#<%=hdfCustomerPhone.ClientID%>").val());
+            $("select[id$='_ddlProvince']").attr('disabled', true);
+            $("select[id$='_ddlProvince']").prop('readonly', true);
+            $("select[id$='_ddlDistrict']").attr('disabled', true);
+            $("select[id$='_ddlDistrict']").prop('readonly', true);
+            $("select[id$='_ddlWard']").attr('disabled', true);
+            $("select[id$='_ddlWard']").prop('readonly', true);
+        });
 
         function clickrow(obj) {
             if (!obj.find("td").eq(1).hasClass("checked")) {

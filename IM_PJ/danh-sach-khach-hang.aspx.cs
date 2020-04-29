@@ -61,7 +61,7 @@ namespace IM_PJ
             {
                 foreach (var p in pro)
                 {
-                    ListItem listitem = new ListItem(p.ProvinceName, p.ID.ToString());
+                    ListItem listitem = new ListItem(p.Name, p.ID.ToString());
                     ddlProvince.Items.Add(listitem);
                 }
                 ddlProvince.DataBind();

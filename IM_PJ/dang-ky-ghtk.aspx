@@ -745,7 +745,7 @@
                             _order.pick_money = data.money;
                             $("#pick_money").val(_formatThousand(data.money));
                             // value
-                            _order.value = data.money;
+                            _order.value = data.value;
                             $("#value").val(_formatThousand(data.money));
                             $("#total_money").val(_formatThousand(data.money));
                             // id
@@ -809,7 +809,7 @@
                                 $("#divFeeShop").hide();
                             }
                             if (data.note)
-                                $("#note").val(data.note).trigger('change');
+                                $("#note").val($("#note").val() + ". " + data.note).trigger('change');
                         },
                         error: (xhr, textStatus, error) => {
                             return _alterError(titleAlert, xhr.responseJSON)
@@ -1034,11 +1034,11 @@
                                     if (data.success) {
                                         if (_feeShipment == 1) {
                                             _order.pick_money = _order.pick_money - _fee;
-                                            _order.value = _order.pick_money;
+                                            //_order.value = _order.pick_money;
                                         }
                                         else if (_feeShipment == 2) {
                                             _order.pick_money = _order.pick_money - _feeShop;
-                                            _order.value = _order.pick_money;
+                                            //_order.value = _order.pick_money;
                                         }
                                         _fee = data.fee.fee;
                                         $("#feeship").html(_formatThousand(_fee));
@@ -1069,12 +1069,12 @@
                         //total_money = _order.pick_money;
                         // Thay đổi logic. Shop trả sẻ cộng tiền phí vào thu hộ
                         _order.pick_money = _order.pick_money + _fee;
-                        _order.value = _order.pick_money;
+                        //_order.value = _order.pick_money;
                         total_money = _order.pick_money;
                     }
                     else if (feeShipment == 2) {
                         _order.pick_money = _order.pick_money + _feeShop;
-                        _order.value = _order.pick_money;
+                        //_order.value = _order.pick_money;
                         total_money = _order.pick_money;
                     }
                     else {
