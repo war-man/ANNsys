@@ -312,15 +312,15 @@ namespace NHST.Bussiness
             }
             else if (ShippingType == 2)
             {
-                ret = "<span class='bg-red'>Bưu điện</span>";
+                ret = "<span class='bg-yellow'>Bưu điện</span>";
             }
             else if (ShippingType == 3)
             {
-                ret = "<span class='bg-yellow'>Proship</span>";
+                ret = "<span class='bg-proship'>Proship</span>";
             }
             else if (ShippingType == 4)
             {
-                ret = "<span class='bg-blue'>Chuyển xe</span>";
+                ret = "<span class='bg-orange'>Chuyển xe</span>";
             }
             else if (ShippingType == 5)
             {
@@ -328,7 +328,7 @@ namespace NHST.Bussiness
             }
             else if (ShippingType == 6)
             {
-                ret = "<span class='bg-orange'>GHTK</span>";
+                ret = "<span class='bg-ghtk'>GHTK</span>";
             }
             else if (ShippingType == 7)
             {
