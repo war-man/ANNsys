@@ -196,7 +196,7 @@
                                             </td>
                                         </tr>
                                         <tr class="odd">
-                                            <td class="label-weight">Khối lượng</td>
+                                            <td class="label-weight">Khối lượng (kg)</td>
                                             <td class="input-weight">
                                                 <input type="number" min="0" step="0.1" id="weight" class="form-control text-right">
                                             </td>
@@ -661,10 +661,10 @@
                         // Chuyển kiểu string thành float 
                         weight = parseFloat(weight);
 
-                        if (weight < (_weight_min - 0.3))
+                        if (weight < _weight_min)
                             return _alterError(
                               "Lỗi nhập khối lượng gói hàng",
-                              { message: "Khối lượng gói hàng tối thiểu là " + (_weight_min - 0.3) + "kg" }
+                              { message: "Khối lượng gói hàng tối thiểu là " + _weight_min + "kg" }
                             ).then(() => $("#weight").focus());
 
                         let $shipmentShop = $("#shipment_shop");
@@ -789,15 +789,16 @@
                             // address
                             $("#address").val(data.customerAddress).trigger('change');
                             if (data.weight) {
-                                _weight_min = parseFloat(data.weight);
-                                $("#weight").val(_weight_min).trigger('blur');
-                                if (weight != 0) {
-                                    $("#weight").val(weight).trigger('blur');
+                                if (data.weight != 0 && weight == 0) {
+                                    $("#weight").val(data.weight).trigger('blur');
                                 }
+                            }
+                            if (data.weightMin) {
+                                _weight_min = parseFloat(data.weightMin);
                             }
                             if (data.feeShop) {
                                 _feeShop = data.feeShop;
-                                $("#feeship_shop").attr("disabled", true);
+                                //$("#feeship_shop").attr("disabled", true);
                                 $("#feeship_receiver").attr("disabled", true);
                                 $("#divFeeShop").show();
                                 $("#labelFeeShop").html(_formatThousand(data.feeShop));
@@ -1037,7 +1038,7 @@
                                             //_order.value = _order.pick_money;
                                         }
                                         else if (_feeShipment == 2) {
-                                            _order.pick_money = _order.pick_money - _feeShop;
+                                            _order.pick_money = _order.pick_money;
                                             //_order.value = _order.pick_money;
                                         }
                                         _fee = data.fee.fee;
@@ -1065,6 +1066,7 @@
                     let feeShipment = +$("input:radio[name='feeship']:checked").val() || 0;
                     let total_money = 0;
 
+                    
                     if (feeShipment == 1) {
                         //total_money = _order.pick_money;
                         // Thay đổi logic. Shop trả sẻ cộng tiền phí vào thu hộ
@@ -1073,7 +1075,7 @@
                         total_money = _order.pick_money;
                     }
                     else if (feeShipment == 2) {
-                        _order.pick_money = _order.pick_money + _feeShop;
+                        _order.pick_money = _order.pick_money;
                         //_order.value = _order.pick_money;
                         total_money = _order.pick_money;
                     }

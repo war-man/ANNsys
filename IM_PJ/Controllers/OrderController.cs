@@ -2212,7 +2212,7 @@ namespace IM_PJ.Controllers
                     .ToList();
             }
 
-            result = result.Where(x => x.Quantity > 0).OrderByDescending(x => x.Quantity).Take(10).ToList();
+            result = result.Where(x => x.Quantity > 0).OrderByDescending(x => x.Quantity).Take(15).ToList();
 
             return result;
         }
