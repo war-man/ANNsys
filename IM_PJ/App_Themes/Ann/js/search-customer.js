@@ -343,6 +343,8 @@ function selectCustomer() {
         var createdby = $(this).closest('tr').find("td.createdby").html();
         var username = $("input[id$='_hdfUsername']").val();
 
+        
+
         if (createdby !== username) {
             swal({
                 title: 'Lưu ý',
@@ -377,6 +379,7 @@ function selectCustomer() {
                     button += "<a href=\"javascript:;\" class=\"btn primary-btn fw-btn not-fullwidth clear-btn\" onclick=\"clearCustomerDetail()\"><i class=\"fa fa-times\" aria-hidden=\"true\"></i> Bỏ</a>";
                     $(".view-detail").html(button).show();
 
+                    _clearCustomerAddress();
                     _getCustomerAddress(phone);
 
                     getCustomerDiscount(id);
@@ -425,6 +428,7 @@ function selectCustomer() {
             button += "<a href=\"javascript:;\" class=\"btn primary-btn fw-btn not-fullwidth clear-btn\" onclick=\"clearCustomerDetail()\"><i class=\"fa fa-times\" aria-hidden=\"true\"></i> Bỏ</a>";
             $(".view-detail").html(button).show();
 
+            _clearCustomerAddress();
             _getCustomerAddress(phone);
 
             getCustomerDiscount(id);
@@ -925,6 +929,6 @@ function _clearCustomerAddress() {
     $("select[id$='_ddlProvince']").find("option").remove();
     $("select[id$='_ddlDistrict']").find("option").remove();
     $("select[id$='_ddlWard']").find("option").remove();
-    _disabledDDLDistrict(true, 0);
-    _disabledDDLWard(true, 0);
+    
+    _initReceiverAddress();
 }
