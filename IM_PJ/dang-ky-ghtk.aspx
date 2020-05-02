@@ -21,6 +21,9 @@
 
     <title>Tạo đơn GHTK</title>
     <style>
+        .hide {
+            display: none;
+        }
         .bg07 {
             background-image: url(https://dev.ghtk.vn/img/bg/07.png);
         }
@@ -206,7 +209,7 @@
                             </div>
                             <div class="form-group row">
                                 <div class="col-4 col-xl-4">
-                                    <label>Phí ship GHTK</label>
+                                    <label>Phí GHTK tính</label>
                                 </div>
                                 <div class="col-8 col-xl-8">
                                     <div class="row">
@@ -215,20 +218,20 @@
                                         </div>
                                         <div class="col-7 col-xl-9">
                                             <div class="custom-control custom-radio custom-control-inline">
-                                                <input type="radio" id="feeship_shop" name="feeship" class="custom-control-input" value="1" checked="checked">
-                                                <label class="custom-control-label" for="feeship_shop">Shop trả</label>
+                                                <input type="radio" id="feeship_shop" name="feeship" class="custom-control-input" value="1">
+                                                <label class="custom-control-label" for="feeship_shop">Lấy phí GHTK (update phí này vào đơn hàng)</label>
                                             </div>
-                                            <%--<div class="custom-control custom-radio custom-control-inline">
+                                            <div class="custom-control custom-radio custom-control-inline">
                                                 <input type="radio" id="feeship_receiver" name="feeship" class="custom-control-input" value="0">
-                                                <label class="custom-control-label" for="feeship_receiver">Khách trả</label>
-                                            </div>--%>
+                                                <label class="custom-control-label" for="feeship_receiver">Khách tự trả phí (shop ứng trước, phí cộng vào thu hộ)</label>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                             <div id="divFeeShop" class="form-group row">
                                 <div class="col-4 col-xl-4">
-                                    <label>Phí nhân viên nhập</label>
+                                    <label>Phí nhân viên tính</label>
                                 </div>
                                 <div class="col-8 col-xl-8">
                                     <div class="row">
@@ -237,28 +240,28 @@
                                         </div>
                                         <div class="col-7 col-xl-9">
                                             <div class="custom-control custom-radio custom-control-inline">
-                                                <input type="radio" id="feeShop" name="feeship" class="custom-control-input" value="2">
-                                                <label class="custom-control-label" for="feeShop">Đã nhập</label>
+                                                <input type="radio" id="fee_entered" name="feeship" class="custom-control-input" value="2">
+                                                <label class="custom-control-label" for="fee_entered">Lấy phí nhân viên tính (phí này phải bằng phí GHTK tính)</label>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <label for="pick_money" class="col-4 col-xl-3 col-form-label">Tiền thu hộ</label>
-                                <div class="input-group col-8 col-xl-9">
+                                <label for="pick_money" class="col-4 col-xl-4 col-form-label">Tiền thu hộ</label>
+                                <div class="input-group col-8 col-xl-8">
                                     <input type="text" id="pick_money" class="form-control text-right" value="0" disabled="disabled" readonly>
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <label for="value" class="col-4 col-xl-3 col-form-label">Giá trị hàng</label>
-                                <div class="input-group col-8 col-xl-9">
+                                <label for="value" class="col-4 col-xl-4 col-form-label">Giá trị hàng</label>
+                                <div class="input-group col-8 col-xl-8">
                                     <input type="text" id="value" class="form-control text-right" value="0" disabled="disabled" readonly>
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <label for="total_money" class="col-4 col-xl-3 col-form-label">Tổng tiền thu</label>
-                                <div class="input-group col-8 col-xl-9">
+                                <label for="total_money" class="col-4 col-xl-4 col-form-label">Tổng tiền GHTK thu</label>
+                                <div class="input-group col-8 col-xl-8">
                                     <input type="text" id="total_money" class="form-control text-right" value="0" disabled="disabled" readonly>
                                 </div>
                             </div>
@@ -371,7 +374,7 @@
                         note: null,
                         email: null,
                         use_return_address: 0,
-                        is_freeship: _feeShipment == 0 ? 0 : 1,
+                        is_freeship: 1,
                         weight_option: 'kilogram',
                         pick_work_shift: null,
                         //deliver_work_shift: null,
@@ -691,8 +694,7 @@
 
                 function _initFee() {
                     $('input:radio[name="feeship"]').change(function () {
-                        _order.is_freeship = +$(this).val() == 0 ? 0 : 1;
-                        _calculateMoney();
+                        _calculateFee();
                     });
                 }
 
@@ -723,7 +725,7 @@
                               window.location.href = "/danh-sach-don-hang";
                           });
 
-                    let titleAlert = "Lấy thông tin đơn giao hàng";
+                    let titleAlert = "Lấy thông tin đơn hàng";
 
                     $.ajax({
                         method: 'GET',
@@ -751,6 +753,7 @@
                             // id
                             _order.id = data.orderID;
                             $("#client_id").val(data.orderID);
+
                             // province
                             if (data.customerProvinceID) {
                                 // Danh sách tỉnh / thành
@@ -763,6 +766,7 @@
                                 // Danh sách quận / huyện
                                 _disabledDDLDistrict(false);
                             }
+
                             if (data.customerProvinceID && data.customerDistrictID) {
                                 // Danh sách quận / huyện
                                 _order.district_id = data.customerDistrictID;
@@ -776,6 +780,7 @@
                                 // Danh sách phường / xã
                                 _disabledDDLWard(false);
                             }
+
                             if (data.customerProvinceID && data.customerDistrictID && data.customerWardID) {
                                 // Danh sách quận / huyện
                                 _order.ward_id = data.customerWardID;
@@ -786,6 +791,7 @@
                                 $('#ddlWard').removeAttr('readonly');
                                 $('#ddlWard').append(newOption).trigger('change');
                             }
+
                             // address
                             $("#address").val(data.customerAddress).trigger('change');
                             if (data.weight) {
@@ -793,22 +799,45 @@
                                     $("#weight").val(data.weight).trigger('blur');
                                 }
                             }
+
                             if (data.weightMin) {
                                 _weight_min = parseFloat(data.weightMin);
                             }
+
+                            // nếu đã có phí trong đơn hàng
                             if (data.feeShop) {
                                 _feeShop = data.feeShop;
-                                //$("#feeship_shop").attr("disabled", true);
-                                $("#feeship_receiver").attr("disabled", true);
                                 $("#divFeeShop").show();
                                 $("#labelFeeShop").html(_formatThousand(data.feeShop));
-                                $("#feeShop").prop('checked', true).trigger('change');
+                                $("#fee_entered").prop('checked', true).trigger('change');
+                                if (data.money == 0) {
+                                    $("#feeship_shop").attr("disabled", true);
+                                    $("#feeship_receiver").attr("disabled", true);
+                                    $("#feeship_shop").parent().hide();
+                                    $("#feeship_receiver").parent().hide();
+                                }
+                                else {
+                                    $("#feeship_receiver").attr("disabled", true);
+                                    $("#feeship_receiver").parent().hide();
+                                }
                             }
                             else {
-                                $("#feeship_shop").removeAttr("disabled");
-                                $("#feeship_receiver").removeAttr("disabled");
                                 $("#divFeeShop").hide();
+                                // nếu không thu hộ
+                                if (data.money == 0) {
+                                    $("#feeship_shop").attr("disabled", true);
+                                    $("#feeship_shop").hide();
+                                    $("#feeship_shop").parent().hide();
+                                    $("#feeship_receiver").prop('checked', true).trigger('change');
+                                }
+                                else {
+                                    $("#feeship_shop").removeAttr("disabled");
+                                    $("#feeship_receiver").attr("disabled", true);
+                                    $("#feeship_receiver").parent().hide();
+                                    $("#feeship_shop").prop('checked', true).trigger('change');
+                                }
                             }
+
                             if (data.note)
                                 $("#note").val($("#note").val() + ". " + data.note).trigger('change');
                         },
@@ -987,6 +1016,17 @@
                         })
                           .then(() => { $("#ddlProduct").select2('open'); });
 
+                    let ship_GHTK = $("#labelFeeShop").text();
+                    let ship_Entered = $("#feeship").text();
+                    let feeShipment = +$("input:radio[name='feeship']:checked").val() || 0;
+                    if (ship_GHTK != ship_Entered && feeShipment == 2) {
+                        return swal({
+                            title: titleAlert,
+                            text: "Phí ship đã nhập không bằng phí ship GHTK",
+                            icon: "error",
+                        });
+                    }
+
                     _calculateFee();
                     _submit();
                 }
@@ -1033,13 +1073,22 @@
                             success: (data, textStatus, xhr) => {
                                 if (xhr.status == 200 && data) {
                                     if (data.success) {
-                                        if (_feeShipment == 1) {
+                                        if (_feeShipment == 0 || _feeShipment == 1) {
                                             _order.pick_money = _order.pick_money - _fee;
-                                            //_order.value = _order.pick_money;
+                                            _order.value = _order.value - _fee;
                                         }
                                         else if (_feeShipment == 2) {
-                                            _order.pick_money = _order.pick_money;
-                                            //_order.value = _order.pick_money;
+                                            //_order.pick_money = _order.pick_money - _feeShop;
+                                            //_order.value = _order.value - _feeShop;
+                                            if (_order.pick_money == 0) {
+                                                _order.value = _order.value - _feeShop;
+                                                _order.pick_money = _order.pick_money;
+                                            }
+                                                // thu hộ
+                                            else if (_order.pick_money > 0) {
+                                                _order.value = _order.value - _feeShop;
+                                                _order.pick_money = _order.pick_money - _feeShop;
+                                            }
                                         }
                                         _fee = data.fee.fee;
                                         $("#feeship").html(_formatThousand(_fee));
@@ -1066,32 +1115,38 @@
                     let feeShipment = +$("input:radio[name='feeship']:checked").val() || 0;
                     let total_money = 0;
 
-                    
-                    if (feeShipment == 1) {
-                        //total_money = _order.pick_money;
-                        // Thay đổi logic. Shop trả sẻ cộng tiền phí vào thu hộ
+                    if (feeShipment == 0 || feeShipment == 1) {
+                        _order.value = _order.value + _fee;
                         _order.pick_money = _order.pick_money + _fee;
-                        //_order.value = _order.pick_money;
-                        total_money = _order.pick_money;
                     }
                     else if (feeShipment == 2) {
-                        _order.pick_money = _order.pick_money;
-                        //_order.value = _order.pick_money;
-                        total_money = _order.pick_money;
-                    }
-                    else {
-                        total_money = _order.pick_money + _fee;
+                        // chuyển khoản
+                        if (_order.pick_money == 0) {
+                            _order.value = _order.value + _feeShop;
+                            _order.pick_money = _order.pick_money;
+                        }
+                        // thu hộ
+                        else if (_order.pick_money > 0) {
+                            _order.value = _order.value + _feeShop;
+                            _order.pick_money = _order.pick_money + _feeShop;
+                        }
                     }
 
                     _feeShipment = feeShipment;
                     $pick_money.val(_formatThousand(_order.pick_money));
                     $value.val(_formatThousand(_order.value));
-                    $total_money.val(_formatThousand(total_money));
+                    $total_money.val(_formatThousand(_order.pick_money));
                 }
 
                 function _submit() {
                     let titleAlert = "Đồng bộ đơn hàng GHTK";
 
+                    //let $value = $("#value");
+                    //let $total_money = $("#total_money");
+                    //_order.pick_money = +parseInt($total_money.val().replace(/,/g, '')) || 0;
+                    //_order.value = +parseInt($value.val().replace(/,/g, '')) || 0;
+
+                    
                     $.ajax({
                         method: 'POST',
                         contentType: 'application/json',
