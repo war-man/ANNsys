@@ -143,10 +143,26 @@ namespace IM_PJ
                 }
                 var customer = CustomerController.GetByID(order.CustomerID.Value);
 
-                var Province = ProvinceController.GetByID(customer.ProvinceID.Value);
-                var District = ProvinceController.GetByID(customer.DistrictId.Value);
-                var Ward = ProvinceController.GetByID(customer.WardId.Value);
-                string CustomerAddress = order.CustomerAddress.ToTitleCase() + ", " + Ward.Name + ", " + District.Name + ", " + Province.Name;
+                string addressDetail = "";
+                string ProvinceName = "";
+                if (customer.ProvinceID.HasValue)
+                {
+                    var Province = ProvinceController.GetByID(customer.ProvinceID.Value);
+                    addressDetail = ", " + Province.Name;
+                    ProvinceName = Province.Name;
+                }
+                if (customer.DistrictId.HasValue)
+                {
+                    var District = ProvinceController.GetByID(customer.DistrictId.Value);
+                    addressDetail = ", " + District.Name + addressDetail;
+                }
+                if (customer.WardId.HasValue)
+                {
+                    var Ward = ProvinceController.GetByID(customer.WardId.Value);
+                    addressDetail = ", " + Ward.Name + addressDetail;
+                }
+                
+                string CustomerAddress = order.CustomerAddress.ToTitleCase() + addressDetail;
                 string DeliveryInfo = "";
                 string ShippingFeeInfo = "";
                 string ShipperFeeInfo = "";
@@ -216,9 +232,9 @@ namespace IM_PJ
                         var shipto = TransportCompanyController.GetReceivePlaceForOrderList(company.ID, subID);
                         if (shipto != null && subID > 0)
                         {
-                            if (!String.IsNullOrEmpty(Province.Name))
+                            if (!String.IsNullOrEmpty(ProvinceName))
                             {
-                                CustomerAddress = "<span class='phone'>" + shipto.ShipTo.ToTitleCase() + " (" + Province.Name + ")</span>";
+                                CustomerAddress = "<span class='phone'>" + shipto.ShipTo.ToTitleCase() + " (" + ProvinceName + ")</span>";
                             }
                             else
                             {

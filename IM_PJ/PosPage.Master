@@ -1,0 +1,300 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="POSPage.Master.cs" Inherits="IM_PJ.POSPage" %>
+
+<%@ Register Assembly="Telerik.Web.UI" Namespace="Telerik.Web.UI" TagPrefix="telerik" %>
+<!DOCTYPE html>
+<html>
+<head runat="server">
+    <title>Kho Hàng Sỉ ANN</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="robots" content="noindex, nofollow">
+    <link href="/App_Themes/Ann/css/style.css?v=02052020" rel="stylesheet" media="all">
+    <link href="/App_Themes/NewUI/js/select2/select2.css" rel="stylesheet" />
+    <link href="/App_Themes/Ann/css/style-P.css?v=02052020" rel="stylesheet" media="all">
+    <link href="/App_Themes/NewUI/js/sweet/sweet-alert.css" rel="stylesheet" />
+    <link href="/App_Themes/Ann/css/HoldOn.css?v=02052020" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="/App_Themes/Ann/js/jquery-2.1.3.min.js"></script>
+    <script type="text/javascript" src="/App_Themes/Ann/js/popup.js?v=02052020"></script>
+    <script type="text/javascript" src="/Scripts/uuid.js"></script>
+    <asp:ContentPlaceHolder ID="head" runat="server">
+    </asp:ContentPlaceHolder>
+    <style>
+        .image-item img {
+          cursor: pointer;
+          transition: 0.3s;
+        }
+
+        .image-item img:hover {
+            opacity: 0.7;
+        }
+
+        /* The Modal Image (background) */
+        .modal-image-product {
+          position: fixed; /* Stay in place */
+          z-index: 99999; /* Sit on top */
+          padding-top: 100px; /* Location of the box */
+          left: 0;
+          top: 0;
+          width: 100%; /* Full width */
+          height: 100%; /* Full height */
+          overflow: auto; /* Enable scroll if needed */
+          background-color: rgb(0,0,0); /* Fallback color */
+          background-color: rgba(0,0,0,0.9); /* Black w/ opacity */
+        }
+
+        .modal-image-product img {
+            max-height: 90%;
+            width: auto;
+        }
+
+        /* Modal Content (image) */
+        .modal-image-product-content {
+          margin: auto;
+          display: block;
+          width: 80%;
+          max-width: 700px;
+        }
+
+        /* Caption of Modal Image */
+        #caption {
+            margin: auto;
+            display: block;
+            width: 80%;
+            max-width: 700px;
+            text-align: center;
+            color: #fff;
+            padding: 10px 0;
+            height: 150px;
+            font-size: 18px;
+        }
+
+        /* Add Animation */
+        .modal-image-product-content, #caption {  
+          -webkit-animation-name: zoom;
+          -webkit-animation-duration: 0.6s;
+          animation-name: zoom;
+          animation-duration: 0.6s;
+        }
+
+        @-webkit-keyframes zoom {
+          from {-webkit-transform:scale(0)} 
+          to {-webkit-transform:scale(1)}
+        }
+
+        @keyframes zoom {
+          from {transform:scale(0)} 
+          to {transform:scale(1)}
+        }
+
+        /* The Close Button */
+        .modal-image-product-close {
+          position: absolute;
+          top: 15px;
+          right: 35px;
+          color: #f1f1f1;
+          font-size: 40px;
+          font-weight: bold;
+          transition: 0.3s;
+        }
+
+        .modal-image-product-close:hover,
+        .modal-image-product-close:focus {
+          color: #bbb;
+          text-decoration: none;
+          cursor: pointer;
+        }
+
+        /* 100% Image Width on Smaller Screens */
+        @media only screen and (max-width: 700px){
+          .modal-image-product-content {
+            width: 100%;
+          }
+          .modal-image-product img {
+            max-width: 100%;
+            height: auto;
+        }
+        }
+    </style>
+</head>
+<body class="menuin scrollbar2">
+    <form id="form12" runat="server" enctype="multipart/form-data">
+        <asp:ScriptManager runat="server" ID="scr">
+        </asp:ScriptManager>
+        <div>
+            <header id="header">
+            </header>
+            <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server">
+            </asp:ContentPlaceHolder>
+            <footer id="footer">
+            </footer>
+            <!-- Modal open large image -->
+            <div id="modalImage" class="modal-image-product hide">
+                <span class="modal-image-product-close">&times;</span>
+                <img class="modal-image-product-content" id="img01">
+                <div id="caption"></div>
+            </div>
+
+            <asp:HiddenField ID="hdfUserID" runat="server" />
+
+            <script src="/App_Themes/Ann/js/bootstrap.min.js"></script>
+            <script src="/App_Themes/NewUI/js/sweet/sweet-alert.js?v=02052020" type="text/javascript"></script>
+            <script src="/App_Themes/NewUI/js/select2/select2.min.js"></script>
+            <script src="/App_Themes/Ann/js/master.js?v=02052020"></script>
+            <script src="/App_Themes/Ann/js/HoldOn.js?v=02052020"></script>
+            <script type="text/javascript">
+                $(".image-item img").click(function (e) {
+                    $("#modalImage").removeClass("hide");
+
+                    var fullPath = $(this).attr("src");
+                    var filename = fullPath.replace(/^.*[\\\/]/, '');
+                    $("#img01").attr("src", "/uploads/images/" + filename);
+
+                    let productName = $(this).parent().parent().find(".name-item").text();
+                    let productSKU = " - " + $(this).parent().parent().find(".sku-item").text();
+                    let productPrice = " - " + $(this).parent().parent().find(".price-item").text();
+                    $("#caption").html(productName + productSKU + productPrice);
+                });
+
+                $(".modal-image-product").click(function (e) {
+                    $("#modalImage").addClass("hide");
+                });
+
+                $(".modal-image-product-close").click(function (e) {
+                    $("#modalImage").addClass("hide");
+                });
+
+                function openImage(obj) {
+                    $("#modalImage").removeClass("hide");
+
+                    var fullPath = $(obj).attr("src");
+                    var filename = fullPath.replace(/^.*[\\\/]/, '');
+                    $("#img01").attr("src", "/uploads/images/" + filename);
+
+                    let productName = $(obj).parent().parent().find(".name-item").text();
+                    let productSKU = " - " + $(obj).parent().parent().find(".sku-item").text();
+                    let productPrice = " - " + $(obj).parent().parent().find(".price-item").text();
+                    $("#caption").html(productName + productSKU + productPrice);
+                }
+
+                function openImageInvoice(obj) {
+                    $("#modalImage").removeClass("hide");
+                    $("#img01").attr("src", $(obj).attr("data-link"));
+                    let name = $(obj).parent().parent().find(".customer-td").text();
+                    $("#caption").html(name);
+                }
+
+                if (!$.cookie('showNotePopup11')) {
+                }
+                
+
+                function screenClass() {
+                    if ($(window).innerWidth() < 769) {
+                        $('.nav-toggle').removeClass('open');
+                        $('body').removeClass('menuin');
+                    }
+                }
+
+                // Fire.
+                screenClass();
+
+                $(document).ready(function () {
+                    LoadSelect();
+                });
+
+                function LoadSelect() {
+                    $(".select2").select2({
+                        templateResult: formatState,
+                        templateSelection: formatState
+                    });
+                    function formatState(opt) {
+                        if (!opt.id) {
+                            return opt.text;
+                        }
+                        var optimage = $(opt.element).data('image');
+                        if (!optimage) {
+                            return opt.text;
+                        } else {
+                            var $opt = $(
+                                '<span>' + opt.text + '</span>'
+                            );
+                            return $opt;
+                        }
+                    };
+                }
+
+
+                $('.form-filter input').keyup(function (e) {
+                    var $input = $(this),
+                        inputContent = $input.val().toLowerCase(),
+                        column = $('.form-filter input').index($input),
+                        $table = $('#table-student'),
+                        $rows = $table.find('tbody tr');
+
+                    var $filteredRows = $rows.filter(function () {
+                        var value = $(this).find('td').eq(column).text().toLowerCase();
+
+                        if (value.indexOf(inputContent) > -1) {
+                            $(this).show();
+                        } else {
+                            $(this).hide();
+                        }
+
+
+                    });
+
+
+                    /* Clean no-result if exist */
+                    /* Prepend no-result */
+                    if ($table.find('tbody tr:visible').length === 0) {
+                        $table.find('tbody').prepend($('<tr class="no-result text-center"><td colspan="3">No result found</td></tr>'));
+                    } else {
+                        $table.find('tbody .no-result').remove();
+                    }
+                });
+
+                function truncateName(args) {
+                    var $span = $(".ruUploadProgress", args.get_row());
+                    var text = $span.text();
+                    if (text.length > 23) {
+                        var newString = text.substring(0, 23) + '...';
+                        $span.text(newString);
+                    }
+                }
+
+                function showThumbnail(file, args) {
+
+                    var image = document.createElement("img");
+
+                    image.file = file;
+                    image.className = "ab img-responsive";
+
+                    var $row = $(args.get_row());
+                    $row.parent().className = "row ruInputs list-unstyled";
+                    $row.append(image);
+
+
+                    var reader = new FileReader();
+                    reader.onload = (function (aImg) {
+                        return function (e) {
+                            aImg.src = e.target.result;
+                        };
+                    }(image));
+                    var ret = reader.readAsDataURL(file);
+                    var canvas = document.createElement("canvas");
+
+                    ctx = canvas.getContext("2d");
+                    image.onload = function () {
+                        ctx.drawImage(image, 100, 100);
+                    };
+
+                }
+
+                function isBlank(str) {
+                    return (!str || /^\s*$/.test(str));
+                }
+            </script>
+        </div>
+    </form>
+</body>
+</html>

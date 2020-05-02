@@ -21,6 +21,12 @@
 
     <title>Tạo đơn GHTK</title>
     <style>
+        #total_money, #pick_money, #value {
+            font-weight: 600;
+        }
+        #total_money {
+            color: red;
+        }
         .hide {
             display: none;
         }
@@ -119,6 +125,15 @@
                                 </div>
                             </div>
                             <div class="form-group">
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text" id="inputGroup-address"><i class="fa fa-home"></i></span>
+                                    </div>
+                                    <input type="text" id="address" class="form-control" aria-label="Sizing example input"
+                                        aria-describedby="inputGroup-address" placeholder="Địa chỉ chi tiết (nhà/ngõ/đường...)">
+                                </div>
+                            </div>
+                            <div class="form-group">
                                 <select id="ddlProvince" class="form-control">
                                 </select>
                             </div>
@@ -129,15 +144,6 @@
                             <div class="form-group">
                                 <select id="ddlWard" class="form-control">
                                 </select>
-                            </div>
-                            <div class="form-group">
-                                <div class="input-group mb-3">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text" id="inputGroup-address"><i class="fa fa-home"></i></span>
-                                    </div>
-                                    <input type="text" id="address" class="form-control" aria-label="Sizing example input"
-                                        aria-describedby="inputGroup-address" placeholder="Địa chỉ chi tiết (nhà/ngõ/đường...)">
-                                </div>
                             </div>
                             <br />
                             <div class="form-group">
@@ -1016,13 +1022,13 @@
                         })
                           .then(() => { $("#ddlProduct").select2('open'); });
 
-                    let ship_GHTK = $("#labelFeeShop").text();
-                    let ship_Entered = $("#feeship").text();
+                    let ship_GHTK = parseFloat($("#feeship").text().replace(/,/g, ''));
+                    let ship_Entered = parseFloat($("#labelFeeShop").text().replace(/,/g, ''));
                     let feeShipment = +$("input:radio[name='feeship']:checked").val() || 0;
-                    if (ship_GHTK != ship_Entered && feeShipment == 2) {
+                    if (ship_Entered < ship_GHTK && feeShipment == 2) {
                         return swal({
                             title: titleAlert,
-                            text: "Phí ship đã nhập không bằng phí ship GHTK",
+                            text: "Phí ship nhân viên tính phải lớn hơn hoặc bằng phí ship GHTK",
                             icon: "error",
                         });
                     }
