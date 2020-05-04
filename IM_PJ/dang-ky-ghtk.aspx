@@ -737,7 +737,7 @@
                         method: 'GET',
                         url: "/api/v1/order/" + orderID + "/delivery-save",
                         success: (response, textStatus, xhr) => {
-                            let data = response.data;
+                            let data = response;
 
                             if (data.executeStatus == 2) {
                                 $("#btnRegister").removeAttr("disabled");
@@ -1187,7 +1187,7 @@
                     let message = '';
                     title = (typeof title !== 'undefined') ? title : 'Thông báo lỗi';
 
-                    if (responseJSON === null) {
+                    if (responseJSON === undefined || responseJSON === null) {
                         message = 'Đẫ có lỗi xãy ra.';
                     }
                     else {
