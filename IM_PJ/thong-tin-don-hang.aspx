@@ -1039,13 +1039,16 @@
 
             // cal fee ship
             function calFeeShip() {
+                if ($("#<%=ddlShippingType.ClientID%>").find(":selected").val() == 6) {
+                    return swal("Thông báo", "Đơn này gửi <strong>GHTK</strong> nên không chọn miễn phí ship được!<br>Nếu cần miễn giảm phí thì hãy tính phí bình thường, sau đó chọn trừ phí ship trong phí khác!", "error");
+                }
                 if ($("#<%=pFeeShip.ClientID%>").is(":disabled")) {
                     $("#<%=pFeeShip.ClientID%>").prop('disabled', false).css("background-color", "#fff").focus();
                     $("#calfeeship").html("Miễn phí").css("background-color", "#F44336");
                 }
                 else {
                     $("#<%=pFeeShip.ClientID%>").prop('disabled', true).css("background-color", "#eeeeee").val(0);
-                    swal("Thông báo", "Đã chọn miễn phí vận chuyển cho đơn hàng này<br><strong>Hãy ghi chú lý do miễn phí vận chuyển!!!</strong>", "success");
+                    swal("Thông báo", "Đã chọn miễn phí ship cho đơn hàng này<br><strong>Hãy ghi chú lý do miễn phí ship!!!</strong>", "success");
                     getAllPrice();
                     $("#calfeeship").html("<i class='fa fa-pencil-square-o' aria-hidden='true'></i> Tính phí").css("background-color", "#f87703");
                 }
@@ -1945,12 +1948,13 @@
                 var fs = $("#<%=pFeeShip.ClientID%>").val();
                 var feeship = parseFloat(fs.replace(/\,/g, ''));
 
-                if (shippingtype == 2 || shippingtype == 3 || shippingtype == 7) {
+                // kiểm tra nhập phí vận chuyển chưa
+                if (shippingtype == 2 || shippingtype == 3 || shippingtype == 6 || shippingtype == 7) {
                     if (feeship == 0 && $("#<%=pFeeShip.ClientID%>").is(":disabled") == false) {
                         $("#<%=pFeeShip.ClientID%>").focus();
                         swal({
                             title: "Có vấn đề:",
-                            text: "Chưa nhập phí vận chuyển!<br><br>Hỏng lẻ miễn phí vận chuyển luôn hở?",
+                            text: "Chưa nhập phí vận chuyển!<br><br>Đơn này miễn phí vận chuyển luôn hở?",
                             type: "warning",
                             showCancelButton: true,
                             confirmButtonColor: "#DD6B55",
@@ -1987,7 +1991,8 @@
                         }
                     }
                 }
-
+                
+                // kiểm tra phí vận chuyển có nhỏ hơn 10k
                 if (feeship > 0 && feeship < 10000) {
                     checkAllValue = false;
                     $("#<%=pFeeShip.ClientID%>").focus();
@@ -2002,6 +2007,7 @@
                     });
                 }
 
+                // kiểm tra chiết khấu lớn hơn 15k
                 var ds = $("#<%=pDiscount.ClientID%>").val();
                 var discount = parseFloat(ds.replace(/\,/g, ''));
 
@@ -2019,6 +2025,7 @@
                     });
                 }
 
+                // chuyển người tạo đơn
                 var ddlCreatedBy = $("#<%=ddlCreatedBy.ClientID%>").val();
                 var createdBy = $("#<%=hdfUsername.ClientID%>").val();
 
