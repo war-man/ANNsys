@@ -56,15 +56,15 @@ function showPostSyncModal(postPublicID) {
         webItem += "<div class='col-md-6 item-button'>" + button + "</div>";
         $(".web-list").append("<div class='row item-website' data-web='" + webList[i] + "' data-post-public-id='" + postPublicID + "' data-post-clone-id='' data-post-wordpress-id=''>" + webItem + "</div>");
 
-        getCloneByPostPublicID(webList[i], postPublicID);
+        getClone(postPublicID, webList[i]);
     }
 }
 
-function getCloneByPostPublicID(web, postPublicID) {
+function getClone(postPublicID, web) {
     $.ajax({
         type: "POST",
-        url: systemAPI + "/getCloneByPostPublicID",
-        data: "{postPublicID: " + postPublicID + "}",
+        url: systemAPI + "/getClone",
+        data: "{postPublicID: " + postPublicID + ", web: '" + web + "'}",
         dataType: "json",
         contentType: "application/json; charset=utf-8",
         success: function (msg) {
@@ -72,10 +72,17 @@ function getCloneByPostPublicID(web, postPublicID) {
             if (msg.d != "null") {
                 let data = JSON.parse(msg.d);
 
-                $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-blue'>Tìm thấy clone trên hệ thống</span>");
-                $("*[data-web='" + web + "']").find(".item-button").find(".btn-clone-had-found").removeClass("hide");
-                $("*[data-web='" + web + "']").attr("data-post-clone-id", data[0].ID);
-                $("*[data-web='" + web + "']").attr("data-post-wordpress-id", data[0].PostWebID);
+                $("*[data-web='" + web + "']").attr("data-post-clone-id", data.ID);
+
+                if (data.PostWebID > 0) {
+                    $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-green'>Đã đăng lên web</span>");
+                    $("*[data-web='" + web + "']").find(".item-button").find(".btn-web-had-found").removeClass("hide");
+                    $("*[data-web='" + web + "']").attr("data-post-wordpress-id", data.PostWebID);
+                }
+                else {
+                    $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-blue'>Tìm thấy clone trên hệ thống</span>");
+                    $("*[data-web='" + web + "']").find(".item-button").find(".btn-clone-had-found").removeClass("hide");
+                }
             }
             else {
                 $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-blue'>Không tìm thấy clone trên hệ thống</span>");
@@ -89,24 +96,24 @@ function getCloneByPostPublicID(web, postPublicID) {
     });
 }
 
-function createClonePost(obj) {
+function createClone(obj) {
     let web = obj.closest(".item-website").attr("data-web");
     let postPublicID = obj.closest(".item-website").attr("data-post-public-id");
 
     if (web == "all") {
         for (var i = 0; i < webList.length; i++) {
-            ajaxCreateClonePost(webList[i], productID);
+            ajaxCreateClone(webList[i], productID);
         }
     }
     else {
-        ajaxCreateClonePost(web, postPublicID);
+        ajaxCreateClone(web, postPublicID);
     }
 }
 
-function ajaxCreateClonePost(web, postPublicID) {
+function ajaxCreateClone(web, postPublicID) {
     $.ajax({
         type: "POST",
-        url: systemAPI + "/createCloneByPostPublicID",
+        url: systemAPI + "/createClone",
         data: "{web: '" + web + "', postPublicID: " + postPublicID + "}",
         async: true,
         datatype: "json",
@@ -152,21 +159,21 @@ function ajaxCreateClonePost(web, postPublicID) {
     });
 }
 
-function postPost(obj) {
+function postWordpress(obj) {
     let web = obj.closest(".item-website").attr("data-web");
     let postCloneID = obj.closest(".item-website").attr("data-post-clone-id");
 
     if (web == "all") {
         for (var i = 0; i < webList.length; i++) {
-            ajaxPostPost(webList[i], postCloneID);
+            ajaxPostWordpress(webList[i], postCloneID);
         }
     }
     else {
-        ajaxPostPost(web, postCloneID);
+        ajaxPostWordpress(web, postCloneID);
     }
 }
 
-function ajaxPostPost(web, postCloneID) {
+function ajaxPostWordpress(web, postCloneID) {
     $.ajax({
         type: "POST",
         url: wpAPI + postCloneID,

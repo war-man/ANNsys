@@ -141,9 +141,9 @@ namespace IM_PJ
             ltrNumberOfPost.Text = a.Count().ToString();
         }
         [WebMethod]
-        public static string getCloneByPostPublicID(int postPublicID)
+        public static string getClone(int postPublicID)
         {
-            var postWordpressList = PostCloneController.GetAllByPostPublicID(postPublicID);
+            var postWordpressList = PostCloneController.GetAll(postPublicID);
             if (postWordpressList != null)
             {
                 return JsonConvert.SerializeObject(postWordpressList);
@@ -152,10 +152,21 @@ namespace IM_PJ
             return "null";
         }
         [WebMethod]
-        public static string createCloneByPostPublicID(string web, int postPublicID)
+        public static string getClone(int postPublicID, string web)
+        {
+            var postWordpressList = PostCloneController.Get(postPublicID, web);
+            if (postWordpressList != null)
+            {
+                return JsonConvert.SerializeObject(postWordpressList);
+            }
+
+            return "null";
+        }
+        [WebMethod]
+        public static string createClone(string web, int postPublicID)
         {
             // Kiểm tra post clone tồn tại chưa
-            var postClone = PostCloneController.GetByPostPublicIDAndWeb(web, postPublicID);
+            var postClone = PostCloneController.Get(postPublicID, web);
             if (postClone != null)
             {
                 return "existPostClone";

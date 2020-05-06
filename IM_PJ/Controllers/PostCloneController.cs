@@ -80,7 +80,7 @@ namespace IM_PJ.Controllers
                 return null;
             }
         }
-        public static List<PostClone> GetAllByPostPublicID(int postPublicID)
+        public static List<PostClone> GetAll(int postPublicID)
         {
             using (var dbe = new inventorymanagementEntities())
             {
@@ -93,7 +93,7 @@ namespace IM_PJ.Controllers
                 return null;
             }
         }
-        public static PostClone GetByPostPublicIDAndWeb(string web, int postPublicID)
+        public static PostClone Get(int postPublicID, string web)
         {
             using (var dbe = new inventorymanagementEntities())
             {
@@ -105,7 +105,7 @@ namespace IM_PJ.Controllers
                 return null;
             }
         }
-        public static List<PostClone> GetAllByPostWebWordpress(string web)
+        public static List<PostClone> GetAll(string web)
         {
             using (var dbe = new inventorymanagementEntities())
             {
