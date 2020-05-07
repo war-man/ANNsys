@@ -11,13 +11,11 @@ function showPostSyncModal(postPublicID) {
     html += "<div class='row item-website'>";
     html += "    <div class='col-md-12' data-web='all' data-post-id='" + postPublicID + "'>";
     html += "       <span>";
-    html += "        	<a href='javascript:;' class='btn primary-btn btn-green' onclick='createClonePost($(this))'><i class='fa fa-cloud-upload' aria-hidden='true'></i> Tạo clone tất cả</a>";
-    html += "        	<a href='javascript:;' class='btn primary-btn btn-green' onclick='postPost($(this))'><i class='fa fa-cloud-upload' aria-hidden='true'></i> Đăng tất cả</a>";
-    html += "        	<a href='javascript:;' class='btn primary-btn btn-blue' onclick='upTopProduct($(this))'><i class='fa fa-upload' aria-hidden='true'></i> Up top tất cả</a>";
-    html += "        	<a href='javascript:;' class='btn primary-btn btn-black' onclick='renewProduct($(this))'><i class='fa fa-refresh' aria-hidden='true'></i> Làm mới tất cả</a>";
-    html += "        	<a href='javascript:;' class='btn primary-btn btn-black' onclick='toggleProduct($(this), `hide`)'><i class='fa fa-refresh' aria-hidden='true'></i> Ẩn tất cả</a>";
-    html += "        	<a href='javascript:;' class='btn primary-btn' onclick='toggleProduct($(this), `show`)'><i class='fa fa-refresh' aria-hidden='true'></i> Hiện tất cả</a>";
-    html += "        	<a href='javascript:;' class='btn primary-btn btn-red' onclick='deleteProduct($(this), `show`)'><i class='fa fa-times' aria-hidden='true'></i> Xóa tất cả</a>";
+    html += "        	<a href='javascript:;' class='btn primary-btn btn-green' onclick='createClone($(this))'><i class='fa fa-cloud-upload' aria-hidden='true'></i> Tạo clone tất cả</a>";
+    html += "        	<a href='javascript:;' class='btn primary-btn btn-green' onclick='postWordpress($(this))'><i class='fa fa-cloud-upload' aria-hidden='true'></i> Đăng tất cả</a>";
+    html += "        	<a href='javascript:;' class='btn primary-btn btn-blue' onclick='upTopPost($(this))'><i class='fa fa-upload' aria-hidden='true'></i> Up top tất cả</a>";
+    html += "        	<a href='javascript:;' class='btn primary-btn btn-black' onclick='renewPost($(this))'><i class='fa fa-refresh' aria-hidden='true'></i> Làm mới tất cả</a>";
+    html += "        	<a href='javascript:;' class='btn primary-btn btn-red' onclick='deleteWordpressPost($(this), `show`)'><i class='fa fa-times' aria-hidden='true'></i> Xóa tất cả</a>";
     html += "       </span>";
     html += "    </div>";
     html += "</div>";
@@ -30,24 +28,22 @@ function showPostSyncModal(postPublicID) {
 
         var button = "";
         button += "<span class='btn-clone-not-found hide'>";
-        button += "<a href='javascript:;' class='btn primary-btn btn-green' onclick='createClonePost($(this))'>Tạo clone</a>";
+        button += "<a href='javascript:;' class='btn primary-btn btn-green' onclick='createClone($(this))'>Tạo clone</a>";
         button += "</span>";
         button += "<span class='btn-clone-had-found hide'>";
-        button += "<a href='javascript:;' class='btn primary-btn btn-blue' onclick='editClonePost($(this))'>Sửa clone</a>";
-        button += "<a href='javascript:;' class='btn primary-btn btn-green' onclick='postPost($(this))'>Đăng web</a>";
+        button += "<a href='javascript:;' class='btn primary-btn btn-blue' onclick='editClone($(this))'>Sửa clone</a>";
+        button += "<a href='javascript:;' class='btn primary-btn btn-green' onclick='postWordpress($(this))'>Đăng web</a>";
         button += "</span>";
         button += "<span class='btn-web-not-found hide'>";
-        button += "<a href='javascript:;' class='btn primary-btn btn-blue' onclick='editClonePost($(this))'>Sửa clone</a>";
-        button += "<a href='javascript:;' class='btn primary-btn btn-green' onclick='postPost($(this))'>Đăng web</a>";
+        button += "<a href='javascript:;' class='btn primary-btn btn-blue' onclick='editClone($(this))'>Sửa clone</a>";
+        button += "<a href='javascript:;' class='btn primary-btn btn-green' onclick='postWordpress($(this))'>Đăng web</a>";
         button += "</span>";
         button += "<span class='btn-web-had-found hide'>";
-        button += "<a href='javascript:;' onclick='upTopProduct($(this))' class='btn primary-btn btn-blue'>Up top</a>";
-        button += "<a href='javascript:;' onclick='renewProduct($(this))' class='btn primary-btn btn-black'>Làm mới</a>";
-        button += "<a href='javascript:;' onclick='viewProduct($(this))' class='btn primary-btn btn-yellow'>Xem</a>";
-        button += "<a href='javascript:;' onclick='editProduct($(this))' class='btn primary-btn btn-black'>Sửa</a>";
-        button += "<a href='javascript:;' onclick='toggleProduct($(this), `hide`)' class='btn primary-btn btn-black'>Ẩn</a>";
-        button += "<a href='javascript:;' onclick='toggleProduct($(this), `show`)' class='btn primary-btn'>Hiện</a>";
-        button += "<a href='javascript:;' onclick='deleteProduct($(this), `show`)' class='btn primary-btn btn-red'>Xóa</a>";
+        button += "<a href='javascript:;' onclick='upTopPost($(this))' class='btn primary-btn btn-blue'>Up top</a>";
+        button += "<a href='javascript:;' onclick='renewPost($(this))' class='btn primary-btn btn-black'>Làm mới</a>";
+        button += "<a href='javascript:;' onclick='viewPost($(this))' class='btn primary-btn btn-yellow'>Xem</a>";
+        button += "<a href='javascript:;' onclick='editPost($(this))' class='btn primary-btn btn-black'>Sửa</a>";
+        button += "<a href='javascript:;' onclick='deleteWordpressPost($(this), `show`)' class='btn primary-btn btn-red'>Xóa</a>";
         button += "</span>";
 
         var webItem = "";
@@ -102,7 +98,7 @@ function createClone(obj) {
 
     if (web == "all") {
         for (var i = 0; i < webList.length; i++) {
-            ajaxCreateClone(webList[i], productID);
+            ajaxCreateClone(webList[i], postPublicID);
         }
     }
     else {
@@ -225,24 +221,24 @@ function ajaxPostWordpress(web, postCloneID) {
     });
 }
 
-function upTopProduct(obj) {
-    let web = obj.parent().parent().attr("data-web");
-    let productID = obj.parent().parent().attr("data-product-id");
+function upTopPost(obj) {
+    let web = obj.closest(".item-website").attr("data-web");
+    let postCloneID = obj.closest(".item-website").attr("data-post-clone-id");
 
     if (web == "all") {
         for (var i = 0; i < webList.length; i++) {
-            ajaxUpTopProduct(webList[i], productID);
+            ajaxUpTopPost(webList[i], postCloneID);
         }
     }
     else {
-        ajaxUpTopProduct(web, productID);
+        ajaxUpTopPost(web, postCloneID);
     }
 }
 
-function ajaxUpTopProduct(web, productID) {
+function ajaxUpTopPost(web, postCloneID) {
     $.ajax({
         type: "POST",
-        url: API + productID + "/uptop",
+        url: wpAPI + postCloneID + "/uptop",
         headers: {
             'domain': web,
         },
@@ -251,8 +247,10 @@ function ajaxUpTopProduct(web, productID) {
         beforeSend: function () {
             HoldOn.open();
             $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-yellow'>Đang up lên đầu web...</span>");
-            $("*[data-web='" + web + "']").find(".item-button").find(".btn-not-found").addClass("hide");
-            $("*[data-web='" + web + "']").find(".item-button").find(".btn-had-found").addClass("hide");
+            $("*[data-web='" + web + "']").find(".item-button").find(".btn-clone-not-found").addClass("hide");
+            $("*[data-web='" + web + "']").find(".item-button").find(".btn-clone-had-found").addClass("hide");
+            $("*[data-web='" + web + "']").find(".item-button").find(".btn-web-not-found").addClass("hide");
+            $("*[data-web='" + web + "']").find(".item-button").find(".btn-web-had-found").addClass("hide");
         },
         success: function (data, textStatus, xhr) {
             HoldOn.close();
@@ -261,13 +259,13 @@ function ajaxUpTopProduct(web, productID) {
             if (xhr.status === 200) {
                 if (data.id > 0) {
                     $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-green'>Up lên đầu web thành công</span>");
-                    $("*[data-web='" + web + "']").find(".item-button").find(".btn-not-found").addClass("hide");
-                    $("*[data-web='" + web + "']").find(".item-button").find(".btn-had-found").removeClass("hide");
+                    $("*[data-web='" + web + "']").find(".item-button").find(".btn-web-not-found").addClass("hide");
+                    $("*[data-web='" + web + "']").find(".item-button").find(".btn-web-had-found").removeClass("hide");
                 }
                 else {
                     $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-red'>Up lên đầu web thất bại</span>");
-                    $("*[data-web='" + web + "']").find(".item-button").find(".btn-not-found").removeClass("hide");
-                    $("*[data-web='" + web + "']").find(".item-button").find(".btn-had-found").addClass("hide");
+                    $("*[data-web='" + web + "']").find(".item-button").find(".btn-web-not-found").removeClass("hide");
+                    $("*[data-web='" + web + "']").find(".item-button").find(".btn-web-had-found").addClass("hide");
                 }
             }
             else {
@@ -290,24 +288,24 @@ function ajaxUpTopProduct(web, productID) {
     });
 }
 
-function renewProduct(obj) {
-    let web = obj.parent().parent().attr("data-web");
-    let productID = obj.parent().parent().attr("data-product-id");
+function renewPost(obj) {
+    let web = obj.closest(".item-website").attr("data-web");
+    let postCloneID = obj.closest(".item-website").attr("data-post-clone-id");
 
     if (web == "all") {
         for (var i = 0; i < webList.length; i++) {
-            ajaxRenewProductt(webList[i], productID);
+            ajaxRenewPost(webList[i], postCloneID);
         }
     }
     else {
-        ajaxRenewProductt(web, productID);
+        ajaxRenewPost(web, postCloneID);
     }
 }
 
-function ajaxRenewProductt(web, productID) {
+function ajaxRenewPost(web, postCloneID) {
     $.ajax({
         type: "POST",
-        url: API + productID + "/renew",
+        url: wpAPI + postCloneID + "/renew",
         headers: {
             'domain': web,
         },
@@ -315,9 +313,11 @@ function ajaxRenewProductt(web, productID) {
         datatype: "json",
         beforeSend: function () {
             HoldOn.open();
-            $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-yellow'>Đang làm mới sản phẩm...</span>");
-            $("*[data-web='" + web + "']").find(".item-button").find(".btn-not-found").addClass("hide");
-            $("*[data-web='" + web + "']").find(".item-button").find(".btn-had-found").addClass("hide");
+            $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-yellow'>Đang làm mới bài viết...</span>");
+            $("*[data-web='" + web + "']").find(".item-button").find(".btn-clone-not-found").addClass("hide");
+            $("*[data-web='" + web + "']").find(".item-button").find(".btn-clone-had-found").addClass("hide");
+            $("*[data-web='" + web + "']").find(".item-button").find(".btn-web-not-found").addClass("hide");
+            $("*[data-web='" + web + "']").find(".item-button").find(".btn-web-had-found").addClass("hide");
         },
         success: function (data, textStatus, xhr) {
             HoldOn.close();
@@ -325,15 +325,14 @@ function ajaxRenewProductt(web, productID) {
             // Thành công
             if (xhr.status === 200) {
                 if (data.id > 0) {
-                    $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-green'>Làm mới sản phẩm thành công</span>");
-                    $("*[data-web='" + web + "']").find(".item-button").find(".btn-not-found").addClass("hide");
-                    $("*[data-web='" + web + "']").find(".item-button").find(".btn-had-found").removeClass("hide");
-                    $("*[data-web='" + web + "']").attr("data-web-product-id", data.id);
+                    $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-green'>Làm mới bài viết thành công</span>");
+                    $("*[data-web='" + web + "']").find(".item-button").find(".btn-web-not-found").addClass("hide");
+                    $("*[data-web='" + web + "']").find(".item-button").find(".btn-web-had-found").removeClass("hide");
                 }
                 else {
                     $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-red'>Làm mới sản phẩm thất bại</span>");
-                    $("*[data-web='" + web + "']").find(".item-button").find(".btn-not-found").removeClass("hide");
-                    $("*[data-web='" + web + "']").find(".item-button").find(".btn-had-found").addClass("hide");
+                    $("*[data-web='" + web + "']").find(".item-button").find(".btn-web-not-found").removeClass("hide");
+                    $("*[data-web='" + web + "']").find(".item-button").find(".btn-web-had-found").addClass("hide");
                 }
             }
             else {
@@ -356,110 +355,39 @@ function ajaxRenewProductt(web, productID) {
     });
 }
 
-function toggleProduct(obj, toggle) {
-    let web = obj.parent().parent().attr("data-web");
-    let productID = obj.parent().parent().attr("data-product-id");
-
-    if (web == "all") {
-        for (var i = 0; i < webList.length; i++) {
-            ajaxToggleProduct(webList[i], productID, toggle);
-        }
-    }
-    else {
-        ajaxToggleProduct(web, productID, toggle);
-    }
-}
-
-function ajaxToggleProduct(web, productID, toggle) {
-    let status = "ẩn";
-    if (toggle === "show") {
-        status = "hiện";
-    }
-
-    $.ajax({
-        type: "POST",
-        url: API + productID + "/" + toggle,
-        headers: {
-            'domain': web,
-        },
-        async: true,
-        datatype: "json",
-        beforeSend: function () {
-            HoldOn.open();
-            
-            $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-yellow'>Đang " + status + " sản phẩm</span>");
-            $("*[data-web='" + web + "']").find(".item-button").find(".btn-not-found").addClass("hide");
-            $("*[data-web='" + web + "']").find(".item-button").find(".btn-had-found").addClass("hide");
-        },
-        success: function (data, textStatus, xhr) {
-            HoldOn.close();
-
-            // Thành công
-            if (xhr.status === 200) {
-                if (data.id > 0) {
-                    $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-green'>Đã " + status + " sản phẩm thành công</span>");
-                    $("*[data-web='" + web + "']").find(".item-button").find(".btn-not-found").addClass("hide");
-                    $("*[data-web='" + web + "']").find(".item-button").find(".btn-had-found").removeClass("hide");
-                }
-                else {
-                    $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-red'>Đã " + status + " sản phẩm thất bại</span>");
-                    $("*[data-web='" + web + "']").find(".item-button").find(".btn-not-found").removeClass("hide");
-                    $("*[data-web='" + web + "']").find(".item-button").find(".btn-had-found").addClass("hide");
-                }
-            }
-            else {
-                $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-red'>Lỗi kết nối trang con</span>");
-            }
-        },
-        error: function (xhr, textStatus, error) {
-            HoldOn.close();
-            let data = xhr.responseJSON;
-            if (xhr.status === 500) {
-                $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-red'>" + data.message + "</span>");
-            }
-            else if (xhr.status === 400) {
-                $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-red'>" + data.message + "</span>");
-            }
-            else {
-                $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-red'>Lỗi kết nối trang con</span>");
-            }
-        }
-    });
-}
-
-function viewProduct(obj) {
-    let web = obj.parent().parent().attr("data-web");
-    let ID = obj.parent().parent().attr("data-web-product-id");
-    let URL = "http://" + web + "/?p=" + ID;
+function viewPost(obj) {
+    let web = obj.closest(".item-website").attr("data-web");
+    let postWordpressID = obj.closest(".item-website").attr("data-post-wordpress-id");
+    let URL = "http://" + web + "/?p=" + postWordpressID;
     window.open(URL, '_blank');
 }
 
-function editProduct(obj) {
-    let web = obj.parent().parent().attr("data-web");
-    let ID = obj.parent().parent().attr("data-web-product-id");
-    let URL = "http://" + web + "/wp-admin/post.php?post=" + ID + "&action=edit";
+function editPost(obj) {
+    let web = obj.closest(".item-website").attr("data-web");
+    let postWordpressID = obj.closest(".item-website").attr("data-post-wordpress-id");
+    let URL = "http://" + web + "/wp-admin/post.php?post=" + postWordpressID + "&action=edit";
     window.open(URL, '_blank');
 }
 
-function deleteProduct(obj, toggle) {
-    let web = obj.parent().parent().attr("data-web");
-    let productID = obj.parent().parent().attr("data-product-id");
+function deleteWordpressPost(obj, toggle) {
+    let web = obj.closest(".item-website").attr("data-web");
+    let postCloneID = obj.closest(".item-website").attr("data-post-clone-id");
 
     if (web == "all") {
         for (var i = 0; i < webList.length; i++) {
-            ajaxDeleteProduct(webList[i], productID);
+            ajaxDeleteWordpressPost(webList[i], postCloneID);
         }
     }
     else {
-        ajaxDeleteProduct(web, productID);
+        ajaxDeleteWordpressPost(web, postCloneID);
     }
 }
 
-function ajaxDeleteProduct(web, productID) {
+function ajaxDeleteWordpressPost(web, postCloneID) {
 
     $.ajax({
         type: "DELETE",
-        url: API + productID,
+        url: wpAPI + postCloneID,
         headers: {
             'domain': web,
         },
@@ -467,10 +395,11 @@ function ajaxDeleteProduct(web, productID) {
         datatype: "json",
         beforeSend: function () {
             HoldOn.open();
-
-            $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-yellow'>Đang xóa sản phẩm</span>");
-            $("*[data-web='" + web + "']").find(".item-button").find(".btn-not-found").addClass("hide");
-            $("*[data-web='" + web + "']").find(".item-button").find(".btn-had-found").addClass("hide");
+            $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-yellow'>Đang xóa bài viết</span>");
+            $("*[data-web='" + web + "']").find(".item-button").find(".btn-clone-not-found").addClass("hide");
+            $("*[data-web='" + web + "']").find(".item-button").find(".btn-clone-had-found").addClass("hide");
+            $("*[data-web='" + web + "']").find(".item-button").find(".btn-web-not-found").addClass("hide");
+            $("*[data-web='" + web + "']").find(".item-button").find(".btn-web-had-found").addClass("hide");
         },
         success: function (data, textStatus, xhr) {
             HoldOn.close();
@@ -478,15 +407,15 @@ function ajaxDeleteProduct(web, productID) {
             // Thành công
             if (xhr.status === 200) {
                 if (data.id > 0) {
-                    $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-green'>Xóa sản phẩm thành công</span>");
-                    $("*[data-web='" + web + "']").find(".item-button").find(".btn-not-found").removeClass("hide");
-                    $("*[data-web='" + web + "']").find(".item-button").find(".btn-had-found").addClass("hide");
-                    $("*[data-web='" + web + "']").attr("data-web-product-id", "");
+                    $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-green'>Xóa bài viết thành công</span>");
+                    $("*[data-web='" + web + "']").find(".item-button").find(".btn-web-not-found").removeClass("hide");
+                    $("*[data-web='" + web + "']").find(".item-button").find(".btn-web-had-found").addClass("hide");
+                    $("*[data-web='" + web + "']").attr("data-post-wordpress-id", "");
                 }
                 else {
-                    $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-red'>Xóa sản phẩm thất bại</span>");
-                    $("*[data-web='" + web + "']").find(".item-button").find(".btn-not-found").addClass("hide");
-                    $("*[data-web='" + web + "']").find(".item-button").find(".btn-had-found").removeClass("hide");
+                    $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-red'>Xóa bài viết thất bại</span>");
+                    $("*[data-web='" + web + "']").find(".item-button").find(".btn-web-not-found").addClass("hide");
+                    $("*[data-web='" + web + "']").find(".item-button").find(".btn-web-had-found").removeClass("hide");
                 }
             }
             else {
