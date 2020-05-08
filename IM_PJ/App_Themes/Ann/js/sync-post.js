@@ -1,15 +1,15 @@
 ﻿var systemAPI = "/danh-sach-bai-viet-app.aspx"
 var wpAPI = "/api/v1/wordpress/post/";
-//var webList = ["ann.com.vn", "khohangsiann.com", "bosiquanao.net", "quanaogiaxuong.com", "bansithoitrang.net", "panpan.vn", "quanaoxuongmay.com", "annshop.vn"];
-var webList = ["annshop.vn"];
+var webList = ["ann.com.vn", "khohangsiann.com", "bosiquanao.net", "quanaogiaxuong.com", "annshop.vn", "quanaoxuongmay.com", "bansithoitrang.net", "panpan.vn"];
+//var webList = ["annshop.vn"];
 
 function showPostSyncModal(postPublicID) {
     closePopup();
 
     var html = "";
     html += "<div class='row'><div class='col-md-12'><h2>Đồng bộ bài viết " + postPublicID + "</h2><br></div></div>";
-    html += "<div class='row item-website'>";
-    html += "    <div class='col-md-12' data-web='all' data-post-id='" + postPublicID + "'>";
+    html += "<div class='row'>";
+    html += "    <div class='col-md-12 item-website' data-web='all' data-post-public-id='" + postPublicID + "'>";
     html += "       <span>";
     html += "        	<a href='javascript:;' class='btn primary-btn btn-green' onclick='createClone($(this))'><i class='fa fa-cloud-upload' aria-hidden='true'></i> Tạo clone tất cả</a>";
     html += "        	<a href='javascript:;' class='btn primary-btn btn-green' onclick='postWordpress($(this))'><i class='fa fa-cloud-upload' aria-hidden='true'></i> Đăng tất cả</a>";
@@ -71,7 +71,7 @@ function getClone(postPublicID, web) {
                 $("*[data-web='" + web + "']").attr("data-post-clone-id", data.ID);
 
                 if (data.PostWebID > 0) {
-                    $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-green'>Đã đăng lên web</span>");
+                    $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-green'>Đã có bài viết trên web</span>");
                     $("*[data-web='" + web + "']").find(".item-button").find(".btn-web-had-found").removeClass("hide");
                     $("*[data-web='" + web + "']").attr("data-post-wordpress-id", data.PostWebID);
                 }
@@ -122,8 +122,17 @@ function ajaxCreateClone(web, postPublicID) {
         },
         success: function (msg) {
             HoldOn.close();
-
-            if (msg.d != "null") {
+            if (msg.d === "null") {
+                $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-red'>Lỗi kết nối trang con</span>");
+            }
+            else if (msg.d === "existPostClone") {
+                $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-green'>Đã có sẵn clone trên hệ thống</span>");
+                $("*[data-web='" + web + "']").find(".item-button").find(".btn-web-had-found").addClass("hide");
+                $("*[data-web='" + web + "']").find(".item-button").find(".btn-clone-not-found").addClass("hide");
+                $("*[data-web='" + web + "']").find(".item-button").find(".btn-clone-had-found").removeClass("hide");
+                $("*[data-web='" + web + "']").attr("data-post-clone-id", data.ID);
+            }
+            else {
                 let data = JSON.parse(msg.d);
                 if (data.ID > 0) {
                     $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-green'>Tạo clone thành công</span>");
@@ -136,9 +145,6 @@ function ajaxCreateClone(web, postPublicID) {
                     $("*[data-web='" + web + "']").find(".item-button").find(".btn-clone-not-found").removeClass("hide");
                     $("*[data-web='" + web + "']").find(".item-button").find(".btn-clone-had-found").addClass("hide");
                 }
-            }
-            else {
-                $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-red'>Lỗi kết nối trang con</span>");
             }
         },
         error: function (xhr, textStatus, error) {
@@ -159,8 +165,9 @@ function postWordpress(obj) {
     let web = obj.closest(".item-website").attr("data-web");
     let postCloneID = obj.closest(".item-website").attr("data-post-clone-id");
 
-    if (web == "all") {
+    if (web === "all") {
         for (var i = 0; i < webList.length; i++) {
+            postCloneID = $("*[data-web='" + webList[i] + "']").attr("data-post-clone-id");
             ajaxPostWordpress(webList[i], postCloneID);
         }
     }
@@ -170,6 +177,11 @@ function postWordpress(obj) {
 }
 
 function ajaxPostWordpress(web, postCloneID) {
+    if (postCloneID === "") {
+        $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-red'>Chưa tạo clone</span>");
+        $("*[data-web='" + web + "']").find(".item-button").find(".btn-clone-not-found").removeClass("hide");
+        return;
+    }
     $.ajax({
         type: "POST",
         url: wpAPI + postCloneID,
@@ -204,19 +216,15 @@ function ajaxPostWordpress(web, postCloneID) {
                 }
             }
             else {
-                $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-red'>Lỗi kết nối trang con</span>");
+                $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-red'>" + data.message + "</span>");
             }
         },
         error: function (xhr, textStatus, error) {
             HoldOn.close();
 
-            if (xhr.status === 500) {
-                let data = xhr.responseJSON;
-                $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-red'>" + data.message + "</span>");
-            }
-            else {
-                $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-red'>Lỗi kết nối trang con</span>");
-            }
+            let data = xhr.responseJSON;
+            $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-red'>" + data.message + "</span>");
+
         }
     });
 }
@@ -227,6 +235,7 @@ function upTopPost(obj) {
 
     if (web == "all") {
         for (var i = 0; i < webList.length; i++) {
+            postCloneID = $("*[data-web='" + webList[i] + "']").attr("data-post-clone-id");
             ajaxUpTopPost(webList[i], postCloneID);
         }
     }
@@ -236,6 +245,11 @@ function upTopPost(obj) {
 }
 
 function ajaxUpTopPost(web, postCloneID) {
+    if (postCloneID === "") {
+        $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-red'>Chưa tạo clone</span>");
+        $("*[data-web='" + web + "']").find(".item-button").find(".btn-clone-not-found").removeClass("hide");
+        return;
+    }
     $.ajax({
         type: "POST",
         url: wpAPI + postCloneID + "/uptop",
@@ -294,6 +308,7 @@ function renewPost(obj) {
 
     if (web == "all") {
         for (var i = 0; i < webList.length; i++) {
+            postCloneID = $("*[data-web='" + webList[i] + "']").attr("data-post-clone-id");
             ajaxRenewPost(webList[i], postCloneID);
         }
     }
@@ -303,6 +318,11 @@ function renewPost(obj) {
 }
 
 function ajaxRenewPost(web, postCloneID) {
+    if (postCloneID === "") {
+        $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-red'>Chưa tạo clone</span>");
+        $("*[data-web='" + web + "']").find(".item-button").find(".btn-clone-not-found").removeClass("hide");
+        return;
+    }
     $.ajax({
         type: "POST",
         url: wpAPI + postCloneID + "/renew",
@@ -375,6 +395,7 @@ function deleteWordpressPost(obj, toggle) {
 
     if (web == "all") {
         for (var i = 0; i < webList.length; i++) {
+            postCloneID = $("*[data-web='" + webList[i] + "']").attr("data-post-clone-id");
             ajaxDeleteWordpressPost(webList[i], postCloneID);
         }
     }
@@ -384,7 +405,11 @@ function deleteWordpressPost(obj, toggle) {
 }
 
 function ajaxDeleteWordpressPost(web, postCloneID) {
-
+    if (postCloneID === "") {
+        $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-red'>Chưa tạo clone</span>");
+        $("*[data-web='" + web + "']").find(".item-button").find(".btn-clone-not-found").removeClass("hide");
+        return;
+    }
     $.ajax({
         type: "DELETE",
         url: wpAPI + postCloneID,
