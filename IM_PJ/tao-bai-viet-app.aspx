@@ -138,17 +138,6 @@
                             </div>
                             <div class="form-row">
                                 <div class="row-left">
-                                    Chính sách
-                                </div>
-                                <div class="row-right">
-                                    <asp:DropDownList ID="ddlIsPolicy" AppendDataBoundItems="true" runat="server" class="form-control">
-                                        <asp:ListItem Text="Không" Value="False" />
-                                        <asp:ListItem Text="Có" Value="True" />
-                                    </asp:DropDownList>
-                                </div>
-                            </div>
-                            <div class="form-row">
-                                <div class="row-left">
                                     Trang chủ
                                 </div>
                                 <div class="row-right">
@@ -211,6 +200,47 @@
                                 </div>
                             </div>
                             <div class="form-row">
+                                <div class="row-left">
+                                    Copy vào hệ thống gốc
+                                </div>
+                                <div class="row-right">
+                                    <asp:DropDownList ID="ddlCopyToSystem" AppendDataBoundItems="true" runat="server" class="form-control">
+                                        <asp:ListItem Text="Có" Value="True" />
+                                        <asp:ListItem Text="Không" Value="False" />
+                                    </asp:DropDownList>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="row-left">
+                                    Tạo biến thể Wordpress
+                                </div>
+                                <div class="row row-right">
+                                    <div class="col-md-5">
+                                        <asp:DropDownList ID="ddlWordpress" AppendDataBoundItems="true" runat="server" class="form-control">
+                                        <asp:ListItem Text="Thêm tất cả" Value="all" />
+                                        <asp:ListItem Text="ann.com.vn" Value="ann.com.vn" />
+                                        <asp:ListItem Text="khohangsiann.com" Value="khohangsiann.com" />
+                                        <asp:ListItem Text="bosiquanao.net" Value="bosiquanao.net" />
+                                        <asp:ListItem Text="quanaogiaxuong.com" Value="quanaogiaxuong.com" />
+                                        <asp:ListItem Text="panpan.vn" Value="panpan.vn" />
+                                        <asp:ListItem Text="bansithoitrang.net" Value="bansithoitrang.net" />
+                                        <asp:ListItem Text="annshop.vn" Value="annshop.vn" />
+                                        <asp:ListItem Text="quanaoxuongmay.com" Value="quanaoxuongmay.com" />
+                                    </asp:DropDownList>
+                                    </div>
+                                    <div class="col-md-7">
+                                        <a href="javascript:;" class="btn primary-btn fw-btn not-fullwidth" onclick="addClone()"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Thêm</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-row post-variants hide">
+                                <div class="row-left">
+                                    Biến thể
+                                </div>
+                                <div class="row-right post-variant-list">
+                                </div>
+                            </div>
+                            <div class="form-row">
                                 <a href="javascript:;" class="btn primary-btn fw-btn not-fullwidth" onclick="addNewPost()"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Xuất bản</a>
                                 <asp:Button ID="btnSubmit" runat="server" CssClass="btn primary-btn fw-btn not-fullwidth" Text="Xuất bản" OnClick="btnSubmit_Click" Style="display: none" />
                                 <a href="/danh-sach-bai-viet-app" class="btn primary-btn fw-btn not-fullwidth"><i class="fa fa-arrow-left" aria-hidden="true"></i> Trở về</a>
@@ -234,10 +264,68 @@
             </div>
         </div>
         <asp:HiddenField ID="hdfParentID" runat="server" />
+        <asp:HiddenField ID="hdfPostVariants" runat="server" />
     </main>
 
     <telerik:RadCodeBlock runat="server">
         <script type="text/javascript">
+
+            // FeeModel
+            class Variant {
+                constructor(Web, Title) {
+                    this.Web = Web;
+                    this.Web = Web;
+                }
+
+                stringJSON() {
+                    return JSON.stringify(this);
+                }
+            }
+
+            var variants = [];
+
+            function addClone() {
+                let title = $("#<%=txtTitle.ClientID%>").val();
+                if (title == "") {
+                    return swal("Thông báo", "Chưa nhập tiêu đề bài viết", "warning");
+                }
+
+                $(".post-variants").removeClass("hide");
+                let wordpress = $("#<%=ddlWordpress.ClientID%>").val();
+                if (wordpress == "all") {
+                    $("#<%=ddlWordpress.ClientID%> option").each(function () {
+                        let web = $(this).val();
+                        let checkWeb = $("input[name='" + web + "']").length;
+                        if (web != "all" && !checkWeb) {
+                            let htmlInput = "<div class='form-row'><label>" + web + "</label><input class='form-control' name='" + web + "' value='" + title + "'></div>";
+                            $(".post-variant-list").append(htmlInput);
+                            variants.push(new Variant(web, title));
+                        }
+                    });
+                }
+                else {
+                    let checkWeb = $("input[name='" + wordpress + "']").length;
+                    if (checkWeb) {
+                        return swal("Thông báo", "Đã tạo biến thể này rồi", "warning");
+                    }
+
+                    let htmlInput = "<div class='form-row'><label>" + wordpress + "</label><input class='form-control' name='" + wordpress + "' value='" + title + "'></div>";
+                    $(".post-variant-list").append(htmlInput);
+                    variants.push(new Variant(wordpress, title));
+                }
+            }
+
+            function handlePostVariant() {
+                let checkVariant = $(".post-variant-list").html();
+                if (checkVariant == "") {
+                    return;
+                }
+                variants.forEach((item) => {
+                    let title = $("input[name='" + item.Web + "']").val();
+                    item.Title = title;
+                });
+                $("#<%=hdfPostVariants.ClientID%>").val(JSON.stringify(variants));
+            }
 
             function changeAction() {
                 var action = $("#<%=ddlAction.ClientID%>").val();
@@ -383,6 +471,7 @@
                     swal("Thông báo", "Chưa chọn danh mục bài viết", "error");
                 }
                 else {
+                    handlePostVariant();
                     HoldOn.open();
                     $("#<%=btnSubmit.ClientID%>").click();
                 }

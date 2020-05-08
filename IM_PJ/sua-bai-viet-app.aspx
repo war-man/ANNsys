@@ -1,4 +1,4 @@
-﻿<%@ Page Title="Sửa bài viết App" Language="C#" MasterPageFile="~/MasterPage.Master" AutoEventWireup="true" CodeBehind="sua-bai-viet-app.aspx.cs" Inherits="IM_PJ.sua_bai_viet_app" %>
+﻿<%@ Page Title="Sửa bài viết App" Language="C#" MasterPageFile="~/MasterPage.Master" AutoEventWireup="true" CodeBehind="sua-bai-viet-app.aspx.cs" Inherits="IM_PJ.sua_bai_viet_app" EnableEventValidation="false" %>
 
 <%@ Register Assembly="Telerik.Web.UI" Namespace="Telerik.Web.UI" TagPrefix="telerik" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
@@ -129,6 +129,13 @@
                                     <asp:Literal ID="imageGallery" runat="server"></asp:Literal>
                                 </div>
                             </div>
+                            <div class="form-row post-variants hide">
+                                <div class="row-left">
+                                    Biến thể
+                                </div>
+                                <div class="row-right post-variant-list">
+                                </div>
+                            </div>
                             <div class="form-row">
                                 <a href="javascript:;" class="btn primary-btn fw-btn not-fullwidth" onclick="updatePost()"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Cập nhật</a>
                                 <asp:Button ID="btnSubmit" runat="server" CssClass="btn primary-btn fw-btn not-fullwidth" Text="Cập nhật" OnClick="btnSubmit_Click" Style="display: none" />
@@ -157,11 +164,59 @@
         <asp:HiddenField ID="hdfDeleteImageGallery" runat="server" />
         <asp:HiddenField ID="hdfAction" runat="server" />
         <asp:HiddenField ID="hdfParentID" runat="server" />
+        <asp:HiddenField ID="hdfPostVariants" runat="server" />
     </main>
 
     <telerik:RadCodeBlock runat="server">
         <script>
+            class Variant {
+                constructor(Web, Title) {
+                    this.Web = Web;
+                    this.Title = Title;
+                }
+
+                stringJSON() {
+                    return JSON.stringify(this);
+                }
+            }
+
+            var variants = [];
+
+            function initVariants() {
+
+                // Load Variants List
+                let obj = JSON.parse($("#<%=hdfPostVariants.ClientID%>").val());
+                if ($.isArray(obj))
+                {
+                    $(".post-variants").removeClass("hide");
+
+                    obj.forEach((item) => {
+                        let variant = new Variant(
+                            item.Web,
+                            item.Title
+                        );
+
+                        variants.push(variant);
+                        let htmlInput = "<div class='form-row' id='" + item.Web + "'><label>" + item.Web + "</label><input class='form-control' name='" + item.Web + "' value='" + item.Title + "'></div>";
+                        $(".post-variant-list").append(htmlInput);
+                    });
+                }
+            }
+
+            function initFocusInput() {
+                let queryString = window.location.search;
+                let urlParams = new URLSearchParams(queryString);
+                let web = urlParams.get('web');
+                if (web != "") {
+                    $("input[name='" + web + "']").focus().select();
+                }
+            }
+
             $(document).ready(function () {
+
+                initVariants();
+                initFocusInput();
+
                 var action = $("#<%=hdfAction.ClientID%>").val();
                 if (action == "show_web") {
                     $(".input-link").removeClass("hide");
@@ -172,6 +227,18 @@
                     $(".input-link").addClass("hide");
                 }
             });
+
+            function handlePostVariant() {
+                let checkVariant = $(".post-variant-list").html();
+                if (checkVariant == "") {
+                    return;
+                }
+                variants.forEach((item) => {
+                    let title = $("input[name='" + item.Web + "']").val();
+                    item.Title = title;
+                });
+                $("#<%=hdfPostVariants.ClientID%>").val(JSON.stringify(variants));
+            }
 
             function redirectTo(ID) {
                 window.location.href = "/xem-bai-viet-app?id=" + ID;
@@ -336,6 +403,7 @@
                     swal("Thông báo", "Chưa chọn danh mục bài viết", "error");
                 }
                 else {
+                    handlePostVariant();
                     HoldOn.open();
                     $("#<%=btnSubmit.ClientID%>").click();
                 }

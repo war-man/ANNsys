@@ -375,6 +375,13 @@ function ajaxRenewPost(web, postCloneID) {
     });
 }
 
+function editClone(obj) {
+    let web = obj.closest(".item-website").attr("data-web");
+    let postPublicID = obj.closest(".item-website").attr("data-post-public-id");
+    let URL = "/sua-bai-viet-app?id=" + postPublicID + "&web=" + web;
+    window.open(URL, '_blank');
+}
+
 function viewPost(obj) {
     let web = obj.closest(".item-website").attr("data-web");
     let postWordpressID = obj.closest(".item-website").attr("data-post-wordpress-id");

@@ -130,7 +130,7 @@ namespace IM_PJ
                     ActionValue = Link;
                 }
                 bool AtHome = ddlAtHome.SelectedValue.ToBool();
-                bool IsPolicy = ddlIsPolicy.SelectedValue.ToBool();
+                bool IsPolicy = false;
 
                 var newPostPublic = new PostPublic()
                 {
@@ -152,69 +152,98 @@ namespace IM_PJ
 
                 var post = PostPublicController.Insert(newPostPublic);
 
-                //Phần thêm ảnh đại diện
-                string path = "/uploads/images/posts/";
-                string Image = "";
-                if (PostPublicThumbnailImage.UploadedFiles.Count > 0)
-                {
-                    foreach (UploadedFile f in PostPublicThumbnailImage.UploadedFiles)
-                    {
-                        var o = path + "post-app-" + post.ID.ToString() + "-" + Slug.ConvertToSlug(Path.GetFileName(f.FileName), isFile: true);
-                        try
-                        {
-                            f.SaveAs(Server.MapPath(o));
-                            Image = o;
-                        }
-                        catch { }
-                    }
-                }
-                string updateImage = PostPublicController.UpdateImage(post.ID, Image);
-
-                //Phần thêm thư viện ảnh
-                string IMG = "";
-                if (ImageGallery.UploadedFiles.Count > 0)
-                {
-                    foreach (UploadedFile f in ImageGallery.UploadedFiles)
-                    {
-                        var o = path + "post-app-" + post.ID.ToString() + "-" + Slug.ConvertToSlug(Path.GetFileName(f.FileName), isFile: true);
-                        try
-                        {
-                            f.SaveAs(Server.MapPath(o));
-                            IMG = o;
-                            PostPublicImageController.Insert(post.ID, IMG, username, currentDate);
-                        }
-                        catch { }
-                    }
-                }
-
-                // tạo phiên bản cho wordpress
                 if (post != null)
                 {
-                    var webWordpress = WebWordpressController.GetAll();
-                    foreach (var item in webWordpress)
+                    // Thêm ảnh đại diện
+                    string path = "/uploads/images/posts/";
+                    string Image = "";
+                    if (PostPublicThumbnailImage.UploadedFiles.Count > 0)
                     {
-                        var newPostClone = new PostClone()
+                        foreach (UploadedFile f in PostPublicThumbnailImage.UploadedFiles)
                         {
-                            PostPublicID = post.ID,
-                            Web = item.Web,
-                            PostWebID = 0,
-                            CategoryID = post.CategoryID,
+                            var o = path + "post-app-" + post.ID.ToString() + "-" + Slug.ConvertToSlug(Path.GetFileName(f.FileName), isFile: true);
+                            try
+                            {
+                                f.SaveAs(Server.MapPath(o));
+                                Image = o;
+                            }
+                            catch { }
+                        }
+                    }
+                    string updateImage = PostPublicController.UpdateImage(post.ID, Image);
+
+                    // Thêm thư viện ảnh
+                    string IMG = "";
+                    if (ImageGallery.UploadedFiles.Count > 0)
+                    {
+                        foreach (UploadedFile f in ImageGallery.UploadedFiles)
+                        {
+                            var o = path + "post-app-" + post.ID.ToString() + "-" + Slug.ConvertToSlug(Path.GetFileName(f.FileName), isFile: true);
+                            try
+                            {
+                                f.SaveAs(Server.MapPath(o));
+                                IMG = o;
+                                PostPublicImageController.Insert(post.ID, IMG, username, currentDate);
+                            }
+                            catch { }
+                        }
+                    }
+
+                    // Copy bài viết vào hệ thống gốc
+                    if (ddlCopyToSystem.SelectedValue == "True" && post.Action == "view_more")
+                    {
+                        var categorySystem = PostCategoryController.GetByName(category.Name);
+                        var postSystem = new tbl_Post()
+                        {
                             Title = post.Title,
-                            Summary = post.Summary,
                             Content = post.Content,
-                            Thumbnail = post.Thumbnail,
+                            Image = post.Thumbnail,
+                            Featured = 1,
+                            CategoryID = categorySystem != null ? categorySystem.ID : 0,
+                            Status = 1,
+                            CreatedBy = post.CreatedBy,
                             CreatedDate = post.CreatedDate,
-                            CreatedBy = acc.Username,
+                            ModifiedBy = post.ModifiedBy,
                             ModifiedDate = post.ModifiedDate,
-                            ModifiedBy = acc.Username
+                            WebPublish = true,
+                            WebUpdate = post.CreatedDate,
+                            Slug = post.ActionValue
                         };
 
-                        var postClone = PostCloneController.Insert(newPostClone);
+                        PostController.Insert(postSystem);
                     }
-                }
 
-                if (post != null)
-                {
+
+                    // Tạo phiên bản cho wordpress
+                    if (!String.IsNullOrEmpty(hdfPostVariants.Value))
+                    {
+                        JavaScriptSerializer serializer = new JavaScriptSerializer();
+                        var variants = serializer.Deserialize<List<PostClone>>(hdfPostVariants.Value);
+                        if (variants != null)
+                        {
+                            foreach (var item in variants)
+                            {
+                                var newPostClone = new PostClone()
+                                {
+                                    PostPublicID = post.ID,
+                                    Web = item.Web,
+                                    PostWebID = 0,
+                                    CategoryID = post.CategoryID,
+                                    Title = !String.IsNullOrEmpty(item.Title) ? item.Title : post.Title,
+                                    Summary = post.Summary,
+                                    Content = post.Content,
+                                    Thumbnail = post.Thumbnail,
+                                    CreatedDate = post.CreatedDate,
+                                    CreatedBy = acc.Username,
+                                    ModifiedDate = post.ModifiedDate,
+                                    ModifiedBy = acc.Username
+                                };
+
+                                PostCloneController.Insert(newPostClone);
+                            }
+                        }
+                    }
+
                     PJUtils.ShowMessageBoxSwAlertCallFunction("Tạo bài viết thành công", "s", true, "redirectTo(" + post.ID.ToString() + ")", Page);
                 }
             }

@@ -67,15 +67,6 @@ namespace IM_PJ {
         protected global::System.Web.UI.HtmlControls.HtmlSelect ddlCategory;
         
         /// <summary>
-        /// ddlIsPolicy control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlIsPolicy;
-        
-        /// <summary>
         /// ddlAtHome control.
         /// </summary>
         /// <remarks>
@@ -157,6 +148,24 @@ namespace IM_PJ {
         protected global::System.Web.UI.WebControls.HiddenField listImg;
         
         /// <summary>
+        /// ddlCopyToSystem control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList ddlCopyToSystem;
+        
+        /// <summary>
+        /// ddlWordpress control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList ddlWordpress;
+        
+        /// <summary>
         /// btnSubmit control.
         /// </summary>
         /// <remarks>
@@ -173,5 +182,14 @@ namespace IM_PJ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.HiddenField hdfParentID;
+        
+        /// <summary>
+        /// hdfPostVariants control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField hdfPostVariants;
     }
 }

@@ -1,4 +1,5 @@
 ﻿using IM_PJ.Controllers;
+using IM_PJ.Models;
 using MB.Extensions;
 using NHST.Bussiness;
 using System;
@@ -114,48 +115,64 @@ namespace IM_PJ
                 string PostSlug = Slug.ConvertToSlug(txtSlug.Text.Trim());
                 string Content = pContent.Content.ToString();
 
-                string kq = PostController.Insert(Title, Content, "", ddlFeatured.SelectedValue.ToInt(), cateID, 1, PostSlug, acc.Username, currentDate);
-
-                //Phần thêm ảnh đại diện
-                string path = "/uploads/images/posts/";
-                string Image = "";
-                if (ProductThumbnailImage.UploadedFiles.Count > 0)
+                var newPost = new tbl_Post()
                 {
-                    foreach (UploadedFile f in ProductThumbnailImage.UploadedFiles)
+                    Title = Title,
+                    Content = Content,
+                    Image = "",
+                    Featured = ddlFeatured.SelectedValue.ToInt(),
+                    CategoryID = cateID,
+                    Status = 1,
+                    CreatedBy = acc.Username,
+                    CreatedDate = currentDate,
+                    ModifiedBy = acc.Username,
+                    ModifiedDate = currentDate,
+                    WebPublish = false,
+                    WebUpdate = currentDate,
+                    Slug = PostSlug
+                };
+
+                var post = PostController.Insert(newPost);
+
+                if (post != null)
+                {
+                    //Phần thêm ảnh đại diện
+                    string path = "/uploads/images/posts/";
+                    string Image = "";
+                    if (ProductThumbnailImage.UploadedFiles.Count > 0)
                     {
-                        var o = path + "post-" + kq + "-" + Slug.ConvertToSlug(Path.GetFileName(f.FileName), isFile: true);
-                        try
+                        foreach (UploadedFile f in ProductThumbnailImage.UploadedFiles)
                         {
-                            f.SaveAs(Server.MapPath(o));
-                            Image = o;
+                            var o = path + "post-" + post.ID + "-" + Slug.ConvertToSlug(Path.GetFileName(f.FileName), isFile: true);
+                            try
+                            {
+                                f.SaveAs(Server.MapPath(o));
+                                Image = o;
+                            }
+                            catch { }
                         }
-                        catch { }
                     }
-                }
 
-                string updateImage = PostController.UpdateImage(kq.ToInt(), Image);
+                    string updateImage = PostController.UpdateImage(post.ID, Image);
 
-                //Phần thêm thư viện ảnh
-                string IMG = "";
-                if (hinhDaiDien.UploadedFiles.Count > 0)
-                {
-                    foreach (UploadedFile f in hinhDaiDien.UploadedFiles)
+                    //Phần thêm thư viện ảnh
+                    string IMG = "";
+                    if (hinhDaiDien.UploadedFiles.Count > 0)
                     {
-                        var o = path + "post-" + kq + "-" + Slug.ConvertToSlug(Path.GetFileName(f.FileName), isFile: true);
-                        try
+                        foreach (UploadedFile f in hinhDaiDien.UploadedFiles)
                         {
-                            f.SaveAs(Server.MapPath(o));
-                            IMG = o;
-                            PostImageController.Insert(kq.ToInt(), IMG, username, currentDate);
+                            var o = path + "post-" + post.ID + "-" + Slug.ConvertToSlug(Path.GetFileName(f.FileName), isFile: true);
+                            try
+                            {
+                                f.SaveAs(Server.MapPath(o));
+                                IMG = o;
+                                PostImageController.Insert(post.ID, IMG, username, currentDate);
+                            }
+                            catch { }
                         }
-                        catch { }
                     }
-                }
 
-
-                if (kq.ToInt(0) > 0)
-                {
-                    PJUtils.ShowMessageBoxSwAlertCallFunction("Tạo bài viết thành công", "s", true, "redirectTo(" + kq + ")", Page);
+                    PJUtils.ShowMessageBoxSwAlertCallFunction("Tạo bài viết thành công", "s", true, "redirectTo(" + post.ID + ")", Page);
                 }
             }
         }

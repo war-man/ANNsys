@@ -29,27 +29,14 @@ namespace IM_PJ.Controllers
             }
         }
         #region CRUD
-        public static string Insert(string Title, string Content, string Image, int Featured, int CategoryID, int Status, string PostSlug, string CreatedBy, DateTime CreatedDate)
+        public static tbl_Post Insert(tbl_Post data)
         {
-            using (var dbe = new inventorymanagementEntities())
+            using (var con = new inventorymanagementEntities())
             {
-                tbl_Post ui = new tbl_Post();
-                ui.Title = Title;
-                ui.Content = Content;
-                ui.Image = Image;
-                ui.Featured = Featured;
-                ui.CategoryID = CategoryID;
-                ui.Status = Status;
-                ui.CreatedBy = CreatedBy;
-                ui.CreatedDate = CreatedDate;
-                ui.WebPublish = false;
-                ui.WebUpdate = CreatedDate;
-                ui.Slug = checkSlug(Slug.ConvertToSlug(PostSlug != "" ? PostSlug : Title));
+                con.tbl_Post.Add(data);
+                con.SaveChanges();
 
-                dbe.tbl_Post.Add(ui);
-                dbe.SaveChanges();
-                int kq = ui.ID;
-                return kq.ToString();
+                return data;
             }
         }
         public static string Update(int ID, string Title, string Content, string Image, int Featured, int CategoryID, int Status, string PostSlug, string ModifiedBy, DateTime ModifiedDate)

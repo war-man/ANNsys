@@ -7,12 +7,29 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Web;
+using System.Web.Script.Serialization;
 using WebUI.Business;
 
 namespace IM_PJ.Controllers
 {
     public class PostCloneController
     {
+        public static string getFeesJSON(int PostPublicID)
+        {
+            JavaScriptSerializer serializer = new JavaScriptSerializer();
+            var result = String.Empty;
+
+            using (var con = new inventorymanagementEntities())
+            {
+                var post = con.PostClones
+                    .Where(x => x.PostPublicID == PostPublicID)
+                    .ToArray();
+                result = serializer.Serialize(post);
+            }
+
+            return result;
+        }
+
         public static PostClone Insert(PostClone data)
         {
             using (var con = new inventorymanagementEntities())

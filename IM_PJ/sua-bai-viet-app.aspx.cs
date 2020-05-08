@@ -12,6 +12,7 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using Telerik.Web.UI;
 using System.IO;
+using System.Web.Script.Serialization;
 
 namespace IM_PJ
 {
@@ -129,6 +130,8 @@ namespace IM_PJ
                     PostInfo += "<p><strong>Ngày cập nhật</strong>: " + p.ModifiedDate + "</p>";
                     PostInfo += "<p><strong>Người cập nhật</strong>: " + p.ModifiedBy + "</p>";
                     ltrPostInfo.Text = PostInfo;
+
+                    hdfPostVariants.Value = PostCloneController.getFeesJSON(id);
                 }
             }
         }
@@ -219,20 +222,58 @@ namespace IM_PJ
                 };
 
                 var updatePost = PostPublicController.Update(oldPostPublic);
-
-                // Upload image gallery
-                if (UploadImages.HasFiles)
-                {
-                    foreach (HttpPostedFile uploadedFile in UploadImages.PostedFiles)
-                    {
-                        var o = path + "post-app-" + PostID + '-' + Slug.ConvertToSlug(Path.GetFileName(uploadedFile.FileName), isFile: true);
-                        uploadedFile.SaveAs(Server.MapPath(o));
-                        PostPublicImageController.Insert(PostID, o, username, DateTime.Now);
-                    }
-                }
-
+                
                 if (updatePost != null)
                 {
+                    // Cập nhật thư viện ảnh cho bài viết
+                    if (UploadImages.HasFiles)
+                    {
+                        foreach (HttpPostedFile uploadedFile in UploadImages.PostedFiles)
+                        {
+                            var o = path + "post-app-" + PostID + '-' + Slug.ConvertToSlug(Path.GetFileName(uploadedFile.FileName), isFile: true);
+                            uploadedFile.SaveAs(Server.MapPath(o));
+                            PostPublicImageController.Insert(PostID, o, username, DateTime.Now);
+                        }
+                    }
+
+                    // tạo phiên bản cho wordpress
+                    if (!String.IsNullOrEmpty(hdfPostVariants.Value))
+                    {
+                        JavaScriptSerializer serializer = new JavaScriptSerializer();
+                        var variants = serializer.Deserialize<List<PostClone>>(hdfPostVariants.Value);
+                        if (variants != null)
+                        {
+                            foreach (var item in variants)
+                            {
+                                var getpostClone = PostCloneController.Get(updatePost.ID, item.Web);
+                                if (getpostClone == null)
+                                {
+                                    continue;
+                                }
+
+                                var oldPostClone = new PostClone()
+                                {
+                                    ID = getpostClone.ID,
+                                    PostPublicID = updatePost.ID,
+                                    Web = getpostClone.Web,
+                                    PostWebID = getpostClone.PostWebID,
+                                    CategoryName = category.Name,
+                                    CategoryID = updatePost.CategoryID,
+                                    Title = !String.IsNullOrEmpty(item.Title) ? item.Title : updatePost.Title,
+                                    Summary = updatePost.Summary,
+                                    Content = updatePost.Content,
+                                    Thumbnail = updatePost.Thumbnail,
+                                    CreatedBy = getpostClone.CreatedBy,
+                                    CreatedDate = getpostClone.CreatedDate,
+                                    ModifiedDate = currentDate,
+                                    ModifiedBy = acc.Username
+                                };
+
+                                PostCloneController.Update(oldPostClone);
+                            }
+                        }
+                    }
+
                     PJUtils.ShowMessageBoxSwAlertCallFunction("Cập nhật bài viết thành công", "s", true, "redirectTo(" + updatePost.ID.ToString() + ")", Page);
                 }
             }

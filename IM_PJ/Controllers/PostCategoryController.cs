@@ -53,6 +53,19 @@ namespace IM_PJ.Controllers
 
             }
         }
+        public static tbl_PostCategory GetByName(string name)
+        {
+            using (var dbe = new inventorymanagementEntities())
+            {
+                tbl_PostCategory ai = dbe.tbl_PostCategory.Where(a => a.Title == name).SingleOrDefault();
+                if (ai != null)
+                {
+                    return ai;
+                }
+                else return null;
+
+            }
+        }
         public static List<tbl_PostCategory> GetAll()
         {
             using (var dbe = new inventorymanagementEntities())
