@@ -12,10 +12,11 @@ function showPostSyncModal(postPublicID) {
     html += "    <div class='col-md-12 item-website' data-web='all' data-post-public-id='" + postPublicID + "'>";
     html += "       <span>";
     html += "        	<a href='javascript:;' class='btn primary-btn btn-green' onclick='createClone($(this))'><i class='fa fa-cloud-upload' aria-hidden='true'></i> Tạo clone tất cả</a>";
+    html += "        	<a href='javascript:;' class='btn primary-btn btn-blue' onclick='editClone($(this))'><i class='fa fa-cloud-upload' aria-hidden='true'></i> Sửa bài viết</a>";
     html += "        	<a href='javascript:;' class='btn primary-btn btn-green' onclick='postWordpress($(this))'><i class='fa fa-cloud-upload' aria-hidden='true'></i> Đăng tất cả</a>";
     html += "        	<a href='javascript:;' class='btn primary-btn btn-blue' onclick='upTopPost($(this))'><i class='fa fa-upload' aria-hidden='true'></i> Up top tất cả</a>";
     html += "        	<a href='javascript:;' class='btn primary-btn btn-black' onclick='renewPost($(this))'><i class='fa fa-refresh' aria-hidden='true'></i> Làm mới tất cả</a>";
-    html += "        	<a href='javascript:;' class='btn primary-btn btn-red' onclick='deleteWordpressPost($(this), `show`)'><i class='fa fa-times' aria-hidden='true'></i> Xóa tất cả</a>";
+    html += "        	<a href='javascript:;' class='btn primary-btn btn-red' onclick='deleteWordpressPost($(this))'><i class='fa fa-times' aria-hidden='true'></i> Xóa tất cả</a>";
     html += "       </span>";
     html += "    </div>";
     html += "</div>";
@@ -43,7 +44,7 @@ function showPostSyncModal(postPublicID) {
         button += "<a href='javascript:;' onclick='renewPost($(this))' class='btn primary-btn btn-black'>Làm mới</a>";
         button += "<a href='javascript:;' onclick='viewPost($(this))' class='btn primary-btn btn-yellow'>Xem</a>";
         button += "<a href='javascript:;' onclick='editPost($(this))' class='btn primary-btn btn-black'>Sửa</a>";
-        button += "<a href='javascript:;' onclick='deleteWordpressPost($(this), `show`)' class='btn primary-btn btn-red'>Xóa</a>";
+        button += "<a href='javascript:;' onclick='deleteWordpressPost($(this))' class='btn primary-btn btn-red'>Xóa</a>";
         button += "</span>";
 
         var webItem = "";
@@ -232,22 +233,28 @@ function ajaxPostWordpress(web, postCloneID) {
 function upTopPost(obj) {
     let web = obj.closest(".item-website").attr("data-web");
     let postCloneID = obj.closest(".item-website").attr("data-post-clone-id");
+    let postWordpressID = obj.closest(".item-website").attr("data-post-wordpress-id");
 
     if (web == "all") {
         for (var i = 0; i < webList.length; i++) {
             postCloneID = $("*[data-web='" + webList[i] + "']").attr("data-post-clone-id");
-            ajaxUpTopPost(webList[i], postCloneID);
+            postWordpressID = $("*[data-web='" + webList[i] + "']").attr("data-post-wordpress-id");
+            ajaxUpTopPost(webList[i], postCloneID, postWordpressID);
         }
     }
     else {
-        ajaxUpTopPost(web, postCloneID);
+        ajaxUpTopPost(web, postCloneID, postWordpressID);
     }
 }
 
-function ajaxUpTopPost(web, postCloneID) {
+function ajaxUpTopPost(web, postCloneID, postWordpressID) {
     if (postCloneID === "") {
         $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-red'>Chưa tạo clone</span>");
         $("*[data-web='" + web + "']").find(".item-button").find(".btn-clone-not-found").removeClass("hide");
+        return;
+    }
+    if (postWordpressID === "" || postWordpressID == undefined) {
+        $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-red'>Chưa đăng bài viết lên web</span>");
         return;
     }
     $.ajax({
@@ -305,22 +312,28 @@ function ajaxUpTopPost(web, postCloneID) {
 function renewPost(obj) {
     let web = obj.closest(".item-website").attr("data-web");
     let postCloneID = obj.closest(".item-website").attr("data-post-clone-id");
+    let postWordpressID = obj.closest(".item-website").attr("data-post-wordpress-id");
 
     if (web == "all") {
         for (var i = 0; i < webList.length; i++) {
             postCloneID = $("*[data-web='" + webList[i] + "']").attr("data-post-clone-id");
-            ajaxRenewPost(webList[i], postCloneID);
+            postWordpressID = $("*[data-web='" + webList[i] + "']").attr("data-post-wordpress-id");
+            ajaxRenewPost(webList[i], postCloneID, postWordpressID);
         }
     }
     else {
-        ajaxRenewPost(web, postCloneID);
+        ajaxRenewPost(web, postCloneID, postWordpressID);
     }
 }
 
-function ajaxRenewPost(web, postCloneID) {
+function ajaxRenewPost(web, postCloneID, postWordpressID) {
     if (postCloneID === "") {
         $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-red'>Chưa tạo clone</span>");
         $("*[data-web='" + web + "']").find(".item-button").find(".btn-clone-not-found").removeClass("hide");
+        return;
+    }
+    if (postWordpressID === "" || postWordpressID == undefined) {
+        $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-red'>Chưa đăng bài viết lên web</span>");
         return;
     }
     $.ajax({
@@ -396,25 +409,31 @@ function editPost(obj) {
     window.open(URL, '_blank');
 }
 
-function deleteWordpressPost(obj, toggle) {
+function deleteWordpressPost(obj) {
     let web = obj.closest(".item-website").attr("data-web");
     let postCloneID = obj.closest(".item-website").attr("data-post-clone-id");
+    let postWordpressID = obj.closest(".item-website").attr("data-post-wordpress-id");
 
     if (web == "all") {
         for (var i = 0; i < webList.length; i++) {
             postCloneID = $("*[data-web='" + webList[i] + "']").attr("data-post-clone-id");
-            ajaxDeleteWordpressPost(webList[i], postCloneID);
+            postWordpressID = $("*[data-web='" + webList[i] + "']").attr("data-post-wordpress-id");
+            ajaxDeleteWordpressPost(webList[i], postCloneID, postWordpressID);
         }
     }
     else {
-        ajaxDeleteWordpressPost(web, postCloneID);
+        ajaxDeleteWordpressPost(web, postCloneID, postWordpressID);
     }
 }
 
-function ajaxDeleteWordpressPost(web, postCloneID) {
+function ajaxDeleteWordpressPost(web, postCloneID, postWordpressID) {
     if (postCloneID === "") {
         $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-red'>Chưa tạo clone</span>");
         $("*[data-web='" + web + "']").find(".item-button").find(".btn-clone-not-found").removeClass("hide");
+        return;
+    }
+    if (postWordpressID === "" || postWordpressID == undefined) {
+        $("*[data-web='" + web + "']").find(".item-status").html("<span class='bg-red'>Chưa đăng bài viết lên web</span>");
         return;
     }
     $.ajax({
