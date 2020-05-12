@@ -785,6 +785,103 @@ ul.image-gallery li {
 .content-box img {
     width: inherit;
 }
+.all-variable-table .image-column {
+    width: 7%;
+}
+.all-variable-table .name-column {
+    width: 22%;
+}
+.all-variable-table .sku-column {
+    width: 6%;
+}
+.all-variable-table .wholesale-price-column {
+    width: 5%;
+}
+.all-variable-table .retail-price-column {
+    width: 5%;
+}
+.all-variable-table .cost-price-column {
+    width: 5%;
+}
+.all-variable-table .stock-column {
+    width: 4%;
+}
+.all-variable-table .stock-status-column {
+    width: 12%;
+}
+.all-variable-table .category-column {
+    width: 8%;
+}
+.all-variable-table .date-column {
+    width: 7%;
+}
+.all-variable-table .show-homepage-column {
+    width: 6%;
+}
+.all-variable-table .show-webpublish-column {
+    width: 6%;
+}
+.all-variable-table .action-column {
+    width: 8%;
+}
+.all-variable-table .variable-column {
+    width: 20%;
+}
+.all-variable-table .hide-column {
+    width: 5%;
+}
+.all-product-table-2 .checkbox-column {
+    width: 3%;
+}
+.all-product-table-2 .checkbox-column input {
+    height: 20px;
+    width: 20px;
+}
+.all-product-table-2 .image-column {
+    width: 12%;
+}
+.all-product-table-2 .name-column {
+    width: 22%;
+}
+.all-product-table-2 .sku-column {
+    width: 6%;
+}
+.all-product-table-2 .wholesale-price-column {
+    width: 5%;
+}
+.all-product-table-2 .retail-price-column {
+    width: 5%;
+}
+.all-product-table-2 .cost-price-column {
+    width: 5%;
+}
+.all-product-table-2 .stock-column {
+    width: 4%;
+}
+.all-product-table-2 .stock-status-column {
+    width: 6%;
+}
+.all-product-table-2 .category-column {
+    width: 8%;
+}
+.all-product-table-2 .date-column {
+    width: 7%;
+}
+.all-product-table-2 .show-homepage-column {
+    width: 6%;
+}
+.all-product-table-2 .show-webpublish-column {
+    width: 6%;
+}
+.all-product-table-2 .action-column {
+    width: 8%;
+}
+.all-product-table-2 .variable-column {
+    width: 20%;
+}
+.all-product-table-2 .hide-column {
+    width: 5%;
+}
 .all-product-table .image-column {
     width: 10%;
 }

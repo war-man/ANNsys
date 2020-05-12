@@ -31,6 +31,10 @@
         table.shop_table_responsive > tbody > tr:nth-of-type(2n+1) td {
             border-bottom: solid 1px #e1e1e1!important;
         }
+        input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+        }
         @media (max-width: 768px) {
             table.shop_table_responsive thead {
 	            display: none;
@@ -123,7 +127,7 @@
     </style>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
-    <main class="col-md-10 main-block">
+    <main class="col-md-11 col-xs-12 main-block">
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
@@ -135,22 +139,8 @@
                     <div class="filter-above-wrap clear">
                         <div class="filter-control">
                             <div class="row">
-                                <div class="col-md-3 col-xs-12">
+                                <div class="col-md-7 col-xs-12">
                                     <asp:TextBox ID="txtSearchProduct" runat="server" CssClass="form-control" placeholder="Tìm sản phẩm" autocomplete="off"></asp:TextBox>
-                                </div>
-                                <div class="col-md-2 col-xs-6">
-                                    <asp:DropDownList ID="ddlWebPublish" runat="server" CssClass="form-control">
-                                        <asp:ListItem Value="" Text="Trang xem hàng"></asp:ListItem>
-                                        <asp:ListItem Value="0" Text="Đang ẩn"></asp:ListItem>
-                                        <asp:ListItem Value="1" Text="Đang hiện"></asp:ListItem>
-                                    </asp:DropDownList>
-                                </div>
-                                <div class="col-md-2 col-xs-6">
-                                    <asp:DropDownList ID="ddlShowHomePage" runat="server" CssClass="form-control">
-                                        <asp:ListItem Value="" Text="Trang chủ"></asp:ListItem>
-                                        <asp:ListItem Value="0" Text="Đang ẩn"></asp:ListItem>
-                                        <asp:ListItem Value="1" Text="Đang hiện"></asp:ListItem>
-                                    </asp:DropDownList>
                                 </div>
                                 <div class="col-md-2 col-xs-6">
                                     <label>Từ ngày</label>
@@ -169,7 +159,7 @@
                                 <div class="col-md-1 col-xs-6 search-button">
                                     <a href="javascript:;" onclick="searchProduct()" class="btn primary-btn h45-btn"><i class="fa fa-search"></i></a>
                                     <asp:Button ID="btnSearch" runat="server" CssClass="btn primary-btn h45-btn" OnClick="btnSearch_Click" Style="display: none" />
-                                    <a href="/tat-ca-san-pham" class="btn primary-btn h45-btn"><i class="fa fa-times" aria-hidden="true"></i></a>
+                                    <a href="/san-pham" class="btn primary-btn h45-btn"><i class="fa fa-times" aria-hidden="true"></i></a>
                                 </div>
                             </div>
                         </div>
@@ -215,14 +205,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-2 col-xs-6">
-                                    <asp:DropDownList ID="ddlPreOrder" runat="server" CssClass="form-control">
-                                        <asp:ListItem Value="" Text="Loại hàng"></asp:ListItem>
-                                        <asp:ListItem Value="0" Text="Hàng có sẵn"></asp:ListItem>
-                                        <asp:ListItem Value="1" Text="Hàng order"></asp:ListItem>
-                                    </asp:DropDownList>
-                                </div>
-                                <div class="col-md-1 col-xs-6">
+                                <div class="col-md-3 col-xs-6">
                                 </div>
                             </div>
                         </div>
@@ -340,7 +323,7 @@
                             </div>
                         </div>
                         <div class="responsive-table">
-                            <table class="table table-checkable table-product all-product-table shop_table_responsive">
+                            <table class="table table-checkable table-product all-product-table-2 shop_table_responsive">
                                 <asp:Literal ID="ltrList" runat="server" EnableViewState="false"></asp:Literal>
                             </table>
                         </div>
@@ -398,6 +381,7 @@
                 }
             }
 
+
             function changeQuantityFilter(obj)
             {
                 var value = obj.val();
@@ -420,361 +404,36 @@
                 $("#<%= btnSearch.ClientID%>").click();
             }
 
-            function updateHotProduct(obj) {
-                let productID = obj.attr("data-id");
+            function changeCheckAll(checked) {
+                let childDOM = $("td>input[type='checkbox']").not("[disabled='disabled']");
 
-                $.ajax({
-                    type: "POST",
-                    url: "/tat-ca-san-pham.aspx/updateHotProduct",
-                    data: "{productID: " + productID + "}",
-                    contentType: "application/json; charset=utf-8",
-                    dataType: "json",
-                    success: function (msg) {
-                        if (msg.d == "hot") {
-                            $(obj).html("<i class='fa fa-star' aria-hidden='true'></i>");
-                        }
-                        else if (msg.d == "noHot") {
-                            $(obj).html("<i class='fa fa-star-o' aria-hidden='true'></i>");
-                        }
-                        else if (msg.d == "productNotfound") {
-                            alert("Lỗi không tìm thấy sản phẩm");
-                        }
-                    }
-                });
-            }
-            
-            function updateShowHomePage(obj)
-            {
-                var ID = obj.attr("data-product-id");
-                var update = obj.attr("data-update");
-                $.ajax({
-                    type: "POST",
-                    url: "/tat-ca-san-pham.aspx/updateShowHomePage",
-                    data: "{id: " + ID + ", value: " + update + "}",
-                    contentType: "application/json; charset=utf-8",
-                    dataType: "json",
-                    beforeSend: function () {
-                        HoldOn.open();
-                    },
-                    success: function (msg) {
-                        HoldOn.close();
-                        if (msg.d == "nocleanimage")
-                        {
-                            swal("Thông báo", "Sản phẩm này chưa có hình đại diện sạch!", "warning");
-                        }
-                        else if (msg.d == "sameimage")
-                        {
-                            swal("Thông báo", "Có thể hình đại diện sạch giống với hình có mã.<br> Hãy kiểm tra lại!", "warning");
-                        }
-                        else if (msg.d == "true")
-                        {
-                            if (update == 1)
-                            {
-                                $('#showHomePage_' + ID).html("<a href='javascript:;' data-product-id='" + ID + "' data-update='0' class='bg-green bg-button' onclick='updateShowHomePage($(this))'>Đang hiện</a>");
-                                $(".up-product-" + ID).removeClass("hide");
-                            }
-                            else
-                            {
-                                $('#showHomePage_' + ID).html("<a href='javascript:;' data-product-id='" + ID + "' data-update='1' class='bg-black bg-button' onclick='updateShowHomePage($(this))'>Đang ẩn</a>");
-                                $(".up-product-" + ID).addClass("hide");
-                            }
-                        }
-                        else
-                        {
-                            alert("Lỗi");
-                        }
-                    },
-                    complete: function () {
-                        HoldOn.close();
-                    }
+                childDOM.each((index, element) => {
+                    element.checked = checked;
                 });
             }
 
-            function updateShowWebPublish(obj)
-            {
-                var ID = obj.attr("data-product-id");
-                var update = obj.attr("data-update");
-                $.ajax({
-                    type: "POST",
-                    url: "/tat-ca-san-pham.aspx/updateWebPublish",
-                    data: "{id: " + ID + ", value: " + update + "}",
-                    contentType: "application/json; charset=utf-8",
-                    dataType: "json",
-                    beforeSend: function () {
-                        HoldOn.open();
-                    },
-                    success: function (msg) {
-                        if (msg.d == "true")
-                        {
-                            if (update == "true")
-                            {
-                                $('#showWebPublish_' + ID).html("<a href='javascript:;' data-product-id='" + ID + "' data-update='false' class='bg-red bg-button' onclick='updateShowWebPublish($(this))'>Đang hiện</a>");
-                                $(".webupdate-product-" + ID).removeClass("hide");
-                            }
-                            else
-                            {
-                                $('#showWebPublish_' + ID).html("<a href='javascript:;' data-product-id='" + ID + "' data-update='true' class='bg-black bg-button' onclick='updateShowWebPublish($(this))'>Đang ẩn</a>");
-                                $(".webupdate-product-" + ID).addClass("hide");
-                            }
-                        }
-                        else
-                        {
-                            alert("Lỗi");
-                        }
-                    },
-                    complete: function () {
-                        HoldOn.close();
-                    }
-                });
-            }
-
-            function upTopWebUpdate(obj)
-            {
-                var productID = obj.attr("data-id");
-
-                $.ajax({
-                    type: "POST",
-                    url: "/tat-ca-san-pham.aspx/upTopWebUpdate",
-                    data: "{id: " + productID + "}",
-                    contentType: "application/json; charset=utf-8",
-                    dataType: "json",
-                    beforeSend: function () {
-                        HoldOn.open();
-                    },
-                    success: function (msg) {
-                        if (msg.d == "true")
-                        {
-                            swal("Thông báo", "Up thành công!", "success");
-                        }
-                        else
-                        {
-                            alert("Lỗi");
-                        }
-                    },
-                    complete: function () {
-                        HoldOn.close();
-                    }
-                });
-            }
-
-            function liquidateProduct(categoryID, productID, sku)
-            {
-                swal({
-                    title: "Xác nhận",
-                    text: "Bạn muốn xả kho sản phẩm này?",
-                    type: "warning",
-                    showCancelButton: true,
-                    closeOnConfirm: true,
-                    cancelButtonText: "Để em xem lại...",
-                    confirmButtonText: "Đúng rồi sếp!",
-                }, function (confirm) {
-                    if (confirm) {
-                        HoldOn.open();
-                        ProductService.liquidate(productID)
-                            .then(data => {
-                                if (data) {
-                                    let btnLiquidateDOM = document.querySelector(".liquidation-product-" + productID);
-                                    let rowDOM = btnLiquidateDOM.parentElement.parentElement;
-                                    let skuDOM = rowDOM.querySelector("[data-title='Mã']");
-                                    let quantityDOM = rowDOM.querySelector("[data-title='Số lượng']");
-                                    let stockDOM = rowDOM.querySelector("[data-title='Kho']");
-
-                                    // Cập nhật trạng thái xã kho
-                                    btnLiquidateDOM.remove();
-                                    rowDOM.querySelector("[data-title='Thao tác']").innerHTML += btnRecoverLiquidatedHTML(categoryID, productID, sku);
-                                    quantityDOM.innerHTML = '<a target="_blank" href="/thong-ke-san-pham?SKU=' + skuDOM.innerText + '">0</a>'
-                                    stockDOM.innerHTML = '<span class="bg-red">Hết hàng</span>';
-
-                                    setTimeout(function () {
-                                        swal({
-                                            title: "Thông báo",
-                                            text: "Xã kho thành công!",
-                                            type: "success"
-                                        }, function () {
-                                            hiddenProduct(categoryID, productID, sku);
-                                        });
-                                    }, 500);
-                                }
-                                else {
-                                    setTimeout(function () {
-                                        swal("Thông báo", "Có lỗi trong qua trình xã kho", "error");
-                                    }, 500);
-                                }
-                            })
-                            .catch(err => {
-                                setTimeout(function () {
-                                    swal("Thông báo", "Có lỗi trong qua trình xã kho", "error");
-                                }, 500);
-                            })
-                            .finally(() => { HoldOn.close(); });
-                    }
-                });
-            }
-
-            function recoverLiquidatedProduct(categoryID, productID, sku) {
-                swal({
-                    title: "Xác nhận",
-                    text: "Bạn muốn phục hồi xã kho?",
-                    type: "warning",
-                    showCancelButton: true,
-                    closeOnConfirm: true,
-                    cancelButtonText: "Để em xem lại...",
-                    confirmButtonText: "Đúng rồi sếp!",
-                }, function (confirm) {
-                    if (confirm) {
-                        HoldOn.open();
-                        ProductService.recoverLiquidated(productID, sku)
-                            .then(data => {
-                                if (data) {
-                                    let btnRecoverLiquidatedDOM = document.querySelector(".recover-liquidation-product-" + productID);
-                                    let rowDOM = btnRecoverLiquidatedDOM.parentElement.parentElement;
-                                    let skuDOM = rowDOM.querySelector("[data-title='Mã']");
-                                    let quantityDOM = rowDOM.querySelector("[data-title='Số lượng']");
-                                    let stockDOM = rowDOM.querySelector("[data-title='Kho']");
-
-                                    // Cập nhật trạng thái xã kho
-                                    btnRecoverLiquidatedDOM.remove();
-                                    rowDOM.querySelector("[data-title='Thao tác']").innerHTML += btnLiquidateHTML(categoryID, productID, sku);
-                                    quantityDOM.innerHTML = '<a target="_blank" href="/thong-ke-san-pham?SKU=' + skuDOM.innerText + '">' + data.TotalProductInstockQuantityLeft  + '</a>'
-                                    stockDOM.innerHTML = '<span class="bg-green">Còn hàng</span>';
-
-                                    setTimeout(function () {
-                                        swal({
-                                            title: "Thông báo", 
-                                            text: "Phục hồi xã kho thành công!", 
-                                            type: "success"
-                                        }, function () {
-                                            unhiddenProduct(categoryID, productID, sku);
-                                        });
-                                    }, 500);
-                                }
-                                else {
-                                    setTimeout(function () {
-                                        swal("Thông báo", "Có lỗi trong qua trình phục hồi lại xã kho", "error");
-                                    }, 500);
-                                }
-                            })
-                            .catch(err => {
-                                setTimeout(function () {
-                                    swal("Thông báo", "Có lỗi trong qua trình phục hồi lại xã kho", "error");
-                                }, 500);
-                            })
-                            .finally(() => { HoldOn.close(); });
-                    }
-                });
-            }
-
-            function btnLiquidateHTML(categoryID, productID, sku)
-            {
-                let strHTML = "";
-
-                strHTML += "<a href='javascript:;' ";
-                strHTML += "       title='Xả kho' ";
-                strHTML += "       class='liquidation-product-" + productID + " btn primary-btn btn-red h45-btn' ";
-                strHTML += "       onclick='liquidateProduct(" + categoryID + ", " + productID + ", `" + sku + "`);'>";
-                strHTML += "   <i class='glyphicon glyphicon-trash' aria-hidden='true'></i>";
-                strHTML += "</a>";
-
-                return strHTML;
-            };
-
-            function btnRecoverLiquidatedHTML(categoryID, productID, sku)
-            {
-                let strHTML = "";
-
-                strHTML += "<a href='javascript:;' ";
-                strHTML += "       title='Phục hồi xả kho' ";
-                strHTML += "       class='recover-liquidation-product-" + productID + " btn primary-btn btn-green h45-btn' ";
-                strHTML += "       onclick='recoverLiquidatedProduct(" + categoryID + ", " + productID + ", `" + sku + "`);'>";
-                strHTML += "   <i class='glyphicon glyphicon-repeat' aria-hidden='true'></i>";
-                strHTML += "</a>";
-
-                return strHTML;
-            };
-
-            function hiddenProduct(categoryID, productID, sku) {
-                setTimeout(() => {
-                    swal({
-                        title: "Xác nhận",
-                        text: "Bạn đang muốn ẩn sản phẩm đúng không?",
-                        type: "warning",
-                        showCancelButton: true,
-                        closeOnConfirm: true,
-                        cancelButtonText: "Để em xem lại...",
-                        confirmButtonText: "Đúng rồi sếp!",
-                    }, (confirm) => {
-                        if (confirm) {
-                            // Thực hiện update giá trị trong database
-                            HoldOn.open();
-                            ProductService.updateHidden(productID, true)
-                                .then(() => {
-                                    // Thực hiện ẩn sản phẩm trên các trang quảng cáo
-                                    HoldOn.open();
-                                    ProductService.handleSyncProduct(categoryID, productID, sku, false, false, true)
-                                        .then(() => {
-                                            setTimeout(() => {
-                                                swal("Thông báo", "Ẩn sản phẩm trên trang quảng cáo thành công!", "success");
-                                            }, 500);
-                                        })
-                                        .catch(err => {
-                                            setTimeout(() => {
-                                                swal("Thông báo", "Có lỗi trong qua trình ẩn sản phẩm trên các trang quảng cáo", "error");
-                                            }, 500);
-                                        })
-                                        .finally(() => { HoldOn.close(); });
-                                })
-                                .catch(err => {
-                                    setTimeout(() => {
-                                        swal("Thông báo", "Có lỗi trong qua trình ẩn sản phẩm", "error");
-                                    }, 500);
-                                })
-                                .finally(() => { HoldOn.close(); });
-                        }
+            function checkAll() {
+                let parentDOM = $("#checkAll");
+                let childDOM = $("td>input[type='checkbox']").not("[disabled='disabled']");
+                if (childDOM.length == 0) {
+                    parentDOM.prop('checked', false);
+                }
+                else {
+                    childDOM.each((index, element) => {
+                        parentDOM.prop('checked', element.checked);
+                        if (!element.checked) return false;
                     });
-                }, 1000);
-            };
+                }
+            }
 
-            function unhiddenProduct(categoryID, productID, sku, up, renew) {
-                setTimeout(() => {
-                    swal({
-                        title: "Xác nhận",
-                        text: "Bạn đang muốn hiện sản phẩm đúng không?",
-                        type: "warning",
-                        showCancelButton: true,
-                        closeOnConfirm: true,
-                        cancelButtonText: "Để em xem lại...",
-                        confirmButtonText: "Đúng rồi sếp!",
-                    }, (confirm) => {
-                        if (confirm) {
-                            // Thực hiện update giá trị trong database
-                            HoldOn.open();
-                            ProductService.updateHidden(productID, false)
-                                .then(() => {
-                                    // Thực hiện hiển thị sản phẩm trên các trang quảng cáo
-                                    HoldOn.open();
-                                    ProductService.handleSyncProduct(categoryID, productID, sku, false, false, false)
-                                        .then(() => {
-                                            setTimeout(()  => {
-                                                swal("Thông báo", "Hiện sản phẩm trên trang quảng cáo thành công!", "success");
-                                            }, 500);
-                                        })
-                                        .catch(err => {
-                                            setTimeout(() => {
-                                                swal("Thông báo", "Có lỗi trong qua trình hiện sản phẩm trên các trang quảng cáo", "error");
-                                            }, 500);
-                                        })
-                                        .finally(() => { HoldOn.close(); });
-                                })
-                                .catch(err => {
-                                    setTimeout(() => {
-                                        swal("Thông báo", "Có lỗi trong qua trình hiển sản phẩm", "error");
-                                    }, 500);
-                                })
-                                .finally(() => { HoldOn.close(); });
-                        }
-                    });
-                }, 1000);
-            };
+            function changeCheck(self) {
+                let parent = self.parent().parent();
+
+                
+
+                // Hổ trợ xử lý check or uncheck all print
+                checkAll();
+            }
         </script>
     </main>
 </asp:Content>

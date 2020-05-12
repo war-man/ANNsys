@@ -695,6 +695,7 @@
     <Content Include="thong-tin-don-hang-chuyen-hoan.aspx" />
     <Content Include="sua-bai-viet.aspx" />
     <Content Include="uploads\avatars\no-avatar.png" />
+    <Content Include="chi-tiet-san-pham.aspx" />
     <Content Include="xem-thong-bao.aspx" />
     <Content Include="xem-bai-viet-app.aspx" />
     <Content Include="xem-don-hang-doi-tra.aspx" />
@@ -2143,6 +2144,13 @@
     <Compile Include="Utils\Thumbnail.cs" />
     <Compile Include="Utils\UnSign.cs" />
     <Compile Include="Utils\Slug.cs" />
+    <Compile Include="chi-tiet-san-pham.aspx.cs">
+      <DependentUpon>chi-tiet-san-pham.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="chi-tiet-san-pham.aspx.designer.cs">
+      <DependentUpon>chi-tiet-san-pham.aspx</DependentUpon>
+    </Compile>
     <Compile Include="xem-thong-bao.aspx.cs">
       <DependentUpon>xem-thong-bao.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>

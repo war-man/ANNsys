@@ -21,6 +21,10 @@
         .select2-container--default .select2-selection--single .select2-selection__arrow {
             height: 43px;
         }
+        input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+        }
         @media (max-width: 768px) {
             table.shop_table_responsive thead {
 	            display: none;

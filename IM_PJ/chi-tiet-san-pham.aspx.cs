@@ -1,0 +1,354 @@
+﻿using IM_PJ.Controllers;
+using IM_PJ.Models;
+using IM_PJ.Utils;
+using MB.Extensions;
+using NHST.Bussiness;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+
+namespace IM_PJ
+{
+    public partial class chi_tiet_san_pham : System.Web.UI.Page
+    {
+        protected void Page_Load(object sender, EventArgs e)
+        {
+            if (!IsPostBack)
+            {
+                if (Request.Cookies["usernameLoginSystem"] != null)
+                {
+                    string username = Request.Cookies["usernameLoginSystem"].Value;
+                    var acc = AccountController.GetByUsername(username);
+                    if (acc != null)
+                    {
+                        LoadData();
+                    }
+                }
+                else
+                {
+
+                    Response.Redirect("/dang-nhap");
+                }
+            }
+        }
+        public void LoadData()
+        {
+            int id = Request.QueryString["id"].ToInt(0);
+            string sku = Request.QueryString["sku"];
+
+            var p = new tbl_Product();
+
+            if (id > 0)
+            {
+                p = ProductController.GetByID(id);
+            }
+            else if (id == 0)
+            {
+                int variableid = Request.QueryString["variableid"].ToInt(0);
+                if (variableid != 0)
+                {
+                    p = ProductController.GetByVariableID(variableid);
+                }
+                else
+                {
+                    if (sku != "")
+                    {
+                        p = ProductController.GetBySKU(sku);
+                        if (p == null)
+                        {
+                            p = ProductController.GetByVariableSKU(sku);
+                        }
+                    }
+                }
+            }
+
+            if (p == null)
+            {
+                PJUtils.ShowMessageBoxSwAlertError("Không tìm thấy sản phẩm " + id, "e", true, "/san-pham", Page);
+            }
+            else
+            {
+                this.Title = String.Format("{0} - Sản phẩm", p.ProductSKU);
+
+                ltrEdit1.Text = "";
+                ltrEdit1.Text += "<a href='javascript:;' onclick='copyProductInfo(" + p.ID + ")' class='btn primary-btn not-fullwidth print-invoice-merged'><i class='fa fa-files-o'></i> Copy thông tin</a>";
+                ltrEdit1.Text += "<a href='javascript:;' onclick='getAllProductImage(`" + p.ProductSKU + "`);' class='btn primary-btn not-fullwidth print-invoice-merged'><i class='fa fa-cloud-download'></i> Tải tất cả hình ảnh</a>";
+
+                ltrProductName.Text = p.ProductSKU + " - " + p.ProductTitle;
+                var categoryName = CategoryController.GetByID(p.CategoryID.Value);
+                ltrCategory.Text = categoryName.CategoryName;
+                ltrMaterials.Text = p.Materials;
+                pContent.Text = p.ProductContent;
+                ltrSKU.Text = p.ProductSKU;
+                ltrRegularPrice.Text = string.Format("{0:N0}", p.Regular_Price);
+                ltrRetailPrice.Text = string.Format("{0:N0}", p.Retail_Price);
+
+                // Create order fileter
+                var filter = new ProductFilterModel() { search = p.ProductSKU };
+                // Create pagination
+                var page = new PaginationMetadataModel();
+                var a = ProductController.GetAllSql(filter, ref page);
+                if (page.totalCount > 0)
+                {
+                    foreach (var item in a)
+                    {
+                        ltrStock.Text = item.TotalProductInstockQuantityLeft.ToString();
+                        if (item.StockStatus == 1)
+                        {
+                            ltrStockStatus.Text = "còn hàng";
+                        }
+                        else if (item.StockStatus == 2)
+                        {
+                            ltrStockStatus.Text = "hết hàng";
+                        }
+                        else
+                        {
+                            ltrStockStatus.Text = "đang nhập hàng";
+                        }
+                    }
+                }
+                else
+                {
+                    ltrStock.Text = "0";
+                }
+
+                // thư viện ảnh
+                var image = ProductImageController.GetByProductID(id);
+                imageGallery.Text = "<ul class='image-gallery'>";
+                imageGallery.Text += "<li><a href='" + Thumbnail.getURL(p.ProductImage, Thumbnail.Size.Source) + "' target='_blank'><img src='" + Thumbnail.getURL(p.ProductImage, Thumbnail.Size.Normal) + "'></a><a href='" + Thumbnail.getURL(p.ProductImage, Thumbnail.Size.Source) + "' download class='btn download-btn download-image h45-btn'><i class='fa fa-cloud-download'></i> Tải hình này</a></li>";
+                if (image != null)
+                {
+                    foreach (var img in image)
+                    {
+                        if (img.ProductImage != p.ProductImage)
+                        {
+                            imageGallery.Text += "<li><a href='" + Thumbnail.getURL(img.ProductImage, Thumbnail.Size.Source) + "' target='_blank'><img src='" + Thumbnail.getURL(img.ProductImage, Thumbnail.Size.Normal) + "'></a><a href='" + Thumbnail.getURL(img.ProductImage, Thumbnail.Size.Source) + "' download class='btn download-btn download-image h45-btn'><i class='fa fa-cloud-download'></i> Tải hình này</a></li>";
+                        }
+                    }
+                }
+                imageGallery.Text += "</ul>";
+
+
+                hdfTable.Value = p.ProductStyle.ToString();
+                List<tbl_ProductVariable> b = new List<tbl_ProductVariable>();
+                b = ProductVariableController.SearchProductID(p.ID, "");
+                if (b != null)
+                {
+                    pagingall(b);
+                }
+            }
+        }
+        #region Paging
+        public void pagingall(List<tbl_ProductVariable> acs)
+        {
+            int PageSize = 40;
+            StringBuilder html = new StringBuilder();
+            if (acs.Count > 0)
+            {
+                int TotalItems = acs.Count;
+                if (TotalItems % PageSize == 0)
+                    PageCount = TotalItems / PageSize;
+                else
+                    PageCount = TotalItems / PageSize + 1;
+
+                Int32 Page = GetIntFromQueryString("Page");
+
+                if (Page == -1) Page = 1;
+                int FromRow = (Page - 1) * PageSize;
+                int ToRow = Page * PageSize - 1;
+                if (ToRow >= TotalItems)
+                    ToRow = TotalItems - 1;
+                html.Append("<tr>");
+                html.Append("    <th class='image-column'>Ảnh</th>");
+                html.Append("    <th class='variable-column'>Thuộc tính</th>");
+                html.Append("    <th class='sku-column'>Mã</th>");
+                html.Append("    <th class='wholesale-price-column'>Giá sỉ</th>");
+                html.Append("    <th class='stock-column'>Kho</th>");
+                html.Append("    <th class='stock-status-column'>Trạng thái</th>");
+                html.Append("</tr>");
+                for (int i = FromRow; i < ToRow + 1; i++)
+                {
+                    var item = acs[i];
+                    html.Append("<tr>");
+                    html.Append("   <td><img src='" + Thumbnail.getURL(item.Image, Thumbnail.Size.Small) + "'></td>");
+
+                    string date = string.Format("{0:dd/MM/yyyy}", item.CreatedDate);
+                    string ishidden = "";
+                    if (item.IsHidden != null)
+                    {
+                        bool IsHidden = Convert.ToBoolean(item.IsHidden);
+                        ishidden = PJUtils.IsHiddenStatus(IsHidden);
+                    }
+                    else
+                    {
+                        ishidden = PJUtils.IsHiddenStatus(false);
+                    }
+
+                    var value = ProductVariableValueController.GetByProductVariableID(item.ID);
+                    if (value != null)
+                    {
+                        html.Append("   <td>");
+                        string list = "";
+                        foreach (var temp in value)
+                        {
+                            html.Append("" + temp.VariableName + ": " + temp.VariableValue + "</br>" + "");
+                            list += temp.VariableName + "|";
+                        }
+                        html.Append("</td>");
+                    }
+
+                    html.Append("   <td>" + item.SKU + "</td>");
+                    html.Append("   <td>" + string.Format("{0:N0}", item.Regular_Price) + "</td>");
+                    html.Append("   <td>" + PJUtils.TotalProductQuantityInstock(1, item.SKU) + "</td>");
+                    html.Append("   <td>" + PJUtils.StockStatusBySKU(1, item.SKU) + "</td>");
+                    html.Append("</tr>");
+                }
+            }
+            ltrList.Text = html.ToString();
+        }
+        public static Int32 GetIntFromQueryString(String key)
+        {
+            Int32 returnValue = -1;
+            String queryStringValue = HttpContext.Current.Request.QueryString[key];
+            try
+            {
+                if (queryStringValue == null)
+                    return returnValue;
+                if (queryStringValue.IndexOf("#") > 0)
+                    queryStringValue = queryStringValue.Substring(0, queryStringValue.IndexOf("#"));
+                returnValue = Convert.ToInt32(queryStringValue);
+            }
+            catch
+            { }
+            return returnValue;
+        }
+        private int PageCount;
+        protected void DisplayHtmlStringPaging1()
+        {
+
+            Int32 CurrentPage = Convert.ToInt32(Request.QueryString["Page"]);
+            if (CurrentPage == -1) CurrentPage = 1;
+            string[] strText = new string[4] { "Trang đầu", "Trang cuối", "Trang sau", "Trang trước" };
+            if (PageCount > 1)
+                Response.Write(GetHtmlPagingAdvanced(6, CurrentPage, PageCount, Context.Request.RawUrl, strText));
+
+        }
+        private static string GetPageUrl(int currentPage, string pageUrl)
+        {
+            pageUrl = Regex.Replace(pageUrl, "(\\?|\\&)*" + "Page=" + currentPage, "");
+            if (pageUrl.IndexOf("?") > 0)
+            {
+                pageUrl += "&Page={0}";
+            }
+            else
+            {
+                pageUrl += "?Page={0}";
+            }
+            return pageUrl;
+        }
+        public static string GetHtmlPagingAdvanced(int pagesToOutput, int currentPage, int pageCount, string currentPageUrl, string[] strText)
+        {
+            //Nếu Số trang hiển thị là số lẻ thì tăng thêm 1 thành chẵn
+            if (pagesToOutput % 2 != 0)
+            {
+                pagesToOutput++;
+            }
+
+            //Một nửa số trang để đầu ra, đây là số lượng hai bên.
+            int pagesToOutputHalfed = pagesToOutput / 2;
+
+            //Url của trang
+            string pageUrl = GetPageUrl(currentPage, currentPageUrl);
+
+
+            //Trang đầu tiên
+            int startPageNumbersFrom = currentPage - pagesToOutputHalfed; ;
+
+            //Trang cuối cùng
+            int stopPageNumbersAt = currentPage + pagesToOutputHalfed; ;
+
+            StringBuilder output = new StringBuilder();
+
+            //Nối chuỗi phân trang
+            //output.Append("<div class=\"paging\">");
+            output.Append("<ul>");
+
+            //Link First(Trang đầu) và Previous(Trang trước)
+            if (currentPage > 1)
+            {
+                output.Append("<li><a title=\"" + strText[0] + "\" href=\"" + string.Format(pageUrl, 1) + "\">Trang đầu</a></li>");
+                output.Append("<li><a title=\"" + strText[1] + "\" href=\"" + string.Format(pageUrl, currentPage - 1) + "\">Trang trước</a></li>");
+                //output.Append("<li class=\"UnselectedPrev\" ><a title=\"" + strText[1] + "\" href=\"" + string.Format(pageUrl, currentPage - 1) + "\"><i class=\"fa fa-angle-left\"></i></a></li>");
+
+                //output.Append("<span class=\"Unselect_prev\"><a href=\"" + string.Format(pageUrl, currentPage - 1) + "\"></a></span>");
+            }
+
+            /******************Xác định startPageNumbersFrom & stopPageNumbersAt**********************/
+            if (startPageNumbersFrom < 1)
+            {
+                startPageNumbersFrom = 1;
+
+                //As page numbers are starting at one, output an even number of pages.  
+                stopPageNumbersAt = pagesToOutput;
+            }
+
+            if (stopPageNumbersAt > pageCount)
+            {
+                stopPageNumbersAt = pageCount;
+            }
+
+            if ((stopPageNumbersAt - startPageNumbersFrom) < pagesToOutput)
+            {
+                startPageNumbersFrom = stopPageNumbersAt - pagesToOutput;
+                if (startPageNumbersFrom < 1)
+                {
+                    startPageNumbersFrom = 1;
+                }
+            }
+            /******************End: Xác định startPageNumbersFrom & stopPageNumbersAt**********************/
+
+            //Các dấu ... chỉ những trang phía trước  
+            if (startPageNumbersFrom > 1)
+            {
+                output.Append("<li><a href=\"" + string.Format(GetPageUrl(currentPage - 1, pageUrl), startPageNumbersFrom - 1) + "\">&hellip;</a></li>");
+            }
+
+            //Duyệt vòng for hiển thị các trang
+            for (int i = startPageNumbersFrom; i <= stopPageNumbersAt; i++)
+            {
+                if (currentPage == i)
+                {
+                    output.Append("<li class=\"current\" ><a >" + i.ToString() + "</a> </li>");
+                }
+                else
+                {
+                    output.Append("<li><a href=\"" + string.Format(pageUrl, i) + "\">" + i.ToString() + "</a> </li>");
+                }
+            }
+
+            //Các dấu ... chỉ những trang tiếp theo  
+            if (stopPageNumbersAt < pageCount)
+            {
+                output.Append("<li><a href=\"" + string.Format(pageUrl, stopPageNumbersAt + 1) + "\">&hellip;</a></li>");
+            }
+
+            //Link Next(Trang tiếp) và Last(Trang cuối)
+            if (currentPage != pageCount)
+            {
+                //output.Append("<span class=\"Unselect_next\"><a href=\"" + string.Format(pageUrl, currentPage + 1) + "\"></a></span>");
+                //output.Append("<li class=\"UnselectedNext\" ><a title=\"" + strText[2] + "\" href=\"" + string.Format(pageUrl, currentPage + 1) + "\"><i class=\"fa fa-angle-right\"></i></a></li>");
+                output.Append("<li><a title=\"" + strText[2] + "\" href=\"" + string.Format(pageUrl, currentPage + 1) + "\">Trang sau</a></li>");
+                output.Append("<li><a title=\"" + strText[3] + "\" href=\"" + string.Format(pageUrl, pageCount) + "\">Trang cuối</a></li>");
+            }
+            output.Append("</ul>");
+            //output.Append("</div>");
+            return output.ToString();
+        }
+        #endregion
+    }
+}

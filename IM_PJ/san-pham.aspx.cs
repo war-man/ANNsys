@@ -125,8 +125,6 @@ namespace IM_PJ
                 string TextSearch = String.Empty;
                 int CategoryID = 0;
                 int StockStatus = 0;
-                string ShowHomePage = String.Empty;
-                string WebPublish = String.Empty;
                 string strColor = String.Empty;
                 string strSize = String.Empty;
                 int Page = 1;
@@ -134,8 +132,7 @@ namespace IM_PJ
                 string Quantity = String.Empty;
                 int QuantityFrom = 0;
                 int QuantityTo = 0;
-                // add filter preOrder
-                var preOrder = String.Empty;
+                
                 string orderBy = String.Empty;
                 int tag = 0;
 
@@ -145,10 +142,6 @@ namespace IM_PJ
                     StockStatus = Request.QueryString["stockstatus"].ToInt();
                 if (Request.QueryString["categoryid"] != null)
                     CategoryID = Request.QueryString["categoryid"].ToInt();
-                if (Request.QueryString["showhomepage"] != null)
-                    ShowHomePage = Request.QueryString["showhomepage"];
-                if (Request.QueryString["webpublish"] != null)
-                    WebPublish = Request.QueryString["webpublish"];
                 // Add filter valiable value
                 if (Request.QueryString["color"] != null)
                     strColor = Request.QueryString["color"].Trim();
@@ -189,8 +182,6 @@ namespace IM_PJ
                 txtSearchProduct.Text = TextSearch;
                 ddlCategory.SelectedValue = CategoryID.ToString();
                 ddlStockStatus.SelectedValue = StockStatus.ToString();
-                ddlShowHomePage.SelectedValue = ShowHomePage.ToString();
-                ddlWebPublish.SelectedValue = WebPublish.ToString();
                 // add filter quantity
                 ddlQuantityFilter.SelectedValue = Quantity.ToString();
                 if (Quantity == "greaterthan")
@@ -215,10 +206,6 @@ namespace IM_PJ
                 // Add filter valiable value
                 ddlColor.SelectedValue = strColor;
                 ddlSize.SelectedValue = strSize;
-                // Add filter preOrder
-                if (!String.IsNullOrEmpty(Request.QueryString["preOrder"]))
-                    preOrder = Request.QueryString["preOrder"];
-                ddlPreOrder.SelectedValue = preOrder;
 
                 ddlTag.SelectedValue = tag.ToString();
                 ddlOrderBy.SelectedValue = orderBy;
@@ -236,9 +223,9 @@ namespace IM_PJ
                     quantityTo = QuantityTo,
                     fromDate = fromDate,
                     toDate = toDate,
-                    showHomePage = ShowHomePage,
-                    webPublish = WebPublish,
-                    preOrder = preOrder,
+                    showHomePage = "",
+                    webPublish = "",
+                    preOrder = "",
                     tag = tag,
                     orderBy = orderBy
                 };
@@ -254,12 +241,6 @@ namespace IM_PJ
                 pagingall(a, page);
 
                 ltrNumberOfProduct.Text = page.totalCount.ToString();
-
-                if (acc.RoleID != 0)
-                {
-                    ddlShowHomePage.Enabled = false;
-                    ddlWebPublish.Enabled = false;
-                }
             }
         }
         [WebMethod]
@@ -498,6 +479,7 @@ namespace IM_PJ
             StringBuilder html = new StringBuilder();
             html.AppendLine("<thead>");
             html.AppendLine("<tr>");
+            html.AppendLine("    <th class='checkbox-column'><input id='checkAll' type='checkbox' onchange='changeCheckAll($(this).prop(`checked`))'/></th>");
             html.AppendLine("    <th class='image-column'>Ảnh</th>");
             html.AppendLine("    <th class='name-column'>Sản phẩm</th>");
             html.AppendLine("    <th class='sku-column'>Mã</th>");
@@ -520,11 +502,12 @@ namespace IM_PJ
                 foreach (var item in acs)
                 {
                     html.AppendLine("<tr>");
+                    html.AppendLine("   <td><input type='checkbox' onchange='changeCheck($(this))' /></td>");
                     html.AppendLine("<td>");
-                    html.AppendLine("   <a target='_blank' href='/xem-san-pham?id=" + item.ID + "'><img src='" + Thumbnail.getURL(item.ProductImage, Thumbnail.Size.Small) + "'></a>");
+                    html.AppendLine("   <a target='_blank' href='/chi-tiet-san-pham?id=" + item.ID + "'><img src='" + Thumbnail.getURL(item.ProductImage, Thumbnail.Size.Normal) + "'></a>");
                     html.AppendLine("</td>");
                     html.AppendLine("   <td>");
-                    html.AppendLine("       <a target='_blank' class='customer-name-link' href='/xem-san-pham?id=" + item.ID + "'>" + item.ProductTitle + "</a>");
+                    html.AppendLine("       <a target='_blank' class='customer-name-link' href='/chi-tiet-san-pham?id=" + item.ID + "'>" + item.ProductTitle + "</a>");
                     html.AppendLine("       <p class='p-paterials'><strong>Chất liệu:</strong> " + item.Materials + "<p>");
 
                     if (!String.IsNullOrEmpty(item.Tags))
@@ -734,16 +717,6 @@ namespace IM_PJ
                 request += "&todate=" + rToDate.SelectedDate.ToString();
             }
 
-            if (!String.IsNullOrEmpty(ddlShowHomePage.SelectedValue))
-            {
-                request += "&showhomepage=" + ddlShowHomePage.SelectedValue;
-            }
-
-            if (!String.IsNullOrEmpty(ddlWebPublish.SelectedValue))
-            {
-                request += "&webpublish=" + ddlWebPublish.SelectedValue;
-            }
-
             if (!String.IsNullOrEmpty(ddlQuantityFilter.SelectedValue))
             {
                 if (ddlQuantityFilter.SelectedValue == "greaterthan" || ddlQuantityFilter.SelectedValue == "lessthan")
@@ -766,10 +739,6 @@ namespace IM_PJ
             {
                 request += "&size=" + ddlSize.SelectedValue;
             }
-
-            // Add filter preOrder
-            if (!String.IsNullOrEmpty(ddlPreOrder.SelectedValue))
-                request += "&preOrder=" + ddlPreOrder.SelectedValue;
 
             // Add filter tag
             if (ddlTag.SelectedValue != "0")
