@@ -549,6 +549,7 @@
     <Content Include="SQL\05CREATE_STORE_PROCEDURE_ClearStock.sql" />
     <Content Include="SQL\05CREATE_STORE_PROCEDURE_HandleProductImage.sql" />
     <Content Include="dang-ky-ghtk.aspx" />
+    <Content Include="san-pham.aspx" />
     <Content Include="thuc-hien-kiem-kho.aspx" />
     <Content Include="thong-tin-kiem-kho.aspx" />
     <Content Include="tao-phien-kiem-kho.aspx" />
@@ -603,6 +604,7 @@
       <DependentUpon>IMModel.edmx</DependentUpon>
     </Content>
     <Content Include="POSPage.Master" />
+    <Content Include="ProductPage.Master" />
     <None Include="Properties\PublishProfiles\ANN.pubxml" />
     <Content Include="Scripts\bootstrap2-toggle.min.js.map" />
     <Content Include="Scripts\bootstrap-toggle.min.js.map" />
@@ -1010,6 +1012,13 @@
     <Compile Include="danh-sach-bai-viet-app.aspx.designer.cs">
       <DependentUpon>danh-sach-bai-viet-app.aspx</DependentUpon>
     </Compile>
+    <Compile Include="ProductPage.Master.cs">
+      <DependentUpon>ProductPage.Master</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ProductPage.Master.designer.cs">
+      <DependentUpon>ProductPage.Master</DependentUpon>
+    </Compile>
     <Compile Include="POSPage.Master.cs">
       <DependentUpon>POSPage.Master</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -1296,6 +1305,13 @@
     </Compile>
     <Compile Include="dang-ky-ghtk.aspx.designer.cs">
       <DependentUpon>dang-ky-ghtk.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="san-pham.aspx.cs">
+      <DependentUpon>san-pham.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="san-pham.aspx.designer.cs">
+      <DependentUpon>san-pham.aspx</DependentUpon>
     </Compile>
     <Compile Include="thuc-hien-kiem-kho.aspx.cs">
       <DependentUpon>thuc-hien-kiem-kho.aspx</DependentUpon>
