@@ -22,27 +22,13 @@ namespace IM_PJ
 {
     public partial class san_pham : System.Web.UI.Page
     {
-        private static tbl_Account acc;
-
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
             {
-                if (Request.Cookies["usernameLoginSystem"] != null)
-                {
-                    string username = Request.Cookies["usernameLoginSystem"].Value;
-                    acc = AccountController.GetByUsername(username);
-                    if (acc != null)
-                    {
-                        LoadData();
-                        LoadCategory();
-                        LoadTag();
-                    }
-                }
-                else
-                {
-                    Response.Redirect("/dang-nhap");
-                }
+                LoadData();
+                LoadCategory();
+                LoadTag();
             }
         }
         public void LoadTag()
@@ -89,159 +75,157 @@ namespace IM_PJ
         }
         public void LoadData()
         {
-            if (acc != null)
+            DateTime year = new DateTime(2018, 6, 22);
+
+            var config = ConfigController.GetByTop1();
+            if (config.ViewAllReports == 0)
             {
-                DateTime year = new DateTime(2018, 6, 22);
+                year = DateTime.Now.AddMonths(-2);
+            }
 
-                var config = ConfigController.GetByTop1();
-                if (config.ViewAllReports == 0)
-                {
-                    year = DateTime.Now.AddMonths(-2);
-                }
+            DateTime DateConfig = year;
 
-                DateTime DateConfig = year;
+            DateTime fromDate = DateConfig;
+            DateTime toDate = DateTime.Now;
 
-                DateTime fromDate = DateConfig;
-                DateTime toDate = DateTime.Now;
+            if (!String.IsNullOrEmpty(Request.QueryString["fromdate"]))
+            {
+                fromDate = Convert.ToDateTime(Request.QueryString["fromdate"]);
+            }
 
-                if (!String.IsNullOrEmpty(Request.QueryString["fromdate"]))
-                {
-                    fromDate = Convert.ToDateTime(Request.QueryString["fromdate"]);
-                }
+            if (!String.IsNullOrEmpty(Request.QueryString["todate"]))
+            {
+                toDate = Convert.ToDateTime(Request.QueryString["todate"]).AddDays(1).AddMinutes(-1);
+            }
 
-                if (!String.IsNullOrEmpty(Request.QueryString["todate"]))
-                {
-                    toDate = Convert.ToDateTime(Request.QueryString["todate"]).AddDays(1).AddMinutes(-1);
-                }
+            rFromDate.SelectedDate = fromDate;
+            rFromDate.MinDate = DateConfig;
+            rFromDate.MaxDate = DateTime.Now;
 
-                rFromDate.SelectedDate = fromDate;
-                rFromDate.MinDate = DateConfig;
-                rFromDate.MaxDate = DateTime.Now;
+            rToDate.SelectedDate = toDate;
+            rToDate.MinDate = DateConfig;
+            rToDate.MaxDate = DateTime.Now;
 
-                rToDate.SelectedDate = toDate;
-                rToDate.MinDate = DateConfig;
-                rToDate.MaxDate = DateTime.Now;
-
-                string TextSearch = String.Empty;
-                int CategoryID = 0;
-                int StockStatus = 0;
-                string strColor = String.Empty;
-                string strSize = String.Empty;
-                int Page = 1;
-                // add filter quantity
-                string Quantity = String.Empty;
-                int QuantityFrom = 0;
-                int QuantityTo = 0;
+            string TextSearch = String.Empty;
+            int CategoryID = 0;
+            int StockStatus = 0;
+            string strColor = String.Empty;
+            string strSize = String.Empty;
+            int Page = 1;
+            // add filter quantity
+            string Quantity = String.Empty;
+            int QuantityFrom = 0;
+            int QuantityTo = 0;
                 
-                string orderBy = String.Empty;
-                int tag = 0;
+            string orderBy = String.Empty;
+            int tag = 0;
 
-                if (Request.QueryString["textsearch"] != null)
-                    TextSearch = Request.QueryString["textsearch"].Trim();
-                if (Request.QueryString["stockstatus"] != null)
-                    StockStatus = Request.QueryString["stockstatus"].ToInt();
-                if (Request.QueryString["categoryid"] != null)
-                    CategoryID = Request.QueryString["categoryid"].ToInt();
-                // Add filter valiable value
-                if (Request.QueryString["color"] != null)
-                    strColor = Request.QueryString["color"].Trim();
-                if (Request.QueryString["size"] != null)
-                    strSize = Request.QueryString["size"].Trim();
-                if (Request.QueryString["Page"] != null)
-                {
-                    Page = Request.QueryString["Page"].ToInt();
-                }
-                // add filter quantity
-                if (Request.QueryString["quantityfilter"] != null)
-                {
-                    Quantity = Request.QueryString["quantityfilter"];
+            if (Request.QueryString["textsearch"] != null)
+                TextSearch = Request.QueryString["textsearch"].Trim();
+            if (Request.QueryString["stockstatus"] != null)
+                StockStatus = Request.QueryString["stockstatus"].ToInt();
+            if (Request.QueryString["categoryid"] != null)
+                CategoryID = Request.QueryString["categoryid"].ToInt();
+            // Add filter valiable value
+            if (Request.QueryString["color"] != null)
+                strColor = Request.QueryString["color"].Trim();
+            if (Request.QueryString["size"] != null)
+                strSize = Request.QueryString["size"].Trim();
+            if (Request.QueryString["Page"] != null)
+            {
+                Page = Request.QueryString["Page"].ToInt();
+            }
+            // add filter quantity
+            if (Request.QueryString["quantityfilter"] != null)
+            {
+                Quantity = Request.QueryString["quantityfilter"];
 
-                    if (Quantity == "greaterthan")
-                    {
-                        QuantityFrom = Request.QueryString["quantity"].ToInt();
-                    }
-                    else if (Quantity == "lessthan")
-                    {
-                        QuantityTo = Request.QueryString["quantity"].ToInt();
-                    }
-                    else if (Quantity == "between")
-                    {
-                        QuantityFrom = Request.QueryString["quantitymin"].ToInt();
-                        QuantityTo = Request.QueryString["quantitymax"].ToInt();
-                    }
-                }
-                if (Request.QueryString["orderby"] != null)
-                {
-                    orderBy = Request.QueryString["orderby"];
-                }
-                if (Request.QueryString["tag"] != null)
-                {
-                    tag = Request.QueryString["tag"].ToInt();
-                }
-
-                txtSearchProduct.Text = TextSearch;
-                ddlCategory.SelectedValue = CategoryID.ToString();
-                ddlStockStatus.SelectedValue = StockStatus.ToString();
-                // add filter quantity
-                ddlQuantityFilter.SelectedValue = Quantity.ToString();
                 if (Quantity == "greaterthan")
                 {
-                    txtQuantity.Text = QuantityFrom.ToString();
-                    txtQuantityMin.Text = "0";
-                    txtQuantityMax.Text = "0";
+                    QuantityFrom = Request.QueryString["quantity"].ToInt();
                 }
                 else if (Quantity == "lessthan")
                 {
-                    txtQuantity.Text = QuantityTo.ToString();
-                    txtQuantityMin.Text = "0";
-                    txtQuantityMax.Text = "0";
+                    QuantityTo = Request.QueryString["quantity"].ToInt();
                 }
                 else if (Quantity == "between")
                 {
-                    txtQuantity.Text = "0";
-                    txtQuantityMin.Text = QuantityFrom.ToString();
-                    txtQuantityMax.Text = QuantityTo.ToString();
+                    QuantityFrom = Request.QueryString["quantitymin"].ToInt();
+                    QuantityTo = Request.QueryString["quantitymax"].ToInt();
                 }
-
-                // Add filter valiable value
-                ddlColor.SelectedValue = strColor;
-                ddlSize.SelectedValue = strSize;
-
-                ddlTag.SelectedValue = tag.ToString();
-                ddlOrderBy.SelectedValue = orderBy;
-
-                // Create order filter
-                var filter = new ProductFilterModel()
-                {
-                    category = CategoryID,
-                    search = TextSearch,
-                    color = strColor,
-                    size = strSize,
-                    stockStatus = StockStatus,
-                    quantity = Quantity,
-                    quantityFrom = QuantityFrom,
-                    quantityTo = QuantityTo,
-                    fromDate = fromDate,
-                    toDate = toDate,
-                    showHomePage = "",
-                    webPublish = "",
-                    preOrder = "",
-                    tag = tag,
-                    orderBy = orderBy
-                };
-                // Create pagination
-                var page = new PaginationMetadataModel()
-                {
-                    currentPage = Page
-                };
-
-                List<ProductSQL> a = new List<ProductSQL>();
-                a = ProductController.GetAllSql(filter, ref page);
-
-                pagingall(a, page);
-
-                ltrNumberOfProduct.Text = page.totalCount.ToString();
             }
+            if (Request.QueryString["orderby"] != null)
+            {
+                orderBy = Request.QueryString["orderby"];
+            }
+            if (Request.QueryString["tag"] != null)
+            {
+                tag = Request.QueryString["tag"].ToInt();
+            }
+
+            txtSearchProduct.Text = TextSearch;
+            ddlCategory.SelectedValue = CategoryID.ToString();
+            ddlStockStatus.SelectedValue = StockStatus.ToString();
+            // add filter quantity
+            ddlQuantityFilter.SelectedValue = Quantity.ToString();
+            if (Quantity == "greaterthan")
+            {
+                txtQuantity.Text = QuantityFrom.ToString();
+                txtQuantityMin.Text = "0";
+                txtQuantityMax.Text = "0";
+            }
+            else if (Quantity == "lessthan")
+            {
+                txtQuantity.Text = QuantityTo.ToString();
+                txtQuantityMin.Text = "0";
+                txtQuantityMax.Text = "0";
+            }
+            else if (Quantity == "between")
+            {
+                txtQuantity.Text = "0";
+                txtQuantityMin.Text = QuantityFrom.ToString();
+                txtQuantityMax.Text = QuantityTo.ToString();
+            }
+
+            // Add filter valiable value
+            ddlColor.SelectedValue = strColor;
+            ddlSize.SelectedValue = strSize;
+
+            ddlTag.SelectedValue = tag.ToString();
+            ddlOrderBy.SelectedValue = orderBy;
+
+            // Create order filter
+            var filter = new ProductFilterModel()
+            {
+                category = CategoryID,
+                search = TextSearch,
+                color = strColor,
+                size = strSize,
+                stockStatus = StockStatus,
+                quantity = Quantity,
+                quantityFrom = QuantityFrom,
+                quantityTo = QuantityTo,
+                fromDate = fromDate,
+                toDate = toDate,
+                showHomePage = "",
+                webPublish = "",
+                preOrder = "",
+                tag = tag,
+                orderBy = orderBy
+            };
+            // Create pagination
+            var page = new PaginationMetadataModel()
+            {
+                currentPage = Page,
+                pageSize = 20
+            };
+
+            List<ProductSQL> a = new List<ProductSQL>();
+            a = ProductController.GetAllSql(filter, ref page);
+
+            pagingall(a, page);
+
+            ltrNumberOfProduct.Text = page.totalCount.ToString();
         }
         [WebMethod]
         public static string getAllProductImage(string sku)
@@ -501,7 +485,7 @@ namespace IM_PJ
 
                 foreach (var item in acs)
                 {
-                    html.AppendLine("<tr>");
+                    html.AppendLine(String.Format("<tr data-productsku='{0}'>", item.ProductSKU));
                     html.AppendLine("   <td><input type='checkbox' onchange='changeCheck($(this))' /></td>");
                     html.AppendLine("<td>");
                     html.AppendLine("   <a target='_blank' href='/chi-tiet-san-pham?id=" + item.ID + "'><img src='" + Thumbnail.getURL(item.ProductImage, Thumbnail.Size.Normal) + "'></a>");
@@ -534,6 +518,7 @@ namespace IM_PJ
                     html.AppendLine("   <td data-title='Ngày tạo'>" + date + "</td>");
                     html.AppendLine("   <td data-title='Thao tác' class='update-button'>");
                     html.AppendLine("       <a href='javascript:;' title='Download tất cả hình sản phẩm này' class='btn primary-btn h45-btn' onclick='getAllProductImage(`" + item.ProductSKU + "`);'><i class='fa fa-file-image-o' aria-hidden='true'></i></a>");
+                    html.AppendLine("       <a href='javascript:;' title='Up sản phẩm lên KiotViet' class='btn primary-btn btn-violet h45-btn' onclick='postProductKiotViet(`" + item.ProductSKU + "`);'><i class='fa fa-arrow-up' aria-hidden='true'></i></a>");
                     html.AppendLine("  </td>");
                     html.AppendLine("</tr>");
                 }
@@ -690,7 +675,7 @@ namespace IM_PJ
         protected void btnSearch_Click(object sender, EventArgs e)
         {
             string search = txtSearchProduct.Text;
-            string request = "/tat-ca-san-pham?";
+            string request = "http://kho.xuongann.com?";
 
             if (!String.IsNullOrEmpty(search))
             {
@@ -752,7 +737,7 @@ namespace IM_PJ
                 request += "&orderby=" + ddlOrderBy.SelectedValue;
             }
 
-            Response.Redirect(request);
+            Response.Redirect("http://kho.xuongann.com?");
         }
         public class danhmuccon1
         {

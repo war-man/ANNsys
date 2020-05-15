@@ -139,7 +139,7 @@
                     <div class="filter-above-wrap clear">
                         <div class="filter-control">
                             <div class="row">
-                                <div class="col-md-7 col-xs-12">
+                                <div class="col-md-6 col-xs-12">
                                     <asp:TextBox ID="txtSearchProduct" runat="server" CssClass="form-control" placeholder="Tìm sản phẩm" autocomplete="off"></asp:TextBox>
                                 </div>
                                 <div class="col-md-2 col-xs-6">
@@ -156,10 +156,8 @@
                                         </DateInput>
                                     </telerik:RadDatePicker>
                                 </div>
-                                <div class="col-md-1 col-xs-6 search-button">
-                                    <a href="javascript:;" onclick="searchProduct()" class="btn primary-btn h45-btn"><i class="fa fa-search"></i></a>
-                                    <asp:Button ID="btnSearch" runat="server" CssClass="btn primary-btn h45-btn" OnClick="btnSearch_Click" Style="display: none" />
-                                    <a href="/san-pham" class="btn primary-btn h45-btn"><i class="fa fa-times" aria-hidden="true"></i></a>
+                                <div class="col-md-2 col-xs-6">
+                                    
                                 </div>
                             </div>
                         </div>
@@ -312,6 +310,19 @@
                             </div>
                         </div>
                     </div>
+                    <div class="filter-above-wrap clear">
+                        <div class="filter-control">
+                            <div class="row">
+                                <div class="col-md-3 col-xs-6">
+                                    <a href="javascript:;" onclick="searchProduct()" class="btn primary-btn h45-btn"><i class="fa fa-search"></i> Lọc</a>
+                                    <a href="/" class="btn primary-btn h45-btn"><i class="fa fa-times" aria-hidden="true"></i> Bỏ lọc</a>
+                                    <a id="btnPostAllProductKiotViet" href="javascript:;" onclick="postALLProductKiotViet()" class="btn primary-btn btn-violet h45-btn" disabled="disabled" readonly>
+                                        <i class="fa fa-arrow-up"></i> Đồng bộ KiotViet
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="row">
@@ -343,12 +354,33 @@
         <script src="/App_Themes/Ann/js/services/common/product-service.js?v=09052020"></script>
         
         <script type="text/javascript">
-            $("#<%=txtSearchProduct.ClientID%>").keyup(function (e) {
-                if (e.keyCode == 13)
-                {
-                    $("#<%= btnSearch.ClientID%>").click();
-                }
-            });
+            $(document).ready(function() {
+                $("#<%=txtSearchProduct.ClientID%>").keyup(function (e) {
+                    if (e.keyCode == 13)
+                    {
+                        searchProduct();
+                    }
+                });
+
+                $("td>input[type='checkbox']").change(function () {
+                    let btnPostAllProductKiotViet = $("#btnPostAllProductKiotViet");
+
+                    if (this.checked == true) {
+                        btnPostAllProductKiotViet.removeAttr("disabled");
+                        btnPostAllProductKiotViet.removeAttr("readonly");
+                    }
+                    else {
+                        let $tdChecked = $("td>input[type='checkbox']:checked");
+
+                        if ($tdChecked.length == 0) {
+                            btnPostAllProductKiotViet.attr("disabled", true);
+                            btnPostAllProductKiotViet.attr("readonly", true);
+                        }
+
+                    }
+                })
+            })
+            
 
             // Parse URL Queries
             function url_query(query)
@@ -401,12 +433,100 @@
 
             function searchProduct()
             {
-                $("#<%= btnSearch.ClientID%>").click();
+                let request = "http://kho.xuongann.com?";
+
+                let search = $("#<%=txtSearchProduct.ClientID%>").val();
+                let stockstatus = $("#<%=ddlStockStatus.ClientID%>").val();
+                let categoryid = $("#<%=ddlCategory.ClientID%>").val();
+                let fromdate = $("#<%=rFromDate.ClientID%>").val();
+                let todate = $("#<%=rToDate.ClientID%>").val();
+                let quantityfilter = $("#<%=ddlQuantityFilter.ClientID%>").val();
+                let quantity = $("#<%=txtQuantity.ClientID%>").val();
+                let quantitymin = $("#<%=txtQuantityMin.ClientID%>").val();
+                let quantitymax = $("#<%=txtQuantityMin.ClientID%>").val();
+                let color = $("#<%=ddlColor.ClientID%>").val();
+                let size = $("#<%=ddlSize.ClientID%>").val();
+                let tag = $("#<%=ddlTag.ClientID%>").val();
+                let orderby = $("#<%=ddlOrderBy.ClientID%>").val();
+
+                if (search != "")
+                {
+                    request += "&textsearch=" + search;
+                }
+
+                if (stockstatus != "")
+                {
+                    request += "&stockstatus=" + stockstatus;
+                }
+
+                if (categoryid != "0")
+                {
+                    request += "&categoryid=" + categoryid;
+                }
+
+                if (fromdate != "")
+                {
+                    request += "&fromdate=" + fromdate;
+                }
+
+                if (todate != "")
+                {
+                    request += "&todate=" + todate;
+                }
+
+                if (quantityfilter != "")
+                {
+                    if (quantityfilter == "greaterthan" || quantityfilter == "lessthan")
+                    {
+                        request += "&quantityfilter=" + quantityfilter + "&quantity=" + quantity;
+                    }
+
+                    if (quantityfilter == "between")
+                    {
+                        request += "&quantityfilter=" + quantityfilter + "&quantitymin=" + quantitymin + "&quantitymax=" + quantitymax;
+                    }
+                }
+
+                // Add filter valiable value
+                if (color != "")
+                {
+                    request += "&color=" + color;
+                }
+                if (size != "")
+                {
+                    request += "&size=" + size;
+                }
+
+                // Add filter tag
+                if (tag != "0")
+                {
+                    request += "&tag=" + tag;
+                }
+
+                // Add filter order by
+                if (orderby != "")
+                {
+                    request += "&orderby=" + orderby;
+                }
+
+                window.open(request, "_self");
             }
 
             function changeCheckAll(checked) {
                 let childDOM = $("td>input[type='checkbox']").not("[disabled='disabled']");
 
+                // Button Post ALL Product KiotViet
+                let btnPostAllProductKiotViet = $("#btnPostAllProductKiotViet");
+                if (checked) {
+                    btnPostAllProductKiotViet.removeAttr("disabled");
+                    btnPostAllProductKiotViet.removeAttr("readonly");
+                }
+                else {
+                    btnPostAllProductKiotViet.attr("disabled", true);
+                    btnPostAllProductKiotViet.attr("readonly", true);
+                }
+
+                // Checkbox children
                 childDOM.each((index, element) => {
                     element.checked = checked;
                 });
@@ -417,22 +537,129 @@
                 let childDOM = $("td>input[type='checkbox']").not("[disabled='disabled']");
                 if (childDOM.length == 0) {
                     parentDOM.prop('checked', false);
+
                 }
                 else {
                     childDOM.each((index, element) => {
                         parentDOM.prop('checked', element.checked);
+                        
                         if (!element.checked) return false;
                     });
                 }
             }
 
             function changeCheck(self) {
-                let parent = self.parent().parent();
 
-                
-
-                // Hổ trợ xử lý check or uncheck all print
+                // Hổ trợ xử lý check or uncheck
                 checkAll();
+            }
+
+            function postALLProductKiotViet() {
+                let $checkBox = $("td>input[type='checkbox']:checked");
+                let products = [];
+
+                $checkBox.each(function (index, element) {
+                    let $tr = element.parentElement.parentElement;
+
+                    products.push($tr.dataset.productsku);
+                });
+
+                let titleAlert = "Thực hiện khởi tạo sản phẩm tại KiotViet";
+
+                if (products.length == 0)
+                    return _alterError(titleAlert, { message: "Danh sách SKU rỗng." });
+
+                let dataJSON = JSON.stringify({ "productSKU": products.join(',') });
+
+                $.ajax({
+                    beforeSend: function () {
+                        HoldOn.open();
+                    },
+                    method: 'POST',
+                    contentType: 'application/json',
+                    dataType: "json",
+                    data: dataJSON,
+                    url: "/api/v1/kiotviet/product",
+                    success: (response, textStatus, xhr) => {
+                        HoldOn.close();
+
+                        if (xhr.status == 200) {
+                            _alterSuccess(titleAlert, "Thành công");
+                        } else {
+                            _alterError(titleAlert);
+                        }
+                    },
+                    error: (xhr, textStatus, error) => {
+                        HoldOn.close();
+                        _alterError(titleAlert, xhr.responseJSON);
+                    }
+                });
+            }
+
+            function postProductKiotViet(productSKU) {
+                let titleAlert = "Thực hiện khởi tạo sản phẩm tại KiotViet";
+
+                if (!productSKU)
+                    _alterError(titleAlert, { message: "Giá trị SKU rỗng." });
+
+                let dataJSON = JSON.stringify({ "productSKU": productSKU });
+                $.ajax({
+                    beforeSend: function () {
+                        HoldOn.open();
+                    },
+                    method: 'POST',
+                    contentType: 'application/json',
+                    dataType: "json",
+                    data: dataJSON,
+                    url: "/api/v1/kiotviet/product",
+                    success: (response, textStatus, xhr) => {
+                        HoldOn.close();
+
+                        if (xhr.status == 200) {
+                            _alterSuccess(titleAlert, "Mã #" + productSKU + " khởi tạo thành công");
+                        } else {
+                            _alterError(titleAlert);
+                        }
+                    },
+                    error: (xhr, textStatus, error) => {
+                        HoldOn.close();
+
+                        _alterError(titleAlert, xhr.responseJSON);
+                    }
+                });
+            }
+
+            function _alterSuccess(title, message) {
+                title = (typeof title !== 'undefined') ? title : 'Thông báo thành công';
+
+                if (message === undefined) {
+                    message = null;
+                }
+
+                return swal({
+                    title: title,
+                    text: message,
+                    icon: "success",
+                });
+            }
+
+            function _alterError(title, responseJSON) {
+                let message = '';
+                title = (typeof title !== 'undefined') ? title : 'Thông báo lỗi';
+
+                if (responseJSON === undefined || responseJSON === null) {
+                    message = 'Đẫ có lỗi xãy ra.';
+                }
+                else {
+                    if (responseJSON.message)
+                        message += responseJSON.message;
+                }
+
+                return swal({
+                    title: title,
+                    text: message,
+                    icon: "error",
+                });
             }
         </script>
     </main>

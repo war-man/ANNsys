@@ -20,20 +20,7 @@ namespace IM_PJ
         {
             if (!IsPostBack)
             {
-                if (Request.Cookies["usernameLoginSystem"] != null)
-                {
-                    string username = Request.Cookies["usernameLoginSystem"].Value;
-                    var acc = AccountController.GetByUsername(username);
-                    if (acc != null)
-                    {
-                        LoadData();
-                    }
-                }
-                else
-                {
-
-                    Response.Redirect("/dang-nhap");
-                }
+                LoadData();
             }
         }
         public void LoadData()
