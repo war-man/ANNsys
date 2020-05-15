@@ -3,6 +3,9 @@
 <%@ Register Assembly="Telerik.Web.UI" Namespace="Telerik.Web.UI" TagPrefix="telerik" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
     <style>
+        body {
+            background-color: #eee;
+        }
         .main-block {
             margin: auto;
             float: inherit;
@@ -27,7 +30,28 @@
         .bootstrap-tagsinput .label {
             font-size: 100%;
         }
-
+        .bg-green {
+            display: inherit;
+        }
+        .table > tbody > tr > th {
+            background-color: #0090da;
+        }
+        .btn {
+            border-radius: 5px;
+        }
+        .btn.primary-btn {
+            background-color: #4bac4d;
+        }
+        .btn.primary-btn:hover {
+            background-color: #3e8f3e;
+        }
+        .margin-right-15px {
+            margin-right: 12px!important;
+        }
+        img {
+            max-width: 100%;
+            width: auto;
+        }
         @media (max-width: 769px) {
             ul.image-gallery li {
                 width: 100%;
@@ -35,15 +59,18 @@
             .btn {
                 width: 100%!important;
                 float: left;
-                margin-bottom: 10px;
+                margin-bottom: 15px;
+                margin-left: 0;
+            }
+            .download-btn {
                 margin-left: 0;
             }
         }
     </style>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
-    <main class="col-md-8 col-xs-12 main-block">
-        <div class="container">
+    <main>
+        <div class="col-md-8 main-block">
             <div class="row">
                 <div class="col-md-12">
                     <div class="panel panelborderheading">
@@ -113,4 +140,73 @@
 
     <script src="/App_Themes/Ann/js/copy-product-info.js?v=09052020"></script>
     <script src="/App_Themes/Ann/js/download-product-image.js?v=09052020"></script>
+    <script>
+        function postProductKiotViet(productSKU) {
+            let titleAlert = "Đồng bộ KiotViet";
+
+            if (!productSKU)
+                _alterError(titleAlert, { message: "Chưa chọn sản phẩm nào!" });
+
+            let dataJSON = JSON.stringify({ "productSKU": productSKU });
+            $.ajax({
+                beforeSend: function () {
+                    HoldOn.open();
+                },
+                method: 'POST',
+                contentType: 'application/json',
+                dataType: "json",
+                data: dataJSON,
+                url: "/api/v1/kiotviet/product",
+                success: (response, textStatus, xhr) => {
+                    HoldOn.close();
+
+                    if (xhr.status == 200) {
+                        _alterSuccess(titleAlert, "Sản phẩm <strong>" + productSKU + "</strong> đồng bộ thành công!");
+                    } else {
+                        _alterError(titleAlert);
+                    }
+                },
+                error: (xhr, textStatus, error) => {
+                    HoldOn.close();
+
+                    _alterError(titleAlert, xhr.responseJSON);
+                }
+            });
+        }
+
+        function _alterSuccess(title, message) {
+            title = (typeof title !== 'undefined') ? title : 'Thông báo thành công';
+
+            if (message === undefined) {
+                message = null;
+            }
+
+            return swal({
+                title: title,
+                text: message,
+                type: "success",
+                html: true
+            });
+        }
+        
+        function _alterError(title, responseJSON) {
+            let message = '';
+            title = (typeof title !== 'undefined') ? title : 'Thông báo lỗi';
+
+            if (responseJSON === undefined || responseJSON === null) {
+                message = 'Đẫ có lỗi xãy ra.';
+            }
+            else {
+                if (responseJSON.message)
+                    message += responseJSON.message;
+            }
+
+            return swal({
+                title: title,
+                text: message,
+                type: "error",
+                html: true
+            });
+        }
+    </script>
 </asp:Content>

@@ -31,24 +31,6 @@ namespace IM_PJ {
         protected global::System.Web.UI.WebControls.TextBox txtSearchProduct;
         
         /// <summary>
-        /// rFromDate control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::Telerik.Web.UI.RadDatePicker rFromDate;
-        
-        /// <summary>
-        /// rToDate control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::Telerik.Web.UI.RadDatePicker rToDate;
-        
-        /// <summary>
         /// ddlOrderBy control.
         /// </summary>
         /// <remarks>
@@ -137,6 +119,24 @@ namespace IM_PJ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList ddlSize;
+        
+        /// <summary>
+        /// rFromDate control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::Telerik.Web.UI.RadDatePicker rFromDate;
+        
+        /// <summary>
+        /// rToDate control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::Telerik.Web.UI.RadDatePicker rToDate;
         
         /// <summary>
         /// ltrList control.

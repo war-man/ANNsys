@@ -42,7 +42,14 @@
                 content: "";
             }
             table.shop_table_responsive > tbody > tr > td:nth-of-type(2) {
+                height: auto;
+                padding-bottom: 1px;
+                text-align: left;
+            }
+            table.shop_table_responsive > tbody > tr > td:nth-of-type(13):before {
                 content: "";
+            }
+            table.shop_table_responsive > tbody > tr > td:nth-of-type(13) {
                 text-align: left;
             }
             table.shop_table_responsive > tbody > tr:nth-of-type(2n) td {

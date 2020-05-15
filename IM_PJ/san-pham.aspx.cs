@@ -76,13 +76,6 @@ namespace IM_PJ
         public void LoadData()
         {
             DateTime year = new DateTime(2018, 6, 22);
-
-            var config = ConfigController.GetByTop1();
-            if (config.ViewAllReports == 0)
-            {
-                year = DateTime.Now.AddMonths(-2);
-            }
-
             DateTime DateConfig = year;
 
             DateTime fromDate = DateConfig;
@@ -134,6 +127,10 @@ namespace IM_PJ
             if (Request.QueryString["Page"] != null)
             {
                 Page = Request.QueryString["Page"].ToInt();
+                if (Page < 1)
+                {
+                    Page = 1;
+                }
             }
             // add filter quantity
             if (Request.QueryString["quantityfilter"] != null)
@@ -432,22 +429,6 @@ namespace IM_PJ
 
                 html.AppendLine("<p></p>\r\n");
                 html.AppendLine("<p></p>\r\n");
-
-                if (product.ID%4 == 0)
-                {
-                    // thông tin liên hệ
-                    
-                    html.AppendLine("<p>-----------------------------------------------------------</p>\r\n");
-                    html.AppendLine("<p></p>\r\n");
-                    html.AppendLine("<p>⚡⚡ KHO HÀNG SỈ ANN ⚡⚡</p>\r\n");
-                    html.AppendLine("<p></p>\r\n");
-                    html.AppendLine("<p>🏭 68 Đường C12, P.13, Tân Bình, TP.HCM</p>\r\n");
-                    html.AppendLine("<p></p>\r\n");
-                    html.AppendLine("<p>⭐ Zalo đặt hàng: 0918569400 - 0936786404 - 0913268406 - 0918567409</p>\r\n");
-                    html.AppendLine("<p></p>\r\n");
-                    html.AppendLine("<p>⭐ Ứng dụng: https://app.ann.com.vn/download </p>\r\n");
-                    html.AppendLine("<p></p>\r\n");
-                }
             }
 
             return html.ToString();
@@ -514,11 +495,11 @@ namespace IM_PJ
                     html.AppendLine("   <td data-title='Số lượng'>" + string.Format("{0:N0}", item.TotalProductInstockQuantityLeft) + "</td>");
                     html.AppendLine("   <td data-title='Kho'>" + item.ProductInstockStatus + "</td>");
                     html.AppendLine("   <td data-title='Danh mục'>" + item.CategoryName + "</td>");
-                    string date = string.Format("<strong>{0:dd/MM/yyyy}</strong><br>{0:HH:mm}", item.CreatedDate);
+                    string date = string.Format("<strong>{0:dd/MM/yyyy}</strong>", item.CreatedDate);
                     html.AppendLine("   <td data-title='Ngày tạo'>" + date + "</td>");
-                    html.AppendLine("   <td data-title='Thao tác' class='update-button'>");
-                    html.AppendLine("       <a href='javascript:;' title='Download tất cả hình sản phẩm này' class='btn primary-btn h45-btn' onclick='getAllProductImage(`" + item.ProductSKU + "`);'><i class='fa fa-file-image-o' aria-hidden='true'></i></a>");
-                    html.AppendLine("       <a href='javascript:;' title='Up sản phẩm lên KiotViet' class='btn primary-btn btn-violet h45-btn' onclick='postProductKiotViet(`" + item.ProductSKU + "`);'><i class='fa fa-arrow-up' aria-hidden='true'></i></a>");
+                    html.AppendLine("   <td class='update-button'>");
+                    html.AppendLine("       <a href='javascript:;' title='Download tất cả hình sản phẩm này' class='btn primary-btn' onclick='getAllProductImage(`" + item.ProductSKU + "`);'><i class='fa fa-download' aria-hidden='true'></i></a>");
+                    html.AppendLine("       <a href='javascript:;' title='Up sản phẩm lên KiotViet' class='btn primary-btn' onclick='postProductKiotViet(`" + item.ProductSKU + "`);'><i class='fa fa-arrow-up' aria-hidden='true'></i></a>");
                     html.AppendLine("  </td>");
                     html.AppendLine("</tr>");
                 }
@@ -551,12 +532,12 @@ namespace IM_PJ
         private int PageCount;
         protected void DisplayHtmlStringPaging1()
         {
-
-            Int32 CurrentPage = Convert.ToInt32(Request.QueryString["Page"]);
-            if (CurrentPage == -1) CurrentPage = 1;
-            string[] strText = new string[4] { "Trang đầu", "Trang cuối", "Trang sau", "Trang trước" };
+            int CurrentPage = 1;
+            CurrentPage = Convert.ToInt32(Request.QueryString["Page"]);
+            if (CurrentPage < 1) CurrentPage = 1;
+            string[] strText = new string[4] { "Trang đầu", "Trang trước", "Trang sau", "Trang cuối" };
             if (PageCount > 1)
-                Response.Write(GetHtmlPagingAdvanced(6, CurrentPage, PageCount, Context.Request.RawUrl, strText));
+                Response.Write(GetHtmlPagingAdvanced(4, CurrentPage, PageCount, Context.Request.RawUrl, strText));
 
         }
         private static string GetPageUrl(int currentPage, string pageUrl)
@@ -596,17 +577,13 @@ namespace IM_PJ
             StringBuilder output = new StringBuilder();
 
             //Nối chuỗi phân trang
-            //output.Append("<div class=\"paging\">");
             output.Append("<ul>");
 
             //Link First(Trang đầu) và Previous(Trang trước)
             if (currentPage > 1)
             {
-                output.Append("<li><a title=\"" + strText[0] + "\" href=\"" + string.Format(pageUrl, 1) + "\">Trang đầu</a></li>");
-                output.Append("<li><a title=\"" + strText[1] + "\" href=\"" + string.Format(pageUrl, currentPage - 1) + "\">Trang trước</a></li>");
-                //output.Append("<li class=\"UnselectedPrev\" ><a title=\"" + strText[1] + "\" href=\"" + string.Format(pageUrl, currentPage - 1) + "\"><i class=\"fa fa-angle-left\"></i></a></li>");
-
-                //output.Append("<span class=\"Unselect_prev\"><a href=\"" + string.Format(pageUrl, currentPage - 1) + "\"></a></span>");
+                output.Append("<li><a title=\"" + strText[0] + "\" href=\"" + string.Format(pageUrl, 1) + "\"><i class='fa fa-fast-backward' aria-hidden='true'></i></a></li>");
+                output.Append("<li><a title=\"" + strText[1] + "\" href=\"" + string.Format(pageUrl, currentPage - 1) + "\"><i class='fa fa-backward' aria-hidden='true'></i></a></li>");
             }
 
             /******************Xác định startPageNumbersFrom & stopPageNumbersAt**********************/
@@ -636,7 +613,7 @@ namespace IM_PJ
             //Các dấu ... chỉ những trang phía trước  
             if (startPageNumbersFrom > 1)
             {
-                output.Append("<li><a href=\"" + string.Format(GetPageUrl(currentPage - 1, pageUrl), startPageNumbersFrom - 1) + "\">&hellip;</a></li>");
+                output.Append("<li><a href=\"" + string.Format(pageUrl, startPageNumbersFrom - 1) + "\">&hellip;</a></li>");
             }
 
             //Duyệt vòng for hiển thị các trang
@@ -644,7 +621,7 @@ namespace IM_PJ
             {
                 if (currentPage == i)
                 {
-                    output.Append("<li class=\"current\" ><a >" + i.ToString() + "</a> </li>");
+                    output.Append("<li class=\"current\">" + i.ToString() + "</li>");
                 }
                 else
                 {
@@ -661,88 +638,12 @@ namespace IM_PJ
             //Link Next(Trang tiếp) và Last(Trang cuối)
             if (currentPage != pageCount)
             {
-                //output.Append("<span class=\"Unselect_next\"><a href=\"" + string.Format(pageUrl, currentPage + 1) + "\"></a></span>");
-                //output.Append("<li class=\"UnselectedNext\" ><a title=\"" + strText[2] + "\" href=\"" + string.Format(pageUrl, currentPage + 1) + "\"><i class=\"fa fa-angle-right\"></i></a></li>");
-                output.Append("<li><a title=\"" + strText[2] + "\" href=\"" + string.Format(pageUrl, currentPage + 1) + "\">Trang sau</a></li>");
-                output.Append("<li><a title=\"" + strText[3] + "\" href=\"" + string.Format(pageUrl, pageCount) + "\">Trang cuối</a></li>");
+                output.Append("<li><a title=\"" + strText[2] + "\" href=\"" + string.Format(pageUrl, currentPage + 1) + "\"><i class='fa fa-forward' aria-hidden='true'></i></a></li>");
+                output.Append("<li><a title=\"" + strText[3] + "\" href=\"" + string.Format(pageUrl, pageCount) + "\"><i class='fa fa-fast-forward' aria-hidden='true'></i></a></li>");
             }
             output.Append("</ul>");
-            //output.Append("</div>");
             return output.ToString();
         }
         #endregion
-
-        protected void btnSearch_Click(object sender, EventArgs e)
-        {
-            string search = txtSearchProduct.Text;
-            string request = "http://kho.xuongann.com?";
-
-            if (!String.IsNullOrEmpty(search))
-            {
-                request += "&textsearch=" + search;
-            }
-
-            if (!String.IsNullOrEmpty(ddlStockStatus.SelectedValue))
-            {
-                request += "&stockstatus=" + ddlStockStatus.SelectedValue;
-            }
-
-            if (ddlCategory.SelectedValue != "0")
-            {
-                request += "&categoryid=" + ddlCategory.SelectedValue;
-            }
-
-            if (rFromDate.SelectedDate.HasValue)
-            {
-                request += "&fromdate=" + rFromDate.SelectedDate.ToString();
-            }
-
-            if (rToDate.SelectedDate.HasValue)
-            {
-                request += "&todate=" + rToDate.SelectedDate.ToString();
-            }
-
-            if (!String.IsNullOrEmpty(ddlQuantityFilter.SelectedValue))
-            {
-                if (ddlQuantityFilter.SelectedValue == "greaterthan" || ddlQuantityFilter.SelectedValue == "lessthan")
-                {
-                    request += "&quantityfilter=" + ddlQuantityFilter.SelectedValue + "&quantity=" + txtQuantity.Text;
-                }
-
-                if (ddlQuantityFilter.SelectedValue == "between")
-                {
-                    request += "&quantityfilter=" + ddlQuantityFilter.SelectedValue + "&quantitymin=" + txtQuantityMin.Text + "&quantitymax=" + txtQuantityMax.Text;
-                }
-            }
-
-            // Add filter valiable value
-            if (!String.IsNullOrEmpty(ddlColor.SelectedValue))
-            {
-                request += "&color=" + ddlColor.SelectedValue;
-            }
-            if (!String.IsNullOrEmpty(ddlSize.SelectedValue))
-            {
-                request += "&size=" + ddlSize.SelectedValue;
-            }
-
-            // Add filter tag
-            if (ddlTag.SelectedValue != "0")
-            {
-                request += "&tag=" + ddlTag.SelectedValue;
-            }
-
-            // Add filter order by
-            if (!String.IsNullOrEmpty(ddlOrderBy.SelectedValue))
-            {
-                request += "&orderby=" + ddlOrderBy.SelectedValue;
-            }
-
-            Response.Redirect("http://kho.xuongann.com?");
-        }
-        public class danhmuccon1
-        {
-            public tbl_Category cate1 { get; set; }
-            public string parentName { get; set; }
-        }
     }
 }

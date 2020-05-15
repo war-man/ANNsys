@@ -3,6 +3,12 @@
 <%@ Register Assembly="Telerik.Web.UI" Namespace="Telerik.Web.UI" TagPrefix="telerik" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
     <style>
+        body {
+            background-color: #eee;
+        }
+        .margin-right-15px {
+            margin-right: 12px!important;
+        }
         .main-block {
             margin: auto;
             float: inherit;
@@ -35,7 +41,87 @@
             width: 20px;
             height: 20px;
         }
+        .bg-green, .bg-red, .bg-yellow {
+            display: inherit;
+        }
+        .table > thead > tr > th {
+            background-color: #0090da;
+        }
+        .btn {
+            border-radius: 5px;
+        }
+        .btn.primary-btn {
+            background-color: #4bac4d;
+        }
+        .btn.primary-btn:hover {
+            background-color: #3e8f3e;
+        }
+        img {
+            border-radius: 5px;
+        }
+        .form-control {
+            border-radius: 5px;
+            margin-bottom: 15px;
+        }
+        .select2-container .select2-selection--single {
+            border-radius: 5px;
+            margin-bottom: 15px;
+        }
+        .filter-above-wrap {
+            margin-bottom: 0;
+        }
+        .filter-above-wrap .action-button {
+            margin-bottom: 15px;
+        }
+        .pagination li > a, .pagination li > a {
+            height: 24px;
+            border: transparent;
+            line-height: 24px;
+            -ms-box-orient: horizontal;
+            display: -webkit-box;
+            display: -moz-box;
+            display: -ms-flexbox;
+            display: -moz-flex;
+            display: -webkit-flex;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: transparent;
+            z-index: 99;
+            width: auto;
+            min-width: 24px;
+            -webkit-border-radius: 2px;
+            -moz-border-radius: 2px;
+            border-radius: 2px;
+            margin: 0 5px 0 0;
+        }
+        .pagination li.current {
+            background-color: #4bac4d;
+            color: #fff;
+            height: 24px;
+            border: transparent;
+            line-height: 24px;
+            -ms-box-orient: horizontal;
+            align-items: center;
+            justify-content: center;
+            z-index: 99;
+            width: auto;
+            min-width: 24px;
+            -webkit-border-radius: 2px;
+            -moz-border-radius: 2px;
+            border-radius: 2px;
+            margin: 0 5px 0 0;
+            text-align: center;
+        }
+        .pagination li:hover > a {
+            background-color: #e5e5e5;
+            color: #000;
+        }
+        
         @media (max-width: 768px) {
+            .filter-above-wrap .action-button {
+                margin-top: 15px;
+            }
             table.shop_table_responsive thead {
 	            display: none;
             }
@@ -50,7 +136,21 @@
                 content: "";
             }
             table.shop_table_responsive > tbody > tr > td:nth-of-type(2) {
+                height: auto;
+                padding-bottom: 0;
+            }
+            table.shop_table_responsive > tbody > tr > td:nth-of-type(3):before {
                 content: "";
+            }
+            table.shop_table_responsive > tbody > tr > td:nth-of-type(3) {
+                height: auto;
+                text-align: left;
+                padding-bottom: 1px;
+            }
+            table.shop_table_responsive > tbody > tr > td:nth-of-type(11):before {
+                content: "";
+            }
+            table.shop_table_responsive > tbody > tr > td:nth-of-type(11) {
                 text-align: left;
             }
             table.shop_table_responsive > tbody > tr:nth-of-type(2n) td {
@@ -127,8 +227,8 @@
     </style>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
-    <main class="col-md-11 col-xs-12 main-block">
-        <div class="container">
+    <main>
+        <div class="col-md-10 main-block">
             <div class="row">
                 <div class="col-md-12">
                     <h3 class="page-title left">Sản phẩm <span>(<asp:Literal ID="ltrNumberOfProduct" runat="server" EnableViewState="false"></asp:Literal>)</span></h3>
@@ -139,33 +239,10 @@
                     <div class="filter-above-wrap clear">
                         <div class="filter-control">
                             <div class="row">
-                                <div class="col-md-6 col-xs-12">
+                                <div class="col-md-4 col-xs-12">
                                     <asp:TextBox ID="txtSearchProduct" runat="server" CssClass="form-control" placeholder="Tìm sản phẩm" autocomplete="off"></asp:TextBox>
                                 </div>
                                 <div class="col-md-2 col-xs-6">
-                                    <label>Từ ngày</label>
-                                    <telerik:RadDatePicker RenderMode="Lightweight" ID="rFromDate" ShowPopupOnFocus="true" Width="100%" runat="server" DateInput-CssClass="radPreventDecorate">
-                                        <DateInput DisplayDateFormat="dd/MM/yyyy" runat="server">
-                                        </DateInput>
-                                    </telerik:RadDatePicker>
-                                </div>
-                                <div class="col-md-2 col-xs-6">
-                                    <label>Đến ngày</label>
-                                    <telerik:RadDatePicker RenderMode="Lightweight" ID="rToDate" ShowPopupOnFocus="true" Width="100%" runat="server" DateInput-CssClass="radPreventDecorate">
-                                        <DateInput DisplayDateFormat="dd/MM/yyyy" runat="server">
-                                        </DateInput>
-                                    </telerik:RadDatePicker>
-                                </div>
-                                <div class="col-md-2 col-xs-6">
-                                    
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="filter-above-wrap clear">
-                        <div class="filter-control">
-                            <div class="row">
-                                <div class="col-md-3 col-xs-6">
                                     <asp:DropDownList ID="ddlOrderBy" runat="server" CssClass="form-control" Width="100%">
                                         <asp:ListItem Value="" Text="Sắp xếp"></asp:ListItem>
                                         <asp:ListItem Value="latestOnApp" Text="Mới nhất trên app"></asp:ListItem>
@@ -203,15 +280,13 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-3 col-xs-6">
-                                </div>
                             </div>
                         </div>
                     </div>
                     <div class="filter-above-wrap clear">
                         <div class="filter-control">
                             <div class="row">
-                                <div class="col-md-3 col-xs-6">
+                                <div class="col-md-2 col-xs-6">
                                     <asp:DropDownList ID="ddlCategory" runat="server" CssClass="form-control"></asp:DropDownList>
                                 </div>
                                 <div class="col-md-2 col-xs-6">
@@ -305,18 +380,30 @@
                                         <asp:ListItem Value="38" Text="Size 38"></asp:ListItem>
                                     </asp:DropDownList>
                                 </div>
-                                <div class="col-md-4 col-xs-6">
+                                <div class="col-md-2 col-xs-6">
+                                    <label>Từ ngày</label>
+                                    <telerik:RadDatePicker RenderMode="Lightweight" ID="rFromDate" ShowPopupOnFocus="true" Width="100%" runat="server" DateInput-CssClass="radPreventDecorate">
+                                        <DateInput DisplayDateFormat="dd/MM/yyyy" runat="server">
+                                        </DateInput>
+                                    </telerik:RadDatePicker>
+                                </div>
+                                <div class="col-md-2 col-xs-6">
+                                    <label>Đến ngày</label>
+                                    <telerik:RadDatePicker RenderMode="Lightweight" ID="rToDate" ShowPopupOnFocus="true" Width="100%" runat="server" DateInput-CssClass="radPreventDecorate">
+                                        <DateInput DisplayDateFormat="dd/MM/yyyy" runat="server">
+                                        </DateInput>
+                                    </telerik:RadDatePicker>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="filter-above-wrap clear">
-                        <div class="filter-control">
+                        <div class="filter-control action-button">
                             <div class="row">
-                                <div class="col-md-3 col-xs-6">
-                                    <a href="javascript:;" onclick="searchProduct()" class="btn primary-btn h45-btn"><i class="fa fa-search"></i> Lọc</a>
-                                    <a href="/" class="btn primary-btn h45-btn"><i class="fa fa-times" aria-hidden="true"></i> Bỏ lọc</a>
-                                    <a id="btnPostAllProductKiotViet" href="javascript:;" onclick="postALLProductKiotViet()" class="btn primary-btn btn-violet h45-btn" disabled="disabled" readonly>
+                                <div class="col-md-12 col-xs-12">
+                                    <a href="javascript:;" onclick="searchProduct()" class="btn primary-btn margin-right-15px"><i class="fa fa-search"></i> Lọc</a>
+                                    <a href="/" class="btn primary-btn margin-right-15px"><i class="fa fa-times" aria-hidden="true"></i> Bỏ lọc</a>
+                                    <a id="btnPostAllProductKiotViet" href="javascript:;" onclick="postALLProductKiotViet()" class="btn primary-btn margin-right-15px" disabled="disabled" readonly>
                                         <i class="fa fa-arrow-up"></i> Đồng bộ KiotViet
                                     </a>
                                 </div>
@@ -433,7 +520,7 @@
 
             function searchProduct()
             {
-                let request = "http://kho.xuongann.com?";
+                let request = "?";
 
                 let search = $("#<%=txtSearchProduct.ClientID%>").val();
                 let stockstatus = $("#<%=ddlStockStatus.ClientID%>").val();
@@ -564,10 +651,10 @@
                     products.push($tr.dataset.productsku);
                 });
 
-                let titleAlert = "Thực hiện khởi tạo sản phẩm tại KiotViet";
+                let titleAlert = "Đồng bộ KiotViet";
 
                 if (products.length == 0)
-                    return _alterError(titleAlert, { message: "Danh sách SKU rỗng." });
+                    return _alterError(titleAlert, { message: "Chưa chọn sản phẩm nào!" });
 
                 let dataJSON = JSON.stringify({ "productSKU": products.join(',') });
 
@@ -597,10 +684,10 @@
             }
 
             function postProductKiotViet(productSKU) {
-                let titleAlert = "Thực hiện khởi tạo sản phẩm tại KiotViet";
+                let titleAlert = "Đồng bộ KiotViet";
 
                 if (!productSKU)
-                    _alterError(titleAlert, { message: "Giá trị SKU rỗng." });
+                    _alterError(titleAlert, { message: "Chưa chọn sản phẩm nào!" });
 
                 let dataJSON = JSON.stringify({ "productSKU": productSKU });
                 $.ajax({
@@ -616,7 +703,7 @@
                         HoldOn.close();
 
                         if (xhr.status == 200) {
-                            _alterSuccess(titleAlert, "Mã #" + productSKU + " khởi tạo thành công");
+                            _alterSuccess(titleAlert, "Sản phẩm <strong>" + productSKU + "</strong> đồng bộ thành công!");
                         } else {
                             _alterError(titleAlert);
                         }
@@ -639,7 +726,8 @@
                 return swal({
                     title: title,
                     text: message,
-                    icon: "success",
+                    type: "success",
+                    html: true
                 });
             }
 
@@ -658,7 +746,8 @@
                 return swal({
                     title: title,
                     text: message,
-                    icon: "error",
+                    type: "error",
+                    html: true
                 });
             }
         </script>
