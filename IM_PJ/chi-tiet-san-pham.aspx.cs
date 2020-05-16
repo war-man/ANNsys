@@ -65,7 +65,7 @@ namespace IM_PJ
                 ltrEdit1.Text = "";
                 ltrEdit1.Text += "<a href='javascript:;' onclick='copyProductInfo(" + p.ID + ")' class='btn primary-btn margin-right-15px'><i class='fa fa-files-o'></i> Copy thông tin</a>";
                 ltrEdit1.Text += "<a href='javascript:;' onclick='getAllProductImage(`" + p.ProductSKU + "`)' class='btn primary-btn margin-right-15px'><i class='fa fa-download'></i> Tải tất cả hình ảnh</a>";
-                ltrEdit1.Text += "<a href='javascript:;' onclick='postProductKiotViet(`" + p.ProductSKU + "`)' class='btn primary-btn margin-right-15px'><i class='fa fa-arrow-up'></i> Đồng bộ kiotviet</a>";
+                ltrEdit1.Text += "<a href='javascript:;' onclick='postProductKiotViet(`" + p.ProductSKU + "`)' class='btn primary-btn margin-right-15px'><i class='fa fa-arrow-up'></i> Đồng bộ Kiotviet</a>";
                 ltrProductName.Text = p.ProductSKU + " - " + p.ProductTitle;
                 var categoryName = CategoryController.GetByID(p.CategoryID.Value);
                 ltrCategory.Text = categoryName.CategoryName;
