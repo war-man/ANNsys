@@ -138,7 +138,7 @@
         <asp:HiddenField ID="hdfTags" runat="server" />
     </main>
 
-    <script src="/App_Themes/Ann/js/copy-product-info.js?v=09052020"></script>
+    <script src="/App_Themes/Ann/js/copy-product-info-public.js?v=09052020"></script>
     <script src="/App_Themes/Ann/js/download-product-image.js?v=09052020"></script>
     <script>
         function postProductKiotViet(productSKU) {

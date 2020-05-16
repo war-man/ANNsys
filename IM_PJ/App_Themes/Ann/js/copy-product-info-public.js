@@ -62,7 +62,7 @@ function copyProductInfo(id) {
 function ajaxCopyInfo(id) {
     $.ajax({
         type: "POST",
-        url: "/tat-ca-san-pham.aspx/copyProductInfo",
+        url: "/san-pham.aspx/copyProductInfo",
         data: "{id: " + id + "}",
         contentType: "application/json; charset=utf-8",
         dataType: "json",

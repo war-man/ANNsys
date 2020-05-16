@@ -338,23 +338,18 @@ namespace IM_PJ
             if (product != null)
             {
                 html.AppendLine("<p>" + product.ProductSKU + " - " + product.ProductTitle + "</p>\r\n");
-                html.AppendLine("<p></p>\r\n");
-                html.AppendLine("<p>📌 Giá sỉ: " + (product.Regular_Price / 1000).ToString() + "k</p>\r\n");
-                html.AppendLine("<p></p>\r\n");
-                html.AppendLine("<p>📌 Giá lẻ: " + (product.Retail_Price / 1000).ToString() + "k</p>\r\n");
-                html.AppendLine("<p></p>\r\n");
+                html.AppendLine("<p>📌 Sỉ: " + (product.Regular_Price / 1000).ToString() + "k</p>\r\n");
+                html.AppendLine("<p>📌 Lẻ: " + (product.Retail_Price / 1000).ToString() + "k</p>\r\n");
 
                 if (!string.IsNullOrEmpty(product.Materials))
                 {
                     html.AppendLine("<p>🔖 " + (product.CategoryID == 44 ? "" : "Chất liệu: ")  + product.Materials + "</p>\r\n");
-                    html.AppendLine("<p></p>\r\n");
                 }
 
                 if (!string.IsNullOrEmpty(product.ProductContent))
                 {
                     string content = Regex.Replace(product.ProductContent, @"<img\s[^>]*>(?:\s*?</img>)?", "").ToString();
                     html.AppendLine("<p>🔖 " + content + "</p>\r\n");
-                    html.AppendLine("<p></p>\r\n");
                 }
 
                 // liệt kê thuộc tính sản phẩm
@@ -418,7 +413,6 @@ namespace IM_PJ
                                 Variable += count.ToString() + " mẫu khác nhau";
                             }
                             Variable += "</p>\r\n";
-                            Variable += "<p></p>\r\n";
                             Variable += "<p><strong>📐 " + vari[y].VariableName + "</strong>: " + vari[y].VariableValue + "; ";
                             stringVariable = vari[y].VariableName;
                         }
@@ -427,7 +421,6 @@ namespace IM_PJ
                     html.AppendLine(Variable);
                 }
 
-                html.AppendLine("<p></p>\r\n");
                 html.AppendLine("<p></p>\r\n");
             }
 
@@ -498,8 +491,9 @@ namespace IM_PJ
                     string date = string.Format("<strong>{0:dd/MM/yyyy}</strong>", item.CreatedDate);
                     html.AppendLine("   <td data-title='Ngày tạo'>" + date + "</td>");
                     html.AppendLine("   <td class='update-button'>");
-                    html.AppendLine("       <a href='javascript:;' title='Download tất cả hình sản phẩm này' class='btn primary-btn' onclick='getAllProductImage(`" + item.ProductSKU + "`);'><i class='fa fa-download' aria-hidden='true'></i></a>");
-                    html.AppendLine("       <a href='javascript:;' title='Up sản phẩm lên KiotViet' class='btn primary-btn' onclick='postProductKiotViet(`" + item.ProductSKU + "`);'><i class='fa fa-arrow-up' aria-hidden='true'></i></a>");
+                    html.AppendLine("       <a href='javascript:;' title='Copy thông tin sản phẩm này' class='btn primary-btn' onclick='copyProductInfo(" + item.ID + ")'><i class='fa fa-files-o' aria-hidden='true'></i></a>");
+                    html.AppendLine("       <a href='javascript:;' title='Download tất cả hình sản phẩm này' class='btn primary-btn' onclick='getAllProductImage(`" + item.ProductSKU + "`)'><i class='fa fa-download' aria-hidden='true'></i></a>");
+                    html.AppendLine("       <a href='javascript:;' title='Đồng bộ sản phẩm lên KiotViet' class='btn primary-btn' onclick='postProductKiotViet(`" + item.ProductSKU + "`)'><i class='fa fa-arrow-up' aria-hidden='true'></i></a>");
                     html.AppendLine("  </td>");
                     html.AppendLine("</tr>");
                 }

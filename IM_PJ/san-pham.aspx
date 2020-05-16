@@ -404,7 +404,7 @@
                                     <a href="javascript:;" onclick="searchProduct()" class="btn primary-btn margin-right-15px"><i class="fa fa-search"></i> Lọc</a>
                                     <a href="/" class="btn primary-btn margin-right-15px"><i class="fa fa-times" aria-hidden="true"></i> Bỏ lọc</a>
                                     <a id="btnPostAllProductKiotViet" href="javascript:;" onclick="postALLProductKiotViet()" class="btn primary-btn margin-right-15px" disabled="disabled" readonly>
-                                        <i class="fa fa-arrow-up"></i> Đồng bộ KiotViet
+                                        <i class="fa fa-arrow-up"></i> Đồng bộ kiotviet
                                     </a>
                                 </div>
                             </div>
@@ -435,8 +435,7 @@
             </div>
         </div>
 
-        <script src="/App_Themes/Ann/js/copy-product-info.js?v=09052020"></script>
-        <script src="/App_Themes/Ann/js/sync-product-v2.js?v=09052020"></script>
+        <script src="/App_Themes/Ann/js/copy-product-info-public.js?v=09052020"></script>
         <script src="/App_Themes/Ann/js/download-product-image.js?v=09052020"></script>
         <script src="/App_Themes/Ann/js/services/common/product-service.js?v=09052020"></script>
         
