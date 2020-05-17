@@ -9,13 +9,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=yes">
     <meta name="format-detection" content="telephone=no">
     <meta name="robots" content="noindex, nofollow">
-    <link href="/App_Themes/Ann/css/style.css?v=16052020" rel="stylesheet" media="all">
+    <link href="/App_Themes/Ann/css/style.css?v=17052020" rel="stylesheet" media="all">
     <link href="/App_Themes/NewUI/js/select2/select2.css" rel="stylesheet" />
-    <link href="/App_Themes/Ann/css/style-P.css?v=16052020" rel="stylesheet" media="all">
+    <link href="/App_Themes/Ann/css/style-P.css?v=17052020" rel="stylesheet" media="all">
     <link href="/App_Themes/NewUI/js/sweet/sweet-alert.css" rel="stylesheet" />
-    <link href="/App_Themes/Ann/css/HoldOn.css?v=16052020" rel="stylesheet" type="text/css" />
+    <link href="/App_Themes/Ann/css/HoldOn.css?v=17052020" rel="stylesheet" type="text/css" />
     <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
-    <script type="text/javascript" src="/App_Themes/Ann/js/popup.js?v=16052020"></script>
+    <script type="text/javascript" src="/App_Themes/Ann/js/popup.js?v=17052020"></script>
     <script type="text/javascript" src="/Scripts/uuid.js"></script>
     <asp:ContentPlaceHolder ID="head" runat="server">
     </asp:ContentPlaceHolder>
@@ -138,10 +138,10 @@
             <asp:HiddenField ID="hdfUserID" runat="server" />
 
             <script src="/App_Themes/Ann/js/bootstrap.min.js"></script>
-            <script src="/App_Themes/NewUI/js/sweet/sweet-alert.js?v=16052020" type="text/javascript"></script>
+            <script src="/App_Themes/NewUI/js/sweet/sweet-alert.js?v=17052020" type="text/javascript"></script>
             <script src="/App_Themes/NewUI/js/select2/select2.min.js"></script>
-            <script src="/App_Themes/Ann/js/master.js?v=16052020"></script>
-            <script src="/App_Themes/Ann/js/HoldOn.js?v=16052020"></script>
+            <script src="/App_Themes/Ann/js/master.js?v=17052020"></script>
+            <script src="/App_Themes/Ann/js/HoldOn.js?v=17052020"></script>
             <script type="text/javascript">
                 $(".image-item img").click(function (e) {
                     $("#modalImage").removeClass("hide");

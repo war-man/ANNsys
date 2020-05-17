@@ -182,8 +182,8 @@
         <asp:HiddenField ID="hdfTags" runat="server" />
     </main>
 
-    <script src="/App_Themes/Ann/js/copy-product-info.js?v=16052020"></script>
-    <script src="/App_Themes/Ann/js/download-product-image.js?v=16052020"></script>
+    <script src="/App_Themes/Ann/js/copy-product-info-public.js?v=17052020"></script>
+    <script src="/App_Themes/Ann/js/download-product-image.js?v=17052020"></script>
     <script>
         function postProductKiotViet(productSKU) {
             let titleAlert = "Đồng bộ KiotViet";

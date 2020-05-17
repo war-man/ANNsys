@@ -59,16 +59,6 @@ function copyProductInfo(id) {
     $(".copy-content").remove();
 }
 
-function copyProductInfo(id) {
-    $("body").append("<div class='copy-content hide'></div>");
-
-    ajaxCopyInfo(id);
-
-    Clipboard.copy($(".copy-content").text());
-
-    $(".copy-content").remove();
-}
-
 function ajaxCopyInfo(id) {
     $.ajax({
         type: "POST",
