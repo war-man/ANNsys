@@ -6,6 +6,9 @@
         body {
             background-color: #eee;
         }
+        .page-title {
+            margin-top: 15px;
+        }
         .margin-right-15px {
             margin-right: 12px!important;
         }
@@ -119,6 +122,9 @@
         }
         
         @media (max-width: 768px) {
+            .margin-right-15px {
+                margin-right: 6px!important;
+            }
             .filter-above-wrap .action-button {
                 margin-top: 15px;
             }
@@ -404,7 +410,7 @@
                                     <a href="javascript:;" onclick="searchProduct()" class="btn primary-btn margin-right-15px"><i class="fa fa-search"></i> Lọc</a>
                                     <a href="/" class="btn primary-btn margin-right-15px"><i class="fa fa-times" aria-hidden="true"></i> Bỏ lọc</a>
                                     <a id="btnPostAllProductKiotViet" href="javascript:;" onclick="postALLProductKiotViet()" class="btn primary-btn margin-right-15px" disabled="disabled" readonly>
-                                        <i class="fa fa-arrow-up"></i> Đồng bộ KiotViet
+                                        <i class="fa fa-arrow-up"></i> Đồng bộ Kiotviet
                                     </a>
                                 </div>
                             </div>
@@ -435,10 +441,9 @@
             </div>
         </div>
 
-        <script src="/App_Themes/Ann/js/copy-product-info.js?v=16052020"></script>
-        <script src="/App_Themes/Ann/js/sync-product-v2.js?v=16052020"></script>
-        <script src="/App_Themes/Ann/js/download-product-image.js?v=16052020"></script>
-        <script src="/App_Themes/Ann/js/services/common/product-service.js?v=16052020"></script>
+        <script src="/App_Themes/Ann/js/copy-product-info-public.js?v=09052020"></script>
+        <script src="/App_Themes/Ann/js/download-product-image.js?v=09052020"></script>
+        <script src="/App_Themes/Ann/js/services/common/product-service.js?v=09052020"></script>
         
         <script type="text/javascript">
             $(document).ready(function() {

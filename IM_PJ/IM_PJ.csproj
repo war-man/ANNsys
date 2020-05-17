@@ -405,6 +405,7 @@
     <Content Include="App_Themes\Ann\js\copy-invoice-url.js" />
     <Content Include="App_Themes\Ann\js\copy-post-info.js" />
     <Content Include="App_Themes\Ann\js\copy-post-to-app.js" />
+    <Content Include="App_Themes\Ann\js\copy-product-info-public.js" />
     <Content Include="App_Themes\Ann\js\download-post-image.js" />
     <Content Include="App_Themes\Ann\js\download-product-image.js" />
     <Content Include="App_Themes\Ann\js\jquery.cookie.js" />

@@ -59,20 +59,10 @@ function copyProductInfo(id) {
     $(".copy-content").remove();
 }
 
-function copyProductInfo(id) {
-    $("body").append("<div class='copy-content hide'></div>");
-
-    ajaxCopyInfo(id);
-
-    Clipboard.copy($(".copy-content").text());
-
-    $(".copy-content").remove();
-}
-
 function ajaxCopyInfo(id) {
     $.ajax({
         type: "POST",
-        url: "/tat-ca-san-pham.aspx/copyProductInfo",
+        url: "/san-pham.aspx/copyProductInfo",
         data: "{id: " + id + "}",
         contentType: "application/json; charset=utf-8",
         dataType: "json",
