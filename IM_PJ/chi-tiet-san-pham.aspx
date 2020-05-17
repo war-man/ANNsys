@@ -52,6 +52,50 @@
             max-width: 100%;
             width: auto;
         }
+        .pagination li > a, .pagination li > a {
+            height: 24px;
+            border: transparent;
+            line-height: 24px;
+            -ms-box-orient: horizontal;
+            display: -webkit-box;
+            display: -moz-box;
+            display: -ms-flexbox;
+            display: -moz-flex;
+            display: -webkit-flex;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: transparent;
+            z-index: 99;
+            width: auto;
+            min-width: 24px;
+            -webkit-border-radius: 2px;
+            -moz-border-radius: 2px;
+            border-radius: 2px;
+            margin: 0 5px 0 0;
+        }
+        .pagination li.current {
+            background-color: #4bac4d;
+            color: #fff;
+            height: 24px;
+            border: transparent;
+            line-height: 24px;
+            -ms-box-orient: horizontal;
+            align-items: center;
+            justify-content: center;
+            z-index: 99;
+            width: auto;
+            min-width: 24px;
+            -webkit-border-radius: 2px;
+            -moz-border-radius: 2px;
+            border-radius: 2px;
+            margin: 0 5px 0 0;
+            text-align: center;
+        }
+        .pagination li:hover > a {
+            background-color: #e5e5e5;
+            color: #000;
+        }
         @media (max-width: 769px) {
             ul.image-gallery li {
                 width: 100%;
@@ -138,8 +182,8 @@
         <asp:HiddenField ID="hdfTags" runat="server" />
     </main>
 
-    <script src="/App_Themes/Ann/js/copy-product-info.js?v=09052020"></script>
-    <script src="/App_Themes/Ann/js/download-product-image.js?v=09052020"></script>
+    <script src="/App_Themes/Ann/js/copy-product-info.js?v=16052020"></script>
+    <script src="/App_Themes/Ann/js/download-product-image.js?v=16052020"></script>
     <script>
         function postProductKiotViet(productSKU) {
             let titleAlert = "Đồng bộ KiotViet";

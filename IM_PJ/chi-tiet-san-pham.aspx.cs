@@ -16,6 +16,8 @@ namespace IM_PJ
 {
     public partial class chi_tiet_san_pham : System.Web.UI.Page
     {
+        private const string domain = "kho.xuongann.com";
+
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
@@ -217,12 +219,12 @@ namespace IM_PJ
         private int PageCount;
         protected void DisplayHtmlStringPaging1()
         {
-
-            Int32 CurrentPage = Convert.ToInt32(Request.QueryString["Page"]);
-            if (CurrentPage == -1) CurrentPage = 1;
-            string[] strText = new string[4] { "Trang đầu", "Trang cuối", "Trang sau", "Trang trước" };
+            int CurrentPage = 1;
+            CurrentPage = Convert.ToInt32(Request.QueryString["Page"]);
+            if (CurrentPage < 1) CurrentPage = 1;
+            string[] strText = new string[4] { "Trang đầu", "Trang trước", "Trang sau", "Trang cuối" };
             if (PageCount > 1)
-                Response.Write(GetHtmlPagingAdvanced(6, CurrentPage, PageCount, Context.Request.RawUrl, strText));
+                Response.Write(GetHtmlPagingAdvanced(4, CurrentPage, PageCount, Context.Request.RawUrl, strText));
 
         }
         private static string GetPageUrl(int currentPage, string pageUrl)
@@ -262,17 +264,13 @@ namespace IM_PJ
             StringBuilder output = new StringBuilder();
 
             //Nối chuỗi phân trang
-            //output.Append("<div class=\"paging\">");
             output.Append("<ul>");
 
             //Link First(Trang đầu) và Previous(Trang trước)
             if (currentPage > 1)
             {
-                output.Append("<li><a title=\"" + strText[0] + "\" href=\"" + string.Format(pageUrl, 1) + "\">Trang đầu</a></li>");
-                output.Append("<li><a title=\"" + strText[1] + "\" href=\"" + string.Format(pageUrl, currentPage - 1) + "\">Trang trước</a></li>");
-                //output.Append("<li class=\"UnselectedPrev\" ><a title=\"" + strText[1] + "\" href=\"" + string.Format(pageUrl, currentPage - 1) + "\"><i class=\"fa fa-angle-left\"></i></a></li>");
-
-                //output.Append("<span class=\"Unselect_prev\"><a href=\"" + string.Format(pageUrl, currentPage - 1) + "\"></a></span>");
+                output.Append("<li><a title=\"" + strText[0] + "\" href=\"" + string.Format(pageUrl, 1) + "\"><i class='fa fa-fast-backward' aria-hidden='true'></i></a></li>");
+                output.Append("<li><a title=\"" + strText[1] + "\" href=\"" + string.Format(pageUrl, currentPage - 1) + "\"><i class='fa fa-backward' aria-hidden='true'></i></a></li>");
             }
 
             /******************Xác định startPageNumbersFrom & stopPageNumbersAt**********************/
@@ -302,7 +300,7 @@ namespace IM_PJ
             //Các dấu ... chỉ những trang phía trước  
             if (startPageNumbersFrom > 1)
             {
-                output.Append("<li><a href=\"" + string.Format(GetPageUrl(currentPage - 1, pageUrl), startPageNumbersFrom - 1) + "\">&hellip;</a></li>");
+                output.Append("<li><a href=\"" + string.Format(pageUrl, startPageNumbersFrom - 1) + "\">&hellip;</a></li>");
             }
 
             //Duyệt vòng for hiển thị các trang
@@ -310,7 +308,7 @@ namespace IM_PJ
             {
                 if (currentPage == i)
                 {
-                    output.Append("<li class=\"current\" ><a >" + i.ToString() + "</a> </li>");
+                    output.Append("<li class=\"current\">" + i.ToString() + "</li>");
                 }
                 else
                 {
@@ -327,13 +325,10 @@ namespace IM_PJ
             //Link Next(Trang tiếp) và Last(Trang cuối)
             if (currentPage != pageCount)
             {
-                //output.Append("<span class=\"Unselect_next\"><a href=\"" + string.Format(pageUrl, currentPage + 1) + "\"></a></span>");
-                //output.Append("<li class=\"UnselectedNext\" ><a title=\"" + strText[2] + "\" href=\"" + string.Format(pageUrl, currentPage + 1) + "\"><i class=\"fa fa-angle-right\"></i></a></li>");
-                output.Append("<li><a title=\"" + strText[2] + "\" href=\"" + string.Format(pageUrl, currentPage + 1) + "\">Trang sau</a></li>");
-                output.Append("<li><a title=\"" + strText[3] + "\" href=\"" + string.Format(pageUrl, pageCount) + "\">Trang cuối</a></li>");
+                output.Append("<li><a title=\"" + strText[2] + "\" href=\"" + string.Format(pageUrl, currentPage + 1) + "\"><i class='fa fa-forward' aria-hidden='true'></i></a></li>");
+                output.Append("<li><a title=\"" + strText[3] + "\" href=\"" + string.Format(pageUrl, pageCount) + "\"><i class='fa fa-fast-forward' aria-hidden='true'></i></a></li>");
             }
             output.Append("</ul>");
-            //output.Append("</div>");
             return output.ToString();
         }
         #endregion
