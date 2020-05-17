@@ -464,7 +464,7 @@ namespace IM_PJ
                     html.AppendLine(String.Format("<tr data-productsku='{0}'>", item.ProductSKU));
                     html.AppendLine("   <td><input type='checkbox' onchange='changeCheck($(this))' /></td>");
                     html.AppendLine("<td>");
-                    html.AppendLine("   <a target='_blank' href='/chi-tiet-san-pham?id=" + item.ID + "'><img src='" + Thumbnail.getURL(item.ProductImage, Thumbnail.Size.Normal) + "'></a>");
+                    html.AppendLine("   <a target='_blank' href='/chi-tiet-san-pham?id=" + item.ID + "'><img src='" + Thumbnail.getURL(item.ProductImage, Thumbnail.Size.Large) + "'></a>");
                     html.AppendLine("</td>");
                     html.AppendLine("   <td>");
                     html.AppendLine("       <a target='_blank' class='customer-name-link' href='/chi-tiet-san-pham?id=" + item.ID + "'>" + item.ProductTitle + "</a>");
