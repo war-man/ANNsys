@@ -109,14 +109,14 @@ namespace IM_PJ
                 // thư viện ảnh
                 var image = ProductImageController.GetByProductID(id);
                 imageGallery.Text = "<ul class='image-gallery'>";
-                imageGallery.Text += "<li><a href='" + Thumbnail.getURL(p.ProductImage, Thumbnail.Size.Source) + "' target='_blank'><img src='" + Thumbnail.getURL(p.ProductImage, Thumbnail.Size.Normal) + "'></a><a href='" + Thumbnail.getURL(p.ProductImage, Thumbnail.Size.Source) + "' download class='btn download-btn download-image h45-btn'><i class='fa fa-cloud-download'></i> Tải hình này</a></li>";
+                imageGallery.Text += "<li><a href='" + Thumbnail.getURL(p.ProductImage, Thumbnail.Size.Source) + "' target='_blank'><img src='" + Thumbnail.getURL(p.ProductImage, Thumbnail.Size.Large) + "'></a><a href='" + Thumbnail.getURL(p.ProductImage, Thumbnail.Size.Source) + "' download class='btn download-btn download-image h45-btn'><i class='fa fa-cloud-download'></i> Tải hình này</a></li>";
                 if (image != null)
                 {
                     foreach (var img in image)
                     {
                         if (img.ProductImage != p.ProductImage)
                         {
-                            imageGallery.Text += "<li><a href='" + Thumbnail.getURL(img.ProductImage, Thumbnail.Size.Source) + "' target='_blank'><img src='" + Thumbnail.getURL(img.ProductImage, Thumbnail.Size.Normal) + "'></a><a href='" + Thumbnail.getURL(img.ProductImage, Thumbnail.Size.Source) + "' download class='btn download-btn download-image h45-btn'><i class='fa fa-cloud-download'></i> Tải hình này</a></li>";
+                            imageGallery.Text += "<li><a href='" + Thumbnail.getURL(img.ProductImage, Thumbnail.Size.Source) + "' target='_blank'><img src='" + Thumbnail.getURL(img.ProductImage, Thumbnail.Size.Large) + "'></a><a href='" + Thumbnail.getURL(img.ProductImage, Thumbnail.Size.Source) + "' download class='btn download-btn download-image h45-btn'><i class='fa fa-cloud-download'></i> Tải hình này</a></li>";
                         }
                     }
                 }
@@ -155,46 +155,31 @@ namespace IM_PJ
                 html.Append("<tr>");
                 html.Append("    <th class='image-column'>Ảnh</th>");
                 html.Append("    <th class='variable-column'>Thuộc tính</th>");
-                html.Append("    <th class='sku-column'>Mã</th>");
                 html.Append("    <th class='wholesale-price-column'>Giá sỉ</th>");
                 html.Append("    <th class='stock-column'>Kho</th>");
-                html.Append("    <th class='stock-status-column'>Trạng thái</th>");
                 html.Append("</tr>");
                 for (int i = FromRow; i < ToRow + 1; i++)
                 {
                     var item = acs[i];
                     html.Append("<tr>");
                     html.Append("   <td><img src='" + Thumbnail.getURL(item.Image, Thumbnail.Size.Small) + "'></td>");
-
-                    string date = string.Format("{0:dd/MM/yyyy}", item.CreatedDate);
-                    string ishidden = "";
-                    if (item.IsHidden != null)
-                    {
-                        bool IsHidden = Convert.ToBoolean(item.IsHidden);
-                        ishidden = PJUtils.IsHiddenStatus(IsHidden);
-                    }
-                    else
-                    {
-                        ishidden = PJUtils.IsHiddenStatus(false);
-                    }
-
+                    html.Append("<td>");
+                    html.Append("<strong>" + item.SKU + "</strong><br><br>");
                     var value = ProductVariableValueController.GetByProductVariableID(item.ID);
                     if (value != null)
                     {
-                        html.Append("   <td>");
+                        
                         string list = "";
                         foreach (var temp in value)
                         {
                             html.Append("" + temp.VariableName + ": " + temp.VariableValue + "</br>" + "");
                             list += temp.VariableName + "|";
                         }
-                        html.Append("</td>");
+                        html.Append("<br>" + PJUtils.StockStatusBySKU(1, item.SKU));
                     }
-
-                    html.Append("   <td>" + item.SKU + "</td>");
+                    html.Append("</td>");
                     html.Append("   <td>" + string.Format("{0:N0}", item.Regular_Price) + "</td>");
                     html.Append("   <td>" + PJUtils.TotalProductQuantityInstock(1, item.SKU) + "</td>");
-                    html.Append("   <td>" + PJUtils.StockStatusBySKU(1, item.SKU) + "</td>");
                     html.Append("</tr>");
                 }
             }

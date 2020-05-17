@@ -126,25 +126,25 @@
                                 <asp:Literal ID="ltrEdit1" runat="server"></asp:Literal>
                             </div>
                             <div class="form-row">
-                                🔰 Danh mục: <asp:Literal ID="ltrCategory" runat="server"></asp:Literal>
+                                🔰 <strong>Danh mục:</strong> <asp:Literal ID="ltrCategory" runat="server"></asp:Literal>
                             </div>
                             <div class="form-row">
-                                🔰 Mã sản phẩm: <asp:Literal ID="ltrSKU" runat="server"></asp:Literal>
+                                🔰 <strong>Mã sản phẩm:</strong> <asp:Literal ID="ltrSKU" runat="server"></asp:Literal>
                             </div>
                             <div class="form-row">
-                                🔰 Chất liệu: <asp:Literal ID="ltrMaterials" runat="server"></asp:Literal>
+                                🔰 <strong>Chất liệu:</strong> <asp:Literal ID="ltrMaterials" runat="server"></asp:Literal>
                             </div>
                             <div class="form-row">
-                                🔰 Tổng số lượng: <asp:Literal ID="ltrStock" runat="server"></asp:Literal>
+                                🔰 <strong>Tổng số lượng:</strong> <asp:Literal ID="ltrStock" runat="server"></asp:Literal>
                             </div>
                             <div class="form-row">
-                                🔰 Trạng thái: <asp:Literal ID="ltrStockStatus" runat="server"></asp:Literal>
+                                🔰 <strong>Trạng thái:</strong> <asp:Literal ID="ltrStockStatus" runat="server"></asp:Literal>
                             </div>
                             <div class="form-row">
-                                🔰 Giá sỉ: <asp:Literal ID="ltrRegularPrice" runat="server"></asp:Literal>
+                                🔰 <strong>Giá sỉ:</strong> <asp:Literal ID="ltrRegularPrice" runat="server"></asp:Literal>
                             </div>
                             <div class="form-row">
-                                🔰 Giá lẻ: <asp:Literal ID="ltrRetailPrice" runat="server"></asp:Literal>
+                                🔰 <strong>Giá lẻ:</strong> <asp:Literal ID="ltrRetailPrice" runat="server"></asp:Literal>
                             </div>
                             <div class="form-row">
                                 <asp:Literal ID="pContent" runat="server"></asp:Literal>
@@ -160,7 +160,7 @@
                 <div class="col-md-12">
                     <div class="panel-table clear">
                         <div class="responsive-table">
-                            <table class="table table-checkable table-product all-variable-table">
+                            <table class="table table-checkable table-product all-variable-table-2">
                                 <tbody>
                                     <asp:Literal ID="ltrList" runat="server" EnableViewState="false"></asp:Literal>
                                 </tbody>
@@ -179,7 +179,6 @@
         <asp:HiddenField ID="hdfTempVariable" runat="server" />
         <asp:HiddenField ID="hdfVariableFull" runat="server" />
         <asp:HiddenField ID="hdfTable" runat="server" />
-        <asp:HiddenField ID="hdfTags" runat="server" />
     </main>
 
     <script src="/App_Themes/Ann/js/copy-product-info-public.js?v=17052020"></script>

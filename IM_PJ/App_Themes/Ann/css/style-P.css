@@ -785,6 +785,18 @@ ul.image-gallery li {
 .content-box img {
     width: inherit;
 }
+.all-variable-table-2 .image-column {
+    width: 12%;
+}
+.all-variable-table-2 .variable-column {
+    width: 58%;
+}
+.all-variable-table-2 .wholesale-price-column {
+    width: 15%;
+}
+.all-variable-table-2 .stock-column {
+    width: 15%;
+}
 .all-variable-table .image-column {
     width: 7%;
 }
@@ -1567,6 +1579,18 @@ body {
     }
 }
 @media (max-width: 769px) {
+    .all-variable-table-2 .image-column {
+        width: 30%;
+    }
+    .all-variable-table-2 .variable-column {
+        width: 40%;
+    }
+    .all-variable-table-2 .wholesale-price-column {
+        width: 15%;
+    }
+    .all-variable-table-2 .stock-column {
+        width: 15%;
+    }
     .row-left {
         width: 100%;
     }
