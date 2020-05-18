@@ -22,8 +22,6 @@ namespace IM_PJ
 {
     public partial class san_pham : System.Web.UI.Page
     {
-        private const string domain = "http://kho.xuongann.com";
-
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
@@ -533,13 +531,13 @@ namespace IM_PJ
             if (CurrentPage < 1) CurrentPage = 1;
             string[] strText = new string[4] { "Trang đầu", "Trang trước", "Trang sau", "Trang cuối" };
             if (PageCount > 1)
-                Response.Write(GetHtmlPagingAdvanced(4, CurrentPage, PageCount, domain, strText));
+                Response.Write(GetHtmlPagingAdvanced(4, CurrentPage, PageCount, HttpContext.Current.Request.Url.Query, strText));
 
         }
         private static string GetPageUrl(int currentPage, string pageUrl)
         {
             pageUrl = Regex.Replace(pageUrl, "(\\?|\\&)*" + "Page=" + currentPage, "");
-            if (pageUrl.IndexOf("?") > 0)
+            if (pageUrl.Contains('?'))
             {
                 pageUrl += "&Page={0}";
             }

@@ -68,6 +68,10 @@ namespace IM_PJ
                 ltrEdit1.Text += "<a href='javascript:;' onclick='copyProductInfo(" + p.ID + ")' class='btn primary-btn margin-right-15px'><i class='fa fa-files-o'></i> Copy thông tin</a>";
                 ltrEdit1.Text += "<a href='javascript:;' onclick='getAllProductImage(`" + p.ProductSKU + "`)' class='btn primary-btn margin-right-15px'><i class='fa fa-download'></i> Tải tất cả hình ảnh</a>";
                 ltrEdit1.Text += "<a href='javascript:;' onclick='postProductKiotViet(`" + p.ProductSKU + "`)' class='btn primary-btn margin-right-15px'><i class='fa fa-arrow-up'></i> Đồng bộ Kiotviet</a>";
+                if (p.ProductType == 2)
+                {
+                    ltrEdit1.Text += "<a href='#variantList' class='btn primary-btn margin-right-15px'><i class='fa fa-th-list'></i> Xem thuộc tính</a>";
+                }
                 ltrProductName.Text = p.ProductSKU + " - " + p.ProductTitle;
                 var categoryName = CategoryController.GetByID(p.CategoryID.Value);
                 ltrCategory.Text = categoryName.CategoryName;
@@ -209,13 +213,13 @@ namespace IM_PJ
             if (CurrentPage < 1) CurrentPage = 1;
             string[] strText = new string[4] { "Trang đầu", "Trang trước", "Trang sau", "Trang cuối" };
             if (PageCount > 1)
-                Response.Write(GetHtmlPagingAdvanced(4, CurrentPage, PageCount, Context.Request.RawUrl, strText));
+                Response.Write(GetHtmlPagingAdvanced(4, CurrentPage, PageCount, HttpContext.Current.Request.Url.Query, strText));
 
         }
         private static string GetPageUrl(int currentPage, string pageUrl)
         {
             pageUrl = Regex.Replace(pageUrl, "(\\?|\\&)*" + "Page=" + currentPage, "");
-            if (pageUrl.IndexOf("?") > 0)
+            if (pageUrl.Contains("?"))
             {
                 pageUrl += "&Page={0}";
             }

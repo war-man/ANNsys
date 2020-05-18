@@ -30,7 +30,7 @@
         .bootstrap-tagsinput .label {
             font-size: 100%;
         }
-        .bg-green {
+        .bg-green, .bg-red, .bg-yellow {
             display: inherit;
         }
         .table > tbody > tr > th {
@@ -160,7 +160,7 @@
                 <div class="col-md-12">
                     <div class="panel-table clear">
                         <div class="responsive-table">
-                            <table class="table table-checkable table-product all-variable-table-2">
+                            <table id="variantList" class="table table-checkable table-product all-variable-table-2">
                                 <tbody>
                                     <asp:Literal ID="ltrList" runat="server" EnableViewState="false"></asp:Literal>
                                 </tbody>
