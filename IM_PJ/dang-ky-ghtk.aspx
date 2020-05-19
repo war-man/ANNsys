@@ -18,7 +18,7 @@
     <!-- Add Select2 library -->
     <!-- https://select2.org/getting-started/installation -->
     <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet" />
-
+    <link href="/App_Themes/Ann/css/HoldOn.css?v=17052020" rel="stylesheet" type="text/css" />
     <title>Tạo đơn GHTK</title>
     <style>
         #total_money, #pick_money, #value {
@@ -184,12 +184,6 @@
                                     <select id="pick_work_shift" class="form-control"></select>
                                 </div>
                             </div>
-                            <%--<div class="form-group row">
-                                <label for="deliver_work_shift" class="col-5 col-xl-4 col-form-label">Dự kiến giao hàng</label>
-                                <div class="col-7 col-xl-8">
-                                    <select id="deliver_work_shift" class="form-control"></select>
-                                </div>
-                            </div>--%>
                         </div>
                         <div class="col-12 col-xl-6">
                             <div class="form-group">
@@ -231,6 +225,21 @@
                                                 <input type="radio" id="feeship_receiver" name="feeship" class="custom-control-input" value="0">
                                                 <label class="custom-control-label" for="feeship_receiver">Khách tự trả phí (shop ứng trước, phí cộng vào thu hộ)</label>
                                             </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group row insurance-fee hide">
+                                <div class="col-4 col-xl-4">
+                                    <label>Phí bảo hiểm</label>
+                                </div>
+                                <div class="col-8 col-xl-8">
+                                    <div class="row">
+                                        <div class="col-5 col-xl-3">
+                                            <label id="insuranceFee">0</label>
+                                        </div>
+                                        <div class="col-7 col-xl-9">
+                                            (đã cộng vào phí ship GHTK)
                                         </div>
                                     </div>
                                 </div>
@@ -316,6 +325,7 @@
             <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
             <!-- Select2 -->
             <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+            <script src="/App_Themes/Ann/js/HoldOn.js?v=17052020"></script>
 
             <script>
                 let _feeShipment, // Dùng để lấy trạng thái trước của radio Shipment
@@ -353,6 +363,10 @@
                     _feeShipment = 1;
                     _fee = 0;
                     _feeShop = 0;
+                    _feeWithoutInsurance = 0;
+
+                    // payment Type
+                    _paymentType = 0;
 
                     // Order
                     _order = {
@@ -503,8 +517,12 @@
                             $.ajax({
                                 method: 'GET',
                                 url: '/api/v1/delivery-save/personal',
+                                beforeSend: function () {
+                                    HoldOn.open();
+                                },
                                 success: (data, textStatus, xhr) => {
                                     if (xhr.status == 200 && data) {
+                                        HoldOn.close();
                                         _personal = data;
                                         return _onChangeShipment('shop');
                                     } else {
@@ -736,7 +754,12 @@
                     $.ajax({
                         method: 'GET',
                         url: "/api/v1/order/" + orderID + "/delivery-save",
+                        beforeSend: function () {
+                            HoldOn.open();
+                        },
                         success: (response, textStatus, xhr) => {
+                            HoldOn.close();
+
                             let data = response;
 
                             if (data.executeStatus == 2) {
@@ -746,11 +769,10 @@
 
                             // tel
                             $("#tel").val(data.customerPhone).trigger('change');
-                            // customer_id
                             // name
                             $("#name").val(data.customerName).trigger('change');
-                            // pick_money
-                            _order.pick_money = data.money;
+                            // pick_money (trừ phí ship của shop để tính lại ở phía dưới)
+                            _order.pick_money = data.money - data.feeShop;
                             $("#pick_money").val(_formatThousand(data.money));
                             // value
                             _order.value = data.value;
@@ -759,6 +781,9 @@
                             // id
                             _order.id = data.orderID;
                             $("#client_id").val(data.orderID);
+
+                            // Shipping type
+                            _paymentType = data.paymentType;
 
                             // province
                             if (data.customerProvinceID) {
@@ -1028,8 +1053,8 @@
                     if (ship_Entered < ship_GHTK && feeShipment == 2) {
                         return swal({
                             title: titleAlert,
-                            text: "Phí ship nhân viên tính phải lớn hơn hoặc bằng phí ship GHTK",
-                            icon: "error",
+                            text: "Phí ship nhân viên tính phải tối thiểu bằng phí ship GHTK. Có thể chọn vào phí GHTK tính mà không cần vào sửa đơn!",
+                            icon: "error"
                         });
                     }
 
@@ -1070,34 +1095,70 @@
                             query += "&street=" + _order.street;
                         query += "&weight=" + ((+_product.weight || 0) * 1000);
                         query += "&transport=road";
+                        
 
                         let titleAlert = "Tính phí giao hàng";
 
                         $.ajax({
                             method: 'GET',
                             url: url + query,
+                            async: true,
+                            beforeSend: function() {
+                                HoldOn.open();
+                            },
                             success: (data, textStatus, xhr) => {
                                 if (xhr.status == 200 && data) {
+                                    HoldOn.close();
                                     if (data.success) {
+
+                                        _feeWithoutInsurance = data.fee.fee;
+
+                                    }
+                                    else {
+                                        _alterError(titleAlert, { message: data.message });
+                                    }
+                                } else {
+                                    _alterError(titleAlert);
+                                }
+                            },
+                            error: (xhr, textStatus, error) => {
+                                _alterError(titleAlert);
+                            }
+                        });
+
+                        // tính phí có bảo hiểm
+                        query += "&value=" + _order.value || 0;
+
+                        $.ajax({
+                            method: 'GET',
+                            url: url + query,
+                            async: true,
+                            beforeSend: function () {
+                                HoldOn.open();
+                            },
+                            success: (data, textStatus, xhr) => {
+                                if (xhr.status == 200 && data) {
+                                    HoldOn.close();
+                                    if (data.success) {
+
                                         if (_feeShipment == 0 || _feeShipment == 1) {
                                             _order.pick_money = _order.pick_money - _fee;
-                                            _order.value = _order.value - _fee;
                                         }
                                         else if (_feeShipment == 2) {
-                                            //_order.pick_money = _order.pick_money - _feeShop;
-                                            //_order.value = _order.value - _feeShop;
-                                            if (_order.pick_money == 0) {
-                                                _order.value = _order.value - _feeShop;
-                                                _order.pick_money = _order.pick_money;
-                                            }
-                                                // thu hộ
-                                            else if (_order.pick_money > 0) {
-                                                _order.value = _order.value - _feeShop;
+                                            // thu hộ
+                                            if (_paymentType == 3) {
                                                 _order.pick_money = _order.pick_money - _feeShop;
+                                            }
+                                            else {
+                                                _order.pick_money = 0;
                                             }
                                         }
                                         _fee = data.fee.fee;
                                         $("#feeship").html(_formatThousand(_fee));
+                                        if (_fee - _feeWithoutInsurance > 0 && _order.value > 3000000) {
+                                            $("#insuranceFee").html(_formatThousand(_fee - _feeWithoutInsurance));
+                                            $(".insurance-fee").removeClass("hide");
+                                        }
                                         _calculateMoney();
                                     }
                                     else {
@@ -1122,19 +1183,16 @@
                     let total_money = 0;
 
                     if (feeShipment == 0 || feeShipment == 1) {
-                        _order.value = _order.value + _fee;
                         _order.pick_money = _order.pick_money + _fee;
                     }
                     else if (feeShipment == 2) {
-                        // chuyển khoản
-                        if (_order.pick_money == 0) {
-                            _order.value = _order.value + _feeShop;
-                            _order.pick_money = _order.pick_money;
-                        }
                         // thu hộ
-                        else if (_order.pick_money > 0) {
-                            _order.value = _order.value + _feeShop;
+                        if (_paymentType == 3) {
                             _order.pick_money = _order.pick_money + _feeShop;
+                        }
+                        // chuyển khoản || tiền mặt || công nợ
+                        else {
+                            _order.pick_money = 0;
                         }
                     }
 
@@ -1159,8 +1217,12 @@
                         dataType: "json",
                         data: JSON.stringify({ products: [_product], order: _order }),
                         url: "/api/v1/delivery-save/register-order",
+                        beforeSend: function () {
+                            HoldOn.open();
+                        },
                         success: (data, textStatus, xhr) => {
                             if (xhr.status == 200 && data) {
+                                HoldOn.close();
                                 if (data.success)
                                     return swal({
                                         title: titleAlert,

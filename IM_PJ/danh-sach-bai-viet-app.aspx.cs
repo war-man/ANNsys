@@ -257,6 +257,16 @@ namespace IM_PJ
                 {
                     result = "failed";
                 }
+
+                // Delete clone
+                var postClone = PostCloneController.GetAll(id);
+                if (postClone.Count > 0)
+                {
+                    foreach (var item in postClone)
+                    {
+                        PostCloneController.Delete(item.ID);
+                    }
+                }
             }
             else
             {
@@ -323,7 +333,7 @@ namespace IM_PJ
                     html.Append("   <td>");
                     html.Append("       <a href='javascript:;' title='Xóa bài này' class='btn primary-btn btn-red h45-btn' onclick='deletePost(" + item.ID + ");'><i class='fa fa-times' aria-hidden='true'></i> Xóa</a>");
                     html.Append("       <a target='_blank' href='/sua-bai-viet-app?id=" + item.ID + "' title='Sửa bài này' class='btn primary-btn btn-blue h45-btn'><i class='fa fa-pencil-square-o' aria-hidden='true'></i> Sửa</a>");
-                    html.AppendLine("       <a href='javascript:;' title='Đồng bộ bài viết' class='btn btn-green primary-btn h45-btn' onclick='showPostSyncModal(" + item.ID + ");'><i class='fa fa-refresh' aria-hidden='true'></i></a>");
+                    html.Append("       <a href='javascript:;' title='Đồng bộ bài viết' class='btn btn-green primary-btn h45-btn' onclick='showPostSyncModal(" + item.ID + ");'><i class='fa fa-refresh' aria-hidden='true'></i></a>");
                     html.Append("  </td>");
                     html.Append("</tr>");
                 }

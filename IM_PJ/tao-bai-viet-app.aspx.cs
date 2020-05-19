@@ -197,7 +197,7 @@ namespace IM_PJ
                         {
                             Title = post.Title,
                             Content = post.Content,
-                            Image = post.Thumbnail,
+                            Image = Image,
                             Featured = 1,
                             CategoryID = categorySystem != null ? categorySystem.ID : 0,
                             Status = 1,
@@ -211,6 +211,21 @@ namespace IM_PJ
                         };
 
                         PostController.Insert(postSystem);
+
+                        // Copy image
+                        if (postSystem != null)
+                        {
+                            var imagePostPublic = PostPublicImageController.GetByPostID(post.ID);
+                            if (imagePostPublic.Count > 0)
+                            {
+                                foreach (var item in imagePostPublic)
+                                {
+                                    PostImageController.Insert(postSystem.ID, item.Image, postSystem.CreatedBy, DateTime.Now);
+                                }
+                            }
+                            
+                        }
+                        
                     }
 
 
@@ -229,10 +244,11 @@ namespace IM_PJ
                                     Web = item.Web,
                                     PostWebID = 0,
                                     CategoryID = post.CategoryID,
+                                    CategoryName = category.Name,
                                     Title = !String.IsNullOrEmpty(item.Title) ? item.Title : post.Title,
                                     Summary = post.Summary,
                                     Content = post.Content,
-                                    Thumbnail = post.Thumbnail,
+                                    Thumbnail = Image,
                                     CreatedDate = post.CreatedDate,
                                     CreatedBy = acc.Username,
                                     ModifiedDate = post.ModifiedDate,
