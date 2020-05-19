@@ -113,14 +113,14 @@ namespace IM_PJ
                 // thư viện ảnh
                 var image = ProductImageController.GetByProductID(id);
                 imageGallery.Text = "<ul class='image-gallery'>";
-                imageGallery.Text += "<li><a href='" + Thumbnail.getURL(p.ProductImage, Thumbnail.Size.Source) + "' target='_blank'><img src='" + Thumbnail.getURL(p.ProductImage, Thumbnail.Size.Large) + "'></a><a href='" + Thumbnail.getURL(p.ProductImage, Thumbnail.Size.Source) + "' download class='btn download-btn download-image h45-btn'><i class='fa fa-cloud-download'></i> Tải hình này</a></li>";
+                imageGallery.Text += "<li><a href='" + Thumbnail.getURL(p.ProductImage, Thumbnail.Size.Source) + "' target='_blank'><img src='" + Thumbnail.getURL(p.ProductImage, Thumbnail.Size.Source) + "'></a><a href='" + Thumbnail.getURL(p.ProductImage, Thumbnail.Size.Source) + "' download class='btn download-btn download-image h45-btn'><i class='fa fa-cloud-download'></i> Tải hình này</a></li>";
                 if (image != null)
                 {
                     foreach (var img in image)
                     {
                         if (img.ProductImage != p.ProductImage)
                         {
-                            imageGallery.Text += "<li><a href='" + Thumbnail.getURL(img.ProductImage, Thumbnail.Size.Source) + "' target='_blank'><img src='" + Thumbnail.getURL(img.ProductImage, Thumbnail.Size.Large) + "'></a><a href='" + Thumbnail.getURL(img.ProductImage, Thumbnail.Size.Source) + "' download class='btn download-btn download-image h45-btn'><i class='fa fa-cloud-download'></i> Tải hình này</a></li>";
+                            imageGallery.Text += "<li><a href='" + Thumbnail.getURL(img.ProductImage, Thumbnail.Size.Source) + "' target='_blank'><img src='" + Thumbnail.getURL(img.ProductImage, Thumbnail.Size.Source) + "'></a><a href='" + Thumbnail.getURL(img.ProductImage, Thumbnail.Size.Source) + "' download class='btn download-btn download-image h45-btn'><i class='fa fa-cloud-download'></i> Tải hình này</a></li>";
                         }
                     }
                 }

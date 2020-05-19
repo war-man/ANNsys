@@ -63,8 +63,9 @@ namespace IM_PJ
                     ltrEditTop.Text = "";
                     if (acc.RoleID == 0 || acc.Username == "nhom_zalo502")
                     {
-                        ltrEditTop.Text += "<a href='/sua-bai-viet-app?id=" + p.ID + "' class='btn primary-btn fw-btn not-fullwidth'><i class='fa fa-pencil-square-o' aria-hidden='true'></i> Chỉnh sửa</a>";
-                        ltrEditTop.Text += "<a href='/tao-bai-viet-app' class='btn primary-btn fw-btn not-fullwidth print-invoice-merged'><i class='fa fa-file-text-o' aria-hidden='true'></i> Thêm mới</a>";
+                        ltrEditTop.Text += "<a href='/sua-bai-viet-app?id=" + p.ID + "' class='btn primary-btn fw-btn not-fullwidth'><i class='fa fa-pencil-square-o' aria-hidden='true'></i> Sửa</a>";
+                        ltrEditTop.Text += "<a href='/tao-bai-viet-app' class='btn primary-btn fw-btn not-fullwidth print-invoice-merged'><i class='fa fa-file-text-o' aria-hidden='true'></i> Thêm</a>";
+                        ltrEditTop.Text += "<a href='javascript:;' onclick='showPostSyncModal(" + p.ID + ");' class='btn primary-btn fw-btn not-fullwidth print-invoice-merged'><i class='fa fa-refresh' aria-hidden='true'></i> Đồng bộ</a>";
                     }
                     ltrEditBottom.Text = ltrEditTop.Text;
                     ltrTitle.Text = p.Title;
