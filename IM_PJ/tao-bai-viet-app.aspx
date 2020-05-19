@@ -4,6 +4,9 @@
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
     <style>
+        .convert-case {
+            float: right;
+        }
         .variableselect {
             float: left;
             width: 100%;
@@ -19,46 +22,46 @@
             margin-left: 10px;
         }
 
-            .variable-select .variablename {
-                float: left;
-                width: 100%;
-                margin-right: 10px;
-                background: blue;
-                color: #fff;
-                text-align: center;
-                padding: 10px 0;
-                line-height: 40px;
-            }
+        .variable-select .variablename {
+            float: left;
+            width: 100%;
+            margin-right: 10px;
+            background: blue;
+            color: #fff;
+            text-align: center;
+            padding: 10px 0;
+            line-height: 40px;
+        }
 
-            .variable-select .variablevalue {
-                float: left;
-                width: 100%;
-                padding: 10px;
-            }
+        .variable-select .variablevalue {
+            float: left;
+            width: 100%;
+            padding: 10px;
+        }
 
-                .variable-select .variablevalue .variablevalue-item {
-                    float: left;
-                    width: 100%;
-                    clear: both;
-                    margin-bottom: 10px;
-                    border-bottom: solid 1px #ccc;
-                    padding-bottom: 5px;
-                }
+        .variable-select .variablevalue .variablevalue-item {
+            float: left;
+            width: 100%;
+            clear: both;
+            margin-bottom: 10px;
+            border-bottom: solid 1px #ccc;
+            padding-bottom: 5px;
+        }
 
-                    .variable-select .variablevalue .variablevalue-item:last-child {
-                        border: none;
-                    }
+        .variable-select .variablevalue .variablevalue-item:last-child {
+            border: none;
+        }
 
-                    .variable-select .variablevalue .variablevalue-item .v-value {
-                        float: left;
-                        width: 78%;
-                        line-height: 40px;
-                    }
+        .variable-select .variablevalue .variablevalue-item .v-value {
+            float: left;
+            width: 78%;
+            line-height: 40px;
+        }
 
-                    .variable-select .variablevalue .variablevalue-item .v-delete {
-                        float: left;
-                        width: 20%;
-                    }
+        .variable-select .variablevalue .variablevalue-item .v-delete {
+            float: left;
+            width: 20%;
+        }
 
         #selectvariabletitle {
             float: left;
@@ -98,6 +101,7 @@
                                 </div>
                                 <div class="row-right">
                                     <asp:TextBox ID="txtTitle" runat="server" CssClass="form-control" placeholder="Tiêu đề bài viết" autocomplete="off" onkeyup="ChangeToSlug();"></asp:TextBox>
+                                    <a href="javascript:;" class="convert-case" onclick="convertCase()"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Convert</a>
                                 </div>
                             </div>
                             <div class="form-row">
@@ -230,6 +234,8 @@
                                     </div>
                                     <div class="col-md-7">
                                         <a href="javascript:;" class="btn primary-btn fw-btn not-fullwidth" onclick="addClone()"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Thêm</a>
+                                        <a href="javascript:;" class="btn primary-btn fw-btn not-fullwidth copy-title-to-clone hide" onclick="copyTitleToClone()"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Copy tiêu đề</a>
+                                        <a href="javascript:;" class="btn primary-btn fw-btn not-fullwidth copy-title-to-clone hide" onclick="deleteClone()"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Xóa tất cả</a>
                                     </div>
                                 </div>
                             </div>
@@ -270,6 +276,14 @@
     <telerik:RadCodeBlock runat="server">
         <script type="text/javascript">
 
+            $(document).on("keypress", 'form', function (e) {
+                var code = e.keyCode || e.which;
+                if (code == 13) {
+                    e.preventDefault();
+                    return false;
+                }
+            });
+
             // FeeModel
             class Variant {
                 constructor(Web, Title) {
@@ -289,7 +303,11 @@
                 if (title == "") {
                     return swal("Thông báo", "Chưa nhập tiêu đề bài viết", "warning");
                 }
-
+                let action = $("#<%=ddlAction.ClientID%>").val();
+                if (action != "view_more") {
+                    return swal("Thông báo", "Bài viết phải là dạng nội bộ", "warning");
+                }
+                $(".copy-title-to-clone").removeClass("hide");
                 $(".post-variants").removeClass("hide");
                 let wordpress = $("#<%=ddlWordpress.ClientID%>").val();
                 if (wordpress == "all") {
@@ -327,6 +345,28 @@
                 $("#<%=hdfPostVariants.ClientID%>").val(JSON.stringify(variants));
             }
 
+            function copyTitleToClone() {
+                let title = $("#<%=txtTitle.ClientID%>").val();
+                if (title == "") {
+                    return swal("Thông báo", "Chưa nhập tiêu đề bài viết", "warning");
+                }
+                let checkVariant = $(".post-variant-list").html();
+                if (checkVariant == "") {
+                    return swal("Thông báo", "Chưa tạo biến thể bài viết", "warning");
+                }
+                variants.forEach((item) => {
+                    $("input[name='" + item.Web + "']").val(title);
+                    item.Title = title;
+                });
+                $("#<%=hdfPostVariants.ClientID%>").val(JSON.stringify(variants));
+            }
+
+            function deleteClone() {
+                $(".post-variant-list").html("");
+                variants = [];
+                $(".post-variants").addClass("hide");
+            }
+
             function changeAction() {
                 var action = $("#<%=ddlAction.ClientID%>").val();
                 if (action == "show_web") {
@@ -334,7 +374,9 @@
                     $(".input-slug").addClass("hide");
                     $(".input-summary").removeClass("hide");
                     $(".input-content").addClass("hide");
-                    
+                    $(".post-variant-list").html("");
+                    variants = [];
+                    $(".post-variants").addClass("hide");
                 }
                 else if (action == "view_more") {
                     $(".input-slug").removeClass("hide");
@@ -475,6 +517,12 @@
                     HoldOn.open();
                     $("#<%=btnSubmit.ClientID%>").click();
                 }
+            }
+
+            function convertCase() {
+                let title = $("#<%=txtTitle.ClientID%>").val();
+                title = title.charAt(0).toUpperCase() + title.slice(1).toLowerCase();
+                $("#<%=txtTitle.ClientID%>").val(title);
             }
 
             function isBlank(str) {
