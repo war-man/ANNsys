@@ -375,6 +375,7 @@
                                         <asp:ListItem Value="xl" Text="Size XL"></asp:ListItem>
                                         <asp:ListItem Value="xxl" Text="Size XXL"></asp:ListItem>
                                         <asp:ListItem Value="xxxl" Text="Size XXXL"></asp:ListItem>
+                                        <asp:ListItem Value="27" Text="Size 27"></asp:ListItem>
                                         <asp:ListItem Value="28" Text="Size 28"></asp:ListItem>
                                         <asp:ListItem Value="29" Text="Size 29"></asp:ListItem>
                                         <asp:ListItem Value="30" Text="Size 30"></asp:ListItem>
@@ -382,8 +383,12 @@
                                         <asp:ListItem Value="32" Text="Size 32"></asp:ListItem>
                                         <asp:ListItem Value="33" Text="Size 33"></asp:ListItem>
                                         <asp:ListItem Value="34" Text="Size 34"></asp:ListItem>
+                                        <asp:ListItem Value="35" Text="Size 35"></asp:ListItem>
                                         <asp:ListItem Value="36" Text="Size 36"></asp:ListItem>
+                                        <asp:ListItem Value="37" Text="Size 37"></asp:ListItem>
                                         <asp:ListItem Value="38" Text="Size 38"></asp:ListItem>
+                                        <asp:ListItem Value="39" Text="Size 39"></asp:ListItem>
+                                        <asp:ListItem Value="40" Text="Size 40"></asp:ListItem>
                                     </asp:DropDownList>
                                 </div>
                                 <div class="col-md-2 col-xs-6">
