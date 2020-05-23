@@ -708,7 +708,7 @@
                     contentType: 'application/json',
                     dataType: "json",
                     data: dataJSON,
-                    url: "/api/v1/kiotviet/product",
+                    url: "/api/v1/zaloshop/product",
                     success: (response, textStatus, xhr) => {
                         HoldOn.close();
 
