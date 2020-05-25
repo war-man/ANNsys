@@ -494,6 +494,7 @@ namespace IM_PJ
                     html.AppendLine("       <a href='javascript:;' title='Copy thông tin sản phẩm này' class='btn primary-btn' onclick='copyProductInfo(" + item.ID + ")'><i class='fa fa-files-o' aria-hidden='true'></i></a>");
                     html.AppendLine("       <a href='javascript:;' title='Download tất cả hình sản phẩm này' class='btn primary-btn' onclick='getAllProductImage(`" + item.ProductSKU + "`)'><i class='fa fa-download' aria-hidden='true'></i></a>");
                     html.AppendLine("       <a href='javascript:;' title='Đồng bộ sản phẩm lên KiotViet' class='btn primary-btn' onclick='postProductKiotViet(`" + item.ProductSKU + "`)'><i class='fa fa-arrow-up' aria-hidden='true'></i></a>");
+                    html.AppendLine("       <a href='javascript:;' title='Xóa sản phẩm trên Zalo Shop' class='btn primary-btn btn-red' onclick='deleteProductZaloShop(`" + item.ProductSKU + "`)'><i class='fa fa-times' aria-hidden='true'></i></a>");
                     html.AppendLine("  </td>");
                     html.AppendLine("</tr>");
                 }

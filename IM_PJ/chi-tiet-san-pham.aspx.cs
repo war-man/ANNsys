@@ -66,8 +66,9 @@ namespace IM_PJ
 
                 ltrEdit1.Text = "";
                 ltrEdit1.Text += "<a href='javascript:;' onclick='copyProductInfo(" + p.ID + ")' class='btn primary-btn margin-right-15px'><i class='fa fa-files-o'></i> Copy thông tin</a>";
-                ltrEdit1.Text += "<a href='javascript:;' onclick='getAllProductImage(`" + p.ProductSKU + "`)' class='btn primary-btn margin-right-15px'><i class='fa fa-download'></i> Tải tất cả hình ảnh</a>";
-                ltrEdit1.Text += "<a href='javascript:;' onclick='postProductKiotViet(`" + p.ProductSKU + "`)' class='btn primary-btn margin-right-15px'><i class='fa fa-arrow-up'></i> Đồng bộ Kiotviet</a>";
+                ltrEdit1.Text += "<a href='javascript:;' onclick='getAllProductImage(`" + p.ProductSKU + "`)' class='btn primary-btn margin-right-15px'><i class='fa fa-download'></i> Tải hình</a>";
+                ltrEdit1.Text += "<a href='javascript:;' onclick='postProductKiotViet(`" + p.ProductSKU + "`)' class='btn primary-btn margin-right-15px'><i class='fa fa-arrow-up'></i> Đồng bộ</a>";
+                ltrEdit1.Text += "<a href='javascript:;' onclick='deleteProductZaloShop(`" + p.ProductSKU + "`)' class='btn primary-btn btn-red margin-right-15px'><i class='fa fa-times' aria-hidden='true'></i> Xóa trên Zalo Shop</a>";
                 if (p.ProductType == 2)
                 {
                     ltrEdit1.Text += "<a href='#variantList' class='btn primary-btn margin-right-15px'><i class='fa fa-th-list'></i> Xem thuộc tính</a>";
