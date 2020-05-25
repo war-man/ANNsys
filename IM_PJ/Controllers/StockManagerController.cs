@@ -1359,5 +1359,34 @@ namespace IM_PJ.Controllers
             }
         }
         #endregion
+
+        #region Quản lý kho 2
+        public static int getQuantityBySKU(string sku)
+        {
+            using(var con = new inventorymanagementEntities())
+            {
+                var stock = con.StockManager2
+                    .Where(x => x.SKU == sku)
+                    .OrderByDescending(o => o.ID)
+                    .FirstOrDefault();
+
+                if (stock == null)
+                    return 0;
+                else
+                    return stock.QuantityCurrent + stock.Quantity * (stock.Type == 1 ? 1 : -1);
+            }
+        }
+
+        public static StockManager2 warehousing(StockManager2 data)
+        {
+            using(var con = new inventorymanagementEntities())
+            {
+                con.StockManager2.Add(data);
+                con.SaveChanges();
+
+                return data;
+            }
+        }
+        #endregion
     }
 }

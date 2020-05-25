@@ -552,6 +552,9 @@
     <Content Include="dang-ky-ghtk.aspx" />
     <Content Include="san-pham.aspx" />
     <Content Include="thuc-hien-kiem-kho.aspx" />
+    <Content Include="chinh-sua-kho-2.aspx" />
+    <Content Include="chuyen-kho.aspx" />
+    <Content Include="quan-ly-nhap-kho-2.aspx" />
     <Content Include="thong-tin-kiem-kho.aspx" />
     <Content Include="tao-phien-kiem-kho.aspx" />
     <Content Include="Scripts\bloodhound.js" />
@@ -834,6 +837,7 @@
     <Content Include="DeliveryHandler.ashx" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
+      <SubType>Designer</SubType>
     </None>
     <None Include="Web.Release.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -1158,6 +1162,9 @@
     <Compile Include="Models\Shipper.cs">
       <DependentUpon>IMModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\StockManager2.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\Tag.cs">
       <DependentUpon>IMModel.tt</DependentUpon>
     </Compile>
@@ -1300,27 +1307,6 @@
     </Compile>
     <Compile Include="cron-job-product-status.aspx.designer.cs">
       <DependentUpon>cron-job-product-status.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="dang-ky-ghtk.aspx.cs">
-      <DependentUpon>dang-ky-ghtk.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="dang-ky-ghtk.aspx.designer.cs">
-      <DependentUpon>dang-ky-ghtk.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="san-pham.aspx.cs">
-      <DependentUpon>san-pham.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="san-pham.aspx.designer.cs">
-      <DependentUpon>san-pham.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="thuc-hien-kiem-kho.aspx.cs">
-      <DependentUpon>thuc-hien-kiem-kho.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="thuc-hien-kiem-kho.aspx.designer.cs">
-      <DependentUpon>thuc-hien-kiem-kho.aspx</DependentUpon>
     </Compile>
     <Compile Include="thong-tin-kiem-kho.aspx.cs">
       <DependentUpon>thong-tin-kiem-kho.aspx</DependentUpon>

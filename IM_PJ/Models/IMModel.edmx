@@ -515,6 +515,26 @@
           <Property Name="ModifiedBy" Type="int" Nullable="false" />
           <Property Name="ModifiedDate" Type="datetime" Nullable="false" />
         </EntityType>
+        <EntityType Name="StockManager2">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="AgentID" Type="int" />
+          <Property Name="ProductID" Type="int" Nullable="false" />
+          <Property Name="ProductVariableID" Type="int" />
+          <Property Name="SKU" Type="nvarchar" MaxLength="30" Nullable="false" />
+          <Property Name="ParentSKU" Type="nvarchar" MaxLength="30" />
+          <Property Name="Type" Type="int" Nullable="false" />
+          <Property Name="Quantity" Type="int" Nullable="false" />
+          <Property Name="QuantityCurrent" Type="int" Nullable="false" />
+          <Property Name="Status" Type="int" />
+          <Property Name="Note" Type="nvarchar(max)" />
+          <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+          <Property Name="CreatedBy" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="ModifiedDate" Type="datetime" Nullable="false" />
+          <Property Name="ModifiedBy" Type="nvarchar" MaxLength="255" Nullable="false" />
+        </EntityType>
         <EntityType Name="Tag">
           <Key>
             <PropertyRef Name="ID" />
@@ -625,6 +645,7 @@
           <Property Name="ModifiedBy" Type="nvarchar(max)" />
           <Property Name="Slug" Type="nvarchar" MaxLength="100" />
           <Property Name="Icon" Type="nvarchar" MaxLength="255" />
+          <Property Name="ZaloShop" Type="int" />
         </EntityType>
         <EntityType Name="tbl_CheckWarehouse">
           <Key>
@@ -1317,6 +1338,7 @@
           <EntitySet Name="RegisterProduct" EntityType="Self.RegisterProduct" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Session" EntityType="Self.Session" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Shipper" EntityType="Self.Shipper" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="StockManager2" EntityType="Self.StockManager2" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Tag" EntityType="Self.Tag" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_Account" EntityType="Self.tbl_Account" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_AccountInfo" EntityType="Self.tbl_AccountInfo" Schema="dbo" store:Type="Tables" />
@@ -1876,6 +1898,7 @@
           <Property Name="ModifiedBy" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="Slug" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="Icon" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="ZaloShop" Type="Int32" />
         </EntityType>
         <EntityType Name="tbl_CheckWarehouse">
           <Key>
@@ -2592,10 +2615,6 @@
           <EntitySet Name="WebWordpresses" EntityType="inventorymanagementModel.WebWordpress" />
           <EntitySet Name="CheckWarehouses" EntityType="inventorymanagementModel.CheckWarehouse" />
           <EntitySet Name="CheckWarehouseDetails" EntityType="inventorymanagementModel.CheckWarehouseDetail" />
-          <EntitySet Name="NotifyNews" EntityType="inventorymanagementModel.NotifyNew" />
-          <EntitySet Name="PostClones" EntityType="inventorymanagementModel.PostClone" />
-          <EntitySet Name="NotificationCategories" EntityType="inventorymanagementModel.NotificationCategory" />
-          <EntitySet Name="DeliverySaveAddresses" EntityType="inventorymanagementModel.DeliverySaveAddress" />
         </EntityContainer>
         <EntityType Name="PostPublicImage">
           <Key>
@@ -2720,6 +2739,73 @@
           <Property Name="Alias" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="IsPicked" Type="Boolean" Nullable="false" />
           <Property Name="IsDelivered" Type="Boolean" Nullable="false" />
+        </EntityType>
+        <EntityType Name="DeliverySaveAddress">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="PID" Type="Int32" />
+          <Property Name="Type" Type="Int32" Nullable="false" />
+          <Property Name="Region" Type="Int32" />
+          <Property Name="Alias" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="IsPicked" Type="Boolean" Nullable="false" />
+          <Property Name="IsDelivered" Type="Boolean" Nullable="false" />
+        </EntityType>
+        <EntityType Name="PostClone">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="PostPublicID" Type="Int32" Nullable="false" />
+          <Property Name="Web" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="PostWebID" Type="Int32" Nullable="false" />
+          <Property Name="CategoryID" Type="Int32" />
+          <Property Name="CategoryName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Title" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Summary" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Content" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Thumbnail" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+          <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
+          <Property Name="ModifiedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="StockManager2">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="AgentID" Type="Int32" />
+          <Property Name="ProductID" Type="Int32" Nullable="false" />
+          <Property Name="ProductVariableID" Type="Int32" />
+          <Property Name="SKU" Type="String" Nullable="false" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="ParentSKU" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="Type" Type="Int32" Nullable="false" />
+          <Property Name="Quantity" Type="Int32" Nullable="false" />
+          <Property Name="QuantityCurrent" Type="Int32" Nullable="false" />
+          <Property Name="Status" Type="Int32" />
+          <Property Name="Note" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="CreatedBy" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="ModifiedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ModifiedBy" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="WebWordpress">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Web" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="WPKey" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="WPSecret" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="WPToken" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="WPTokenSecret" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="WCKey" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="WCSecret" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="WCPriceType" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Active" Type="Boolean" Nullable="false" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -3255,6 +3341,7 @@
           <EntitySetMapping Name="tbl_Category">
             <EntityTypeMapping TypeName="inventorymanagementModel.tbl_Category">
               <MappingFragment StoreEntitySet="tbl_Category">
+                <ScalarProperty Name="ZaloShop" ColumnName="ZaloShop" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="CategoryName" ColumnName="CategoryName" />
                 <ScalarProperty Name="CategoryDescription" ColumnName="CategoryDescription" />
@@ -4081,6 +4168,78 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           </EntityContainerMapping>
+          <EntitySetMapping Name="DeliverySaveAddresses">
+            <EntityTypeMapping TypeName="inventorymanagementModel.DeliverySaveAddress">
+              <MappingFragment StoreEntitySet="DeliverySaveAddress">
+                <ScalarProperty Name="IsDelivered" ColumnName="IsDelivered" />
+                <ScalarProperty Name="IsPicked" ColumnName="IsPicked" />
+                <ScalarProperty Name="Alias" ColumnName="Alias" />
+                <ScalarProperty Name="Region" ColumnName="Region" />
+                <ScalarProperty Name="Type" ColumnName="Type" />
+                <ScalarProperty Name="PID" ColumnName="PID" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PostClones">
+            <EntityTypeMapping TypeName="inventorymanagementModel.PostClone">
+              <MappingFragment StoreEntitySet="PostClone">
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="Thumbnail" ColumnName="Thumbnail" />
+                <ScalarProperty Name="Content" ColumnName="Content" />
+                <ScalarProperty Name="Summary" ColumnName="Summary" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="CategoryName" ColumnName="CategoryName" />
+                <ScalarProperty Name="CategoryID" ColumnName="CategoryID" />
+                <ScalarProperty Name="PostWebID" ColumnName="PostWebID" />
+                <ScalarProperty Name="Web" ColumnName="Web" />
+                <ScalarProperty Name="PostPublicID" ColumnName="PostPublicID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="StockManager2">
+            <EntityTypeMapping TypeName="inventorymanagementModel.StockManager2">
+              <MappingFragment StoreEntitySet="StockManager2">
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="Note" ColumnName="Note" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="QuantityCurrent" ColumnName="QuantityCurrent" />
+                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+                <ScalarProperty Name="Type" ColumnName="Type" />
+                <ScalarProperty Name="ParentSKU" ColumnName="ParentSKU" />
+                <ScalarProperty Name="SKU" ColumnName="SKU" />
+                <ScalarProperty Name="ProductVariableID" ColumnName="ProductVariableID" />
+                <ScalarProperty Name="ProductID" ColumnName="ProductID" />
+                <ScalarProperty Name="AgentID" ColumnName="AgentID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="WebWordpresses">
+            <EntityTypeMapping TypeName="inventorymanagementModel.WebWordpress">
+              <MappingFragment StoreEntitySet="WebWordpress">
+                <ScalarProperty Name="Active" ColumnName="Active" />
+                <ScalarProperty Name="WCPriceType" ColumnName="WCPriceType" />
+                <ScalarProperty Name="WCSecret" ColumnName="WCSecret" />
+                <ScalarProperty Name="WCKey" ColumnName="WCKey" />
+                <ScalarProperty Name="WPTokenSecret" ColumnName="WPTokenSecret" />
+                <ScalarProperty Name="WPToken" ColumnName="WPToken" />
+                <ScalarProperty Name="WPSecret" ColumnName="WPSecret" />
+                <ScalarProperty Name="WPKey" ColumnName="WPKey" />
+                <ScalarProperty Name="Web" ColumnName="Web" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>
   </edmx:Runtime>
