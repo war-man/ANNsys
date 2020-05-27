@@ -1360,10 +1360,40 @@ namespace IM_PJ.Controllers
         }
         #endregion
 
+        public static tbl_StockManager warehousing1(StockManager2 stock2)
+        {
+            using (var con = new inventorymanagementEntities())
+            {
+                var stock1 = new tbl_StockManager()
+                {
+                    AgentID = stock2.AgentID,
+                    ProductID = stock2.ProductVariableID == 0 ? stock2.ProductID : 0,
+                    ProductVariableID = stock2.ProductVariableID,
+                    Quantity = stock2.Quantity,
+                    QuantityCurrent = stock2.QuantityCurrent,
+                    Type = stock2.Type,
+                    CreatedDate = stock2.CreatedDate,
+                    CreatedBy = stock2.CreatedBy,
+                    ModifiedDate = stock2.ModifiedDate,
+                    ModifiedBy = stock2.ModifiedBy,
+                    NoteID = stock2.Note,
+                    OrderID = 0,
+                    Status = stock2.Status,
+                    SKU = stock2.SKU,
+                    MoveProID = 0,
+                    ParentID = stock2.ProductID
+                };
+                con.tbl_StockManager.Add(stock1);
+                con.SaveChanges();
+
+                return stock1;
+            }
+        }
+
         #region Quản lý kho 2
         public static int getQuantityBySKU(string sku)
         {
-            using(var con = new inventorymanagementEntities())
+            using (var con = new inventorymanagementEntities())
             {
                 var stock = con.StockManager2
                     .Where(x => x.SKU == sku)
@@ -1377,9 +1407,9 @@ namespace IM_PJ.Controllers
             }
         }
 
-        public static StockManager2 warehousing(StockManager2 data)
+        public static StockManager2 warehousing2(StockManager2 data)
         {
-            using(var con = new inventorymanagementEntities())
+            using (var con = new inventorymanagementEntities())
             {
                 con.StockManager2.Add(data);
                 con.SaveChanges();

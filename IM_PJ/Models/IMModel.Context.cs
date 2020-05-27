@@ -99,7 +99,6 @@ namespace IM_PJ.Models
         public virtual DbSet<PostClone> PostClones { get; set; }
         public virtual DbSet<NotificationCategory> NotificationCategories { get; set; }
         public virtual DbSet<DeliverySaveAddress> DeliverySaveAddresses { get; set; }
-        public virtual DbSet<DeliverySaveAddress> DeliverySaveAddresses { get; set; }
         public virtual DbSet<StockManager2> StockManager2 { get; set; }
     }
 }

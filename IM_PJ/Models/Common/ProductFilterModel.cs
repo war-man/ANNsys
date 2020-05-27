@@ -44,7 +44,7 @@ namespace IM_PJ.Models
         public string preOrder { get; set; }
         public int tag { get; set; } = 0;
         public string orderBy { get; set; } = String.Empty;
-        // KHo
-        public int warehouse { get; set; } = 0
+        // Warehouse
+        public int warehouse { get; set; } = 0;
     }
 }

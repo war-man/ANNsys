@@ -21,7 +21,7 @@ using Newtonsoft.Json;
 
 namespace IM_PJ
 {
-    public partial class quan_ly_nhap_kho_2 : System.Web.UI.Page
+    public partial class chinh_sua_kho_2 : System.Web.UI.Page
     {
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -126,7 +126,7 @@ namespace IM_PJ
                     variablevalue += attribute.VariableValue.Trim() + "|";
                 }
 
-                var quantity = StockManagerController.getQuantityBySKU(variation.SKU); 
+                var quantity = StockManagerController.getQuantityBySKU(product.ProductSKU); 
                 var item = new ProductGetOut(){
                     ID = variation.ID,
                     ProductName = product.ProductTitle,
@@ -202,9 +202,10 @@ namespace IM_PJ
         public class WarehousePostModel {
             public int productStyle { get; set; }
             public int productID { get; set; } 
-            public int productVariableID { get; set; } 
+            public int? productVariableID { get; set; } 
             public string sku { get; set; }
             public string parentSKU { get; set; }
+            public int type { get; set; }
             public int quantity { get; set; }
             public int quantityCurrent {get; set;}
         }
@@ -218,23 +219,40 @@ namespace IM_PJ
             {
                 int AgentID = Convert.ToInt32(acc.AgentID);
                 string note = String.IsNullOrEmpty(hdfNote.Value) ? 
-                    "Nhập kho 2 bằng chức năng nhập kho 2" : hdfNote.Value;
+                    "Chỉnh sửa số lượng kho 2 bằng chức năng chỉnh sửa kho 2" : hdfNote.Value;
                 var data = String.IsNullOrEmpty(hdfvalue.Value) ? 
                     new List<WarehousePostModel>() : 
                     JsonConvert.DeserializeObject<List<WarehousePostModel>>(hdfvalue.Value);
 
                 foreach (var item in data)
                 {
-                    var stock2 = StockManagerController.warehousing2(new StockManager2() {
+                    StockManagerController.Insert(new tbl_StockManager
+                    {
+                        AgentID = AgentID,
+                        ProductID = item.productID,
+                        ProductVariableID = item.productVariableID,
+                        Quantity = item.quantity,
+                        QuantityCurrent = item.quantityCurrent,
+                        Type = item.type,
+                        NoteID = note,
+                        OrderID = 0,
+                        Status = 1,
+                        SKU = item.sku,
+                        CreatedDate = currentDate,
+                        CreatedBy = username,
+                        MoveProID = 0,
+                        ParentID = item.productID
+                    });
+                    StockManagerController.warehousing(new StockManager2() {
                         AgentID = AgentID,
                         ProductID = item.productID,
                         ProductVariableID = item.productVariableID,
                         SKU = item.sku,
                         ParentSKU = item.parentSKU,
-                        Type = 1,
+                        Type = item.type,
                         Quantity = item.quantity,
                         QuantityCurrent = item.quantityCurrent,
-                        Status = 1,
+                        Status = 2,
                         Note = note,
                         CreatedDate = currentDate,
                         CreatedBy = username,
@@ -242,15 +260,13 @@ namespace IM_PJ
                         ModifiedBy = username,
                     });
 
-                    StockManagerController.warehousing1(stock2);
-
                     if (item.productStyle == 1)
                         ProductController.UpdateStockStatus(item.sku, 1, false, currentDate, username);
                     else 
-                        ProductVariableController.UpdateStockStatus(item.productVariableID, 1, false, currentDate, username);
+                        ProductVariableController.UpdateStockStatus(item.productVariableID.Value, 1, false, currentDate, username);
                 }
                 
-                PJUtils.ShowMessageBoxSwAlert("Nhập kho 2 thành công!", "s", true, Page);
+                PJUtils.ShowMessageBoxSwAlert("Chỉnh sửa số lượng kho 2 thành công!", "s", true, Page);
             }
         }
     }

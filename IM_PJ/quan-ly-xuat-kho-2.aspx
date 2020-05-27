@@ -1,4 +1,4 @@
-﻿<%@ Page Title="Nhập kho 2 sản phẩm" Language="C#" MasterPageFile="~/MasterPage.Master" AutoEventWireup="true" CodeBehind="quan-ly-nhap-kho-2.aspx.cs" Inherits="IM_PJ.quan_ly_nhap_kho_2" EnableSessionState="ReadOnly" %>
+﻿<%@ Page Title="Xuất kho 2 sản phẩm" Language="C#" MasterPageFile="~/MasterPage.Master" AutoEventWireup="true" CodeBehind="quan-ly-xuat-kho-2.aspx.cs" Inherits="IM_PJ.chinh_sua_kho_2" EnableSessionState="ReadOnly" %>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <main id="main-wrap">
         <div class="container">
@@ -6,7 +6,7 @@
                 <div class="col-md-12">
                     <div class="panel panelborderheading">
                         <div class="panel-heading clear">
-                            <h3 class="page-title left not-margin-bot">Nhập kho 2 sản phẩm</h3>
+                            <h3 class="page-title left not-margin-bot">Xuất kho 2 sản phẩm</h3>
                         </div>
                         <div class="panel-body">
                             <div class="form-row">
@@ -19,7 +19,7 @@
                             <div class="form-row">
                                 <h3 class="no-margin float-left">Kết quả tìm kiếm: <span class="result-numsearch"></span></h3>
                                 <div class="excute-in">
-                                    <a href="javascript:;" style="background-color: #f87703; float: right;" class="btn primary-btn link-btn" onclick="inProduct()">Nhập kho</a>
+                                    <a href="javascript:;" style="background-color: #f87703; float: right;" class="btn primary-btn link-btn" onclick="inProduct()">Xuất kho</a>
                                     <a href="javascript:;" style="background-color: #ffad00; float: right;" class="btn primary-btn link-btn" onclick="quickInput()">Nhập nhanh số lượng (F2)</a>
                                 </div>
                             </div>
@@ -45,8 +45,7 @@
                                 </table>
                             </div>
                             <div class="post-table-links excute-in clear">
-                                <a href="javascript:;" style="background-color: #f87703; float: right;" class="btn primary-btn link-btn" onclick="inProduct()">Nhập kho</a>
-                                <a href="javascript:;" style="background-color: #ffad00; float: right;" class="btn primary-btn link-btn" onclick="quickInput()">Nhập nhanh số lượng (F2)</a>
+                                <a href="javascript:;" style="background-color: #f87703; float: right;" class="btn primary-btn link-btn" onclick="inProduct()">Xuất kho</a>
                             </div>
                         </div>
                     </div>
@@ -82,10 +81,6 @@
         });
 
         $(document).keydown(function (e) {
-            if (e.which == 113) { //F2 Quick Input
-                quickInput();
-                return false;
-            }
             if (e.which == 114) { //F3 Search Product
                 $("#txtSearch").focus();
                 return false;
@@ -99,38 +94,6 @@
             else {
                 obj.find("td").removeClass("checked");
             }
-        }
-
-        // quick input quantity
-        function quickInput() {
-            if ($(".product-result").length == 0) {
-                alert("Hãy nhập sản phẩm!");
-                $("#txtSearch").focus();
-            } else {
-                var html = "";
-                html += "<div class=\"form-row\">";
-                html += "<label>Nhập nhanh số lượng cho mỗi sản phẩm: </label>";
-                html += "<input ID=\"txtQuickInput\" class=\"form-control fjx\"></input>";
-                html += "<a href=\"javascript:;\" class=\"btn primary-btn float-right-btn link-btn\" onclick=\"submitQuickInput()\"><i class=\"fa fa-search\" aria-hidden=\"true\"></i> OK</a>";
-                html += "</div>";
-                showPopup(html, 3);
-                $("#txtQuickInput").focus();
-                $('#txtQuickInput').keydown(function (event) {
-                    if (event.which === 13) {
-                        submitQuickInput();
-                        event.preventDefault();
-                        return false;
-                    }
-                });
-            }
-        }
-
-        function submitQuickInput() {
-            var quantity = $("#txtQuickInput").val();
-            $(".product-result").each(function () {
-                $(this).find(".in-quantity").val(quantity);
-            });
-            closePopup();
         }
    
         function check() {
@@ -186,11 +149,7 @@
                                             html += "       data-productvariable=\"" + item.ProductVariable + "\"";
                                             html += "       data-productname=\"" + item.ProductName + "\"";
                                             html += "       data-sku=\"" + item.SKU + "\"";
-<<<<<<< HEAD
                                             html += "       data-productstyle=\"" + item.productstyle + "\"";
-=======
-                                            html += "       data-productstyle=\"" + item.ProductStyle + "\"";
->>>>>>> fa1b48f17f53a3359ee3d6040f651418fb01bcf4
                                             html += "       data-id=\"" + item.ID + "\"";
                                             html += "       data-productnariablename=\"" + item.ProductVariableName + "\"";
                                             html += "       data-productvariablevalue =\"" + item.ProductVariableValue + "\"";
@@ -199,11 +158,7 @@
                                             html += "       data-parentsku=\"" + item.ParentSKU + "\"";
                                             html += ">";
                                             html += "   <td><input type=\"checkbox\" class=\"check-popup\" onchange=\"check()\"  /></td>";
-<<<<<<< HEAD
                                             html += "   <td class='image-item'><img onclick='openImage($(this))' src='" + + item.ProductImage + "'></td>";
-=======
-                                            html += "   <td class='image-item'><img onclick='openImage($(this))' src='" + item.ProductImage + "'></td>";
->>>>>>> fa1b48f17f53a3359ee3d6040f651418fb01bcf4
                                             html += "   <td class='name-item'><a href='/xem-san-pham?sku=" + item.SKU + "' target='_blank'>" + item.ProductName + "</a></td>";
                                             html += "   <td class='sku-item'>" + item.SKU + "</td>";
                                             html += "   <td class='price-item'>" + item.ProductVariable.replace(/\|/g, "<br>") + "</td>";
@@ -236,11 +191,7 @@
                                         html += "       data-productvariable=\"" + item.ProductVariable + "\"";
                                         html += "       data-productname=\"" + item.ProductName + "\"";
                                         html += "       data-sku=\"" + item.SKU + "\"";
-<<<<<<< HEAD
                                         html += "       data-productstyle=\"" + item.productstyle + "\"";
-=======
-                                        html += "       data-productstyle=\"" + item.ProductStyle + "\"";
->>>>>>> fa1b48f17f53a3359ee3d6040f651418fb01bcf4
                                         html += "       data-id=\"" + item.ID + "\"";
                                         html += "       data-productnariablename=\"" + item.ProductVariableName + "\"";
                                         html += "       data-productvariablevalue =\"" + item.ProductVariableValue + "\"";
@@ -249,11 +200,7 @@
                                         html += "       data-parentsku=\"" + item.ParentSKU + "\"";
                                         html += ">";
                                         html += " <td><input type=\"checkbox\" class=\"check-popup\" onchange=\"check()\" /></td>";
-<<<<<<< HEAD
                                         html += "   <td class='image-item'><img onclick='openImage($(this))' src='" + + item.ProductImage + "'></td>";
-=======
-                                        html += "   <td class='image-item'><img onclick='openImage($(this))' src='" + item.ProductImage + "'></td>";
->>>>>>> fa1b48f17f53a3359ee3d6040f651418fb01bcf4
                                         html += "   <td class='name-item'><a href='/xem-san-pham?sku=" + item.SKU + "' target='_blank'>" + item.ProductName + "</a></td>";
                                         html += "   <td class='sku-item'>" + item.SKU + "</td>";
                                         html += "   <td class='price-item'>" + item.ProductVariable.replace(/\|/g, "<br>") + "</td>";
@@ -346,20 +293,19 @@
                     var id = +$(this).attr("data-id") || 0;
                     var sku = $(this).attr("data-sku");
                     var parentSKU = $(this).attr("data-parentsku");
-                    var quantity = +$(this).find(".in-quantity").val() || 0;
+                    var quantityNew = +$(this).find(".in-quantity").val() || 0;
                     var quantityCurrent = +$(this).attr("data-quantity-current") || 0;
 
                     if (quantity > 0) {
+                        let isIncreated = quantityNew > quantityCurrent;
+                        let quantity = isIncreated ? quantityNew - quantityCurrent : quantityCurrent - quantityNew;
                         let item = {
                             "productStyle": productstyle,
                             "productID": parentID,
-<<<<<<< HEAD
                             "productVariableID": productstyle == 1 ? null : id,
-=======
-                            "productVariableID": productstyle == 1 ? 0 : id,
->>>>>>> fa1b48f17f53a3359ee3d6040f651418fb01bcf4
                             "sku": sku,
                             "parentSKU": parentSKU,
+                            "type": isIncreated ? 1 : 2,
                             "quantity": quantity,
                             "quantityCurrent": quantityCurrent
                         };
