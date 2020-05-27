@@ -518,6 +518,8 @@
     <Content Include="bc.aspx" />
     <Content Include="bao-cao.aspx" />
     <Content Include="bv.aspx" />
+    <Content Include="chuyen-kho.aspx" />
+    <Content Include="quan-ly-xuat-kho-2.aspx" />
     <Content Include="Content\bootstrap-datetimepicker.css" />
     <Content Include="Content\bootstrap-datetimepicker.min.css" />
     <Content Include="Content\bootstrap-tagsinput-typeahead.css" />
@@ -546,6 +548,7 @@
     </Content>
     <Content Include="nuoc-hoa.aspx" />
     <Content Include="cron-job-product-status.aspx" />
+    <Content Include="quan-ly-nhap-kho-2.aspx" />
     <Content Include="SQL\05CREATE_STORE_PROCEDURE_BackupOrder.sql" />
     <Content Include="SQL\05CREATE_STORE_PROCEDURE_ClearStock.sql" />
     <Content Include="SQL\05CREATE_STORE_PROCEDURE_HandleProductImage.sql" />
@@ -969,6 +972,20 @@
     <Compile Include="bao-cao.aspx.designer.cs">
       <DependentUpon>bao-cao.aspx</DependentUpon>
     </Compile>
+    <Compile Include="chuyen-kho.aspx.cs">
+      <DependentUpon>chuyen-kho.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="chuyen-kho.aspx.designer.cs">
+      <DependentUpon>chuyen-kho.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="quan-ly-xuat-kho-2.aspx.cs">
+      <DependentUpon>quan-ly-xuat-kho-2.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="quan-ly-xuat-kho-2.aspx.designer.cs">
+      <DependentUpon>quan-ly-xuat-kho-2.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Controllers\WebWordpressController.cs" />
     <Compile Include="Controllers\PostCloneController.cs" />
     <Compile Include="Controllers\UserController.cs" />
@@ -1013,6 +1030,9 @@
     </Compile>
     <Compile Include="danh-sach-bai-viet-app.aspx.designer.cs">
       <DependentUpon>danh-sach-bai-viet-app.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Models\StockManager2.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
     </Compile>
     <Compile Include="ProductPage.Master.cs">
       <DependentUpon>ProductPage.Master</DependentUpon>
@@ -1307,6 +1327,13 @@
     </Compile>
     <Compile Include="dang-ky-ghtk.aspx.designer.cs">
       <DependentUpon>dang-ky-ghtk.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="quan-ly-nhap-kho-2.aspx.cs">
+      <DependentUpon>quan-ly-nhap-kho-2.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="quan-ly-nhap-kho-2.aspx.designer.cs">
+      <DependentUpon>quan-ly-nhap-kho-2.aspx</DependentUpon>
     </Compile>
     <Compile Include="san-pham.aspx.cs">
       <DependentUpon>san-pham.aspx</DependentUpon>
@@ -2267,7 +2294,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>80</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost</IISUrl>
+          <IISUrl>http://ann-shop.com</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

@@ -1204,7 +1204,8 @@ namespace IM_PJ.Controllers
             #endregion
 
             #region Trích xuất thông tin kho
-            #region Thông tin kho vơi sản phẩm thường
+            #region Kho 1
+            #region Thông tin kho 1 với sản phẩm thường
             sql.AppendLine(String.Empty);
             sql.AppendLine("     SELECT");
             sql.AppendLine("             STM.ProductID");
@@ -1231,7 +1232,7 @@ namespace IM_PJ.Controllers
             sql.AppendLine("     )");
             #endregion
 
-            #region Thông tin kho với sản phẩm biến thể
+            #region Thông tin kho 1 với sản phẩm biến thể
             sql.AppendLine(String.Empty);
             sql.AppendLine("     SELECT");
             sql.AppendLine("             STM.ProductVariableID");
@@ -1248,14 +1249,74 @@ namespace IM_PJ.Controllers
             sql.AppendLine("         ON  PRD.ProductStyle = 2");
             sql.AppendLine("         AND PRD.ID = STM.ParentID");
             sql.AppendLine("     ORDER BY");
-            sql.AppendLine("             STM.ProductVariableID");
+            sql.AppendLine("             STM.ParentID");
+            sql.AppendLine("     ,       STM.ProductVariableID");
             sql.AppendLine("     ,       STM.CreatedDate");
             sql.AppendLine("     ;");
             sql.AppendLine(String.Empty);
             sql.AppendLine("     CREATE INDEX [ID_PROCDUCT] ON #StockProductVariable(");
-            sql.AppendLine("             [ProductVariableID] ASC");
+            sql.AppendLine("             [ParentID] ASC");
+            sql.AppendLine("     ,       [ProductVariableID] ASC");
             sql.AppendLine("     ,       [CreatedDate] DESC");
             sql.AppendLine("     )");
+            #endregion
+            #endregion
+
+            #region Kho 2
+            #region Thông tin kho 2 với sản phẩm thường
+            sql.AppendLine(String.Empty);
+            sql.AppendLine("     SELECT");
+            sql.AppendLine("             STM.ProductID");
+            sql.AppendLine("     ,       STM.Quantity");
+            sql.AppendLine("     ,       STM.QuantityCurrent");
+            sql.AppendLine("     ,       STM.Type");
+            sql.AppendLine("     ,       STM.Status");
+            sql.AppendLine("     ,       STM.CreatedDate");
+            sql.AppendLine("     INTO #StockProduct2");
+            sql.AppendLine("     FROM");
+            sql.AppendLine("             #Product AS PRD");
+            sql.AppendLine("     INNER JOIN StockManager2 AS STM");
+            sql.AppendLine("         ON  PRD.ProductStyle = 1");
+            sql.AppendLine("         AND PRD.ID = STM.ProductID");
+            sql.AppendLine("     ORDER BY");
+            sql.AppendLine("             STM.ProductID");
+            sql.AppendLine("     ,       STM.CreatedDate");
+            sql.AppendLine("     ;");
+            sql.AppendLine(String.Empty);
+            sql.AppendLine("     CREATE INDEX [ID_PROCDUCT] ON #StockProduct2(");
+            sql.AppendLine("             [ProductID] ASC");
+            sql.AppendLine("     ,       [CreatedDate] DESC");
+            sql.AppendLine("     )");
+            #endregion
+
+            #region Thông tin kho 2 với sản phẩm biến thể
+            sql.AppendLine(String.Empty);
+            sql.AppendLine("     SELECT");
+            sql.AppendLine("             STM.ProductVariableID");
+            sql.AppendLine("     ,       STM.Quantity");
+            sql.AppendLine("     ,       STM.QuantityCurrent");
+            sql.AppendLine("     ,       STM.Type");
+            sql.AppendLine("     ,       STM.Status");
+            sql.AppendLine("     ,       STM.CreatedDate");
+            sql.AppendLine("     ,       STM.ProductID");
+            sql.AppendLine("     INTO #StockProductVariable2");
+            sql.AppendLine("     FROM");
+            sql.AppendLine("             #Product AS PRD");
+            sql.AppendLine("     INNER JOIN StockManager2 AS STM");
+            sql.AppendLine("         ON  PRD.ProductStyle = 2");
+            sql.AppendLine("         AND PRD.ID = STM.ProductID");
+            sql.AppendLine("     ORDER BY");
+            sql.AppendLine("             STM.ProductID");
+            sql.AppendLine("     ,       STM.ProductVariableID");
+            sql.AppendLine("     ,       STM.CreatedDate");
+            sql.AppendLine("     ;");
+            sql.AppendLine(String.Empty);
+            sql.AppendLine("     CREATE INDEX [ID_PROCDUCT] ON #StockProductVariable2(");
+            sql.AppendLine("             [ProductID] ASC");
+            sql.AppendLine("     ,       [ProductVariableID] ASC");
+            sql.AppendLine("     ,       [CreatedDate] DESC");
+            sql.AppendLine("     )");
+            #endregion
             #endregion
 
             #region Tính thông tin kho của tất cả sản phẩm ( sản phẩm thường và sản phẩm biến thể)
@@ -1265,6 +1326,8 @@ namespace IM_PJ.Controllers
             sql.AppendLine("     ,       PRQ.ParentID");
             sql.AppendLine("     ,       SUM(ISNULL(PRQ.QuantityLeft, 0)) AS QuantityLeft");
             sql.AppendLine("     ,       MIN(ISNULL(PRQ.Liquidated, 0)) AS Liquidated");
+            sql.AppendLine("     ,       MAX(ISNULL(PRQ.HasStock2, 0)) AS HasStock2");
+            sql.AppendLine("     ,       SUM(ISNULL(PRQ.QuantityLeft2, 0)) AS QuantityLeft2");
             sql.AppendLine("     INTO #ProductQuantity");
             sql.AppendLine("     FROM (");
             sql.AppendLine("         SELECT");
@@ -1288,6 +1351,8 @@ namespace IM_PJ.Controllers
             sql.AppendLine("                             0");
             sql.AppendLine("                     END");
             sql.AppendLine("                 ) AS Liquidated");
+            sql.AppendLine("         ,       0 AS HasStock2");
+            sql.AppendLine("         ,       0 AS QuantityLeft2");
             sql.AppendLine("         FROM ");
             sql.AppendLine("                 #StockProduct AS STP");
             sql.AppendLine("         INNER JOIN (");
@@ -1296,6 +1361,45 @@ namespace IM_PJ.Controllers
             sql.AppendLine("                 ,       MAX(CreatedDate) AS CreatedDate");
             sql.AppendLine("                 FROM");
             sql.AppendLine("                         #StockProduct");
+            sql.AppendLine("                 GROUP BY");
+            sql.AppendLine("                         ProductID");
+            sql.AppendLine("             ) AS SPM");
+            sql.AppendLine("             ON  STP.ProductID = SPM.ProductID");
+            sql.AppendLine("             AND STP.CreatedDate = SPM.CreatedDate");
+            sql.AppendLine(String.Empty);
+            sql.AppendLine("         UNION ALL");
+            sql.AppendLine(String.Empty);
+            sql.AppendLine("         SELECT");
+            sql.AppendLine("                 1 AS ProductStyle");
+            sql.AppendLine("         ,       STP.ProductID  AS ParentID");
+            sql.AppendLine("         ,       0 AS QuantityLeft");
+            sql.AppendLine("         ,       (");
+            sql.AppendLine("                     CASE STP.Status");
+            sql.AppendLine("                         WHEN 14");
+            sql.AppendLine("                             THEN 1");
+            sql.AppendLine("                         ELSE");
+            sql.AppendLine("                             0");
+            sql.AppendLine("                     END");
+            sql.AppendLine("                 ) AS Liquidated");
+            sql.AppendLine("         ,       1 AS HasStock2");
+            sql.AppendLine("         ,       (");
+            sql.AppendLine("                     CASE STP.Type");
+            sql.AppendLine("                         WHEN 1");
+            sql.AppendLine("                             THEN STP.QuantityCurrent + STP.Quantity");
+            sql.AppendLine("                         WHEN 2");
+            sql.AppendLine("                             THEN STP.QuantityCurrent - STP.Quantity");
+            sql.AppendLine("                         ELSE");
+            sql.AppendLine("                             0");
+            sql.AppendLine("                     END");
+            sql.AppendLine("                 ) AS QuantityLeft2");
+            sql.AppendLine("         FROM ");
+            sql.AppendLine("                 #StockProduct2 AS STP");
+            sql.AppendLine("         INNER JOIN (");
+            sql.AppendLine("                 SELECT");
+            sql.AppendLine("                         ProductID");
+            sql.AppendLine("                 ,       MAX(CreatedDate) AS CreatedDate");
+            sql.AppendLine("                 FROM");
+            sql.AppendLine("                         #StockProduct2");
             sql.AppendLine("                 GROUP BY");
             sql.AppendLine("                         ProductID");
             sql.AppendLine("             ) AS SPM");
@@ -1325,18 +1429,65 @@ namespace IM_PJ.Controllers
             sql.AppendLine("                             0");
             sql.AppendLine("                     END");
             sql.AppendLine("                 ) AS Liquidated");
+            sql.AppendLine("         ,       0 AS HasStock2");
+            sql.AppendLine("         ,       0 AS QuantityLeft2");
             sql.AppendLine("         FROM ");
             sql.AppendLine("                 #StockProductVariable AS STP");
             sql.AppendLine("         INNER JOIN (");
             sql.AppendLine("                 SELECT");
-            sql.AppendLine("                         ProductVariableID");
+            sql.AppendLine("                         ParentID");
+            sql.AppendLine("                 ,       ProductVariableID");
             sql.AppendLine("                 ,       MAX(CreatedDate) AS CreatedDate");
             sql.AppendLine("                 FROM");
             sql.AppendLine("                         #StockProductVariable");
             sql.AppendLine("                 GROUP BY");
-            sql.AppendLine("                         ProductVariableID");
+            sql.AppendLine("                         ParentID");
+            sql.AppendLine("                 ,       ProductVariableID");
             sql.AppendLine("             ) AS SPM");
-            sql.AppendLine("             ON  STP.ProductVariableID = SPM.ProductVariableID");
+            sql.AppendLine("             ON  STP.ParentID = SPM.ParentID");
+            sql.AppendLine("             AND STP.ProductVariableID = SPM.ProductVariableID");
+            sql.AppendLine("             AND STP.CreatedDate = SPM.CreatedDate");
+            sql.AppendLine(String.Empty);
+            sql.AppendLine("         UNION ALL");
+            sql.AppendLine(String.Empty);
+            sql.AppendLine("         SELECT");
+            sql.AppendLine("                 2 AS ProductStyle");
+            sql.AppendLine("         ,       STP.ProductID AS ParentID");
+            sql.AppendLine("         ,       0 AS QuantityLeft");
+            sql.AppendLine("         ,       (");
+            sql.AppendLine("                     CASE STP.Status");
+            sql.AppendLine("                         WHEN 14");
+            sql.AppendLine("                             THEN 1");
+            sql.AppendLine("                         ELSE");
+            sql.AppendLine("                             0");
+            sql.AppendLine("                     END");
+            sql.AppendLine("                 ) AS Liquidated");
+            sql.AppendLine("         ,       1 AS HasStock2");
+            sql.AppendLine("         ,       (");
+            sql.AppendLine("                     CASE STP.Type");
+            sql.AppendLine("                         WHEN 1");
+            sql.AppendLine("                             THEN STP.QuantityCurrent + STP.Quantity");
+            sql.AppendLine("                         WHEN 2");
+            sql.AppendLine("                             THEN STP.QuantityCurrent - STP.Quantity");
+            sql.AppendLine("                         ELSE");
+            sql.AppendLine("                             0");
+            sql.AppendLine("                     END");
+            sql.AppendLine("                 ) AS QuantityLeft2");
+            sql.AppendLine("         FROM ");
+            sql.AppendLine("                 #StockProductVariable2 AS STP");
+            sql.AppendLine("         INNER JOIN (");
+            sql.AppendLine("                 SELECT");
+            sql.AppendLine("                         ProductID");
+            sql.AppendLine("                 ,       ProductVariableID");
+            sql.AppendLine("                 ,       MAX(CreatedDate) AS CreatedDate");
+            sql.AppendLine("                 FROM");
+            sql.AppendLine("                         #StockProductVariable2");
+            sql.AppendLine("                 GROUP BY");
+            sql.AppendLine("                         ProductID");
+            sql.AppendLine("                 ,       ProductVariableID");
+            sql.AppendLine("             ) AS SPM");
+            sql.AppendLine("             ON  STP.ProductID = SPM.ProductID");
+            sql.AppendLine("             AND STP.ProductVariableID = SPM.ProductVariableID");
             sql.AppendLine("             AND STP.CreatedDate = SPM.CreatedDate");
             sql.AppendLine("     ) AS PRQ");
             sql.AppendLine("     GROUP BY");
@@ -1391,6 +1542,92 @@ namespace IM_PJ.Controllers
             }
             #endregion
 
+            #region Lọc sản phẩm theo kho
+            switch (filter.warehouse)
+            {
+                case 1:
+                    sql.AppendLine(String.Empty);
+                    sql.AppendLine("DELETE #Product");
+                    sql.AppendLine("WHERE NOT EXISTS (");
+                    sql.AppendLine("        SELECT");
+                    sql.AppendLine("            S.ParentID");
+                    sql.AppendLine("        FROM (");
+                    sql.AppendLine("            SELECT ");
+                    sql.AppendLine("                SP.ParentID");
+                    sql.AppendLine("            FROM");
+                    sql.AppendLine("                #StockProduct AS SP");
+                    sql.AppendLine("            GROUP BY");
+                    sql.AppendLine("                SP.ParentID");
+                    sql.AppendLine("        ) AS S");
+                    sql.AppendLine("        WHERE");
+                    sql.AppendLine("            ID = S.ParentID");
+                    sql.AppendLine("    )");
+                    sql.AppendLine("    AND NOT EXISTS (");
+                    sql.AppendLine("        SELECT");
+                    sql.AppendLine("            S.ParentID");
+                    sql.AppendLine("        FROM (");
+                    sql.AppendLine("            SELECT ");
+                    sql.AppendLine("                SP.ParentID");
+                    sql.AppendLine("            FROM");
+                    sql.AppendLine("                #StockProductVariable AS SP");
+                    sql.AppendLine("            GROUP BY");
+                    sql.AppendLine("                SP.ParentID");
+                    sql.AppendLine("        ) AS S");
+                    sql.AppendLine("        WHERE");
+                    sql.AppendLine("            ID = S.ParentID");
+                    sql.AppendLine("    );");
+                    break;
+                case 2:
+                    sql.AppendLine(String.Empty);
+                    sql.AppendLine("DELETE #Product");
+                    sql.AppendLine("WHERE NOT EXISTS (");
+                    sql.AppendLine("        SELECT");
+                    sql.AppendLine("            S.ProductID");
+                    sql.AppendLine("        FROM (");
+                    sql.AppendLine("            SELECT ");
+                    sql.AppendLine("                SP.ProductID");
+                    sql.AppendLine("            FROM");
+                    sql.AppendLine("                #StockProduct2 AS SP");
+                    sql.AppendLine("            GROUP BY");
+                    sql.AppendLine("                SP.ProductID");
+                    sql.AppendLine("        ) AS S");
+                    sql.AppendLine("        WHERE");
+                    sql.AppendLine("            ID = S.ProductID");
+                    sql.AppendLine("    )");
+                    sql.AppendLine("    AND NOT EXISTS (");
+                    sql.AppendLine("        SELECT");
+                    sql.AppendLine("            S.ProductID");
+                    sql.AppendLine("        FROM (");
+                    sql.AppendLine("            SELECT ");
+                    sql.AppendLine("                SP.ProductID");
+                    sql.AppendLine("            FROM");
+                    sql.AppendLine("                #StockProductVariable2 AS SP");
+                    sql.AppendLine("            GROUP BY");
+                    sql.AppendLine("                SP.ProductID");
+                    sql.AppendLine("        ) AS S");
+                    sql.AppendLine("        WHERE");
+                    sql.AppendLine("            ID = S.ProductID");
+                    sql.AppendLine("    );");
+                    break;
+                default:
+                    break;
+            }
+
+            if (filter.warehouse != 0)
+            {
+                sql.AppendLine(String.Empty);
+                sql.AppendLine("DELETE #ProductQuantity");
+                sql.AppendLine("WHERE NOT EXISTS (");
+                sql.AppendLine("    SELECT");
+                sql.AppendLine("        NULL AS DUMMY");
+                sql.AppendLine("    FROM");
+                sql.AppendLine("        #Product AS p");
+                sql.AppendLine("    WHERE");
+                sql.AppendLine("        p.ProductStyle = ProductStyle");
+                sql.AppendLine("    AND p.ID = ParentID");
+                sql.AppendLine(");");
+            }
+            #endregion
 
             #region Lọc lại dữ liệu liên quan tag
             if (filter.tag != 0)
@@ -1431,6 +1668,7 @@ namespace IM_PJ.Controllers
             sql.AppendLine("FROM");
             sql.AppendLine("    #Product AS p;");
             #endregion
+
             #region Lấy sản phẩm đã phân trang
             sql.AppendLine(String.Empty);
             sql.AppendLine("     SELECT");
@@ -1485,6 +1723,7 @@ namespace IM_PJ.Controllers
             sql.AppendLine(");");
             sql.AppendLine(String.Empty);
             #endregion
+
             #region Kết thúc
             sql.AppendLine(String.Empty);
             sql.AppendLine("     SELECT");
@@ -1496,6 +1735,8 @@ namespace IM_PJ.Controllers
             sql.AppendLine("     ,       p.*");
             sql.AppendLine("     ,       PRQ.QuantityLeft");
             sql.AppendLine("     ,       PRQ.Liquidated");
+            sql.AppendLine("     ,       PRQ.HasStock2");
+            sql.AppendLine("     ,       PRQ.QuantityLeft2");
             sql.AppendLine("     FROM");
             sql.AppendLine("             #ProductPagination AS p");
             sql.AppendLine("     LEFT JOIN #ProductQuantity AS PRQ");
@@ -1560,7 +1801,6 @@ namespace IM_PJ.Controllers
                 }
 
                 entity.TotalProductInstockQuantityLeft = quantityLeft;
-
                 if (reader["Old_Price"] != DBNull.Value)
                     entity.OldPrice = Convert.ToDouble(reader["Old_Price"].ToString());
                 if (reader["Regular_Price"] != DBNull.Value)
@@ -1598,6 +1838,17 @@ namespace IM_PJ.Controllers
                     page.totalCount = reader["TotalCount"].ToString().ToInt(0);
                 if (reader["TotalPages"] != DBNull.Value)
                     page.totalPages = reader["TotalPages"].ToString().ToInt(0);
+
+                #region Stock 2
+                if (reader["HasStock2"] != DBNull.Value)
+                    entity.HasStock2 = Convert.ToBoolean(reader["HasStock2"]);
+                else
+                    entity.HasStock2 = false;
+                if (reader["QuantityLeft2"] != DBNull.Value)
+                    entity.Stock2Quantity = Convert.ToInt32(reader["QuantityLeft2"]);
+                else
+                    entity.Stock2Quantity = 0;
+                #endregion
                 list.Add(entity);
             }
             reader.Close();
@@ -3086,6 +3337,10 @@ namespace IM_PJ.Controllers
             public DateTime WebUpdate { get; set; }
             public bool Liquidated { get; set; }
             public bool IsHidden { get; set; }
+            // Stock 2
+            public bool HasStock2 { get; set; }
+            public int Stock2Quantity { get; set; }
+
         }
 
         public class ProductStockReport
