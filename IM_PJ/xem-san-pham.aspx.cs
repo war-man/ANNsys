@@ -268,6 +268,7 @@ namespace IM_PJ
                 for (int i = FromRow; i < ToRow + 1; i++)
                 {
                     var item = acs[i];
+                    var stock2 = StockManagerController.getQuantityStock2BySKU(item.SKU);
                     html.Append("<tr>");
                     html.Append("   <td><img src='" + Thumbnail.getURL(item.Image, Thumbnail.Size.Small) + "'></td>");
 
@@ -306,8 +307,11 @@ namespace IM_PJ
                     }
 
                     html.Append("   <td>" + string.Format("{0:N0}", item.RetailPrice) + "</td>");
-
-                    html.Append("   <td>" + PJUtils.TotalProductQuantityInstock(1, item.SKU) + "</td>");
+                    
+                    if (stock2.HasValue)
+                        html.Append(String.Format("   <td>{0:N0}<br>(Kho 2: {1:N0})</td>", PJUtils.TotalProductQuantityInstock(1, item.SKU), stock2.Value));
+                    else
+                        html.Append("   <td>" + PJUtils.TotalProductQuantityInstock(1, item.SKU) + "</td>");
                     html.Append("   <td>" + PJUtils.StockStatusBySKU(1, item.SKU) + "</td>");
 
                     html.Append("   <td>" + date + "</td>");

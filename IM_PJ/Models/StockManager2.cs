@@ -17,7 +17,7 @@ namespace IM_PJ.Models
         public int ID { get; set; }
         public Nullable<int> AgentID { get; set; }
         public int ProductID { get; set; }
-        public int ProductVariableID { get; set; }
+        public Nullable<int> ProductVariableID { get; set; }
         public string SKU { get; set; }
         public string ParentSKU { get; set; }
         public int Type { get; set; }

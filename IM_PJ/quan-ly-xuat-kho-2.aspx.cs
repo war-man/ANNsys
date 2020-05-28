@@ -78,7 +78,11 @@ namespace IM_PJ
         }
 
         private static ProductGetOut _getProduct(tbl_Product product) {
-            var quantity = StockManagerController.getQuantityBySKU(product.ProductSKU);
+            var quantity = StockManagerController.getQuantityStock2BySKU(product.ProductSKU);
+
+            if (!quantity.HasValue || quantity.Value == 0)
+                return null;
+
             var result = new ProductGetOut(){
                 ID = product.ID,
                 ProductName = product.ProductTitle,
@@ -110,6 +114,11 @@ namespace IM_PJ
 
             foreach (var variation in variations)
             {
+                var quantity = StockManagerController.getQuantityStock2BySKU(variation.SKU);
+
+                if (!quantity.HasValue || quantity.Value == 0)
+                    continue;
+
                 var attributes = ProductVariableValueController.GetByProductVariableSKU(variation.SKU);
 
                 if (attributes.Count == 0)
@@ -126,7 +135,6 @@ namespace IM_PJ
                     variablevalue += attribute.VariableValue.Trim() + "|";
                 }
 
-                var quantity = StockManagerController.getQuantityBySKU(product.ProductSKU); 
                 var item = new ProductGetOut(){
                     ID = variation.ID,
                     ProductName = product.ProductTitle,
@@ -159,22 +167,31 @@ namespace IM_PJ
             if (acc != null)
             {
                 int AgentID = Convert.ToInt32(acc.AgentID);
-                var product = ProductController.GetBySKU(textsearch.Trim().ToUpper());
+                var product = ProductController.GetBySKU((int)Warehouse.Two, textsearch.Trim().ToUpper());
 
                 if (product != null)
                 {
                     if (product.ProductStyle == 1) {
-                        result.Add(_getProduct(product));
+                        var data = _getProduct(product);
+
+                        if (data != null)
+                            result.Add(data);
                     }
                     else {
                         var productvariable = ProductVariableController.GetByParentSKU(product.ProductSKU);
-                        result.AddRange(_getProductVariation(productvariable, product));
+                        var data = _getProductVariation(productvariable, product);
+
+                        if (data != null && data.Count > 0)
+                            result.AddRange(data);
                     }
                 }
                 else
                 {
                     var productvariable = ProductVariableController.GetAllBySKU(textsearch.Trim().ToUpper());
-                    result.AddRange(_getProductVariation(productvariable, product));
+                        var data = _getProductVariation(productvariable);
+
+                        if (data != null && data.Count > 0)
+                            result.AddRange(data);
                 }
             }
             
@@ -201,13 +218,12 @@ namespace IM_PJ
 
         public class WarehousePostModel {
             public int productStyle { get; set; }
-            public int productID { get; set; } 
-            public int? productVariableID { get; set; } 
+            public int productID { get; set; }
+            public int productVariableID { get; set; }
             public string sku { get; set; }
             public string parentSKU { get; set; }
-            public int type { get; set; }
             public int quantity { get; set; }
-            public int quantityCurrent {get; set;}
+            public int quantityCurrent { get; set; }
         }
 
         protected void btnImport_Click(object sender, EventArgs e)
@@ -218,52 +234,30 @@ namespace IM_PJ
             if (acc != null)
             {
                 int AgentID = Convert.ToInt32(acc.AgentID);
-                string note = String.IsNullOrEmpty(hdfNote.Value) ? 
-                    "Chỉnh sửa số lượng kho 2 bằng chức năng chỉnh sửa kho 2" : hdfNote.Value;
+                string note = "Xuất kho 2 bằng chức xuất kho 2";
                 var data = String.IsNullOrEmpty(hdfvalue.Value) ? 
                     new List<WarehousePostModel>() : 
                     JsonConvert.DeserializeObject<List<WarehousePostModel>>(hdfvalue.Value);
 
                 foreach (var item in data)
                 {
-                    StockManagerController.Insert(new tbl_StockManager
-                    {
-                        AgentID = AgentID,
-                        ProductID = item.productID,
-                        ProductVariableID = item.productVariableID,
-                        Quantity = item.quantity,
-                        QuantityCurrent = item.quantityCurrent,
-                        Type = item.type,
-                        NoteID = note,
-                        OrderID = 0,
-                        Status = 1,
-                        SKU = item.sku,
-                        CreatedDate = currentDate,
-                        CreatedBy = username,
-                        MoveProID = 0,
-                        ParentID = item.productID
-                    });
-                    StockManagerController.warehousing(new StockManager2() {
+                    var stock2 = StockManagerController.warehousing2(new StockManager2() {
                         AgentID = AgentID,
                         ProductID = item.productID,
                         ProductVariableID = item.productVariableID,
                         SKU = item.sku,
                         ParentSKU = item.parentSKU,
-                        Type = item.type,
+                        Type = 2,
                         Quantity = item.quantity,
                         QuantityCurrent = item.quantityCurrent,
-                        Status = 2,
+                        Status = 17,
                         Note = note,
                         CreatedDate = currentDate,
                         CreatedBy = username,
                         ModifiedDate = currentDate,
                         ModifiedBy = username,
                     });
-
-                    if (item.productStyle == 1)
-                        ProductController.UpdateStockStatus(item.sku, 1, false, currentDate, username);
-                    else 
-                        ProductVariableController.UpdateStockStatus(item.productVariableID.Value, 1, false, currentDate, username);
+                    StockManagerController.warehousing1(stock2);
                 }
                 
                 PJUtils.ShowMessageBoxSwAlert("Chỉnh sửa số lượng kho 2 thành công!", "s", true, Page);

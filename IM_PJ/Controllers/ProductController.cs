@@ -337,6 +337,49 @@ namespace IM_PJ.Controllers
 
             }
         }
+
+        public static tbl_Product GetBySKU(int warehouse, string SKU)
+        {
+            using (var con = new inventorymanagementEntities())
+            {
+                var products = con.tbl_Product.Where(a => a.ProductSKU == SKU);
+
+                switch(warehouse)
+                {
+                    case 1:
+                        var stock1 = con.tbl_StockManager
+                            .Where(x => x.SKU == SKU)
+                            .GroupBy(g => g.ParentID)
+                            .Select(x => new { productID = x.Key });
+                        products = products
+                            .Join(
+                                stock1,
+                                p => p.ID,
+                                s => s.productID,
+                                (p, s) => p
+                            );
+                        break;
+                    case 2:
+                        var stock2 = con.StockManager2
+                            .Where(x => x.SKU == SKU)
+                            .GroupBy(g => g.ProductID)
+                            .Select(x => new { productID = x.Key });
+                        products = products
+                            .Join(
+                                stock2,
+                                p => p.ID,
+                                s => s.productID,
+                                (p, s) => p
+                            );
+                        break;
+                    default:
+                        break;
+                }
+
+                return products.SingleOrDefault();
+            }
+        }
+
         public static List<tbl_Product> GetAll(string s)
         {
             using (var dbe = new inventorymanagementEntities())
@@ -1489,82 +1532,6 @@ namespace IM_PJ.Controllers
             sql.AppendLine("             ON  STP.ProductID = SPM.ProductID");
             sql.AppendLine("             AND STP.ProductVariableID = SPM.ProductVariableID");
             sql.AppendLine("             AND STP.CreatedDate = SPM.CreatedDate");
-            sql.AppendLine(String.Empty);
-            sql.AppendLine("         UNION ALL");
-            sql.AppendLine(String.Empty);
-            sql.AppendLine("         SELECT");
-            sql.AppendLine("                 1 AS ProductStyle");
-            sql.AppendLine("         ,       STP.ParentID");
-            sql.AppendLine("         ,       0 AS QuantityLeft");
-            sql.AppendLine("         ,       (");
-            sql.AppendLine("                     CASE STP.Status");
-            sql.AppendLine("                         WHEN 14");
-            sql.AppendLine("                             THEN 1");
-            sql.AppendLine("                         ELSE");
-            sql.AppendLine("                             0");
-            sql.AppendLine("                     END");
-            sql.AppendLine("                 ) AS Liquidated");
-            sql.AppendLine("         ,       (");
-            sql.AppendLine("                     CASE STP.Type");
-            sql.AppendLine("                         WHEN 1");
-            sql.AppendLine("                             THEN STP.QuantityCurrent + STP.Quantity");
-            sql.AppendLine("                         WHEN 2");
-            sql.AppendLine("                             THEN STP.QuantityCurrent - STP.Quantity");
-            sql.AppendLine("                         ELSE");
-            sql.AppendLine("                             0");
-            sql.AppendLine("                     END");
-            sql.AppendLine("                 ) AS QuantityLeft2");
-            sql.AppendLine("         FROM ");
-            sql.AppendLine("                 #StockProduct2 AS STP");
-            sql.AppendLine("         INNER JOIN (");
-            sql.AppendLine("                 SELECT");
-            sql.AppendLine("                         ProductID");
-            sql.AppendLine("                 ,       MAX(CreatedDate) AS CreatedDate");
-            sql.AppendLine("                 FROM");
-            sql.AppendLine("                         #StockProduct");
-            sql.AppendLine("                 GROUP BY");
-            sql.AppendLine("                         ProductID");
-            sql.AppendLine("             ) AS SPM");
-            sql.AppendLine("             ON  STP.ProductID = SPM.ProductID");
-            sql.AppendLine("             AND STP.CreatedDate = SPM.CreatedDate");
-            sql.AppendLine(String.Empty);
-            sql.AppendLine("         UNION ALL");
-            sql.AppendLine(String.Empty);
-            sql.AppendLine("         SELECT");
-            sql.AppendLine("                 2 AS ProductStyle");
-            sql.AppendLine("         ,       STP.ParentID");
-            sql.AppendLine("         ,       0 AS QuantityLeft");
-            sql.AppendLine("         ,       (");
-            sql.AppendLine("                     CASE STP.Status");
-            sql.AppendLine("                         WHEN 14");
-            sql.AppendLine("                             THEN 1");
-            sql.AppendLine("                         ELSE");
-            sql.AppendLine("                             0");
-            sql.AppendLine("                     END");
-            sql.AppendLine("                 ) AS Liquidated");
-            sql.AppendLine("         ,       (");
-            sql.AppendLine("                     CASE STP.Type");
-            sql.AppendLine("                         WHEN 1");
-            sql.AppendLine("                             THEN STP.QuantityCurrent + STP.Quantity");
-            sql.AppendLine("                         WHEN 2");
-            sql.AppendLine("                             THEN STP.QuantityCurrent - STP.Quantity");
-            sql.AppendLine("                         ELSE");
-            sql.AppendLine("                             0");
-            sql.AppendLine("                     END");
-            sql.AppendLine("                 ) AS QuantityLeft");
-            sql.AppendLine("         FROM ");
-            sql.AppendLine("                 #StockProductVariable2 AS STP");
-            sql.AppendLine("         INNER JOIN (");
-            sql.AppendLine("                 SELECT");
-            sql.AppendLine("                         ProductVariableID");
-            sql.AppendLine("                 ,       MAX(CreatedDate) AS CreatedDate");
-            sql.AppendLine("                 FROM");
-            sql.AppendLine("                         #StockProductVariable");
-            sql.AppendLine("                 GROUP BY");
-            sql.AppendLine("                         ProductVariableID");
-            sql.AppendLine("             ) AS SPM");
-            sql.AppendLine("             ON  STP.ProductVariableID = SPM.ProductVariableID");
-            sql.AppendLine("             AND STP.CreatedDate = SPM.CreatedDate");
             sql.AppendLine("     ) AS PRQ");
             sql.AppendLine("     GROUP BY");
             sql.AppendLine("             PRQ.ProductStyle");
@@ -1572,6 +1539,7 @@ namespace IM_PJ.Controllers
             sql.AppendLine("     ;");
             sql.AppendLine(String.Empty);
             sql.AppendLine("     CREATE INDEX [ID_PROCDUCT] ON #ProductQuantity([ProductStyle], [ParentID])");
+            #endregion
             #endregion
             #endregion
 

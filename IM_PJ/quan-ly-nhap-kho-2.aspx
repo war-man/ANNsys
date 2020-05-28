@@ -27,9 +27,6 @@
                                 <table class="table table-checkable table-product import-stock">
                                     <thead>
                                         <tr>
-                                            <th class="select-column">
-                                                <input type="checkbox" id="check-all" onchange="check_all()" />
-                                            </th>
                                             <th class="image-column">Ảnh</th>
                                             <th class="name-column">Sản phẩm</th>
                                             <th class="sku-column">Mã</th>
@@ -54,11 +51,7 @@
             </div>
         </div>
         <asp:HiddenField ID="hdfvalue" runat="server" />
-        <asp:HiddenField ID="hdfNote" runat="server" />
         <asp:Button ID="btnImport" runat="server" OnClick="btnImport_Click" Style="display: none" />
-        <div id="printcontent" style="display: none">
-            <asp:Literal ID="ltrprint" runat="server"></asp:Literal>
-        </div>
     </main>
 
     <script type="text/javascript">
@@ -73,12 +66,6 @@
                     return false;
                 }
             });
-
-            // Checkbox
-            $("#check-all").change(function () {
-                $(".check-popup").prop('checked', $(this).prop("checked"));
-            });
-
         });
 
         $(document).keydown(function (e) {
@@ -132,25 +119,6 @@
             });
             closePopup();
         }
-   
-        function check() {
-            var temp = 0;
-            var temp2 = 0;
-            $(".product-result").each(function () {
-                if ($(this).find(".check-popup").is(':checked')) {
-                    temp++;
-                }
-                else {
-                    temp2++;
-                }
-                if (temp2 > 0) {
-                    $("#check-all").prop('checked', false);
-                }
-                else {
-                    $("#check-all").prop('checked', true);
-                }
-            });
-        }
 
         function searchProduct() {
             var textsearch = $("#txtSearch").val();
@@ -186,11 +154,7 @@
                                             html += "       data-productvariable=\"" + item.ProductVariable + "\"";
                                             html += "       data-productname=\"" + item.ProductName + "\"";
                                             html += "       data-sku=\"" + item.SKU + "\"";
-<<<<<<< HEAD
-                                            html += "       data-productstyle=\"" + item.productstyle + "\"";
-=======
                                             html += "       data-productstyle=\"" + item.ProductStyle + "\"";
->>>>>>> fa1b48f17f53a3359ee3d6040f651418fb01bcf4
                                             html += "       data-id=\"" + item.ID + "\"";
                                             html += "       data-productnariablename=\"" + item.ProductVariableName + "\"";
                                             html += "       data-productvariablevalue =\"" + item.ProductVariableValue + "\"";
@@ -198,12 +162,7 @@
                                             html += "       data-parentid=\"" + item.ParentID + "\"";
                                             html += "       data-parentsku=\"" + item.ParentSKU + "\"";
                                             html += ">";
-                                            html += "   <td><input type=\"checkbox\" class=\"check-popup\" onchange=\"check()\"  /></td>";
-<<<<<<< HEAD
-                                            html += "   <td class='image-item'><img onclick='openImage($(this))' src='" + + item.ProductImage + "'></td>";
-=======
                                             html += "   <td class='image-item'><img onclick='openImage($(this))' src='" + item.ProductImage + "'></td>";
->>>>>>> fa1b48f17f53a3359ee3d6040f651418fb01bcf4
                                             html += "   <td class='name-item'><a href='/xem-san-pham?sku=" + item.SKU + "' target='_blank'>" + item.ProductName + "</a></td>";
                                             html += "   <td class='sku-item'>" + item.SKU + "</td>";
                                             html += "   <td class='price-item'>" + item.ProductVariable.replace(/\|/g, "<br>") + "</td>";
@@ -236,11 +195,7 @@
                                         html += "       data-productvariable=\"" + item.ProductVariable + "\"";
                                         html += "       data-productname=\"" + item.ProductName + "\"";
                                         html += "       data-sku=\"" + item.SKU + "\"";
-<<<<<<< HEAD
-                                        html += "       data-productstyle=\"" + item.productstyle + "\"";
-=======
                                         html += "       data-productstyle=\"" + item.ProductStyle + "\"";
->>>>>>> fa1b48f17f53a3359ee3d6040f651418fb01bcf4
                                         html += "       data-id=\"" + item.ID + "\"";
                                         html += "       data-productnariablename=\"" + item.ProductVariableName + "\"";
                                         html += "       data-productvariablevalue =\"" + item.ProductVariableValue + "\"";
@@ -248,12 +203,7 @@
                                         html += "       data-parentid=\"" + item.ParentID + "\"";
                                         html += "       data-parentsku=\"" + item.ParentSKU + "\"";
                                         html += ">";
-                                        html += " <td><input type=\"checkbox\" class=\"check-popup\" onchange=\"check()\" /></td>";
-<<<<<<< HEAD
-                                        html += "   <td class='image-item'><img onclick='openImage($(this))' src='" + + item.ProductImage + "'></td>";
-=======
                                         html += "   <td class='image-item'><img onclick='openImage($(this))' src='" + item.ProductImage + "'></td>";
->>>>>>> fa1b48f17f53a3359ee3d6040f651418fb01bcf4
                                         html += "   <td class='name-item'><a href='/xem-san-pham?sku=" + item.SKU + "' target='_blank'>" + item.ProductName + "</a></td>";
                                         html += "   <td class='sku-item'>" + item.SKU + "</td>";
                                         html += "   <td class='price-item'>" + item.ProductVariable.replace(/\|/g, "<br>") + "</td>";
@@ -338,7 +288,6 @@
         function inProduct() {
             if ($(".product-result").length > 0) {
                 HoldOn.open();
-                var note = $("#txtnote").val();
                 var list = [];
                 $(".product-result").each(function () {
                     var productstyle = +$(this).attr("data-productstyle") || 1;
@@ -353,11 +302,7 @@
                         let item = {
                             "productStyle": productstyle,
                             "productID": parentID,
-<<<<<<< HEAD
-                            "productVariableID": productstyle == 1 ? null : id,
-=======
                             "productVariableID": productstyle == 1 ? 0 : id,
->>>>>>> fa1b48f17f53a3359ee3d6040f651418fb01bcf4
                             "sku": sku,
                             "parentSKU": parentSKU,
                             "quantity": quantity,
@@ -367,7 +312,6 @@
                         list.push(item);
                     }
                 });
-                $("#<%=hdfNote.ClientID%>").val(note);
                 $("#<%=hdfvalue.ClientID%>").val(JSON.stringify(list));
                 HoldOn.close();
                 $("#<%=btnImport.ClientID%>").click();
@@ -375,17 +319,6 @@
             else {
                 alert("Vui lòng nhập sản phẩm");
             }
-        }
-
-        function noteImportStock() {
-            fr = "<div class=\"form-row\">";
-            fr += "    <label class=\"lbl-popup\">Nội dung nhập kho</label>";
-            fr += "    <textarea id=\"txtnote\" class=\"form-control\" placeholder=\"Có thể để trống\"/>";
-            fr += "</div>";
-            fr += "<div class=\"btn-content\">";
-            fr += "    <a class=\"btn primary-btn fw-btn float-right-btn not-fullwidth\" href=\"javascript:;\" onclick=\"inProduct()\" >Xác nhận</a>";
-            fr += "</div>";
-            showPopup(fr);
         }
     </script>
 </asp:Content>

@@ -1360,28 +1360,40 @@ namespace IM_PJ.Controllers
         }
         #endregion
 
-        public static tbl_StockManager warehousing1(StockManager2 stock2)
+
+        public static tbl_StockManager warehousing1(tbl_StockManager data)
+        {
+            using (var con = new inventorymanagementEntities())
+            {
+                con.tbl_StockManager.Add(data);
+                con.SaveChanges();
+
+                return data;
+            }
+        }
+
+        public static tbl_StockManager warehousing1(StockManager2 data)
         {
             using (var con = new inventorymanagementEntities())
             {
                 var stock1 = new tbl_StockManager()
                 {
-                    AgentID = stock2.AgentID,
-                    ProductID = stock2.ProductVariableID == 0 ? stock2.ProductID : 0,
-                    ProductVariableID = stock2.ProductVariableID,
-                    Quantity = stock2.Quantity,
-                    QuantityCurrent = stock2.QuantityCurrent,
-                    Type = stock2.Type,
-                    CreatedDate = stock2.CreatedDate,
-                    CreatedBy = stock2.CreatedBy,
-                    ModifiedDate = stock2.ModifiedDate,
-                    ModifiedBy = stock2.ModifiedBy,
-                    NoteID = stock2.Note,
+                    AgentID = data.AgentID,
+                    ProductID = data.ProductVariableID == 0 ? data.ProductID : 0,
+                    ProductVariableID = data.ProductVariableID,
+                    Quantity = data.Quantity,
+                    QuantityCurrent = data.QuantityCurrent,
+                    Type = data.Type,
+                    CreatedDate = data.CreatedDate,
+                    CreatedBy = data.CreatedBy,
+                    ModifiedDate = data.ModifiedDate,
+                    ModifiedBy = data.ModifiedBy,
+                    NoteID = data.Note,
                     OrderID = 0,
-                    Status = stock2.Status,
-                    SKU = stock2.SKU,
+                    Status = data.Status,
+                    SKU = data.SKU,
                     MoveProID = 0,
-                    ParentID = stock2.ProductID
+                    ParentID = data.ProductID
                 };
                 con.tbl_StockManager.Add(stock1);
                 con.SaveChanges();
@@ -1391,19 +1403,19 @@ namespace IM_PJ.Controllers
         }
 
         #region Quản lý kho 2
-        public static int getQuantityBySKU(string sku)
+        public static int? getQuantityStock2BySKU(string sku)
         {
             using (var con = new inventorymanagementEntities())
             {
-                var stock = con.StockManager2
-                    .Where(x => x.SKU == sku)
-                    .OrderByDescending(o => o.ID)
-                    .FirstOrDefault();
+                var stock2 = con.StockManager2
+                            .Where(x => x.SKU == sku)
+                            .OrderByDescending(o => o.ID)
+                            .FirstOrDefault();
 
-                if (stock == null)
-                    return 0;
+                if (stock2 == null)
+                    return null;
                 else
-                    return stock.QuantityCurrent + stock.Quantity * (stock.Type == 1 ? 1 : -1);
+                    return stock2.QuantityCurrent + stock2.Quantity * (stock2.Type == 1 ? 1 : -1);
             }
         }
 

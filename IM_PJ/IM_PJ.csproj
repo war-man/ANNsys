@@ -519,6 +519,16 @@
     <Content Include="bao-cao.aspx" />
     <Content Include="bv.aspx" />
     <Content Include="chuyen-kho.aspx" />
+    <Content Include="Models\IMModel.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>IMModel.edmx</DependentUpon>
+      <LastGenOutput>IMModel.Context.cs</LastGenOutput>
+    </Content>
+    <Content Include="Models\IMModel.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>IMModel.edmx</DependentUpon>
+      <LastGenOutput>IMModel.cs</LastGenOutput>
+    </Content>
     <Content Include="quan-ly-xuat-kho-2.aspx" />
     <Content Include="Content\bootstrap-datetimepicker.css" />
     <Content Include="Content\bootstrap-datetimepicker.min.css" />
@@ -536,16 +546,6 @@
     <Content Include="danh-sach-thong-bao.aspx" />
     <Content Include="danh-sach-bai-viet-app.aspx" />
     <Content Include="kh.aspx" />
-    <Content Include="Models\IMModel.Context.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>IMModel.edmx</DependentUpon>
-      <LastGenOutput>IMModel.Context.cs</LastGenOutput>
-    </Content>
-    <Content Include="Models\IMModel.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>IMModel.edmx</DependentUpon>
-      <LastGenOutput>IMModel.cs</LastGenOutput>
-    </Content>
     <Content Include="nuoc-hoa.aspx" />
     <Content Include="cron-job-product-status.aspx" />
     <Content Include="quan-ly-nhap-kho-2.aspx" />
@@ -603,6 +603,8 @@
     <Content Include="App_Themes\Ann\css\bootstrap\glyphicons-halflings-regular.ttf" />
     <Content Include="App_Themes\Ann\css\bootstrap\glyphicons-halflings-regular.woff" />
     <Content Include="Content\bootstrap-tagsinput.less" />
+    <Content Include="POSPage.Master" />
+    <Content Include="ProductPage.Master" />
     <EntityDeploy Include="Models\IMModel.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>IMModel.Designer.cs</LastGenOutput>
@@ -610,8 +612,6 @@
     <Content Include="Models\IMModel.edmx.diagram">
       <DependentUpon>IMModel.edmx</DependentUpon>
     </Content>
-    <Content Include="POSPage.Master" />
-    <Content Include="ProductPage.Master" />
     <None Include="Properties\PublishProfiles\ANN.pubxml" />
     <Content Include="Scripts\bootstrap2-toggle.min.js.map" />
     <Content Include="Scripts\bootstrap-toggle.min.js.map" />
@@ -983,75 +983,6 @@
     <Compile Include="chuyen-kho.aspx.designer.cs">
       <DependentUpon>chuyen-kho.aspx</DependentUpon>
     </Compile>
-    <Compile Include="quan-ly-xuat-kho-2.aspx.cs">
-      <DependentUpon>quan-ly-xuat-kho-2.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="quan-ly-xuat-kho-2.aspx.designer.cs">
-      <DependentUpon>quan-ly-xuat-kho-2.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Controllers\WebWordpressController.cs" />
-    <Compile Include="Controllers\PostCloneController.cs" />
-    <Compile Include="Controllers\UserController.cs" />
-    <Compile Include="Controllers\CategoryController.cs" />
-    <Compile Include="Controllers\CategoryShelfController.cs" />
-    <Compile Include="Controllers\CouponController.cs" />
-    <Compile Include="Controllers\CronJobController.cs" />
-    <Compile Include="Controllers\DeliveryProshipController.cs" />
-    <Compile Include="Controllers\DeliveryPostOfficeController.cs" />
-    <Compile Include="Controllers\NotifyCategoryController.cs" />
-    <Compile Include="Controllers\PostPublicImageController.cs" />
-    <Compile Include="Controllers\PostPublicCategoryController.cs" />
-    <Compile Include="Controllers\NotifyController.cs" />
-    <Compile Include="Controllers\PostPublicController.cs" />
-    <Compile Include="Controllers\ProductTagController.cs" />
-    <Compile Include="Controllers\RegisterController.cs" />
-    <Compile Include="Controllers\BankAccountController.cs" />
-    <Compile Include="Controllers\BankController.cs" />
-    <Compile Include="Controllers\DeliveryController.cs" />
-    <Compile Include="Controllers\BankTransferController.cs" />
-    <Compile Include="Controllers\FeeController.cs" />
-    <Compile Include="Controllers\FeeTypeController.cs" />
-    <Compile Include="Controllers\PostCategoryController.cs" />
-    <Compile Include="Controllers\PostController.cs" />
-    <Compile Include="Controllers\PostImageController.cs" />
-    <Compile Include="Controllers\RegisterProductController.cs" />
-    <Compile Include="Controllers\SessionController.cs" />
-    <Compile Include="Controllers\ShipperController.cs" />
-    <Compile Include="Controllers\TagController.cs" />
-    <Compile Include="CronJob\RunScheduleProductStatus.cs" />
-    <Compile Include="CronJob\CreateScheduleProductStatus.cs" />
-    <Compile Include="danh-sach-thong-bao.aspx.cs">
-      <DependentUpon>danh-sach-thong-bao.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="danh-sach-thong-bao.aspx.designer.cs">
-      <DependentUpon>danh-sach-thong-bao.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="danh-sach-bai-viet-app.aspx.cs">
-      <DependentUpon>danh-sach-bai-viet-app.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="danh-sach-bai-viet-app.aspx.designer.cs">
-      <DependentUpon>danh-sach-bai-viet-app.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Models\StockManager2.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="ProductPage.Master.cs">
-      <DependentUpon>ProductPage.Master</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="ProductPage.Master.designer.cs">
-      <DependentUpon>ProductPage.Master</DependentUpon>
-    </Compile>
-    <Compile Include="POSPage.Master.cs">
-      <DependentUpon>POSPage.Master</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="POSPage.Master.designer.cs">
-      <DependentUpon>POSPage.Master</DependentUpon>
-    </Compile>
     <Compile Include="Models\Bank.cs">
       <DependentUpon>IMModel.tt</DependentUpon>
     </Compile>
@@ -1067,12 +998,6 @@
     <Compile Include="Models\CheckWarehouseDetail.cs">
       <DependentUpon>IMModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\Common\CustomerModel.cs" />
-    <Compile Include="Models\Common\DeliveryProshipFilterModel.cs" />
-    <Compile Include="Models\Common\DeliveryPostOfficeFilterModel.cs" />
-    <Compile Include="Models\Common\DiscountGroupModel.cs" />
-    <Compile Include="Models\Common\OrderModel.cs" />
-    <Compile Include="Models\Common\TagModel.cs" />
     <Compile Include="Models\Coupon.cs">
       <DependentUpon>IMModel.tt</DependentUpon>
     </Compile>
@@ -1136,22 +1061,6 @@
     <Compile Include="Models\NotifyUser.cs">
       <DependentUpon>IMModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\Pages\cron-job-product-status\FilterModel.cs" />
-    <Compile Include="Models\Pages\cron-job-product-status\ProductModel.cs" />
-    <Compile Include="Models\Pages\danh-sach-nhom-khach-hang\DiscountGroupModel.cs" />
-    <Compile Include="Models\Pages\ExecuteAPI\ResponseProductStatusModel.cs" />
-    <Compile Include="Models\Pages\thong-ke-doanh-thu-khach-hang\CustomerModel.cs" />
-    <Compile Include="Models\Pages\thong-ke-doanh-thu-khach-hang\OrderInfoModel.cs" />
-    <Compile Include="Models\Pages\thong-ke-doanh-thu-khach-hang\ReportProfitCustomerModel.cs" />
-    <Compile Include="kh.aspx.cs">
-      <DependentUpon>kh.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="kh.aspx.designer.cs">
-      <DependentUpon>kh.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Models\Pages\thuc-hien-kiem-kho\StaffHistoryModel.cs" />
-    <Compile Include="Models\Pages\thuc-hien-kiem-kho\UpdateQuantityModel.cs" />
     <Compile Include="Models\PostCategory.cs">
       <DependentUpon>IMModel.tt</DependentUpon>
     </Compile>
@@ -1180,9 +1089,6 @@
       <DependentUpon>IMModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Shipper.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\StockManager2.cs">
       <DependentUpon>IMModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Tag.cs">
@@ -1314,6 +1220,97 @@
     <Compile Include="Models\WebWordpress.cs">
       <DependentUpon>IMModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="quan-ly-xuat-kho-2.aspx.cs">
+      <DependentUpon>quan-ly-xuat-kho-2.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="quan-ly-xuat-kho-2.aspx.designer.cs">
+      <DependentUpon>quan-ly-xuat-kho-2.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Controllers\WebWordpressController.cs" />
+    <Compile Include="Controllers\PostCloneController.cs" />
+    <Compile Include="Controllers\UserController.cs" />
+    <Compile Include="Controllers\CategoryController.cs" />
+    <Compile Include="Controllers\CategoryShelfController.cs" />
+    <Compile Include="Controllers\CouponController.cs" />
+    <Compile Include="Controllers\CronJobController.cs" />
+    <Compile Include="Controllers\DeliveryProshipController.cs" />
+    <Compile Include="Controllers\DeliveryPostOfficeController.cs" />
+    <Compile Include="Controllers\NotifyCategoryController.cs" />
+    <Compile Include="Controllers\PostPublicImageController.cs" />
+    <Compile Include="Controllers\PostPublicCategoryController.cs" />
+    <Compile Include="Controllers\NotifyController.cs" />
+    <Compile Include="Controllers\PostPublicController.cs" />
+    <Compile Include="Controllers\ProductTagController.cs" />
+    <Compile Include="Controllers\RegisterController.cs" />
+    <Compile Include="Controllers\BankAccountController.cs" />
+    <Compile Include="Controllers\BankController.cs" />
+    <Compile Include="Controllers\DeliveryController.cs" />
+    <Compile Include="Controllers\BankTransferController.cs" />
+    <Compile Include="Controllers\FeeController.cs" />
+    <Compile Include="Controllers\FeeTypeController.cs" />
+    <Compile Include="Controllers\PostCategoryController.cs" />
+    <Compile Include="Controllers\PostController.cs" />
+    <Compile Include="Controllers\PostImageController.cs" />
+    <Compile Include="Controllers\RegisterProductController.cs" />
+    <Compile Include="Controllers\SessionController.cs" />
+    <Compile Include="Controllers\ShipperController.cs" />
+    <Compile Include="Controllers\TagController.cs" />
+    <Compile Include="CronJob\RunScheduleProductStatus.cs" />
+    <Compile Include="CronJob\CreateScheduleProductStatus.cs" />
+    <Compile Include="danh-sach-thong-bao.aspx.cs">
+      <DependentUpon>danh-sach-thong-bao.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="danh-sach-thong-bao.aspx.designer.cs">
+      <DependentUpon>danh-sach-thong-bao.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="danh-sach-bai-viet-app.aspx.cs">
+      <DependentUpon>danh-sach-bai-viet-app.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="danh-sach-bai-viet-app.aspx.designer.cs">
+      <DependentUpon>danh-sach-bai-viet-app.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ProductPage.Master.cs">
+      <DependentUpon>ProductPage.Master</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ProductPage.Master.designer.cs">
+      <DependentUpon>ProductPage.Master</DependentUpon>
+    </Compile>
+    <Compile Include="POSPage.Master.cs">
+      <DependentUpon>POSPage.Master</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="POSPage.Master.designer.cs">
+      <DependentUpon>POSPage.Master</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Common\CustomerModel.cs" />
+    <Compile Include="Models\Common\DeliveryProshipFilterModel.cs" />
+    <Compile Include="Models\Common\DeliveryPostOfficeFilterModel.cs" />
+    <Compile Include="Models\Common\DiscountGroupModel.cs" />
+    <Compile Include="Models\Common\OrderModel.cs" />
+    <Compile Include="Models\Common\TagModel.cs" />
+    <Compile Include="Models\Pages\cron-job-product-status\FilterModel.cs" />
+    <Compile Include="Models\Pages\cron-job-product-status\ProductModel.cs" />
+    <Compile Include="Models\Pages\danh-sach-nhom-khach-hang\DiscountGroupModel.cs" />
+    <Compile Include="Models\Pages\ExecuteAPI\ResponseProductStatusModel.cs" />
+    <Compile Include="Models\Pages\thong-ke-doanh-thu-khach-hang\CustomerModel.cs" />
+    <Compile Include="Models\Pages\thong-ke-doanh-thu-khach-hang\OrderInfoModel.cs" />
+    <Compile Include="Models\Pages\thong-ke-doanh-thu-khach-hang\ReportProfitCustomerModel.cs" />
+    <Compile Include="kh.aspx.cs">
+      <DependentUpon>kh.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="kh.aspx.designer.cs">
+      <DependentUpon>kh.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Pages\thuc-hien-kiem-kho\StaffHistoryModel.cs" />
+    <Compile Include="Models\Pages\thuc-hien-kiem-kho\UpdateQuantityModel.cs" />
+    <Compile Include="Models\StockManager2.cs">
+      <DependentUpon>IMModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="nuoc-hoa.aspx.cs">
       <DependentUpon>nuoc-hoa.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -1328,8 +1325,6 @@
     <Compile Include="cron-job-product-status.aspx.designer.cs">
       <DependentUpon>cron-job-product-status.aspx</DependentUpon>
     </Compile>
-<<<<<<< HEAD
-=======
     <Compile Include="dang-ky-ghtk.aspx.cs">
       <DependentUpon>dang-ky-ghtk.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -1358,7 +1353,6 @@
     <Compile Include="thuc-hien-kiem-kho.aspx.designer.cs">
       <DependentUpon>thuc-hien-kiem-kho.aspx</DependentUpon>
     </Compile>
->>>>>>> fa1b48f17f53a3359ee3d6040f651418fb01bcf4
     <Compile Include="thong-tin-kiem-kho.aspx.cs">
       <DependentUpon>thong-tin-kiem-kho.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -2304,7 +2298,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>80</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://ann-shop.com</IISUrl>
+          <IISUrl>http://localhost</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

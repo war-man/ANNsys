@@ -31,15 +31,6 @@ namespace IM_PJ {
         protected global::System.Web.UI.WebControls.HiddenField hdfvalue;
         
         /// <summary>
-        /// hdfNote control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.HiddenField hdfNote;
-        
-        /// <summary>
         /// btnImport control.
         /// </summary>
         /// <remarks>
@@ -47,14 +38,5 @@ namespace IM_PJ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnImport;
-        
-        /// <summary>
-        /// ltrprint control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Literal ltrprint;
     }
 }

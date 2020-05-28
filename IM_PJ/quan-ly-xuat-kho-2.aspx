@@ -1,4 +1,4 @@
-﻿<%@ Page Title="Xuất kho 2 sản phẩm" Language="C#" MasterPageFile="~/MasterPage.Master" AutoEventWireup="true" CodeBehind="quan-ly-xuat-kho-2.aspx.cs" Inherits="IM_PJ.chinh_sua_kho_2" EnableSessionState="ReadOnly" %>
+﻿<%@ Page Title="Xuất kho 2" Language="C#" MasterPageFile="~/MasterPage.Master" AutoEventWireup="true" CodeBehind="quan-ly-xuat-kho-2.aspx.cs" Inherits="IM_PJ.chinh_sua_kho_2" EnableSessionState="ReadOnly" %>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <main id="main-wrap">
         <div class="container">
@@ -6,7 +6,7 @@
                 <div class="col-md-12">
                     <div class="panel panelborderheading">
                         <div class="panel-heading clear">
-                            <h3 class="page-title left not-margin-bot">Xuất kho 2 sản phẩm</h3>
+                            <h3 class="page-title left not-margin-bot">Xuất kho 2</h3>
                         </div>
                         <div class="panel-body">
                             <div class="form-row">
@@ -20,16 +20,12 @@
                                 <h3 class="no-margin float-left">Kết quả tìm kiếm: <span class="result-numsearch"></span></h3>
                                 <div class="excute-in">
                                     <a href="javascript:;" style="background-color: #f87703; float: right;" class="btn primary-btn link-btn" onclick="inProduct()">Xuất kho</a>
-                                    <a href="javascript:;" style="background-color: #ffad00; float: right;" class="btn primary-btn link-btn" onclick="quickInput()">Nhập nhanh số lượng (F2)</a>
                                 </div>
                             </div>
                             <div class="form-row" style="border: solid 1px #ccc; padding: 10px;">
                                 <table class="table table-checkable table-product import-stock">
                                     <thead>
                                         <tr>
-                                            <th class="select-column">
-                                                <input type="checkbox" id="check-all" onchange="check_all()" />
-                                            </th>
                                             <th class="image-column">Ảnh</th>
                                             <th class="name-column">Sản phẩm</th>
                                             <th class="sku-column">Mã</th>
@@ -53,11 +49,7 @@
             </div>
         </div>
         <asp:HiddenField ID="hdfvalue" runat="server" />
-        <asp:HiddenField ID="hdfNote" runat="server" />
         <asp:Button ID="btnImport" runat="server" OnClick="btnImport_Click" Style="display: none" />
-        <div id="printcontent" style="display: none">
-            <asp:Literal ID="ltrprint" runat="server"></asp:Literal>
-        </div>
     </main>
 
     <script type="text/javascript">
@@ -80,13 +72,6 @@
 
         });
 
-        $(document).keydown(function (e) {
-            if (e.which == 114) { //F3 Search Product
-                $("#txtSearch").focus();
-                return false;
-            }
-        });
-
         function clickrow(obj) {
             if (!obj.find("td").eq(1).hasClass("checked")) {
                 obj.find("td").addClass("checked");
@@ -95,25 +80,6 @@
                 obj.find("td").removeClass("checked");
             }
         }
-   
-        function check() {
-            var temp = 0;
-            var temp2 = 0;
-            $(".product-result").each(function () {
-                if ($(this).find(".check-popup").is(':checked')) {
-                    temp++;
-                }
-                else {
-                    temp2++;
-                }
-                if (temp2 > 0) {
-                    $("#check-all").prop('checked', false);
-                }
-                else {
-                    $("#check-all").prop('checked', true);
-                }
-            });
-        }
 
         function searchProduct() {
             var textsearch = $("#txtSearch").val();
@@ -121,7 +87,7 @@
             if (!isBlank(textsearch)) {
                 $.ajax({
                     type: "POST",
-                    url: "/quan-ly-nhap-kho-2.aspx/getProduct",
+                    url: "/quan-ly-xuat-kho-2.aspx/getProduct",
                     data: "{textsearch:'" + textsearch + "'}",
                     contentType: "application/json; charset=utf-8",
                     dataType: "json",
@@ -149,7 +115,7 @@
                                             html += "       data-productvariable=\"" + item.ProductVariable + "\"";
                                             html += "       data-productname=\"" + item.ProductName + "\"";
                                             html += "       data-sku=\"" + item.SKU + "\"";
-                                            html += "       data-productstyle=\"" + item.productstyle + "\"";
+                                            html += "       data-productstyle=\"" + item.ProductStyle + "\"";
                                             html += "       data-id=\"" + item.ID + "\"";
                                             html += "       data-productnariablename=\"" + item.ProductVariableName + "\"";
                                             html += "       data-productvariablevalue =\"" + item.ProductVariableValue + "\"";
@@ -157,14 +123,13 @@
                                             html += "       data-parentid=\"" + item.ParentID + "\"";
                                             html += "       data-parentsku=\"" + item.ParentSKU + "\"";
                                             html += ">";
-                                            html += "   <td><input type=\"checkbox\" class=\"check-popup\" onchange=\"check()\"  /></td>";
-                                            html += "   <td class='image-item'><img onclick='openImage($(this))' src='" + + item.ProductImage + "'></td>";
+                                            html += "   <td class='image-item'><img onclick='openImage($(this))' src='" + item.ProductImage + "'></td>";
                                             html += "   <td class='name-item'><a href='/xem-san-pham?sku=" + item.SKU + "' target='_blank'>" + item.ProductName + "</a></td>";
                                             html += "   <td class='sku-item'>" + item.SKU + "</td>";
                                             html += "   <td class='price-item'>" + item.ProductVariable.replace(/\|/g, "<br>") + "</td>";
                                             html += "   <td>" + item.SupplierName + "</td>";
                                             html += "   <td>" + item.WarehouseQuantity + "</td>";
-                                            html += "   <td><input type=\"text\" class=\"form-control in-quantity\" pattern=\"[0-9]{1,3}\" onkeyup=\"pressKeyQuantity($(this))\" onkeypress=\"return event.charCode >= 48 && event.charCode <= 57\" value=\"1\" /></td>";
+                                            html += "   <td><input type=\"text\" class=\"form-control in-quantity\" pattern=\"[0-9]{1,3}\" onkeyup=\"pressKeyQuantity($(this))\" onkeypress=\"return event.charCode >= 48 && event.charCode <= 57\" value=\"1\" onblur='blurQuantity($(this), " + (+item.WarehouseQuantity || 0) + ")'/></td>";
                                             html += "   <td class=\"trash-column\"><a href=\"javascript:;\" onclick=\"deleteRow($(this))\"><i class=\"fa fa-trash\"></i></a></td>";
                                             html += "</tr>";
                                         }
@@ -191,7 +156,7 @@
                                         html += "       data-productvariable=\"" + item.ProductVariable + "\"";
                                         html += "       data-productname=\"" + item.ProductName + "\"";
                                         html += "       data-sku=\"" + item.SKU + "\"";
-                                        html += "       data-productstyle=\"" + item.productstyle + "\"";
+                                        html += "       data-productstyle=\"" + item.ProductStyle + "\"";
                                         html += "       data-id=\"" + item.ID + "\"";
                                         html += "       data-productnariablename=\"" + item.ProductVariableName + "\"";
                                         html += "       data-productvariablevalue =\"" + item.ProductVariableValue + "\"";
@@ -199,14 +164,13 @@
                                         html += "       data-parentid=\"" + item.ParentID + "\"";
                                         html += "       data-parentsku=\"" + item.ParentSKU + "\"";
                                         html += ">";
-                                        html += " <td><input type=\"checkbox\" class=\"check-popup\" onchange=\"check()\" /></td>";
-                                        html += "   <td class='image-item'><img onclick='openImage($(this))' src='" + + item.ProductImage + "'></td>";
+                                        html += "   <td class='image-item'><img onclick='openImage($(this))' src='" + item.ProductImage + "'></td>";
                                         html += "   <td class='name-item'><a href='/xem-san-pham?sku=" + item.SKU + "' target='_blank'>" + item.ProductName + "</a></td>";
                                         html += "   <td class='sku-item'>" + item.SKU + "</td>";
                                         html += "   <td class='price-item'>" + item.ProductVariable.replace(/\|/g, "<br>") + "</td>";
                                         html += "   <td>" + item.SupplierName + "</td>";
                                         html += "   <td>" + item.WarehouseQuantity + "</td>";
-                                        html += "   <td><input type=\"text\" class=\"form-control in-quantity\" pattern=\"[0-9]{1,3}\" onkeyup=\"pressKeyQuantity($(this))\" onkeypress=\"return event.charCode >= 48 && event.charCode <= 57\" value=\"1\" /></td>";
+                                        html += "   <td><input type=\"text\" class=\"form-control in-quantity\" pattern=\"[0-9]{1,3}\" onkeyup=\"pressKeyQuantity($(this))\" onkeypress=\"return event.charCode >= 48 && event.charCode <= 57\" value=\"1\" onblur='blurQuantity($(this), " + (+item.WarehouseQuantity || 0) + ")'/></td>";
                                         html += "   <td class=\"trash-column\"><a href=\"javascript:;\" onclick=\"deleteRow($(this))\"><i class=\"fa fa-trash\"></i></a></td>";
                                         html += "</tr>";
                                     }
@@ -230,7 +194,7 @@
                             }
                         }
                         else {
-                            swal('Thông báo', 'Không tìm thấy sản phẩm', 'error');
+                            swal('Thông báo', 'Sản phẩm hiện tại không có trong kho', 'warning');
                         }
                     },
                     error: function (xmlhttprequest, textstatus, errorthrow) {
@@ -252,7 +216,6 @@
         }
 
         function pressKeyQuantity(e) {
-            
             $(".in-quantity").keyup(function (e) {
                 if (/\D/g.test(this.value)) {
                     // Filter non-digits from input value.
@@ -272,6 +235,21 @@
             checkQuantiy(e);
         }
 
+        function blurQuantity($input, quantityCurrent) {
+            let quantityOut = +$input.val() || 0;
+            if (quantityOut > quantityCurrent)
+            {
+                return swal({
+                    type: "error",
+                    title: "Thông báo",
+                    text: "Số lượng xuất kho (" + quantityOut + " cái) đã quá số lượng kho hiện tại (" + quantityCurrent + ")"
+                }, function () {
+                    $input.focus();
+                    $input.select();
+                })
+            }
+        }
+
         function deleteRow(obj) {
             var c = confirm('Bạn muốn xóa sản phẩm này?');
             if (c) {
@@ -285,7 +263,6 @@
         function inProduct() {
             if ($(".product-result").length > 0) {
                 HoldOn.open();
-                var note = $("#txtnote").val();
                 var list = [];
                 $(".product-result").each(function () {
                     var productstyle = +$(this).attr("data-productstyle") || 1;
@@ -293,19 +270,16 @@
                     var id = +$(this).attr("data-id") || 0;
                     var sku = $(this).attr("data-sku");
                     var parentSKU = $(this).attr("data-parentsku");
-                    var quantityNew = +$(this).find(".in-quantity").val() || 0;
+                    var quantity = +$(this).find(".in-quantity").val() || 0;
                     var quantityCurrent = +$(this).attr("data-quantity-current") || 0;
 
                     if (quantity > 0) {
-                        let isIncreated = quantityNew > quantityCurrent;
-                        let quantity = isIncreated ? quantityNew - quantityCurrent : quantityCurrent - quantityNew;
                         let item = {
                             "productStyle": productstyle,
                             "productID": parentID,
-                            "productVariableID": productstyle == 1 ? null : id,
+                            "productVariableID": productstyle == 1 ? 0 : id,
                             "sku": sku,
                             "parentSKU": parentSKU,
-                            "type": isIncreated ? 1 : 2,
                             "quantity": quantity,
                             "quantityCurrent": quantityCurrent
                         };
@@ -313,7 +287,6 @@
                         list.push(item);
                     }
                 });
-                $("#<%=hdfNote.ClientID%>").val(note);
                 $("#<%=hdfvalue.ClientID%>").val(JSON.stringify(list));
                 HoldOn.close();
                 $("#<%=btnImport.ClientID%>").click();
@@ -321,17 +294,6 @@
             else {
                 alert("Vui lòng nhập sản phẩm");
             }
-        }
-
-        function noteImportStock() {
-            fr = "<div class=\"form-row\">";
-            fr += "    <label class=\"lbl-popup\">Nội dung nhập kho</label>";
-            fr += "    <textarea id=\"txtnote\" class=\"form-control\" placeholder=\"Có thể để trống\"/>";
-            fr += "</div>";
-            fr += "<div class=\"btn-content\">";
-            fr += "    <a class=\"btn primary-btn fw-btn float-right-btn not-fullwidth\" href=\"javascript:;\" onclick=\"inProduct()\" >Xác nhận</a>";
-            fr += "</div>";
-            showPopup(fr);
         }
     </script>
 </asp:Content>

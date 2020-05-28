@@ -78,7 +78,7 @@ namespace IM_PJ
         }
 
         private static ProductGetOut _getProduct(tbl_Product product) {
-            var quantity = StockManagerController.getQuantityBySKU(product.ProductSKU);
+            var quantity = StockManagerController.getQuantityStock2BySKU(product.ProductSKU);
             var result = new ProductGetOut(){
                 ID = product.ID,
                 ProductName = product.ProductTitle,
@@ -126,7 +126,7 @@ namespace IM_PJ
                     variablevalue += attribute.VariableValue.Trim() + "|";
                 }
 
-                var quantity = StockManagerController.getQuantityBySKU(variation.SKU); 
+                var quantity = StockManagerController.getQuantityStock2BySKU(variation.SKU); 
                 var item = new ProductGetOut(){
                     ID = variation.ID,
                     ProductName = product.ProductTitle,
@@ -174,7 +174,7 @@ namespace IM_PJ
                 else
                 {
                     var productvariable = ProductVariableController.GetAllBySKU(textsearch.Trim().ToUpper());
-                    result.AddRange(_getProductVariation(productvariable, product));
+                    result.AddRange(_getProductVariation(productvariable));
                 }
             }
             
@@ -217,8 +217,7 @@ namespace IM_PJ
             if (acc != null)
             {
                 int AgentID = Convert.ToInt32(acc.AgentID);
-                string note = String.IsNullOrEmpty(hdfNote.Value) ? 
-                    "Nhập kho 2 bằng chức năng nhập kho 2" : hdfNote.Value;
+                string note = "Nhập kho 2 bằng chức năng nhập kho 2";
                 var data = String.IsNullOrEmpty(hdfvalue.Value) ? 
                     new List<WarehousePostModel>() : 
                     JsonConvert.DeserializeObject<List<WarehousePostModel>>(hdfvalue.Value);
@@ -234,7 +233,7 @@ namespace IM_PJ
                         Type = 1,
                         Quantity = item.quantity,
                         QuantityCurrent = item.quantityCurrent,
-                        Status = 1,
+                        Status = 16,
                         Note = note,
                         CreatedDate = currentDate,
                         CreatedBy = username,
@@ -243,11 +242,6 @@ namespace IM_PJ
                     });
 
                     StockManagerController.warehousing1(stock2);
-
-                    if (item.productStyle == 1)
-                        ProductController.UpdateStockStatus(item.sku, 1, false, currentDate, username);
-                    else 
-                        ProductVariableController.UpdateStockStatus(item.productVariableID, 1, false, currentDate, username);
                 }
                 
                 PJUtils.ShowMessageBoxSwAlert("Nhập kho 2 thành công!", "s", true, Page);
