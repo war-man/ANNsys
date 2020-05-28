@@ -335,7 +335,14 @@
                                         <asp:ListItem Value="40" Text="Size 40"></asp:ListItem>
                                     </asp:DropDownList>
                                 </div>
-                                <div class="col-md-4 col-xs-6">
+                                <div class="col-md-2 col-xs-6">
+                                    <asp:DropDownList ID="ddlWarehouse" runat="server" CssClass="form-control">
+                                        <asp:ListItem Value="" Text="Chọn kho"></asp:ListItem>
+                                        <asp:ListItem Value="1" Text="Kho 1"></asp:ListItem>
+                                        <asp:ListItem Value="2" Text="Kho 2"></asp:ListItem>
+                                    </asp:DropDownList>
+                                </div>
+                                <div class="col-md-1 col-xs-6">
                                 </div>
                             </div>
                         </div>

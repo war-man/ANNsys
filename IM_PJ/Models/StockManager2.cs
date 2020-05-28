@@ -12,20 +12,22 @@ namespace IM_PJ.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class tbl_Category
+    public partial class StockManager2
     {
         public int ID { get; set; }
-        public string CategoryName { get; set; }
-        public string CategoryDescription { get; set; }
-        public Nullable<int> CategoryLevel { get; set; }
-        public Nullable<int> ParentID { get; set; }
-        public Nullable<bool> IsHidden { get; set; }
-        public Nullable<System.DateTime> CreatedDate { get; set; }
+        public Nullable<int> AgentID { get; set; }
+        public int ProductID { get; set; }
+        public Nullable<int> ProductVariableID { get; set; }
+        public string SKU { get; set; }
+        public string ParentSKU { get; set; }
+        public int Type { get; set; }
+        public int Quantity { get; set; }
+        public int QuantityCurrent { get; set; }
+        public Nullable<int> Status { get; set; }
+        public string Note { get; set; }
+        public System.DateTime CreatedDate { get; set; }
         public string CreatedBy { get; set; }
-        public Nullable<System.DateTime> ModifiedDate { get; set; }
+        public System.DateTime ModifiedDate { get; set; }
         public string ModifiedBy { get; set; }
-        public string Slug { get; set; }
-        public string Icon { get; set; }
-        public Nullable<int> ZaloShop { get; set; }
     }
 }

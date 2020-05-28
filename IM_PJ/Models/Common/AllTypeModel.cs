@@ -158,4 +158,10 @@ namespace IM_PJ.Models
         @checked = 1,
         unChecked = 2
     }
+
+    public enum Warehouse
+    {
+        One = 1,
+        Two = 2
+    }
 }

@@ -1359,5 +1359,76 @@ namespace IM_PJ.Controllers
             }
         }
         #endregion
+
+
+        public static tbl_StockManager warehousing1(tbl_StockManager data)
+        {
+            using (var con = new inventorymanagementEntities())
+            {
+                con.tbl_StockManager.Add(data);
+                con.SaveChanges();
+
+                return data;
+            }
+        }
+
+        public static tbl_StockManager warehousing1(StockManager2 data)
+        {
+            using (var con = new inventorymanagementEntities())
+            {
+                var stock1 = new tbl_StockManager()
+                {
+                    AgentID = data.AgentID,
+                    ProductID = data.ProductVariableID == 0 ? data.ProductID : 0,
+                    ProductVariableID = data.ProductVariableID,
+                    Quantity = data.Quantity,
+                    QuantityCurrent = data.QuantityCurrent,
+                    Type = data.Type,
+                    CreatedDate = data.CreatedDate,
+                    CreatedBy = data.CreatedBy,
+                    ModifiedDate = data.ModifiedDate,
+                    ModifiedBy = data.ModifiedBy,
+                    NoteID = data.Note,
+                    OrderID = 0,
+                    Status = data.Status,
+                    SKU = data.SKU,
+                    MoveProID = 0,
+                    ParentID = data.ProductID
+                };
+                con.tbl_StockManager.Add(stock1);
+                con.SaveChanges();
+
+                return stock1;
+            }
+        }
+
+        #region Quản lý kho 2
+        public static int? getQuantityStock2BySKU(string sku)
+        {
+            using (var con = new inventorymanagementEntities())
+            {
+                var stock2 = con.StockManager2
+                            .Where(x => x.SKU == sku)
+                            .OrderByDescending(o => o.ID)
+                            .FirstOrDefault();
+
+                if (stock2 == null)
+                    return null;
+                else
+                    return stock2.QuantityCurrent + stock2.Quantity * (stock2.Type == 1 ? 1 : -1);
+            }
+        }
+
+        public static StockManager2 warehousing2(StockManager2 data)
+        {
+            using (var con = new inventorymanagementEntities())
+            {
+                con.StockManager2.Add(data);
+                con.SaveChanges();
+
+                return data;
+            }
+        }
+        #endregion
     }
 }

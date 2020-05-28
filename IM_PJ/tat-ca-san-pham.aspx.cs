@@ -143,6 +143,8 @@ namespace IM_PJ
                 var preOrder = String.Empty;
                 string orderBy = String.Empty;
                 int tag = 0;
+                // add filter warehouse
+                var warehouse = 0;
 
                 if (Request.QueryString["textsearch"] != null)
                     TextSearch = Request.QueryString["textsearch"].Trim();
@@ -227,6 +229,16 @@ namespace IM_PJ
 
                 ddlTag.SelectedValue = tag.ToString();
                 ddlOrderBy.SelectedValue = orderBy;
+                // Add filter warehouse
+                if (!String.IsNullOrEmpty(Request.QueryString["warehouse"]))
+                    warehouse = Request.QueryString["warehouse"].ToInt();
+
+                // Add Warehouse
+                if (!String.IsNullOrEmpty(Request.QueryString["warehouse"]))
+                {
+                    warehouse = Request.QueryString["warehouse"].ToInt();
+                    ddlWarehouse.SelectedValue = Request.QueryString["warehouse"];
+                }
 
                 // Create order filter
                 var filter = new ProductFilterModel()
@@ -245,7 +257,8 @@ namespace IM_PJ
                     webPublish = WebPublish,
                     preOrder = preOrder,
                     tag = tag,
-                    orderBy = orderBy
+                    orderBy = orderBy,
+                    warehouse = warehouse
                 };
                 // Create pagination
                 var page = new PaginationMetadataModel()
@@ -838,7 +851,11 @@ namespace IM_PJ
                         html.AppendLine("   <td data-title='Giá vốn'>" + string.Format("{0:N0}", item.CostOfGood) + "</td>");
                     }
                     html.AppendLine("   <td data-title='Giá lẻ'>" + string.Format("{0:N0}", item.RetailPrice) + "</td>");
-                    html.AppendLine("   <td data-title='Số lượng'><a target='_blank' title='Xem thống kê sản phẩm' href='/thong-ke-san-pham?SKU=" + item.ProductSKU + "'>" + string.Format("{0:N0}", item.TotalProductInstockQuantityLeft) + "</a></td>");
+
+                    var strStock2Quantity = String.Empty;
+                    if (item.HasStock2)
+                        strStock2Quantity = String.Format("<br>(Kho 2: {0:N0})", item.Stock2Quantity);
+                    html.AppendLine(String.Format("   <td data-title='Số lượng'><a target='_blank' title='Xem thống kê sản phẩm' href='/thong-ke-san-pham?SKU={0}'>{1:N0}</a>{2}</td>", item.ProductSKU, item.TotalProductInstockQuantityLeft, strStock2Quantity));
                     html.AppendLine("   <td data-title='Kho'>" + item.ProductInstockStatus + "</td>");
                     html.AppendLine("   <td data-title='Danh mục'>" + item.CategoryName + "</td>");
                     string date = string.Format("<strong>{0:dd/MM/yyyy}</strong><br>{0:HH:mm}", item.CreatedDate);
@@ -1113,6 +1130,12 @@ namespace IM_PJ
             if (!String.IsNullOrEmpty(ddlOrderBy.SelectedValue))
             {
                 request += "&orderby=" + ddlOrderBy.SelectedValue;
+            }
+
+            // Add filter warehouse
+            if (!String.IsNullOrEmpty(ddlWarehouse.SelectedValue))
+            {
+                request += "&warehouse=" + ddlWarehouse.SelectedValue;
             }
 
             Response.Redirect(request);
