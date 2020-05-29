@@ -1,4 +1,4 @@
-﻿<%@ Page Title="Chuyển sản phẩm giữa 2 kho" Language="C#" MasterPageFile="~/MasterPage.Master" AutoEventWireup="true" CodeBehind="chuyen-kho.aspx.cs" Inherits="IM_PJ.chuyen_kho" EnableSessionState="ReadOnly" %>
+﻿<%@ Page Title="Chuyển kho" Language="C#" MasterPageFile="~/MasterPage.Master" AutoEventWireup="true" CodeBehind="chuyen-kho.aspx.cs" Inherits="IM_PJ.chuyen_kho" EnableSessionState="ReadOnly" %>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <main id="main-wrap">
         <div class="container">
@@ -6,15 +6,15 @@
                 <div class="col-md-12">
                     <div class="panel panelborderheading">
                         <div class="panel-heading clear">
-                            <h3 class="page-title left not-margin-bot">Chuyển sản phẩm giữa 2 kho</h3>
+                            <h3 class="page-title left not-margin-bot">Chuyển kho</h3>
                         </div>
                         <div class="panel-body">
                             <div class="form-row">
                                 <div class="col-xs-3">
                                     <asp:DropDownList ID="ddlWarehouseTransfer" runat="server" CssClass="form-control">
-                                        <asp:ListItem Value="0" Text="Chuyển kho"></asp:ListItem>
-                                        <asp:ListItem Value="1" Text="Chuyển từ kho 1 sang kho 2"></asp:ListItem>
-                                        <asp:ListItem Value="2" Text="Chuyển từ kho 2 sang kho 1"></asp:ListItem>
+                                        <asp:ListItem Value="0" Text="Hướng chuyển kho"></asp:ListItem>
+                                        <asp:ListItem Value="1" Text="Kho 1 => Kho 2"></asp:ListItem>
+                                        <asp:ListItem Value="2" Text="Kho 2 => Kho 1"></asp:ListItem>
                                     </asp:DropDownList>
                                 </div>
                                 <input type="text" id="txtSearch" class="form-control sku-input" placeholder="NHẬP MÃ SẢN PHẨM (F3)" style="width: 40%; float: left; margin-right: 10px" autocomplete="off" disabled="disabled" readonly />

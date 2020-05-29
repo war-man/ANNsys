@@ -10,43 +10,38 @@
             margin: auto;
             float: inherit;
         }
+        .btn {
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+        .btn.primary-btn {
+            background-color: #4bac4d;
+        }
+        .btn:hover {
+            background-color: #000!important;
+        }
+        .btn-red {
+            background-color: #F44336;
+        }
+        .btn-blue {
+            background-color: #008fe5!important;
+        }
+        .bg-green, .bg-red, .bg-yellow {
+            display: inherit;
+        }
         .btn.download-btn {
             background-color: #000;
             color: #fff;
             border-radius: 0;
             font-size: 16px;
-            text-transform: uppercase;
             width: 100%;
         }
         .btn.down-btn {
             background-color: #E91E63;
             color: #fff;
         }
-
-        .bootstrap-tagsinput {
-            width: 100%;
-        }
-        
-        .bootstrap-tagsinput .label {
-            font-size: 100%;
-        }
-        .bg-green, .bg-red, .bg-yellow {
-            display: inherit;
-        }
         .table > tbody > tr > th {
             background-color: #0090da;
-        }
-        .btn {
-            border-radius: 5px;
-        }
-        .btn-red {
-            background-color: #F44336;
-        }
-        .btn.primary-btn {
-            background-color: #4bac4d;
-        }
-        .btn.primary-btn:hover {
-            background-color: #3e8f3e;
         }
         .margin-right-15px {
             margin-right: 12px!important;
@@ -104,13 +99,14 @@
                 width: 100%;
             }
             .btn {
-                width: 100%!important;
+                width: 45%!important;
                 float: left;
                 margin-bottom: 15px;
                 margin-left: 0;
+                display: inline-block;
             }
-            .download-btn {
-                margin-left: 0;
+            .btn.download-btn {
+                width: 100%!important;
             }
         }
     </style>

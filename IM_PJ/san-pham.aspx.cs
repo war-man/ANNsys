@@ -491,10 +491,12 @@ namespace IM_PJ
                     string date = string.Format("<strong>{0:dd/MM/yyyy}</strong>", item.CreatedDate);
                     html.AppendLine("   <td data-title='Ngày tạo'>" + date + "</td>");
                     html.AppendLine("   <td class='update-button'>");
-                    html.AppendLine("       <a href='javascript:;' title='Copy thông tin sản phẩm này' class='btn primary-btn' onclick='copyProductInfo(" + item.ID + ")'><i class='fa fa-files-o' aria-hidden='true'></i></a>");
-                    html.AppendLine("       <a href='javascript:;' title='Download tất cả hình sản phẩm này' class='btn primary-btn' onclick='getAllProductImage(`" + item.ProductSKU + "`)'><i class='fa fa-download' aria-hidden='true'></i></a>");
-                    html.AppendLine("       <a href='javascript:;' title='Đồng bộ sản phẩm lên KiotViet' class='btn primary-btn' onclick='postProductKiotViet(`" + item.ProductSKU + "`)'><i class='fa fa-arrow-up' aria-hidden='true'></i></a>");
-                    html.AppendLine("       <a href='javascript:;' title='Xóa sản phẩm trên Zalo Shop' class='btn primary-btn btn-red' onclick='deleteProductZaloShop(`" + item.ProductSKU + "`)'><i class='fa fa-times' aria-hidden='true'></i></a>");
+                    html.AppendLine("       <a href='javascript:;' title='Copy thông tin sản phẩm này' class='btn primary-btn' onclick='copyProductInfo(" + item.ID + ")'><i class='fa fa-files-o' aria-hidden='true'></i> Copy</a>");
+                    html.AppendLine("       <a href='javascript:;' title='Tải tất cả hình sản phẩm này' class='btn primary-btn' onclick='getAllProductImage(`" + item.ProductSKU + "`)'><i class='fa fa-download' aria-hidden='true'></i> Hình</a>");
+                    html.AppendLine("       <a href='javascript:;' title='Đăng sản phẩm lên KiotViet' class='btn primary-btn' onclick='postProductKiotViet(`" + item.ProductSKU + "`)'><i class='fa fa-arrow-up' aria-hidden='true'></i> Kiot</a>");
+                    html.AppendLine("       <a href='javascript:;' title='Đăng sản phẩm lên Zalo Shop' class='btn primary-btn' onclick='postProductZaloShop(`" + item.ProductSKU + "`)'><i class='fa fa-arrow-up' aria-hidden='true'></i> Zalo</a>");
+                    html.AppendLine("       <a href='javascript:;' title='Tải file sản phẩm Zalo Shop' class='btn primary-btn btn-blue' onclick='downloadProductZaloShop(`" + item.ProductSKU + "`)'><i class='fa fa-download' aria-hidden='true'></i> Zalo</a>");
+                    html.AppendLine("       <a href='javascript:;' title='Xóa sản phẩm trên Zalo Shop' class='btn primary-btn btn-red' onclick='deleteProductZaloShop(`" + item.ProductSKU + "`)'><i class='fa fa-times' aria-hidden='true'></i> Zalo</a>");
                     html.AppendLine("  </td>");
                     html.AppendLine("</tr>");
                 }

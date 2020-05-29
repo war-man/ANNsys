@@ -53,7 +53,7 @@ namespace IM_PJ
                         ltrMenu.Text += "<li><a href='/danh-sach-don-hang-chuyen-hoan'><span class='icon-menu icon-order'></span>Chuyển hoàn</a></li>";
                         ltrMenu.Text += "<li><a href='/danh-sach-dang-ky'><span class='icon-menu icon-order'></span>Đăng ký</a></li>";
                         ltrMenu.Text += "<li><a href='/tat-ca-san-pham'><span class='icon-menu icon-lib'></span>Sản phẩm</a></li>";
-                        ltrMenu.Text += "<li><a href='/san-pham-theo-ke'><span class='icon-menu icon-lib'></span>Sản phẩm kệ</a></li>";
+                        //ltrMenu.Text += "<li><a href='/san-pham-theo-ke'><span class='icon-menu icon-lib'></span>Sản phẩm kệ</a></li>";
                         ltrMenu.Text += "<li><a href='/danh-sach-bai-viet'><span class='icon-menu icon-lib'></span>Bài viết</a></li>";
                         ltrMenu.Text += "<li><a href='/danh-sach-bai-viet-app'><span class='icon-menu icon-lib'></span>Bài viết App</a></li>";
                         ltrMenu.Text += "<li><a href='/danh-sach-thong-bao'><span class='icon-menu icon-lib'></span>Thông báo</a></li>";
@@ -61,16 +61,17 @@ namespace IM_PJ
                         ltrMenu.Text += "<li><a href='/quan-ly-danh-muc-thuoc-tinh'><span class='icon-menu icon-product'></span>Thuộc tính</a></li>";
                         ltrMenu.Text += "<li><a href='/danh-sach-khach-hang'><span class='icon-menu icon-product'></span>Khách hàng</a></li>";
                         ltrMenu.Text += "<li><a href='/danh-sach-nhom-khach-hang'><span class='icon-menu icon-product'></span>Nhóm KH</a></li>";
-                        ltrMenu.Text += "<li><a href='/tao-ma-vach'><span class='icon-menu icon-product'></span>In mã vạch</a></li>";
-                        ltrMenu.Text += "<li><a href='/kiem-ke'><span class='icon-menu icon-product'></span>Kiểm kệ</a></li>";
-                        ltrMenu.Text += "<li><a href='/chuyen-ke'><span class='icon-menu icon-product'></span>Chuyển kệ</a></li>";
+                        //ltrMenu.Text += "<li><a href='/tao-ma-vach'><span class='icon-menu icon-product'></span>In mã vạch</a></li>";
+                        //ltrMenu.Text += "<li><a href='/kiem-ke'><span class='icon-menu icon-product'></span>Kiểm kệ</a></li>";
+                        //ltrMenu.Text += "<li><a href='/chuyen-ke'><span class='icon-menu icon-product'></span>Chuyển kệ</a></li>";
                         ltrMenu.Text += "<li><a href='/danh-sach-nhap-hang'><span class='icon-menu icon-product'></span>QL đặt hàng</a></li>";
                         ltrMenu.Text += "<li><a href='/chuyen-kho'><span class='icon-menu icon-product'></span>Chuyển kho</a></li>";
                         ltrMenu.Text += "<li><a href='/thong-ke-nhap-kho'><span class='icon-menu icon-product'></span>TK nhập kho</a></li>";
-                        ltrMenu.Text += "<li><a href='/quan-ly-nhap-kho'><span class='icon-menu icon-product'></span>Nhập kho</a></li>";
-                        ltrMenu.Text += "<li><a href='/quan-ly-xuat-kho'><span class='icon-menu icon-product'></span>Xuất kho</a></li>";
+                        ltrMenu.Text += "<li><a href='/quan-ly-nhap-kho'><span class='icon-menu icon-product'></span>Nhập kho 1</a></li>";
+                        ltrMenu.Text += "<li><a href='/quan-ly-xuat-kho'><span class='icon-menu icon-product'></span>Xuất kho 1</a></li>";
                         ltrMenu.Text += "<li><a href='/quan-ly-nhap-kho-2'><span class='icon-menu icon-product'></span>Nhập kho 2</a></li>";
                         ltrMenu.Text += "<li><a href='/quan-ly-xuat-kho-2'><span class='icon-menu icon-product'></span>Xuất kho 2</a></li>";
+                        ltrMenu.Text += "<li><a href='/chuyen-kho'><span class='icon-menu icon-product'></span>Chuyển kho</a></li>";
                         ltrMenu.Text += "<li><a href='/danh-sach-nha-xe'><span class='icon-menu icon-product'></span>Nhà xe</a></li>";
                         ltrMenu.Text += "<li><a href='/tat-ca-nhan-vien'><span class='icon-menu icon-lib'></span>Nhân viên</a></li>";
                         ltrMenu.Text += "<li><a href='/danh-sach-nha-cung-cap'><span class='icon-menu icon-product'></span>Nhà cung cấp</a></li>";
@@ -92,12 +93,12 @@ namespace IM_PJ
                         ltrMenu.Text += "<li><a href='/dang-ky-nhap-hang' target='_blank'><span class='icon-menu icon-lib'></span>Đặt hàng</a></li>";
                         ltrMenu.Text += "<li><a href='/nhan-vien-dat-hang' target='_blank'><span class='icon-menu icon-lib'></span>DS đặt hàng</a></li>";
                         ltrMenu.Text += "<li><a href='/danh-sach-nhap-hang'><span class='icon-menu icon-product'></span>QL đặt hàng</a></li>";
-                        ltrMenu.Text += "<li><a href='/chuyen-kho'><span class='icon-menu icon-product'></span>Chuyển kho</a></li>";
                         ltrMenu.Text += "<li><a href='/thong-ke-nhap-kho'><span class='icon-menu icon-product'></span>TK nhập kho</a></li>";
-                        ltrMenu.Text += "<li><a href='/quan-ly-nhap-kho'><span class='icon-menu icon-product'></span>Nhập kho</a></li>";
-                        ltrMenu.Text += "<li><a href='/quan-ly-xuat-kho'><span class='icon-menu icon-product'></span>Xuất kho </a></li>";
+                        ltrMenu.Text += "<li><a href='/quan-ly-nhap-kho'><span class='icon-menu icon-product'></span>Nhập kho 1</a></li>";
+                        ltrMenu.Text += "<li><a href='/quan-ly-xuat-kho'><span class='icon-menu icon-product'></span>Xuất kho 1</a></li>";
                         ltrMenu.Text += "<li><a href='/quan-ly-nhap-kho-2'><span class='icon-menu icon-product'></span>Nhập kho 2</a></li>";
                         ltrMenu.Text += "<li><a href='/quan-ly-xuat-kho-2'><span class='icon-menu icon-product'></span>Xuất kho 2</a></li>";
+                        ltrMenu.Text += "<li><a href='/chuyen-kho'><span class='icon-menu icon-product'></span>Chuyển kho</a></li>";
                         ltrMenu.Text += "<li><a href='/kiem-kho'><span class='icon-menu icon-product'></span>Kiểm kho</a></li>";
                     }
                     else //Nhân viên bán hàng

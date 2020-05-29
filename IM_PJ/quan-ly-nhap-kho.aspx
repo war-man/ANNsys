@@ -1,4 +1,4 @@
-﻿<%@ Page Title="Nhập kho sản phẩm" Language="C#" MasterPageFile="~/MasterPage.Master" AutoEventWireup="true" CodeBehind="quan-ly-nhap-kho.aspx.cs" Inherits="IM_PJ.quan_ly_nhap_kho" EnableSessionState="ReadOnly" %>
+﻿<%@ Page Title="Nhập kho 1" Language="C#" MasterPageFile="~/MasterPage.Master" AutoEventWireup="true" CodeBehind="quan-ly-nhap-kho.aspx.cs" Inherits="IM_PJ.quan_ly_nhap_kho" EnableSessionState="ReadOnly" %>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <main id="main-wrap">
         <div class="container">
@@ -6,7 +6,7 @@
                 <div class="col-md-12">
                     <div class="panel panelborderheading">
                         <div class="panel-heading clear">
-                            <h3 class="page-title left not-margin-bot">Nhập kho sản phẩm</h3>
+                            <h3 class="page-title left not-margin-bot">Nhập kho 1</h3>
                         </div>
                         <div class="panel-body">
                             <div class="form-row">

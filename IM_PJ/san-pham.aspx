@@ -26,19 +26,23 @@
             height: 43px;
         }
         .btn {
-            margin-bottom: 5px;
+            margin-bottom: 10px;
+            border-radius: 5px;
         }
-        .btn.download-btn {
-            background-color: #000;
-            color: #fff;
-            border-radius: 0;
-            text-transform: uppercase;
-            width: 100%;
-            height: 35px;
-            line-height: 8px;
+        .btn.primary-btn {
+            background-color: #4bac4d;
         }
-        .btn.download-btn:hover {
-            color: #ff8400;
+        .btn:hover {
+            background-color: #000!important;
+        }
+        .btn-red {
+            background-color: #F44336;
+        }
+        .btn-blue {
+            background-color: #008fe5!important;
+        }
+        .bg-green, .bg-red, .bg-yellow {
+            display: inherit;
         }
         table.shop_table_responsive > tbody > tr:nth-of-type(2n+1) td {
             border-bottom: solid 1px #e1e1e1!important;
@@ -53,15 +57,7 @@
         .table > thead > tr > th {
             background-color: #0090da;
         }
-        .btn {
-            border-radius: 5px;
-        }
-        .btn.primary-btn {
-            background-color: #4bac4d;
-        }
-        .btn.primary-btn:hover {
-            background-color: #3e8f3e;
-        }
+        
         img {
             border-radius: 5px;
         }
@@ -122,9 +118,6 @@
         .pagination li:hover > a {
             background-color: #e5e5e5;
             color: #000;
-        }
-        .btn-red {
-            background-color: #F44336;
         }
         @media (max-width: 768px) {
             .margin-right-15px {
@@ -194,7 +187,7 @@
                 margin-top: 10px;
             }
             table.shop_table_responsive > tbody > tr > td.update-button {
-                height: 85px;
+                height: 130px;
             }
             table.shop_table_responsive .bg-bronze,
             table.shop_table_responsive .bg-red,
@@ -239,7 +232,7 @@
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <main>
-        <div class="col-md-10 main-block">
+        <div class="col-md-12 main-block">
             <div class="row">
                 <div class="col-md-12">
                     <h3 class="page-title left">Sản phẩm <span>(<asp:Literal ID="ltrNumberOfProduct" runat="server" EnableViewState="false"></asp:Literal>)</span></h3>
@@ -419,8 +412,14 @@
                                 <div class="col-md-12 col-xs-12">
                                     <a href="javascript:;" onclick="searchProduct()" class="btn primary-btn margin-right-15px"><i class="fa fa-search"></i> Lọc</a>
                                     <a href="/" class="btn primary-btn margin-right-15px"><i class="fa fa-times" aria-hidden="true"></i> Bỏ lọc</a>
-                                    <a id="btnPostAllProductKiotViet" href="javascript:;" onclick="postALLProductKiotViet()" class="btn primary-btn margin-right-15px" disabled="disabled" readonly>
-                                        <i class="fa fa-arrow-up"></i> Đồng bộ
+                                    <a href="javascript:;" onclick="postALLProductKiotViet()" class="btn-action btn primary-btn margin-right-15px" disabled="disabled" readonly>
+                                        <i class="fa fa-arrow-up"></i> Kiot
+                                    </a>
+                                    <a href="javascript:;" onclick="postALLProductZaloShop()" class="btn-action btn primary-btn margin-right-15px" disabled="disabled" readonly>
+                                        <i class="fa fa-arrow-up"></i> Zalo
+                                    </a>
+                                    <a href="javascript:;" onclick="downloadAllZaloShop()" class="btn-action btn primary-btn btn-blue margin-right-15px" disabled="disabled" readonly>
+                                        <i class="fa fa-download"></i> Zalo
                                     </a>
                                 </div>
                             </div>
@@ -456,6 +455,7 @@
         <script src="/App_Themes/Ann/js/services/common/product-service.js?v=17052020"></script>
         
         <script type="text/javascript">
+
             $(document).ready(function() {
                 $("#<%=txtSearchProduct.ClientID%>").keyup(function (e) {
                     if (e.keyCode == 13)
@@ -465,18 +465,18 @@
                 });
 
                 $("td>input[type='checkbox']").change(function () {
-                    let btnPostAllProductKiotViet = $("#btnPostAllProductKiotViet");
+                    let btnAction = $(".btn-action");
 
                     if (this.checked == true) {
-                        btnPostAllProductKiotViet.removeAttr("disabled");
-                        btnPostAllProductKiotViet.removeAttr("readonly");
+                        btnAction.removeAttr("disabled");
+                        btnAction.removeAttr("readonly");
                     }
                     else {
                         let $tdChecked = $("td>input[type='checkbox']:checked");
 
                         if ($tdChecked.length == 0) {
-                            btnPostAllProductKiotViet.attr("disabled", true);
-                            btnPostAllProductKiotViet.attr("readonly", true);
+                            btnAction.attr("disabled", true);
+                            btnAction.attr("readonly", true);
                         }
 
                     }
@@ -618,14 +618,14 @@
                 let childDOM = $("td>input[type='checkbox']").not("[disabled='disabled']");
 
                 // Button Post ALL Product KiotViet
-                let btnPostAllProductKiotViet = $("#btnPostAllProductKiotViet");
+                let btnAction = $(".btn-action");
                 if (checked) {
-                    btnPostAllProductKiotViet.removeAttr("disabled");
-                    btnPostAllProductKiotViet.removeAttr("readonly");
+                    btnAction.removeAttr("disabled");
+                    btnAction.removeAttr("readonly");
                 }
                 else {
-                    btnPostAllProductKiotViet.attr("disabled", true);
-                    btnPostAllProductKiotViet.attr("readonly", true);
+                    btnAction.attr("disabled", true);
+                    btnAction.attr("readonly", true);
                 }
 
                 // Checkbox children
@@ -656,9 +656,22 @@
                 checkAll();
             }
 
-            function postALLProductZaloShop(dataJSON) {
+            function postALLProductZaloShop() {
+                let $checkBox = $("td>input[type='checkbox']:checked");
+                let products = [];
 
-                let titleAlert = "Đồng bộ Zalo Shop";
+                $checkBox.each(function (index, element) {
+                    let $tr = element.parentElement.parentElement;
+
+                    products.push($tr.dataset.productsku);
+                });
+
+                let titleAlert = "Đăng sản phẩm Zalo Shop";
+
+                if (products.length == 0)
+                    return _alterError(titleAlert, { message: "Chưa chọn sản phẩm nào!" });
+
+                let dataJSON = JSON.stringify({ "productSKU": products.join(',') });
 
                 $.ajax({
                     beforeSend: function () {
@@ -695,7 +708,7 @@
                     products.push($tr.dataset.productsku);
                 });
 
-                let titleAlert = "Đồng bộ KiotViet";
+                let titleAlert = "Đăng sản phẩm KiotViet";
 
                 if (products.length == 0)
                     return _alterError(titleAlert, { message: "Chưa chọn sản phẩm nào!" });
@@ -715,48 +728,20 @@
                         HoldOn.close();
 
                         if (xhr.status == 200) {
-                            postALLProductZaloShop(dataJSON);
+                            _alterSuccess(titleAlert, "Thành công");
                         } else {
-                            swal({
-                                title: titleAlert,
-                                text: "Đồng bộ lỗi",
-                                type: "warning",
-                                showCancelButton: true,
-                                confirmButtonColor: "#DD6B55",
-                                confirmButtonText: "Tiếp tục đồng bộ Zalo Shop",
-                                closeOnConfirm: true,
-                                cancelButtonText: "Dừng đồng bộ..",
-                                html: true
-                            }, function (isConfirm) {
-                                if (isConfirm) {
-                                    postALLProductZaloShop(dataJSON);
-                                }
-                            });
+                            _alterError(titleAlert);
                         }
                     },
                     error: (xhr, textStatus, error) => {
                         HoldOn.close();
-                        swal({
-                            title: titleAlert,
-                            text: xhr.responseJSON.message,
-                            type: "warning",
-                            showCancelButton: true,
-                            confirmButtonColor: "#DD6B55",
-                            confirmButtonText: "Tiếp tục đồng bộ Zalo Shop",
-                            closeOnConfirm: true,
-                            cancelButtonText: "Dừng đồng bộ..",
-                            html: true
-                        }, function (isConfirm) {
-                            if (isConfirm) {
-                                postALLProductZaloShop(dataJSON);
-                            }
-                        });
+                        _alterError(titleAlert, xhr.responseJSON);
                     }
                 });
             }
 
             function postProductZaloShop(productSKU) {
-                let titleAlert = "Đồng bộ Zalo Shop";
+                let titleAlert = "Đăng sản phẩm Zalo Shop";
 
                 if (!productSKU)
                     _alterError(titleAlert, { message: "Chưa chọn sản phẩm nào!" });
@@ -776,7 +761,7 @@
                         HoldOn.close();
 
                         if (xhr.status == 200) {
-                            _alterSuccess(titleAlert, "Sản phẩm <strong>" + productSKU + "</strong> đồng bộ thành công!");
+                            _alterSuccess(titleAlert, "Đăng sản phẩm <strong>" + productSKU + "</strong> thành công!");
                         } else {
                             _alterError(titleAlert);
                         }
@@ -790,7 +775,7 @@
             }
 
             function postProductKiotViet(productSKU) {
-                let titleAlert = "Đồng bộ KiotViet";
+                let titleAlert = "Đăng sản phẩm KiotViet";
 
                 if (!productSKU)
                     _alterError(titleAlert, { message: "Chưa chọn sản phẩm nào!" });
@@ -810,42 +795,14 @@
                         HoldOn.close();
 
                         if (xhr.status == 200) {
-                            postProductZaloShop(productSKU);
+                            _alterSuccess(titleAlert, "Đăng sản phẩm <strong>" + productSKU + "</strong> thành công!");
                         } else {
-                            swal({
-                                title: titleAlert,
-                                text: "Đồng bộ lỗi",
-                                type: "warning",
-                                showCancelButton: true,
-                                confirmButtonColor: "#DD6B55",
-                                confirmButtonText: "Tiếp tục đồng bộ Zalo Shop",
-                                closeOnConfirm: true,
-                                cancelButtonText: "Dừng đồng bộ..",
-                                html: true
-                            }, function (isConfirm) {
-                                if (isConfirm) {
-                                    postProductZaloShop(productSKU);
-                                }
-                            });
+                            _alterError(titleAlert);
                         }
                     },
                     error: (xhr, textStatus, error) => {
                         HoldOn.close();
-                        swal({
-                            title: titleAlert,
-                            text: xhr.responseJSON.message,
-                            type: "warning",
-                            showCancelButton: true,
-                            confirmButtonColor: "#DD6B55",
-                            confirmButtonText: "Tiếp tục đồng bộ Zalo Shop",
-                            closeOnConfirm: true,
-                            cancelButtonText: "Dừng đồng bộ..",
-                            html: true
-                        }, function (isConfirm) {
-                            if (isConfirm) {
-                                postProductZaloShop(productSKU);
-                            }
-                        });
+                        _alterError(titleAlert, xhr.responseJSON);
                     }
                 });
             }
@@ -880,6 +837,34 @@
                     }
                 });
             }
+
+            function downloadProductZaloShop(productSKU) {
+
+                if (!productSKU)
+                    _alterError(titleAlert, { message: "Chưa chọn sản phẩm nào!" });
+
+                window.open("/api/v1/zaloshop/product/export/excel?productSKU=" + productSKU, "_self");
+
+            }
+
+            function downloadAllZaloShop() {
+
+                let $checkBox = $("td>input[type='checkbox']:checked");
+                let products = [];
+
+                $checkBox.each(function (index, element) {
+                    let $tr = element.parentElement.parentElement;
+
+                    products.push($tr.dataset.productsku);
+                });
+
+                if (products.length == 0)
+                    return _alterError(titleAlert, { message: "Chưa chọn sản phẩm nào!" });
+
+                window.open("/api/v1/zaloshop/product/export/excel?productSKU=" + products.join(','), "_self");
+
+            }
+            
 
             function _alterSuccess(title, message) {
                 title = (typeof title !== 'undefined') ? title : 'Thông báo thành công';

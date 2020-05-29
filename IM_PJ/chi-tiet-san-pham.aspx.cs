@@ -65,13 +65,15 @@ namespace IM_PJ
                 this.Title = String.Format("{0} - Sản phẩm", p.ProductSKU);
 
                 ltrEdit1.Text = "";
-                ltrEdit1.Text += "<a href='javascript:;' onclick='copyProductInfo(" + p.ID + ")' class='btn primary-btn margin-right-15px'><i class='fa fa-files-o'></i> Copy thông tin</a>";
+                ltrEdit1.Text += "<a href='javascript:;' onclick='copyProductInfo(" + p.ID + ")' class='btn primary-btn margin-right-15px'><i class='fa fa-files-o'></i> Copy</a>";
                 ltrEdit1.Text += "<a href='javascript:;' onclick='getAllProductImage(`" + p.ProductSKU + "`)' class='btn primary-btn margin-right-15px'><i class='fa fa-download'></i> Tải hình</a>";
-                ltrEdit1.Text += "<a href='javascript:;' onclick='postProductKiotViet(`" + p.ProductSKU + "`)' class='btn primary-btn margin-right-15px'><i class='fa fa-arrow-up'></i> Đồng bộ</a>";
-                ltrEdit1.Text += "<a href='javascript:;' onclick='deleteProductZaloShop(`" + p.ProductSKU + "`)' class='btn primary-btn btn-red margin-right-15px'><i class='fa fa-times' aria-hidden='true'></i> Xóa trên Zalo Shop</a>";
+                ltrEdit1.Text += "<a href='javascript:;' onclick='postProductKiotViet(`" + p.ProductSKU + "`)' class='btn primary-btn margin-right-15px'><i class='fa fa-arrow-up'></i> Đăng Kiot</a>";
+                ltrEdit1.Text += "<a href='javascript:;' onclick='postProductZaloShop(`" + p.ProductSKU + "`)' class='btn primary-btn margin-right-15px'><i class='fa fa-arrow-up'></i> Đăng Zalo</a>";
+                ltrEdit1.Text += "<a href='javascript:;' onclick='downloadProductZaloShop(`" + p.ProductSKU + "`)' class='btn primary-btn btn-blue margin-right-15px'><i class='fa fa-download'></i> Tải Zalo</a>";
+                ltrEdit1.Text += "<a href='javascript:;' onclick='deleteProductZaloShop(`" + p.ProductSKU + "`)' class='btn primary-btn btn-red margin-right-15px'><i class='fa fa-times' aria-hidden='true'></i> Xóa Zalo</a>";
                 if (p.ProductType == 2)
                 {
-                    ltrEdit1.Text += "<a href='#variantList' class='btn primary-btn margin-right-15px'><i class='fa fa-th-list'></i> Xem thuộc tính</a>";
+                    ltrEdit1.Text += "<a href='#variantList' class='btn primary-btn margin-right-15px'><i class='fa fa-th-list'></i> Thuộc tính</a>";
                 }
                 ltrProductName.Text = p.ProductSKU + " - " + p.ProductTitle;
                 var categoryName = CategoryController.GetByID(p.CategoryID.Value);
@@ -114,14 +116,14 @@ namespace IM_PJ
                 // thư viện ảnh
                 var image = ProductImageController.GetByProductID(id);
                 imageGallery.Text = "<ul class='image-gallery'>";
-                imageGallery.Text += "<li><a href='" + Thumbnail.getURL(p.ProductImage, Thumbnail.Size.Source) + "' target='_blank'><img src='" + Thumbnail.getURL(p.ProductImage, Thumbnail.Size.Source) + "'></a><a href='" + Thumbnail.getURL(p.ProductImage, Thumbnail.Size.Source) + "' download class='btn download-btn download-image h45-btn'><i class='fa fa-cloud-download'></i> Tải hình này</a></li>";
+                imageGallery.Text += "<li><a href='" + Thumbnail.getURL(p.ProductImage, Thumbnail.Size.Source) + "' target='_blank'><img src='" + Thumbnail.getURL(p.ProductImage, Thumbnail.Size.Source) + "'></a><a href='" + Thumbnail.getURL(p.ProductImage, Thumbnail.Size.Source) + "' download class='btn download-btn download-image h45-btn'><i class='fa fa-cloud-download'></i> Tải hình</a></li>";
                 if (image != null)
                 {
                     foreach (var img in image)
                     {
                         if (img.ProductImage != p.ProductImage)
                         {
-                            imageGallery.Text += "<li><a href='" + Thumbnail.getURL(img.ProductImage, Thumbnail.Size.Source) + "' target='_blank'><img src='" + Thumbnail.getURL(img.ProductImage, Thumbnail.Size.Source) + "'></a><a href='" + Thumbnail.getURL(img.ProductImage, Thumbnail.Size.Source) + "' download class='btn download-btn download-image h45-btn'><i class='fa fa-cloud-download'></i> Tải hình này</a></li>";
+                            imageGallery.Text += "<li><a href='" + Thumbnail.getURL(img.ProductImage, Thumbnail.Size.Source) + "' target='_blank'><img src='" + Thumbnail.getURL(img.ProductImage, Thumbnail.Size.Source) + "'></a><a href='" + Thumbnail.getURL(img.ProductImage, Thumbnail.Size.Source) + "' download class='btn download-btn download-image h45-btn'><i class='fa fa-cloud-download'></i> Tải hình</a></li>";
                         }
                     }
                 }
