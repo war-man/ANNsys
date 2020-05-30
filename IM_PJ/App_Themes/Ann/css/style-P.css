@@ -913,7 +913,7 @@ ul.image-gallery li {
     width: 5%;
 }
 .all-product-table .stock-column {
-    width: 4%;
+    width: 8%;
 }
 .all-product-table .stock-status-column {
     width: 6%;
@@ -931,7 +931,7 @@ ul.image-gallery li {
     width: 6%;
 }
 .all-product-table .action-column {
-    width: 15%;
+    width: 11%;
 }
 .all-product-table .variable-column {
     width: 20%;

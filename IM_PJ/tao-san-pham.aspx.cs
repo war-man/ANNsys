@@ -450,6 +450,7 @@ namespace IM_PJ
                                         Thumbnail.create(Server.MapPath(o), 159, 212);
                                         Thumbnail.create(Server.MapPath(o), 240, 320);
                                         Thumbnail.create(Server.MapPath(o), 350, 467);
+                                        Thumbnail.create(Server.MapPath(o), 600, 0);
                                     }
 
                                     ProductImage = Path.GetFileName(Server.MapPath(o));
@@ -472,6 +473,7 @@ namespace IM_PJ
                                         Thumbnail.create(Server.MapPath(o), 159, 212);
                                         Thumbnail.create(Server.MapPath(o), 240, 320);
                                         Thumbnail.create(Server.MapPath(o), 350, 467);
+                                        Thumbnail.create(Server.MapPath(o), 600, 0);
                                     }
 
                                     ProductImageClean = Path.GetFileName(Server.MapPath(o));
@@ -494,6 +496,7 @@ namespace IM_PJ
                                         Thumbnail.create(Server.MapPath(o), 159, 212);
                                         Thumbnail.create(Server.MapPath(o), 240, 320);
                                         Thumbnail.create(Server.MapPath(o), 350, 467);
+                                        Thumbnail.create(Server.MapPath(o), 600, 0);
                                     }
 
                                     IMG = Path.GetFileName(Server.MapPath(o));
@@ -543,6 +546,7 @@ namespace IM_PJ
                                                 Thumbnail.create(Server.MapPath(o), 159, 212);
                                                 Thumbnail.create(Server.MapPath(o), 240, 320);
                                                 Thumbnail.create(Server.MapPath(o), 350, 467);
+                                                Thumbnail.create(Server.MapPath(o), 600, 0);
                                             }
 
                                             image = Path.GetFileName(Server.MapPath(o));

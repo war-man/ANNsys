@@ -1,5 +1,10 @@
 ﻿<%@ Page Title="Nhập kho 2" Language="C#" MasterPageFile="~/MasterPage.Master" AutoEventWireup="true" CodeBehind="quan-ly-nhap-kho-2.aspx.cs" Inherits="IM_PJ.quan_ly_nhap_kho_2" EnableSessionState="ReadOnly" %>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
+    <style>
+        .panel {
+            background-color: #7799c0!important;
+        }
+    </style>
     <main id="main-wrap">
         <div class="container">
             <div class="row">

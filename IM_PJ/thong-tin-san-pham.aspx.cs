@@ -348,6 +348,7 @@ namespace IM_PJ
                         Thumbnail.create(Server.MapPath(o), 159, 212);
                         Thumbnail.create(Server.MapPath(o), 240, 320);
                         Thumbnail.create(Server.MapPath(o), 350, 467);
+                        Thumbnail.create(Server.MapPath(o), 600, 0);
                     }
                 }
 
@@ -370,6 +371,7 @@ namespace IM_PJ
                         Thumbnail.create(Server.MapPath(o), 159, 212);
                         Thumbnail.create(Server.MapPath(o), 240, 320);
                         Thumbnail.create(Server.MapPath(o), 350, 467);
+                        Thumbnail.create(Server.MapPath(o), 600, 0);
                     }
                 }
 
@@ -480,7 +482,8 @@ namespace IM_PJ
                         Thumbnail.create(Server.MapPath(o), 159, 212);
                         Thumbnail.create(Server.MapPath(o), 240, 320);
                         Thumbnail.create(Server.MapPath(o), 350, 467);
-                        
+                        Thumbnail.create(Server.MapPath(o), 600, 0);
+
                         ProductImageController.Insert(ProductID, itemGallery, false, DateTime.Now, username);
                     }
                 }
@@ -548,6 +551,7 @@ namespace IM_PJ
                                                 Thumbnail.create(Server.MapPath(o), 159, 212);
                                                 Thumbnail.create(Server.MapPath(o), 240, 320);
                                                 Thumbnail.create(Server.MapPath(o), 350, 467);
+                                                Thumbnail.create(Server.MapPath(o), 600, 0);
                                             }
                                             else
                                             {
@@ -585,6 +589,7 @@ namespace IM_PJ
                                         Thumbnail.create(Server.MapPath(o), 159, 212);
                                         Thumbnail.create(Server.MapPath(o), 240, 320);
                                         Thumbnail.create(Server.MapPath(o), 350, 467);
+                                        Thumbnail.create(Server.MapPath(o), 600, 0);
                                     }
 
                                     // Insert new variable

@@ -1,5 +1,10 @@
 ﻿<%@ Page Title="Xuất kho 2" Language="C#" MasterPageFile="~/MasterPage.Master" AutoEventWireup="true" CodeBehind="quan-ly-xuat-kho-2.aspx.cs" Inherits="IM_PJ.chinh_sua_kho_2" EnableSessionState="ReadOnly" %>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
+    <style>
+        .panel {
+            background-color: #7799c0!important;
+        }
+    </style>
     <main id="main-wrap">
         <div class="container">
             <div class="row">
