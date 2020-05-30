@@ -519,15 +519,15 @@
     <Content Include="bao-cao.aspx" />
     <Content Include="bv.aspx" />
     <Content Include="chuyen-kho.aspx" />
-    <Content Include="Models\IMModel.Context.tt">
+    <Content Include="Models\IMMode.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>IMModel.edmx</DependentUpon>
-      <LastGenOutput>IMModel.Context.cs</LastGenOutput>
+      <DependentUpon>IMMode.edmx</DependentUpon>
+      <LastGenOutput>IMMode.Context.cs</LastGenOutput>
     </Content>
-    <Content Include="Models\IMModel.tt">
+    <Content Include="Models\IMMode.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>IMModel.edmx</DependentUpon>
-      <LastGenOutput>IMModel.cs</LastGenOutput>
+      <DependentUpon>IMMode.edmx</DependentUpon>
+      <LastGenOutput>IMMode.cs</LastGenOutput>
     </Content>
     <Content Include="quan-ly-xuat-kho-2.aspx" />
     <Content Include="Content\bootstrap-datetimepicker.css" />
@@ -605,12 +605,12 @@
     <Content Include="Content\bootstrap-tagsinput.less" />
     <Content Include="POSPage.Master" />
     <Content Include="ProductPage.Master" />
-    <EntityDeploy Include="Models\IMModel.edmx">
+    <EntityDeploy Include="Models\IMMode.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>IMModel.Designer.cs</LastGenOutput>
+      <LastGenOutput>IMMode.Designer.cs</LastGenOutput>
     </EntityDeploy>
-    <Content Include="Models\IMModel.edmx.diagram">
-      <DependentUpon>IMModel.edmx</DependentUpon>
+    <Content Include="Models\IMMode.edmx.diagram">
+      <DependentUpon>IMMode.edmx</DependentUpon>
     </Content>
     <None Include="Properties\PublishProfiles\ANN.pubxml" />
     <Content Include="Scripts\bootstrap2-toggle.min.js.map" />
@@ -984,241 +984,250 @@
       <DependentUpon>chuyen-kho.aspx</DependentUpon>
     </Compile>
     <Compile Include="Models\Bank.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
+      <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\BankAccount.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
+      <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\BankTransfer.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
+      <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\CheckWarehouse.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
+      <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\CheckWarehouseDetail.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
+      <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Coupon.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
+      <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\CronJob.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
+      <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\CronJobProductStatu.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
+      <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\CustomerCoupon.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
+      <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\CustomerEditOrder.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
+      <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Delivery.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
+      <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\DeliveryPostOffice.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
+      <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\DeliverySaveAddress.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
+      <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Fee.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
+      <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\FeeType.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
+      <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\GroupNotifyPromotion.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
+      <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\IMModel.Context.cs">
+    <Compile Include="Models\IMMode.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>IMModel.Context.tt</DependentUpon>
+      <DependentUpon>IMMode.Context.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\IMModel.cs">
+    <Compile Include="Models\IMMode.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>IMModel.tt</DependentUpon>
+      <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\IMModel.Designer.cs">
+    <Compile Include="Models\IMMode.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>IMModel.edmx</DependentUpon>
+      <DependentUpon>IMMode.edmx</DependentUpon>
     </Compile>
     <Compile Include="Models\Notification.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
+      <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\NotificationCategory.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
+      <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\NotifyNew.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
+      <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\NotifyPromotion.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
+      <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\NotifyUser.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
+      <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\PostCategory.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
+      <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\PostClone.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
+      <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\PostPublic.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
+      <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\PostPublicImage.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
+      <DependentUpon>IMMode.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\PostWordpress.cs">
+      <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ProductTag.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
+      <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ReceivedProductHistory.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
+      <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Register.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
+      <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\RegisterProduct.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
+      <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Session.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
+      <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Shipper.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
+      <DependentUpon>IMMode.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\StockManager2.cs">
+      <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Tag.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
+      <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\tbl_Account.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
+      <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\tbl_AccountInfo.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
+      <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\tbl_Agent.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
+      <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\tbl_AgentProduct.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
+      <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\tbl_AgentProductVariable.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
+      <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\tbl_Category.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
+      <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\tbl_CheckWarehouse.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
+      <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\tbl_CheckWarehouseDetail.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
+      <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\tbl_Config.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
+      <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\tbl_Customer.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
+      <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\tbl_CustomerLevel.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
+      <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\tbl_Discount.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
+      <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\tbl_DiscountCustomer.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
+      <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\tbl_DiscountGroup.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
+      <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\tbl_LinkImnage.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
+      <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\tbl_MovePro.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
+      <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\tbl_MoveProdDetail.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
+      <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\tbl_Order.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
+      <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\tbl_OrderDetail.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
+      <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\tbl_OrderReturnGood.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
+      <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\tbl_Post.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
+      <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\tbl_PostCategory.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
+      <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\tbl_PostImage.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
+      <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\tbl_Product.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
+      <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\tbl_ProductImage.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
+      <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\tbl_ProductVariable.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
+      <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\tbl_ProductVariableImage.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
+      <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\tbl_ProductVariableValue.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
+      <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\tbl_Province.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
+      <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\tbl_RefundGoods.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
+      <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\tbl_RefundGoodsDetails.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
+      <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\tbl_Role.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
+      <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\tbl_SessionInOu.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
+      <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\tbl_StockManager.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
+      <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\tbl_Supplier.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
+      <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\tbl_TransportCompany.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
+      <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\tbl_Variable.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
+      <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\tbl_VariableValue.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
+      <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\tbl_WhiteDomain.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
+      <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\User.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
+      <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\UserNotifyPromotion.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
+      <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\WebWordpress.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
+      <DependentUpon>IMMode.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\ZaloIndustry.cs">
+      <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
     <Compile Include="quan-ly-xuat-kho-2.aspx.cs">
       <DependentUpon>quan-ly-xuat-kho-2.aspx</DependentUpon>
@@ -1308,9 +1317,6 @@
     </Compile>
     <Compile Include="Models\Pages\thuc-hien-kiem-kho\StaffHistoryModel.cs" />
     <Compile Include="Models\Pages\thuc-hien-kiem-kho\UpdateQuantityModel.cs" />
-    <Compile Include="Models\StockManager2.cs">
-      <DependentUpon>IMModel.tt</DependentUpon>
-    </Compile>
     <Compile Include="nuoc-hoa.aspx.cs">
       <DependentUpon>nuoc-hoa.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
