@@ -1073,9 +1073,6 @@
     <Compile Include="Models\PostPublicImage.cs">
       <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\PostWordpress.cs">
-      <DependentUpon>IMMode.tt</DependentUpon>
-    </Compile>
     <Compile Include="Models\ProductTag.cs">
       <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>

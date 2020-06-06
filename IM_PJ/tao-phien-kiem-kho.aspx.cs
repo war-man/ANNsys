@@ -13,6 +13,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Script.Serialization;
 using System.Web.Services;
@@ -59,12 +60,39 @@ namespace IM_PJ
                 
             }
         }
+
+        #region Private
+        private void _createCheckWarehouse(CheckWarehouse data)
+        {
+            using (var con = new inventorymanagementEntities())
+            {
+                con.CheckWarehouses.Add(data);
+                con.SaveChanges();
+            }
+        }
+
+        private void _createCheckWarehouseDetail(List<CheckWarehouseDetail> data)
+        {
+            using (var con = new inventorymanagementEntities())
+            {
+                var totalInserts = (int)Math.Ceiling(data.Count / 100D);
+
+                for (int i = 0; i < totalInserts; i++)
+                {
+                    var details = data.Skip(i * 100).Take(100).ToList();
+                    con.CheckWarehouseDetails.AddRange(details);
+                    con.SaveChanges();
+                }
+            }
+        }
+        #endregion
+
         public void LoadData()
         {
             var categories = CategoryController.GetAll();
             StringBuilder html = new StringBuilder();
 
-            html.Append("<select id='ddlCategory' class='form-control' style='width: 20%; float: left; margin-right: 10px'>");
+            html.Append("<select id='ddlCategory' class='form-control' disabled='disabled' readonly>");
             html.Append("<option value=''>Tất cả các danh mục</option>");
 
             foreach (var c in categories)
@@ -237,8 +265,6 @@ namespace IM_PJ
             }
         }
 
-
-
         public class ProductGetOut
         {
             public int ID { get; set; }
@@ -246,6 +272,14 @@ namespace IM_PJ
             public int ProductStyle { get; set; }
             public string ProductName { get; set; }
             public string WarehouseQuantity { get; set; }
+        }
+
+        public class ProductVariationStock
+        {
+            public int productID { get; set; }
+            public int productVariableID { get; set; }
+            public string sku { get; set; }
+            public double calQuantity { get; set; }
         }
 
         protected void btnImport_Click(object sender, EventArgs e)
@@ -256,66 +290,57 @@ namespace IM_PJ
             if (acc == null)
                 return;
 
-            using (var con = new inventorymanagementEntities())
+            var now = DateTime.Now;
+
+            var checkWarehouse = new CheckWarehouse()
             {
-                var now = DateTime.Now;
-                var checkWarehouse = new CheckWarehouse()
+                Name = String.Format("{0}-{1:yyyy/MM/dd hh:mm:ss}", txtTestName.Text.Trim(), now),
+                Stock = ddlStock.SelectedValue.ToInt(),
+                Active = true,
+                CreatedDate = now,
+                CreatedBy = acc.Username,
+                ModifiedDate = now,
+                ModifiedBy = acc.Username
+            };
+            _createCheckWarehouse(checkWarehouse);
+
+            var data = JsonConvert.DeserializeObject<List<ProductGetOut>>(hdfvalue.Value);
+            var details = new List<CheckWarehouseDetail>();
+
+            #region Xử lý với sản phẩm không có biến thể
+            var products = data.Where(x => x.ProductStyle == 1).ToList();
+
+            foreach (var item in products)
+            {
+                var temp = new CheckWarehouseDetail()
                 {
-                    Name = String.Format("{0}-{1:yyyy/MM/dd hh:mm:ss}", txtTestName.Text.Trim(), now),
-                    Active = true,
+                    CheckWarehouseID = checkWarehouse.ID,
+                    ProductID = item.ID,
+                    ProductVariableID = 0,
+                    ProductSKU = item.SKU,
+                    QuantityOld = Convert.ToInt32(item.WarehouseQuantity),
                     CreatedDate = now,
                     CreatedBy = acc.Username,
                     ModifiedDate = now,
                     ModifiedBy = acc.Username
                 };
+                details.Add(temp);
+            }
 
-                con.CheckWarehouses.Add(checkWarehouse);
-                con.SaveChanges();
+            if (details.Count > 0)
+            {
+                _createCheckWarehouseDetail(details);
+                details.Clear();
+            }
+            #endregion
 
-                var data = JsonConvert.DeserializeObject<List<ProductGetOut>>(hdfvalue.Value);
-                var details = new List<CheckWarehouseDetail>();
+            #region Xử lý với sản phẩm có biến thể
+            var productVariables = data.Except(products).ToList();
+            IList<ProductVariationStock> stocks;
 
-                #region Xử lý với sản phẩm không có biến thể
-                var products = data.Where(x => x.ProductStyle == 1).ToList();
-
-                foreach (var item in products)
-                {
-                    var temp = new CheckWarehouseDetail()
-                    {
-                        CheckWarehouseID = checkWarehouse.ID,
-                        ProductID = item.ID,
-                        ProductVariableID = 0,
-                        ProductSKU = item.SKU,
-                        QuantityOld = Convert.ToInt32(item.WarehouseQuantity),
-                        CreatedDate = now,
-                        CreatedBy = acc.Username,
-                        ModifiedDate = now,
-                        ModifiedBy = acc.Username
-                    };
-                    details.Add(temp);
-
-                    if (details.Count == 100)
-                    {
-                        con.CheckWarehouseDetails.AddRange(details);
-                        con.SaveChanges();
-
-                        details.Clear();
-                    }
-                }
-
-                if (details.Count > 0)
-                {
-                    con.CheckWarehouseDetails.AddRange(details);
-                    con.SaveChanges();
-
-                    details.Clear();
-                }
-                #endregion
-
-                #region Xử lý với sản phẩm có biến thể
-                var productVariables = data.Except(products).ToList();
-
-                #region Lấy thông tin  stock
+            #region Lấy thông tin  stock
+            using (var con = new inventorymanagementEntities())
+            {
                 var productIDs = productVariables.Select(x => x.ID).Distinct().ToList();
 
                 // Lọc ra những dòng stock cần lấy
@@ -341,7 +366,7 @@ namespace IM_PJ
                     });
 
                 // Thông tin stock
-                var stocks = stockLast
+                stocks = stockLast
                     .Join(
                         stockFilter,
                         last => new
@@ -366,7 +391,7 @@ namespace IM_PJ
                             type = rec.Type.HasValue ? rec.Type.Value : 0
                         }
                     )
-                    .Select(x => new
+                    .Select(x => new ProductVariationStock()
                     {
                         productID = x.parentID,
                         productVariableID = x.productVariableID,
@@ -376,45 +401,36 @@ namespace IM_PJ
                             (x.type == 2 ? x.quantityCurrent - x.quantity : 0D)
                     })
                     .OrderBy(o => o.productID)
-                    .ThenBy(o => o.productVariableID);
-                #endregion
-
-                foreach (var item in stocks)
-                {
-                    var temp = new CheckWarehouseDetail()
-                    {
-                        CheckWarehouseID = checkWarehouse.ID,
-                        ProductID = item.productID,
-                        ProductVariableID = item.productVariableID,
-                        ProductSKU = item.sku,
-                        QuantityOld = Convert.ToInt32(item.calQuantity),
-                        CreatedDate = now,
-                        CreatedBy = acc.Username,
-                        ModifiedDate = now,
-                        ModifiedBy = acc.Username
-                    };
-                    details.Add(temp);
-
-                    if (details.Count == 100)
-                    {
-                        con.CheckWarehouseDetails.AddRange(details);
-                        con.SaveChanges();
-
-                        details.Clear();
-                    }
-                }
-
-                if (details.Count > 0)
-                {
-                    con.CheckWarehouseDetails.AddRange(details);
-                    con.SaveChanges();
-
-                    details.Clear();
-                }
-                #endregion
-
-                PJUtils.ShowMessageBoxSwAlert("Nhập kho thành công!", "s", true, Page);
+                    .ThenBy(o => o.productVariableID)
+                    .ToList();
             }
+            #endregion
+
+            foreach (var item in stocks)
+            {
+                var temp = new CheckWarehouseDetail()
+                {
+                    CheckWarehouseID = checkWarehouse.ID,
+                    ProductID = item.productID,
+                    ProductVariableID = item.productVariableID,
+                    ProductSKU = item.sku,
+                    QuantityOld = Convert.ToInt32(item.calQuantity),
+                    CreatedDate = now,
+                    CreatedBy = acc.Username,
+                    ModifiedDate = now,
+                    ModifiedBy = acc.Username
+                };
+                details.Add(temp);
+            }
+
+            if (details.Count > 0)
+            {
+                _createCheckWarehouseDetail(details);
+                details.Clear();
+            }
+            #endregion
+
+            PJUtils.ShowMessageBoxSwAlert("Nhập kho thành công!", "s", true, Page);
         }
     }
 }

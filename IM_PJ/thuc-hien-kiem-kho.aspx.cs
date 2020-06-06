@@ -8,6 +8,7 @@ using Newtonsoft.Json;
 using IM_PJ.Models.Pages.thuc_hien_kiem_kho;
 using IM_PJ.Models;
 using System.Collections.Generic;
+using System.Text;
 
 namespace IM_PJ
 {
@@ -17,9 +18,49 @@ namespace IM_PJ
         {
             if (!IsPostBack)
             {
-                if (Request.Cookies["loginHiddenPage"] == null)
-                    Response.Redirect("/login-hidden-page");
+                if (Request.Cookies["usernameLoginSystem"] != null)
+                {
+                    string username = Request.Cookies["usernameLoginSystem"].Value;
+                    var acc = AccountController.GetByUsername(username);
+                    if (acc != null)
+                    {
+                        if (acc.RoleID == 0)
+                        {
+
+                        }
+                        else if (acc.RoleID == 1)
+                        {
+
+                        }
+                        else
+                        {
+                            Response.Redirect("/trang-chu");
+                        }
+                        LoadData();
+                    }
+                }
+                else
+                {
+                    Response.Redirect("/dang-nhap");
+                }
+
             }
+        }
+
+        public void LoadData()
+        {
+            var checkWarehouse = CheckWarehouseController.getAll();
+            dllCheckWarehouse.Items.Clear();
+            dllCheckWarehouse.Items.Insert(0, new ListItem("Chọn phiên kiểm kho", ""));
+
+            foreach (var cw in checkWarehouse)
+            {
+                ListItem listitem = new ListItem(cw.Name, cw.ID.ToString());
+                dllCheckWarehouse.Items.Add(listitem);
+            }
+
+            if (checkWarehouse.Count > 0)
+                dllCheckWarehouse.DataBind();
         }
     }
 }
