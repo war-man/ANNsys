@@ -67,6 +67,8 @@ namespace IM_PJ
                         ltrMenu.Text += "<li><a href='/danh-sach-nhap-hang'><span class='icon-menu icon-product'></span>QL đặt hàng</a></li>";
                         ltrMenu.Text += "<li><a href='/chuyen-kho'><span class='icon-menu icon-product'></span>Chuyển kho</a></li>";
                         ltrMenu.Text += "<li><a href='/thong-ke-nhap-kho'><span class='icon-menu icon-product'></span>TK nhập kho</a></li>";
+                        ltrMenu.Text += "<li><a href='/tao-phien-kiem-kho'><span class='icon-menu icon-product'></span>Tạo Kiểm kho</a></li>";
+                        ltrMenu.Text += "<li><a href='/thong-tin-kiem-kho'><span class='icon-menu icon-product'></span>TK Kiểm kho</a></li>";
                         ltrMenu.Text += "<li><a href='/quan-ly-nhap-kho'><span class='icon-menu icon-product'></span>Nhập kho 1</a></li>";
                         ltrMenu.Text += "<li><a href='/quan-ly-xuat-kho'><span class='icon-menu icon-product'></span>Xuất kho 1</a></li>";
                         ltrMenu.Text += "<li><a href='/quan-ly-nhap-kho-2'><span class='icon-menu icon-product'></span>Nhập kho 2</a></li>";
@@ -99,7 +101,8 @@ namespace IM_PJ
                         ltrMenu.Text += "<li><a href='/quan-ly-nhap-kho-2'><span class='icon-menu icon-product'></span>Nhập kho 2</a></li>";
                         ltrMenu.Text += "<li><a href='/quan-ly-xuat-kho-2'><span class='icon-menu icon-product'></span>Xuất kho 2</a></li>";
                         ltrMenu.Text += "<li><a href='/chuyen-kho'><span class='icon-menu icon-product'></span>Chuyển kho</a></li>";
-                        ltrMenu.Text += "<li><a href='/kiem-kho'><span class='icon-menu icon-product'></span>Kiểm kho</a></li>";
+                        //ltrMenu.Text += "<li><a href='/kiem-kho'><span class='icon-menu icon-product'></span>Kiểm kho</a></li>";
+                        ltrMenu.Text += "<li><a href='/thuc-hien-kiem-kho'><span class='icon-menu icon-product'></span>Kiểm kho</a></li>";
                     }
                     else //Nhân viên bán hàng
                     {

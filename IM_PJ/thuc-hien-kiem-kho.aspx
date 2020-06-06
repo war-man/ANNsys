@@ -93,7 +93,7 @@
                 </div>
                 <div class="col-sm-3 col-xs-5">
                     <a id="btnExecute" class="btn primary-btn fw-btn not-fullwidth" href="javascript:;" onclick="execute()">
-                        <i class="fa fa-paper-plane" aria-hidden="true"></i>Kiểm kho
+                        <i class="fa fa-paper-plane" aria-hidden="true"></i> Kiểm kho
                     </a>
                 </div>
             </div>
@@ -113,7 +113,7 @@
                             </div>
                             <div class="col-sm-4 col-xs-5">
                                 <a href="javascript:;" id="btnSearch" onclick="searchProduct()" class="btn primary-btn h40-btn">
-                                    <i class="fa fa-search"></i>Tìm kiếm
+                                    <i class="fa fa-search"></i> Tìm kiếm
                                 </a>
                             </div>
                         </div>

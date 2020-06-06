@@ -41,10 +41,6 @@ namespace IM_PJ
                         {
 
                         }
-                        else if (acc.RoleID == 2)
-                        {
-
-                        }
                         else
                         {
                             Response.Redirect("/trang-chu");
