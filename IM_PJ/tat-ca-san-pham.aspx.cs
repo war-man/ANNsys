@@ -907,7 +907,7 @@ namespace IM_PJ
             }
             else
             {
-                html.AppendLine("<tr><td colspan='11'>Không tìm thấy sản phẩm...</td></tr>");
+                html.AppendLine("<tr><td colspan='13'>Không tìm thấy sản phẩm...</td></tr>");
             }
             html.AppendLine("</tbody>");
 

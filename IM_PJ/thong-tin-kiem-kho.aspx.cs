@@ -41,10 +41,6 @@ namespace IM_PJ
                         {
 
                         }
-                        else if (acc.RoleID == 2)
-                        {
-
-                        }
                         else
                         {
                             Response.Redirect("/trang-chu");
@@ -64,7 +60,7 @@ namespace IM_PJ
             var checkWarehouse = CheckWarehouseController.getAll();
             StringBuilder html = new StringBuilder();
 
-            html.Append("<select id='ddlCheckWarehouse' class='form-control' style='width: 50%; float: left; margin-right: 10px'>");
+            html.Append("<select id='ddlCheckWarehouse' class='form-control'>");
             html.Append("<option value=''>Tất cả lần kiểm tra kho</option>");
 
             foreach (var item in checkWarehouse)
@@ -109,8 +105,8 @@ namespace IM_PJ
                 {
                     ProductName = x.ProductName,
                     SKU = x.SKU,
-                    QuantityOld = x.QuantityOld,
-                    QuantityNew = x.QuantityNew,
+                    QuantityOld = String.Format("{0:N0}", x.QuantityOld),
+                    QuantityNew = x.QuantityNew.HasValue ? String.Format("{0:N0}", x.QuantityNew.Value) : String.Empty,
                     ModifiedDate = x.CreatedDate == x.ModifiedDate ? String.Empty : x.ModifiedDate.ToString(),
                     //ModifiedDate = x.CreatedDate == x.ModifiedDate ? String.Empty : x.ModifiedDate.ToString("yyyy-MM-dd hh:mm:ss"),
                     ModifiedBy = x.CreatedBy == x.ModifiedBy ? String.Empty : x.ModifiedBy
@@ -126,8 +122,8 @@ namespace IM_PJ
         {
             public string ProductName { get; set; }
             public string SKU { get; set; }
-            public int QuantityOld { get; set; }
-            public int? QuantityNew { get; set; }
+            public string QuantityOld { get; set; }
+            public string QuantityNew { get; set; }
             public string ModifiedDate { get; set; }
             public string ModifiedBy { get; set; }
         }

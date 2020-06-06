@@ -13,13 +13,22 @@ namespace IM_PJ {
     public partial class tao_phien_kiem_kho {
         
         /// <summary>
-        /// ddlSearchType control.
+        /// txtTestName control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlSearchType;
+        protected global::System.Web.UI.WebControls.TextBox txtTestName;
+        
+        /// <summary>
+        /// ddlStock control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList ddlStock;
         
         /// <summary>
         /// ltrCategory control.
@@ -38,15 +47,6 @@ namespace IM_PJ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList ddlStockStatus;
-        
-        /// <summary>
-        /// txtTestName control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtTestName;
         
         /// <summary>
         /// hdfvalue control.

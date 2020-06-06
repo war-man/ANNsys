@@ -13,21 +13,12 @@ namespace IM_PJ {
     public partial class thuc_hien_kiem_kho {
         
         /// <summary>
-        /// form12 control.
+        /// dllCheckWarehouse control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlForm form12;
-        
-        /// <summary>
-        /// scr control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.ScriptManager scr;
+        protected global::System.Web.UI.WebControls.DropDownList dllCheckWarehouse;
     }
 }
