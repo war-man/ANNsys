@@ -497,7 +497,7 @@ namespace IM_PJ
                         string variable = hdfVariableListInsert.Value;
                         if (!string.IsNullOrEmpty(variable))
                         {
-                            string[] items = variable.Split(',');
+                            string[] items = variable.Split(',').Where(x => !String.IsNullOrEmpty(x)).ToArray();
                             for (int i = 0; i < items.Length - 1; i++)
                             {
                                 string item = items[i];

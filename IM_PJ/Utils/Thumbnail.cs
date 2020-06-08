@@ -30,25 +30,26 @@ namespace IM_PJ.Utils
             switch (size)
             {
                 case Size.Micro:
-                    directory = "85x113";
+                    directory = "85x113/";
                     break;
                 case Size.Small:
-                    directory = "159x212";
+                    directory = "159x212/";
                     break;
                 case Size.Normal:
-                    directory = "240x320";
+                    directory = "240x320/";
                     break;
                 case Size.Large:
-                    directory = "350x467";
+                    directory = "350x467/";
                     break;
                 case Size.XLarge:
-                    directory = "600";
+                    directory = "600/";
                     break;
                 default:
                     directory = String.Empty;
                     break;
             }
-            return String.Format("/uploads/images/{0}/{1}", directory, image);
+
+            return String.Format("/uploads/images/{0}{1}", directory, image);
         }
 
         public static bool create(string path_file, int ideal_width, int ideal_height)
