@@ -286,7 +286,7 @@ namespace IM_PJ
 
             var checkWarehouse = new CheckWarehouse()
             {
-                Name = String.Format("{0}-{1:yyyy/MM/dd hh:mm:ss}", txtTestName.Text.Trim(), now),
+                Name = String.Format("{0} - {1:dd/MM/yyyy HH:mm}", txtTestName.Text.Trim(), now),
                 Stock = ddlStock.SelectedValue.ToInt(),
                 Active = true,
                 CreatedDate = now,
@@ -422,7 +422,7 @@ namespace IM_PJ
             }
             #endregion
 
-            PJUtils.ShowMessageBoxSwAlert("Nhập kho thành công!", "s", true, Page);
+            PJUtils.ShowMessageBoxSwAlert("Tạo phiên kiểm kho thành công!", "s", true, Page);
         }
     }
 }

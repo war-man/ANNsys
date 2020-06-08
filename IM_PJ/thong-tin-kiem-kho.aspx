@@ -1,4 +1,4 @@
-﻿<%@ Page Title="Xem thông tin kiểm kho" Language="C#" MasterPageFile="~/MasterPage.Master" AutoEventWireup="true" CodeBehind="thong-tin-kiem-kho.aspx.cs" Inherits="IM_PJ.thong_tin_kiem_kho" EnableSessionState="ReadOnly" %>
+﻿<%@ Page Title="Thông tin kiểm kho" Language="C#" MasterPageFile="~/MasterPage.Master" AutoEventWireup="true" CodeBehind="thong-tin-kiem-kho.aspx.cs" Inherits="IM_PJ.thong_tin_kiem_kho" EnableSessionState="ReadOnly" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
     <style>
@@ -79,7 +79,7 @@
                 <div class="col-md-12">
                     <div class="panel panelborderheading">
                         <div class="panel-heading clear">
-                            <h3 class="page-title left not-margin-bot">Nhập kho sản phẩm</h3>
+                            <h3 class="page-title left not-margin-bot">Thông tin kiểm kho</h3>
                         </div>
                         <div class="panel-body">
                             <div class="form-row">
@@ -93,9 +93,8 @@
                                 </div>
                             </div>
                             <div class="form-row">
-                                <h3 class="no-margin float-left">Kết quả tìm kiếm: <span class="result-numsearch"></span></h3>
                                 <div class="excute-in">
-                                    <a href="javascript:;" style="background-color: #f87703; float: right;" class="btn primary-btn link-btn" onclick="closeCheckWarehouse()">Kết thúc kiểm tra kho</a>
+                                    <a href="javascript:;" style="background-color: #f87703; float: right;" class="btn primary-btn link-btn" onclick="closeCheckWarehouse()">Kết thúc phiên kiểm kho</a>
                                 </div>
                             </div>
                             <div class="form-row hidden">
@@ -108,10 +107,9 @@
                                             <tr>
                                                 <th class="name-column">Sản phẩm</th>
                                                 <th class="sku-column">Mã</th>
-                                                <th class="stock-column">Số lượng củ</th>
-                                                <th class="stock-column">Số lượng mới</th>
-                                                <th class="trash-column">Ngày kiểm</th>
-                                                <th class="trash-column">Người kiểm</th>
+                                                <th class="stock-column">SL cũ</th>
+                                                <th class="stock-column">SL mới</th>
+                                                <th class="trash-column">Thời gian</th>
                                             </tr>
                                         </thead>
                                         <tbody class="content-product">
@@ -138,7 +136,7 @@
         let _isMobile = false;
         let _table = {
             page: 1,
-            pageSize: 10,
+            pageSize: 30,
             data: []
         };
 
@@ -174,15 +172,14 @@
             let data = _table.data.slice(index, index + _table.pageSize);
 
             data.forEach(item => {
-                html += "<tr ondblclick=\"clickrow($(this))\" class=\"product-result\" >";
+                html += "<tr ondblclick='clickrow($(this))' class='product-result' >";
                 html += "   <td class='name-column' data-title='Sản phẩm'>";
                 html += "       <a href='/xem-san-pham?sku=" + item.SKU + "' target='_blank'>" + item.ProductName + "</a>";
                 html += "   </td>";
                 html += "   <td data-title='Mã'>" + item.SKU + "</td>";
-                html += "   <td data-title='Số lượng củ'>" + item.QuantityOld + "</td>";
-                html += "   <td data-title='Số lượng mới'>" + item.QuantityNew + "</td>";
-                html += "   <td data-title='Ngày kiểm'>" + item.ModifiedDate + "</td>";
-                html += "   <td data-title='Người kiểm'>" + item.ModifiedBy + "</td>";
+                html += "   <td data-title='SL cũ'>" + item.QuantityOld + "</td>";
+                html += "   <td data-title='SL mới'>" + item.QuantityNew + "</td>";
+                html += "   <td data-title='Thời gian'>" + item.ModifiedDate + "</td>";
                 html += "</tr>";
             });
 

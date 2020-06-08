@@ -225,7 +225,7 @@ namespace IM_PJ
             ltrNumberOfProduct.Text = page.totalCount.ToString();
         }
         [WebMethod]
-        public static string getAllProductImage(string sku)
+        public static string getAllProductImage1MB(string sku)
         {
             List<string> result = new List<string>();
 
@@ -275,6 +275,7 @@ namespace IM_PJ
                     }
                 }
 
+                // lọc hình trùng lặp
                 images = images.Distinct().ToList();
 
                 if (images.Count() > 0)
@@ -298,10 +299,36 @@ namespace IM_PJ
                     }
                 }
 
-                // lấy hình gốc
+                // lấy hình dưới 1MB
                 for (int i = 0; i < images.Count; i++)
                 {
-                    result.Add(Thumbnail.getURL(images[i], Thumbnail.Size.Source));
+                    string item = uploadsImagesPath + images[i];
+                    var size = new System.IO.FileInfo(item).Length;
+                    if (size > 1000000)
+                    {
+                        // kiểm tra size hình rộng 600px
+                        item = uploadsImagesPath + "600/" + images[i];
+                        if (File.Exists(item))
+                        {
+                            size = new System.IO.FileInfo(item).Length;
+                            if (size > 1000000)
+                            {
+                                result.Add(Thumbnail.getURL(images[i], Thumbnail.Size.Large));
+                            }
+                            else
+                            {
+                                result.Add(Thumbnail.getURL(images[i], Thumbnail.Size.XLarge));
+                            }
+                        }
+                        else
+                        {
+                            result.Add(Thumbnail.getURL(images[i], Thumbnail.Size.Large));
+                        }
+                    }
+                    else
+                    {
+                        result.Add(Thumbnail.getURL(images[i], Thumbnail.Size.Source));
+                    }
                 }
             }
 

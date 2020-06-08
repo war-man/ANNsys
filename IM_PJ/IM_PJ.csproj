@@ -407,6 +407,7 @@
     <Content Include="App_Themes\Ann\js\copy-post-to-app.js" />
     <Content Include="App_Themes\Ann\js\copy-product-info-public.js" />
     <Content Include="App_Themes\Ann\js\download-post-image.js" />
+    <Content Include="App_Themes\Ann\js\download-product-image-public.js" />
     <Content Include="App_Themes\Ann\js\download-product-image.js" />
     <Content Include="App_Themes\Ann\js\jquery.cookie.js" />
     <Content Include="App_Themes\Ann\js\models\common\customer-model.js" />
@@ -549,6 +550,8 @@
     <Content Include="nuoc-hoa.aspx" />
     <Content Include="cron-job-product-status.aspx" />
     <Content Include="quan-ly-nhap-kho-2.aspx" />
+    <Content Include="SQL\01CREATE_TABLE_CheckWarehouse.sql" />
+    <Content Include="SQL\01CREATE_TABLE_CheckWarehouseDetail.sql" />
     <Content Include="SQL\05CREATE_STORE_PROCEDURE_BackupOrder.sql" />
     <Content Include="SQL\05CREATE_STORE_PROCEDURE_ClearStock.sql" />
     <Content Include="SQL\05CREATE_STORE_PROCEDURE_HandleProductImage.sql" />

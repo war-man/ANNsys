@@ -181,7 +181,7 @@
     </main>
 
     <script src="/App_Themes/Ann/js/copy-product-info-public.js?v=17052020"></script>
-    <script src="/App_Themes/Ann/js/download-product-image.js?v=17052020"></script>
+    <script src="/App_Themes/Ann/js/download-product-image-public.js?v=17052020"></script>
     <script>
         function postProductZaloShop(productSKU) {
             let titleAlert = "Đồng bộ Zalo Shop";

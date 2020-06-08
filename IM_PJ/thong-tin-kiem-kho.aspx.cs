@@ -61,7 +61,7 @@ namespace IM_PJ
             StringBuilder html = new StringBuilder();
 
             html.Append("<select id='ddlCheckWarehouse' class='form-control'>");
-            html.Append("<option value=''>Tất cả lần kiểm tra kho</option>");
+            html.Append("<option value=''>Chọn phiên kiểm kho</option>");
 
             foreach (var item in checkWarehouse)
             {

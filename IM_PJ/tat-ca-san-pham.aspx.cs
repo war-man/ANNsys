@@ -309,6 +309,117 @@ namespace IM_PJ
             }
         }
         [WebMethod]
+        public static string getAllProductImage1MB(string sku)
+        {
+            List<string> result = new List<string>();
+
+            string rootPath = HostingEnvironment.ApplicationPhysicalPath;
+            string uploadsImagesPath = rootPath + "/uploads/images/";
+            var product = ProductController.GetBySKU(sku);
+
+            if (product != null)
+            {
+                List<string> images = new List<string>();
+
+                // lấy ảnh đại diện
+                string imgAdd = product.ProductImage;
+                if (File.Exists(uploadsImagesPath + imgAdd))
+                {
+                    images.Add(imgAdd);
+                }
+
+                // lấy ảnh sản phẩm từ thư viện
+                var imageProduct = ProductImageController.GetByProductID(product.ID);
+                if (imageProduct != null)
+                {
+                    foreach (var img in imageProduct)
+                    {
+                        imgAdd = img.ProductImage;
+                        if (File.Exists(uploadsImagesPath + imgAdd))
+                        {
+                            images.Add(imgAdd);
+                        }
+                    }
+                }
+
+                // lấy ảnh sản phẩm từ biến thể
+                var variable = ProductVariableController.GetByParentSKU(product.ProductSKU);
+                if (variable != null)
+                {
+                    foreach (var v in variable)
+                    {
+                        if (!String.IsNullOrEmpty(v.Image))
+                        {
+                            imgAdd = v.Image;
+                            if (File.Exists(uploadsImagesPath + imgAdd))
+                            {
+                                images.Add(imgAdd);
+                            }
+                        }
+                    }
+                }
+
+                // lọc hình trùng lặp
+                images = images.Distinct().ToList();
+
+                if (images.Count() > 0)
+                {
+                    for (int i = 0; i < images.Count - 1; i++)
+                    {
+                        for (int y = i + 1; y < images.Count; y++)
+                        {
+                            string img1 = Thumbnail.getURL(images[i], Thumbnail.Size.Micro);
+                            string img2 = Thumbnail.getURL(images[y], Thumbnail.Size.Micro);
+
+                            // so sánh 2 hình và lọc hình trùng lặp
+                            Bitmap bmp1 = (Bitmap)Bitmap.FromFile(rootPath + img1);
+                            Bitmap bmp2 = (Bitmap)Bitmap.FromFile(rootPath + img2);
+                            if (CompareBitmapsLazy(bmp1, bmp2))
+                            {
+                                images.RemoveAt(y);
+                                y--;
+                            }
+                        }
+                    }
+                }
+
+                // lấy hình dưới 1MB
+                for (int i = 0; i < images.Count; i++)
+                {
+                    string item = uploadsImagesPath + images[i];
+                    var size = new System.IO.FileInfo(item).Length;
+                    if (size > 1000000)
+                    {
+                        // kiểm tra size hình rộng 600px
+                        item = uploadsImagesPath + "600/" + images[i];
+                        if (File.Exists(item))
+                        {
+                            size = new System.IO.FileInfo(item).Length;
+                            if (size > 1000000)
+                            {
+                                result.Add(Thumbnail.getURL(images[i], Thumbnail.Size.Large));
+                            }
+                            else
+                            {
+                                result.Add(Thumbnail.getURL(images[i], Thumbnail.Size.XLarge));
+                            }
+                        }
+                        else
+                        {
+                            result.Add(Thumbnail.getURL(images[i], Thumbnail.Size.Large));
+                        }
+                    }
+                    else
+                    {
+                        result.Add(Thumbnail.getURL(images[i], Thumbnail.Size.Source));
+                    }
+                }
+            }
+
+            JavaScriptSerializer serializer = new JavaScriptSerializer();
+            return serializer.Serialize(result.ToList());
+        }
+        [WebMethod]
         public static string getAllProductImage(string sku)
         {
             List<string> result = new List<string>();
@@ -359,6 +470,7 @@ namespace IM_PJ
                     }
                 }
 
+                // lọc hình trùng lặp
                 images = images.Distinct().ToList();
 
                 if (images.Count() > 0)

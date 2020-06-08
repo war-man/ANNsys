@@ -62,7 +62,7 @@
             </div>
             <div class="form-row">
                 <div class="col-sm-5 col-xs-8 none-padding-left">
-                    <asp:TextBox runat="server" ID="txtTestName" CssClass="form-control" placeholder="Tên đợt kiểm tra kho" autocomplete="off" />
+                    <asp:TextBox runat="server" ID="txtTestName" CssClass="form-control" placeholder="Tên phiên kiểm kho" autocomplete="off" />
                 </div>
                 <div class="col-sm-2 col-xs-4">
                     <asp:DropDownList ID="ddlStock" runat="server" CssClass="form-control" Style="background-color: #fff;">
@@ -75,7 +75,7 @@
             <hr style="border-top: 5px solid #fff;" />
             <div class="form-row">
                 <div class="col-sm-5 col-xs-12 margin-bottom-15 none-padding-left">
-                    <input type="text" id="txtSearch" class="form-control sku-input" placeholder="NHẬP MÃ SẢN PHẨM (F3)" autocomplete="off" disabled="disabled" readonly />
+                    <input type="text" id="txtSearch" class="form-control sku-input" placeholder="Nhập mã sản phẩm cần kiểm kho" autocomplete="off" disabled="disabled" readonly />
                 </div>
                 <div class="col-sm-3 col-xs-12 margin-bottom-15">
                     <asp:Literal ID="ltrCategory" runat="server"></asp:Literal>
@@ -93,12 +93,9 @@
                     </a>
                 </div>
             </div>
-            <div class="form-row">
-                <h3 class="none-padding-horizontal float-left">Kết quả tìm kiếm: <span class="result-numsearch"></span></h3>
-            </div>
             <div class="form-row hidden">
                 <div class="excute-in">
-                    <a href="javascript:;" style="background-color: #f87703; float: right;" class="btn primary-btn link-btn" onclick="registerCheckWarehouse()">Đăng ký kiểm tra kho</a>
+                    <a href="javascript:;" style="background-color: #f87703; float: right;" class="btn primary-btn link-btn" onclick="registerCheckWarehouse()">Tạo phiên kiểm kho</a>
                 </div>
                 <div class="pagination"></div>
             </div>
@@ -109,7 +106,7 @@
             <div class="form-row hidden">
                 <div class="pagination"></div>
                 <div class="post-table-links excute-in clear">
-                    <a href="javascript:;" style="background-color: #f87703; float: right;" class="btn primary-btn link-btn" onclick="registerCheckWarehouse()">Đăng ký kiểm tra kho</a>
+                    <a href="javascript:;" style="background-color: #f87703; float: right;" class="btn primary-btn link-btn" onclick="registerCheckWarehouse()">Tạo phiên kiểm kho</a>
                 </div>
             </div>
         </div>
@@ -121,7 +118,7 @@
         let _tableType = 'SingleRow';
         let _table = {
             page: 1,
-            pageSize: 10,
+            pageSize: 30,
             data: []
         };
 
@@ -264,7 +261,7 @@
                 html += "        </th>";
                 html += "        <th style='width: 40%; text-align: left!important'>Sản phẩm</th>";
                 html += "        <th style='width: 25%; text-align: left!important'>Mã</th>";
-                html += "        <th style='width: 16%; text-align: left!important'>Kho</th>";
+                html += "        <th style='width: 16%; text-align: left!important'>Kho hiện tại</th>";
                 html += "        <th style='width: 6%; text-align: center!important; font-size: 22px'>";
                 html += "            <a href='javascript:;' onclick='deleteAllRow()'>";
                 html += "                <i class='fa fa-trash'></i>";

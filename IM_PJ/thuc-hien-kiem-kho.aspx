@@ -40,7 +40,10 @@
             padding: 6px 12px;
             color: #428bca;
         }
-
+        .table > thead > tr > th {
+            height: inherit;
+            padding: 15px 5px;
+        }
 
         @media only screen and (max-width: 800px) {
             .none-padding-right {
@@ -84,7 +87,7 @@
         <div class="container">
             <div class="row margin-bottom-15">
                 <div class="col-xs-12">
-                    <h3 class="page-title left not-margin-bot">Thực hiện kiểm kho</h3>
+                    <h3 class="page-title left not-margin-bot">Phiên kiểm kho</h3>
                 </div>
             </div>
             <div class="row margin-bottom-15">
@@ -98,22 +101,20 @@
                 </div>
             </div>
             <div id="body" hidden>
-                <hr style="border-top: 5px solid #fff;" />
-
                 <div class="row">
                     <div class="col-xs-12">
-                        <h4>Tiến hành kiểm kho</h4>
+                        <h4>Kiểm kho sản phẩm</h4>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-sm-4 col-xs-12 margin-bottom-15">
                         <div class="row">
                             <div class="col-sm-8 col-xs-7 none-padding-right">
-                                <input type="text" id="txtSKU" class="form-control" placeholder="Nhập mã sản phẩm">
+                                <input type="text" id="txtSKU" class="form-control" placeholder="Nhập mã">
                             </div>
                             <div class="col-sm-4 col-xs-5">
                                 <a href="javascript:;" id="btnSearch" onclick="searchProduct()" class="btn primary-btn h40-btn">
-                                    <i class="fa fa-search"></i> Tìm kiếm
+                                    <i class="fa fa-search"></i> Tìm
                                 </a>
                             </div>
                         </div>
@@ -122,7 +123,7 @@
                         <div class="row">
                             <div class="col-sm-6 col-xs-6 none-padding-horizontal">
                                 <div class="col-sm-6 col-xs-12" style="height: 40px; padding-top: 10px">
-                                    <label>Số lượng kho</label>
+                                    <label>Số lượng cũ</label>
                                 </div>
                                 <div class="col-sm-6 col-xs-12">
                                     <input type="number" id="txtQuantityOld" class="form-control" disabled="disabled" readonly>
@@ -130,7 +131,7 @@
                             </div>
                             <div class="col-sm-6 col-xs-6 none-padding-horizontal">
                                 <div class="col-sm-6 col-xs-12" style="height: 40px; padding-top: 10px">
-                                    <label>Số lượng kiểm</label>
+                                    <label>Số lượng mới</label>
                                 </div>
                                 <div class="col-sm-6 col-xs-12">
                                     <input type="number" id="txtQuantityNew" class="form-control">
@@ -140,28 +141,21 @@
                     </div>
                     <div class="col-sm-2 col-xs-12 body_update" hidden>
                         <a href="javascript:;" onclick="updateQuantity()" class="btn primary-btn h40-btn" tabindex="6">
-                            <i class="fa fa-refresh"></i>Cập nhật
+                            <i class="fa fa-refresh"></i> Lưu
                         </a>
                     </div>
                 </div>
             </div>
             <div class="staff-history hidden">
-                <hr style="border-top: 5px solid #fff;" />
-
-                <div class="row">
-                    <div class="col-xs-12 margin-bottom-15">
-                        <h4>Lịch sử kiểm kho</h4>
-                    </div>
-                </div>
                 <div class="row">
                     <div class="col-xs-12">
                         <table id="tbStaffHistories" class="table table-striped table-bordered">
                             <thead>
                                 <tr>
                                     <th class="text-center history-index">#</th>
-                                    <th class="text-center history-product-name">Tên sản phẩm</th>
-                                    <th class="text-center history-sku">SKU</th>
-                                    <th class="text-center history-quantity">Số lượng</th>
+                                    <th class="text-center history-product-name">Sản phẩm</th>
+                                    <th class="text-center history-sku">Mã</th>
+                                    <th class="text-center history-quantity">SL mới</th>
                                     <th class="text-center history-date">Ngày</th>
                                 </tr>
                             </thead>
@@ -333,10 +327,21 @@
             let account = getAccount();
             let checkID = +$('#<%= dllCheckWarehouse.ClientID %>').val() || 0;
             let sku = $('#txtSKU').val()
-            let quantity = +$('#txtQuantityNew').val() || -1;
+            let quantity = $('#txtQuantityNew').val() || "";
 
-            if (!account || !checkID || !sku || quantity < 0)
+            if (!account || !checkID || !sku)
                 return;
+
+            if (isBlank(quantity) || +quantity < 0) {
+                return swal({
+                    title: "Thông báo",
+                    text: "Vui lòng nhập số lượng sản phẩm",
+                    icon: "warning",
+                }, function () { $('#txtQuantityNew').focus(); });
+            }
+            else {
+                quantity = +quantity || 0;
+            }
 
             let titleAlert = 'Cập số lượng sản phẩm';
             let url = 'api/v1/check-warehouse/' + checkID + '/update-quantity';
@@ -421,7 +426,7 @@
                 title: title,
                 text: "Thời gian đăng nhập đã hết.\r\nVui lòng đăng nhập lại",
                 icon: "warning",
-            }).then((value) => { document.location = 'http://hethongann.com/login-hidden-page'; });
+            }, function () { document.location = 'http://hethongann.com/dang-nhap'; });
         }
     </script>
 </asp:Content>
