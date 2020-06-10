@@ -1,4 +1,7 @@
-﻿.item-website {
+﻿#header .hd-left {
+    height: 40px;
+}
+.item-website {
     margin-top: 10px;
     margin-bottom: 5px;
 }

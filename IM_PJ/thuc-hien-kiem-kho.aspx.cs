@@ -24,15 +24,7 @@ namespace IM_PJ
                     var acc = AccountController.GetByUsername(username);
                     if (acc != null)
                     {
-                        if (acc.RoleID == 0)
-                        {
-
-                        }
-                        else if (acc.RoleID == 1)
-                        {
-
-                        }
-                        else
+                        if (acc.RoleID != 0 && acc.RoleID != 1 && acc.RoleID != 3)
                         {
                             Response.Redirect("/trang-chu");
                         }

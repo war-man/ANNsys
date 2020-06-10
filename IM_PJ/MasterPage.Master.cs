@@ -104,7 +104,7 @@ namespace IM_PJ
                         ltrMenu.Text += "<li><a href='/thuc-hien-kiem-kho'><span class='icon-menu icon-product'></span>Kiểm kho</a></li>";
                         ltrMenu.Text += "<li><a href='/thong-tin-kiem-kho'><span class='icon-menu icon-product'></span>Xem kiểm kho</a></li>";
                     }
-                    else //Nhân viên bán hàng
+                    else if (role == 2) //Nhân viên bán hàng 
                     {
                         ltrMenu.Text += "<li><a href='/trang-chu'><span class='icon-menu icon-home'></span>Trang chủ</a></li>";
                         ltrMenu.Text += "<li><a target='_blank' href='/pos'><span class='icon-menu icon-order'></span>Máy tính tiền</a></li>";
@@ -137,6 +137,15 @@ namespace IM_PJ
                         {
                             ltrMenu.Text += "<li><a href='/bao-cao-nhan-vien'><span class='icon-menu icon-order'></span>Báo cáo</a></li>";
                         }
+                    }
+                    else if (role == 3) //Nhân viên kiểm kho
+                    {
+                        ltrMenu.Text += "<li><a href='/thuc-hien-kiem-kho'><span class='icon-menu icon-product'></span>Kiểm kho</a></li>";
+                        ltrMenu.Text += "<li><a href='/thong-tin-kiem-kho'><span class='icon-menu icon-product'></span>Xem kiểm kho</a></li>";
+                    }
+                    else
+                    {
+                        ltrMenu.Text += "<li><a href='/trang-chu'><span class='icon-menu icon-home'></span>Trang chủ</a></li>";
                     }
                 }
             }

@@ -47,13 +47,24 @@ namespace IM_PJ
         }
         public void LoadData()
         {
-            DateTime fromdate = DateTime.Today;
-            DateTime todate = DateTime.Now;
-            List<OrderReportHomePage> order = new List<OrderReportHomePage>();
-            order = OrderController.ReportHomePage(fromdate, todate);
-            if (order != null)
+            if (Request.Cookies["usernameLoginSystem"] != null)
             {
-                pagingall(order);
+                string username = Request.Cookies["usernameLoginSystem"].Value;
+                var acc = AccountController.GetByUsername(username);
+                if (acc != null)
+                {
+                    if (acc.RoleID == 0 || acc.RoleID == 2)
+                    {
+                        DateTime fromdate = DateTime.Today;
+                        DateTime todate = DateTime.Now;
+                        List<OrderReportHomePage> order = new List<OrderReportHomePage>();
+                        order = OrderController.ReportHomePage(fromdate, todate);
+                        if (order != null)
+                        {
+                            pagingall(order);
+                        }
+                    }
+                }
             }
         }
         #region Paging
@@ -61,19 +72,33 @@ namespace IM_PJ
         {
             int PageSize = acs.Count();
             StringBuilder html = new StringBuilder();
+
             if (acs.Count > 0)
             {
+                html.Append("<table id='table-student' class='table table-checkable'>");
+                html.Append("    <thead>");
+                html.Append("        <tr>");
+                html.Append("            <th>#</th>");
+                html.Append("            <th>Khách hàng</th>");
+                html.Append("            <th>Nick</th>");
+                html.Append("            <th>Đã mua</th>");
+                html.Append("            <th>Nhân viên</th>");
+                html.Append("        </tr>");
+                html.Append("    </thead>");
+                html.Append("    <tbody>");
                 for (int i = 0; i < PageSize; i++)
                 {
                     var item = acs[i];
                     html.Append("<tr>");
                     html.Append("   <td>" + Convert.ToInt32(i + 1) + "</td>");
-                    html.Append("   <td class=\"capitalize\">" + item.CustomerName + "</td>");
-                    html.Append("   <td class=\"capitalize\">" + item.Nick + "</td>");
+                    html.Append("   <td class='capitalize'>" + item.CustomerName + "</td>");
+                    html.Append("   <td class='capitalize'>" + item.Nick + "</td>");
                     html.Append("   <td>" + item.Quantity + " cái" + "</td>");
                     html.Append("   <td>" + item.CreatedBy + "</td>");
                     html.Append("</tr>");
                 }
+                html.Append("    </tbody>");
+                html.Append("<table>");
             }
             ltrList.Text = html.ToString();
         }
