@@ -133,9 +133,6 @@
                     </ul>
                 </nav>
                 <div class="hd-left">
-                    <div class="search-box header-search-box">
-                        <asp:TextBox runat="server" CssClass="form-control" placeholder="Tìm khách hàng" ID="txtsearchcustomer"></asp:TextBox>
-                    </div>
                 </div>
                 <div class="hd-right">
                     <div class="user-action">

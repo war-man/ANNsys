@@ -78,6 +78,9 @@
             .table > tbody > tr > td:nth-child(2) {
                 display: none;
             }
+            .table > tbody > tr > td {
+                padding: 0px 5px;
+            }
         }
     </style>
 </asp:Content>

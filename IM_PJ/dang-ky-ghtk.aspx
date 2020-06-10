@@ -426,6 +426,7 @@
 
                     $("#address").change(function () {
                         _order.address = $(this).val();
+                        _order.street = _order.address;
                         _updateAddress();
                     })
                 }
@@ -499,6 +500,7 @@
                         _order.ward_id = data.id;
                         _order.ward = data.text;
                         _updateAddress();
+
                         // Tính tiền phí Ship
                         _calculateFee();
                     });
@@ -785,6 +787,9 @@
                             // Shipping type
                             _paymentType = data.paymentType;
 
+                            // address
+                            $("#address").val(data.customerAddress).trigger('change');
+
                             // province
                             if (data.customerProvinceID) {
                                 // Danh sách tỉnh / thành
@@ -816,23 +821,21 @@
                                 // Danh sách quận / huyện
                                 _order.ward_id = data.customerWardID;
                                 _order.ward = data.customerWardName;
-                                
+
                                 let newOption = new Option(data.customerWardName, data.customerWardID, false, false);
                                 $('#ddlWard').removeAttr('disabled');
                                 $('#ddlWard').removeAttr('readonly');
                                 $('#ddlWard').append(newOption).trigger('change');
                             }
 
-                            // address
-                            $("#address").val(data.customerAddress).trigger('change');
+                            if (data.weightMin) {
+                                _weight_min = parseFloat(data.weightMin);
+                            }
+
                             if (data.weight) {
                                 if (data.weight != 0 && weight == 0) {
                                     $("#weight").val(data.weight).trigger('blur');
                                 }
-                            }
-
-                            if (data.weightMin) {
-                                _weight_min = parseFloat(data.weightMin);
                             }
 
                             // nếu đã có phí trong đơn hàng
@@ -1271,6 +1274,10 @@
                 }
 
                 function _disabledDDLDistrict(disabled) {
+                    // Update Order
+                    _order.district = null;
+                    _order.district_id = null;
+
                     if (disabled) {
                         $('#ddlDistrict').attr('disabled', true);
                         $('#ddlDistrict').attr('readonly', 'readonly');
@@ -1300,6 +1307,10 @@
                 }
 
                 function _disabledDDLWard(disabled) {
+                    // Update Order
+                    _order.ward = null;
+                    _order.ward_id = null;
+
                     if (disabled) {
                         $('#ddlWard').attr('disabled', true);
                         $('#ddlWard').attr('readonly', 'readonly');
@@ -1327,6 +1338,7 @@
                         });
                     }
                 }
+
                 function _updateAddress() {
                     if (!_order || !_order.tel || (!_order.province_id && !_order.district_id && !_order.ward_id && !_order.address))
                         return;
