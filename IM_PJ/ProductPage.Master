@@ -189,10 +189,6 @@
                     $("#caption").html(name);
                 }
 
-                if ($.cookie('showNotePopup11')) {
-
-                }
-
                 function screenClass() {
                     if ($(window).innerWidth() < 769) {
                         $('.nav-toggle').removeClass('open');

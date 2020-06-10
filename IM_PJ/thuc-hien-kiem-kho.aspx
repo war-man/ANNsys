@@ -89,67 +89,53 @@
     <main id="main-wrap">
         <div class="container">
             <div class="row margin-bottom-15">
-                <div class="col-xs-12">
-                    <h3 class="page-title left not-margin-bot">Phiên kiểm kho</h3>
-                </div>
-            </div>
-            <div class="row margin-bottom-15">
-                <div class="col-sm-4 col-xs-7 none-padding-right">
+                <div class="col-sm-4 col-xs-8 none-padding-right">
                     <asp:DropDownList ID="dllCheckWarehouse" runat="server" CssClass="form-control select2" Width="100%"></asp:DropDownList>
                 </div>
-                <div class="col-sm-3 col-xs-5">
-                    <a id="btnExecute" class="btn primary-btn fw-btn not-fullwidth" href="javascript:;" onclick="execute()">
-                        <i class="fa fa-paper-plane" aria-hidden="true"></i> Kiểm kho
+                <div class="col-sm-1 col-xs-4">
+                    <a id="btnExecute" class="btn primary-btn fw-btn" href="javascript:;" onclick="execute()">
+                        <i class="fa fa-paper-plane" aria-hidden="true"></i> Kiểm
                     </a>
                 </div>
             </div>
             <div id="body" hidden>
-                <div class="row">
-                    <div class="col-xs-12">
-                        <h4>Kiểm kho sản phẩm</h4>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm-4 col-xs-12 margin-bottom-15">
-                        <div class="row">
-                            <div class="col-sm-8 col-xs-7 none-padding-right">
-                                <input type="text" id="txtSKU" class="form-control" placeholder="Nhập mã">
-                            </div>
-                            <div class="col-sm-4 col-xs-5">
-                                <a href="javascript:;" id="btnSearch" onclick="searchProduct()" class="btn primary-btn h40-btn">
-                                    <i class="fa fa-search"></i> Tìm
-                                </a>
-                            </div>
+                <div class="row margin-bottom-15">
+                        <div class="col-sm-4 col-xs-8 none-padding-right">
+                            <input type="text" id="txtSKU" class="form-control" placeholder="Nhập mã sản phẩm">
+                        </div>
+                        <div class="col-sm-1 col-xs-4">
+                            <a href="javascript:;" id="btnSearch" onclick="searchProduct()" class="btn primary-btn fw-btn">
+                                <i class="fa fa-search"></i> Tìm
+                            </a>
                         </div>
                     </div>
-                    <div class="col-sm-6 col-xs-12 margin-bottom-15 body_update" hidden>
-                        <div class="row">
-                            <div class="col-sm-6 col-xs-6 none-padding-horizontal">
-                                <div class="col-sm-6 col-xs-12" style="height: 40px; padding-top: 10px">
-                                    <label>Số lượng cũ</label>
-                                </div>
-                                <div class="col-sm-6 col-xs-12">
-                                    <input type="number" id="txtQuantityOld" class="form-control" disabled="disabled" readonly>
-                                </div>
+                    <div class="row margin-bottom-15 body_update" hidden>
+                        <div class="col-sm-2 col-xs-4 none-padding-horizontal">
+                            <div class="col-sm-6 col-xs-12" style="height: 40px; padding-top: 10px">
+                                <label>Số lượng cũ</label>
                             </div>
-                            <div class="col-sm-6 col-xs-6 none-padding-horizontal">
-                                <div class="col-sm-6 col-xs-12" style="height: 40px; padding-top: 10px">
-                                    <label>Số lượng mới</label>
-                                </div>
-                                <div class="col-sm-6 col-xs-12">
-                                    <input type="number" id="txtQuantityNew" class="form-control">
-                                </div>
+                            <div class="col-sm-6 col-xs-12">
+                                <input type="number" id="txtQuantityOld" class="form-control" disabled="disabled" readonly>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-sm-2 col-xs-12 body_update" hidden>
-                        <a href="javascript:;" onclick="updateQuantity()" class="btn primary-btn h40-btn" tabindex="6">
+                        <div class="col-sm-2 col-xs-4 none-padding-horizontal">
+                            <div class="col-sm-6 col-xs-12" style="height: 40px; padding-top: 10px">
+                                <label>Số lượng mới</label>
+                            </div>
+                            <div class="col-sm-6 col-xs-12">
+                                <input type="number" id="txtQuantityNew" class="form-control">
+                            </div>
+                        </div>
+                        <div class="col-sm-1 col-xs-4 body_update" hidden>
+                        <a href="javascript:;" onclick="updateQuantity()" class="btn primary-btn btn-red fw-btn" tabindex="6">
                             <i class="fa fa-refresh"></i> Lưu
                         </a>
                     </div>
+                    </div>
+                    
                 </div>
             </div>
-            <div class="staff-history hidden">
+            <div class="container staff-history hidden">
                 <div class="row">
                     <div class="col-xs-12">
                         <table id="tbStaffHistories" class="table table-striped table-bordered">
@@ -247,7 +233,7 @@
                 ordering: false,
                 fixedHeader: true,
                 pagingType: "first_last_numbers",
-                pageLength: 10,
+                pageLength: 20,
                 serverSide: true,
                 ajax: {
                     method: 'GET',

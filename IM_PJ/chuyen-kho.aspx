@@ -13,8 +13,8 @@
                                 <div class="col-xs-3">
                                     <asp:DropDownList ID="ddlWarehouseTransfer" runat="server" CssClass="form-control">
                                         <asp:ListItem Value="0" Text="Hướng chuyển kho"></asp:ListItem>
-                                        <asp:ListItem Value="1" Text="Kho 1 => Kho 2"></asp:ListItem>
                                         <asp:ListItem Value="2" Text="Kho 2 => Kho 1"></asp:ListItem>
+                                        <asp:ListItem Value="1" Text="Kho 1 => Kho 2"></asp:ListItem>
                                     </asp:DropDownList>
                                 </div>
                                 <input type="text" id="txtSearch" class="form-control sku-input" placeholder="NHẬP MÃ SẢN PHẨM (F3)" style="width: 40%; float: left; margin-right: 10px" autocomplete="off" disabled="disabled" readonly />
@@ -28,7 +28,6 @@
                                 <h3 class="no-margin float-left">Kết quả tìm kiếm: <span class="result-numsearch"></span></h3>
                                 <div class="excute-in">
                                     <a href="javascript:;" style="background-color: #f87703; float: right;" class="btn primary-btn link-btn" onclick="inProduct()">Chuyển kho</a>
-                                    <%--<a href="javascript:;" style="background-color: #ffad00; float: right;" class="btn primary-btn link-btn" onclick="quickInput()">Nhập nhanh số lượng (F2)</a>--%>
                                 </div>
                             </div>
                             <div class="form-row" style="border: solid 1px #ccc; padding: 10px;">
@@ -51,7 +50,6 @@
                             </div>
                             <div class="post-table-links excute-in clear">
                                 <a href="javascript:;" style="background-color: #f87703; float: right;" class="btn primary-btn link-btn" onclick="inProduct()">Chuyển kho</a>
-                                <%--<a href="javascript:;" style="background-color: #ffad00; float: right;" class="btn primary-btn link-btn" onclick="quickInput()">Nhập nhanh số lượng (F2)</a>--%>
                             </div>
                         </div>
                     </div>

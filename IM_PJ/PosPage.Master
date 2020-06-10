@@ -183,9 +183,6 @@
                     let name = $(obj).parent().parent().find(".customer-td").text();
                     $("#caption").html(name);
                 }
-
-                if ($.cookie('showNotePopup11')) {
-                }
                 
 
                 function screenClass() {

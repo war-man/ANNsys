@@ -17,7 +17,7 @@
         }
         img {
             width: inherit;
-            margin: 10px auto;
+            margin: 10px auto 0 auto;
             max-width: 100%;
             height: auto;
         }

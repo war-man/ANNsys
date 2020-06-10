@@ -215,18 +215,6 @@
                     $("#caption").html(name);
                 }
 
-                if ($.cookie('showNotePopup11')) {
-                    if ($(window).width() < 480) {
-                        closeNotePopup();
-                    }
-                    else {
-                        openNotePopup();
-                    }
-                }
-                else {
-                    closeNotePopup();
-                }
-
                 function zoomInNotePopup() {
                     var noteEditor = $find("<%=txtNote.ClientID%>");
                     var windowHeight = $(window).height();
@@ -300,10 +288,6 @@
                     }
                     else {
                         closeNotePopup();
-                        // cookie
-                        var date = new Date();
-                        date.setTime(date.getTime() + 120 * 60 * 1000);
-                        $.cookie('showNotePopup11', true, { expires: date });
                     }
                 }
 
@@ -336,20 +320,10 @@
                 // Fire.
                 screenClass();
 
-                $('#txtsearchcustomer').keydown(function (event) {
-                    if (event.which === 13) {
-                        var value = $("#txtsearchcustomer").val();
-                        if (!isBlank(value)) {
-                            window.open("/danh-sach-khach-hang?textsearch=" + value, "_blank");
-                        }
-                        event.preventDefault();
-                        return false;
-                    }
-                });
-
                 $(document).ready(function () {
                     LoadSelect();
                 });
+
                 function LoadSelect() {
                     $(".select2").select2({
                         templateResult: formatState,

@@ -30,7 +30,7 @@ namespace IM_PJ
                     var acc = AccountController.GetByUsername(username);
                     if (acc != null)
                     {
-                        if (acc.RoleID == 0 || acc.Username == "nhom_zalo502")
+                        if (acc.RoleID == 0 || acc.RoleID == 2 || acc.Username == "nhom_zalo502")
                         {
                             LoadData();
                             LoadCreatedBy();
@@ -287,10 +287,16 @@ namespace IM_PJ
             html.Append("    <th class='image-column'>Ảnh</th>");
             html.Append("    <th class='name-column'>Tiêu đề</th>");
             html.Append("    <th class='category-column'>Danh mục</th>");
-            html.Append("    <th class='stock-status-column'>Trang chủ</th>");
+            if (acc.RoleID == 0 || acc.Username == "nhom_zalo502")
+            {
+                html.Append("    <th class='stock-status-column'>Trang chủ</th>");
+            }
             html.Append("    <th class='date-column'>Người viết</th>");
             html.Append("    <th class='date-column'>Ngày tạo</th>");
-            html.Append("    <th class='action-column'></th>");
+            if (acc.RoleID == 0 || acc.Username == "nhom_zalo502")
+            {
+                html.Append("    <th class='action-column'></th>");
+            }
             html.Append("</tr>");
 
             if (acs.Count > 0)
@@ -319,22 +325,28 @@ namespace IM_PJ
                     html.Append("</td>");
                     html.Append("   <td class='customer-name-link'><a target='_blank' href='/xem-bai-viet-app?id=" + item.ID + "'>" + item.Title + "</a></td>");
                     html.Append("   <td>" + item.CategoryName + "</td>");
-                    if (item.AtHome == false)
+                    if (acc.RoleID == 0 || acc.Username == "nhom_zalo502")
                     {
-                        html.Append("   <td><span id='showAtHome_" + item.ID + "'><a href='javascript:;' data-post-id='" + item.ID + "' data-update='true' class='bg-black bg-button' onclick='updateAtHome($(this))'>Đang ẩn</a></span></td>");
-                    }
-                    else
-                    {
-                        html.Append("   <td><span id='showAtHome_" + item.ID + "'><a href='javascript:;' data-post-id='" + item.ID + "' data-update='false' class='bg-green bg-button' onclick='updateAtHome($(this))'>Đang hiện</a></span></td>");
+                        if (item.AtHome == false)
+                        {
+                            html.Append("   <td><span id='showAtHome_" + item.ID + "'><a href='javascript:;' data-post-id='" + item.ID + "' data-update='true' class='bg-black bg-button' onclick='updateAtHome($(this))'>Đang ẩn</a></span></td>");
+                        }
+                        else
+                        {
+                            html.Append("   <td><span id='showAtHome_" + item.ID + "'><a href='javascript:;' data-post-id='" + item.ID + "' data-update='false' class='bg-green bg-button' onclick='updateAtHome($(this))'>Đang hiện</a></span></td>");
+                        }
                     }
                     html.Append("   <td>" + item.CreatedBy + "</td>");
                     string date = string.Format("{0:dd/MM/yyyy}", item.CreatedDate);
                     html.Append("   <td>" + date + "</td>");
-                    html.Append("   <td>");
-                    html.Append("       <a href='javascript:;' title='Xóa bài này' class='btn primary-btn btn-red h45-btn' onclick='deletePost(" + item.ID + ");'><i class='fa fa-times' aria-hidden='true'></i> Xóa</a>");
-                    html.Append("       <a target='_blank' href='/sua-bai-viet-app?id=" + item.ID + "' title='Sửa bài này' class='btn primary-btn btn-blue h45-btn'><i class='fa fa-pencil-square-o' aria-hidden='true'></i> Sửa</a>");
-                    html.Append("       <a href='javascript:;' title='Đồng bộ bài viết' class='btn btn-green primary-btn h45-btn' onclick='showPostSyncModal(" + item.ID + ");'><i class='fa fa-refresh' aria-hidden='true'></i></a>");
-                    html.Append("  </td>");
+                    if (acc.RoleID == 0 || acc.Username == "nhom_zalo502")
+                    {
+                        html.Append("   <td>");
+                        html.Append("       <a href='javascript:;' title='Xóa bài này' class='btn primary-btn btn-red h45-btn' onclick='deletePost(" + item.ID + ");'><i class='fa fa-times' aria-hidden='true'></i> Xóa</a>");
+                        html.Append("       <a target='_blank' href='/sua-bai-viet-app?id=" + item.ID + "' title='Sửa bài này' class='btn primary-btn btn-blue h45-btn'><i class='fa fa-pencil-square-o' aria-hidden='true'></i> Sửa</a>");
+                        html.Append("       <a href='javascript:;' title='Đồng bộ bài viết' class='btn btn-green primary-btn h45-btn' onclick='showPostSyncModal(" + item.ID + ");'><i class='fa fa-refresh' aria-hidden='true'></i></a>");
+                        html.Append("  </td>");
+                    }
                     html.Append("</tr>");
                 }
 

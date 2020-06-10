@@ -49,7 +49,7 @@ namespace IM_PJ
                 }
                 else
                 {
-                    ltrThumbnail.Text = "<img src='" + p.Thumbnail + "'>";
+                    ltrThumbnail.Text = "<img src='" + p.Thumbnail + "'><a href='" + p.Thumbnail + "' download class='btn download-btn download-image h45-btn'><i class='fa fa-cloud-download'></i> Tải hình này</a>";
                     ltrSummary.Text = p.Summary;
                     if (p.Action == "show_web")
                     {
