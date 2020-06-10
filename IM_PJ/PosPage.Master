@@ -9,13 +9,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=yes">
     <meta name="format-detection" content="telephone=no">
     <meta name="robots" content="noindex, nofollow">
-    <link href="/App_Themes/Ann/css/style.css?v=11062020" rel="stylesheet" media="all">
+    <link href="/App_Themes/Ann/css/style.css?v=17052020" rel="stylesheet" media="all">
     <link href="/App_Themes/NewUI/js/select2/select2.css" rel="stylesheet" />
-    <link href="/App_Themes/Ann/css/style-P.css?v=11062020" rel="stylesheet" media="all">
+    <link href="/App_Themes/Ann/css/style-P.css?v=17052020" rel="stylesheet" media="all">
     <link href="/App_Themes/NewUI/js/sweet/sweet-alert.css" rel="stylesheet" />
-    <link href="/App_Themes/Ann/css/HoldOn.css?v=11062020" rel="stylesheet" type="text/css" />
+    <link href="/App_Themes/Ann/css/HoldOn.css?v=17052020" rel="stylesheet" type="text/css" />
     <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
-    <script type="text/javascript" src="/App_Themes/Ann/js/popup.js?v=11062020"></script>
+    <script type="text/javascript" src="/App_Themes/Ann/js/popup.js?v=17052020"></script>
     <script type="text/javascript" src="/Scripts/uuid.js"></script>
     <asp:ContentPlaceHolder ID="head" runat="server">
     </asp:ContentPlaceHolder>
@@ -138,10 +138,10 @@
             <asp:HiddenField ID="hdfUserID" runat="server" />
 
             <script src="/App_Themes/Ann/js/bootstrap.min.js"></script>
-            <script src="/App_Themes/NewUI/js/sweet/sweet-alert.js?v=11062020" type="text/javascript"></script>
+            <script src="/App_Themes/NewUI/js/sweet/sweet-alert.js?v=17052020" type="text/javascript"></script>
             <script src="/App_Themes/NewUI/js/select2/select2.min.js"></script>
-            <script src="/App_Themes/Ann/js/master.js?v=11062020"></script>
-            <script src="/App_Themes/Ann/js/HoldOn.js?v=11062020"></script>
+            <script src="/App_Themes/Ann/js/master.js?v=17052020"></script>
+            <script src="/App_Themes/Ann/js/HoldOn.js?v=17052020"></script>
             <script type="text/javascript">
                 $(".image-item img").click(function (e) {
                     $("#modalImage").removeClass("hide");
@@ -183,43 +183,6 @@
                     let name = $(obj).parent().parent().find(".customer-td").text();
                     $("#caption").html(name);
                 }
-                
-
-                function screenClass() {
-                    if ($(window).innerWidth() < 769) {
-                        $('.nav-toggle').removeClass('open');
-                        $('body').removeClass('menuin');
-                    }
-                }
-
-                // Fire.
-                screenClass();
-
-                $(document).ready(function () {
-                    LoadSelect();
-                });
-
-                function LoadSelect() {
-                    $(".select2").select2({
-                        templateResult: formatState,
-                        templateSelection: formatState
-                    });
-                    function formatState(opt) {
-                        if (!opt.id) {
-                            return opt.text;
-                        }
-                        var optimage = $(opt.element).data('image');
-                        if (!optimage) {
-                            return opt.text;
-                        } else {
-                            var $opt = $(
-                                '<span>' + opt.text + '</span>'
-                            );
-                            return $opt;
-                        }
-                    };
-                }
-
 
                 $('.form-filter input').keyup(function (e) {
                     var $input = $(this),
@@ -249,43 +212,6 @@
                         $table.find('tbody .no-result').remove();
                     }
                 });
-
-                function truncateName(args) {
-                    var $span = $(".ruUploadProgress", args.get_row());
-                    var text = $span.text();
-                    if (text.length > 23) {
-                        var newString = text.substring(0, 23) + '...';
-                        $span.text(newString);
-                    }
-                }
-
-                function showThumbnail(file, args) {
-
-                    var image = document.createElement("img");
-
-                    image.file = file;
-                    image.className = "ab img-responsive";
-
-                    var $row = $(args.get_row());
-                    $row.parent().className = "row ruInputs list-unstyled";
-                    $row.append(image);
-
-
-                    var reader = new FileReader();
-                    reader.onload = (function (aImg) {
-                        return function (e) {
-                            aImg.src = e.target.result;
-                        };
-                    }(image));
-                    var ret = reader.readAsDataURL(file);
-                    var canvas = document.createElement("canvas");
-
-                    ctx = canvas.getContext("2d");
-                    image.onload = function () {
-                        ctx.drawImage(image, 100, 100);
-                    };
-
-                }
 
                 function isBlank(str) {
                     return (!str || /^\s*$/.test(str));
