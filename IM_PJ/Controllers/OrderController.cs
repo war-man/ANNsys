@@ -375,20 +375,23 @@ namespace IM_PJ.Controllers
                     {
                         ID = x.ID,
                         CustomerID = x.CustomerID,
-                        CustomerNewPhone = x.CustomerNewPhone,
                         OrderType = x.OrderType,
-                        PaymentType = x.PaymentType,
-                        PaymentStatus = x.PaymentStatus,
-                        ShippingType = x.ShippingType,
-                        ShippingCode = x.ShippingCode,
-                        TransportCompanyID = x.TransportCompanyID,
                         ExcuteStatus = x.ExcuteStatus,
-                        DateDone = x.DateDone,
-                        CreatedDate = x.CreatedDate,
+                        PaymentStatus = x.PaymentStatus,
+                        PaymentType = x.PaymentType,
+                        ShippingType = x.ShippingType,
+                        TotalPrice = x.TotalPrice,
                         TotalDiscount = x.TotalDiscount,
+                        FeeShipping = x.FeeShipping,
+                        CreatedDate = x.CreatedDate,
                         CreatedBy = x.CreatedBy,
+                        DateDone = x.DateDone,
                         OrderNote = x.OrderNote,
                         RefundsGoodsID = x.RefundsGoodsID,
+                        ShippingCode = x.ShippingCode,
+                        TransportCompanyID = x.TransportCompanyID,
+                        TransportCompanySubID = x.TransportCompanySubID,
+                        PostalDeliveryType = x.PostalDeliveryType,
                         CouponID = x.CouponID,
                         CouponValue = x.CouponValue
                     })
@@ -396,7 +399,6 @@ namespace IM_PJ.Controllers
                 #endregion
 
                 #region Các filter trức tiếp trên bản tbl_Order
-
                 // Filter Created By
                 if (!String.IsNullOrEmpty(filter.orderCreatedBy))
                 {
@@ -512,11 +514,47 @@ namespace IM_PJ.Controllers
                     ID = x.ID,
                     CustomerID = x.CustomerID,
                     RefundsGoodsID = x.RefundsGoodsID,
-                    CouponID = x.CouponID
+                    CouponID = x.CouponID,
+                    ShippingCode = x.ShippingCode
                 });
                 #endregion
 
                 #region Các filter cần liên kết bản
+                #region Tìm kiếm theo Customer, Order Detail
+                var orderDetailFilter = con.tbl_OrderDetail
+                    .Join(
+                        orderFilter,
+                        d => d.OrderID,
+                        h => h.ID,
+                        (d, h) => d
+                    )
+                    .Select(x => new {
+                        OrderID = x.OrderID,
+                        SKU = x.SKU,
+                        Quantity = x.Quantity.HasValue ? x.Quantity.Value : 0
+                    });
+
+                var customerFilter = con.tbl_Customer
+                    .Join(
+                        orderFilter
+                            .Where(x => x.CustomerID.HasValue)
+                            .GroupBy(g => g.CustomerID)
+                            .Select(x => new { CustomerID = x.Key }),
+                        c => c.ID,
+                        h => h.CustomerID,
+                        (c, h) => c
+                    )
+                    .Select(x => new {
+                        ID = x.ID,
+                        CustomerName = x.CustomerName,
+                        Nick = x.Nick,
+                        Zalo = x.Zalo,
+                        CustomerPhone = x.CustomerPhone,
+                        CustomerPhone2 = x.CustomerPhone2,
+                        UnSignedName = x.UnSignedName,
+                        UnSignedNick = x.UnSignedNick
+                    });
+
                 #region Tìm kiếm theo từ khóa
                 // Filter orderid or customername or customerphone or nick or shipcode
                 if (!String.IsNullOrEmpty(filter.search))
@@ -532,282 +570,83 @@ namespace IM_PJ.Controllers
                         {
                             if (search.Length <= 6)
                             {
-                                orderFilter = orders
-                                    .Where(x =>
-                                        x.ID.ToString() == search
-                                    )
-                                    .Select(x => new
-                                    {
-                                        ID = x.ID,
-                                        CustomerID = x.CustomerID,
-                                        RefundsGoodsID = x.RefundsGoodsID,
-                                        CouponID = x.CouponID
-                                    });
+                                orderFilter = orderFilter.Where(x => x.ID.ToString() == search);
                             }
                             else
                             {
-                                orderFilter = orders
+                                orderFilter = orderFilter
                                     .Join(
-                                        con.tbl_Customer,
+                                        customerFilter,
                                         h => h.CustomerID,
                                         c => c.ID,
-                                        (h, c) => new
-                                        {
-                                            ID = h.ID,
-                                            CustomerID = h.CustomerID,
-                                            ShippingCode = h.ShippingCode,
-                                            RefundsGoodsID = h.RefundsGoodsID,
-                                            CouponID = h.CouponID,
-                                            // Customer
-                                            Zalo = c.Zalo,
-                                            CustomerPhone = c.CustomerPhone,
-                                            CustomerNewPhone = h.CustomerNewPhone
+                                        (h, c) => new {
+                                            order = h,
+                                            customer = c
                                         }
                                     )
                                     .Where(x =>
-                                        x.CustomerPhone == search ||
-                                        x.CustomerNewPhone == search ||
-                                        x.Zalo == search ||
-                                        x.ShippingCode == search
+                                        x.customer.CustomerPhone == search ||
+                                        x.customer.CustomerPhone2 == search ||
+                                        x.customer.Zalo == search ||
+                                        x.order.ShippingCode == search
                                     )
-                                    .Select(x => new
-                                    {
-                                        ID = x.ID,
-                                        CustomerID = x.CustomerID,
-                                        RefundsGoodsID = x.RefundsGoodsID,
-                                        CouponID = x.CouponID
-                                    });
+                                    .Select(x => x.order);
+
+                                customerFilter = customerFilter
+                                    .Join(
+                                        orderFilter
+                                            .Where(x => x.CustomerID.HasValue)
+                                            .GroupBy(g => g.CustomerID)
+                                            .Select(x => new { CustomerID = x.Key }),
+                                        c => c.ID,
+                                        h => h.CustomerID,
+                                        (c, h) => c
+                                    );
                             }
                         }
                         else
                         {
-                            orderFilter = orders
+                            orderFilter = orderFilter
                                 .Join(
-                                    con.tbl_Customer,
+                                    customerFilter,
                                     h => h.CustomerID,
                                     c => c.ID,
-                                    (h, c) => new
-                                    {
-                                        ID = h.ID,
-                                        CustomerID = h.CustomerID,
-                                        ShippingCode = h.ShippingCode,
-                                        RefundsGoodsID = h.RefundsGoodsID,
-                                        CouponID = h.CouponID,
-                                        // Customer
-                                        UnSignedName = c.UnSignedName,
-                                        UnSignedNick = c.UnSignedNick
+                                    (h, c) => new {
+                                        order = h,
+                                        customer = c
                                     }
                                 )
                                 .Where(x =>
-                                    x.UnSignedName.ToLower().Contains(search) ||
-                                    x.UnSignedNick.ToLower().Contains(search) ||
-                                    x.ShippingCode.ToLower() == search
+                                    x.customer.UnSignedName.ToLower().Contains(search) ||
+                                    x.customer.UnSignedNick.ToLower().Contains(search) ||
+                                    x.order.ShippingCode.ToLower() == search
                                 )
-                                .Select(x => new
-                                {
-                                    ID = x.ID,
-                                    CustomerID = x.CustomerID,
-                                    RefundsGoodsID = x.RefundsGoodsID,
-                                    CouponID = x.CouponID
-                                });
+                                .Select(x => x.order);
+
+                            customerFilter = customerFilter
+                                .Join(
+                                    orderFilter
+                                        .Where(x => x.CustomerID.HasValue)
+                                        .GroupBy(g => g.CustomerID)
+                                        .Select(x => new { CustomerID = x.Key }),
+                                    c => c.ID,
+                                    h => h.CustomerID,
+                                    (c, h) => c
+                                );
                         }
 
                     }
                     else if (filter.searchType == (int)SearchType.Product)
                     {
-                        orderFilter = orders
+                        orderDetailFilter = orderDetailFilter.Where(x => x.SKU.ToUpper().StartsWith(search));
+                        orderFilter = orderFilter
                             .Join(
-                                con.tbl_OrderDetail,
+                                orderDetailFilter,
                                 h => h.ID,
                                 d => d.OrderID,
-                                (h, d) => new
-                                {
-                                    ID = h.ID,
-                                    CustomerID = h.CustomerID,
-                                    ShippingCode = h.ShippingCode,
-                                    RefundsGoodsID = h.RefundsGoodsID,
-                                    CouponID = h.CouponID,
-                                    // Order detail
-                                    SKU = d.SKU
-                                }
-                            )
-                            .Where(x =>
-                                x.SKU.ToUpper().StartsWith(search)
-                            )
-                            .Select(x => new
-                            {
-                                ID = x.ID,
-                                CustomerID = x.CustomerID,
-                                RefundsGoodsID = x.RefundsGoodsID,
-                                CouponID = x.CouponID
-                            });
+                                (h, d) => h
+                            );
                     }
-                }
-                #endregion
-
-                #region Tìm kiếm theo ngày giao hàng
-                // Filter Delivery Start At
-                if (!String.IsNullOrEmpty(filter.deliveryStart))
-                {
-                    DateTime fromdate = DateTime.Today;
-                    DateTime todate = DateTime.Now;
-                    CalDate(filter.deliveryStart, ref fromdate, ref todate);
-
-                    orderFilter = orders
-                        .GroupJoin(
-                            con.Deliveries,
-                            h => h.ID,
-                            d => d.OrderID,
-                            (h, d) => new { h, d }
-                        )
-                        .SelectMany(
-                            x => x.d.DefaultIfEmpty(),
-                            (parent, child) => new
-                            {
-                                ID = parent.h.ID,
-                                CustomerID = parent.h.CustomerID,
-                                RefundsGoodsID = parent.h.RefundsGoodsID,
-                                CouponID = parent.h.CouponID,
-                                // Delivery
-                                DelStartAt = child.StartAt
-                            }
-                        )
-                        .Where(x =>
-                            x.DelStartAt >= fromdate &&
-                            x.DelStartAt <= todate
-                        )
-                        .Select(x => new
-                        {
-                            ID = x.ID,
-                            CustomerID = x.CustomerID,
-                            RefundsGoodsID = x.RefundsGoodsID,
-                            CouponID = x.CouponID
-                        });
-                }
-                #endregion
-
-                #region Tìm kiếm trạng thái chuyển khoản hoặc ngày kết kết thúc chuyển khoản
-                // Filter Transfer Status or DoneAt
-                if (filter.transferStatus > 0 || (filter.transferFromDate.HasValue && filter.transferToDate.HasValue))
-                {
-                    var tempTrans = orders
-                        .GroupJoin(
-                            con.BankTransfers,
-                            h => h.ID,
-                            b => b.OrderID,
-                            (h, b) => new { h, b }
-                        )
-                        .SelectMany(
-                            x => x.b.DefaultIfEmpty(),
-                            (parent, child) => new
-                            {
-                                ID = parent.h.ID,
-                                CustomerID = parent.h.CustomerID,
-                                RefundsGoodsID = parent.h.RefundsGoodsID,
-                                CouponID = parent.h.CouponID,
-                                // Bank Transfers
-                                TransStatus = child.Status,
-                                TransDoneAt = child.DoneAt,
-                            }
-                        )
-                        .Where(x => 1 == 1);
-
-                    if (filter.transferStatus == 1)
-                    {
-                        tempTrans = tempTrans.Where(x =>
-                            x.TransStatus == 1
-                        );
-                    }
-                    else if (filter.transferStatus == 2)
-                    {
-                        tempTrans = tempTrans.Where(x =>
-                            x.TransStatus != 1
-                        );
-                    }
-
-                    if (filter.transferFromDate.HasValue && filter.transferToDate.HasValue)
-                    {
-
-                        tempTrans = tempTrans.Where(x =>
-                            x.TransDoneAt >= filter.transferFromDate &&
-                            x.TransDoneAt <= filter.transferToDate
-                        );
-                    }
-
-                    orderFilter = tempTrans.Select(x => new
-                    {
-                        ID = x.ID,
-                        CustomerID = x.CustomerID,
-                        RefundsGoodsID = x.RefundsGoodsID,
-                        CouponID = x.CouponID
-                    });
-                }
-                #endregion
-
-                #region Tìm kiếm đợt giao hàng
-                // Filter Delivery times
-                if (filter.deliveryTimes > 0)
-                {
-                    orderFilter = orders
-                        .GroupJoin(
-                            con.Deliveries,
-                            h => h.ID,
-                            d => d.OrderID,
-                            (h, d) => new { h, d }
-                        )
-                        .SelectMany(
-                            x => x.d.DefaultIfEmpty(),
-                            (parent, child) => new
-                            {
-                                ID = parent.h.ID,
-                                CustomerID = parent.h.CustomerID,
-                                RefundsGoodsID = parent.h.RefundsGoodsID,
-                                CouponID = parent.h.CouponID,
-                                // Delivery
-                                DeliveryTimes = child.Times
-                            }
-                        )
-                        .Where(x => x.DeliveryTimes == filter.deliveryTimes)
-                        .Select(x => new
-                        {
-                            ID = x.ID,
-                            CustomerID = x.CustomerID,
-                            RefundsGoodsID = x.RefundsGoodsID,
-                            CouponID = x.CouponID
-                        });
-                }
-                #endregion
-
-                #region Tìm kiếm theo shipper
-                // Filter Shipper
-                if (filter.shipper > 0)
-                {
-                    orderFilter = orders
-                        .GroupJoin(
-                            con.Deliveries,
-                            h => h.ID,
-                            d => d.OrderID,
-                            (h, d) => new { h, d }
-                        )
-                        .SelectMany(
-                            x => x.d.DefaultIfEmpty(),
-                            (parent, child) => new
-                            {
-                                ID = parent.h.ID,
-                                CustomerID = parent.h.CustomerID,
-                                RefundsGoodsID = parent.h.RefundsGoodsID,
-                                CouponID = parent.h.CouponID,
-                                ShipperID = child.ShipperID,
-                            }
-                        )
-                        .Where(x => x.ShipperID == filter.shipper)
-                        .Select(x => new
-                        {
-                            ID = x.ID,
-                            CustomerID = x.CustomerID,
-                            RefundsGoodsID = x.RefundsGoodsID,
-                            CouponID = x.CouponID
-                        });
                 }
                 #endregion
 
@@ -815,13 +654,13 @@ namespace IM_PJ.Controllers
                 // Get info quantiy
                 var orderQuantity = orderFilter
                     .Join(
-                        con.tbl_OrderDetail,
+                        orderDetailFilter,
                         h => h.ID,
-                        od => od.OrderID.Value,
+                        od => od.OrderID,
                         (h, od) => new
                         {
                             OrderID = h.ID,
-                            Quantity = od.Quantity.HasValue ? od.Quantity.Value : 0
+                            Quantity = od.Quantity
                         }
                     )
                     .GroupBy(x => x.OrderID)
@@ -866,15 +705,200 @@ namespace IM_PJ.Controllers
                     }
                 }
                 #endregion
+                #endregion
 
-                #region Tìm kiếm theo phí sản phẩm
-                // Get fee of product
-                var orderFee = orderFilter
+                #region Tìm kiếm theo Bank, Transfers
+                var transferFilter = con.BankTransfers
                     .Join(
-                        con.Fees,
+                        orderFilter,
+                        b => b.OrderID,
                         h => h.ID,
+                        (b, h) => b
+                    )
+                    .Select(x => new {
+                        OrderID = x.OrderID,
+                        CusBankID = x.CusBankID,
+                        AccBankID = x.AccBankID,
+                        Money = x.Money,
+                        Status = x.Status,
+                        DoneAt = x.DoneAt,
+                        Note = x.Note
+                    });
+
+                #region Tìm kiếm trạng thái chuyển khoản hoặc ngày kết kết thúc chuyển khoản
+                // Filter Transfer Status or DoneAt
+                if (filter.transferStatus > 0 || (filter.transferFromDate.HasValue && filter.transferToDate.HasValue))
+                {
+                    var bankTransfers = con.BankTransfers.Where(x => 1 == 1);
+
+                    if (filter.transferStatus == 1)
+                    {
+                        bankTransfers = bankTransfers.Where(x => x.Status == 1);
+                    }
+                    else if (filter.transferStatus == 2)
+                    {
+                        bankTransfers = bankTransfers.Where(x => x.Status != 1);
+                    }
+
+                    if (filter.transferFromDate.HasValue && filter.transferToDate.HasValue)
+                    {
+
+                        bankTransfers = bankTransfers.Where(x =>
+                            x.DoneAt >= filter.transferFromDate &&
+                            x.DoneAt <= filter.transferToDate
+                        );
+                    }
+
+                    orderFilter = orderFilter
+                        .Join(
+                            bankTransfers,
+                            h => h.ID,
+                            b => b.OrderID,
+                            (h, b) => h
+                        );
+                }
+                #endregion
+
+                #region Tìm kiếm theo tài khoản ngân hàng nhận tiền
+                if (filter.bankReceive != 0)
+                {
+                    transferFilter = transferFilter.Where(x => x.AccBankID == filter.bankReceive);
+                    orderFilter = orderFilter
+                        .Join(
+                            transferFilter,
+                            o => o.ID,
+                            b => b.OrderID,
+                            (o, b) => o
+                        );
+                }
+                #endregion
+                #endregion
+
+                #region Tìm kiếm theo Delivery
+                var deliveryFilter = con.Deliveries
+                    .Join(
+                        orderFilter,
+                        d => d.OrderID,
+                        h => h.ID,
+                        (d, h) => d
+                    )
+                    .Select(x => new
+                    {
+                        OrderID = x.OrderID,
+                        StartAt = x.StartAt,
+                        Status = x.Status,
+                        ShipperID = x.ShipperID,
+                        COD = x.COD,
+                        COO = x.COO,
+                        ShipNote = x.ShipNote,
+                        Image = x.Image,
+                        Times = x.Times,
+                    });
+
+                #region Tìm kiếm theo ngày giao hàng
+                // Filter Delivery Start At
+                if (!String.IsNullOrEmpty(filter.deliveryStart))
+                {
+                    DateTime fromdate = DateTime.Today;
+                    DateTime todate = DateTime.Now;
+                    CalDate(filter.deliveryStart, ref fromdate, ref todate);
+
+                    deliveryFilter = deliveryFilter
+                        .Where(x =>
+                            x.StartAt >= fromdate &&
+                            x.StartAt <= todate
+                        );
+
+                    orderFilter = orderFilter
+                        .Join(
+                            deliveryFilter,
+                            h => h.ID,
+                            d => d.OrderID,
+                            (h, d) => h
+                        );
+                }
+                #endregion
+
+                #region Tìm kiếm đợt giao hàng
+                // Filter Delivery times
+                if (filter.deliveryTimes > 0)
+                {
+                    deliveryFilter = deliveryFilter.Where(x => x.Times == filter.deliveryTimes);
+                    orderFilter = orderFilter
+                        .Join(
+                            deliveryFilter,
+                            h => h.ID,
+                            d => d.OrderID,
+                            (h, d) => h
+                        );
+                }
+                #endregion
+
+                #region Tìm kiếm theo shipper
+                // Filter Shipper
+                if (filter.shipper > 0)
+                {
+                    deliveryFilter = deliveryFilter.Where(x => x.ShipperID == filter.shipper);
+                    orderFilter = orderFilter
+                        .Join(
+                            deliveryFilter,
+                            h => h.ID,
+                            d => d.OrderID,
+                            (h, d) => h
+                        );
+                }
+                #endregion
+
+                #region Tìm kiếm theo phiếu giao hàng
+                if (filter.deliveryStatus != 0)
+                {
+                    deliveryFilter = deliveryFilter.Where(x => x.Status == filter.deliveryStatus);
+                    orderFilter = orderFilter
+                        .Join(
+                            deliveryFilter,
+                            o => o.ID,
+                            b => b.OrderID,
+                            (o, b) => o
+                        );
+                }
+
+                switch (filter.invoiceStatus)
+                {
+                    case (int)InvoiceStatus.Yes:
+                        deliveryFilter = deliveryFilter.Where(x => !String.IsNullOrEmpty(x.Image));
+
+                        orderFilter = orderFilter
+                            .Join(
+                                deliveryFilter,
+                                o => o.ID,
+                                b => b.OrderID,
+                                (o, b) => o
+                            );
+                        break;
+                    case (int)InvoiceStatus.No:
+                        deliveryFilter = deliveryFilter.Where(x => String.IsNullOrEmpty(x.Image));
+                        orderFilter = orderFilter
+                            .Join(
+                                deliveryFilter,
+                                o => o.ID,
+                                b => b.OrderID,
+                                (o, b) => o
+                            );
+                        break;
+                    default:
+                        break;
+                }
+                #endregion
+                #endregion
+
+                #region Tìm kiếm theo Fee
+                // Get fee of product
+                var feeFilter = con.Fees
+                    .Join(
+                        orderFilter,
                         f => f.OrderID,
-                        (h, f) => new
+                        h => h.ID,
+                        (f, h) => new
                         {
                             OrderID = h.ID,
                             FeeTypeID = f.FeeTypeID,
@@ -900,14 +924,16 @@ namespace IM_PJ.Controllers
                         OtherFeeValue = g.Sum(x => x.FeePrice)
                     });
 
+                #region Tìm kiếm theo phí sản phẩm
                 // Filter fee of product
                 if (!String.IsNullOrEmpty(filter.otherFee))
                 {
                     if (filter.otherFee.Equals("yes"))
                     {
+                        feeFilter = feeFilter.Where(x => x.OtherFeeValue != 0);
                         orderFilter = orderFilter
                             .Join(
-                                orderFee.Where(x => x.OtherFeeValue != 0),
+                                feeFilter,
                                 o => o.ID,
                                 b => b.OrderID,
                                 (o, b) => o
@@ -915,9 +941,10 @@ namespace IM_PJ.Controllers
                     }
                     else
                     {
+                        feeFilter = feeFilter.Where(x => x.OtherFeeValue == 0);
                         orderFilter = orderFilter
                             .Join(
-                                orderFee.Where(x => x.OtherFeeValue == 0),
+                                feeFilter,
                                 o => o.ID,
                                 b => b.OrderID,
                                 (o, b) => o
@@ -925,144 +952,10 @@ namespace IM_PJ.Controllers
                     }
                 }
                 #endregion
-
-                #region Tìm kiếm theo tài khoản ngân hàng nhận tiền
-                // Filter banck receive
-                var orderBank = orderFilter
-                    .Join(
-                        con.BankTransfers,
-                        h => h.ID,
-                        t => t.OrderID,
-                        (h, t) => new
-                        {
-                            OrderID = h.ID,
-                            CusBankID = t.CusBankID,
-                            AccBankID = t.AccBankID,
-                            Money = t.Money,
-                            Status = t.Status,
-                            DoneAt = t.DoneAt,
-                            Note = t.Note
-                        }
-                    )
-                    .Join(
-                        con.Banks,
-                        h => h.CusBankID,
-                        c => c.ID,
-                        (h, c) => new
-                        {
-                            OrderID = h.OrderID,
-                            CusBankID = h.CusBankID,
-                            AccBankID = h.AccBankID,
-                            Money = h.Money,
-                            Status = h.Status,
-                            DoneAt = h.DoneAt,
-                            Note = h.Note,
-                            // Bank
-                            CusBankName = c.BankName
-                        }
-                    )
-                    .Join(
-                        con.BankAccounts,
-                        h => h.AccBankID,
-                        a => a.ID,
-                        (h, a) => new
-                        {
-                            OrderID = h.OrderID,
-                            CusBankID = h.CusBankID,
-                            AccBankID = h.AccBankID,
-                            Money = h.Money,
-                            Status = h.Status,
-                            DoneAt = h.DoneAt,
-                            Note = h.Note,
-                            // Bank
-                            CusBankName = h.CusBankName,
-                            // Bank Account
-                            AccBankName = a.BankName
-                        }
-                    );
-
-                if (filter.bankReceive != 0)
-                {
-                    orderFilter = orderFilter
-                        .Join(
-                            orderBank.Where(x => x.AccBankID == filter.bankReceive),
-                            o => o.ID,
-                            b => b.OrderID,
-                            (o, b) => o
-                        );
-                }
-                #endregion
-
-                #region Tìm kiếm theo phiếu giao hàng
-                var orderDelivery = con.Deliveries
-                    .Join(
-                        orderFilter,
-                        d => d.OrderID,
-                        o => o.ID,
-                        (d, o) => new { d, o }
-                    )
-                    .GroupJoin(
-                        con.Shippers,
-                        t1 => t1.d.ShipperID,
-                        c => c.ID,
-                        (t1, c) => new { t1, c }
-                    )
-                    .SelectMany(
-                        x => x.c.DefaultIfEmpty(),
-                        (parent, child) => new
-                        {
-                            OrderID = parent.t1.d.OrderID,
-                            StartAt = parent.t1.d.StartAt,
-                            Status = parent.t1.d.Status,
-                            ShipperID = parent.t1.d.ShipperID,
-                            COD = parent.t1.d.COD,
-                            COO = parent.t1.d.COO,
-                            ShipNote = parent.t1.d.ShipNote,
-                            Image = parent.t1.d.Image,
-                            DeliveryTimes = parent.t1.d.Times,
-                            // Shipper
-                            ShipperName = child != null ? child.Name : String.Empty
-                        }
-                    );
-
-                if (filter.deliveryStatus != 0)
-                {
-                    orderFilter = orderFilter
-                        .Join(
-                            orderDelivery.Where(x => x.Status == filter.deliveryStatus),
-                            o => o.ID,
-                            b => b.OrderID,
-                            (o, b) => o
-                        );
-                }
-
-                switch (filter.invoiceStatus)
-                {
-                    case (int)InvoiceStatus.Yes:
-                        orderFilter = orderFilter
-                        .Join(
-                            orderDelivery.Where(x => !String.IsNullOrEmpty(x.Image)),
-                            o => o.ID,
-                            b => b.OrderID,
-                            (o, b) => o
-                        );
-                        break;
-                    case (int)InvoiceStatus.No:
-                        orderFilter = orderFilter
-                        .Join(
-                            orderDelivery.Where(x => String.IsNullOrEmpty(x.Image)),
-                            o => o.ID,
-                            b => b.OrderID,
-                            (o, b) => o
-                        );
-                        break;
-                    default:
-                        break;
-                }
                 #endregion
 
                 #region Lọc theo mã giảm giá
-                var customerCoupon = con.Coupons
+                var couponFilter = con.Coupons
                     .Join(
                         orderFilter,
                         c => c.ID,
@@ -1080,7 +973,7 @@ namespace IM_PJ.Controllers
                     var orderCoupon = orderFilter
                        .Where(x => x.CouponID.HasValue)
                        .Join(
-                           customerCoupon,
+                           couponFilter,
                            o => o.ID,
                            c => c.orderID,
                            (o, c) => o
@@ -1107,12 +1000,12 @@ namespace IM_PJ.Controllers
                 #region Xuất dữ liệu
                 #region Xuất thông tin chính
                 // Get info main
-                var header = orderFilter
+                var header = orders
                     .Join(
-                        con.tbl_Order,
-                        h => h.ID,
+                        orderFilter,
                         o => o.ID,
-                        (h, o) => o
+                        h => h.ID,
+                        (o, h) => o
                     )
                     .OrderByDescending(o => o.ID)
                     .ToList();
@@ -1121,18 +1014,24 @@ namespace IM_PJ.Controllers
                 #region Xuất thông tin về số lượng order
                 // Get info quantiy
                 var body = orderQuantity
+                    .Join(
+                        orderFilter,
+                        b => b.OrderID,
+                        o => o.ID,
+                        (b, o) => b
+                    )
                     .OrderByDescending(o => o.OrderID)
                     .ToList();
                 #endregion
 
                 #region Xuất thông tin về tra hàng
                 // Get info refunds
-                var refunds = orderFilter.Where(x => x.RefundsGoodsID.HasValue)
+                var refunds = con.tbl_RefundGoods
                     .Join(
-                        con.tbl_RefundGoods,
-                        h => h.RefundsGoodsID.Value,
+                        orderFilter.Where(x => x.RefundsGoodsID.HasValue),
                         r => r.ID,
-                        (h, r) => new
+                        h => h.RefundsGoodsID.Value,
+                        (r, h) => new
                         {
                             OrderID = h.ID,
                             RefundsGoodsID = h.RefundsGoodsID,
@@ -1145,7 +1044,7 @@ namespace IM_PJ.Controllers
                 // Get info customer
                 var customer = orderFilter
                     .Join(
-                        con.tbl_Customer,
+                        customerFilter,
                         h => h.CustomerID,
                         c => c.ID,
                         (h, c) => new
@@ -1162,28 +1061,128 @@ namespace IM_PJ.Controllers
 
                 #region Xuất thông tin phí của đơn hàng
                 // Get info fee
-                var fee = orderFee
+                var fee = feeFilter
+                    .Join(
+                        orderFilter,
+                        f => f.OrderID,
+                        o => o.ID,
+                        (f, o) => f
+                    )
                     .OrderByDescending(o => o.OrderID)
                     .ToList();
                 #endregion
 
                 #region Xuất thông tin giao dich ngân hàng
                 // Get info transfer bank
-                var trans = orderBank
+                var transfers = transferFilter
+                    .Join(
+                        orderFilter,
+                        t => t.OrderID,
+                        h => h.ID,
+                        (t, h) => t
+                    )
+                    .Join(
+                        con.Banks,
+                        h => h.CusBankID,
+                        c => c.ID,
+                        (h, c) => new
+                        {
+                            transfer = h,
+                            bank = new { CusBankName = c.BankName }
+                        }
+                    )
+                    .Join(
+                        con.BankAccounts,
+                        h => h.transfer.AccBankID,
+                        a => a.ID,
+                        (h, a) => new
+                        {
+                            transfer = h.transfer,
+                            bank = h.bank,
+                            account = new { AccBankName = a.BankName }
+                        }
+                    )
+                    .Select(x => new
+                    {
+                        OrderID = x.transfer.OrderID,
+                        CusBankID = x.transfer.CusBankID,
+                        CusBankName = x.bank.CusBankName,
+                        AccBankID = x.transfer.AccBankID,
+                        AccBankName = x.account.AccBankName,
+                        Money = x.transfer.Money,
+                        Status = x.transfer.Status,
+                        StatusName = x.transfer.Status,
+                        DoneAt = x.transfer.DoneAt,
+                        Note = x.transfer.Note,
+                    })
                     .OrderByDescending(o => o.OrderID)
                     .ToList();
                 #endregion
 
                 #region Xuất thông tin giao hàng
                 // Get info delivery
-                var deliveries = orderDelivery
+                var deliveries = deliveryFilter
+                    .Join(
+                        orderFilter,
+                        d => d.OrderID,
+                        o => o.ID,
+                        (d, o) => d
+                    )
+                    .GroupJoin(
+                        con.Shippers,
+                        d => d.ShipperID,
+                        s => s.ID,
+                        (d, s) => new { d, s }
+                    )
+                    .SelectMany(
+                        x => x.s.DefaultIfEmpty(),
+                        (parent, child) => new
+                        {
+                            delivery = parent.d,
+                            shipper = child
+                        }
+                    )
+                    .Select(x => new {
+                        OrderID = x.delivery.OrderID,
+                        StartAt = x.delivery.StartAt,
+                        Status = x.delivery.Status,
+                        ShipperID = x.delivery.ShipperID,
+                        COD = x.delivery.COD,
+                        COO = x.delivery.COO,
+                        ShipNote = x.delivery.ShipNote,
+                        Image = x.delivery.Image,
+                        DeliveryTimes = x.delivery.Times,
+                        // Shipper
+                        ShipperName = x.shipper != null ? x.shipper.Name : String.Empty
+                    })
                     .OrderByDescending(o => o.OrderID)
+                    .ToList();
+
+                // Fix bug duble in database
+                deliveries = deliveries
+                    .Join(
+                        deliveries
+                            .GroupBy(g => g.OrderID)
+                            .Select(x => new {
+                                OrderID = x.Key,
+                                StartAt = x.Max(m => m.StartAt)
+                            }),
+                        d => new { OrderID = d.OrderID, StartAt = d.StartAt },
+                        f => new { OrderID = f.OrderID, StartAt = f.StartAt },
+                        (d, f) => d
+                    )
                     .ToList();
                 #endregion
 
                 #region Xuất thông phiếu giảm giá
                 // Lấy thông tin phiếu giảm giá
-                var coupons = customerCoupon
+                var coupons = couponFilter
+                    .Join(
+                        orderFilter,
+                        c => c.orderID,
+                        o => o.ID,
+                        (c, o) => c
+                    )
                     .OrderByDescending(o => o.orderID)
                     .ToList();
                 #endregion
@@ -1256,7 +1255,7 @@ namespace IM_PJ.Controllers
                         }
                     )
                     .GroupJoin(
-                        trans,
+                        transfers,
                         temp => temp.header.ID,
                         t => t.OrderID,
                         (temp, t) => new {
