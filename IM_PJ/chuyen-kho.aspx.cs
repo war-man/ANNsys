@@ -109,7 +109,7 @@ namespace IM_PJ
                 if (warehouse == 1 && quantity == 0)
                     continue;
 
-                if (warehouse == 2 && (!quantity2.HasValue && quantity2.Value == 0))
+                if (warehouse == 2 && (!quantity2.HasValue || quantity2.Value == 0))
                     continue;
 
                 var attributes = ProductVariableValueController.GetByProductVariableSKU(variation.SKU);
