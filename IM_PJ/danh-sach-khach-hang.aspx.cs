@@ -172,9 +172,9 @@ namespace IM_PJ
             }
         }
         [WebMethod]
-        public static string generateCouponG20(int customerID)
+        public static string generateCouponG25(int customerID)
         {
-            var coupon = CouponController.getByName("G20");
+            var coupon = CouponController.getByName("G25");
             if (coupon != null)
             {
                 //generate coupon for customer
@@ -188,7 +188,7 @@ namespace IM_PJ
             return "false";
         }
         [WebMethod]
-        public static string checkCouponG20(int customerID)
+        public static string checkCouponG25(int customerID)
         {
             // check customer
             var customer = CustomerController.GetByID(customerID);
@@ -198,7 +198,7 @@ namespace IM_PJ
             }
 
             // check coupon
-            var coupon = CouponController.getByName("G20");
+            var coupon = CouponController.getByName("G25");
             if (coupon == null)
             {
                 return "couponNotFound";
