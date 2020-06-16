@@ -229,6 +229,7 @@
                                     </asp:DropDownList>
                                 </div>
                                 <div class="col-md-1 col-xs-6">
+                                    <a href="javascript:;" onclick="copyProductID()" class="btn primary-btn h45-btn"><i class="fa fa-clone"></i></a>
                                 </div>
                             </div>
                         </div>
@@ -793,6 +794,16 @@
                     });
                 }, 1000);
             };
+            function copyProductID() {
+                $("body").append("<div class='copy-product-id hide'></div>");
+
+                $(".table-product > tbody > tr").each(function (i, tr) {
+                    $(".copy-product-id").append($(tr).attr("data-id") + "\n");
+                });
+
+                Clipboard.copy($(".copy-product-id").text());
+                $(".copy-product-id").remove();
+            }
         </script>
     </main>
 </asp:Content>

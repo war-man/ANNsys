@@ -925,7 +925,7 @@ namespace IM_PJ
 
                 foreach (var item in acs)
                 {
-                    html.AppendLine("<tr>");
+                    html.AppendLine("<tr data-id='" + item.ID + "'>");
                     html.AppendLine("<td>");
                     html.AppendLine("   <a target='_blank' href='/xem-san-pham?id=" + item.ID + "'><img src='" + Thumbnail.getURL(item.ProductImage, Thumbnail.Size.Normal) + "'></a>");
                     html.AppendLine("   <a href='javascript:;' onclick='copyProductInfo(" + item.ID + ")' class='btn download-btn h45-btn'><i class='fa fa-files-o'></i> Copy</a>");
@@ -956,7 +956,13 @@ namespace IM_PJ
                     }
                     html.AppendLine("   </td>");
 
-                    html.AppendLine("   <td data-title='Mã' class='customer-name-link'>" + item.ProductSKU + "</td>");
+                    html.AppendLine("   <td data-title='Mã'>");
+                    html.AppendLine("   <span class='customer-name-link'>" + item.ProductSKU + "</span>");
+                    if (acc.RoleID == 0)
+                    {
+                        html.AppendLine("   <br>(" + item.ID + ")");
+                    }
+                    html.AppendLine("   </td>");
                     html.AppendLine("   <td data-title='Giá sỉ'>" + string.Format("{0:N0}", item.RegularPrice) + (item.OldPrice > 0 ? " <span class='old-price'>" + string.Format("{0:N0}", item.OldPrice) + "</span>" : "") + "</td>");
                     if (acc.RoleID == 0)
                     {
