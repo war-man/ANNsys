@@ -98,7 +98,7 @@ namespace IM_PJ
                     html.Append("</tr>");
                 }
                 html.Append("    </tbody>");
-                html.Append("<table>");
+                html.Append("</table>");
             }
             ltrList.Text = html.ToString();
         }

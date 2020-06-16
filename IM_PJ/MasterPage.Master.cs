@@ -124,13 +124,17 @@ namespace IM_PJ
                             ltrMenu.Text += "<li><a href='/danh-sach-thong-bao'><span class='icon-menu icon-lib'></span>Thông báo</a></li>";
                         }
                         ltrMenu.Text += "<li><a target='_blank' href='/bv'><span class='icon-menu icon-lib'></span>Xem bài viết</a></li>";
+                        ltrMenu.Text += "<li><a href='/danh-sach-bai-viet-app'><span class='icon-menu icon-lib'></span>Bài viết App</a></li>";
                         ltrMenu.Text += "<li><a href='/danh-sach-nha-xe'><span class='icon-menu icon-product'></span>Nhà xe</a></li>";
                         ltrMenu.Text += "<li><a href='/danh-sach-dang-ky'><span class='icon-menu icon-order'></span>Đăng ký</a></li>";
                         ltrMenu.Text += "<li><a href='/chuyen-kho'><span class='icon-menu icon-product'></span>Chuyển kho</a></li>";
                         ltrMenu.Text += "<li><a href='/thong-ke-nhap-kho'><span class='icon-menu icon-product'></span>TK nhập kho</a></li>";
-                        if (acc.Username == "nhom_zalo406" || acc.Username == "hotline" || acc.Username == "nhom_zalo502")
+                        if (acc.Username == "nhom_zalo406" || acc.Username == "nhom_zalo409")
                         {
                             ltrMenu.Text += "<li><a href='/chuyen-kho'><span class='icon-menu icon-product'></span>Chuyển kho</a></li>";
+                        }
+                        if (acc.Username == "nhom_zalo406" || acc.Username == "hotline" || acc.Username == "nhom_zalo502")
+                        {
                             ltrMenu.Text += "<li><a href='/danh-sach-van-chuyen'><span class='icon-menu icon-order'></span>Giao hàng</a></li>";
                         }
                         if (config.ViewAllReports == 1)

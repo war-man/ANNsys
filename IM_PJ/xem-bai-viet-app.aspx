@@ -17,7 +17,7 @@
         }
         img {
             width: inherit;
-            margin: 10px auto;
+            margin: 10px auto 0 auto;
             max-width: 100%;
             height: auto;
         }
@@ -82,5 +82,5 @@
             </div>
         </div>
     </main>
-    <script src="/App_Themes/Ann/js/sync-post.js?v=17052020"></script>
+    <script src="/App_Themes/Ann/js/sync-post.js?v=15062020"></script>
 </asp:Content>

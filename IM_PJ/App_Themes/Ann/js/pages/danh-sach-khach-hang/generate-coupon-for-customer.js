@@ -1,28 +1,41 @@
-﻿function generateCouponG20(customerName, customerID) {
+﻿function wait(ms) {
+    var start = new Date().getTime();
+    var end = start;
+    while (end < start + ms) {
+        end = new Date().getTime();
+    }
+}
+function generateCouponG25(customerName, customerID) {
     swal({
         title: "Thông báo:",
-        text: "Kiểm tra mã giảm giá <strong>G20</strong> cho khách <strong>" + customerName + "</strong>?",
+        text: "Kiểm tra mã giảm giá <strong>G25</strong> cho khách <strong>" + customerName + "</strong>?",
         type: "warning",
         showCancelButton: true,
         showCloseButton: false,
         confirmButtonText: "OK kiểm tra!",
         cancelButtonText: "Để xem lại!",
+        closeOnConfirm: true,
         html: true,
     }, function (confirm) {
         if (confirm) {
             sweetAlert.close();
-            checkCouponG20(customerID);
+            checkCouponG25(customerID);
         }
     });
 }
 
-function checkCouponG20(customerID, couponCode) {
+function checkCouponG25(customerID, couponCode) {
+    sweetAlert.close();
     $.ajax({
         type: "POST",
-        url: "/danh-sach-khach-hang.aspx/checkCouponG20",
+        url: "/danh-sach-khach-hang.aspx/checkCouponG25",
         data: "{customerID: " + customerID + "}",
         contentType: "application/json; charset=utf-8",
         dataType: "json",
+        beforeSend: function () {
+            sweetAlert.close();
+            $("body").removeClass("stop-scrolling");
+        },
         success: function (msg) {
             if (msg.d === "customerNotFound") {
                 alert("Không tìm thấy khách hàng!");
@@ -51,7 +64,7 @@ function checkCouponG20(customerID, couponCode) {
             else if (msg.d === "activeCouponExists") {
                 swal({
                     title: "Thông báo:",
-                    text: "Đang có sẵn mã giảm giá G20 cho khách!<br>Hãy nhập mã vào đơn hàng!",
+                    text: "Đang có sẵn mã giảm giá G25 cho khách!<br>Hãy nhập mã vào đơn hàng!",
                     type: "success",
                     showCloseButton: true,
                     html: true,
@@ -60,24 +73,25 @@ function checkCouponG20(customerID, couponCode) {
             else if (msg.d === "noCouponGeneratedYet") {
                 swal({
                     title: "Xác nhận:",
-                    text: "<strong>Khách đủ điều kiện sử dụng mã giảm giá G20!</strong><br><br>Bạn muốn tạo mã cho khách?",
+                    text: "<strong>Khách đủ điều kiện sử dụng mã giảm giá G25!</strong><br><br>Bạn muốn tạo mã cho khách?",
                     type: "warning",
                     showCancelButton: true,
                     showCloseButton: false,
                     confirmButtonText: "OK tạo luôn!",
                     cancelButtonText: "Để em xem lại!",
+                    closeOnConfirm: true,
                     html: true,
                 }, function (confirm) {
                     if (confirm) {
                         sweetAlert.close();
-                        ajaxGenerateCouponG20(customerID);
+                        ajaxGenerateCouponG25(customerID);
                     }
                 });
             }
             else if (msg.d === "couponUsageLimitExceeded") {
                 swal({
                     title: "Thông báo:",
-                    text: "<strong>Khách đã sử dụng hết số lần mã giảm giá G20!</strong>",
+                    text: "<strong>Khách đã sử dụng hết số lần mã giảm giá G25!</strong>",
                     type: "warning",
                     showCloseButton: true,
                     html: true,
@@ -88,13 +102,14 @@ function checkCouponG20(customerID, couponCode) {
             }
         }
     });
-    sweetAlert.close();
 }
 
-function ajaxGenerateCouponG20(customerID) {
+function ajaxGenerateCouponG25(customerID) {
+    sweetAlert.close();
+    wait(500);
     $.ajax({
         type: "POST",
-        url: "/danh-sach-khach-hang.aspx/generateCouponG20",
+        url: "/danh-sach-khach-hang.aspx/generateCouponG25",
         data: "{customerID: " + customerID + "}",
         contentType: "application/json; charset=utf-8",
         dataType: "json",
@@ -102,7 +117,7 @@ function ajaxGenerateCouponG20(customerID) {
             if (msg.d === "true") {
                 swal({
                     title: "Thông báo:",
-                    text: "Đã tạo mã giảm giá G20 cho khách!",
+                    text: "Đã tạo mã giảm giá G25 cho khách!",
                     type: "success",
                     showCancelButton: false,
                     showCloseButton: true,
@@ -115,7 +130,6 @@ function ajaxGenerateCouponG20(customerID) {
             }
         }
     });
-    sweetAlert.close();
 }
 
 function generateCouponG15(customerName, customerID) {
@@ -143,6 +157,9 @@ function ajaxGenerateCouponG15(customerID, checkUser) {
         data: "{customerID: " + customerID + ", checkUser: " + checkUser + "}",
         contentType: "application/json; charset=utf-8",
         dataType: "json",
+        beforeSend: function () {
+            sweetAlert.close();
+        },
         success: function (msg) {
             if (msg.d === "true") {
                 swal({

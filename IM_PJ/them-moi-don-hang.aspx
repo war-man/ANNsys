@@ -2,9 +2,9 @@
 
 <%@ Register Assembly="Telerik.Web.UI" Namespace="Telerik.Web.UI" TagPrefix="telerik" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
-    <script src="/App_Themes/Ann/js/search-customer.js?v=17052020"></script>
-    <script src="/App_Themes/Ann/js/search-product.js?v=17052020"></script>
-    <script type="text/javascript" src="/App_Themes/Ann/js/pages/danh-sach-khach-hang/generate-coupon-for-customer.js?v=17052020"></script>
+    <script src="/App_Themes/Ann/js/search-customer.js?v=15062020"></script>
+    <script src="/App_Themes/Ann/js/search-product.js?v=15062020"></script>
+    <script type="text/javascript" src="/App_Themes/Ann/js/pages/danh-sach-khach-hang/generate-coupon-for-customer.js?v=15062020"></script>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <style>
@@ -163,8 +163,7 @@
                                 <div class="post-row clear coupon">
                                     <div class="left">Mã giảm giá</div>
                                     <div class="right">
-                                        <a id="btnGenerateCouponG15" class="btn btn-coupon btn-violet hide" title="Tạo mã giảm giá G15" onclick="couponG15()"><i class="fa fa-gift"></i> G15</a>
-                                        <a id="btnGenerateCouponG20" class="btn btn-coupon btn-violet" title="Kiểm tra mã giảm giá G20" onclick="couponG20()"><i class="fa fa-gift"></i> G20</a>
+                                        <a id="btnGenerateCouponG25" class="btn btn-coupon btn-violet" title="Kiểm tra mã giảm giá G25" onclick="couponG25()"><i class="fa fa-gift"></i> G25</a>
                                         <a id="btnOpenCouponModal" class="btn btn-coupon btn-violet" title="Nhập mã giảm giá" onclick="openCouponModal()"><i class="fa fa-gift"></i> Nhập mã</a>
                                         <a href="javascript:;" id="btnRemoveCouponCode" class="btn btn-coupon link-btn hide" onclick="removeCoupon()"><i class="fa fa-times" aria-hidden="true"></i> Xóa</a>
                                         <asp:TextBox ID="txtCouponValue" runat="server" CssClass="form-control text-right width-notfull input-coupon" value="0" disabled="disabled"></asp:TextBox>
@@ -1934,7 +1933,7 @@
                                 couponModalDOM.querySelector('#closeCoupon').click();
                                 document.querySelector('#btnOpenCouponModal').classList.add('hide');
                                 document.querySelector('#btnRemoveCouponCode').classList.remove('hide');
-                                document.querySelector('#btnGenerateCouponG20').classList.add('hide');
+                                document.querySelector('#btnGenerateCouponG25').classList.add('hide');
 
                                 getAllPrice();
                             }
@@ -1961,7 +1960,7 @@
                 document.querySelector('[id$="_hdfCouponPriceMin"]').value = 0;
                 document.querySelector('#btnOpenCouponModal').classList.remove('hide');
                 document.querySelector('#btnRemoveCouponCode').classList.add('hide');
-                document.querySelector('#btnGenerateCouponG20').classList.remove('hide');
+                document.querySelector('#btnGenerateCouponG25').classList.remove('hide');
 
                 getAllPrice();
             }
@@ -1982,23 +1981,13 @@
                 }
             }
 
-            function couponG15() {
-                let customerID = +document.querySelector('[id$="_hdfCustomerID"]').value || 0;
-                let customerName = $("#<%=txtFullname.ClientID%>").val();
-
-                if (!customerID)
-                    return swal("Thông báo", "Chưa nhập thông tin khách hàng! Hoặc đây là khách hàng mới...", "warning");
-
-                generateCoupon15(customerName, customerID, "G15");
-            }
-
-            function couponG20() {
+            function couponG25() {
                 let customerID = +document.querySelector('[id$="_hdfCustomerID"]').value || 0;
                 let customerName = $("#<%=txtFullname.ClientID%>").val();
                 if (!customerID)
                     return swal("Thông báo", "Chưa nhập thông tin khách hàng! Hoặc đây là khách hàng mới...", "warning");
 
-                generateCouponG20(customerName, customerID);
+                generateCouponG25(customerName, customerID);
             }
 
         </script>

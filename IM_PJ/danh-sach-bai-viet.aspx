@@ -112,8 +112,8 @@
             </div>
         </div>
         
-        <script src="/App_Themes/Ann/js/copy-post-info.js?v=17052020"></script>
-        <script src="/App_Themes/Ann/js/download-post-image.js?v=17052020"></script>
+        <script src="/App_Themes/Ann/js/copy-post-info.js?v=15062020"></script>
+        <script src="/App_Themes/Ann/js/download-post-image.js?v=15062020"></script>
         
         <script type="text/javascript">
             $("#<%=txtSearchPost.ClientID%>").keyup(function (e) {

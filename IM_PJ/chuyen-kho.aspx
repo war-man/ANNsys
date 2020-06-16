@@ -10,17 +10,22 @@
                         </div>
                         <div class="panel-body">
                             <div class="form-row">
-                                <div class="col-xs-3">
+                                <div class="col-md-3 col-xs-12 margin-bottom-15">
                                     <asp:DropDownList ID="ddlWarehouseTransfer" runat="server" CssClass="form-control">
                                         <asp:ListItem Value="0" Text="Hướng chuyển kho"></asp:ListItem>
-                                        <asp:ListItem Value="1" Text="Kho 1 => Kho 2"></asp:ListItem>
                                         <asp:ListItem Value="2" Text="Kho 2 => Kho 1"></asp:ListItem>
+                                        <asp:ListItem Value="1" Text="Kho 1 => Kho 2"></asp:ListItem>
                                     </asp:DropDownList>
                                 </div>
-                                <input type="text" id="txtSearch" class="form-control sku-input" placeholder="NHẬP MÃ SẢN PHẨM (F3)" style="width: 40%; float: left; margin-right: 10px" autocomplete="off" disabled="disabled" readonly />
-                                <a id="btnSearch" href="javascript:;" class="btn primary-btn fw-btn not-fullwidth" style="margin-right: 10px" onclick="searchProduct()" disabled="disabled">
-                                    <i class="fa fa-search" aria-hidden="true"></i> Tìm
-                                </a>
+                                <div class="col-md-3 col-xs-8 margin-bottom-15">
+                                    <input type="text" id="txtSearch" class="form-control sku-input" placeholder="NHẬP MÃ SẢN PHẨM (F3)" autocomplete="off" disabled="disabled" readonly />
+                                    <span class="product-not-found red-txt hide">Không tìm thấy sản phẩm này trong kho</span>
+                                </div>
+                                <div class="col-md-1 col-xs-4 margin-bottom-15">
+                                    <a id="btnSearch" href="javascript:;" class="btn primary-btn fw-btn" onclick="searchProduct()" disabled="disabled">
+                                        <i class="fa fa-search" aria-hidden="true"></i> Tìm
+                                    </a>
+                                </div>
                             </div>
                             <div class="form-row">
                             </div>
@@ -28,7 +33,6 @@
                                 <h3 class="no-margin float-left">Kết quả tìm kiếm: <span class="result-numsearch"></span></h3>
                                 <div class="excute-in">
                                     <a href="javascript:;" style="background-color: #f87703; float: right;" class="btn primary-btn link-btn" onclick="inProduct()">Chuyển kho</a>
-                                    <%--<a href="javascript:;" style="background-color: #ffad00; float: right;" class="btn primary-btn link-btn" onclick="quickInput()">Nhập nhanh số lượng (F2)</a>--%>
                                 </div>
                             </div>
                             <div class="form-row" style="border: solid 1px #ccc; padding: 10px;">
@@ -51,7 +55,6 @@
                             </div>
                             <div class="post-table-links excute-in clear">
                                 <a href="javascript:;" style="background-color: #f87703; float: right;" class="btn primary-btn link-btn" onclick="inProduct()">Chuyển kho</a>
-                                <%--<a href="javascript:;" style="background-color: #ffad00; float: right;" class="btn primary-btn link-btn" onclick="quickInput()">Nhập nhanh số lượng (F2)</a>--%>
                             </div>
                         </div>
                     </div>
@@ -164,14 +167,14 @@
                 return swal({
                     type: "error",
                     title: "Thông báo",
-                    text: "Vui lòng chọn kho muốn chuyển hàng"
+                    text: "Hãy chọn hướng chuyển kho"
                 });
 
             if (isBlank(textsearch))
                 return swal({
                     type: "error",
                     title: "Thông báo",
-                    text: "Vui lòng nhập nội dung tìm kiếm"
+                    text: "Hãy nhập mã sản phẩm"
                 });
 
             $.ajax({
@@ -239,9 +242,12 @@
                         if (count > 0) {
                             $(".excute-in").show();
                         }
+                        $(".product-not-found").addClass("hide");
                     }
                     else {
-                        swal('Thông báo', 'Sản phẩm hiện tại không có trong kho', 'warning');
+                        $(".product-not-found").removeClass("hide");
+                        $("#txtSearch").select();
+                        //swal('Thông báo', 'Sản phẩm hiện tại không có trong kho', 'warning');
                     }
                 },
                 error: function (xmlhttprequest, textstatus, errorthrow) {
@@ -292,7 +298,7 @@
                 return swal({
                     type: "error",
                     title: "Thông báo",
-                    text: "Số lượng chuyển kho (" + quantityTransfer + " cái) đã quá số lượng kho " + transfer + " (" + quantityCurrent + " cái)"
+                    text: "Số lượng chuyển (" + quantityTransfer + " cái) vượt quá số lượng kho hiện tại " + transfer + " (" + quantityCurrent + " cái)"
                 }, function () {
                     $input.focus();
                     $input.select();
@@ -317,7 +323,7 @@
                 return swal({
                     type: "error",
                     title: "Thông báo",
-                    text: "Vui lòng chọn kho muốn chuyển hàng"
+                    text: "Hãy chọn hướng chuyển kho"
                 });
             else
                 $("#<%=hdfWarehouseTransfer.ClientID%>").val(transfer);
@@ -356,7 +362,7 @@
                 $("#<%=btnImport.ClientID%>").click();
             }
             else {
-                alert("Vui lòng nhập sản phẩm");
+                alert("Hãy nhập sản phẩm");
             }
         }
     </script>

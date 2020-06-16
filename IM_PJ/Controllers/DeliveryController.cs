@@ -14,9 +14,27 @@ namespace IM_PJ.Controllers
         {
             using (var con = new inventorymanagementEntities())
             {
-                var old = con.Deliveries.Where(x => x.OrderID == delivery.OrderID).SingleOrDefault();
-                if (old != null)
+                Delivery old = null;
+                var deliveries = con.Deliveries
+                    .Where(x => x.OrderID == delivery.OrderID)
+                    .OrderByDescending(o => o.StartAt)
+                    .ToList();
+
+                if (deliveries.Count() >= 1)
                 {
+                    old = deliveries.FirstOrDefault();
+                    deliveries = deliveries.Where(x => x.UUID != old.UUID).ToList();
+
+                    if (deliveries.Count > 0)
+                    {
+                        con.Deliveries.RemoveRange(deliveries);
+                        con.SaveChanges();
+                    }
+
+                }
+
+                if (old != null)
+                { 
                     old.ShipperID = delivery.ShipperID;
                     old.Status = delivery.Status;
                     old.Image = delivery.Image;

@@ -49,7 +49,6 @@ namespace IM_PJ
                         {
                             Response.Redirect("/trang-chu");
                         }
-                        LoadData();
                     }
                 }
                 else
@@ -58,9 +57,6 @@ namespace IM_PJ
                 }
                 
             }
-        }
-        public void LoadData()
-        {
         }
 
         private static ProductGetOut _getProduct(int warehouse, tbl_Product product) {
@@ -249,53 +245,92 @@ namespace IM_PJ
                     note = "Chuyền hàng từ kho 1 sang kho 2 bằng chức năng chuyển kho";
                     type1 = 2;
                     type2 = 1;
+
+                    foreach (var item in data)
+                    {
+                        StockManagerController.warehousing1(new tbl_StockManager()
+                        {
+                            AgentID = AgentID,
+                            ProductID = item.productVariableID == 0 ? item.productID : 0,
+                            ProductVariableID = item.productVariableID,
+                            SKU = item.sku,
+                            Type = 1,
+                            Quantity = item.quantity,
+                            QuantityCurrent = item.stock2,
+                            Status = 18,
+                            NoteID = note,
+                            CreatedDate = currentDate,
+                            CreatedBy = username,
+                            ModifiedDate = currentDate,
+                            ModifiedBy = username,
+                            OrderID = 0,
+                            MoveProID = 0,
+                            ParentID = item.productID
+                        });
+                        StockManagerController.warehousing2(new StockManager2()
+                        {
+                            AgentID = AgentID,
+                            ProductID = item.productID,
+                            ProductVariableID = item.productVariableID,
+                            SKU = item.sku,
+                            ParentSKU = item.parentSKU,
+                            Type = 1,
+                            Quantity = item.quantity,
+                            QuantityCurrent = item.stock2,
+                            Status = 18,
+                            Note = note,
+                            CreatedDate = currentDate,
+                            CreatedBy = username,
+                            ModifiedDate = currentDate,
+                            ModifiedBy = username,
+                        });
+                    }
                 }
                 else
                 {
                     note = "Chuyền hàng từ kho 2 sang kho 1 bằng chức năng chuyển kho";
-                    type1 = 1;
-                    type2 = 2;
-                }
 
-                foreach (var item in data)
-                {
-                    StockManagerController.warehousing1(new tbl_StockManager()
+                    foreach (var item in data)
                     {
-                        AgentID = AgentID,
-                        ProductID = item.productVariableID == 0 ? item.productID : 0,
-                        ProductVariableID = item.productVariableID,
-                        SKU = item.sku,
-                        Type = type1,
-                        Quantity = item.quantity,
-                        QuantityCurrent = item.stock1,
-                        Status = 18,
-                        NoteID = note,
-                        CreatedDate = currentDate,
-                        CreatedBy = username,
-                        ModifiedDate = currentDate,
-                        ModifiedBy = username,
-                        OrderID = 0,
-                        MoveProID = 0,
-                        ParentID = item.productID
-                    });
-                    StockManagerController.warehousing2(new StockManager2()
-                    {
-                        AgentID = AgentID,
-                        ProductID = item.productID,
-                        ProductVariableID = item.productVariableID,
-                        SKU = item.sku,
-                        ParentSKU = item.parentSKU,
-                        Type = type2,
-                        Quantity = item.quantity,
-                        QuantityCurrent = item.stock2,
-                        Status = 18,
-                        Note = note,
-                        CreatedDate = currentDate,
-                        CreatedBy = username,
-                        ModifiedDate = currentDate,
-                        ModifiedBy = username,
-                    });
+                        StockManagerController.warehousing1(new tbl_StockManager()
+                        {
+                            AgentID = AgentID,
+                            ProductID = item.productVariableID == 0 ? item.productID : 0,
+                            ProductVariableID = item.productVariableID,
+                            SKU = item.sku,
+                            Type = 2,
+                            Quantity = 0,
+                            QuantityCurrent = item.stock2,
+                            Status = 18,
+                            NoteID = note,
+                            CreatedDate = currentDate,
+                            CreatedBy = username,
+                            ModifiedDate = currentDate,
+                            ModifiedBy = username,
+                            OrderID = 0,
+                            MoveProID = 0,
+                            ParentID = item.productID
+                        });
+                        StockManagerController.warehousing2(new StockManager2()
+                        {
+                            AgentID = AgentID,
+                            ProductID = item.productID,
+                            ProductVariableID = item.productVariableID,
+                            SKU = item.sku,
+                            ParentSKU = item.parentSKU,
+                            Type = 2,
+                            Quantity = item.quantity,
+                            QuantityCurrent = item.stock2,
+                            Status = 18,
+                            Note = note,
+                            CreatedDate = currentDate,
+                            CreatedBy = username,
+                            ModifiedDate = currentDate,
+                            ModifiedBy = username,
+                        });
+                    }
                 }
+                
 
                 PJUtils.ShowMessageBoxSwAlert("Chuyển kho thành công!", "s", true, Page);
             }
