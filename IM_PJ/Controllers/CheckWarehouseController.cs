@@ -61,11 +61,31 @@ namespace IM_PJ.Controllers
         }        
         #endregion
 
+        /// <summary>
+        /// Lấy tất cả các phiên kiểm kho
+        /// </summary>
+        /// <returns></returns>
         public static List<CheckWarehouse> getAll()
         {
             using (var con = new inventorymanagementEntities())
             {
                 return con.CheckWarehouses
+                    .OrderByDescending(o => o.CreatedDate)
+                    .ToList();
+            }
+        }
+
+        /// <summary>
+        /// Lấy tất cả các phiên kiểm kho active
+        /// </summary>
+        /// <param name="active"></param>
+        /// <returns></returns>
+        public static List<CheckWarehouse> getAllActive()
+        {
+            using (var con = new inventorymanagementEntities())
+            {
+                return con.CheckWarehouses
+                    .Where(x => x.Active == true)
                     .OrderByDescending(o => o.CreatedDate)
                     .ToList();
             }
@@ -207,6 +227,91 @@ namespace IM_PJ.Controllers
             catch (Exception e)
             {
                 throw e;
+            }
+        }
+
+        /// <summary>
+        /// Lấy tất cả sản phẩm của phiên kiểm
+        /// </summary>
+        /// <param name="checkID"></param>
+        /// <returns></returns>
+        public static IList<CheckWarehouseDetail> getProductByCheckID(int checkID)
+        {
+            using (var con = new inventorymanagementEntities())
+            {
+                var products = con.CheckWarehouseDetails
+                    .Where(x => x.CheckWarehouseID == checkID)
+                    .OrderByDescending(o => o.ModifiedDate)
+                    .ToList();
+
+                return products;
+            }
+        }
+
+        /// <summary>
+        /// Lấy các product chưa được kiểm tra
+        /// </summary>
+        /// <param name="checkID">Mã phiên kiểm tra</param>
+        /// <returns></returns>
+        public static IList<CheckWarehouseDetail> getProductRemainingByCheckID(int checkID)
+        {
+            using (var con = new inventorymanagementEntities())
+            {
+                var products = con.CheckWarehouseDetails
+                    .Where(x => !x.QuantityNew.HasValue)
+                    .Where(x => x.CheckWarehouseID == checkID)
+                    .OrderByDescending(o => o.ModifiedDate)
+                    .ToList();
+
+                return products;
+            }
+        }
+
+        public static bool updateQuantity(IList<UpdateQuantityModel> data)
+        {
+            try
+            {
+                using (var con = new inventorymanagementEntities())
+                {
+                    int? checkID = data.Select(x => x.checkID).FirstOrDefault();
+
+                    if (!checkID.HasValue)
+                        return false;
+
+                    var products = con.CheckWarehouseDetails
+                          .Where(x => x.CheckWarehouseID == checkID)
+                          .ToList();
+
+                    var updateList = products
+                          .Join(
+                              data,
+                              cw => cw.ProductSKU,
+                              d => d.sku,
+                              (cw, d) =>
+                              {
+                                  cw.QuantityNew = d.quantity;
+                                  cw.ModifiedDate = d.updateDate;
+                                  cw.ModifiedBy = d.staff;
+
+                                  return cw;
+                              }
+                          )
+                          .ToList();
+
+                    var total = (int)Math.Ceiling(updateList.Count / 100D);
+
+                    for (int i = 0; i < total; i++)
+                    {
+                        var items = products.Skip(i * 100).Take(100).ToList();
+                        con.SaveChanges();
+                    }
+                    
+                    return true;
+                }
+            }
+            catch (Exception)
+            {
+                return false;
             }
         }
     }

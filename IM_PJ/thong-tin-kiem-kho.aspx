@@ -2,13 +2,50 @@
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
     <style>
+        .none-padding-right {
+            padding-right: 0
+        }
+
+        .btn-edit {
+            float: right;
+        }
+
+        .btn-finish {
+            background-color: #f87703; 
+            float: right;
+            margin-left: 15px;
+        }
+
+        .btn-update {
+            background-color: #f87703; 
+            float: right;
+        }
+
         tr:last-child {
             border-bottom: solid 1px #ccc;
         }
 
         @media only screen and (max-width: 800px) {
-            .col-md-12, .col-xs-12 {
-                padding: 0px;
+            .btn-update {
+                background-color: #f87703; 
+                float: left;
+            }
+
+            .col-sm-3, .col-sm-4, .col-md-12, .col-xs-3, .col-xs-4, .col-xs-12 {
+                padding-left: 0px;
+                padding-right: 0px;
+            }
+
+            .padding-left-15 {
+                padding-left: 15px;
+            }
+
+            .padding-top-15 {
+                padding-top: 15px;
+            }
+
+            .padding-bottom-15 {
+                padding-bottom: 15px;
             }
 
             /* Force table to not be like tables anymore */
@@ -82,18 +119,36 @@
                         </div>
                         <div class="panel-body">
                             <div class="form-row">
-                                <div class="col-sm-4 col-xs-9">
-                                    <asp:Literal ID="ltrCheckWarehouse" runat="server"></asp:Literal>
+                                <div class="col-sm-4 col-xs-12">
+                                    <asp:DropDownList ID="ddlCheckWarehouse" runat="server" CssClass="form-control select2" Width="100%"></asp:DropDownList>
                                 </div>
-                                <div class="col-sm-3 col-xs-3">
-                                    <a href="javascript:;" class="btn primary-btn fw-btn not-fullwidth" onclick="getCheckWarehouse()">
-                                        <i class="fa fa-search" aria-hidden="true"></i> Tìm
+                                <div class="col-sm-8 col-xs-12 none-padding-right padding-top-15" style="display: none">
+                                    <a href="javascript:;" class="btn primary-btn fw-btn not-fullwidth btn-edit" onclick="goEditCheckWarehouse()">
+                                        <i class="fa fa-edit" aria-hidden="true"></i> Chỉnh sửa phiên kiểm kho
                                     </a>
                                 </div>
                             </div>
                             <div class="form-row">
                                 <div class="excute-in">
-                                    <a href="javascript:;" style="background-color: #f87703; float: right;" class="btn primary-btn link-btn" onclick="closeCheckWarehouse()">Kết thúc phiên kiểm kho</a>
+                                    <a href="javascript:;" class="btn primary-btn link-btn btn-finish" onclick="closeCheckWarehouse()">Kết thúc phiên kiểm kho</a>
+                                    <a href="javascript:;" class="btn primary-btn link-btn btn-update" onclick="updateQuantity()">Cập nhật SL</a>
+                                </div>
+                            </div>
+                            <div class="form-row" style="display: none">
+                                <div class="col-sm-4 col-xs-12 padding-bottom-15">
+                                    <asp:TextBox runat="server" ID="txtSearch" CssClass="form-control" placeholder="NHẬP MÃ SẢN PHẨM (F3)" autocomplete="off" />
+                                </div>
+                                <div class="col-sm-2 col-xs-12 padding-bottom-15">
+                                    <asp:DropDownList ID="ddlProductStatus" runat="server" CssClass="form-control">
+                                        <asp:ListItem Value="0" Text="Trạng thái sản phẩm"></asp:ListItem>
+                                        <asp:ListItem Value="1" Text="Đã kiểm"></asp:ListItem>
+                                        <asp:ListItem Value="2" Text="Chưa kiểm"></asp:ListItem>
+                                    </asp:DropDownList>
+                                </div>
+                                <div class="col-sm-4 col-xs-3">
+                                    <a href="javascript:;" class="btn primary-btn fw-btn not-fullwidth" onclick="searchProduct()">
+                                        <i class="fa fa-search" aria-hidden="true"></i> Tìm
+                                    </a>
                                 </div>
                             </div>
                             <div class="form-row hidden">
@@ -120,14 +175,17 @@
                                 <div class="pagination"></div>
                             </div>
                             <div class="post-table-links excute-in clear">
-                                <a href="javascript:;" style="background-color: #f87703; float: right;" class="btn primary-btn link-btn" onclick="closeCheckWarehouse()">Kết thúc kiểm tra kho</a>
+                                <a href="javascript:;" class="btn primary-btn link-btn btn-finish" onclick="closeCheckWarehouse()">Kết thúc phiên kiểm kho</a>
+                                <a href="javascript:;" class="btn primary-btn link-btn btn-update" onclick="updateQuantity()">Cập nhật SL</a>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+        <asp:HiddenField ID="hdfRoleID" runat="server" />
         <asp:HiddenField ID="hdfCheckHouseID" runat="server" />
+        <asp:Button ID="btnUpdateQuantity" runat="server" OnClick="btnUpdateQuantity_Click" Style="display: none" />
         <asp:Button ID="btnCloseCheckWareHouse" runat="server" OnClick="btnCloseCheckWareHouse_Click" Style="display: none" />
     </main>
 
@@ -136,7 +194,8 @@
         let _table = {
             page: 1,
             pageSize: 30,
-            data: []
+            data: [],
+            dataSearch: []
         };
 
         $(window).resize(function () {
@@ -163,7 +222,43 @@
             else {
                 _isMobile = false;
             }
+
+            initCheckWarehouseSelect2();
+            initSearch();
         });
+
+        function initCheckWarehouseSelect2() {
+            let $ddlCheckWarehouse = $('#<%= ddlCheckWarehouse.ClientID %>');
+            let checkID = +$ddlCheckWarehouse.val() || 0;
+
+            // Trường hợp có query param checkID > 0
+            if (checkID > 0) {
+                updateURL(checkID);
+                getCheckWarehouse();
+            }
+
+            // Trường hợp phiên kiểm có thay đổi
+            $ddlCheckWarehouse.change(function () {
+                let queryParams = new URLSearchParams(window.location.search);
+                checkID = +$(this).val() || 0;
+
+                updateURL(checkID);
+                getCheckWarehouse();
+            });
+        }
+
+        function initSearch() {
+            let $txtSearch = $("#<%= txtSearch.ClientID %>");
+
+            $txtSearch.keydown(function (event) {
+                if (event.which === 13) {
+                    event.preventDefault();
+                    searchProduct();
+
+                    return false;
+                }
+            });
+        }
 
         function drawBodyTable() {
             let html = '';
@@ -183,15 +278,6 @@
             });
 
             $(".content-product").html(html);
-
-            let $btnExcute = $(".excute-in");
-
-            if ($(".product-result").length > 0) {
-                $btnExcute.show();
-            }
-            else {
-                $btnExcute.hide();
-            }
         }
 
         function drawPagination() {
@@ -272,13 +358,38 @@
         }
 
         function getCheckWarehouse() {
-            let checkWarehouseID = +$("#ddlCheckWarehouse").val() || 0;
+            let roleID = $('#<%= hdfRoleID.ClientID %>').val() || "";
+            let $ddlCheckWarehouse = $('#<%= ddlCheckWarehouse.ClientID %>');
+            let checkWarehouseID = +$ddlCheckWarehouse.val() || 0;
+            let $btnEdit = $(".btn-edit");
+            let $btnExcute = $(".excute-in");
+            let $btnUpdate = $(".btn-update");
+            let $txtSearch = $("#<%= txtSearch.ClientID %>");
+            let $ddlProductStatus = $("#<%= ddlProductStatus.ClientID %>");
 
-            if (!checkWarehouseID)
-                return;
-
+            $btnEdit.parent().css('display', 'none');
+            $txtSearch.val("");
+            $txtSearch.parent().parent().hide();
             _table.page = 1;
             _table.data = [];
+            _table.dataSearch = [];
+
+            if (!checkWarehouseID) {
+                $btnExcute.hide();
+                drawBodyTable();
+                drawPagination();
+
+                return;
+            }
+
+            if (roleID == "0" && !$ddlCheckWarehouse.find(":selected").data('finished')) {
+                $btnEdit.parent().css('display', 'block');
+                $btnExcute.show();
+            }
+            else {
+                $btnEdit.parent().css('display', 'none');
+                $btnExcute.hide();
+            }
 
             $.ajax({
                 beforeSend: function () {
@@ -301,24 +412,22 @@
                         });
                     }
 
-                    let productNew = [];
+                    let productNotCheck = data.filter(product => product.QuantityNew == "");
 
-                    data.forEach(item => {
-                        const olds = _table.data.filter(product => product.ID == item.ID);
+                    if (productNotCheck.length > 0)
+                        $btnUpdate.show();
+                    else
+                        $btnUpdate.hide();
 
-                        if (olds.length == 0) {
-                            productNew.push(item);
-                        }
-                    })
+                    $txtSearch.parent().parent().show();
+                    $txtSearch.val("");
+                    $ddlProductStatus.val(0);
 
-                    if (productNew.length > 0) {
-                        _table.data = productNew.reverse().concat(_table.data);
+                    _table.data = data;
+                    _table.dataSearch = data;
 
-                        drawBodyTable();
-                        drawPagination();
-                    }
-
-                    $("#txtSearch").val("");
+                    drawBodyTable();
+                    drawPagination();
                 },
                 error: function (xmlhttprequest, textstatus, errorthrow) {
                     HoldOn.close();
@@ -333,10 +442,79 @@
         }
 
         function closeCheckWarehouse() {
-            let checkWarehouseID = +$("#ddlCheckWarehouse").val() || 0;
+            HoldOn.open();
+            let checkWarehouseID = +$('#<%= ddlCheckWarehouse.ClientID %>').val() || 0;
 
             $("#<%=hdfCheckHouseID.ClientID%>").val(checkWarehouseID);
             $("#<%=btnCloseCheckWareHouse.ClientID%>").click();
+        }
+
+        function searchProduct() {
+            let $btnUpdate = $(".btn-update");
+            let $txtSearch = $("#<%= txtSearch.ClientID %>");
+            let $ddlProductStatus = $("#<%= ddlProductStatus.ClientID %>");
+            let search = $txtSearch.val() || "";
+            let productStatus = +$ddlProductStatus.val() || 0;
+            let data = _table.dataSearch;
+
+            if (search) {
+                search = search.toUpperCase().trim();
+                data = data.filter(product => product.SKU.startsWith(search));
+            }
+
+            if (productStatus == 1) {
+                $btnUpdate.hide();
+                data = data.filter(product => product.QuantityNew != "");
+            }
+            else if (productStatus == 2) {
+                data = data.filter(product => product.QuantityNew == "");
+
+                if (data.length > 0)
+                    $btnUpdate.show();
+                else
+                    $btnUpdate.hide();
+            }
+            else {
+                let productNotCheck = data.filter(product => product.QuantityNew == "");
+
+                if (productNotCheck.length > 0)
+                    $btnUpdate.show();
+                else
+                    $btnUpdate.hide();
+            }
+
+            $txtSearch.val("");
+            $ddlProductStatus.val(0);
+            _table.data = data;
+            drawBodyTable();
+            drawPagination();
+        }
+
+        function updateURL(checkID) {
+            if (checkID == 0) {
+                history.pushState(null, null, "?");
+            }
+            else {
+                let queryParams = new URLSearchParams(window.location.search);
+
+                queryParams.set('checkID', checkID);
+                history.pushState(null, null, "?" + queryParams.toString());
+            }
+        }
+
+        function updateQuantity() {
+            HoldOn.open();
+            let checkWarehouseID = +$('#<%= ddlCheckWarehouse.ClientID %>').val() || 0;
+
+            $("#<%=hdfCheckHouseID.ClientID%>").val(checkWarehouseID);
+            $("#<%=btnUpdateQuantity.ClientID%>").click();
+        }
+
+        function goEditCheckWarehouse() {
+            let checkID = +$('#<%= ddlCheckWarehouse.ClientID %>').val() || 0;
+
+            if (checkID)
+                window.open("/sua-phien-kiem-kho?checkID=" + checkID.toString());
         }
     </script>
 </asp:Content>

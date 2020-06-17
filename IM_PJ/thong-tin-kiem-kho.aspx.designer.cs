@@ -13,13 +13,40 @@ namespace IM_PJ {
     public partial class thong_tin_kiem_kho {
         
         /// <summary>
-        /// ltrCheckWarehouse control.
+        /// ddlCheckWarehouse control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Literal ltrCheckWarehouse;
+        protected global::System.Web.UI.WebControls.DropDownList ddlCheckWarehouse;
+        
+        /// <summary>
+        /// txtSearch control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtSearch;
+        
+        /// <summary>
+        /// ddlProductStatus control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList ddlProductStatus;
+        
+        /// <summary>
+        /// hdfRoleID control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField hdfRoleID;
         
         /// <summary>
         /// hdfCheckHouseID control.
@@ -29,6 +56,15 @@ namespace IM_PJ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.HiddenField hdfCheckHouseID;
+        
+        /// <summary>
+        /// btnUpdateQuantity control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnUpdateQuantity;
         
         /// <summary>
         /// btnCloseCheckWareHouse control.

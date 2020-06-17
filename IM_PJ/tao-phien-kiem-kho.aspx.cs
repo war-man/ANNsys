@@ -97,7 +97,7 @@ namespace IM_PJ
         }
 
         [WebMethod]
-        public static string getProduct(string sku, int? categoryID, int? stockStatus)
+        public static string getProduct(string sku, int stock, int? categoryID, int? stockStatus)
         {
             using (var con = new inventorymanagementEntities())
             {
@@ -141,23 +141,53 @@ namespace IM_PJ
 
                 #region Lấy thông tin sản phẩm và stock
                 // Lọc ra những dòng stock cần lấy
-                var stockFilter = con.tbl_StockManager
+                var stockFilter1 = con.tbl_StockManager
                     .Join(
                         source,
                         s => s.ParentID,
                         d => d.productID,
                         (s, d) => s
                     )
+                    .Select(x => new
+                    {
+                        ParentID = x.ParentID.HasValue ? x.ParentID.Value : 0,
+                        ProductVariableID = x.ProductVariableID.HasValue ? x.ProductVariableID.Value : 0,
+                        CreatedDate = x.CreatedDate.HasValue ? x.CreatedDate.Value : DateTime.Now,
+                        Quantity = x.Quantity.HasValue ? (int)x.Quantity.Value : 0,
+                        QuantityCurrent = x.QuantityCurrent.HasValue ? (int)x.QuantityCurrent.Value : 0,
+                        Type = x.Type.HasValue ? x.Type.Value : 0
+                    })
                     .OrderBy(o => o.ParentID)
                     .ThenBy(o => o.ProductVariableID)
                     .ThenBy(o => o.CreatedDate);
 
+                var stockFilter2 = con.StockManager2
+                    .Join(
+                        source,
+                        s => s.ProductID,
+                        d => d.productID,
+                        (s, d) => s
+                    )
+                    .Select(x => new
+                    {
+                        ParentID = x.ProductID,
+                        ProductVariableID = x.ProductVariableID.HasValue ? x.ProductVariableID.Value : 0,
+                        CreatedDate = x.CreatedDate,
+                        Quantity = x.Quantity,
+                        QuantityCurrent = x.QuantityCurrent,
+                        Type = x.Type
+                    })
+                    .OrderBy(o => o.ParentID)
+                    .ThenBy(o => o.ProductVariableID)
+                    .ThenBy(o => o.CreatedDate);
+
+                var stockFilter = stock == 1 ? stockFilter1 : stockFilter2;
                 // Lấy dòng stock cuối cùng
                 var stockLast = stockFilter
                     .Select(x => new
                     {
-                        parentID = x.ParentID.Value,
-                        productVariableID = x.ProductVariableID.Value,
+                        parentID = x.ParentID,
+                        productVariableID = x.ProductVariableID,
                         createDate = x.CreatedDate
                     })
                     .GroupBy(x => new { x.parentID, x.productVariableID })
@@ -180,16 +210,16 @@ namespace IM_PJ
                         },
                         rec => new
                         {
-                            parentID = rec.ParentID.Value,
-                            productVariableID = rec.ProductVariableID.Value,
+                            parentID = rec.ParentID,
+                            productVariableID = rec.ProductVariableID,
                             doneAt = rec.CreatedDate
                         },
                         (last, rec) => new
                         {
                             parentID = last.parentID,
-                            quantity = rec.Quantity.HasValue ? rec.Quantity.Value : 0,
-                            quantityCurrent = rec.QuantityCurrent.HasValue ? rec.QuantityCurrent.Value : 0,
-                            type = rec.Type.HasValue ? rec.Type.Value : 0
+                            quantity = rec.Quantity,
+                            quantityCurrent = rec.QuantityCurrent,
+                            type = rec.Type
                         }
                     )
                     .Select(x => new
@@ -266,7 +296,7 @@ namespace IM_PJ
             public string WarehouseQuantity { get; set; }
         }
 
-        public class ProductVariationStock
+        public class ProductVariation
         {
             public int productID { get; set; }
             public int productVariableID { get; set; }
@@ -286,8 +316,8 @@ namespace IM_PJ
 
             var checkWarehouse = new CheckWarehouse()
             {
-                Name = String.Format("{0} - {1:dd/MM/yyyy HH:mm}", txtTestName.Text.Trim(), now),
-                Stock = ddlStock.SelectedValue.ToInt(),
+                Name = String.Format("{0} - {1:dd/MM/yyyy HH:mm}", hdfTestName.Value.Trim(), now),
+                Stock = hdfStock.Value.ToInt(),
                 Active = true,
                 CreatedDate = now,
                 CreatedBy = acc.Username,
@@ -327,16 +357,41 @@ namespace IM_PJ
             #endregion
 
             #region Xử lý với sản phẩm có biến thể
-            var productVariables = data.Except(products).ToList();
-            IList<ProductVariationStock> stocks;
+            IList<ProductVariation> variations;
 
             #region Lấy thông tin  stock
             using (var con = new inventorymanagementEntities())
             {
-                var productIDs = productVariables.Select(x => x.ID).Distinct().ToList();
+                var productIDs = data.Except(products).Select(x => x.ID).Distinct().ToList();
+                var productVariations = con.tbl_ProductVariable
+                    .Where(x => x.ProductID.HasValue)
+                    .Where(x => productIDs.Contains(x.ProductID.Value))
+                    .Select(x => new {
+                        productID = x.ProductID.Value,
+                        productVariableID = x.ID,
+                        sku = x.SKU
+                    })
+                    .OrderBy(o => o.productID)
+                    .ThenBy(o => o.productVariableID);
 
                 // Lọc ra những dòng stock cần lấy
-                var stockFilter = con.tbl_StockManager.Where(x => productIDs.Contains(x.ParentID.Value))
+                var stockFilter = con.tbl_StockManager
+                    .Join(
+                        productVariations,
+                        s => s.SKU,
+                        v => v.sku,
+                        (s, v) => s
+                    )
+                    .Select(x => new
+                    {
+                        ParentID = x.ParentID,
+                        ProductVariableID = x.ProductVariableID,
+                        SKU = x.SKU,
+                        CreatedDate = x.CreatedDate,
+                        Quantity = x.Quantity,
+                        QuantityCurrent = x.QuantityCurrent,
+                        Type = x.Type
+                    })
                     .OrderBy(o => o.ParentID)
                     .ThenBy(o => o.ProductVariableID)
                     .ThenBy(o => o.CreatedDate);
@@ -358,22 +413,22 @@ namespace IM_PJ
                     });
 
                 // Thông tin stock
-                stocks = stockLast
+                var stocks = stockFilter
                     .Join(
-                        stockFilter,
-                        last => new
-                        {
-                            parentID = last.parentID,
-                            productVariableID = last.productVariableID,
-                            doneAt = last.doneAt
-                        },
+                        stockLast,
                         rec => new
                         {
                             parentID = rec.ParentID.Value,
                             productVariableID = rec.ProductVariableID.Value,
                             doneAt = rec.CreatedDate
                         },
-                        (last, rec) => new
+                        last => new
+                        {
+                            parentID = last.parentID,
+                            productVariableID = last.productVariableID,
+                            doneAt = last.doneAt
+                        },
+                        (rec, last) => new
                         {
                             parentID = last.parentID,
                             productVariableID = last.productVariableID,
@@ -383,22 +438,39 @@ namespace IM_PJ
                             type = rec.Type.HasValue ? rec.Type.Value : 0
                         }
                     )
-                    .Select(x => new ProductVariationStock()
+                    .Select(x => new
                     {
                         productID = x.parentID,
                         productVariableID = x.productVariableID,
                         sku = x.sku,
-                        calQuantity = x.type == 1 ?
-                            (x.quantityCurrent + x.quantity) :
-                            (x.type == 2 ? x.quantityCurrent - x.quantity : 0D)
+                        calQuantity = x.quantityCurrent + x.quantity * (x.type == 1 ? 1 : -1)
                     })
                     .OrderBy(o => o.productID)
-                    .ThenBy(o => o.productVariableID)
+                    .ThenBy(o => o.productVariableID);
+
+                variations = productVariations
+                    .GroupJoin(
+                        stocks,
+                        v => v.sku,
+                        s => s.sku,
+                        (v, s) => new { variation = v, stock = s }
+                    )
+                    .SelectMany(
+                        x => x.stock.DefaultIfEmpty(),
+                        (parent, child) => new { variation = parent.variation, stock = child }
+                    )
+                    .Select(x => new ProductVariation()
+                    {
+                        productID = x.variation.productID,
+                        productVariableID = x.variation.productVariableID,
+                        sku = x.variation.sku,
+                        calQuantity = x.stock != null ? x.stock.calQuantity : 0D
+                    })
                     .ToList();
             }
             #endregion
 
-            foreach (var item in stocks)
+            foreach (var item in variations)
             {
                 var temp = new CheckWarehouseDetail()
                 {
