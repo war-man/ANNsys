@@ -83,12 +83,13 @@ namespace IM_PJ.CronJob
             web.Add("https://ann.com.vn");
             web.Add("https://khohangsiann.com");
             web.Add("https://bosiquanao.net");
+            web.Add("https://thoitrangann.com");
             web.Add("https://quanaogiaxuong.com");
             web.Add("https://bansithoitrang.net");
             web.Add("https://quanaoxuongmay.com");
             web.Add("https://annshop.vn");
             web.Add("https://panpan.vn");
-            web.Add("https://chuyensidobo.com");
+            //web.Add("https://chuyensidobo.com");
             web.Add("https://damgiasi.vn");
 
             return web;

@@ -174,6 +174,7 @@
                                         <asp:ListItem Value="khohangsiann.com" Text="khohangsiann.com"></asp:ListItem>
                                         <asp:ListItem Value="ann.com.vn" Text="ann.com.vn"></asp:ListItem>
                                         <asp:ListItem Value="bosiquanao.net" Text="bosiquanao.net"></asp:ListItem>
+                                        <asp:ListItem Value="thoitrangann.com" Text="thoitrangann.com"></asp:ListItem>
                                     </asp:DropDownList>
                                 </div>
                             </div>

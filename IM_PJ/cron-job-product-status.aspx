@@ -32,6 +32,7 @@
                                         <asp:ListItem Value="ann.com.vn" Text="ann.com.vn"></asp:ListItem>
                                         <asp:ListItem Value="khohangsiann.com" Text="khohangsiann.com"></asp:ListItem>
                                         <asp:ListItem Value="bosiquanao.net" Text="bosiquanao.net"></asp:ListItem>
+                                        <asp:ListItem Value="thoitrangann.com" Text="panpan.vn"></asp:ListItem>
                                         <asp:ListItem Value="quanaogiaxuong.com" Text="quanaogiaxuong.com"></asp:ListItem>
                                         <asp:ListItem Value="bansithoitrang.net" Text="bansithoitrang.net"></asp:ListItem>
                                         <asp:ListItem Value="quanaoxuongmay.com" Text="quanaoxuongmay.com"></asp:ListItem>

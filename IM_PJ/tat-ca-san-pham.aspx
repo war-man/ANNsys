@@ -798,7 +798,11 @@
                 $("body").append("<div class='copy-product-id hide'></div>");
 
                 $(".table-product > tbody > tr").each(function (i, tr) {
-                    $(".copy-product-id").append($(tr).attr("data-id") + "\n");
+                    let showHomePage = $(tr).attr("data-home-page");
+                    let stockQuantity = $(tr).attr("data-stock-quantity");
+                    if (showHomePage == 1 && stockQuantity >= 5) {
+                        $(".copy-product-id").append($(tr).attr("data-id") + "\n");
+                    }
                 });
 
                 Clipboard.copy($(".copy-product-id").text());

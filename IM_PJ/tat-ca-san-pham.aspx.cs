@@ -925,7 +925,7 @@ namespace IM_PJ
 
                 foreach (var item in acs)
                 {
-                    html.AppendLine("<tr data-id='" + item.ID + "'>");
+                    html.AppendLine("<tr data-id='" + item.ID + "' data-home-page='" + item.ShowHomePage.ToString() + "' data-stock-quantity='" + item.TotalProductInstockQuantityLeft + "'>");
                     html.AppendLine("<td>");
                     html.AppendLine("   <a target='_blank' href='/xem-san-pham?id=" + item.ID + "'><img src='" + Thumbnail.getURL(item.ProductImage, Thumbnail.Size.Normal) + "'></a>");
                     html.AppendLine("   <a href='javascript:;' onclick='copyProductInfo(" + item.ID + ")' class='btn download-btn h45-btn'><i class='fa fa-files-o'></i> Copy</a>");
