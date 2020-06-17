@@ -1,5 +1,6 @@
 ﻿using IM_PJ.Controllers;
 using IM_PJ.Models;
+using IM_PJ.Models.Pages.thuc_hien_kiem_kho;
 using IM_PJ.Utils;
 using MB.Extensions;
 using Newtonsoft.Json;
@@ -37,6 +38,7 @@ namespace IM_PJ
                         {
                             Response.Redirect("/trang-chu");
                         }
+                        hdfRoleID.Value = acc.RoleID.ToString();
                         LoadData();
                     }
                 }
@@ -47,21 +49,37 @@ namespace IM_PJ
                 
             }
         }
+
         public void LoadData()
         {
             var checkWarehouse = CheckWarehouseController.getAll();
-            StringBuilder html = new StringBuilder();
+            ddlCheckWarehouse.Items.Clear();
+            ddlCheckWarehouse.Items.Insert(0, new ListItem("Chọn phiên kiểm kho", ""));
 
-            html.Append("<select id='ddlCheckWarehouse' class='form-control'>");
-            html.Append("<option value=''>Chọn phiên kiểm kho</option>");
-
-            foreach (var item in checkWarehouse)
+            foreach (var cw in checkWarehouse)
             {
-                html.Append("<option value='" + item.ID + "'>" + item.Name + "</option>");
+                ListItem listitem = new ListItem(String.Format("{0} - {1}", cw.ID, cw.Name), cw.ID.ToString());
+                ddlCheckWarehouse.Items.Add(listitem);
             }
 
-            html.Append("</select>");
-            ltrCheckWarehouse.Text = html.ToString();
+            if (checkWarehouse.Count > 0)
+            {
+                ddlCheckWarehouse.DataBind();
+
+                for (int i = 0; i < ddlCheckWarehouse.Items.Count; i++)
+                {
+                    var item = ddlCheckWarehouse.Items[i];
+
+                    if (!String.IsNullOrEmpty(item.Value))
+                    {
+                        var cw = checkWarehouse.Where(x => x.ID.ToString() == item.Value).SingleOrDefault();
+                        item.Attributes.Add("data-finished", cw.Active ? "false" : "true");
+                    }
+                }
+            }
+
+            if (!String.IsNullOrEmpty(Request.QueryString["checkID"]))
+                ddlCheckWarehouse.SelectedValue = Request.QueryString["checkID"];
         }
 
         [WebMethod]
@@ -90,7 +108,9 @@ namespace IM_PJ
                             ModifiedDate = c.ModifiedDate,
                             ModifiedBy = c.ModifiedBy
                         }
-                    ).ToList();
+                    )
+                    .OrderByDescending(o => o.ModifiedDate)
+                    .ToList();
 
                 JavaScriptSerializer serializer = new JavaScriptSerializer();
                 var result = data.Select(x => new CheckInfo()
@@ -109,7 +129,6 @@ namespace IM_PJ
         }
 
 
-
         public class CheckInfo
         {
             public string ProductName { get; set; }
@@ -120,12 +139,53 @@ namespace IM_PJ
             public string ModifiedBy { get; set; }
         }
 
+        /// <summary>
+        /// Cập nhật số lượng 0 với những sản phẩm chưa được kiểm
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        protected void btnUpdateQuantity_Click(object sender, EventArgs e)
+        {
+            var now = DateTime.Now;
+            var username = Request.Cookies["usernameLoginSystem"].Value;
+            var checkID = hdfCheckHouseID.Value.ToInt(0);
+            var acc = AccountController.GetByUsername(username);
+
+            if (acc == null || acc.RoleID != 0)
+                return;
+
+            var products = CheckWarehouseController.getProductRemainingByCheckID(checkID);
+
+            if (products == null)
+                PJUtils.ShowMessageBoxSwAlert("Không có sản phẩm nào chưa kiểm tra!", "i", false, Page);
+            else
+            {
+                var productUpdate = products
+                    .Select(x => new UpdateQuantityModel()
+                    {
+                        checkID = x.CheckWarehouseID,
+                        sku = x.ProductSKU,
+                        quantity = 0,
+                        updateDate = now,
+                        staff = username
+                    })
+                    .ToList();
+                var result = CheckWarehouseController.updateQuantity(productUpdate);
+
+                if (result)
+                    PJUtils.ShowMessageBoxSwAlert("Thành cập nhật số lượng các sản phẩm chưa kiểm!", "s", true, Page);
+                else
+                    PJUtils.ShowMessageBoxSwAlert("Thất bại trong việc cập nhật số lượng các sản phẩm chưa kiểm!", "e", false, Page);
+            }
+        }
+
         protected void btnCloseCheckWareHouse_Click(object sender, EventArgs e)
         {
             DateTime currentDate = DateTime.Now;
             string username = Request.Cookies["usernameLoginSystem"].Value;
             var acc = AccountController.GetByUsername(username);
-            if (acc == null)
+
+            if (acc == null || acc.RoleID != 0)
                 return;
 
             var result = CheckWarehouseController.closeCheckHouse(hdfCheckHouseID.Value.ToInt(0), DateTime.Now, acc.Username);

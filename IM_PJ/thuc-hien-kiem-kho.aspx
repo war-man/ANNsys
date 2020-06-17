@@ -90,7 +90,7 @@
         <div class="container">
             <div class="row margin-bottom-15">
                 <div class="col-sm-4 col-xs-8 none-padding-right">
-                    <asp:DropDownList ID="dllCheckWarehouse" runat="server" CssClass="form-control select2" Width="100%"></asp:DropDownList>
+                    <asp:DropDownList ID="ddlCheckWarehouse" runat="server" CssClass="form-control select2" Width="100%"></asp:DropDownList>
                 </div>
                 <div class="col-sm-1 col-xs-4">
                     <a id="btnExecute" class="btn primary-btn fw-btn" href="javascript:;" onclick="execute()">
@@ -100,39 +100,37 @@
             </div>
             <div id="body" hidden>
                 <div class="row margin-bottom-15">
-                        <div class="col-sm-4 col-xs-8 none-padding-right">
-                            <input type="text" id="txtSKU" class="form-control" placeholder="Nhập mã sản phẩm">
+                    <div class="col-sm-4 col-xs-8 none-padding-right">
+                        <input type="text" id="txtSKU" class="form-control" placeholder="Nhập mã sản phẩm">
+                    </div>
+                    <div class="col-sm-1 col-xs-4">
+                        <a href="javascript:;" id="btnSearch" onclick="searchProduct()" class="btn primary-btn fw-btn">
+                            <i class="fa fa-search"></i> Tìm
+                        </a>
+                    </div>
+                </div>
+                <div class="row margin-bottom-15 body_update" hidden>
+                    <div class="col-sm-2 col-xs-4 none-padding-horizontal">
+                        <div class="col-sm-6 col-xs-12" style="height: 40px; padding-top: 10px">
+                            <label>Số lượng cũ</label>
                         </div>
-                        <div class="col-sm-1 col-xs-4">
-                            <a href="javascript:;" id="btnSearch" onclick="searchProduct()" class="btn primary-btn fw-btn">
-                                <i class="fa fa-search"></i> Tìm
-                            </a>
+                        <div class="col-sm-6 col-xs-12">
+                            <input type="number" id="txtQuantityOld" class="form-control" disabled="disabled" readonly>
                         </div>
                     </div>
-                    <div class="row margin-bottom-15 body_update" hidden>
-                        <div class="col-sm-2 col-xs-4 none-padding-horizontal">
-                            <div class="col-sm-6 col-xs-12" style="height: 40px; padding-top: 10px">
-                                <label>Số lượng cũ</label>
-                            </div>
-                            <div class="col-sm-6 col-xs-12">
-                                <input type="number" id="txtQuantityOld" class="form-control" disabled="disabled" readonly>
-                            </div>
+                    <div class="col-sm-2 col-xs-4 none-padding-horizontal">
+                        <div class="col-sm-6 col-xs-12" style="height: 40px; padding-top: 10px">
+                            <label>Số lượng mới</label>
                         </div>
-                        <div class="col-sm-2 col-xs-4 none-padding-horizontal">
-                            <div class="col-sm-6 col-xs-12" style="height: 40px; padding-top: 10px">
-                                <label>Số lượng mới</label>
-                            </div>
-                            <div class="col-sm-6 col-xs-12">
-                                <input type="number" id="txtQuantityNew" class="form-control">
-                            </div>
+                        <div class="col-sm-6 col-xs-12">
+                            <input type="number" id="txtQuantityNew" class="form-control">
                         </div>
-                        <div class="col-sm-1 col-xs-4 body_update" hidden>
+                    </div>
+                    <div class="col-sm-1 col-xs-4 body_update" hidden>
                         <a href="javascript:;" onclick="updateQuantity()" class="btn primary-btn btn-red fw-btn" tabindex="6">
                             <i class="fa fa-refresh"></i> Lưu
                         </a>
                     </div>
-                    </div>
-                    
                 </div>
             </div>
             <div class="container staff-history hidden">
@@ -167,6 +165,7 @@
                 $('body').removeClass('menuin');
             }
 
+            initCheckWarehouseSelect2()
             initSearch();
             initQuantity();
         });
@@ -175,6 +174,13 @@
             let staffName = $.cookie("usernameLoginSystem");
 
             return staffName;
+        }
+
+        function initCheckWarehouseSelect2() {
+            let checkID = +$('#<%= ddlCheckWarehouse.ClientID %>').val() || 0;
+
+            if (checkID > 0)
+                execute();
         }
 
         function initSearch() {
@@ -194,20 +200,20 @@
         }
 
         function execute() {
-            let $dllCheckWarehouse = $('#<%= dllCheckWarehouse.ClientID %>');
+            let $ddlCheckWarehouse = $('#<%= ddlCheckWarehouse.ClientID %>');
 
-            if ($dllCheckWarehouse.val() == "")
+            if ($ddlCheckWarehouse.val() == "")
                 return swal({
                     title: 'Thông báo',
                     text: 'Vui lòng chọn phiên kiểm kho',
                     type: 'warning'
                 }, function () {
-                    $dllCheckWarehouse.select2('open');
+                    $ddlCheckWarehouse.select2('open');
                 });;
 
             // Drop downlist Check Warehouse
-            $dllCheckWarehouse.attr('disabled', true);
-            $dllCheckWarehouse.attr('readonly', true);
+            $ddlCheckWarehouse.attr('disabled', true);
+            $ddlCheckWarehouse.attr('readonly', true);
 
             // Button Execute
             let $btnExecute = $('#btnExecute');
@@ -223,7 +229,7 @@
 
         function initStaffHistories() {
             let account = getAccount();
-            let checkID = +$('#<%= dllCheckWarehouse.ClientID %>').val() || 0;
+            let checkID = +$('#<%= ddlCheckWarehouse.ClientID %>').val() || 0;
             let url = 'api/v1/check-warehouse/' + checkID + '/staff-histories/data-table';
 
             tbStaffHistories = $('#tbStaffHistories').DataTable({
@@ -264,7 +270,7 @@
 
         function searchProduct() {
             let account = getAccount();
-            let checkID = +$('#<%= dllCheckWarehouse.ClientID %>').val() || 0;
+            let checkID = +$('#<%= ddlCheckWarehouse.ClientID %>').val() || 0;
             let sku = $('#txtSKU').val()
 
             if (!account || !checkID || !sku)
@@ -274,12 +280,17 @@
             let url = 'api/v1/check-warehouse/' + checkID + '/check-product/' + sku;
 
             $.ajax({
+                beforeSend: function () {
+                    HoldOn.open();
+                },
                 method: 'GET',
                 url: url,
                 headers: {
                     'staff': account
                 },
                 success: (data, textStatus, xhr) => {
+                    HoldOn.close();
+
                     if (xhr.status === 200) {
                         // input text search
                         $('#txtSKU').attr('disabled', true);
@@ -299,6 +310,8 @@
                     }
                 },
                 error: (xhr, textStatus, error) => {
+                    HoldOn.close();
+
                     if (xhr.status === 400) {
                         alter400(titleAlert, xhr.responseJSON)
                     }
@@ -314,7 +327,7 @@
 
         function updateQuantity() {
             let account = getAccount();
-            let checkID = +$('#<%= dllCheckWarehouse.ClientID %>').val() || 0;
+            let checkID = +$('#<%= ddlCheckWarehouse.ClientID %>').val() || 0;
             let sku = $('#txtSKU').val()
             let quantity = $('#txtQuantityNew').val() || "";
 
@@ -336,6 +349,9 @@
             let url = 'api/v1/check-warehouse/' + checkID + '/update-quantity';
 
             $.ajax({
+                beforeSend: function () {
+                    HoldOn.open();
+                },
                 method: 'POST',
                 url: url,
                 headers: {
@@ -345,6 +361,8 @@
                 dataType: "json",
                 data: JSON.stringify({ sku: sku, quantity: quantity }),
                 success: (data, textStatus, xhr) => {
+                    HoldOn.close();
+
                     if (xhr.status === 200) {
                         // refresh Histories Table 
                         tbStaffHistories.ajax.reload();
@@ -368,6 +386,8 @@
                     }
                 },
                 error: (xhr, textStatus, error) => {
+                    HoldOn.close();
+
                     if (xhr.status === 400) {
                         alter400(titleAlert, xhr.responseJSON)
                     }

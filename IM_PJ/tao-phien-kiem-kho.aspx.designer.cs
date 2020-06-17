@@ -49,6 +49,24 @@ namespace IM_PJ {
         protected global::System.Web.UI.WebControls.DropDownList ddlStockStatus;
         
         /// <summary>
+        /// hdfTestName control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField hdfTestName;
+        
+        /// <summary>
+        /// hdfStock control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField hdfStock;
+        
+        /// <summary>
         /// hdfvalue control.
         /// </summary>
         /// <remarks>

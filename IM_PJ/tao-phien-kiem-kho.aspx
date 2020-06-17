@@ -110,6 +110,8 @@
                 </div>
             </div>
         </div>
+        <asp:HiddenField ID="hdfTestName" runat="server" />
+        <asp:HiddenField ID="hdfStock" runat="server" />
         <asp:HiddenField ID="hdfvalue" runat="server" />
         <asp:Button ID="btnImport" runat="server" OnClick="btnImport_Click" Style="display: none" />
     </main>
@@ -194,6 +196,15 @@
                 $btnSearch.attr('readonly', true);
             }
             else {
+                // Test Name
+                $("#<%=hdfTestName.ClientID%>").val($txtTestName.val());
+                $txtTestName.attr('disabled', true);
+                $txtTestName.attr('readonly', true);
+                // Stock
+                $("#<%=hdfStock.ClientID%>").val($ddlStock.val());
+                $ddlStock.attr('disabled', true);
+                $ddlStock.attr('readonly', true);
+                $ddlStock.removeAttr('style');
                 // Search
                 $txtSearch.removeAttr('disabled');
                 $txtSearch.removeAttr('readonly');
@@ -477,12 +488,14 @@
         }
 
         function searchProduct() {
+            let stock = +$("#<%=ddlStock.ClientID%>").val() || 1;
             let textsearch = $("#txtSearch").val();
             let categoryID = $("#ddlCategory").val();
             let stockStatus = $("#<%=ddlStockStatus.ClientID%>").val();
 
             let data = {
                 sku: textsearch,
+                stock: stock,
                 categoryID: categoryID != "" ? +categoryID : null,
                 stockStatus: stockStatus != "" ? +stockStatus : null
             };

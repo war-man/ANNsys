@@ -557,6 +557,7 @@
     <Content Include="SQL\05CREATE_STORE_PROCEDURE_HandleProductImage.sql" />
     <Content Include="dang-ky-ghtk.aspx" />
     <Content Include="san-pham.aspx" />
+    <Content Include="sua-phien-kiem-kho.aspx" />
     <Content Include="thuc-hien-kiem-kho.aspx" />
     <Content Include="chinh-sua-kho-2.aspx" />
     <Content Include="chuyen-kho.aspx" />
@@ -1351,6 +1352,13 @@
     </Compile>
     <Compile Include="san-pham.aspx.designer.cs">
       <DependentUpon>san-pham.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="sua-phien-kiem-kho.aspx.cs">
+      <DependentUpon>sua-phien-kiem-kho.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="sua-phien-kiem-kho.aspx.designer.cs">
+      <DependentUpon>sua-phien-kiem-kho.aspx</DependentUpon>
     </Compile>
     <Compile Include="thuc-hien-kiem-kho.aspx.cs">
       <DependentUpon>thuc-hien-kiem-kho.aspx</DependentUpon>

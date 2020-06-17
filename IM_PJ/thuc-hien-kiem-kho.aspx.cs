@@ -41,18 +41,21 @@ namespace IM_PJ
 
         public void LoadData()
         {
-            var checkWarehouse = CheckWarehouseController.getAll();
-            dllCheckWarehouse.Items.Clear();
-            dllCheckWarehouse.Items.Insert(0, new ListItem("Chọn phiên kiểm kho", ""));
+            var checkWarehouse = CheckWarehouseController.getAllActive();
+            ddlCheckWarehouse.Items.Clear();
+            ddlCheckWarehouse.Items.Insert(0, new ListItem("Chọn phiên kiểm kho", ""));
 
             foreach (var cw in checkWarehouse)
             {
-                ListItem listitem = new ListItem(cw.Name, cw.ID.ToString());
-                dllCheckWarehouse.Items.Add(listitem);
+                ListItem listitem = new ListItem(String.Format("{0} - {1}", cw.ID, cw.Name), cw.ID.ToString());
+                ddlCheckWarehouse.Items.Add(listitem);
             }
 
             if (checkWarehouse.Count > 0)
-                dllCheckWarehouse.DataBind();
+                ddlCheckWarehouse.DataBind();
+
+            if (!String.IsNullOrEmpty(Request.QueryString["checkID"]))
+                ddlCheckWarehouse.SelectedValue = Request.QueryString["checkID"];
         }
     }
 }
