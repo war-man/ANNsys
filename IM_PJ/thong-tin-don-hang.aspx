@@ -2721,9 +2721,13 @@
             function getShipGHTK() {
                 let orderID = $("#<%=hdOrderInfoID.ClientID%>").val();
                 let weight = $("#<%=txtWeight.ClientID%>").val();
-                if (weight == 0) {
+                if (weight <= 0) {
                     $("#<%=txtWeight.ClientID%>").focus();
                     return swal("Thông báo", "Chưa nhập khối lượng đơn hàng!", "warning");
+                }
+                else if (weight > 150) {
+                    $("#<%=txtWeight.ClientID%>").focus();
+                    return swal("Thông báo", "Khối lượng đơn hàng phải nhỏ hơn 150kg", "warning");
                 }
                 let shippingType = $("#<%=hdfShippingType.ClientID%>").val();
                 if (shippingType != 6) {

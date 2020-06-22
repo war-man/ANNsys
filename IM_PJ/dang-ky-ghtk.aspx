@@ -418,17 +418,20 @@
                 function _initReceiveInfo() {
                     $("#tel").change(function () {
                         _order.tel = $(this).val();
-                    })
+                    });
 
                     $("#name").change(function () {
                         _order.name = $(this).val();
-                    })
+                    });
 
                     $("#address").change(function () {
                         _order.address = $(this).val();
                         _order.street = _order.address;
+                    });
+
+                    $("#address").blur(function () {
                         _updateAddress();
-                    })
+                    });
                 }
 
                 function _initReceiverAddress() {
@@ -1005,6 +1008,15 @@
 
                 function _checkSubmit() {
                     let titleAlert = "Thông báo lỗi";
+                    let orderStatus = $("#btnRegister").is(':disabled');
+
+                    if (orderStatus) {
+                        return swal({
+                            title: titleAlert,
+                            text: "Đơn hàng chưa hoàn tất!",
+                            icon: "error",
+                        });
+                    }
 
                     if (!_order.tel)
                         return swal({
@@ -1146,6 +1158,7 @@
 
                                         if (_feeShipment == 0 || _feeShipment == 1) {
                                             _order.pick_money = _order.pick_money - _fee;
+                                            _order.value = _order.value - _fee;
                                         }
                                         else if (_feeShipment == 2) {
                                             // thu hộ
@@ -1155,6 +1168,8 @@
                                             else {
                                                 _order.pick_money = 0;
                                             }
+
+                                            _order.value = _order.value - _feeShop;
                                         }
                                         _fee = data.fee.fee;
                                         $("#feeship").html(_formatThousand(_fee));
@@ -1187,6 +1202,7 @@
 
                     if (feeShipment == 0 || feeShipment == 1) {
                         _order.pick_money = _order.pick_money + _fee;
+                        _order.value = _order.value + _fee;
                     }
                     else if (feeShipment == 2) {
                         // thu hộ
@@ -1197,8 +1213,9 @@
                         else {
                             _order.pick_money = 0;
                         }
+                        _order.value = _order.value + _feeShop;
                     }
-
+                    
                     _feeShipment = feeShipment;
                     $pick_money.val(_formatThousand(_order.pick_money));
                     $value.val(_formatThousand(_order.value));

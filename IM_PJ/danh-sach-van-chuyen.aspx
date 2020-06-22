@@ -330,6 +330,9 @@
                                     <asp:ListItem Value="" Text="Chọn đợt giao hàng"></asp:ListItem>
                                     <asp:ListItem Value="1" Text="Đợt 1"></asp:ListItem>
                                     <asp:ListItem Value="2" Text="Đợt 2"></asp:ListItem>
+                                    <asp:ListItem Value="3" Text="Đợt 3"></asp:ListItem>
+                                    <asp:ListItem Value="4" Text="Đợt 4"></asp:ListItem>
+                                    <asp:ListItem Value="5" Text="Đợt 5"></asp:ListItem>
                                 </asp:DropDownList>
                             </div>
                         </div>
@@ -424,6 +427,9 @@
                                     <asp:ListItem Value="0" Text="Chọn đợt giao hàng"></asp:ListItem>
                                     <asp:ListItem Value="1" Text="Đợt 1"></asp:ListItem>
                                     <asp:ListItem Value="2" Text="Đợt 2"></asp:ListItem>
+                                    <asp:ListItem Value="3" Text="Đợt 3"></asp:ListItem>
+                                    <asp:ListItem Value="4" Text="Đợt 4"></asp:ListItem>
+                                    <asp:ListItem Value="5" Text="Đợt 5"></asp:ListItem>
                                 </asp:DropDownList>
                             </div>
                         </div>
@@ -457,6 +463,9 @@
                                     <asp:ListItem Value="0" Text="Tất cả"></asp:ListItem>
                                     <asp:ListItem Value="1" Text="Đợt 1"></asp:ListItem>
                                     <asp:ListItem Value="2" Text="Đợt 2"></asp:ListItem>
+                                    <asp:ListItem Value="3" Text="Đợt 3"></asp:ListItem>
+                                    <asp:ListItem Value="4" Text="Đợt 4"></asp:ListItem>
+                                    <asp:ListItem Value="5" Text="Đợt 5"></asp:ListItem>
                                 </asp:DropDownList>
                             </div>
                         </div>

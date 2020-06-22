@@ -156,7 +156,7 @@ namespace IM_PJ
                     var District = ProvinceController.GetByID(customer.DistrictId.Value);
                     addressDetail = ", " + District.Name + addressDetail;
                 }
-                if (customer.WardId.HasValue)
+                if (customer.WardId.HasValue && customer.WardId.Value > 0)
                 {
                     var Ward = ProvinceController.GetByID(customer.WardId.Value);
                     addressDetail = ", " + Ward.Name + addressDetail;

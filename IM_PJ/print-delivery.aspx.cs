@@ -67,7 +67,7 @@ namespace IM_PJ
             ltrPrintDelivery.Text = String.Empty;
             foreach (var shipperID in shippers)
             {
-                for (var timers = 1; timers <= 2; ++timers)
+                for (var timers = 1; timers <= 5; ++timers)
                 {
                     // Báo cáo chuyển hàng tới nhà xe
                     var transforOrders = session
