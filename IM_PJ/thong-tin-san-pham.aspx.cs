@@ -1,5 +1,6 @@
 ﻿using IM_PJ.Controllers;
 using IM_PJ.Models;
+using IM_PJ.Models.Pages.thong_tin_san_pham;
 using IM_PJ.Utils;
 using MB.Extensions;
 using Newtonsoft.Json;
@@ -24,6 +25,8 @@ namespace IM_PJ
 {
     public partial class thong_tin_san_pham : System.Web.UI.Page
     {
+        private static string _productSKU;
+
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
@@ -143,6 +146,7 @@ namespace IM_PJ
             // Cài đặt dữ liệu cho page
             ViewState["ID"] = productID;
             ViewState["cateID"] = product.CategoryID;
+            _productSKU = product.ProductSKU.ToUpper();
             ViewState["SKU"] = product.ProductSKU;
             hdfParentID.Value = product.CategoryID.ToString();
             hdfsetStyle.Value = product.ProductStyle.ToString();
@@ -485,8 +489,9 @@ namespace IM_PJ
         /// <summary>
         /// Cập nhật thông tin product
         /// </summary>
-        private void _updateProduct(int productID, tbl_Account acc)
+        private void _updateProduct(tbl_Account acc)
         {
+            int productID = ViewState["ID"].ToString().ToInt(0);
             var updatedData = new tbl_Product()
             {
                 ID = productID,
@@ -570,7 +575,10 @@ namespace IM_PJ
             // Delete Image
             if (!String.IsNullOrEmpty(hdfDeleteImageGallery.Value))
             {
-                var imageIDList = hdfDeleteImageGallery.Value.Split(',');
+                var imageIDList = hdfDeleteImageGallery.Value
+                    .Split(',')
+                    .Where(x => !String.IsNullOrEmpty(x))
+                    .ToList();
 
                 foreach (var strID in imageIDList)
                 {
@@ -578,10 +586,13 @@ namespace IM_PJ
                 }
             }
             // Add Image
-            foreach (HttpPostedFile httpPostedFile in uploadImageGallery.PostedFiles)
+            if (uploadImageGallery.HasFiles)
             {
-                var fileName = _uploadImage(productID, httpPostedFile);
-                ProductImageController.Insert(productID, fileName, false, DateTime.Now, acc.Username);
+                foreach (HttpPostedFile httpPostedFile in uploadImageGallery.PostedFiles)
+                {
+                    var fileName = _uploadImage(productID, httpPostedFile);
+                    ProductImageController.Insert(productID, fileName, false, DateTime.Now, acc.Username);
+                }
             }
         }
 
@@ -630,131 +641,171 @@ namespace IM_PJ
         #endregion
 
         #region Cập nhật sản phẩm biến thể
-        //private void _updateProductVariation(int productID, tbl_Account acc)
-        //{
-        //    if (String.IsNullOrEmpty(hdfVariableListInsert.Value))
-        //        return;
+        private void _updateProductVariation(tbl_Account acc)
+        {
+            if (String.IsNullOrEmpty(hdfVariableListInsert.Value))
+            {
+                var strFunction = "";
+                strFunction = "HoldOn.close();";
+                strFunction = "swal({title: 'Lỗi', text: 'Quá trình cập nhật biến thể đã xảy ra lỗi', type: 'error'});";
 
-        //    var items = hdfVariableListInsert.Value.Split(',').Where(x => !String.IsNullOrEmpty(x)).ToArray();
+                JavaScript.BeforePageLoad(Page).ExecuteCustomScript(strFunction);
+                return;
 
-        //    for (int i = 0; i < items.Length - 1; i++)
-        //    {
-        //        string item = items[i];
-        //        string[] itemElement = item.Split(';');
+            }
 
-        //        string datanameid = itemElement[0];
-        //        string[] datavalueid = itemElement[1].Split('|');
-        //        string datanametext = itemElement[2];
-        //        string datavaluetext = itemElement[3];
-        //        string productvariablesku = itemElement[4].Trim().ToUpper();
-        //        string regularprice = itemElement[5];
-        //        string costofgood = itemElement[6];
-        //        string retailprice = itemElement[7];
-        //        string[] datanamevalue = itemElement[8].Split('|');
-        //        string imageUpload = itemElement[4];
-        //        int _MaximumInventoryLevel = itemElement[9].ToInt(0);
-        //        int _MinimumInventoryLevel = itemElement[10].ToInt(0);
-        //        int stockstatus = itemElement[11].ToInt();
-        //        string imageSrc = itemElement[13];
-        //        string kq1 = "";
+            var productID = ViewState["ID"].ToString().ToInt(0);
+            var productSKU = ViewState["SKU"].ToString();
+            var uploadPath = "/uploads/images/";
+            var imageDefault = "/App_Themes/Ann/image/placeholder.png";
 
-        //        // Check variable
-        //        var Variable = ProductVariableController.GetBySKU(productvariablesku);
-        //        if (Variable != null)
-        //        {
-        //            // Update image
-        //            string image = Variable.Image;
-        //            if (imageSrc == "/App_Themes/Ann/image/placeholder.png")
-        //            {
-        //                image = "";
-        //            }
-        //            else
-        //            {
-        //                if (imageSrc != path + Variable.Image)
-        //                {
-        //                    HttpPostedFile postedFile = Request.Files[imageUpload];
-        //                    if (postedFile != null && postedFile.ContentLength > 0)
-        //                    {
-        //                        // Upload image
-        //                        var o = path + productID + '-' + Slug.ConvertToSlug(Path.GetFileName(postedFile.FileName), isFile: true);
+            #region Xóa biến thể
+            var variationRemovalList = JsonConvert.DeserializeObject<List<string>>(hdfVariationRemovalList.Value);
 
-        //                        if (File.Exists(Server.MapPath(o)))
-        //                        {
-        //                            o = path + productID + '-' + DateTime.UtcNow.ToString("HHmmssffff") + '-' + Slug.ConvertToSlug(Path.GetFileName(postedFile.FileName), isFile: true);
-        //                        }
-        //                        postedFile.SaveAs(Server.MapPath(o));
-        //                        image = Path.GetFileName(o);
+            foreach (var sku in variationRemovalList)
+            {
+                ProductVariableController.removeByVariationSKU(sku);
+            }
+            #endregion
 
-        //                        // Thumbnail
-        //                        Thumbnail.create(Server.MapPath(o), 85, 113);
-        //                        Thumbnail.create(Server.MapPath(o), 159, 212);
-        //                        Thumbnail.create(Server.MapPath(o), 240, 320);
-        //                        Thumbnail.create(Server.MapPath(o), 350, 467);
-        //                        Thumbnail.create(Server.MapPath(o), 600, 0);
-        //                    }
-        //                    else
-        //                    {
-        //                        image = "";
-        //                    }
-        //                }
-        //            }
+            #region Cập nhật biến thể
+            var productVariationUpdateList = JsonConvert.DeserializeObject<List<ProductVariationUpdateModel>>(hdfVariableListInsert.Value);
 
-        //            // Update variable
+            if (uploadVariationImage.HasFiles)
+            {
+                foreach (var file in uploadVariationImage.PostedFiles)
+                {
+                    
+                    var fileName = file.FileName;
+                    var imageName = _uploadImage(productID, file);
 
-        //            kq1 = ProductVariableController.Update(Variable.ID, productID, Variable.ParentSKU, productvariablesku, Convert.ToDouble(Variable.Stock), Convert.ToInt32(Variable.StockStatus), Convert.ToDouble(regularprice), Convert.ToDouble(costofgood), Convert.ToDouble(retailprice), image, true, false, DateTime.Now, username, Convert.ToInt32(Variable.SupplierID), Variable.SupplierName, _MinimumInventoryLevel, _MaximumInventoryLevel);
+                    productVariationUpdateList
+                        .Where(x => x.image == uploadPath + fileName)
+                        .Select(x =>
+                        {
+                            x.image = uploadPath + imageName;
 
-        //            // Delete all productVariableValue
+                            return x;
+                        });
+                }
+            }
 
-        //            bool deleteVariableValue = ProductVariableValueController.DeleteByProductVariableID(Variable.ID);
-        //        }
-        //        else
-        //        {
-        //            string image = "";
+            foreach (var item in productVariationUpdateList)
+            {
+                var now = DateTime.Now;
+                // Kiểm tra sản phẩm biến thể có tồn tại hay không để thực hiện insert hoặc update
+                var productVariation = ProductVariableController.GetBySKU(item.sku);
+                var image = String.Empty;
 
-        //            HttpPostedFile postedFile = Request.Files[imageUpload];
-        //            if (postedFile != null && postedFile.ContentLength > 0)
-        //            {
-        //                // Upload image
-        //                var o = path + productID + '-' + Slug.ConvertToSlug(Path.GetFileName(postedFile.FileName), isFile: true);
-        //                if (File.Exists(Server.MapPath(o)))
-        //                {
-        //                    o = path + productID + '-' + DateTime.UtcNow.ToString("HHmmssffff") + '-' + Slug.ConvertToSlug(Path.GetFileName(postedFile.FileName), isFile: true);
-        //                }
-        //                postedFile.SaveAs(Server.MapPath(o));
-        //                image = Path.GetFileName(o);
+                if (item.image != imageDefault)
+                {
+                    image = item.image.Replace(uploadPath, String.Empty);
+                }
 
-        //                // Thumbnail
-        //                Thumbnail.create(Server.MapPath(o), 85, 113);
-        //                Thumbnail.create(Server.MapPath(o), 159, 212);
-        //                Thumbnail.create(Server.MapPath(o), 240, 320);
-        //                Thumbnail.create(Server.MapPath(o), 350, 467);
-        //                Thumbnail.create(Server.MapPath(o), 600, 0);
-        //            }
+                if (productVariation != null)
+                {
+                    // Thực hiện update biến thể
+                    var productVariationID = ProductVariableController.Update(
+                        ID: productVariation.ID, 
+                        ProductID: productID, 
+                        ParentSKU: productVariation.ParentSKU, 
+                        SKU: item.sku, 
+                        Stock: Convert.ToDouble(productVariation.Stock),
+                        StockStatus: Convert.ToInt32(productVariation.StockStatus),
+                        Regular_Price: item.regularPrice,
+                        CostOfGood: item.costOfGood,
+                        RetailPrice: item.retailPrice,
+                        Image: image,
+                        ManageStock: true,
+                        IsHidden: false,
+                        ModifiedDate: now,
+                        ModifiedBy: acc.Username,
+                        SupplierID: Convert.ToInt32(productVariation.SupplierID),
+                        SupplierName: productVariation.SupplierName,
+                        MinimumInventoryLevel: item.minimumInventoryLevel,
+                        MaximumInventoryLevel: item.maximumInventoryLevel
+                    );
 
-        //            // Insert new variable
+                    // Xóa tất cả giá trị của biến thể để cập nhật lại
+                    ProductVariableValueController.DeleteByProductVariableID(productVariation.ID);
 
-        //            kq1 = ProductVariableController.Insert(productID, ProductSKU, productvariablesku, 0, stockstatus, Convert.ToDouble(regularprice),
-        //                    Convert.ToDouble(costofgood), Convert.ToDouble(retailprice), image, true, false, DateTime.Now, username,
-        //                    ddlSupplier.SelectedValue.ToInt(0), ddlSupplier.SelectedItem.ToString(), _MinimumInventoryLevel, _MaximumInventoryLevel);
-        //        }
+                    // Khởi tạo biến thể cho sản phẩm con
+                    _createVariationValue(new VariationValueUpdateModel()
+                    {
+                        productVariationID = Convert.ToInt32(productVariationID),
+                        productVariationSKU = item.sku,
+                        variationValueID = item.variationValueID,
+                        variationName = item.variationName,
+                        variationValueName = item.variationValueName,
+                        isHidden = false,
+                        createdDate = now,
+                        createdBy = acc.Username
+                    });
+                }
+                else
+                {
+                    // Tạo sản phẩm biến thể mới
+                    var productVariationID = ProductVariableController.Insert(
+                        ProductID: productID, 
+                        ParentSKU: productSKU,
+                        SKU: item.sku, 
+                        Stock: 0,
+                        StockStatus: item.stockStatus,
+                        Regular_Price: item.regularPrice,
+                        CostOfGood: item.costOfGood,
+                        RetailPrice: item.retailPrice,
+                        Image: image,
+                        ManageStock: true,
+                        IsHidden: false, 
+                        CreatedDate: now, 
+                        CreatedBy: acc.Username,
+                        SupplierID: ddlSupplier.SelectedValue.ToInt(0),
+                        SupplierName: ddlSupplier.SelectedItem.ToString(),
+                        MinimumInventoryLevel: item.minimumInventoryLevel,
+                        MaximumInventoryLevel: item.maximumInventoryLevel);
+                    
+                    // Khởi tạo biến thể cho sản phẩm con
+                    _createVariationValue(new VariationValueUpdateModel()
+                    {
+                        productVariationID = Convert.ToInt32(productVariationID),
+                        productVariationSKU = item.sku,
+                        variationValueID = item.variationValueID,
+                        variationName = item.variationName,
+                        variationValueName = item.variationValueName,
+                        isHidden = false,
+                        createdDate = now,
+                        createdBy = acc.Username
+                    });
+                }
+            }
+            #endregion
+        }
+        #endregion
 
-        //        // Update ProductVariableValue
+        #region Cập nhật giá trị biến thể của sản phẩm con
+        public void _createVariationValue(VariationValueUpdateModel variationValue)
+        {
+            var variationValueIDList = variationValue.variationValueID.Split('|').Where(x => !String.IsNullOrEmpty(x)).ToList();
+            var variationNameList = variationValue.variationName.Split('|').Where(x => !String.IsNullOrEmpty(x)).ToList();
+            var variationValueNameList = variationValue.variationValueName.Split('|').Where(x => !String.IsNullOrEmpty(x)).ToList();
 
-        //        if (kq1.ToInt(0) > 0)
-        //        {
-        //            string[] Data = datanametext.Split('|');
-        //            string[] DataValue = datavaluetext.Split('|');
-        //            for (int k = 0; k < Data.Length - 1; k++)
-        //            {
-        //                int variablevalueID = datavalueid[k].ToInt();
-        //                string variableName = Data[k];
-        //                string variableValueName = DataValue[k];
-        //                ProductVariableValueController.Insert(kq1.ToInt(), productvariablesku, variablevalueID, variableName, variableValueName, false, DateTime.Now, username);
-        //            }
-        //        }
-
-        //    }
-        //}
+            for (int index = 0; index < variationValueIDList.Count; index++)
+            {
+                var variableValueID = variationValueIDList[index].ToInt();
+                string variableName = variationNameList[index];
+                string variableValueName = variationValueNameList[index];
+                ProductVariableValueController.Insert(
+                    ProductVariableID: variationValue.productVariationID,
+                    ProductvariableSKU: variationValue.productVariationSKU,
+                    VariableValueID: variableValueID, 
+                    VariableName: variableName,
+                    VariableValue: variableValueName,
+                    IsHidden: variationValue.isHidden,
+                    CreatedDate: variationValue.createdDate, 
+                    CreatedBy: variationValue.createdBy
+                );
+            }
+        }
         #endregion
         #endregion
         #endregion
@@ -765,22 +816,23 @@ namespace IM_PJ
 
             if (!String.IsNullOrEmpty(productSKU))
             {
-                var product = ProductController.GetBySKU(txtProductSKU.Text.Trim().ToLower());
-
-                if (product != null)
+                if (productSKU != _productSKU)
                 {
-                    txtProductSKU.Text = ViewState["SKU"].ToString();
-                    PJUtils.ShowMessageBoxSwAlert(String.Format("Mã #SKU - {0} đã tồn tại", productSKU), "e", false, Page);
-                }
-                else
-                {
-                    var skuOld = ViewState["SKU"];
-                    var skuNew = productSKU;
-                    var strFunction = String.Format("function() { updateVariationSKUA('{0}', '{1}') };", skuOld, skuNew);
+                    var product = ProductController.GetBySKU(txtProductSKU.Text.Trim().ToLower());
 
-                    ViewState["SKU"] = productSKU;
-                    JavaScript.AfterPageLoad(Page).ExecuteCustomScript(strFunction);
+                    if (product != null)
+                    {
+                        txtProductSKU.Text = ViewState["SKU"].ToString();
+                        PJUtils.ShowMessageBoxSwAlert(String.Format("Mã #SKU - {0} đã tồn tại", productSKU), "e", false, Page);
+                        return;
+                    }
                 }
+
+                var skuOld = ViewState["SKU"].ToString();
+                var skuNew = productSKU;
+
+                ViewState["SKU"] = productSKU;
+                JavaScript.AfterPageLoad(Page).ExecuteCustomScript("updateVariationSKUA('{0}', '{1}');", new object[] { skuOld, skuNew });
             }
             else
             {
@@ -793,17 +845,20 @@ namespace IM_PJ
         {
             string username = Request.Cookies["usernameLoginSystem"].Value;
             var acc = AccountController.GetByUsername(username);
-            int cateID = ViewState["cateID"].ToString().ToInt(0);
-            int productID = ViewState["ID"].ToString().ToInt(0);
-            if (cateID > 0)
+
+            if (acc == null)
+            {
+                var message = String.Format("Không tìm thấy account #{0} trong hệ thống.", username);
+                PJUtils.ShowMessageBoxSwAlert(message, "e", false, Page);
                 return;
+            }
 
             // Cập nhật product
-            _updateProduct(productID, acc);
+            _updateProduct(acc);
 
             // Update Variable
-            //if (hdfsetStyle.Value == "2")
-            //    _updateProductVariation(productID, acc);
+            if (hdfsetStyle.Value == "2")
+                _updateProductVariation(acc);
 
             PJUtils.ShowMessageBoxSwAlert("Cập nhật sản phẩm thành công", "s", true, Page);
         }

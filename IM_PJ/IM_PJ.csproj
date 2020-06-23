@@ -1065,6 +1065,8 @@
     <Compile Include="Models\NotifyUser.cs">
       <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\Pages\thong-tin-san-pham\ProductVariationUpdateModel.cs" />
+    <Compile Include="Models\Pages\thong-tin-san-pham\VariationValueUpdateModel.cs" />
     <Compile Include="Models\PostCategory.cs">
       <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
