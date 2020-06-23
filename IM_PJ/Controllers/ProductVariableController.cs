@@ -159,6 +159,33 @@ namespace IM_PJ.Controllers
                     return null;
             }
         }
+
+        /// <summary>
+        /// Xóa biên thể theo mã SKU
+        /// </summary>
+        /// <param name="variationSKU"></param>
+        public static void removeByVariationSKU(string variationSKU)
+        {
+            using (var con = new inventorymanagementEntities())
+            {
+                var productVariation = con.tbl_ProductVariable
+                    .Where(x => x.SKU == variationSKU)
+                    .SingleOrDefault();
+
+                if (productVariation != null)
+                {
+                    var variationValue = con.tbl_ProductVariableValue
+                        .Where(x => x.ProductVariableID == productVariation.ID)
+                        .ToList();
+
+                    if (variationValue != null || variationValue.Count > 0)
+                        con.tbl_ProductVariableValue.RemoveRange(variationValue);
+
+                    con.tbl_ProductVariable.Remove(productVariation);
+                    con.SaveChanges();
+                }
+            }
+        }
         #endregion
         #region Select
         public static tbl_ProductVariable GetByID(int ID)
