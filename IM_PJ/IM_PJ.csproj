@@ -520,6 +520,7 @@
     <Content Include="bao-cao.aspx" />
     <Content Include="bv.aspx" />
     <Content Include="chuyen-kho.aspx" />
+    <Content Include="tai-khoan-app.aspx" />
     <Content Include="Models\IMMode.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>IMMode.edmx</DependentUpon>
@@ -986,6 +987,13 @@
     </Compile>
     <Compile Include="chuyen-kho.aspx.designer.cs">
       <DependentUpon>chuyen-kho.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="tai-khoan-app.aspx.cs">
+      <DependentUpon>tai-khoan-app.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="tai-khoan-app.aspx.designer.cs">
+      <DependentUpon>tai-khoan-app.aspx</DependentUpon>
     </Compile>
     <Compile Include="Models\Bank.cs">
       <DependentUpon>IMMode.tt</DependentUpon>

@@ -25,7 +25,111 @@ namespace IM_PJ.Controllers
                     return null;
             }
         }
+        public static List<AppUserOut> Filter(string TextSearch, string Gender, string City, int Status, string CreatedDate)
+        {
+            var result = new List<AppUserOut>();
+
+            using (var con = new inventorymanagementEntities())
+            {
+                DateTime fromdate = DateTime.Today;
+                DateTime todate = DateTime.Now;
+
+                switch (CreatedDate)
+                {
+                    case "today":
+                        fromdate = DateTime.Today;
+                        todate = DateTime.Now;
+                        break;
+                    case "yesterday":
+                        fromdate = fromdate.AddDays(-1);
+                        todate = DateTime.Today;
+                        break;
+                    case "beforeyesterday":
+                        fromdate = DateTime.Today.AddDays(-2);
+                        todate = DateTime.Today.AddDays(-1);
+                        break;
+                    case "week":
+                        int days = DateTime.Today.DayOfWeek == DayOfWeek.Sunday ? 7 : (int)DateTime.Today.DayOfWeek;
+                        fromdate = fromdate.AddDays(-days + 1);
+                        todate = DateTime.Now;
+                        break;
+                    case "thismonth":
+                        fromdate = new DateTime(fromdate.Year, fromdate.Month, 1);
+                        todate = DateTime.Now;
+                        break;
+                    case "7days":
+                        fromdate = DateTime.Today.AddDays(-6);
+                        todate = DateTime.Now;
+                        break;
+                    case "30days":
+                        fromdate = DateTime.Today.AddDays(-29);
+                        todate = DateTime.Now;
+                        break;
+                }
+
+                var users = con.Users
+                    .Where(x =>
+                        string.IsNullOrEmpty(TextSearch) ||
+                        (
+                            !string.IsNullOrEmpty(TextSearch) &&
+                            (
+                                x.FullName.Contains(TextSearch) ||
+                                x.Address.Contains(TextSearch) ||
+                                x.Phone == TextSearch
+                            )
+                        )
+                    )
+                    .Where(x => string.IsNullOrEmpty(Gender) || (!string.IsNullOrEmpty(Gender) && x.Gender == Gender))
+                    .Where(x => string.IsNullOrEmpty(City) || (!string.IsNullOrEmpty(City) && x.City == City))
+                    .Where(x => string.IsNullOrEmpty(CreatedDate) || (!string.IsNullOrEmpty(CreatedDate) && x.CreatedDate >= fromdate && x.CreatedDate <= todate));
+                    
+
+                
+                // Kiểm tra xe đã trở thành khách hàng thân thân thiết chưa
+                result = users
+                    .GroupJoin(
+                        con.tbl_Customer,
+                        reg => reg.Phone,
+                        cus => cus.CustomerPhone,
+                        (reg, cus) => new { reg, cus }
+                    )
+                    .SelectMany(
+                        x => x.cus.DefaultIfEmpty(),
+                        (parent, child) => new AppUserOut()
+                        {
+                            ID = parent.reg.ID,
+                            Phone = parent.reg.Phone,
+                            FullName = parent.reg.FullName,
+                            Gender = parent.reg.Gender,
+                            Address = parent.reg.Address,
+                            City = parent.reg.City,
+                            Status = child != null ? 1 : 2,
+                            CreatedDate = parent.reg.CreatedDate,
+                        }
+                    )
+                    .ToList();
+
+                // Trở thành khách hàng
+                if (Status != 0)
+                {
+                    result = result.Where(x => x.Status == Status).ToList();
+                }
+            }
+
+            return result.OrderByDescending(x => x.ID).ToList();
+        }
+        public class AppUserOut
+        {
+            public int ID { get; set; }
+            public string Phone { get; set; }
+            public string FullName { get; set; }
+            public string Gender { get; set; }
+            public string Address { get; set; }
+            public string City { get; set; }
+            public int Status { get; set; }
+            public DateTime CreatedDate { get; set; }
+        }
         #endregion
-        
+
     }
 }

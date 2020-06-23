@@ -51,7 +51,6 @@ namespace IM_PJ
                         ltrMenu.Text += "<li><a href='/danh-sach-van-chuyen'><span class='icon-menu icon-order'></span>Giao hàng</a></li>";
                         ltrMenu.Text += "<li><a href='/danh-sach-don-tra-hang'><span class='icon-menu icon-order'></span>Đổi trả hàng</a></li>";
                         ltrMenu.Text += "<li><a href='/danh-sach-don-hang-chuyen-hoan'><span class='icon-menu icon-order'></span>Chuyển hoàn</a></li>";
-                        ltrMenu.Text += "<li><a href='/danh-sach-dang-ky'><span class='icon-menu icon-order'></span>Đăng ký</a></li>";
                         ltrMenu.Text += "<li><a href='/tat-ca-san-pham'><span class='icon-menu icon-lib'></span>Sản phẩm</a></li>";
                         //ltrMenu.Text += "<li><a href='/san-pham-theo-ke'><span class='icon-menu icon-lib'></span>Sản phẩm kệ</a></li>";
                         ltrMenu.Text += "<li><a href='/danh-sach-bai-viet'><span class='icon-menu icon-lib'></span>Bài viết</a></li>";
@@ -78,7 +77,8 @@ namespace IM_PJ
                         ltrMenu.Text += "<li><a href='/tat-ca-nhan-vien'><span class='icon-menu icon-lib'></span>Nhân viên</a></li>";
                         ltrMenu.Text += "<li><a href='/danh-sach-nha-cung-cap'><span class='icon-menu icon-product'></span>Nhà cung cấp</a></li>";
                         ltrMenu.Text += "<li><a href='/danh-sach-chiet-khau'><span class='icon-menu icon-product'></span>Chiết khấu</a></li>";
-                        
+                        ltrMenu.Text += "<li><a href='/danh-sach-dang-ky'><span class='icon-menu icon-order'></span>Đăng ký Web</a></li>";
+                        ltrMenu.Text += "<li><a href='/tai-khoan-app'><span class='icon-menu icon-order'></span>Đăng ký App</a></li>";
                         if (config.ViewAllReports == 1)
                         {
                             ltrMenu.Text += "<li><a href='/bao-cao'><span class='icon-menu icon-product'></span>Báo cáo</a></li>";
@@ -126,7 +126,6 @@ namespace IM_PJ
                         ltrMenu.Text += "<li><a target='_blank' href='/bv'><span class='icon-menu icon-lib'></span>Xem bài viết</a></li>";
                         ltrMenu.Text += "<li><a href='/danh-sach-bai-viet-app'><span class='icon-menu icon-lib'></span>Bài viết App</a></li>";
                         ltrMenu.Text += "<li><a href='/danh-sach-nha-xe'><span class='icon-menu icon-product'></span>Nhà xe</a></li>";
-                        ltrMenu.Text += "<li><a href='/danh-sach-dang-ky'><span class='icon-menu icon-order'></span>Đăng ký</a></li>";
                         ltrMenu.Text += "<li><a href='/chuyen-kho'><span class='icon-menu icon-product'></span>Chuyển kho</a></li>";
                         ltrMenu.Text += "<li><a href='/thong-ke-nhap-kho'><span class='icon-menu icon-product'></span>TK nhập kho</a></li>";
                         if (acc.Username == "nhom_zalo406" || acc.Username == "nhom_zalo409")
@@ -136,6 +135,11 @@ namespace IM_PJ
                         if (acc.Username == "nhom_zalo406" || acc.Username == "hotline" || acc.Username == "nhom_zalo502")
                         {
                             ltrMenu.Text += "<li><a href='/danh-sach-van-chuyen'><span class='icon-menu icon-order'></span>Giao hàng</a></li>";
+                        }
+                        if (acc.Username == "hotline")
+                        {
+                            ltrMenu.Text += "<li><a href='/danh-sach-dang-ky'><span class='icon-menu icon-order'></span>Đăng ký Web</a></li>";
+                            ltrMenu.Text += "<li><a href='/tai-khoan-app'><span class='icon-menu icon-order'></span>Đăng ký App</a></li>";
                         }
                         if (config.ViewAllReports == 1)
                         {
