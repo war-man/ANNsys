@@ -131,6 +131,14 @@ namespace IM_PJ.Controllers
                 return ags;
             }
         }
+        public static List<tbl_Category> GetByParentID(int ParentID)
+        {
+            using (var dbe = new inventorymanagementEntities())
+            {
+                var categories = dbe.tbl_Category.Where(a => a.ParentID == ParentID).ToList();
+                return categories;
+            }
+        }
         public static List<tbl_Category> GetByParentID(string s, int ParentID)
         {
             using (var dbe = new inventorymanagementEntities())

@@ -175,31 +175,31 @@ namespace IM_PJ {
         protected global::System.Web.UI.WebControls.TextBox pRetailPrice;
         
         /// <summary>
-        /// ProductThumbnailImage control.
+        /// uploadProductImage control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::Telerik.Web.UI.RadAsyncUpload ProductThumbnailImage;
+        protected global::Telerik.Web.UI.RadAsyncUpload uploadProductImage;
         
         /// <summary>
-        /// ProductThumbnail control.
+        /// imgProductImage control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Image ProductThumbnail;
+        protected global::System.Web.UI.WebControls.Image imgProductImage;
         
         /// <summary>
-        /// ListProductThumbnail control.
+        /// hdfProductImage control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.HiddenField ListProductThumbnail;
+        protected global::System.Web.UI.WebControls.HiddenField hdfProductImage;
         
         /// <summary>
         /// pContent control.
@@ -211,13 +211,13 @@ namespace IM_PJ {
         protected global::Telerik.Web.UI.RadEditor pContent;
         
         /// <summary>
-        /// UploadImages control.
+        /// uploadImageGallery control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.FileUpload UploadImages;
+        protected global::System.Web.UI.WebControls.FileUpload uploadImageGallery;
         
         /// <summary>
         /// imageGallery control.
@@ -229,31 +229,31 @@ namespace IM_PJ {
         protected global::System.Web.UI.WebControls.Literal imageGallery;
         
         /// <summary>
-        /// ProductThumbnailImageClean control.
+        /// uploadProductImageClean control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::Telerik.Web.UI.RadAsyncUpload ProductThumbnailImageClean;
+        protected global::Telerik.Web.UI.RadAsyncUpload uploadProductImageClean;
         
         /// <summary>
-        /// ProductThumbnailClean control.
+        /// imgProductImageClean control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Image ProductThumbnailClean;
+        protected global::System.Web.UI.WebControls.Image imgProductImageClean;
         
         /// <summary>
-        /// ListProductThumbnailClean control.
+        /// hdfProductImageClean control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.HiddenField ListProductThumbnailClean;
+        protected global::System.Web.UI.WebControls.HiddenField hdfProductImageClean;
         
         /// <summary>
         /// ltrVariables control.
@@ -380,5 +380,14 @@ namespace IM_PJ {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.HiddenField hdfTags;
+        
+        /// <summary>
+        /// uploadVariationImage control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.FileUpload uploadVariationImage;
     }
 }
