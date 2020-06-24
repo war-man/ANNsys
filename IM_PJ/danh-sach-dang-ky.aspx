@@ -11,6 +11,13 @@
         .select2-container--default .select2-selection--single .select2-selection__arrow {
             height: 43px;
         }
+        table.shop_table_responsive > tbody > tr:nth-of-type(2n + 1) td {
+            border-top: solid 1px #e1e1e1!important;
+            border-bottom: solid 1px #e1e1e1!important;
+        }
+        .bg-green, .bg-yellow, .bg-black {
+            display: inherit;
+        }
         @media (max-width: 768px) {
             table.shop_table_responsive thead {
 	            display: none;

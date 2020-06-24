@@ -112,7 +112,20 @@ namespace IM_PJ
 
             }
         }
+        [WebMethod]
+        public static string updateStatus(int id, int value)
+        {
+            int ID = UserController.UpdateStatus(id, value);
 
+            if (ID != 0)
+            {
+                return "true";
+            }
+            else
+            {
+                return "false";
+            }
+        }
 
         #region Paging
         public void pagingall(List<AppUserOut> acs)
@@ -166,7 +179,12 @@ namespace IM_PJ
                     html.Append(TrTag.ToString());
                     html.Append("   <td data-title='#'>" + (i + 1).ToString() + "</td>");
                     html.Append("   <td data-title='Tên'><strong>" + item.FullName + "</strong></td>");
-                    html.Append("   <td data-title='Điện thoại' id='phone'>" + item.Phone + "</td>");
+                    string phone = "<a href='https://zalo.me/" + item.Phone + "' target='_blank'>" + item.Phone + "</a>";
+                    if (item.Status == 1)
+                    {
+                        phone = "<a href='javascript:;' data-id='" + item.ID + "' data-phone='" + item.Phone + "' data-update='2' onclick='getPhone($(this))'>xem</a>";
+                    }
+                    html.Append("   <td id='phone' data-title='Điện thoại'>" + phone + "</td>");
                     string gender = "";
                     if (item.Gender == "F")
                     {
@@ -178,6 +196,14 @@ namespace IM_PJ
 
                     string status = "";
                     if (item.Status == 1)
+                    {
+                        status = "<span class='bg-black'>Chưa xem</span>";
+                    }
+                    else if (item.Status == 2)
+                    {
+                        status = "<span class='bg-yellow'>Đã xem</span>";
+                    }
+                    else if (item.Status == 3)
                     {
                         status = "<span class='bg-green'>Khách hàng</span>";
                     }

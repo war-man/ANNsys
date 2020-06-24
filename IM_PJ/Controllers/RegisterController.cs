@@ -282,8 +282,7 @@ namespace IM_PJ.Controllers
                     )
                     .ToList();
 
-                // Trở thành khách hàng thân thiết
-                if (Status == 5)
+                if (Status > 0)
                 {
                     result = result.Where(x => x.Status == Status).ToList();
                 }

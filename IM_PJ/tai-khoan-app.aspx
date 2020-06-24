@@ -15,7 +15,7 @@
             border-top: solid 1px #e1e1e1!important;
             border-bottom: solid 1px #e1e1e1!important;
         }
-        .bg-green {
+        .bg-green, .bg-yellow, .bg-black {
             display: inherit;
         }
         @media (max-width: 768px) {
@@ -138,8 +138,9 @@
                                 <div class="col-md-2 col-xs-6">
                                     <asp:DropDownList ID="ddlStatus" runat="server" CssClass="form-control">
                                         <asp:ListItem Value="0" Text="Trạng thái"></asp:ListItem>
-                                        <asp:ListItem Value="1" Text="Là khách hàng"></asp:ListItem>
-                                        <asp:ListItem Value="2" Text="Chưa là khách"></asp:ListItem>
+                                        <asp:ListItem Value="1" Text="Chưa xem"></asp:ListItem>
+                                        <asp:ListItem Value="2" Text="Đã xem"></asp:ListItem>
+                                        <asp:ListItem Value="3" Text="Khách hàng"></asp:ListItem>
                                     </asp:DropDownList>
                                 </div>
                                 <div class="col-md-2 col-xs-6">
@@ -197,6 +198,35 @@
                 $("#<%= btnSearch.ClientID%>").click();
             }
             
+            function getPhone(obj) {
+                var ID = obj.attr("data-id");
+                var phone = obj.attr("data-phone");
+                var update = obj.attr("data-update");
+                $.ajax({
+                    type: "POST",
+                    url: "/tai-khoan-app.aspx/updateStatus",
+                    data: "{id: " + ID + ", value: " + update + "}",
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (msg) {
+                        if (msg.d == "true") {
+                            let row = $("tr[data-userid='" + ID + "']");
+                            let statusDOM = row.find('#status');
+                            let phoneDOM = row.find('#phone');
+                            phoneDOM.html("<a href='https://zalo.me/" + phone + "' target='_blank'>" + phone + "</a>");
+                            if (update == 2) {
+                                statusDOM.html("<span class='bg-yellow'>Đã xem</span>");
+                            }
+                            if (update == 4) {
+                                statusDOM.html("<span class='bg-green'>Đã tiếp nhận</span>");
+                            }
+                        }
+                        else {
+                            alert("Lỗi");
+                        }
+                    }
+                });
+            }
             
         </script>
     </main>

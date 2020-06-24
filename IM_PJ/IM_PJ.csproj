@@ -988,6 +988,9 @@
     <Compile Include="chuyen-kho.aspx.designer.cs">
       <DependentUpon>chuyen-kho.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Models\PostWordpress.cs">
+      <DependentUpon>IMMode.tt</DependentUpon>
+    </Compile>
     <Compile Include="tai-khoan-app.aspx.cs">
       <DependentUpon>tai-khoan-app.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -1125,12 +1128,6 @@
       <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\tbl_Category.cs">
-      <DependentUpon>IMMode.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\tbl_CheckWarehouse.cs">
-      <DependentUpon>IMMode.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\tbl_CheckWarehouseDetail.cs">
       <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\tbl_Config.cs">

@@ -85,7 +85,7 @@ namespace IM_PJ.Controllers
                     
 
                 
-                // Kiểm tra xe đã trở thành khách hàng thân thân thiết chưa
+                // Kiểm tra user đã trở thành khách hàng thân thân thiết chưa
                 result = users
                     .GroupJoin(
                         con.tbl_Customer,
@@ -103,20 +103,38 @@ namespace IM_PJ.Controllers
                             Gender = parent.reg.Gender,
                             Address = parent.reg.Address,
                             City = parent.reg.City,
-                            Status = child != null ? 1 : 2,
+                            Status = child != null ? 3 : parent.reg.ViewStatus.Value,
                             CreatedDate = parent.reg.CreatedDate,
                         }
                     )
                     .ToList();
 
-                // Trở thành khách hàng
-                if (Status != 0)
+                if (Status > 0)
                 {
                     result = result.Where(x => x.Status == Status).ToList();
                 }
             }
 
             return result.OrderByDescending(x => x.ID).ToList();
+        }
+        public static int UpdateStatus(int id, int status)
+        {
+            using (var connect = new inventorymanagementEntities())
+            {
+                User target = connect.Users
+                    .Where(x => x.ID == id)
+                    .SingleOrDefault();
+
+                if (target != null)
+                {
+                    target.ViewStatus = status;
+
+                    connect.SaveChanges();
+                }
+
+                return target.ID;
+            }
+
         }
         public class AppUserOut
         {

@@ -4,7 +4,7 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="1070bb193bd2476b8090c54e55dd5aec" Name="Diagram1">
+      <Diagram DiagramId="1070bb193bd2476b8090c54e55dd5aec" Name="Diagram1" ZoomLevel="117">
         <EntityTypeShape EntityType="inventorymanagementModel.Bank" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="inventorymanagementModel.BankAccount" Width="1.5" PointX="2.75" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="inventorymanagementModel.BankTransfer" Width="1.5" PointX="4.75" PointY="0.75" IsExpanded="true" />
@@ -43,8 +43,6 @@
         <EntityTypeShape EntityType="inventorymanagementModel.tbl_AgentProduct" Width="1.5" PointX="18.75" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="inventorymanagementModel.tbl_AgentProductVariable" Width="1.5" PointX="18.75" PointY="4.75" IsExpanded="true" />
         <EntityTypeShape EntityType="inventorymanagementModel.tbl_Category" Width="1.5" PointX="18.75" PointY="8.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="inventorymanagementModel.tbl_CheckWarehouse" Width="1.5" PointX="18.75" PointY="13.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="inventorymanagementModel.tbl_CheckWarehouseDetail" Width="1.5" PointX="18.75" PointY="17.75" IsExpanded="true" />
         <EntityTypeShape EntityType="inventorymanagementModel.tbl_Config" Width="1.5" PointX="0.75" PointY="19.75" IsExpanded="true" />
         <EntityTypeShape EntityType="inventorymanagementModel.tbl_Customer" Width="1.5" PointX="2.75" PointY="19.75" IsExpanded="true" />
         <EntityTypeShape EntityType="inventorymanagementModel.tbl_CustomerLevel" Width="1.5" PointX="8.75" PointY="19.75" IsExpanded="true" />
@@ -80,7 +78,8 @@
         <EntityTypeShape EntityType="inventorymanagementModel.UserNotifyPromotion" Width="1.5" PointX="26.75" PointY="12.75" IsExpanded="true" />
         <EntityTypeShape EntityType="inventorymanagementModel.WebWordpress" Width="1.5" PointX="26.75" PointY="16.75" IsExpanded="true" />
         <EntityTypeShape EntityType="inventorymanagementModel.ZaloIndustry" Width="1.5" PointX="16.75" PointY="26.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="inventorymanagementModel.NotificationCategory" Width="1.5" PointX="26.75" PointY="20.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="inventorymanagementModel.PostWordpress" Width="1.5" PointX="0.75" PointY="27.75" />
+        <EntityTypeShape EntityType="inventorymanagementModel.NotificationCategory" Width="1.5" PointX="3.375" PointY="27.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

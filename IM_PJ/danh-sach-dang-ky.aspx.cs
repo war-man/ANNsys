@@ -232,7 +232,7 @@ namespace IM_PJ
                     html.Append("   <td data-title='#'>" + (i + 1).ToString() + "</td>");
                     html.Append("   <td data-title='Tên'><strong>" + item.Name + "</strong> " + message + "</td>");
 
-                    string phone = item.Phone;
+                    string phone = "<a href='https://zalo.me/" + item.Phone + "' target='_blank'>" + item.Phone + "</a>";
                     if (item.Status == 1)
                     {
                         phone = "<a href='javascript:;' data-id='" + item.ID + "' data-phone='" + item.Phone + "' data-update='2' onclick='getPhone($(this))'>xem</a>";
@@ -249,11 +249,11 @@ namespace IM_PJ
                     html.Append("   <td data-title='Nguồn'>" + item.Referer + "</td>");
 
                     string status = "";
-                    if(item.Status == 1)
+                    if (item.Status == 1)
                     {
                         status = "<span class='bg-black'>Chưa xem</span>";
                     }
-                    else if(item.Status == 2)
+                    else if (item.Status == 2)
                     {
                         status = "<span class='bg-yellow'>Đã xem</span>";
                     }

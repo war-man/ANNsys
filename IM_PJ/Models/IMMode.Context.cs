@@ -63,8 +63,6 @@ namespace IM_PJ.Models
         public virtual DbSet<tbl_AgentProduct> tbl_AgentProduct { get; set; }
         public virtual DbSet<tbl_AgentProductVariable> tbl_AgentProductVariable { get; set; }
         public virtual DbSet<tbl_Category> tbl_Category { get; set; }
-        public virtual DbSet<tbl_CheckWarehouse> tbl_CheckWarehouse { get; set; }
-        public virtual DbSet<tbl_CheckWarehouseDetail> tbl_CheckWarehouseDetail { get; set; }
         public virtual DbSet<tbl_Config> tbl_Config { get; set; }
         public virtual DbSet<tbl_Customer> tbl_Customer { get; set; }
         public virtual DbSet<tbl_CustomerLevel> tbl_CustomerLevel { get; set; }
@@ -100,6 +98,7 @@ namespace IM_PJ.Models
         public virtual DbSet<UserNotifyPromotion> UserNotifyPromotions { get; set; }
         public virtual DbSet<WebWordpress> WebWordpresses { get; set; }
         public virtual DbSet<ZaloIndustry> ZaloIndustries { get; set; }
+        public virtual DbSet<PostWordpress> PostWordpresses { get; set; }
         public virtual DbSet<NotificationCategory> NotificationCategories { get; set; }
     }
 }
