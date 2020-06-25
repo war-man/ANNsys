@@ -2,7 +2,7 @@
 
 <%@ Register Assembly="Telerik.Web.UI" Namespace="Telerik.Web.UI" TagPrefix="telerik" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
-    <script src="/App_Themes/Ann/js/search-customer.js?v=15062020"></script>
+    <script src="/App_Themes/Ann/js/search-customer.js?v=25062020"></script>
     <script src="/Scripts/moment.min.js"></script>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">

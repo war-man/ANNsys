@@ -450,9 +450,9 @@
             </div>
         </div>
 
-        <script src="/App_Themes/Ann/js/copy-product-info-public.js?v=15062020"></script>
-        <script src="/App_Themes/Ann/js/download-product-image-public.js?v=15062020"></script>
-        <script src="/App_Themes/Ann/js/services/common/product-service.js?v=15062020"></script>
+        <script src="/App_Themes/Ann/js/copy-product-info-public.js?v=25062020"></script>
+        <script src="/App_Themes/Ann/js/download-product-image-public.js?v=25062020"></script>
+        <script src="/App_Themes/Ann/js/services/common/product-service.js?v=25062020"></script>
         
         <script type="text/javascript">
 
