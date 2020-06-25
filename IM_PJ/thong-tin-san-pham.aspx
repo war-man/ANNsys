@@ -1305,7 +1305,6 @@
                     HoldOn.close();
                     $("#<%=ddlCategory.ClientID%>").focus();
 
-
                     swal({
                         title: "Thông báo",
                         text: "Chưa chọn danh mục sản phẩm",
