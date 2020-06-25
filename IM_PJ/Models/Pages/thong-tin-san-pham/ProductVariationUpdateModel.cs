@@ -7,6 +7,7 @@ namespace IM_PJ.Models.Pages.thong_tin_san_pham
 {
     public class ProductVariationUpdateModel
     {
+        public int productVariationID { get; set; }
         public string variationID { get; set; }
         public string variationValueID { get; set; }
         public string variationName { get; set; }

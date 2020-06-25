@@ -742,6 +742,7 @@
                     let $variationSKU = $(this).find(".productvariablesku");
                     let variationSKU = $variationSKU.val();
 
+                    _variationSKURemoval.push(variationSKU);
                     variationSKU = variationSKU.replace(skuOld, skuNew);
                     $variationSKU.val(variationSKU).trigger("change");
                 })
@@ -846,6 +847,7 @@
                 // Cài đặt màu background default cho div biến thể
                 $variationNew.css("background-color", "#fff");
                 $variationNew.attr("data-index", $variation.length);
+                $variationNew.attr("data-product-variation-id", 0);
                 // Thể hiện chi tiết biến thể
                 $variationNew.find(".variable-content").show();
                 // Image
@@ -981,7 +983,7 @@
                 let variationValue = "";
                 let variation = "";
                 let variationSKUOld = $parent.find(".productvariablesku").val() || "";
-                let variableSKU = $("#<%=txtProductSKU.ClientID%>").val();
+                let variableSKU = $("#<%=txtProductSKU.ClientID%>").val().trim().toUpperCase();
 
                 $parent.find("select option:selected").each(function () {
                     let $option = $(this);
@@ -1079,6 +1081,7 @@
 
                     $(".item-var-gen").each(function () {
                         variations.push({
+                            productVariationID: $(this).attr("data-product-variation-id") || 0,
                             variationID: $(this).attr("data-name-id") || "",
                             variationValueID: $(this).attr("data-value-id") || "",
                             variationName: $(this).attr("data-name-text") || "",
@@ -1100,7 +1103,7 @@
                         // Variation removal
                         $("#<%=hdfVariationRemovalList.ClientID%>").val(JSON.stringify(_variationSKURemoval));
                         // Variation update and insert
-                        $("#<%=hdfVariableListInsert.ClientID%>").val(JSON.stringify(variations));
+                        $("#<%=hdfVariableListInsert.ClientID%>").val(JSON.stringify(variations.reverse()));
                         // Tags
                         $("#<%=hdfTags.ClientID%>").val(JSON.stringify(txtTagDOM.tagsinput('items')));
                         // Upload Variation Image

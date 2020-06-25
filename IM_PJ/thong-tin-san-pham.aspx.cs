@@ -327,6 +327,7 @@ namespace IM_PJ
 
                 html.AppendLine(String.Format("<div class='item-var-gen'"));
                 html.AppendLine(String.Format("     data-index='{0}'", index));
+                html.AppendLine(String.Format("     data-product-variation-id='{0}'", item.ID));
                 html.AppendLine(String.Format("     data-name-id='{0}'", variableID));
                 html.AppendLine(String.Format("     data-value-id='{0}'", variableValueID));
                 html.AppendLine(String.Format("     data-name-text='{0}'", variableName));
@@ -694,7 +695,7 @@ namespace IM_PJ
             {
                 var now = DateTime.Now;
                 // Kiểm tra sản phẩm biến thể có tồn tại hay không để thực hiện insert hoặc update
-                var productVariation = ProductVariableController.GetBySKU(item.sku);
+                var productVariation = ProductVariableController.GetByID(item.productVariationID);
                 var image = String.Empty;
 
                 if (item.image != imageDefault)
@@ -708,7 +709,7 @@ namespace IM_PJ
                     var productVariationID = ProductVariableController.Update(
                         ID: productVariation.ID, 
                         ProductID: productID, 
-                        ParentSKU: productVariation.ParentSKU, 
+                        ParentSKU: productSKU, 
                         SKU: item.sku, 
                         Stock: Convert.ToDouble(productVariation.Stock),
                         StockStatus: Convert.ToInt32(productVariation.StockStatus),
@@ -837,7 +838,7 @@ namespace IM_PJ
                     return;
                 }
 
-                var skuOld = ViewState["SKU"].ToString();
+                var skuOld = ViewState["SKU"].ToString().Trim().ToUpper();
                 var skuNew = productSKU;
 
                 ViewState["SKU"] = productSKU;
