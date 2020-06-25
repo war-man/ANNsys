@@ -1136,13 +1136,12 @@
 
                 if (title == "") {
                     HoldOn.close();
+                    $("#<%=txtProductTitle.ClientID%>").focus();
 
                     swal({
                         title: "Thông báo",
                         text: "Chưa nhập tên sản phẩm",
                         type: "error"
-                    }, function () {
-                        $("#<%=txtProductTitle.ClientID%>").focus();
                     });
 
                     return false;
@@ -1153,13 +1152,12 @@
 
                 if (SKU == "") {
                     HoldOn.close();
+                    $("#<%=txtProductSKU.ClientID%>").focus();
 
                     swal({
                         title: "Thông báo",
                         text: "Chưa nhập mã sản phẩm",
                         type: "error"
-                    }, function () {
-                        $("#<%=txtProductSKU.ClientID%>").focus();
                     });
 
                     return false;
@@ -1170,13 +1168,12 @@
 
                 if (materials == "") {
                     HoldOn.close();
+                    $("#<%=txtMaterials.ClientID%>").focus();
 
                     swal({
                         title: "Thông báo",
                         text: "Chưa nhập chất liệu sản phẩm",
                         type: "error"
-                    }, function () {
-                        $("#<%=txtMaterials.ClientID%>").focus();
                     });
 
                     return false;
@@ -1187,13 +1184,12 @@
                     
                 if (giasi == "") {
                     HoldOn.close();
+                    $("#<%=pRegular_Price.ClientID%>").focus();
 
                     swal({
                         title: "Thông báo",
                         text: "Chưa nhập giá sỉ",
                         type: "error"
-                    }, function () {
-                        $("#<%=pRegular_Price.ClientID%>").focus();
                     });
 
                     return false;
@@ -1204,13 +1200,12 @@
 
                 if (giavon == "") {
                     HoldOn.close();
+                    $("#<%=pCostOfGood.ClientID%>").focus();
 
                     swal({
                         title: "Thông báo",
                         text: "Chưa nhập giá vốn",
                         type: "error"
-                    }, function () {
-                        $("#<%=pCostOfGood.ClientID%>").focus();
                     });
 
                     return false;
@@ -1221,13 +1216,13 @@
 
                 if (giale == "") {
                     HoldOn.close();
+                    $("#<%=pRetailPrice.ClientID%>").focus();
+
 
                     swal({
                         title: "Thông báo",
                         text: "Chưa nhập giá lẻ",
                         type: "error"
-                    }, function () {
-                        $("#<%=pRetailPrice.ClientID%>").focus();
                     });
 
                     return false;
@@ -1238,39 +1233,36 @@
                     
                 if (parseFloat(giasi) < parseFloat(giavon)) {
                     HoldOn.close();
+                    $("#<%=pRegular_Price.ClientID%>").focus();
 
                     swal({
                         title: "Thông báo",
                         text: "Gía sỉ không được thấp hơn giá vốn",
                         type: "error"
-                    }, function () {
-                        $("#<%=pRegular_Price.ClientID%>").focus();
                     });
 
                     return false;
                 }
                 else if (giacu > 0 && giacu < parseFloat(giasi)) {
                     HoldOn.close();
+                    $("#<%=pOld_Price.ClientID%>").focus();
 
                     swal({
                         title: "Thông báo",
                         text: "Giá cũ chưa sale không được thấp hơn giá sỉ",
                         type: "error"
-                    }, function () {
-                        $("#<%=pOld_Price.ClientID%>").focus();
                     });
 
                     return false;
                 }
                 else if (parseFloat(giasi) > parseFloat(giale)) {
                     HoldOn.close();
+                    $("#<%=pRetailPrice.ClientID%>").focus();
 
                     swal({
                         title: "Thông báo",
                         text: "Giá lẻ không được thấp hơn giá sỉ",
                         type: "error"
-                    }, function () {
-                        $("#<%=pRetailPrice.ClientID%>").focus();
                     });
 
                     return false;
@@ -1288,13 +1280,12 @@
 
                 if (maincolor == "") {
                     HoldOn.close();
+                    $("#<%=ddlColor.ClientID%>").focus();
 
                     swal({
                         title: "Thông báo",
                         text: "Chưa chọn màu chủ đạo",
                         type: "error"
-                    }, function () {
-                        $("#<%=ddlColor.ClientID%>").focus();
                     });
 
                     return false;
@@ -1312,13 +1303,13 @@
 
                 if (categoryID == 0) {
                     HoldOn.close();
+                    $("#<%=ddlCategory.ClientID%>").focus();
+
 
                     swal({
                         title: "Thông báo",
                         text: "Chưa chọn danh mục sản phẩm",
                         type: "error"
-                    }, function () {
-                        $("#<%=ddlCategory.ClientID%>").focus();
                     });
 
                     return false;

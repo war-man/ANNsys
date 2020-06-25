@@ -828,6 +828,15 @@ namespace IM_PJ
                     }
                 }
 
+                var stocks = StockManagerController.warehousing1ByParentSKU(_productSKU);
+
+                if (stocks.Count > 0)
+                {
+                    txtProductSKU.Text = ViewState["SKU"].ToString();
+                    PJUtils.ShowMessageBoxSwAlert(String.Format("Sản phẩm #{0} đã tạo mã vạch nhập kho rồi nên không thể sửa", ViewState["SKU"]), "i", false, Page);
+                    return;
+                }
+
                 var skuOld = ViewState["SKU"].ToString();
                 var skuNew = productSKU;
 
