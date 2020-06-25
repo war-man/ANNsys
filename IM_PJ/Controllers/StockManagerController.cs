@@ -1402,6 +1402,23 @@ namespace IM_PJ.Controllers
             }
         }
 
+        public static List<tbl_StockManager> warehousing1ByParentSKU(string parentSKU)
+        {
+            using (var con = new inventorymanagementEntities())
+            {
+                var stock = con.tbl_Product.Where(x => x.ProductSKU == parentSKU)
+                    .Join(
+                        con.tbl_StockManager,
+                        p => p.ID,
+                        s => s.ParentID,
+                        (p, s) => s
+                    )
+                    .ToList();
+
+                return stock;
+            }
+        }
+
         #region Quản lý kho 2
         public static int? getQuantityStock2BySKU(string sku)
         {

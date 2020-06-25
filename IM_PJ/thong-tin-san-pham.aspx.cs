@@ -1,5 +1,6 @@
 ﻿using IM_PJ.Controllers;
 using IM_PJ.Models;
+using IM_PJ.Models.Pages.thong_tin_san_pham;
 using IM_PJ.Utils;
 using MB.Extensions;
 using Newtonsoft.Json;
@@ -18,11 +19,14 @@ using System.Web.Services;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Telerik.Web.UI;
+using WebUI.Business;
 
 namespace IM_PJ
 {
     public partial class thong_tin_san_pham : System.Web.UI.Page
     {
+        private static string _productSKU;
+
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
@@ -35,9 +39,9 @@ namespace IM_PJ
                     {
                         if (acc.RoleID == 0 || acc.RoleID == 1 || acc.Username == "nhom_zalo502")
                         {
-                            LoadSupplier();
-                            LoadCategory();
-                            LoadData();
+                            _loadSupplier();
+                            _loadCategory();
+                            _loadData();
                         }
                         else
                         {
@@ -54,34 +58,51 @@ namespace IM_PJ
             }
         }
 
-        public void LoadCategory()
+        #region Private
+        #region Load Data
+        /// <summary>
+        /// Khởi tạo List Item có dạng
+        /// Quần áo nam
+        /// ----Quần áo thun
+        /// </summary>
+        /// <param name="parentID"></param>
+        /// <param name="subName"></param>
+        /// <returns></returns>
+        private IList<ListItem> _getCategoryDropDownList(int parentID, string subName)
+        {
+            var categories = CategoryController.GetByParentID(parentID);
+            List<ListItem> data = new List<ListItem>();
+
+            foreach (var c in categories)
+            {
+                ListItem item = new ListItem(subName + c.CategoryName, c.ID.ToString());
+                data.Add(item);
+                data.AddRange(_getCategoryDropDownList(c.ID, subName + "---"));
+            }
+
+            return data;
+        }
+
+        /// <summary>
+        /// Tải danh sách danh mục
+        /// </summary>
+        private void _loadCategory()
         {
             var category = CategoryController.GetAllWithIsHidden(false);
             ddlCategory.Items.Clear();
             ddlCategory.Items.Insert(0, new ListItem("Chọn danh mục", "0"));
             if (category.Count > 0)
             {
-                addItemCategory(0, "");
+                var data = _getCategoryDropDownList(0, String.Empty);
+                ddlCategory.Items.AddRange(data.ToArray());
                 ddlCategory.DataBind();
             }
         }
 
-        public void addItemCategory(int id, string h = "")
-        {
-            var categories = CategoryController.GetByParentID("", id);
-
-            if (categories.Count > 0)
-            {
-                foreach (var c in categories)
-                {
-                    ListItem listitem = new ListItem(h + c.CategoryName, c.ID.ToString());
-                    ddlCategory.Items.Add(listitem);
-
-                    addItemCategory(c.ID, h + "---");
-                }
-            }
-        }
-        public void LoadSupplier()
+        /// <summary>
+        /// Tải danh sách nhà cung cấp
+        /// </summary>
+        private void _loadSupplier()
         {
             var supplier = SupplierController.GetAllWithIsHidden(false);
             ddlSupplier.Items.Clear();
@@ -96,203 +117,736 @@ namespace IM_PJ
                 ddlSupplier.DataBind();
             }
         }
-        public static string getSelectVariable(string Name, string Value)
+
+        private void _loadData()
         {
-            var variablename = VariableController.GetByName(Name);
-            string html = "";
-            if (variablename != null)
-            {
-                html += "<select name='ddlVariableValue' id='ddlVariableValue' data-name-id='" + variablename.ID + "' data-name-text='" + variablename.VariableName + "' class='form-control' onchange='changeVariable($(this))'>";
-                html += "<option data-sku-text='' value=''>Chọn giá trị</option>";
-                var variablevalue = VariableValueController.GetByVariableID(variablename.ID);
-                foreach (var p in variablevalue)
-                {
-                    if(p.VariableValue == Value)
-                    {
-                        html += "<option data-sku-text='" + p.SKUText + "' selected='selected' value='" + p.ID + "'>" + p.VariableValue + "</option>";
-                    }
-                    else
-                    {
-                        html += "<option data-sku-text='" + p.SKUText + "' value='" + p.ID + "'>" + p.VariableValue + "</option>";
-                    }
-                }
-                html += "</select>";
-            }
-            return html;
-        }
-        public void LoadData()
-        {
-            int n;
-            if (String.IsNullOrEmpty(Request.QueryString["id"]) || !int.TryParse(Request.QueryString["id"], out n))
+            var productID = 0;
+
+            // Lấy product id từ query parameter
+            if (!String.IsNullOrEmpty(Request.QueryString["id"]))
+                productID = Convert.ToInt32(Request.QueryString["id"]);
+
+            // Kiểm tra product id có tồn tại hoặc đúng yêu cầu không
+            if (productID <= 0)
             {
                 PJUtils.ShowMessageBoxSwAlertError("Không tìm thấy sản phẩm", "e", true, "/tat-ca-san-pham", Page);
+                return;
             }
-            
-            int id = Request.QueryString["id"].ToInt(0);
-            if (id > 0)
+
+            // Kiểm tra xem có tồn tại sản phẩm với mã ID trong query param không
+            var product = ProductController.GetByID(productID);
+            if (product == null)
             {
-                var p = ProductController.GetByID(id);
-                if (p == null)
+                PJUtils.ShowMessageBoxSwAlertError("Không tìm thấy sản phẩm " + productID, "e", true, "/tat-ca-san-pham", Page);
+                return;
+            }
+
+            // Cài đặt title page
+            this.Title = String.Format("{0} - Sửa sản phẩm", product.ProductSKU.ToTitleCase());
+            // Cài đặt dữ liệu cho page
+            ViewState["ID"] = productID;
+            ViewState["cateID"] = product.CategoryID;
+            _productSKU = product.ProductSKU.ToUpper();
+            ViewState["SKU"] = product.ProductSKU;
+            hdfParentID.Value = product.CategoryID.ToString();
+            hdfsetStyle.Value = product.ProductStyle.ToString();
+            ltrBack.Text = "<a href='/xem-san-pham?id=" + product.ID + "' class='btn primary-btn fw-btn not-fullwidth'><i class='fa fa-arrow-left' aria-hidden='true'></i> Trở về</a>";
+            ltrBack2.Text = ltrBack.Text;
+            // Thông tin product
+            _loadProductInfo(product);
+
+            // Thông tin biến thể
+            if (product.ProductStyle.HasValue && product.ProductStyle.Value == 2)
+                _loadProductVariationInfo(product.ID);
+
+            // Thông tin chú thích
+            _loadNote(product);
+        }
+
+        /// <summary>
+        /// Tải danh sách các tag
+        /// </summary>
+        /// <param name="productID"></param>
+        private void _loadTags(int productID)
+        {
+            var tags = ProductTagController.get(productID, 0);
+
+            if (tags.Count > 0)
+                hdfTags.Value = JsonConvert.SerializeObject(tags);
+            else
+                hdfTags.Value = String.Empty;
+        }
+
+        /// <summary>
+        /// Tải tập hình ảnh của sản phẩm
+        /// </summary>
+        /// <param name="productID"></param>
+        private void _loadImageGallery(int productID)
+        {
+            var images = ProductImageController.GetByProductID(productID);
+            imageGallery.Text = "<ul class='image-gallery'>";
+            foreach (var img in images)
+            {
+                imageGallery.Text += "<li><img src='" + Thumbnail.getURL(img.ProductImage, Thumbnail.Size.Source) + "'><a href='javascript:;' data-image-id='" + img.ID + "' onclick='deleteImageGallery($(this))' class='btn-delete'><i class='fa fa-times' aria-hidden='true'></i> Xóa hình</a></li>";
+            }
+            imageGallery.Text += "</ul>";
+        }
+
+        /// <summary>
+        /// Khởi tạo HTML danh mục biến thể
+        /// </summary>
+        /// <param name="Name"></param>
+        /// <param name="Value"></param>
+        /// <returns>HTM DropDownList</returns>
+        private string _getSelectVariable(string Name, string Value)
+        {
+            var variableName = VariableController.GetByName(Name);
+            var html = new StringBuilder();
+            if (variableName != null)
+            {
+                html.AppendLine("<select name='ddlVariableValue'");
+                html.AppendLine("        class='form-control select2'");
+                html.AppendLine("        style='width: 100%'");
+                html.AppendLine(String.Format("        data-name-id='{0}'", variableName.ID));
+                html.AppendLine(String.Format("        data-name-text='{0}'", variableName.VariableName));
+                html.AppendLine("        onchange='onChangeVariationValue($(this))'");
+                html.AppendLine(">");
+                html.AppendLine("    <option data-sku-text='' value=''>Chọn giá trị</option>");
+                var variableValue = VariableValueController.GetByVariableID(variableName.ID);
+                foreach (var item in variableValue)
                 {
-                    PJUtils.ShowMessageBoxSwAlertError("Không tìm thấy sản phẩm " + id, "e", true, "/tat-ca-san-pham", Page);
+                    var isSelected = item.VariableValue == Value;
+                    html.AppendLine(String.Format("    <option data-sku-text='{0}' value='{1}' {2}>{3}</option>", item.SKUText, item.ID, (isSelected ? "selected='selected'" : String.Empty), item.VariableValue));
+                }
+                html.AppendLine("</select>");
+            }
+            return html.ToString();
+        }
+
+        /// <summary>
+        /// Tải thông tin sản phẩm
+        /// </summary>
+        /// <param name="product"></param>
+        private void _loadProductInfo(tbl_Product product)
+        {
+            // Tên sản phẩm
+            txtProductTitle.Text = product.ProductTitle;
+            // Danh mục
+            ddlCategory.SelectedValue = product.CategoryID.ToString();
+            // Mã sản phẩm
+            txtProductSKU.Text = product.ProductSKU;
+            // Chất liệu
+            txtMaterials.Text = product.Materials;
+            // Màu chủ đạo
+            if (!String.IsNullOrEmpty(product.Color))
+                ddlColor.SelectedValue = product.Color.Trim();
+            // Loại hàng
+            ddlPreOrder.SelectedValue = product.PreOrder ? "1" : "0";
+            // Tồn kho ít nhất
+            pMinimumInventoryLevel.Text = product.MinimumInventoryLevel.ToString();
+            // Tồn kho nhiều nhất
+            pMaximumInventoryLevel.Text = product.MaximumInventoryLevel.ToString();
+            // Nhà cung cấp
+            ddlSupplier.SelectedValue = product.SupplierID.ToString();
+            // Giá củ chưa sale
+            pOld_Price.Text = product.Old_Price.ToString();
+            // Giá sỉ
+            pRegular_Price.Text = product.Regular_Price.ToString();
+            // Giá vốn
+            pCostOfGood.Text = product.CostOfGood.ToString();
+            // Giá lẻ
+            pRetailPrice.Text = product.Retail_Price.ToString();
+            // Ảnh đại diện
+            if (product.ProductImage != null)
+            {
+                hdfProductImage.Value = product.ProductImage;
+                imgProductImage.ImageUrl = Thumbnail.getURL(product.ProductImage, Thumbnail.Size.Source);
+            }
+            // Tags
+            _loadTags(product.ID);
+            // Nội dung
+            pContent.Content = product.ProductContent;
+            // Thư viện ảnh
+            _loadImageGallery(product.ID);
+            // Ảnh đại diện sạch
+            if (product.ProductImageClean != null)
+            {
+                hdfProductImageClean.Value = product.ProductImageClean;
+                imgProductImageClean.ImageUrl = Thumbnail.getURL(product.ProductImageClean, Thumbnail.Size.Source);
+            }
+        }
+
+        /// <summary>
+        /// Tải thông tin của biến thể
+        /// </summary>
+        /// <param name="productID"></param>
+        private void _loadProductVariationInfo(int productID)
+        {
+            var html = new StringBuilder();
+            var variations = ProductVariableController
+                .GetProductID(productID)
+                .OrderByDescending(o => o.ID);
+            var index = variations.Count();
+
+            foreach (var item in variations)
+            {
+                string VariableSKU = item.SKU;
+                double RegularPrice = Convert.ToDouble(item.Regular_Price);
+                double RetailPrice = Convert.ToDouble(item.RetailPrice);
+                double CostOfGood = Convert.ToDouble(item.CostOfGood);
+                int MinimumInventoryLevel = Convert.ToInt32(item.MinimumInventoryLevel);
+                int MaximumInventoryLevel = Convert.ToInt32(item.MaximumInventoryLevel);
+                string VariableImage = Thumbnail.getURL(item.Image, Thumbnail.Size.Source);
+                string deleteVariableImage = "<a href='javascript:;' onclick='deleteImageVariable($(this))' class='btn-delete hide'><i class='fa fa-times' aria-hidden='true'></i> Xóa hình</a>";
+                if (!string.IsNullOrEmpty(item.Image))
+                {
+                    deleteVariableImage = "<a href='javascript:;' onclick='deleteImageVariable($(this))' class='btn-delete'><i class='fa fa-times' aria-hidden='true'></i> Xóa hình</a>";
+                }
+
+                var value = ProductVariableValueController.GetByProductVariableID(item.ID);
+                string selectVariable = "";
+                string variableID = "";
+                string variableName = "";
+                string variableValueID = "";
+                string variableValueName = "";
+                string dataVariableValue = "";
+                string labelVariableValue = "";
+                if (value != null)
+                {
+                    foreach (var temp in value)
+                    {
+                        selectVariable += "<div class='row margin-bottom-15'><div class='col-md-5'>" + temp.VariableName + "</div><div class='col-md-7'>" + _getSelectVariable(temp.VariableName, temp.VariableValue) + "</div></div>";
+                        variableID += VariableController.GetByName(temp.VariableName.ToString()).ID.ToString() + "|";
+                        variableName += temp.VariableName.ToString() + "|";
+                        variableValueID += temp.VariableValueID.ToString() + "|";
+                        variableValueName += temp.VariableValue.ToString() + "|";
+                        dataVariableValue += VariableController.GetByName(temp.VariableName.ToString()).ID.ToString() + ":" + temp.VariableValueID.ToString() + "|";
+                        labelVariableValue += temp.VariableName.ToString() + ": " + temp.VariableValue.ToString() + " - ";
+                    }
+                }
+
+                html.AppendLine(String.Format("<div class='item-var-gen'"));
+                html.AppendLine(String.Format("     data-index='{0}'", index));
+                html.AppendLine(String.Format("     data-name-id='{0}'", variableID));
+                html.AppendLine(String.Format("     data-value-id='{0}'", variableValueID));
+                html.AppendLine(String.Format("     data-name-text='{0}'", variableName));
+                html.AppendLine(String.Format("     data-value-text='{0}'", variableValueName));
+                html.AppendLine(String.Format("     data-name-value='{0}'", dataVariableValue));
+                html.AppendLine(String.Format(">"));
+                html.AppendLine(String.Format("    <div class='col-md-12'>"));
+                html.AppendLine(String.Format("        <div class='col-md-10 variable-label'  onclick='showVariableContent($(this))'>"));
+                html.AppendLine(String.Format("            <strong>#{0}</strong> - {1} {2}", index, labelVariableValue, VariableSKU));
+                html.AppendLine(String.Format("        </div>"));
+                html.AppendLine(String.Format("        <div class='col-md-2 variable-removal'>"));
+                html.AppendLine(String.Format("            <a href='javascript:;' onclick='deleteVariableItem($(this))' class='btn primary-btn fw-btn not-fullwidth'>"));
+                html.AppendLine(String.Format("                <i class='fa fa-times' aria-hidden='true'></i>"));
+                html.AppendLine(String.Format("            </a>"));
+                html.AppendLine(String.Format("        </div>"));
+                html.AppendLine(String.Format("    </div>"));
+                html.AppendLine(String.Format("    <div class='col-md-12 variable-content'>"));
+                html.AppendLine(String.Format("        <div class='row'>"));
+                html.AppendLine(String.Format("            <div class='col-md-2'>"));
+                html.AppendLine(String.Format("                <input type='file' class='productVariableImage upload-btn' onchange='onChangeVariationImage(this,$(this));' name='{0}'><img class='imgpreview' onclick='openUploadImage($(this))' data-file-name='{1}' src='{1}'>{2}", VariableSKU, VariableImage, deleteVariableImage));
+                html.AppendLine(String.Format("                </div>"));
+                html.AppendLine(String.Format("            <div class='col-md-5'>"));
+                html.AppendLine(String.Format("                {0}", selectVariable));
+                html.AppendLine(String.Format("                <div class='row margin-bottom-15'>"));
+                html.AppendLine(String.Format("                    <div class='col-md-5'>Mã sản phẩm</div>"));
+                html.AppendLine(String.Format("                    <div class='col-md-7'><input type='text' disabled class='form-control productvariablesku sku-input' value='{0}' disabled='disabled' readonly></div>", VariableSKU));
+                html.AppendLine(String.Format("                </div>"));
+                html.AppendLine(String.Format("            </div>"));
+                html.AppendLine(String.Format("            <div class='col-md-5'>"));
+                html.AppendLine(String.Format("                <div class='row margin-bottom-15'>"));
+                html.AppendLine(String.Format("                    <div class='col-md-5'>Giá sỉ</div>"));
+                html.AppendLine(String.Format("                    <div class='col-md-7'><input class='form-control regularprice' type='number' value='{0}'> </div>", RegularPrice));
+                html.AppendLine(String.Format("                </div>"));
+                html.AppendLine(String.Format("                <div class='row margin-bottom-15 cost-of-goods'>"));
+                html.AppendLine(String.Format("                    <div class='col-md-5'>Giá vốn</div>"));
+                html.AppendLine(String.Format("                    <div class='col-md-7'><input class='form-control costofgood cost-price' type='number' value='{0}'></div>", CostOfGood));
+                html.AppendLine(String.Format("                </div>"));
+                html.AppendLine(String.Format("                <div class='row margin-bottom-15'>"));
+                html.AppendLine(String.Format("                    <div class='col-md-5'>Giá bán lẻ</div>"));
+                html.AppendLine(String.Format("                    <div class='col-md-7'><input class='form-control retailprice' type='number' value='{0}'></div>", RetailPrice));
+                html.AppendLine(String.Format("                </div>"));
+                html.AppendLine(String.Format("            </div>"));
+                html.AppendLine(String.Format("        </div>"));
+                html.AppendLine(String.Format("    </div>"));
+                html.AppendLine(String.Format("</div>"));
+
+                index--;
+            }
+
+            if (variations.Count() > 0)
+                ltrVariables.Text = html.ToString();
+        }
+
+        /// <summary>
+        /// Tải thông tin chú thích
+        /// </summary>
+        /// <param name="product"></param>
+        private void _loadNote(tbl_Product product)
+        {
+            string ProductInfo = "<p><strong>Ngày tạo</strong>: " + product.CreatedDate + "</p>";
+            ProductInfo += "<p><strong>Người viết</strong>: " + product.CreatedBy + "</p>";
+            ProductInfo += "<p><strong>Ngày cập nhật</strong>: " + product.ModifiedDate + "</p>";
+            ProductInfo += "<p><strong>Người cập nhật</strong>: " + product.ModifiedBy + "</p>";
+            ltrProductInfo.Text = ProductInfo;
+        }
+        #endregion
+
+        #region Update
+        /// <summary>
+        /// Upload image
+        /// </summary>
+        /// <param name="productID"></param>
+        /// <param name="uploadedFile"></param>
+        /// <returns>File Name</returns>
+        private string _uploadImage(int productID, UploadedFile uploadedFile)
+        {
+            // Upload image
+            var folder = Server.MapPath("/uploads/images");
+            var fileName = Slug.ConvertToSlug(Path.GetFileName(uploadedFile.FileName), isFile: true);
+            var filePath = String.Format("{0}/{1}-{2}", folder, productID, fileName);
+
+            if (File.Exists(filePath))
+            {
+                filePath = String.Format("{0}/{1}-{2}-{3}", folder, productID, DateTime.UtcNow.ToString("HHmmssffff"), fileName);
+            }
+
+            uploadedFile.SaveAs(filePath);
+
+            // Thumbnail
+            Thumbnail.create(filePath, 85, 113);
+            Thumbnail.create(filePath, 159, 212);
+            Thumbnail.create(filePath, 240, 320);
+            Thumbnail.create(filePath, 350, 467);
+            Thumbnail.create(filePath, 600, 0);
+
+            return Path.GetFileName(filePath);
+        }
+
+        /// <summary>
+        /// Upload image
+        /// </summary>
+        /// <param name="productID"></param>
+        /// <param name="httpPostedFile"></param>
+        /// <returns>File Name</returns>
+        private string _uploadImage(int productID, HttpPostedFile httpPostedFile)
+        {
+            // Upload image
+            var folder = Server.MapPath("/uploads/images");
+            var fileName = Slug.ConvertToSlug(Path.GetFileName(httpPostedFile.FileName), isFile: true);
+            var filePath = String.Format("{0}/{1}-{2}", folder, productID, fileName);
+
+            if (File.Exists(filePath))
+            {
+                filePath = String.Format("{0}/{1}-{2}-{3}", folder, productID, DateTime.UtcNow.ToString("HHmmssffff"), fileName);
+            }
+
+            httpPostedFile.SaveAs(filePath);
+
+            // Thumbnail
+            Thumbnail.create(filePath, 85, 113);
+            Thumbnail.create(filePath, 159, 212);
+            Thumbnail.create(filePath, 240, 320);
+            Thumbnail.create(filePath, 350, 467);
+            Thumbnail.create(filePath, 600, 0);
+
+            return Path.GetFileName(filePath);
+        }
+
+        /// <summary>
+        /// Cập nhật hình ảnh không có mã SKU
+        /// </summary>
+        /// <param name="productID"></param>
+        /// <param name="uploadedFile"></param>
+        /// <returns>File Name</returns>
+        private string _uploadImageClean(int productID, UploadedFile uploadedFile)
+        {
+            // Upload image
+            var folder = Server.MapPath("/uploads/images");
+            var fileName = Slug.ConvertToSlug(Path.GetFileName(uploadedFile.FileName), isFile: true);
+            var filePath = String.Format("{0}/{1}-clean-{2}", folder, productID, fileName);
+
+            if (File.Exists(filePath))
+            {
+                filePath = String.Format("{0}/{1}-clean-{2}-{3}", folder, productID, DateTime.UtcNow.ToString("HHmmssffff"), fileName);
+            }
+
+            uploadedFile.SaveAs(filePath);
+
+            // Thumbnail
+            Thumbnail.create(filePath, 85, 113);
+            Thumbnail.create(filePath, 159, 212);
+            Thumbnail.create(filePath, 240, 320);
+            Thumbnail.create(filePath, 350, 467);
+            Thumbnail.create(filePath, 600, 0);
+
+            return Path.GetFileName(filePath);
+        }
+
+        #region Cập nhật Prodcut
+        /// <summary>
+        /// Cập nhật thông tin product
+        /// </summary>
+        private void _updateProduct(tbl_Account acc)
+        {
+            int productID = ViewState["ID"].ToString().ToInt(0);
+            var updatedData = new tbl_Product()
+            {
+                ID = productID,
+                ProductOldID = 0,
+                ProductStock = 0,
+                StockStatus = 0,
+                ManageStock = true,
+                ProductType = 0,
+                IsHidden = false,
+                ModifiedDate = DateTime.Now,
+                ModifiedBy = acc.Username,
+            };
+
+            // Tên sản phẩm
+            updatedData.ProductTitle = Regex.Replace(txtProductTitle.Text, @"\s*\,\s*|\s*\;\s*", " - ");
+            // Danh mục
+            updatedData.CategoryID = Convert.ToInt32(hdfParentID.Value);
+            // Mã sản phẩm
+            updatedData.ProductSKU = ViewState["SKU"].ToString();
+            // Chất liệu
+            updatedData.Materials = txtMaterials.Text;
+            // Màu chủ đạo
+            updatedData.Color = ddlColor.SelectedValue.ToString();
+            // Loại hàng
+            updatedData.PreOrder = ddlPreOrder.SelectedValue == "1" ? true : false;
+            // Tồn kho ít nhât
+            updatedData.MinimumInventoryLevel = String.IsNullOrEmpty(pMinimumInventoryLevel.Text) ? 0 : Convert.ToDouble(pMinimumInventoryLevel.Text);
+            // Tồn kho nhiều nhất
+            updatedData.MaximumInventoryLevel = String.IsNullOrEmpty(pMaximumInventoryLevel.Text) ? 0 : Convert.ToDouble(pMaximumInventoryLevel.Text);
+            // Nhà cung cấp
+            updatedData.SupplierID = ddlSupplier.SelectedValue.ToInt(0);
+            updatedData.SupplierName = ddlSupplier.SelectedItem.ToString();
+            // Giá củ chưa sale
+            updatedData.Old_Price = String.IsNullOrEmpty(pOld_Price.Text) ? 0 : Convert.ToDouble(pOld_Price.Text);
+            // Giá sỉ
+            updatedData.Regular_Price = Convert.ToDouble(pRegular_Price.Text);
+            // Giá vốn
+            updatedData.CostOfGood = Convert.ToDouble(pCostOfGood.Text);
+            // Giá lẻ
+            updatedData.Retail_Price = Convert.ToDouble(pRetailPrice.Text);
+            // Ảnh đại diện
+            if (uploadProductImage.UploadedFiles.Count > 0)
+            {
+                var imageFile = uploadProductImage.UploadedFiles[0];
+                updatedData.ProductImage = _uploadImage(productID, imageFile);
+            }
+            else
+            {
+                updatedData.ProductImage = hdfProductImage.Value;
+            }
+            // Nội dung
+            updatedData.ProductContent = pContent.Content;
+            // Ảnh sạch
+            if (uploadProductImageClean.UploadedFiles.Count > 0)
+            {
+                var imageCleanFile = uploadProductImageClean.UploadedFiles[0];
+                updatedData.ProductImageClean = _uploadImageClean(productID, imageCleanFile);
+            }
+            else
+            {
+                updatedData.ProductImageClean = hdfProductImageClean.Value;
+            }
+
+            // Update product
+            ProductController.Update(updatedData);
+
+            // Cập nhật thư viện hình ảnh sản phẩm
+            _updateImageGallery(productID, acc);
+
+            // Cập nhật tags
+            if (!String.IsNullOrEmpty(hdfTags.Value))
+                _updateTag(updatedData, acc);
+        }
+
+        /// <summary>
+        /// Cập nhật thư viện hình ảnh sản phẩm
+        /// </summary>
+        /// <param name="productID"></param>
+        private void _updateImageGallery(int productID, tbl_Account acc)
+        {
+            // Delete Image
+            if (!String.IsNullOrEmpty(hdfDeleteImageGallery.Value))
+            {
+                var imageIDList = hdfDeleteImageGallery.Value
+                    .Split(',')
+                    .Where(x => !String.IsNullOrEmpty(x))
+                    .ToList();
+
+                foreach (var strID in imageIDList)
+                {
+                    ProductImageController.Delete(Convert.ToInt32(strID));
+                }
+            }
+            // Add Image
+            if (uploadImageGallery.HasFiles)
+            {
+                foreach (HttpPostedFile httpPostedFile in uploadImageGallery.PostedFiles)
+                {
+                    var fileName = _uploadImage(productID, httpPostedFile);
+                    ProductImageController.Insert(productID, fileName, false, DateTime.Now, acc.Username);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Cập nhật table Tags
+        /// </summary>
+        /// <param name="product"></param>
+        /// <param name="acc"></param>
+        private void _updateTag(tbl_Product product, tbl_Account acc)
+        {
+            var tagList = JsonConvert.DeserializeObject<List<TagModel>>(hdfTags.Value);
+
+            if (tagList.Count > 0)
+            {
+                // Get tag new
+                var tagNew = TagController.insert(tagList, acc);
+
+                var productTag = tagList
+                    .GroupJoin(
+                        tagNew,
+                        t => t.name.ToLower(),
+                        n => n.Name.ToLower(),
+                        (t, n) => new { t, n }
+                    )
+                    .SelectMany(
+                        x => x.n.DefaultIfEmpty(),
+                        (parent, child) => new ProductTag
+                        {
+                            TagID = child != null ? child.ID : parent.t.id,
+                            ProductID = product.ID,
+                            ProductVariableID = 0,
+                            SKU = product.ProductSKU,
+                            CreatedBy = acc.ID,
+                            CreatedDate = DateTime.Now
+                        }
+                    )
+                    .ToList();
+
+                ProductTagController.update(product.ID, productTag);
+            }
+            else
+            {
+                ProductTagController.delete(product.ID);
+            }
+        }
+        #endregion
+
+        #region Cập nhật sản phẩm biến thể
+        private void _updateProductVariation(tbl_Account acc)
+        {
+            if (String.IsNullOrEmpty(hdfVariableListInsert.Value))
+            {
+                var strFunction = "";
+                strFunction = "HoldOn.close();";
+                strFunction = "swal({title: 'Lỗi', text: 'Quá trình cập nhật biến thể đã xảy ra lỗi', type: 'error'});";
+
+                JavaScript.BeforePageLoad(Page).ExecuteCustomScript(strFunction);
+                return;
+
+            }
+
+            var productID = ViewState["ID"].ToString().ToInt(0);
+            var productSKU = ViewState["SKU"].ToString();
+            var uploadPath = "/uploads/images/";
+            var imageDefault = "/App_Themes/Ann/image/placeholder.png";
+
+            #region Xóa biến thể
+            var variationRemovalList = JsonConvert.DeserializeObject<List<string>>(hdfVariationRemovalList.Value);
+
+            foreach (var sku in variationRemovalList)
+            {
+                ProductVariableController.removeByVariationSKU(sku);
+            }
+            #endregion
+
+            #region Cập nhật biến thể
+            var productVariationUpdateList = JsonConvert.DeserializeObject<List<ProductVariationUpdateModel>>(hdfVariableListInsert.Value);
+
+            if (uploadVariationImage.HasFiles)
+            {
+                foreach (var file in uploadVariationImage.PostedFiles)
+                {
+                    
+                    var fileName = file.FileName;
+                    var imageName = _uploadImage(productID, file);
+
+                    productVariationUpdateList
+                        .Where(x => x.image == uploadPath + fileName)
+                        .Select(x =>
+                        {
+                            x.image = uploadPath + imageName;
+
+                            return x;
+                        });
+                }
+            }
+
+            foreach (var item in productVariationUpdateList)
+            {
+                var now = DateTime.Now;
+                // Kiểm tra sản phẩm biến thể có tồn tại hay không để thực hiện insert hoặc update
+                var productVariation = ProductVariableController.GetBySKU(item.sku);
+                var image = String.Empty;
+
+                if (item.image != imageDefault)
+                {
+                    image = item.image.Replace(uploadPath, String.Empty);
+                }
+
+                if (productVariation != null)
+                {
+                    // Thực hiện update biến thể
+                    var productVariationID = ProductVariableController.Update(
+                        ID: productVariation.ID, 
+                        ProductID: productID, 
+                        ParentSKU: productVariation.ParentSKU, 
+                        SKU: item.sku, 
+                        Stock: Convert.ToDouble(productVariation.Stock),
+                        StockStatus: Convert.ToInt32(productVariation.StockStatus),
+                        Regular_Price: item.regularPrice,
+                        CostOfGood: item.costOfGood,
+                        RetailPrice: item.retailPrice,
+                        Image: image,
+                        ManageStock: true,
+                        IsHidden: false,
+                        ModifiedDate: now,
+                        ModifiedBy: acc.Username,
+                        SupplierID: Convert.ToInt32(productVariation.SupplierID),
+                        SupplierName: productVariation.SupplierName,
+                        MinimumInventoryLevel: item.minimumInventoryLevel,
+                        MaximumInventoryLevel: item.maximumInventoryLevel
+                    );
+
+                    // Xóa tất cả giá trị của biến thể để cập nhật lại
+                    ProductVariableValueController.DeleteByProductVariableID(productVariation.ID);
+
+                    // Khởi tạo biến thể cho sản phẩm con
+                    _createVariationValue(new VariationValueUpdateModel()
+                    {
+                        productVariationID = Convert.ToInt32(productVariationID),
+                        productVariationSKU = item.sku,
+                        variationValueID = item.variationValueID,
+                        variationName = item.variationName,
+                        variationValueName = item.variationValueName,
+                        isHidden = false,
+                        createdDate = now,
+                        createdBy = acc.Username
+                    });
                 }
                 else
                 {
-                    this.Title = String.Format("{0} - Sửa sản phẩm", p.ProductSKU.ToTitleCase());
-
-                    ViewState["ID"] = id;
-                    ViewState["cateID"] = p.CategoryID;
-                    ViewState["SKU"] = p.ProductSKU;
-                    hdfParentID.Value = p.CategoryID.ToString();
-                    hdfsetStyle.Value = p.ProductStyle.ToString();
-                    ltrBack.Text = "<a href='/xem-san-pham?id=" + p.ID + "' class='btn primary-btn fw-btn not-fullwidth'><i class='fa fa-arrow-left' aria-hidden='true'></i> Trở về</a>";
-                    ltrBack2.Text = ltrBack.Text;
-                    txtProductTitle.Text = p.ProductTitle;
-                    pContent.Content = p.ProductContent;
-                    txtProductSKU.Text = p.ProductSKU;
-
-                    pOld_Price.Text = p.Old_Price.ToString();
-                    pRegular_Price.Text = p.Regular_Price.ToString();
-                    pCostOfGood.Text = p.CostOfGood.ToString();
-                    pRetailPrice.Text = p.Retail_Price.ToString();
-                    ddlSupplier.SelectedValue = p.SupplierID.ToString();
-                    ddlCategory.SelectedValue = p.CategoryID.ToString();
-
-                    if (!string.IsNullOrEmpty(p.Color))
+                    // Tạo sản phẩm biến thể mới
+                    var productVariationID = ProductVariableController.Insert(
+                        ProductID: productID, 
+                        ParentSKU: productSKU,
+                        SKU: item.sku, 
+                        Stock: 0,
+                        StockStatus: item.stockStatus,
+                        Regular_Price: item.regularPrice,
+                        CostOfGood: item.costOfGood,
+                        RetailPrice: item.retailPrice,
+                        Image: image,
+                        ManageStock: true,
+                        IsHidden: false, 
+                        CreatedDate: now, 
+                        CreatedBy: acc.Username,
+                        SupplierID: ddlSupplier.SelectedValue.ToInt(0),
+                        SupplierName: ddlSupplier.SelectedItem.ToString(),
+                        MinimumInventoryLevel: item.minimumInventoryLevel,
+                        MaximumInventoryLevel: item.maximumInventoryLevel);
+                    
+                    // Khởi tạo biến thể cho sản phẩm con
+                    _createVariationValue(new VariationValueUpdateModel()
                     {
-                        ddlColor.SelectedValue =  p.Color.Trim();
-                    }
-
-                    txtMaterials.Text = p.Materials;
-                    pMinimumInventoryLevel.Text = p.MinimumInventoryLevel.ToString();
-                    pMaximumInventoryLevel.Text = p.MaximumInventoryLevel.ToString();
-
-                    if(p.ProductImage != null)
-                    {
-                        ListProductThumbnail.Value = p.ProductImage;
-                        ProductThumbnail.ImageUrl = Thumbnail.getURL(p.ProductImage, Thumbnail.Size.Source);
-                    }
-
-                    if (p.ProductImageClean != null)
-                    {
-                        ListProductThumbnailClean.Value = p.ProductImageClean;
-                        ProductThumbnailClean.ImageUrl = Thumbnail.getURL(p.ProductImageClean, Thumbnail.Size.Source);
-                    }
-
-                    var image = ProductImageController.GetByProductID(id);
-                    imageGallery.Text = "<ul class='image-gallery'>";
-                    if (image != null)
-                    {
-                        foreach (var img in image)
-                        {
-                            imageGallery.Text += "<li><img src='" + Thumbnail.getURL(img.ProductImage, Thumbnail.Size.Source) + "'><a href='javascript:;' data-image-id='" + img.ID + "' onclick='deleteImageGallery($(this))' class='btn-delete'><i class='fa fa-times' aria-hidden='true'></i> Xóa hình</a></li>";
-                        }
-                    }
-                    imageGallery.Text += "</ul>";
-
-                    // Hàng cần Order
-                    ddlPreOrder.SelectedValue = p.PreOrder ? "1" : "0";
-
-                    // Init Tags
-                    var tags = ProductTagController.get(p.ID, 0);
-
-                    if (tags.Count > 0)
-                        hdfTags.Value = JsonConvert.SerializeObject(tags);
-                    else
-                        hdfTags.Value = String.Empty;
-
-                    // Lấy tất cả biến thể ra
-                    List <tbl_ProductVariable> a = new List<tbl_ProductVariable>();
-                    a = ProductVariableController.GetProductID(p.ID);
-
-                    if(a.Count > 0)
-                    {
-                        StringBuilder html = new StringBuilder();
-                        int t = 1;
-                        foreach (var item in a)
-                        {
-                            string VariableSKU = item.SKU;
-                            double RegularPrice = Convert.ToDouble(item.Regular_Price);
-                            double RetailPrice = Convert.ToDouble(item.RetailPrice);
-                            double CostOfGood = Convert.ToDouble(item.CostOfGood);
-                            int MinimumInventoryLevel = Convert.ToInt32(item.MinimumInventoryLevel);
-                            int MaximumInventoryLevel = Convert.ToInt32(item.MaximumInventoryLevel);
-                            string VariableImage = Thumbnail.getURL(item.Image, Thumbnail.Size.Source);
-                            string deleteVariableImage = "<a href='javascript:;' onclick='deleteImageVariable($(this))' class='btn-delete hide'><i class='fa fa-times' aria-hidden='true'></i> Xóa hình</a>";
-                            if (!string.IsNullOrEmpty(item.Image))
-                            {
-                                deleteVariableImage = "<a href='javascript:;' onclick='deleteImageVariable($(this))' class='btn-delete'><i class='fa fa-times' aria-hidden='true'></i> Xóa hình</a>";
-                            }
-
-                            var value = ProductVariableValueController.GetByProductVariableID(item.ID);
-                            string selectVariable = "";
-                            string variableID = "";
-                            string variableName = "";
-                            string variableValueID = "";
-                            string variableValueName = "";
-                            string dataVariableValue = "";
-                            string labelVariableValue = "";
-                            if (value != null)
-                            {
-                                foreach (var temp in value)
-                                {
-                                    selectVariable += "<div class='row margin-bottom-15'><div class='col-md-5'>" + temp.VariableName + "</div><div class='col-md-7'>" + getSelectVariable(temp.VariableName, temp.VariableValue) + "</div></div>";
-                                    variableID += VariableController.GetByName(temp.VariableName.ToString()).ID.ToString() + "|";
-                                    variableName += temp.VariableName.ToString() + "|";
-                                    variableValueID += temp.VariableValueID.ToString() + "|";
-                                    variableValueName += temp.VariableValue.ToString() + "|";
-                                    dataVariableValue += VariableController.GetByName(temp.VariableName.ToString()).ID.ToString() + ":" + temp.VariableValueID.ToString() + "|";
-                                    labelVariableValue += temp.VariableName.ToString() + ": " + temp.VariableValue.ToString() + " - ";
-                                }
-                            }
-
-                            html.AppendLine(String.Format("<div class='item-var-gen' data-name-id='{0}' data-value-id='{1}' data-name-text='{2}' data-value-text='{3}' data-name-value='{4}'>", variableID, variableValueID, variableName, variableValueName, dataVariableValue));
-                            html.AppendLine(String.Format("    <div class='col-md-12 variable-label' onclick='showVariableContent($(this))'>"));
-                            html.AppendLine(String.Format("    	<strong>#{0}</strong> - {1} {2}", t, labelVariableValue, VariableSKU));
-                            html.AppendLine(String.Format("    </div>"));
-                            html.AppendLine(String.Format("    <div class='col-md-12 variable-content'>"));
-                            html.AppendLine(String.Format("    	<div class='row'>"));
-                            html.AppendLine(String.Format("		    <div class='col-md-2'>"));
-                            html.AppendLine(String.Format("		    	<input type='file' class='productVariableImage upload-btn' onchange='imagepreview(this,$(this));' name='{0}'><img class='imgpreview' onclick='openUploadImage($(this))' data-file-name='{1}' src='{1}'>{2}", VariableSKU, VariableImage, deleteVariableImage));
-                            html.AppendLine(String.Format("		    	</div>"));
-                            html.AppendLine(String.Format("		    <div class='col-md-5'>"));
-                            html.AppendLine(String.Format("		    	{0}", selectVariable));
-                            html.AppendLine(String.Format("		    	<div class='row margin-bottom-15'>"));
-                            html.AppendLine(String.Format("		    	    <div class='col-md-5'>Mã sản phẩm</div>"));
-                            html.AppendLine(String.Format("		    	    <div class='col-md-7'><input type='text' disabled class='form-control productvariablesku sku-input' value='{0}'></div>", VariableSKU));
-                            html.AppendLine(String.Format("		    	</div>"));
-                            html.AppendLine(String.Format("		    </div>"));
-                            html.AppendLine(String.Format("		    <div class='col-md-5'>"));
-                            html.AppendLine(String.Format("		    	<div class='row margin-bottom-15'>"));
-                            html.AppendLine(String.Format("		    	    <div class='col-md-5'>Giá sỉ</div>"));
-                            html.AppendLine(String.Format("		    	    <div class='col-md-7'><input class='form-control regularprice' type='text' value='{0}'> </div>", RegularPrice));
-                            html.AppendLine(String.Format("		    	</div>"));
-                            html.AppendLine(String.Format("		    	<div class='row margin-bottom-15 cost-of-goods'>"));
-                            html.AppendLine(String.Format("		    	    <div class='col-md-5'>Giá vốn</div>"));
-                            html.AppendLine(String.Format("		    	    <div class='col-md-7'><input class='form-control costofgood cost-price' type='text' value='{0}'></div>", CostOfGood));
-                            html.AppendLine(String.Format("		    	</div>"));
-                            html.AppendLine(String.Format("		    	<div class='row margin-bottom-15'>"));
-                            html.AppendLine(String.Format("		    	    <div class='col-md-5'>Giá bán lẻ</div>"));
-                            html.AppendLine(String.Format("		    	    <div class='col-md-7'><input class='form-control retailprice' type='text' value='{0}'></div>", RetailPrice));
-                            html.AppendLine(String.Format("		    	</div>"));
-                            html.AppendLine(String.Format("			</div>"));
-                            html.AppendLine(String.Format("		</div>"));
-                            html.AppendLine(String.Format("	</div>"));
-                            html.AppendLine(String.Format("</div>"));
-
-                            t++;
-                        }
-
-                        ltrVariables.Text = html.ToString();
-                    }
-
-                    string ProductInfo = "<p><strong>Ngày tạo</strong>: " + p.CreatedDate + "</p>";
-                    ProductInfo += "<p><strong>Người viết</strong>: " + p.CreatedBy + "</p>";
-                    ProductInfo += "<p><strong>Ngày cập nhật</strong>: " + p.ModifiedDate + "</p>";
-                    ProductInfo += "<p><strong>Người cập nhật</strong>: " + p.ModifiedBy + "</p>";
-                    ltrProductInfo.Text = ProductInfo;
-
+                        productVariationID = Convert.ToInt32(productVariationID),
+                        productVariationSKU = item.sku,
+                        variationValueID = item.variationValueID,
+                        variationName = item.variationName,
+                        variationValueName = item.variationValueName,
+                        isHidden = false,
+                        createdDate = now,
+                        createdBy = acc.Username
+                    });
                 }
+            }
+            #endregion
+        }
+        #endregion
+
+        #region Cập nhật giá trị biến thể của sản phẩm con
+        public void _createVariationValue(VariationValueUpdateModel variationValue)
+        {
+            var variationValueIDList = variationValue.variationValueID.Split('|').Where(x => !String.IsNullOrEmpty(x)).ToList();
+            var variationNameList = variationValue.variationName.Split('|').Where(x => !String.IsNullOrEmpty(x)).ToList();
+            var variationValueNameList = variationValue.variationValueName.Split('|').Where(x => !String.IsNullOrEmpty(x)).ToList();
+
+            for (int index = 0; index < variationValueIDList.Count; index++)
+            {
+                var variableValueID = variationValueIDList[index].ToInt();
+                string variableName = variationNameList[index];
+                string variableValueName = variationValueNameList[index];
+                ProductVariableValueController.Insert(
+                    ProductVariableID: variationValue.productVariationID,
+                    ProductvariableSKU: variationValue.productVariationSKU,
+                    VariableValueID: variableValueID, 
+                    VariableName: variableName,
+                    VariableValue: variableValueName,
+                    IsHidden: variationValue.isHidden,
+                    CreatedDate: variationValue.createdDate, 
+                    CreatedBy: variationValue.createdBy
+                );
+            }
+        }
+        #endregion
+        #endregion
+        #endregion
+
+        protected void txtProductSKU_Changed(object sender, EventArgs e)
+        {
+            var productSKU = txtProductSKU.Text.Trim().ToUpper();
+
+            if (!String.IsNullOrEmpty(productSKU))
+            {
+                if (productSKU != _productSKU)
+                {
+                    var product = ProductController.GetBySKU(txtProductSKU.Text.Trim().ToLower());
+
+                    if (product != null)
+                    {
+                        txtProductSKU.Text = ViewState["SKU"].ToString();
+                        PJUtils.ShowMessageBoxSwAlert(String.Format("Mã #SKU - {0} đã tồn tại", productSKU), "e", false, Page);
+                        return;
+                    }
+                }
+
+                var stocks = StockManagerController.warehousing1ByParentSKU(_productSKU);
+
+                if (stocks.Count > 0)
+                {
+                    txtProductSKU.Text = ViewState["SKU"].ToString();
+                    PJUtils.ShowMessageBoxSwAlert(String.Format("Sản phẩm #{0} đã tạo mã vạch nhập kho rồi nên không thể sửa", ViewState["SKU"]), "i", false, Page);
+                    return;
+                }
+
+                var skuOld = ViewState["SKU"].ToString();
+                var skuNew = productSKU;
+
+                ViewState["SKU"] = productSKU;
+                JavaScript.AfterPageLoad(Page).ExecuteCustomScript("updateVariationSKUA('{0}', '{1}');", new object[] { skuOld, skuNew });
+            }
+            else
+            {
+                txtProductSKU.Text = ViewState["SKU"].ToString();
+                PJUtils.ShowMessageBoxSwAlert("Bạn đã quên nhập mã sản phẩm. Tôi đã lấy mã sản phẩm củ cho bạn", "i", false, Page);
             }
         }
 
@@ -300,327 +854,22 @@ namespace IM_PJ
         {
             string username = Request.Cookies["usernameLoginSystem"].Value;
             var acc = AccountController.GetByUsername(username);
-            int cateID = ViewState["cateID"].ToString().ToInt(0);
-            int ProductID = ViewState["ID"].ToString().ToInt(0);
-            if (cateID > 0)
+
+            if (acc == null)
             {
-                string ProductTitle = Regex.Replace(txtProductTitle.Text, @"\s*\,\s*|\s*\;\s*", " - ");
-                string ProductContent = pContent.Content;
-                string ProductSKU = ViewState["SKU"].ToString();
-                double ProductStock = 0;
-                int StockStatus = 0;
-                bool ManageStock = true;
-                double Old_Price = String.IsNullOrEmpty(pOld_Price.Text) ? 0 : Convert.ToDouble(pOld_Price.Text);
-                double Regular_Price = Convert.ToDouble(pRegular_Price.Text);
-                double CostOfGood = Convert.ToDouble(pCostOfGood.Text);
-                double Retail_Price = Convert.ToDouble(pRetailPrice.Text);
-                int CategoryID = hdfParentID.Value.ToInt();
-                string mainColor = ddlColor.SelectedValue.ToString();
-                double MinimumInventoryLevel = 0;
-                if (pMinimumInventoryLevel.Text != "")
-                {
-                    MinimumInventoryLevel = Convert.ToDouble(pMinimumInventoryLevel.Text);
-                }
-
-                double MaximumInventoryLevel = 0;
-                if (pMaximumInventoryLevel.Text != "")
-                {
-                    MaximumInventoryLevel = Convert.ToDouble(pMaximumInventoryLevel.Text);
-                }
-
-                //Phần cap nhat ảnh đại diện sản phẩm
-                string path = "/uploads/images/";
-                string ProductImage = ListProductThumbnail.Value;
-                if (ProductThumbnailImage.UploadedFiles.Count > 0)
-                {
-                    foreach (UploadedFile f in ProductThumbnailImage.UploadedFiles)
-                    {
-                        string o = path + ProductID + '-' + Slug.ConvertToSlug(Path.GetFileName(f.FileName), isFile: true);
-                        if (File.Exists(Server.MapPath(o)))
-                        {
-                            o = path + ProductID + '-' + DateTime.UtcNow.ToString("HHmmssffff") + '-' + Slug.ConvertToSlug(Path.GetFileName(f.FileName), isFile: true);
-                        }
-                        f.SaveAs(Server.MapPath(o));
-                        ProductImage = Path.GetFileName(o);
-
-                        // Thumbnail
-                        Thumbnail.create(Server.MapPath(o), 85, 113);
-                        Thumbnail.create(Server.MapPath(o), 159, 212);
-                        Thumbnail.create(Server.MapPath(o), 240, 320);
-                        Thumbnail.create(Server.MapPath(o), 350, 467);
-                        Thumbnail.create(Server.MapPath(o), 600, 0);
-                    }
-                }
-
-                //Phần thêm ảnh đại diện sản phẩm sạch không đóng dấu
-                string ProductImageClean = ListProductThumbnailClean.Value;
-                if (ProductThumbnailImageClean.UploadedFiles.Count > 0)
-                {
-                    foreach (UploadedFile f in ProductThumbnailImageClean.UploadedFiles)
-                    {
-                        var o = path + ProductID + "-clean-" + Slug.ConvertToSlug(Path.GetFileName(f.FileName), isFile: true);
-                        if (File.Exists(Server.MapPath(o)))
-                        {
-                            o = path + ProductID + "-clean-" + DateTime.UtcNow.ToString("HHmmssffff") + '-' + Slug.ConvertToSlug(Path.GetFileName(f.FileName), isFile: true);
-                        }
-                        f.SaveAs(Server.MapPath(o));
-                        ProductImageClean = Path.GetFileName(o);
-
-                        // Thumbnail
-                        Thumbnail.create(Server.MapPath(o), 85, 113);
-                        Thumbnail.create(Server.MapPath(o), 159, 212);
-                        Thumbnail.create(Server.MapPath(o), 240, 320);
-                        Thumbnail.create(Server.MapPath(o), 350, 467);
-                        Thumbnail.create(Server.MapPath(o), 600, 0);
-                    }
-                }
-
-                //Delete Image Gallery
-                string deleteImageGallery = hdfDeleteImageGallery.Value;
-                if (deleteImageGallery != "")
-                {
-                    string[] deletelist = deleteImageGallery.Split(',');
-
-                    for (int i = 0; i < deletelist.Length - 1; i++)
-                    {
-                        var img = ProductImageController.GetByID(Convert.ToInt32(deletelist[i]));
-                        if (img != null)
-                        {
-                            string delete = ProductImageController.Delete(img.ID);
-                        }
-                    }
-                }
-
-                // Hàng Order
-                var preOrder = ddlPreOrder.SelectedValue == "1" ? true : false;
-
-                // Update product
-                string kq = ProductController.Update(new tbl_Product() {
-                    ID = ProductID,
-                    CategoryID = CategoryID,
-                    ProductOldID = 0,
-                    ProductTitle = ProductTitle,
-                    ProductContent = ProductContent,
-                    ProductSKU = ProductSKU,
-                    ProductStock = ProductStock,
-                    StockStatus = StockStatus,
-                    ManageStock = ManageStock,
-                    Regular_Price = Regular_Price,
-                    CostOfGood = CostOfGood,
-                    Retail_Price = Retail_Price,
-                    ProductImage = ProductImage,
-                    ProductType = 0,
-                    IsHidden = false,
-                    ModifiedDate = DateTime.Now,
-                    ModifiedBy = username,
-                    SupplierID = ddlSupplier.SelectedValue.ToInt(0),
-                    SupplierName = ddlSupplier.SelectedItem.ToString(),
-                    Materials = txtMaterials.Text,
-                    MinimumInventoryLevel = MinimumInventoryLevel,
-                    MaximumInventoryLevel = MaximumInventoryLevel,
-                    ProductImageClean = ProductImageClean,
-                    Color = mainColor,
-                    PreOrder = preOrder,
-                    Old_Price = Old_Price
-                });
-
-                // Upload tags
-                if (!String.IsNullOrEmpty(hdfTags.Value))
-                {
-                    var tagList = JsonConvert.DeserializeObject<List<TagModel>>(hdfTags.Value);
-
-                    if (tagList.Count > 0)
-                    {
-                        // Get tag new
-                        var tagNew = TagController.insert(tagList, acc);
-
-                        var productTag = tagList
-                            .GroupJoin(
-                                tagNew,
-                                t => t.name.ToLower(),
-                                n => n.Name.ToLower(),
-                                (t, n) => new { t, n }
-                            )
-                            .SelectMany(
-                                x => x.n.DefaultIfEmpty(),
-                                (parent, child) => new ProductTag
-                                {
-                                    TagID = child != null ? child.ID : parent.t.id,
-                                    ProductID = ProductID,
-                                    ProductVariableID = 0,
-                                    SKU = ProductSKU,
-                                    CreatedBy = acc.ID,
-                                    CreatedDate = DateTime.Now
-                                }
-                            )
-                            .ToList();
-
-                        ProductTagController.update(ProductID, productTag);
-                    }
-                    else
-                    {
-                        ProductTagController.delete(ProductID);
-                    }
-                }
-
-                // Upload image gallery
-                string itemGallery = "";
-                if (UploadImages.HasFiles)
-                {
-                    foreach (HttpPostedFile uploadedFile in UploadImages.PostedFiles)
-                    {
-                        var o = path + ProductID + '-' + Slug.ConvertToSlug(Path.GetFileName(uploadedFile.FileName), isFile: true);
-                        if (File.Exists(Server.MapPath(o)))
-                        {
-                            o = path + ProductID + '-' + DateTime.UtcNow.ToString("HHmmssffff") + '-' + Slug.ConvertToSlug(Path.GetFileName(uploadedFile.FileName), isFile: true);
-                        }
-                        uploadedFile.SaveAs(Server.MapPath(o));
-                        itemGallery = Path.GetFileName(o);
-
-                        // Thumbnail
-                        Thumbnail.create(Server.MapPath(o), 85, 113);
-                        Thumbnail.create(Server.MapPath(o), 159, 212);
-                        Thumbnail.create(Server.MapPath(o), 240, 320);
-                        Thumbnail.create(Server.MapPath(o), 350, 467);
-                        Thumbnail.create(Server.MapPath(o), 600, 0);
-
-                        ProductImageController.Insert(ProductID, itemGallery, false, DateTime.Now, username);
-                    }
-                }
-
-
-                if (kq.ToInt(0) > 0)
-                {
-                    // Update Variable
-                    if (hdfsetStyle.Value == "2")
-                    {
-                        string variable = hdfVariableListInsert.Value;
-                        if (!string.IsNullOrEmpty(variable))
-                        {
-                            string[] items = variable.Split(',').Where(x => !String.IsNullOrEmpty(x)).ToArray();
-                            for (int i = 0; i < items.Length - 1; i++)
-                            {
-                                string item = items[i];
-                                string[] itemElement = item.Split(';');
-
-                                string datanameid = itemElement[0];
-                                string[] datavalueid = itemElement[1].Split('|');
-                                string datanametext = itemElement[2];
-                                string datavaluetext = itemElement[3];
-                                string productvariablesku = itemElement[4].Trim().ToUpper();
-                                string regularprice = itemElement[5];
-                                string costofgood = itemElement[6];
-                                string retailprice = itemElement[7];
-                                string[] datanamevalue = itemElement[8].Split('|');
-                                string imageUpload = itemElement[4];
-                                int _MaximumInventoryLevel = itemElement[9].ToInt(0);
-                                int _MinimumInventoryLevel = itemElement[10].ToInt(0);
-                                int stockstatus = itemElement[11].ToInt();
-                                string imageSrc = itemElement[13];
-                                string kq1 = "";
-
-                                // Check variable
-                                var Variable = ProductVariableController.GetBySKU(productvariablesku);
-                                if (Variable != null)
-                                {
-                                    // Update image
-                                    string image = Variable.Image;
-                                    if (imageSrc == "/App_Themes/Ann/image/placeholder.png")
-                                    {
-                                        image = "";
-                                    }
-                                    else
-                                    {
-                                        if (imageSrc != path + Variable.Image)
-                                        {
-                                            HttpPostedFile postedFile = Request.Files[imageUpload];
-                                            if (postedFile != null && postedFile.ContentLength > 0)
-                                            {
-                                                // Upload image
-                                                var o = path + ProductID + '-' + Slug.ConvertToSlug(Path.GetFileName(postedFile.FileName), isFile: true);
-
-                                                if (File.Exists(Server.MapPath(o)))
-                                                {
-                                                    o = path + ProductID + '-' + DateTime.UtcNow.ToString("HHmmssffff") + '-' + Slug.ConvertToSlug(Path.GetFileName(postedFile.FileName), isFile: true);
-                                                }
-                                                postedFile.SaveAs(Server.MapPath(o));
-                                                image = Path.GetFileName(o);
-
-                                                // Thumbnail
-                                                Thumbnail.create(Server.MapPath(o), 85, 113);
-                                                Thumbnail.create(Server.MapPath(o), 159, 212);
-                                                Thumbnail.create(Server.MapPath(o), 240, 320);
-                                                Thumbnail.create(Server.MapPath(o), 350, 467);
-                                                Thumbnail.create(Server.MapPath(o), 600, 0);
-                                            }
-                                            else
-                                            {
-                                                image = "";
-                                            }
-                                        }
-                                    }
-
-                                    // Update variable
-
-                                    kq1 = ProductVariableController.Update(Variable.ID, ProductID, Variable.ParentSKU, productvariablesku, Convert.ToDouble(Variable.Stock), Convert.ToInt32(Variable.StockStatus), Convert.ToDouble(regularprice), Convert.ToDouble(costofgood), Convert.ToDouble(retailprice), image, true, false, DateTime.Now, username, Convert.ToInt32(Variable.SupplierID), Variable.SupplierName, _MinimumInventoryLevel, _MaximumInventoryLevel);
-
-                                    // Delete all productVariableValue
-
-                                    bool deleteVariableValue = ProductVariableValueController.DeleteByProductVariableID(Variable.ID);
-                                }
-                                else
-                                {
-                                    string image = "";
-
-                                    HttpPostedFile postedFile = Request.Files[imageUpload];
-                                    if (postedFile != null && postedFile.ContentLength > 0)
-                                    {
-                                        // Upload image
-                                        var o = path + ProductID + '-' + Slug.ConvertToSlug(Path.GetFileName(postedFile.FileName), isFile: true);
-                                        if (File.Exists(Server.MapPath(o)))
-                                        {
-                                            o = path + ProductID + '-' + DateTime.UtcNow.ToString("HHmmssffff") + '-' + Slug.ConvertToSlug(Path.GetFileName(postedFile.FileName), isFile: true);
-                                        }
-                                        postedFile.SaveAs(Server.MapPath(o));
-                                        image = Path.GetFileName(o);
-
-                                        // Thumbnail
-                                        Thumbnail.create(Server.MapPath(o), 85, 113);
-                                        Thumbnail.create(Server.MapPath(o), 159, 212);
-                                        Thumbnail.create(Server.MapPath(o), 240, 320);
-                                        Thumbnail.create(Server.MapPath(o), 350, 467);
-                                        Thumbnail.create(Server.MapPath(o), 600, 0);
-                                    }
-
-                                    // Insert new variable
-
-                                    kq1 = ProductVariableController.Insert(ProductID, ProductSKU, productvariablesku, 0, stockstatus, Convert.ToDouble(regularprice),
-                                            Convert.ToDouble(costofgood), Convert.ToDouble(retailprice), image, true, false, DateTime.Now, username,
-                                            ddlSupplier.SelectedValue.ToInt(0), ddlSupplier.SelectedItem.ToString(), _MinimumInventoryLevel, _MaximumInventoryLevel);
-                                }
-
-                                // Update ProductVariableValue
-
-                                if (kq1.ToInt(0) > 0)
-                                {
-                                    string[] Data = datanametext.Split('|');
-                                    string[] DataValue = datavaluetext.Split('|');
-                                    for (int k = 0; k < Data.Length - 1; k++)
-                                    {
-                                        int variablevalueID = datavalueid[k].ToInt();
-                                        string variableName = Data[k];
-                                        string variableValueName = DataValue[k];
-                                        ProductVariableValueController.Insert(kq1.ToInt(), productvariablesku, variablevalueID, variableName, variableValueName, false, DateTime.Now, username);
-                                    }
-                                }
-
-                            }
-                        }
-                    }
-
-                    PJUtils.ShowMessageBoxSwAlert("Cập nhật sản phẩm thành công", "s", true, Page);
-                }
+                var message = String.Format("Không tìm thấy account #{0} trong hệ thống.", username);
+                PJUtils.ShowMessageBoxSwAlert(message, "e", false, Page);
+                return;
             }
+
+            // Cập nhật product
+            _updateProduct(acc);
+
+            // Update Variable
+            if (hdfsetStyle.Value == "2")
+                _updateProductVariation(acc);
+
+            PJUtils.ShowMessageBoxSwAlert("Cập nhật sản phẩm thành công", "s", true, Page);
         }
 
         [WebMethod]

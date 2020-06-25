@@ -19,6 +19,21 @@
                 border: dotted 1px #ccc;
                 padding: 15px 0;
         }
+
+        .variable-label {
+            padding-top: 10px;
+            padding-left: 0px;
+            padding-right: 0px;
+        }
+
+        .variable-removal {
+            display: block;
+        }
+
+        .variable-removal > a {
+            float: right;
+        }
+
         .variableselect {
             float: left;
             width: 100%;
@@ -162,7 +177,7 @@
                                     Mã sản phẩm
                                 </div>
                                 <div class="row-right">
-                                    <asp:TextBox ID="txtProductSKU" Enabled="false" runat="server" CssClass="form-control sku-input" placeholder="Mã sản phẩm"></asp:TextBox>
+                                    <asp:TextBox ID="txtProductSKU" runat="server" CssClass="form-control sku-input" placeholder="Mã sản phẩm" OnTextChanged="txtProductSKU_Changed" AutoPostBack="true"></asp:TextBox>
                                 </div>
                             </div>
                             <div class="form-row">
@@ -322,14 +337,13 @@
                                     Ảnh đại diện
                                 </div>
                                 <div class="row-right">
-                                    <telerik:RadAsyncUpload Skin="Metro" runat="server" ID="ProductThumbnailImage" ChunkSize="0"
+                                    <telerik:RadAsyncUpload Skin="Metro" runat="server" ID="uploadProductImage" ChunkSize="0"
                                         Localization-Select="Chọn ảnh" AllowedFileExtensions=".jpeg,.jpg,.png"
                                         MultipleFileSelection="Disabled" OnClientFileSelected="OnClientFileSelected1" 
                                         MaxFileInputsCount="1" OnClientFileUploadRemoved="OnClientFileUploadRemoved1">
                                     </telerik:RadAsyncUpload>
-                                    <asp:Image runat="server" ID="ProductThumbnail" class="img-product" />
-                                    <asp:HiddenField runat="server" ID="ListProductThumbnail" ClientIDMode="Static" />
-                                    <div class="hidProductThumbnail"></div>
+                                    <asp:Image runat="server" ID="imgProductImage" class="img-product" />
+                                    <asp:HiddenField runat="server" ID="hdfProductImage" ClientIDMode="Static" />
                                 </div>
                             </div>
                             <div class="form-row">
@@ -356,7 +370,7 @@
                                     Thư viện ảnh
                                 </div>
                                 <div class="row-right">
-                                    <asp:FileUpload runat="server" ID="UploadImages" name="uploadImageGallery" onchange='showImageGallery(this,$(this));' AllowMultiple="true" />  
+                                    <asp:FileUpload runat="server" ID="uploadImageGallery" name="uploadImageGallery" onchange='showImageGallery(this,$(this));' AllowMultiple="true" />  
                                     
                                     <asp:Literal ID="imageGallery" runat="server"></asp:Literal>
                                 </div>
@@ -366,14 +380,13 @@
                                     Ảnh đại diện sạch
                                 </div>
                                 <div class="row-right">
-                                    <telerik:RadAsyncUpload Skin="Metro" runat="server" ID="ProductThumbnailImageClean" ChunkSize="0"
+                                    <telerik:RadAsyncUpload Skin="Metro" runat="server" ID="uploadProductImageClean" ChunkSize="0"
                                         Localization-Select="Chọn ảnh" AllowedFileExtensions=".jpeg,.jpg,.png"
                                         MultipleFileSelection="Disabled" OnClientFileSelected="OnClientFileSelected2" 
                                         MaxFileInputsCount="1"  OnClientFileUploadRemoved="OnClientFileUploadRemoved2">
                                     </telerik:RadAsyncUpload>
-                                    <asp:Image runat="server" ID="ProductThumbnailClean" Width="200" />
-                                    <asp:HiddenField runat="server" ID="ListProductThumbnailClean" ClientIDMode="Static" />
-                                    <div class="hidProductThumbnailClean"></div>
+                                    <asp:Image runat="server" ID="imgProductImageClean" Width="200" />
+                                    <asp:HiddenField runat="server" ID="hdfProductImageClean" ClientIDMode="Static" />
                                 </div>
                             </div>
                             <div class="form-row variable">
@@ -427,10 +440,12 @@
         <asp:HiddenField ID="hdfDeleteImageGallery" runat="server" />
         <asp:HiddenField ID="hdfsetStyle" runat="server" />
         <asp:HiddenField ID="hdfVariableFull" runat="server" />
+        <asp:HiddenField ID="hdfVariationRemovalList" runat="server" />
         <asp:HiddenField ID="hdfVariableListInsert" runat="server" />
         <asp:HiddenField ID="hdfParentID" runat="server" />
         <asp:HiddenField ID="hdfUserRole" runat="server" />
         <asp:HiddenField ID="hdfTags" runat="server" />
+        <asp:FileUpload runat="server" ID="uploadVariationImage" name="uploadVariationImage" AllowMultiple="true" style="display: none"/>
     </main>
 
     <telerik:RadCodeBlock runat="server">
@@ -438,6 +453,11 @@
         <script type="text/javascript" src="Scripts/typeahead.bundle.min.js"></script>
         <script type="text/javascript" src="Scripts/typeahead.jquery.js"></script>
         <script>
+            let _productID = 0;
+            let _variation = [];
+            let _variationSKURemoval = [];
+            let _variationImageFiles = [];
+
             // init Input Tag
             let tags = new Bloodhound({
                 datumTokenizer: (tag) => {
@@ -478,10 +498,12 @@
                 }
             });
 
-
             var storedFiles = [];
 
             $(document).ready(function () {
+                let queryParams = new URLSearchParams(window.location.search);
+                _productID = queryParams.get('id') || 0;
+
                 var userRole = $("#<%=hdfUserRole.ClientID%>").val();
                 if (userRole != "0") {
                     $(".cost-of-goods").addClass("hide");
@@ -562,22 +584,114 @@
                     getTagList(categoryID);
                 }
                 
+                // Variation
+                _initVariation();
             });
 
-            function showVariableContent(obj) {
-                var content = obj.parent().find(".variable-content");
-                if (content.is(":hidden")) {
-                    content.show();
-                    obj.addClass("margin-bottom-15");
-                }
-                else {
-                    content.hide();
-                    obj.removeClass("margin-bottom-15");
-                }
+            function _initVariation() {
+                _initDropDownListVariableValue();
+                _initVariationRegularPrice();
+                _initVariationCostOfGood();
+                _initVariationRetailPrice();
             }
 
-            function isBlank(str) {
-                return (!str || /^\s*$/.test(str));
+            function _initDropDownListVariableValue() {
+                let $ddlVariableValue = $("select[name='ddlVariableValue']");
+                
+                $.each($ddlVariableValue, function() {
+                    $(this).attr("data-pre", $(this).val())
+                });
+            }
+
+            function _initVariationRegularPrice() {
+                $(".item-var-gen").find(".regularprice").blur(function () {
+                    let $price = $(this);
+
+                    if (!$price.val())
+                        return swal({
+                            title: "Thông báo",
+                            text: "Chưa nhập giá sỉ",
+                            type: "error"
+                        }, function () {
+                            $price.focus();
+                            $price.select();
+                        });
+                    else
+                        _checkVariationInputPrice($price);
+                });
+            }
+
+            function _initVariationCostOfGood() {
+                $(".item-var-gen").find(".costofgood").blur(function () {
+                    let $price = $(this);
+
+                    if (!$price.val())
+                        return swal({
+                            title: "Thông báo",
+                            text: "Chưa nhập giá vốn",
+                            type: "error"
+                        }, function () {
+                            $price.focus();
+                            $price.select();
+                        });
+                    else
+                        _checkVariationInputPrice($price);
+                });
+            }
+
+            function _initVariationRetailPrice() {
+                $(".item-var-gen").find(".retailprice").blur(function () {
+                    let $price = $(this);
+
+                    if (!$price.val())
+                        return swal({
+                            title: "Thông báo",
+                            text: "Chưa nhập giá lẻ",
+                            type: "error"
+                        }, function () {
+                            $price.focus();
+                            $price.select();
+                        });
+                    else
+                        _checkVariationInputPrice($price);
+                });
+            }
+
+            function _checkVariationInputPrice($price) {
+                let $variation = $price.closest(".item-var-gen");
+
+                // Kiểm tra về giá sỉ
+                let $regularPrice = $variation.find(".regularprice");
+                let giasi = $regularPrice.val() || "";
+
+                // Kiểm tra về giá vốn
+                let $costOfGood = $variation.find(".costofgood");
+                let giavon = $costOfGood.val() || "";
+
+                // Kiểm tra về giá lẻ
+                let $retailPrice = $variation.find(".retailprice");
+                let giale = $retailPrice.val() || "";
+
+                if (parseFloat(giasi) < parseFloat(giavon)) {
+                    return swal({
+                        title: "Thông báo",
+                        text: "Gía sỉ không được thấp hơn giá vốn",
+                        type: "error"
+                    }, function () {
+                        $regularPrice.focus();
+                        $regularPrice.select();
+                    });
+                }
+                else if (parseFloat(giasi) > parseFloat(giale)) {
+                    return swal({
+                        title: "Thông báo",
+                        text: "Giá lẻ không được thấp hơn giá sỉ",
+                        type: "error"
+                    }, function () {
+                        $retailPrice.focus();
+                        $retailPrice.select();
+                    });
+                }
             }
 
             function selectCategory(obj) {
@@ -614,6 +728,23 @@
                 });
 
                 getTagList(parentID);
+            }
+
+            // Cập nhật lại tất cả SKU của biến thể sau khi thay đổi SKU cha
+            function updateVariationSKUA(skuOld, skuNew) {
+                $(".item-var-gen").each(function () {
+                    let $variationLabel = $(this).find(".variable-label");
+                    let htmlTitle = $variationLabel.html().trim();
+
+                    htmlTitle = htmlTitle.replace(skuOld, skuNew);
+                    $variationLabel.html(htmlTitle);
+
+                    let $variationSKU = $(this).find(".productvariablesku");
+                    let variationSKU = $variationSKU.val();
+
+                    variationSKU = variationSKU.replace(skuOld, skuNew);
+                    $variationSKU.val(variationSKU).trigger("change");
+                })
             }
 
             function getTagList(categoryID) {
@@ -676,35 +807,6 @@
                 })
             }
 
-            function changeVariable(obj) {
-                var parentDiv = obj.closest(".item-var-gen");
-                var datanameid = "";
-                var datavalueid = "";
-                var datanametext = "";
-                var datavaluetext = "";
-                var datanamevalue = "";
-                var variableSKU = $("#<%=txtProductSKU.ClientID%>").val();
-                parentDiv.find("select option:selected").each(function () {
-                    datanameid += $(this).parent().attr("data-name-id") + "|";
-                    datavalueid += $(this).val() + "|";
-                    datanametext += $(this).parent().attr("data-name-text") + "|";
-                    datavaluetext += $(this).text() + "|";
-                    datanamevalue += $(this).parent().attr("data-name-id") + ":" + $(this).val() + "|";
-                    variableSKU += $(this).attr("data-sku-text");
-                });
-
-                parentDiv.attr("data-name-id", datanameid);
-                parentDiv.attr("data-value-id", datavalueid);
-                parentDiv.attr("data-name-text", datanametext);
-                parentDiv.attr("data-value-text", datavaluetext);
-                parentDiv.attr("data-name-value", datanamevalue);
-                parentDiv.find(".productVariableImage").attr("name", variableSKU);
-                if (!parentDiv.find(".productvariablesku").prop('disabled')) {
-                    parentDiv.find(".productvariablesku").val(variableSKU);
-                }
-                
-            }
-
             function showImageGallery(input, obj) {
                 if (input.files) {
                     base64 = "";
@@ -733,281 +835,109 @@
                 }
             }
 
-            function updateProduct() {
-                var listv = "";
-                var a = $("#<%=hdfsetStyle.ClientID%>").val();
-                var parent = $("#<%=hdfParentID.ClientID%>").val();
-                if (a == 2) {
-                    var title = $("#<%=txtProductTitle.ClientID%>").val();
-                    var SKU = $("#<%=txtProductSKU.ClientID%>").val();
-                    var materials = $("#<%=txtMaterials.ClientID%>").val();
-                    var maximum = $("#<%=pMaximumInventoryLevel.ClientID%>").val();
-                    var minimum = $("#<%=pMinimumInventoryLevel.ClientID%>").val();
-                    var giacu = $("#<%=pOld_Price.ClientID%>").val() || 0;
-                    var giasi = $("#<%=pRegular_Price.ClientID%>").val();
-                    var giavon = $("#<%=pCostOfGood.ClientID%>").val();
-                    var giale = $("#<%=pRetailPrice.ClientID%>").val();
-
-                    if (parent == "") {
-                        $("#<%=ddlCategory.ClientID%>").focus();
-                        swal("Thông báo", "Chưa chọn danh mục sản phẩm", "error");
-                    }
-                    else if (title == "") {
-                        $("#<%=txtProductTitle.ClientID%>").focus();
-                        swal("Thông báo", "Chưa nhập tên sản phẩm", "error");
-                    }
-                    else if (SKU == "") {
-                        $("#<%=txtProductSKU.ClientID%>").focus();
-                        swal("Thông báo", "Chưa nhập mã sản phẩm", "error");
-                    }
-                    else if (materials == "") {
-                        $("#<%=txtMaterials.ClientID%>").focus();
-                        swal("Thông báo", "Chưa nhập chất liệu sản phẩm", "error");
-                    }
-                    else if (giasi == "") {
-                        $("#<%=pRegular_Price.ClientID%>").focus();
-                        swal("Thông báo", "Chưa nhập giá sỉ", "error");
-                    }
-                    else if (giavon == "") {
-                        $("#<%=pCostOfGood.ClientID%>").focus();
-                        swal("Thông báo", "Chưa nhập giá vốn", "error");
-                    }
-                    else if (giale == "") {
-                        $("#<%=pRetailPrice.ClientID%>").focus();
-                        swal("Thông báo", "Chưa nhập giá lẻ", "error");
-                    }
-                    else if (parseFloat(giasi) < parseFloat(giavon)) {
-                        $("#<%=pRegular_Price.ClientID%>").focus();
-                        swal("Thông báo", "Gía sỉ không được thấp hơn giá vốn", "error");
-                    }
-                    else if (parseFloat(giacu) > 0 && parseFloat(giacu) < parseFloat(giasi)) {
-                        $("#<%=pOld_Price.ClientID%>").focus();
-                        swal("Thông báo", "Giá cũ chưa sale không được thấp hơn giá sỉ", "error");
-                    }
-                    else if (parseFloat(giasi) > parseFloat(giale)) {
-                        $("#<%=pRetailPrice.ClientID%>").focus();
-                        swal("Thông báo", "Giá lẻ không được thấp hơn giá sỉ", "error");
-                    }
-                    else {
-                        if ($(".item-var-gen").length > 0) {
-                            var checkError = false;
-                            var errorIn = [];
-                            var items = $(".item-var-gen");
-                            var arraySKU = [];
-                            var arrayVariableValue = [];
-
-                            $.each(items , function (index, value) {
-                                var productvariablesku = $(this).find(".productvariablesku").val();
-                                var regularprice = $(this).find(".regularprice").val();
-                                var costofgood = $(this).find(".costofgood").val();
-                                var retailprice = $(this).find(".retailprice").val();
-                                var image = $(this).find(".productVariableImage").attr("name");
-                                var variable = true;
-
-                                $(this).find("select").each(function () {
-                                    if ($(this).val() == "" || $(this).val() == null) {
-                                        variable = false;
-                                    }
-                                });
-
-                                arraySKU.push(productvariablesku);
-                                arrayVariableValue.push($(this).attr("data-name-value"));
-
-                                // check null value
-                                if (isBlank(productvariablesku) || isBlank(regularprice) || isBlank(costofgood) || isBlank(retailprice) || isBlank(variable) || variable == false) {
-                                    checkError = true;
-                                    errorIn.push(index);
-                                }
-
-                                $(this).css("background-color", "#fff");
-                            });
-
-                            // Check duplicate SKU
-                            var sorted_arr = arraySKU.slice().sort();
-                            var resultDuplicateSKU = [];
-                            for (var i = 0; i < sorted_arr.length - 1; i++) {
-                                if (sorted_arr[i + 1] == sorted_arr[i]) {
-                                    resultDuplicateSKU.push(sorted_arr[i]);
-                                }
-                            }
-
-                            // Check duplicate variable value
-                            var sorted_arr = arrayVariableValue.slice().sort();
-                            var resultDuplicateVariable = [];
-                            for (var i = 0; i < sorted_arr.length - 1; i++) {
-                                if (sorted_arr[i + 1] == sorted_arr[i]) {
-                                    resultDuplicateVariable.push(sorted_arr[i]);
-                                }
-                            }
-
-                            if (checkError == true) {
-                                $.each(errorIn, function (index, value) {
-                                    $(".item-var-gen").eq(value).css("background-color", "#fff0c5");
-                                });
-
-                                swal({
-                                    title: "Thông báo",
-                                    text: "Hãy nhập đầy đủ thông tin các biến thể!",
-                                    type: "warning",
-                                    showCancelButton: false,
-                                    closeOnConfirm: true,
-                                    confirmButtonText: "Để em xem lại...",
-                                }, function () {
-                                    $('html, body').animate({
-                                        scrollTop: $(".item-var-gen").eq(errorIn[0]).offset().top - 150
-                                    }, 500);
-                                });
-                            }
-                            else if (resultDuplicateSKU.length > 0) {
-                                swal({
-                                    title: "Thông báo",
-                                    text: "Có biến thể trùng mã sản phẩm!",
-                                    type: "warning",
-                                    showCancelButton: false,
-                                    closeOnConfirm: true,
-                                    confirmButtonText: "Để em xem lại...",
-                                }, function () {
-                                    $('html, body').animate({
-                                        scrollTop: $(".item-var-gen").eq(0).offset().top - 150
-                                    }, 500);
-                                });
-                            }
-                            else if (resultDuplicateVariable.length > 0) {
-                                swal({
-                                    title: "Thông báo",
-                                    text: "Có biến thể trùng thuộc tính!",
-                                    type: "warning",
-                                    showCancelButton: false,
-                                    closeOnConfirm: true,
-                                    confirmButtonText: "Để em xem lại...",
-                                }, function () {
-                                    $('html, body').animate({
-                                        scrollTop: $(".item-var-gen").eq(0).offset().top - 150
-                                    }, 500);
-                                });
-                            }
-                            else {
-
-                                $(".item-var-gen").each(function () {
-                                    var datanameid = $(this).attr("data-name-id");
-                                    var datavalueid = $(this).attr("data-value-id");
-                                    var datanametext = $(this).attr("data-name-text");
-                                    var datavaluetext = $(this).attr("data-value-text");
-                                    var productvariablesku = $(this).find(".productvariablesku").val();
-                                    var regularprice = $(this).find(".regularprice").val();
-                                    var costofgood = $(this).find(".costofgood").val();
-                                    var retailprice = $(this).find(".retailprice").val();
-                                    var datanamevalue = $(this).attr("data-name-value");
-                                    var StockStatus = 3;
-                                    var checked = true;
-                                    var image = $(this).find(".imgpreview").attr("data-file-name");
-
-                                    if (!isBlank(productvariablesku) && !isBlank(regularprice) && !isBlank(costofgood) && !isBlank(retailprice) && !isBlank(StockStatus))
-                                    {
-                                        listv += datanameid + ";" + datavalueid + ";" + datanametext + ";" + datavaluetext + ";" + productvariablesku + ";" + regularprice.replace(",", "") + ";" + costofgood.replace(",", "") + ";" + retailprice.replace(",", "") + ";" + datanamevalue + ";" + maximum + ";" + minimum + ";" + StockStatus + ";" + checked + ";" + image + ",";
-                                        $("#<%=hdfVariableListInsert.ClientID%>").val(listv);
-                                    }
-                                    else
-                                    {
-                                        swal("Lỗi", "Hãy kiểm tra thông tin các biến thể", "error");
-                                    }
-                                });
-
-                                if ($("#<%=hdfVariableListInsert.ClientID%>").val() != "")
-                                {
-                                    HoldOn.open();
-                                    $("#<%=hdfTags.ClientID%>").val(JSON.stringify(txtTagDOM.tagsinput('items')));
-                                    $("#<%=btnSubmit.ClientID%>").click();
-                                }
-                                else
-                                {
-                                    swal("Lỗi", "Hãy kiểm tra thông tin các biến thể", "error");
-                                }
-                            }
-                        }
-                        else {
-                            swal("Lỗi", "Chưa thiếp lập biến thể sản phẩm", "error");
-                        }
-                    }
-                }
-                else {
-                    var title = $("#<%=txtProductTitle.ClientID%>").val();
-                    var materials = $("#<%=txtMaterials.ClientID%>").val();
-                    var maximum = $("#<%=pMaximumInventoryLevel.ClientID%>").val();
-                    var minimum = $("#<%=pMinimumInventoryLevel.ClientID%>").val();
-                    var giacu = $("#<%=pOld_Price.ClientID%>").val() || 0;
-                    var giasi = $("#<%=pRegular_Price.ClientID%>").val();
-                    var giavon = $("#<%=pCostOfGood.ClientID%>").val();
-                    var giale = $("#<%=pRetailPrice.ClientID%>").val();
-                    var maincolor = $("#<%=ddlColor.ClientID%>").val();
-
-                    if (title == "") {
-                        $("#<%=txtProductTitle.ClientID%>").focus();
-                        swal("Thông báo", "Chưa nhập tên sản phẩm", "error");
-                    }
-                    else if (materials == "") {
-                        $("#<%=txtMaterials.ClientID%>").focus();
-                        swal("Thông báo", "Chưa nhập chất liệu sản phẩm", "error");
-                    }
-                    else if (maincolor == "") {
-                        $("#<%=ddlColor.ClientID%>").focus();
-                        swal("Thông báo", "Chưa chọn màu chủ đạo", "error");
-                    }
-                    else if (giasi == "") {
-                        $("#<%=pRegular_Price.ClientID%>").focus();
-                        swal("Thông báo", "Chưa nhập giá sỉ", "error");
-                    }
-                    else if (giavon == "") {
-                        $("#<%=pCostOfGood.ClientID%>").focus();
-                        swal("Thông báo", "Chưa nhập giá vốn", "error");
-                    }
-                    else if (giale == "") {
-                        $("#<%=pRetailPrice.ClientID%>").focus();
-                        swal("Thông báo", "Chưa nhập giá lẻ", "error");
-                    }
-                    else if (parseFloat(giasi) < parseFloat(giavon)) {
-                        $("#<%=pRegular_Price.ClientID%>").focus();
-                        swal("Thông báo", "Giá sỉ không được thấp hơn giá vốn", "error");
-                    }
-                    else if (parseFloat(giacu) > 0 && parseFloat(giacu) < parseFloat(giasi)) {
-                        $("#<%=pOld_Price.ClientID%>").focus();
-                        swal("Thông báo", "Giá cũ chưa sale không được thấp hơn giá sỉ", "error");
-                    }
-                    else if (parseFloat(giasi) > parseFloat(giale)) {
-                        $("#<%=pRetailPrice.ClientID%>").focus();
-                        swal("Thông báo", "Giá lẻ không được thấp hơn giá sỉ", "error");
-                    }
-                    else {
-                        $("#<%=hdfTags.ClientID%>").val(JSON.stringify(txtTagDOM.tagsinput('items')));
-                        $("#<%=btnSubmit.ClientID%>").click();
-                        HoldOn.open();
-                    }
-                }
-            }
-
             function addVariant() {
                 $(".item-var-gen:eq('0')").clone().prependTo(".list-item-genred > .col-md-12");
-                var parentSKU = $("#<%=txtProductSKU.ClientID%>").val();
-                $(".item-var-gen:eq('0')").find(".productvariablesku").val(parentSKU).prop("disabled", false);
-                $(".item-var-gen:eq('0')").find("select[name='ddlVariableValue']").prop("selectedIndex", 0);
-                $(".item-var-gen:eq('0')").find(".variable-label").html("");
-                $(".item-var-gen:eq('0')").find(".imgpreview").attr("src", "/App_Themes/Ann/image/placeholder.png");
-                $(".item-var-gen:eq('0')").find(".variable-content").show();
-                $(".item-var-gen:eq('0')").css("background-color", "#fff");
-                $(".item-var-gen:eq('0')").find(".btn-delete").addClass("hide");
-                var deleteButton = '<div class="row margin-bottom-15"><div class="col-md-5"></div><div class="col-md-7"><a href="javascript:;" onclick="deleteVariableItem($(this))" class="btn primary-btn fw-btn not-fullwidth">Xóa</a></div></div>';
-                $(".item-var-gen:eq('0')").find(".retailprice").parent().parent().parent().append(deleteButton);
+
+                let parentSKU = $("#<%=txtProductSKU.ClientID%>").val();
+                let $variation = $(".item-var-gen");
+                let $variationNew = $variation.first();
+                let $ddlVariationValue = $variationNew.find("select[name='ddlVariableValue']").first();
+
+                // Cài đặt màu background default cho div biến thể
+                $variationNew.css("background-color", "#fff");
+                $variationNew.attr("data-index", $variation.length);
+                // Thể hiện chi tiết biến thể
+                $variationNew.find(".variable-content").show();
+                // Image
+                $variationNew.find(".productVariableImage").val("");
+                $variationNew.find(".imgpreview")
+                    .attr("src", "/App_Themes/Ann/image/placeholder.png")
+                    .attr("data-file-name", "/App_Themes/Ann/image/placeholder.png");
+                $variationNew.find(".btn-delete").addClass("hide");
+                // Drop down list biến thể
+                $ddlVariationValue.parent().find(".select2-container--default").remove();
+                $ddlVariationValue.attr("data-pre", "");
+                $ddlVariationValue.select2().val("").trigger("change");
+                // Input Variation SKU
+                $variationNew.find(".productvariablesku").val(parentSKU);
             }
 
-            function deleteVariableItem(obj) {
-                var c = confirm("Bạn muốn xóa biến thể này?");
-                if (c == true) {
-                    obj.closest(".item-var-gen").remove();
+            function showVariableContent($self) {
+                let $variation = $self.closest(".item-var-gen");
+                let $title = $self.parent();
+                let $content = $variation.find(".variable-content");
+                
+                if ($content.is(":hidden")) {
+                    $title.addClass("margin-bottom-15");
+                    $content.show();
+                }
+                else {
+                    $title.removeClass("margin-bottom-15");
+                    $content.hide();
                 }
             }
 
-            function openUploadImage(obj) {
-                obj.parent().find(".productVariableImage").click();
+            function deleteVariableItem($self) {
+                if ($(".item-var-gen").length == 1)
+                    return swal({
+                        title: "Thông báo",
+                        text: "Đây là sản phẩm biến thể.<br> Bạn không thể xóa hết các biển thể được.",
+                        type: "error",
+                        html: true
+                    });
+
+                let $variation = $self.closest(".item-var-gen");
+                let variationSKU = $variation.find(".productvariablesku").val() || "";
+
+                return swal({
+                    title: "Thông báo",
+                    text: "Bạn muốn xóa biến thể này?",
+                    showCancelButton: true,
+                    closeOnConfirm: true,
+                    cancelButtonText: "Đợi em xem tí!",
+                    confirmButtonText: "Chắc chắn sếp ơi..",
+                }, function (isConfirm) {
+                    if (isConfirm) {
+                        _variationSKURemoval.push(variationSKU)
+                        $variation.remove();
+
+                        _updateVariationIndex();
+                    }
+                });
+            }
+
+            function _updateVariationIndex() {
+                let $variation = $(".item-var-gen");
+                let numberVariation = $variation.length;
+
+                $.each($variation, function (index) {
+                    $(this).attr("data-index", numberVariation - index);
+                    _updateVariationTitle($(this));
+                });
+            }
+
+            function onChangeVariationImage(input, $self) {
+                let file = input.files[0];
+
+                if (file) {
+                    let fileName = file.name;
+                    let reader = new FileReader();
+
+                    reader.onload = function (e) {
+                        let $img = $self.parent().find(".imgpreview");
+                        let $btnDelete = $self.parent().find(".btn-delete");
+
+                        // img tag
+                        $img.attr("src", e.target.result);
+                        $img.attr("data-file-name", "/uploads/images/" + _productID + "-" + fileName);
+                        $img.attr("data-changed", true);
+                        // a tag
+                        $btnDelete.removeClass("hide");
+                    }
+
+                    reader.readAsDataURL(file);
+                    _variationImageFiles.push(file)
+                }
             }
 
             function deleteImageGallery(obj) {
@@ -1030,112 +960,451 @@
                 });
             }
 
-            function deleteImageVariable(obj) {
-                obj.parent().find(".imgpreview").attr("src", "/App_Themes/Ann/image/placeholder.png").attr("data-file-name", "/App_Themes/Ann/image/placeholder.png");
-                obj.addClass("hide");
-            }
+            function onChangeVariationValue($select) {
+                let preData = $select.attr("data-pre") || "";
 
-            function AddNewProduct() {
-                if ($(".row-variable-selected").length > 0) {
-                    var check = true;
-                    var listva = "";
-                    $(".row-variable-selected").each(function () {
-                        var sku = $(this).find(".sku-variable").val();
-                        if (!isBlank(sku)) {
-
-                        }
+                // Trường hợp là biến thể củ
+                if (!$select.val() && preData)
+                    return swal({
+                        title: "Thông báo",
+                        text: "Vui lòng chọn giá trị biến thể",
+                        type: "error"
+                    }, function () {
+                        $select.val(preData).trigger("change");
+                        $select.select2("open");
                     });
-                }
-            }
 
-            function imagepreview(input, obj) {
-                if (input.files && input.files[0]) {
-                    var reader = new FileReader();
+                let $parent = $select.closest(".item-var-gen");
+                let variationID = "";
+                let variationValueID = "";
+                let variationName = "";
+                let variationValue = "";
+                let variation = "";
+                let variationSKUOld = $parent.find(".productvariablesku").val() || "";
+                let variableSKU = $("#<%=txtProductSKU.ClientID%>").val();
 
-                    reader.onload = function (e) {
-                        obj.parent().find(".imgpreview").attr("src", e.target.result);
-                        obj.parent().find(".imgpreview").attr("data-file-name", obj.parent().find("input:file").val());
-                        obj.parent().find(".btn-delete").removeClass("hide");
-                    }
+                $parent.find("select option:selected").each(function () {
+                    let $option = $(this);
 
-                    reader.readAsDataURL(input.files[0]);
-                }
-            }
-
-            function addVariable() {
-                var variable_selected = "";
-                var valu_list = "";
-                var select_count = 0;
-                var current_selected = $("#<%= hdfTempVariable.ClientID%>").val();
-                $(".variable-row").each(function () {
-                    var v_name = $(this).find(".variable-name").attr("data-name");
-                    var vl_id = $(this).find(".variable-value").val();
-                    var vl_name = $(this).find(".variable-value :selected").text();
-
-                    if (vl_id > 0) {
-                        variable_selected += v_name + ":" + vl_name + ":" + vl_id + "|";
-                        select_count++;
+                    if ($option.val()) {
+                        variationID += $option.parent().attr("data-name-id") + "|";
+                        variationValueID += $option.val() + "|";
+                        variationName += $option.parent().attr("data-name-text") + "|";
+                        variationValue += $option.text() + "|";
+                        variation += $option.parent().attr("data-name-id") + ":" + $option.val() + "|";
+                        variableSKU += $option.attr("data-sku-text");
                     }
                 });
-                if (select_count > 0) {
-                    var check = false;
-                    var itemcur = current_selected.split(',');
-                    if (itemcur.length - 1 > 0) {
-                        for (var j = 0; j < itemcur.length - 1; j++) {
-                            if (itemcur[j] == variable_selected)
-                                check = true;
-                        }
-                    }
-                    if (check == false) {
-                        itemcur += variable_selected + ",";
-                        $("#<%= hdfTempVariable.ClientID%>").val(itemcur);
-                        var html = "";
-                        var vs = variable_selected.split('|');
-                        if (vs.length - 1 > 0) {
-                            html += "<div class=\"row-variable-selected\">";
-                            html += "   <div class=\"v-element\"><input type=\"text\" class=\"form-control sku-variable\" placeholder=\"SKU\"></div>";
-                            html += "   <div class=\"v-element\"><input type=\"number\" min=\"0\" class=\"form-control stock-variable\" placeholder=\"Stock\"></div>";
-                            html += "   <div class=\"v-element\"><select class=\"form-control stock-status\"><option value=\"1\">Instock</option><option value=\"2\">Out of stock</option></select></div>";
-                            html += "   <div class=\"v-element\"><input type=\"number\" min=\"0\" class=\"form-control regularprice-variable\" placeholder=\"Regular Price\"></div>";
-                            html += "   <div class=\"v-element\"><input type=\"number\" min=\"0\" class=\"form-control costofgood-variable\" placeholder=\"Cost Of Good\"></div>";
-                            html += "   <div class=\"v-element\"><input type=\"checkbox\" class=\"form-control managestock-variable\"></div>";
-                            html += "   <div class=\"v-element\"><input type=\"checkbox\" class=\"form-control managestock-variable\"></div>";
-                            for (var i = 0; i < vs.length - 1; i++) {
-                                var item = vs[i];
-                                var item_element = item.split(':');
-                                var v_name1 = item_element[0];
-                                var vl_name1 = item_element[1];
-                                var vl_id1 = item_element[2];
-                                html += "<div class=\"v-element content-vari-value\" data-vname=\"" + v_name1 + "\" data-vl_name=\"" + vl_name1 + "\" data-vl_id=\"" + vl_id1 + "\">" + v_name1 + ": " + vl_name1 + "</div>";
 
-                            }
-                            html += "   <div class=\"v-element delete-value\"><a href=\"javascript:;\" onclick=\"deleterowva($(this))\" class=\"btn primary-btn fw-btn not-fullwidth\">Xóa</a></div>";
-                            html += "</div>";
-                        }
-                        $(".variable-selected").append(html);
+                if (!_checkDuplicateVariationSKU(variableSKU)) {
+                    $parent.attr("data-name-id", variationID);
+                    $parent.attr("data-value-id", variationValueID);
+                    $parent.attr("data-name-text", variationName);
+                    $parent.attr("data-value-text", variationValue);
+                    $parent.attr("data-name-value", variation);
+                    $parent.find(".productVariableImage").attr("name", variableSKU);
+                    $parent.find(".productvariablesku").val(variableSKU);
+                    $select.attr("data-pre", $select.val());
+
+                    _updateVariationTitle($parent);
+
+                    // Cập nhật lại biến thể bị xóa
+                    if ($select.val()) {
+                        if (preData)
+                            _variationSKURemoval.push(variationSKUOld);
+                        _variationSKURemoval = _variationSKURemoval.filter(sku => sku != variableSKU);
                     }
                 }
                 else {
+                    let message = "Biến thể " + $select.data("name-text") + " : " + $select.children("option:selected").text() + " đã tồn tại.";
 
+                    return swal({
+                        title: "Thông báo",
+                        text: message,
+                        type: "error"
+                    }, function () {
+                        $select.val(preData).trigger("change");
+                        $select.select2("open");
+                    });
                 }
             }
 
-            function deleterowva(obj) {
-                var c = confirm("Bạn muốn xóa thuộc tính này?");
-                if (c == true) {
-                    obj.parent().parent().remove();
-                    var newc = "";
-                    $(".row-variable-selected").each(function () {
-                        $(this).find(".content-vari-value").each(function () {
-                            var vname = $(this).attr("data-vname");
-                            var vl_name = $(this).attr("data-vl_name");
-                            var vl_id = $(this).attr("data-vl_id");
-                            newc += vname + ":" + vl_name + ":" + vl_id + "|";
+            function _checkDuplicateVariationSKU(value) {
+                let $variation = $(".item-var-gen");
+                let duplicated = false;
+
+                $variation.each(function () {
+                    let variationSKU = $(this).find(".productvariablesku").val() || "";
+
+                    if (variationSKU == value) {
+                        duplicated = true;
+                        return false;
+                    }
+                });
+
+                return duplicated;
+            }
+
+            function _updateVariationTitle($self) {
+                let variationIndex = $self.attr("data-index") || "";
+                let variationName = $self.attr("data-name-text") || "";
+                let variationValue = $self.attr("data-value-text") || "";
+                let variationSKU = $self.find(".productvariablesku").val() || "";
+                let title = "<strong>#" + variationIndex + "</strong> - ";
+
+                variationName = variationName.split('|').filter(item => item != "");
+                variationValue = variationValue.split('|').filter(item => item != "");
+
+                $.each(variationName, function (index, item) {
+                    title += variationName[index] + ": " + variationValue[index] + " - "
+                });
+
+                title += variationSKU
+
+                $self.find(".variable-label").html(title);
+            }
+
+
+            function updateProduct() {
+                HoldOn.open();
+
+                let productStyle = +$("#<%=hdfsetStyle.ClientID%>").val() || 1;
+
+                // Sản phẩm có biến thể
+                if (productStyle == 2) {
+                    if (!_checkProductVariation())
+                        return;
+
+                    let variations = []
+
+                    $(".item-var-gen").each(function () {
+                        variations.push({
+                            variationID: $(this).attr("data-name-id") || "",
+                            variationValueID: $(this).attr("data-value-id") || "",
+                            variationName: $(this).attr("data-name-text") || "",
+                            variationValueName: $(this).attr("data-value-text") || "",
+                            sku: $(this).find(".productvariablesku").val() || "",
+                            regularPrice: +$(this).find(".regularprice").val() || 0,
+                            costOfGood: +$(this).find(".costofgood").val() || 0,
+                            retailPrice: +$(this).find(".retailprice").val() || 0,
+                            variationValue: $(this).attr("data-name-value") || "",
+                            maximumInventoryLevel: +$("#<%=pMaximumInventoryLevel.ClientID%>").val() || 0,
+                            minimumInventoryLevel: +$("#<%=pMinimumInventoryLevel.ClientID%>").val() || 0,
+                            stockStatus: 3,
+                            checked: true,
+                            image: $(this).find(".imgpreview").attr("data-file-name") || ""
                         });
-                        newc += ",";
                     });
-                    $("#<%=hdfTempVariable.ClientID%>").val(newc);
+
+                    if (variations.length != 0) {
+                        // Variation removal
+                        $("#<%=hdfVariationRemovalList.ClientID%>").val(JSON.stringify(_variationSKURemoval));
+                        // Variation update and insert
+                        $("#<%=hdfVariableListInsert.ClientID%>").val(JSON.stringify(variations));
+                        // Tags
+                        $("#<%=hdfTags.ClientID%>").val(JSON.stringify(txtTagDOM.tagsinput('items')));
+                        // Upload Variation Image
+                        let $uploadVariationImage = $("#<%= uploadVariationImage.ClientID %>").get(0);
+                        $uploadVariationImage.files = new FileListItem(_variationImageFiles);
+
+                        $("#<%=btnSubmit.ClientID%>").click();
+                    }
+                    else
+                    {
+                        HoldOn.close();
+
+                        return swal({
+                            title: "Lỗi",
+                            text: "Hãy kiểm tra thông tin biến thể",
+                            type: "error"
+                        });
+                    }
                 }
+                else {
+                    if (!_checkProduct())
+                        return;
+
+                    // Tags
+                    $("#<%=hdfTags.ClientID%>").val(JSON.stringify(txtTagDOM.tagsinput('items')));
+                    $("#<%=btnSubmit.ClientID%>").click();
+                }
+            }
+
+            function _checkValidation() {
+                // Kiểm tra tên sản phẩm
+                let title = $("#<%=txtProductTitle.ClientID%>").val() || "";
+
+                if (title == "") {
+                    HoldOn.close();
+                    $("#<%=txtProductTitle.ClientID%>").focus();
+
+                    swal({
+                        title: "Thông báo",
+                        text: "Chưa nhập tên sản phẩm",
+                        type: "error"
+                    });
+
+                    return false;
+                }
+
+                // Kiểm tra mã sản phẩm
+                let SKU = $("#<%=txtProductSKU.ClientID%>").val() || "";
+
+                if (SKU == "") {
+                    HoldOn.close();
+                    $("#<%=txtProductSKU.ClientID%>").focus();
+
+                    swal({
+                        title: "Thông báo",
+                        text: "Chưa nhập mã sản phẩm",
+                        type: "error"
+                    });
+
+                    return false;
+                }
+
+                // Kiểm tra chất liệu sản phẩm
+                let materials = $("#<%=txtMaterials.ClientID%>").val() || "";
+
+                if (materials == "") {
+                    HoldOn.close();
+                    $("#<%=txtMaterials.ClientID%>").focus();
+
+                    swal({
+                        title: "Thông báo",
+                        text: "Chưa nhập chất liệu sản phẩm",
+                        type: "error"
+                    });
+
+                    return false;
+                }
+
+                // Kiểm tra về giá sỉ
+                let giasi = $("#<%=pRegular_Price.ClientID%>").val() || "";
+                    
+                if (giasi == "") {
+                    HoldOn.close();
+                    $("#<%=pRegular_Price.ClientID%>").focus();
+
+                    swal({
+                        title: "Thông báo",
+                        text: "Chưa nhập giá sỉ",
+                        type: "error"
+                    });
+
+                    return false;
+                }
+
+                // Kiểm tra về giá vốn
+                let giavon = $("#<%=pCostOfGood.ClientID%>").val() || "";
+
+                if (giavon == "") {
+                    HoldOn.close();
+                    $("#<%=pCostOfGood.ClientID%>").focus();
+
+                    swal({
+                        title: "Thông báo",
+                        text: "Chưa nhập giá vốn",
+                        type: "error"
+                    });
+
+                    return false;
+                }
+
+                // Kiểm tra về giá lẻ
+                let giale = $("#<%=pRetailPrice.ClientID%>").val() || "";
+
+                if (giale == "") {
+                    HoldOn.close();
+                    $("#<%=pRetailPrice.ClientID%>").focus();
+
+
+                    swal({
+                        title: "Thông báo",
+                        text: "Chưa nhập giá lẻ",
+                        type: "error"
+                    });
+
+                    return false;
+                }
+
+                // Kiểm tra logic về giá
+                let giacu = $("#<%=pOld_Price.ClientID%>").val() || 0;
+                    
+                if (parseFloat(giasi) < parseFloat(giavon)) {
+                    HoldOn.close();
+                    $("#<%=pRegular_Price.ClientID%>").focus();
+
+                    swal({
+                        title: "Thông báo",
+                        text: "Gía sỉ không được thấp hơn giá vốn",
+                        type: "error"
+                    });
+
+                    return false;
+                }
+                else if (giacu > 0 && giacu < parseFloat(giasi)) {
+                    HoldOn.close();
+                    $("#<%=pOld_Price.ClientID%>").focus();
+
+                    swal({
+                        title: "Thông báo",
+                        text: "Giá cũ chưa sale không được thấp hơn giá sỉ",
+                        type: "error"
+                    });
+
+                    return false;
+                }
+                else if (parseFloat(giasi) > parseFloat(giale)) {
+                    HoldOn.close();
+                    $("#<%=pRetailPrice.ClientID%>").focus();
+
+                    swal({
+                        title: "Thông báo",
+                        text: "Giá lẻ không được thấp hơn giá sỉ",
+                        type: "error"
+                    });
+
+                    return false;
+                }
+
+                return true;
+            }
+
+            function _checkProduct() {
+                if (!_checkValidation())
+                    return false;
+
+                // Kiểm tra màu chủ đạo
+                let maincolor = $("#<%=ddlColor.ClientID%>").val() || "";
+
+                if (maincolor == "") {
+                    HoldOn.close();
+                    $("#<%=ddlColor.ClientID%>").focus();
+
+                    swal({
+                        title: "Thông báo",
+                        text: "Chưa chọn màu chủ đạo",
+                        type: "error"
+                    });
+
+                    return false;
+                }
+
+                return true;
+            }
+
+            function _checkProductVariation() {
+                if (!_checkValidation())
+                    return false;
+
+                // Kiểm tra danh mục sản phẩm
+                let categoryID = +$("#<%=hdfParentID.ClientID%>").val() || 0;
+
+                if (categoryID == 0) {
+                    HoldOn.close();
+                    $("#<%=ddlCategory.ClientID%>").focus();
+
+                    swal({
+                        title: "Thông báo",
+                        text: "Chưa chọn danh mục sản phẩm",
+                        type: "error"
+                    });
+
+                    return false;
+                }
+
+                // Kiểm tra các biến thể generate
+                let $variation = $(".item-var-gen");
+
+                if ($variation.length == 0) {
+                    HoldOn.close();
+
+                    swal({
+                        title: "Lỗi",
+                        text: "Chưa thiếp lập biến thể sản phẩm",
+                        type: "error"
+                    });
+
+                    return false;
+                }
+
+                let errorPosition = null;
+                let arraySKU = [];
+
+                $.each($variation, function (index, value) {
+                    let sku = $(this).find(".productvariablesku").val() || "";
+                    let regularPrice = $(this).find(".regularprice").val() || "";
+                    let costOfGood = $(this).find(".costofgood").val();
+                    let retailPrice = $(this).find(".retailprice").val();
+                    let selectedVariation = true;
+
+                    $(this).find("select").each(function () {
+                        let variation = $(this).val() || "";
+
+                        if ($(this).val() == "") {
+                            selectedVariation = false;
+                            return false;
+                        }
+                    });
+
+                    // check null value
+                    if (!selectedVariation || isBlank(sku) || isBlank(regularPrice) || isBlank(costOfGood) || isBlank(retailPrice)) {
+                        errorPosition = errorPosition == null ? $(this).offset().top : errorPosition;
+                        $(this).css("background-color", "#fff0c5");
+                    }
+                    else {
+                        arraySKU.push(sku);
+                        $(this).css("background-color", "#fff");
+                    }
+                });
+
+                if (errorPosition != null) {
+                    HoldOn.close();
+
+                    swal({
+                        title: "Thông báo",
+                        text: "Hãy nhập đầy đủ thông tin các biến thể!",
+                        type: "warning",
+                        showCancelButton: false,
+                        closeOnConfirm: true,
+                        confirmButtonText: "Để em xem lại...",
+                    }, function () {
+                        $('html, body').animate({
+                            scrollTop: errorPosition - 150
+                        }, 500);
+                    });
+
+                    return false;
+                }
+
+                return true;
+            }
+
+            function openUploadImage(obj) {
+                obj.parent().find(".productVariableImage").click();
+            }
+
+            function deleteImageVariable(obj) {
+                let $productVariableImage = obj.parent().find(".productVariableImage").get(0);
+                let $imgpreview = obj.parent().find(".imgpreview").get(0);
+                let hasChanged = false;
+                let imageName = "";
+
+                // input[type='file'] tag
+                if ($productVariableImage)
+                    $productVariableImage.value = "";
+                // img tag
+                hasChanged = ($imgpreview.dataset["changed"] || false) == "true";
+                if (hasChanged)
+                    imageName = $imgpreview.dataset["fileName"];
+                $imgpreview.setAttribute("src", "/App_Themes/Ann/image/placeholder.png");
+                $imgpreview.setAttribute("data-file-name", "/App_Themes/Ann/image/placeholder.png");
+                // a tag
+                obj.addClass("hide");
+
+                if (hasChanged)
+                    _variationImageFiles = _variationImageFiles.filter(item => "/uploads/images/" + _productID + "-" + item.name != imageName);
             }
 
             function OnClientFileSelected1(sender, args) {
@@ -1144,7 +1413,7 @@
                     truncateName(args);
                     var file = args.get_fileInputField().files.item(args.get_rowIndex());
                     showThumbnail(file, args);
-                    $("#<%= ProductThumbnail.ClientID %>").hide();
+                    $("#<%= imgProductImage.ClientID %>").hide();
                 }
             }
 
@@ -1154,18 +1423,31 @@
                     truncateName(args);
                     var file = args.get_fileInputField().files.item(args.get_rowIndex());
                     showThumbnail(file, args);
-                    $("#<%= ProductThumbnailClean.ClientID %>").hide();
+                    $("#<%= imgProductImageClean.ClientID %>").hide();
                 }
             }
 
             function OnClientFileUploadRemoved1(sender, args) {
-                    $("#<%= ProductThumbnail.ClientID %>").show();
+                    $("#<%= imgProductImage.ClientID %>").show();
             }
 
             function OnClientFileUploadRemoved2(sender, args) {
-                    $("#<%= ProductThumbnailClean.ClientID %>").show();
+                    $("#<%= imgProductImageClean.ClientID %>").show();
             }
 
+            // Used for creating a new FileList in a round-about way
+            function FileListItem(a) {
+                a = [].slice.call(Array.isArray(a) ? a : arguments)
+                for (var c, b = c = a.length, d = !0; b-- && d;) d = a[b] instanceof File
+                if (!d) throw new TypeError("expected argument to FileList is File or array of File objects")
+                for (b = (new ClipboardEvent("")).clipboardData || new DataTransfer; c--;) b.items.add(a[c])
+                return b.files
+            }
+
+            // Kiểm tra giá trị string is null or empty
+            function isBlank(str) {
+                return (!str || /^\s*$/.test(str));
+            }
         </script>
     </telerik:RadCodeBlock>
 </asp:Content>
