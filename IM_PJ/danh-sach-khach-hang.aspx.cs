@@ -300,7 +300,7 @@ namespace IM_PJ
             html.Append("     <th class='name-column'>Họ tên</th>");
             html.Append("     <th class='nick-column'>Nick đặt hàng</th>");
             html.Append("     <th class='phone-column'>Điện thoại</th>");
-            html.Append("     <th class='zalo-column'>Zalo</th>");
+            html.Append("     <th class='zalo-column'>App</th>");
             html.Append("     <th class='facebook-column'>FB</th>");
             html.Append("     <th class='province-column'>Tỉnh</th>");
             html.Append("     <th class='buy-column'>Đơn</th>");
@@ -336,7 +336,13 @@ namespace IM_PJ
                     html.Append("   <td class='customer-name-link'><a href='/chi-tiet-khach-hang?id=" + item.ID + "'>" + item.CustomerName.ToLower().ToTitleCase() + "</a></td>");
                     html.Append("   <td class='customer-name-link'>" + item.Nick + "</td>");
                     html.Append("   <td>" + item.CustomerPhone + "</td>");
-                    html.Append("   <td>" + item.Zalo + "</td>");
+
+                    string inApp = "";
+                    if (item.InApp == false)
+                    {
+                        inApp = "Không";
+                    }
+                    html.Append("   <td>" + inApp + "</td>");
 
                     if (!string.IsNullOrEmpty(item.Facebook))
                     {
@@ -395,6 +401,10 @@ namespace IM_PJ
                     html.Append("   <td>");
                     html.Append("       <a href='/danh-sach-don-hang?searchtype=1&textsearch=" + item.CustomerPhone + "' title='Xem đơn hàng' class='btn primary-btn h45-btn'><i class='fa fa-shopping-cart' aria-hidden='true'></i></a>");
                     html.Append("       <a href='/thong-ke-khach-hang?textsearch=" + item.CustomerPhone + "' title='Xem thống kê khách hàng' class='btn primary-btn btn-blue h45-btn' target='_blank'><i class='fa fa-line-chart' aria-hidden='true'></i></a>");
+                    if (item.InApp == false && item.SendSMSIntroApp == 0)
+                    {
+                        html.Append("       <a href='javascript:;' onclick='sendSMSIntroAPP(`" + item.CustomerPhone + "`)' title='Gửi tin giới thiệu app' class='btn primary-btn btn-yellow h45-btn'><i class='fa fa-paper-plane-o' aria-hidden='true'></i></a>");
+                    }
                     html.Append("   </td>");
                     html.Append("</tr>");
                 }

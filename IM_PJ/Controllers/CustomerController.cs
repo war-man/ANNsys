@@ -331,7 +331,8 @@ namespace IM_PJ.Controllers
                             PaymentType = parent.customer.PaymentType.HasValue ? parent.customer.PaymentType.Value : 0,
                             TransportCompanyID = parent.customer.TransportCompanyID.HasValue ? parent.customer.TransportCompanyID.Value : 0,
                             TransportCompanySubID = parent.customer.TransportCompanySubID.HasValue ? parent.customer.TransportCompanySubID.Value : 0,
-                            ProvinceName = child != null ? child.Name : String.Empty
+                            ProvinceName = child != null ? child.Name : String.Empty,
+                            SendSMSIntroApp = parent.customer.SendSMSIntroApp.HasValue ? parent.customer.SendSMSIntroApp.Value : 0
                         }
                     )
                     .OrderBy(x => x.ID)
@@ -379,6 +380,24 @@ namespace IM_PJ.Controllers
                         {
                             parent.customer.TotalOrder = child != null ? child.TotalOrder : 0;
                             parent.customer.TotalQuantity = child != null ? child.TotalQuantity : 0;
+
+                            return parent.customer;
+                        }
+                    )
+                    .OrderBy(x => x.ID)
+                    .ToList();
+
+                result.GroupJoin(
+                        dbe.Users,
+                        customer => customer.CustomerPhone,
+                        user => user.Phone,
+                        (customer, user) => new { customer, user }
+                    )
+                    .SelectMany(
+                        x => x.user.DefaultIfEmpty(),
+                        (parent, child) => 
+                        {
+                            parent.customer.InApp = child != null ? true : false;
 
                             return parent.customer;
                         }
@@ -751,6 +770,9 @@ namespace IM_PJ.Controllers
             public int TotalOrder { get; set; }
             public double TotalQuantity { get; set; }
             public string ProvinceName { get; set; }
+
+            public bool InApp { get; set; }
+            public int SendSMSIntroApp { get; set; }
         }
 
         public class RefundInfo

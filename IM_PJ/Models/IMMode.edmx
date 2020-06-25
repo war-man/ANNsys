@@ -719,6 +719,7 @@
           <Property Name="UnSignedName" Type="varchar" MaxLength="255" />
           <Property Name="DistrictId" Type="int" />
           <Property Name="WardId" Type="int" />
+          <Property Name="SendSMSIntroApp" Type="int" />
         </EntityType>
         <EntityType Name="tbl_CustomerLevel">
           <Key>
@@ -2072,6 +2073,7 @@
           <Property Name="UnSignedName" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
           <Property Name="DistrictId" Type="Int32" />
           <Property Name="WardId" Type="Int32" />
+          <Property Name="SendSMSIntroApp" Type="Int32" />
         </EntityType>
         <EntityType Name="tbl_CustomerLevel">
           <Key>
@@ -3471,6 +3473,7 @@
           <EntitySetMapping Name="tbl_Customer">
             <EntityTypeMapping TypeName="inventorymanagementModel.tbl_Customer">
               <MappingFragment StoreEntitySet="tbl_Customer">
+                <ScalarProperty Name="SendSMSIntroApp" ColumnName="SendSMSIntroApp" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="Nick" ColumnName="Nick" />
                 <ScalarProperty Name="CustomerName" ColumnName="CustomerName" />

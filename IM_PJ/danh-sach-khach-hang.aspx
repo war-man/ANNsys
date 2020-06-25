@@ -105,6 +105,19 @@
             function searchCustomer() {
                 $("#<%= btnSearch.ClientID%>").click();
             }
+
+            function sendSMSIntroAPP(phone) {
+                $.ajax({
+                    type: "POST",
+                    url: "http://xuongann.com/api/sms/intro-app",
+                    data: '{"phone": "84914615407"}',
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (msg) {
+                        
+                    }
+                });
+            }
         </script>
     </main>
 </asp:Content>

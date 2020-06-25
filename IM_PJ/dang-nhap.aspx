@@ -48,7 +48,6 @@
         </div>
 
 
-        <a href="javascript:;" class="scroll-top-link" id="scroll-top"><i class="fa fa-angle-up"></i></a>
         <script src="/App_Themes/Ann/js/bootstrap.min.js"></script>
         <script src="/App_Themes/Ann/js/bootstrap-table/bootstrap-table.js"></script>
         <script src="/App_Themes/NewUI/js/sweet/sweet-alert.js" type="text/javascript"></script>
