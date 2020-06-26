@@ -419,13 +419,16 @@
                     else
                         $btnUpdate.hide();
 
-                    $txtSearch.parent().parent().show();
-                    $txtSearch.val("");
-                    $ddlProductStatus.val(0);
-
                     _table.data = data;
                     _table.dataSearch = data;
 
+                    // Page title area
+                    updatePageTitle();
+                    // Search area
+                    $txtSearch.parent().parent().show();
+                    $txtSearch.val("");
+                    $ddlProductStatus.val(0);
+                    // Table area
                     drawBodyTable();
                     drawPagination();
                 },
@@ -483,9 +486,14 @@
                     $btnUpdate.hide();
             }
 
+            _table.data = data;
+
+            // Page title area
+            updatePageTitle();
+            // Search area
             $txtSearch.val("");
             $ddlProductStatus.val(0);
-            _table.data = data;
+            // Table Area
             drawBodyTable();
             drawPagination();
         }
@@ -500,6 +508,15 @@
                 queryParams.set('checkID', checkID);
                 history.pushState(null, null, "?" + queryParams.toString());
             }
+        }
+
+        function updatePageTitle() {
+            let $pageTitle = $(".page-title");
+
+            if (_table.data.length > 0)
+                $pageTitle.text("Thông tin kiểm kho (" + _table.data.length + " mã)");
+            else
+                $pageTitle.text("Thông tin kiểm kho");
         }
 
         function updateQuantity() {
