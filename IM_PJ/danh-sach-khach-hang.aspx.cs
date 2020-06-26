@@ -1,10 +1,13 @@
 ﻿using IM_PJ.Controllers;
 using IM_PJ.Models;
 using MB.Extensions;
+using Newtonsoft.Json;
 using NHST.Bussiness;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
@@ -170,6 +173,138 @@ namespace IM_PJ
 
                 ltrNumberOfCustomer.Text = rs.Count().ToString();
             }
+        }
+        [WebMethod]
+        public static string sendSMSIntroAPP(string customerPhone)
+        {
+            string error = String.Empty;
+
+            var httpWebRequest = (HttpWebRequest)WebRequest.Create("http://xuongann.com/api/sms/intro-app");
+            httpWebRequest.ContentType = "application/json";
+            httpWebRequest.Method = "POST";
+
+            using (var streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
+            {
+                string json = JsonConvert.SerializeObject(new
+                {
+                    phone = customerPhone
+                });
+
+                streamWriter.Write(json);
+            }
+
+            var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
+            using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
+            {
+                var result = JsonConvert.DeserializeObject<SMSBrandNameRespondModel>(streamReader.ReadToEnd());
+
+                if (result == null)
+                {
+                    error = "Đã có lỗi trong quá trính convert giá trị JSON API SMS trả về";
+                    return error;
+                }
+
+                if (result.errorCode == "000")
+                {
+                    error = String.Empty;
+                }
+                else if (result.errorCode == "001")
+                    error = "Có lỗi giá trị không phù hợp với kiểu dữ liệu mô tả";
+                else if (result.errorCode == "002")
+                    error = "Loại tin không hợp lệ";
+                else if (result.errorCode == "003")
+                    error = "Loại tin không được phép gửi";
+                else if (result.errorCode == "005")
+                    error = "Số điện thoại nhận không hợp lệ";
+                else if (result.errorCode == "006")
+                    error = "Mã nhà mạng không hợp lệ";
+                else if (result.errorCode == "007")
+                    error = "Nội dung chứa từ bị khóa";
+                else if (result.errorCode == "008")
+                    error = "Nội dung chứa ký tự unicode";
+                else if (result.errorCode == "009")
+                    error = "Nội dung có ký tự không hợp lệ";
+                else if (result.errorCode == "010")
+                    error = "Độ dài nội dung không hợp lệ";
+                else if (result.errorCode == "011")
+                    error = "Nội dung không khớp với mẫu khai";
+                else if (result.errorCode == "012")
+                    error = "Tài khoản không được phân gửi tới nhà mạng";
+                else if (result.errorCode == "013")
+                    error = "Số điện thoại nhận trong danh sách cấm gửi";
+                else if (result.errorCode == "014")
+                    error = "Tài khoản không đủ tiền để chi trả";
+                else if (result.errorCode == "015")
+                    error = "Tài khoảng không đủ tin để gửi";
+                else if (result.errorCode == "016")
+                    error = "Thời gian gửi tin không hợp lệ";
+                else if (result.errorCode == "017")
+                    error = "Mã order không hợp lệ";
+                else if (result.errorCode == "018")
+                    error = "Mã gói không hợp lệ";
+                else if (result.errorCode == "019")
+                    error = "Số điện thoại không hợp lệ";
+                else if (result.errorCode == "020")
+                    error = "Số điện thoại không trong danh sách nhà mạng được lọc";
+                else if (result.errorCode == "021")
+                    error = "Gửi vào thời điểm bị cấm gửi quảng cáo";
+                else if (result.errorCode == "022")
+                    error = "Định dạnh nội dung không hợp lệ";
+                else if (result.errorCode == "100")
+                    error = "Token không hợp lệ";
+                else if (result.errorCode == "101")
+                    error = "Tài khoản bị khóa";
+                else if (result.errorCode == "102")
+                    error = "Tài khoản không đúng";
+                else if (result.errorCode == "304")
+                    error = "Tin bị lặp trong 5 phút";
+                else if (result.errorCode == "801")
+                    error = "Mẫu tin chưa được thiết lập";
+                else if (result.errorCode == "802")
+                    error = "Tài khoản chưa được thiết lập profile";
+                else if (result.errorCode == "803")
+                    error = "Tài khoản chưa được thiết lập giá";
+                else if (result.errorCode == "804")
+                    error = "Đường gửi tin chưa được thiết lập";
+                else if (result.errorCode == "805")
+                    error = "Đường gửi tin không hỗ trợ unicode";
+                else if (result.errorCode == "904")
+                    error = "Brandname không hợp lệ";
+                else if (result.errorCode == "999")
+                    error = "Lỗi khác trên hệ thống";
+                else
+                    error = "Đã có vấn đề trong post API SMS BrandName";
+            }
+
+            if (String.IsNullOrEmpty(error))
+                return "true";
+            else
+                return error;
+        }
+
+        public class SMSBrandNameRespondModel
+        {
+            public SMSBrandNameSendMessageModel sendMessage { get; set; }
+            public int msgLength { get; set; }
+            public int mtCount { get; set; }
+            public string account { get; set; }
+            public string errorCode { get; set; }
+            public string errorMessage { get; set; }
+            public string referentId { get; set; }
+        }
+        public class SMSBrandNameSendMessageModel
+        {
+            public string to { get; set; }
+            public string telco { get; set; }
+            public string orderCode { get; set; }
+            public string packageCode { get; set; }
+            public int type { get; set; }
+            public string from { get; set; }
+            public string message { get; set; }
+            public string scheduled { get; set; }
+            public string requestId { get; set; }
+            public int useUnicode { get; set; }
+            public object ext { get; set; }
         }
         [WebMethod]
         public static string generateCouponG25(int customerID)
@@ -403,7 +538,14 @@ namespace IM_PJ
                     html.Append("       <a href='/thong-ke-khach-hang?textsearch=" + item.CustomerPhone + "' title='Xem thống kê khách hàng' class='btn primary-btn btn-blue h45-btn' target='_blank'><i class='fa fa-line-chart' aria-hidden='true'></i></a>");
                     if (item.InApp == false && item.SendSMSIntroApp == 0)
                     {
-                        html.Append("       <a href='javascript:;' onclick='sendSMSIntroAPP(`" + item.CustomerPhone + "`)' title='Gửi tin giới thiệu app' class='btn primary-btn btn-yellow h45-btn'><i class='fa fa-paper-plane-o' aria-hidden='true'></i></a>");
+                        string[] viettel = { "086", "096", "097", "098", "032", "033", "034", "035", "036", "037", "038", "039" };
+                        string[] vinaphone = { "088", "091", "094", "081", "082", "083", "084", "085" };
+                        
+                        if (viettel.Any(item.CustomerPhone.StartsWith) || vinaphone.Any(item.CustomerPhone.StartsWith))
+                        {
+                            string phoneWith84 = "84" + item.CustomerPhone.Substring(1, 9);
+                            html.Append("       <a href='javascript:;' onclick='sendSMSIntroAPP(`" + phoneWith84 + "`)' title='Gửi tin giới thiệu app' class='btn primary-btn btn-yellow h45-btn'><i class='fa fa-paper-plane-o' aria-hidden='true'></i></a>");
+                        }
                     }
                     html.Append("   </td>");
                     html.Append("</tr>");

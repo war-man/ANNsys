@@ -106,15 +106,18 @@
                 $("#<%= btnSearch.ClientID%>").click();
             }
 
-            function sendSMSIntroAPP(phone) {
+            function sendSMSIntroAPP(customerPhone) {
                 $.ajax({
                     type: "POST",
-                    url: "http://xuongann.com/api/sms/intro-app",
-                    data: '{"phone": "84914615407"}',
+                    url: "/danh-sach-khach-hang.aspx/sendSMSIntroAPP",
+                    data: "{customerPhone: '" + customerPhone + "'}",
                     contentType: "application/json; charset=utf-8",
                     dataType: "json",
                     success: function (msg) {
-                        
+                        swal("Thông báo", "Đã gửi tin SMS giới thiệu app!", "success");
+                    },
+                    error: function (xmlhttprequest, textstatus, errorthrow) {
+                        alert("lỗi");
                     }
                 });
             }
