@@ -72,7 +72,6 @@ namespace IM_PJ
                         ltrMenu.Text += "<li><a href='/quan-ly-xuat-kho'><span class='icon-menu icon-product'></span>Xuất kho 1</a></li>";
                         ltrMenu.Text += "<li><a href='/quan-ly-nhap-kho-2'><span class='icon-menu icon-product'></span>Nhập kho 2</a></li>";
                         ltrMenu.Text += "<li><a href='/quan-ly-xuat-kho-2'><span class='icon-menu icon-product'></span>Xuất kho 2</a></li>";
-                        ltrMenu.Text += "<li><a href='/chuyen-kho'><span class='icon-menu icon-product'></span>Chuyển kho</a></li>";
                         ltrMenu.Text += "<li><a href='/danh-sach-nha-xe'><span class='icon-menu icon-product'></span>Nhà xe</a></li>";
                         ltrMenu.Text += "<li><a href='/tat-ca-nhan-vien'><span class='icon-menu icon-lib'></span>Nhân viên</a></li>";
                         ltrMenu.Text += "<li><a href='/danh-sach-nha-cung-cap'><span class='icon-menu icon-product'></span>Nhà cung cấp</a></li>";
