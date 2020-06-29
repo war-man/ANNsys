@@ -197,7 +197,7 @@ namespace IM_PJ
                     html.AppendLine("        <td data-title='Thao tác' class='update-button'>");
                     if (item.isVariable)
                     {
-                        html.AppendLine("      <a href='javascript:;' title='Xem thông tin sản phẩm con' class='btn primary-btn h45-btn btn-blue' onclick='showSubGoodsReceipt($(this), `" + item.sku + "`)'>");
+                        html.AppendLine(String.Format("      <a href='javascript:;' title='Xem thông tin sản phẩm con' class='btn primary-btn h45-btn btn-blue' onclick='showSubGoodsReceipt($(this), `{0}`, `{1:dd/MM/yyyy HH:mm}`)'>", item.sku, item.transferDate));
                         html.AppendLine("           <i class='fa fa-chevron-down' aria-hidden='true'></i>");
                         html.AppendLine("      </a>");
                     }
@@ -206,7 +206,7 @@ namespace IM_PJ
 
                     foreach (var subItem in item.children)
                     {
-                        html.AppendLine(String.Format("    <tr class='{0} child-row hide'>", item.sku));
+                        html.AppendLine(String.Format("    <tr class='{0} child-row hide' data-sku='{0}' data-transfer-date='{1:dd/MM/yyyy HH:mm}'>", item.sku, item.transferDate));
                         html.AppendLine("        <td></td>");
                         html.AppendLine("        <td></td>");
                         html.AppendLine("        <td>");

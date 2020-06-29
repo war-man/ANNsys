@@ -1499,27 +1499,29 @@ namespace IM_PJ.Controllers
                 #endregion
 
                 #region Tính toán phân trang
-                var productFilter = stockTransfer
-                    .GroupBy(x => x.ParentID)
+                var transferFilter = stockTransfer
+                    .GroupBy(x => new { productID = x.ParentID, transferDate = x.CreatedDate.Value })
                     .Select(x => new {
-                        productID = x.Key,
+                        productID = x.Key.productID,
                         quantityTransfer = x.Sum(s => s.Quantity.HasValue ? s.Quantity.Value : 0),
-                        transferDate = x.Max(m => m.CreatedDate.Value)
+                        transferDate = x.Key.transferDate
                     });
 
-                if (productFilter.Count() > 0)
-                    totalQuantityInput = Convert.ToInt32(productFilter.Sum(x => x.quantityTransfer));
+                if (transferFilter.Count() > 0)
+                    totalQuantityInput = Convert.ToInt32(transferFilter.Sum(x => x.quantityTransfer));
 
                 // Calculate pagination
-                page.totalCount = productFilter.Count();
+                page.totalCount = transferFilter.Count();
                 page.totalPages = (int)Math.Ceiling(page.totalCount / (double)page.pageSize);
-                productFilter = productFilter
+                transferFilter = transferFilter
                     .OrderByDescending(o => o.transferDate)
                     .Skip((page.currentPage - 1) * page.pageSize)
                     .Take(page.pageSize);
                 #endregion
 
                 #region Kêt thúc: xuất ra dữ liệu
+                var productFilter = transferFilter.Select(x => new { productID = x.productID }).Distinct();
+
                 #region Lấy dữ liệu để tính số lượng hiện tại của sản phẩm trong kho
                 var stock = con.tbl_StockManager
                     .Join(
@@ -1584,7 +1586,7 @@ namespace IM_PJ.Controllers
                     });
                 #endregion
 
-                var data = productFilter
+                var data = transferFilter
                     .Join(
                         con.tbl_Product,
                         f => f.productID,
@@ -1635,7 +1637,7 @@ namespace IM_PJ.Controllers
                             isVariable = x.product.ProductStyle == 2 ? true : false
                         }
                     );
-                var subData = productFilter
+                var subData = transferFilter
                     .Join(
                         con.tbl_ProductVariable,
                         f => f.productID,
@@ -1648,7 +1650,7 @@ namespace IM_PJ.Controllers
                             image = p.Image,
                             quantityTransfer = 0D,
                             quantityAvailable = 0D,
-                            transferDate = DateTime.Now,
+                            transferDate = f.transferDate,
                         }
                     ).ToList();
                 
@@ -1658,11 +1660,13 @@ namespace IM_PJ.Controllers
                         stockTransfer.ToList(),
                         p => new {
                             productID = p.productID,
-                            productVariationID = p.productVariationID
+                            productVariationID = p.productVariationID,
+                            transferDate = p.transferDate
                         },
                         s => new {
                             productID = s.ParentID.HasValue ? s.ParentID.Value : 0,
-                            productVariationID = s.ProductVariableID.HasValue ? s.ProductVariableID.Value : 0
+                            productVariationID = s.ProductVariableID.HasValue ? s.ProductVariableID.Value : 0,
+                            transferDate = s.CreatedDate.HasValue ? s.CreatedDate.Value : DateTime.Now
                         },
                         (p, s) => new
                         {
@@ -1672,7 +1676,7 @@ namespace IM_PJ.Controllers
                             image = p.image,
                             quantityTransfer = s.Quantity.HasValue ? s.Quantity.Value : 0D,
                             quantityAvailable = 0D,
-                            transferDate = s.CreatedDate.Value
+                            transferDate = p.transferDate
                         }
                     )
                     .ToList();
@@ -1707,6 +1711,7 @@ namespace IM_PJ.Controllers
                     {
                         var children = subData
                             .Where(y => y.productID == x.productID)
+                            .Where(y => y.transferDate == x.transferDate)
                             .Select(y => new SubStockTransferReport()
                             {
                                 sku = y.sku,
@@ -1848,27 +1853,29 @@ namespace IM_PJ.Controllers
                 #endregion
 
                 #region Tính toán phân trang
-                var productFilter = stockTransfer
-                    .GroupBy(x => x.ProductID)
+                var transferFilter = stockTransfer
+                    .GroupBy(x => new { productID = x.ProductID, transferDate = x.CreatedDate })
                     .Select(x => new {
-                        productID = x.Key,
+                        productID = x.Key.productID,
                         quantityTransfer = x.Sum(s => s.Quantity),
-                        transferDate = x.Max(m => m.CreatedDate)
+                        transferDate = x.Key.transferDate
                     });
 
-                if (productFilter.Count() > 0)
-                    totalQuantityInput = Convert.ToInt32(productFilter.Sum(x => x.quantityTransfer));
+                if (transferFilter.Count() > 0)
+                    totalQuantityInput = Convert.ToInt32(transferFilter.Sum(x => x.quantityTransfer));
 
                 // Calculate pagination
-                page.totalCount = productFilter.Count();
+                page.totalCount = transferFilter.Count();
                 page.totalPages = (int)Math.Ceiling(page.totalCount / (double)page.pageSize);
-                productFilter = productFilter
+                transferFilter = transferFilter
                     .OrderByDescending(o => o.transferDate)
                     .Skip((page.currentPage - 1) * page.pageSize)
                     .Take(page.pageSize);
                 #endregion
 
                 #region Kêt thúc: xuất ra dữ liệu
+                var productFilter = transferFilter.Select(x => new { productID = x.productID }).Distinct();
+
                 #region Lấy dữ liệu để tính số lượng hiện tại của sản phẩm trong kho
                 var stock = con.StockManager2
                     .Join(
@@ -1929,7 +1936,7 @@ namespace IM_PJ.Controllers
                     });
                 #endregion
 
-                var data = productFilter
+                var data = transferFilter
                     .Join(
                         con.tbl_Product,
                         f => f.productID,
@@ -1980,7 +1987,7 @@ namespace IM_PJ.Controllers
                         isVariable = x.product.ProductStyle == 2 ? true : false
                     }
                     );
-                var subData = productFilter
+                var subData = transferFilter
                     .Join(
                         con.tbl_ProductVariable,
                         f => f.productID,
@@ -1993,7 +2000,7 @@ namespace IM_PJ.Controllers
                             image = p.Image,
                             quantityTransfer = 0,
                             quantityAvailable = 0,
-                            transferDate = DateTime.Now,
+                            transferDate = f.transferDate,
                         }
                     ).ToList();
                 
@@ -2003,11 +2010,13 @@ namespace IM_PJ.Controllers
                         stockTransfer.ToList(),
                         p => new {
                             productID = p.productID,
-                            productVariationID = p.productVariationID
+                            productVariationID = p.productVariationID,
+                            transferDate = p.transferDate
                         },
                         s => new {
                             productID = s.ProductID,
-                            productVariationID = s.ProductVariableID.HasValue ? s.ProductVariableID.Value : 0
+                            productVariationID = s.ProductVariableID.HasValue ? s.ProductVariableID.Value : 0,
+                            transferDate = s.CreatedDate
                         },
                         (p, s) => new
                         {
@@ -2017,7 +2026,7 @@ namespace IM_PJ.Controllers
                             image = p.image,
                             quantityTransfer = s.Quantity,
                             quantityAvailable = 0,
-                            transferDate = s.CreatedDate
+                            transferDate = p.transferDate
                         }
                     )
                     .ToList();
@@ -2052,6 +2061,7 @@ namespace IM_PJ.Controllers
                     {
                         var children = subData
                             .Where(y => y.productID == x.productID)
+                            .Where(y => y.transferDate == x.transferDate)
                             .Select(y => new SubStockTransferReport()
                             {
                                 sku = y.sku,

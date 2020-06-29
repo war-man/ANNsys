@@ -237,9 +237,9 @@
                 $("#<%= btnSearch.ClientID%>").click();
             }
 
-            function showSubGoodsReceipt(obj, sku)
+            function showSubGoodsReceipt(obj, sku, transferDate)
             {
-                let variableDOM = $("." + sku);
+                let variableDOM = $("[data-sku='" + sku + "'][data-transfer-date='" + transferDate + "']");
                 variableDOM.each((index, element) => {
                     //let display = element.style.display;
                     //element.style.display = display == "none" ? "" : "none";
