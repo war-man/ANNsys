@@ -559,9 +559,9 @@
     <Content Include="dang-ky-ghtk.aspx" />
     <Content Include="san-pham.aspx" />
     <Content Include="sua-phien-kiem-kho.aspx" />
+    <Content Include="thong-ke-chuyen-kho.aspx" />
     <Content Include="thuc-hien-kiem-kho.aspx" />
     <Content Include="chinh-sua-kho-2.aspx" />
-    <Content Include="chuyen-kho.aspx" />
     <Content Include="quan-ly-nhap-kho-2.aspx" />
     <Content Include="thong-tin-kiem-kho.aspx" />
     <Content Include="tao-phien-kiem-kho.aspx" />
@@ -988,6 +988,8 @@
     <Compile Include="chuyen-kho.aspx.designer.cs">
       <DependentUpon>chuyen-kho.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Models\Pages\thong-ke-chuyen-kho\SubStockTransferReport.cs" />
+    <Compile Include="Models\Pages\thong-ke-chuyen-kho\StockTransferReport.cs" />
     <Compile Include="Models\PostWordpress.cs">
       <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
@@ -1366,6 +1368,13 @@
     </Compile>
     <Compile Include="sua-phien-kiem-kho.aspx.designer.cs">
       <DependentUpon>sua-phien-kiem-kho.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="thong-ke-chuyen-kho.aspx.cs">
+      <DependentUpon>thong-ke-chuyen-kho.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="thong-ke-chuyen-kho.aspx.designer.cs">
+      <DependentUpon>thong-ke-chuyen-kho.aspx</DependentUpon>
     </Compile>
     <Compile Include="thuc-hien-kiem-kho.aspx.cs">
       <DependentUpon>thuc-hien-kiem-kho.aspx</DependentUpon>

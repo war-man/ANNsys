@@ -238,14 +238,9 @@ namespace IM_PJ
                 var data = String.IsNullOrEmpty(hdfvalue.Value) ? 
                     new List<WarehousePostModel>() : 
                     JsonConvert.DeserializeObject<List<WarehousePostModel>>(hdfvalue.Value);
-                int type1, type2;
 
                 if (hdfWarehouseTransfer.Value == "1")
                 {
-                    note = "Chuyền hàng từ kho 1 sang kho 2 bằng chức năng chuyển kho";
-                    type1 = 2;
-                    type2 = 1;
-
                     foreach (var item in data)
                     {
                         StockManagerController.warehousing1(new tbl_StockManager()
@@ -258,7 +253,7 @@ namespace IM_PJ
                             Quantity = item.quantity,
                             QuantityCurrent = item.stock2,
                             Status = 18,
-                            NoteID = note,
+                            NoteID = "Chuyển hàng sang kho 2 bằng chức năng chuyển kho",
                             CreatedDate = currentDate,
                             CreatedBy = username,
                             ModifiedDate = currentDate,
@@ -277,8 +272,8 @@ namespace IM_PJ
                             Type = 1,
                             Quantity = item.quantity,
                             QuantityCurrent = item.stock2,
-                            Status = 18,
-                            Note = note,
+                            Status = 20,
+                            Note = "Nhận hàng từ kho 1 bằng chức năng chuyển kho",
                             CreatedDate = currentDate,
                             CreatedBy = username,
                             ModifiedDate = currentDate,
@@ -288,8 +283,6 @@ namespace IM_PJ
                 }
                 else
                 {
-                    note = "Chuyền hàng từ kho 2 sang kho 1 bằng chức năng chuyển kho";
-
                     foreach (var item in data)
                     {
                         StockManagerController.warehousing1(new tbl_StockManager()
@@ -298,11 +291,11 @@ namespace IM_PJ
                             ProductID = item.productVariableID == 0 ? item.productID : 0,
                             ProductVariableID = item.productVariableID,
                             SKU = item.sku,
-                            Type = 2,
-                            Quantity = 0,
-                            QuantityCurrent = item.stock2,
-                            Status = 18,
-                            NoteID = note,
+                            Type = 1,
+                            Quantity = item.quantity,
+                            QuantityCurrent = (item.stock2 - item.quantity),
+                            Status = 20,
+                            NoteID = "Nhận hàng từ kho 2 bằng chức năng chuyển kho",
                             CreatedDate = currentDate,
                             CreatedBy = username,
                             ModifiedDate = currentDate,
@@ -322,7 +315,7 @@ namespace IM_PJ
                             Quantity = item.quantity,
                             QuantityCurrent = item.stock2,
                             Status = 18,
-                            Note = note,
+                            Note = "Chuyển hàng sang kho 1 bằng chức năng chuyển kho",
                             CreatedDate = currentDate,
                             CreatedBy = username,
                             ModifiedDate = currentDate,

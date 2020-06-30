@@ -1,4 +1,5 @@
 ﻿using IM_PJ.Models;
+using IM_PJ.Models.Pages.thong_ke_chuyen_kho;
 using IM_PJ.Models.Pages.thong_ke_nhap_kho;
 using System;
 using System.Collections.Generic;
@@ -12,6 +13,8 @@ namespace IM_PJ.Controllers
 {
     public class StockManagerController
     {
+        #region Quản lý kho 1
+
         #region CRUD
         public static void Insert(tbl_StockManager stock)
         {
@@ -1419,6 +1422,332 @@ namespace IM_PJ.Controllers
             }
         }
 
+        #region Lấy thông tin chuyển kho
+        public static List<StockTransferReport> getStock1TransferReport(ProductFilterModel filter,
+                                                                        ref PaginationMetadataModel page,
+                                                                        ref int totalQuantityInput)
+        {
+            using (var con = new inventorymanagementEntities())
+            {
+                // 20: Nhận hàng từ kho khác bằng chức năng chuyển kho
+                var stockTransfer = con.tbl_StockManager.Where(x => x.Status == 20);
+
+                #region Thực thi lấy dữ liệu
+                #region Lọc sản phẩm theo ngày nhập hàng
+                if (filter.fromDate.HasValue && filter.toDate.HasValue)
+                {
+                    stockTransfer = stockTransfer.Where(x => x.CreatedDate >= filter.fromDate && x.CreatedDate <= filter.toDate);
+                }
+                #endregion
+
+                #region Loc theo từ khóa SKU
+                if (!String.IsNullOrEmpty(filter.search))
+                {
+                    var sku = filter.search.Trim().ToLower();
+                    stockTransfer = stockTransfer.Where(x => x.SKU.ToLower().Contains(sku));
+                }
+                #endregion
+
+                #region Lọc sản phẩm theo danh mục
+                if (filter.category > 0)
+                {
+                    var category = con.tbl_Category.Where(x => x.ID == filter.category).FirstOrDefault();
+
+                    if (category != null)
+                    {
+                        var categoryID = CategoryController.getCategoryChild(category)
+                            .Select(x => x.ID)
+                            .OrderBy(o => o)
+                            .ToList();
+
+                        var product = con.tbl_Product
+                            .GroupJoin(
+                                con.tbl_ProductVariable,
+                                p => p.ID,
+                                v => v.ProductID,
+                                (p, v) => new { product = p, variable = v }
+                            )
+                            .SelectMany(
+                                x => x.variable.DefaultIfEmpty(),
+                                (parent, child) => new { product = parent.product, variable = child }
+                            )
+                            .Where(x => categoryID.Contains(x.product.CategoryID.Value))
+                            .Select(x => new
+                            {
+                                productID = x.product.ID,
+                                variableID = x.variable != null ? x.variable.ID : 0
+                            });
+
+                        stockTransfer = stockTransfer
+                            .Join(
+                                product,
+                                s => new
+                                {
+                                    productID = s.ParentID.Value,
+                                    variableID = s.ProductVariableID.Value
+                                },
+                                p => new
+                                {
+                                    productID = p.productID,
+                                    variableID = p.variableID
+                                },
+                                (s, p) => s
+                            );
+                    }
+                }
+                #endregion
+                #endregion
+
+                #region Tính toán phân trang
+                var transferFilter = stockTransfer
+                    .GroupBy(x => new { productID = x.ParentID, transferDate = x.CreatedDate.Value })
+                    .Select(x => new {
+                        productID = x.Key.productID,
+                        quantityTransfer = x.Sum(s => s.Quantity.HasValue ? s.Quantity.Value : 0),
+                        transferDate = x.Key.transferDate
+                    });
+
+                if (transferFilter.Count() > 0)
+                    totalQuantityInput = Convert.ToInt32(transferFilter.Sum(x => x.quantityTransfer));
+
+                // Calculate pagination
+                page.totalCount = transferFilter.Count();
+                page.totalPages = (int)Math.Ceiling(page.totalCount / (double)page.pageSize);
+                transferFilter = transferFilter
+                    .OrderByDescending(o => o.transferDate)
+                    .Skip((page.currentPage - 1) * page.pageSize)
+                    .Take(page.pageSize);
+                #endregion
+
+                #region Kêt thúc: xuất ra dữ liệu
+                var productFilter = transferFilter.Select(x => new { productID = x.productID }).Distinct();
+
+                #region Lấy dữ liệu để tính số lượng hiện tại của sản phẩm trong kho
+                var stock = con.tbl_StockManager
+                    .Join(
+                        productFilter,
+                        s => s.ParentID,
+                        f => f.productID,
+                        (s, f) => s
+                    );
+
+                var stockLast = stock
+                    .Join(
+                        productFilter,
+                        s => s.ParentID,
+                        f => f.productID,
+                        (s, f) => s
+                    )
+                    .GroupBy(g => new { productID = g.ParentID, productVariationID = g.ProductVariableID })
+                    .Select(x => new {
+                        productID = x.Key.productID,
+                        productVariationID = x.Key.productVariationID,
+                        lastDate = x.Max(m => m.CreatedDate.Value)
+                    });
+
+                stock = stock
+                    .Join(
+                        stockLast,
+                        s => new
+                        {
+                            productID = s.ParentID,
+                            productVariationID = s.ProductVariableID,
+                            lastDate = s.CreatedDate.Value
+                        },
+                        l => new
+                        {
+                            productID = l.productID,
+                            productVariationID = l.productVariationID,
+                            lastDate = l.lastDate
+                        },
+                        (s, l) => s
+                    );
+
+                var productStock = stock
+                    .Select(x => new {
+                        productID = x.ParentID,
+                        productVariationID = x.ProductVariableID,
+                        quantityAvailable =
+                                    (x.QuantityCurrent.HasValue ? x.QuantityCurrent.Value : 0) +
+                                    (x.Quantity.HasValue ? x.Quantity.Value : 0) * ((x.Type.HasValue ? x.Type.Value : 1) == 1 ? 1 : -1)
+                    })
+                    .GroupBy(g => g.productID)
+                    .Select(x => new {
+                        productID = x.Key,
+                        quantityAvailable = x.Sum(s => s.quantityAvailable)
+                    });
+                var productVariationStock = stock
+                    .Select(x => new {
+                        productID = x.ParentID,
+                        productVariationID = x.ProductVariableID,
+                        quantityAvailable =
+                                    (x.QuantityCurrent.HasValue ? x.QuantityCurrent.Value : 0) +
+                                    (x.Quantity.HasValue ? x.Quantity.Value : 0) * ((x.Type.HasValue ? x.Type.Value : 1) == 1 ? 1 : -1)
+                    });
+                #endregion
+
+                var data = transferFilter
+                    .Join(
+                        con.tbl_Product,
+                        f => f.productID,
+                        p => p.ID,
+                        (f, p) => new {
+                            product = p,
+                            quantityTransfer = f.quantityTransfer,
+                            transferDate = f.transferDate
+                        }
+                    )
+                    .Join(
+                        con.tbl_Category,
+                        temp => temp.product.CategoryID,
+                        c => c.ID,
+                        (temp, c) => new
+                        {
+                            category = c,
+                            product = temp.product,
+                            quantityTransfer = temp.quantityTransfer,
+                            transferDate = temp.transferDate
+                        }
+                    )
+                    .Join(
+                        productStock,
+                        temp2 => temp2.product.ID,
+                        s => s.productID,
+                        (temp2, s) => new
+                        {
+                            category = temp2.category,
+                            product = temp2.product,
+                            quantityTransfer = temp2.quantityTransfer,
+                            quantityAvailable = s.quantityAvailable,
+                            transferDate = temp2.transferDate
+                        }
+                    )
+                    .Select(x => new
+                        {
+                            categoryID = x.category.ID,
+                            categoryName = x.category.CategoryName,
+                            productID = x.product.ID,
+                            variableID = 0,
+                            sku = x.product.ProductSKU,
+                            title = x.product.ProductTitle,
+                            image = x.product.ProductImage,
+                            quantityTransfer = x.quantityTransfer,
+                            quantityAvailable = x.quantityAvailable,
+                            transferDate = x.transferDate,
+                            isVariable = x.product.ProductStyle == 2 ? true : false
+                        }
+                    );
+                var subData = transferFilter
+                    .Join(
+                        con.tbl_ProductVariable,
+                        f => f.productID,
+                        p => p.ProductID,
+                        (f, p) => new
+                        {
+                            productID = p.ProductID.HasValue ? p.ProductID.Value : 0,
+                            productVariationID = p.ID,
+                            sku = p.SKU,
+                            image = p.Image,
+                            quantityTransfer = 0D,
+                            quantityAvailable = 0D,
+                            transferDate = f.transferDate,
+                        }
+                    ).ToList();
+                
+                // Lấy thông tin số lượng nhận sản phẩm
+                subData = subData
+                    .Join(
+                        stockTransfer.ToList(),
+                        p => new {
+                            productID = p.productID,
+                            productVariationID = p.productVariationID,
+                            transferDate = p.transferDate
+                        },
+                        s => new {
+                            productID = s.ParentID.HasValue ? s.ParentID.Value : 0,
+                            productVariationID = s.ProductVariableID.HasValue ? s.ProductVariableID.Value : 0,
+                            transferDate = s.CreatedDate.HasValue ? s.CreatedDate.Value : DateTime.Now
+                        },
+                        (p, s) => new
+                        {
+                            productID = p.productID,
+                            productVariationID = p.productVariationID,
+                            sku = p.sku,
+                            image = p.image,
+                            quantityTransfer = s.Quantity.HasValue ? s.Quantity.Value : 0D,
+                            quantityAvailable = 0D,
+                            transferDate = p.transferDate
+                        }
+                    )
+                    .ToList();
+                
+                // Lấy thông tin số lượng hiện tại của sản phẩm
+                subData = subData
+                    .Join(
+                        productVariationStock.ToList(),
+                        p => new {
+                            productID = p.productID,
+                            productVariationID = p.productVariationID
+                        },
+                        s => new {
+                            productID = s.productID.HasValue ? s.productID.Value : 0,
+                            productVariationID = s.productVariationID.HasValue ? s.productVariationID.Value : 0
+                        },
+                        (p, s) => new
+                        {
+                            productID = p.productID,
+                            productVariationID = p.productVariationID,
+                            sku = p.sku,
+                            image = p.image,
+                            quantityTransfer = p.quantityTransfer,
+                            quantityAvailable = s.quantityAvailable,
+                            transferDate = p.transferDate
+                        }
+                    )
+                    .ToList();
+
+                var result = data.ToList()
+                    .Select(x =>
+                    {
+                        var children = subData
+                            .Where(y => y.productID == x.productID)
+                            .Where(y => y.transferDate == x.transferDate)
+                            .Select(y => new SubStockTransferReport()
+                            {
+                                sku = y.sku,
+                                image = y.image,
+                                quantityTransfer = Convert.ToInt32(y.quantityTransfer),
+                                quantityAvailable = Convert.ToInt32(y.quantityAvailable),
+                                transferDate = y.transferDate
+                            })
+                            .ToList();
+
+                        return new StockTransferReport()
+                        {
+                            categoryID = x.categoryID,
+                            categoryName = x.categoryName,
+                            productID = x.productID,
+                            variableID = x.variableID,
+                            sku = x.sku,
+                            title = x.title,
+                            image = x.image,
+                            quantityTransfer = Convert.ToInt32(x.quantityTransfer),
+                            quantityAvailable = Convert.ToInt32(x.quantityAvailable),
+                            transferDate = x.transferDate,
+                            isVariable = x.isVariable,
+                            children = children
+                        };
+                    })
+                    .OrderByDescending(x => x.transferDate)
+                    .ToList();
+                #endregion
+
+                return result;
+            }
+        }
+        #endregion
+        #endregion
+
         #region Quản lý kho 2
         public static int? getQuantityStock2BySKU(string sku)
         {
@@ -1446,6 +1775,327 @@ namespace IM_PJ.Controllers
                 return data;
             }
         }
+
+        #region Lấy thông tin chuyển kho
+        public static List<StockTransferReport> getStock2TransferReport(ProductFilterModel filter,
+                                                                        ref PaginationMetadataModel page,
+                                                                        ref int totalQuantityInput)
+        {
+            using (var con = new inventorymanagementEntities())
+            {
+                // 20: Nhận hàng từ kho khác bằng chức năng chuyển kho
+                var stockTransfer = con.StockManager2.Where(x => x.Status == 20);
+
+                #region Thực thi lấy dữ liệu
+                #region Lọc sản phẩm theo ngày nhập hàng
+                if (filter.fromDate.HasValue && filter.toDate.HasValue)
+                {
+                    stockTransfer = stockTransfer.Where(x => x.CreatedDate >= filter.fromDate && x.CreatedDate <= filter.toDate);
+                }
+                #endregion
+
+                #region Loc theo từ khóa SKU
+                if (!String.IsNullOrEmpty(filter.search))
+                {
+                    var sku = filter.search.Trim().ToLower();
+                    stockTransfer = stockTransfer.Where(x => x.SKU.ToLower().Contains(sku));
+                }
+                #endregion
+
+                #region Lọc sản phẩm theo danh mục
+                if (filter.category > 0)
+                {
+                    var category = con.tbl_Category.Where(x => x.ID == filter.category).FirstOrDefault();
+
+                    if (category != null)
+                    {
+                        var categoryID = CategoryController.getCategoryChild(category)
+                            .Select(x => x.ID)
+                            .OrderBy(o => o)
+                            .ToList();
+
+                        var product = con.tbl_Product
+                            .GroupJoin(
+                                con.tbl_ProductVariable,
+                                p => p.ID,
+                                v => v.ProductID,
+                                (p, v) => new { product = p, variable = v }
+                            )
+                            .SelectMany(
+                                x => x.variable.DefaultIfEmpty(),
+                                (parent, child) => new { product = parent.product, variable = child }
+                            )
+                            .Where(x => categoryID.Contains(x.product.CategoryID.Value))
+                            .Select(x => new
+                            {
+                                productID = x.product.ID,
+                                variableID = x.variable != null ? x.variable.ID : 0
+                            });
+
+                        stockTransfer = stockTransfer
+                            .Join(
+                                product,
+                                s => new
+                                {
+                                    productID = s.ProductID,
+                                    variableID = s.ProductVariableID.Value
+                                },
+                                p => new
+                                {
+                                    productID = p.productID,
+                                    variableID = p.variableID
+                                },
+                                (s, p) => s
+                            );
+                    }
+                }
+                #endregion
+                #endregion
+
+                #region Tính toán phân trang
+                var transferFilter = stockTransfer
+                    .GroupBy(x => new { productID = x.ProductID, transferDate = x.CreatedDate })
+                    .Select(x => new {
+                        productID = x.Key.productID,
+                        quantityTransfer = x.Sum(s => s.Quantity),
+                        transferDate = x.Key.transferDate
+                    });
+
+                if (transferFilter.Count() > 0)
+                    totalQuantityInput = Convert.ToInt32(transferFilter.Sum(x => x.quantityTransfer));
+
+                // Calculate pagination
+                page.totalCount = transferFilter.Count();
+                page.totalPages = (int)Math.Ceiling(page.totalCount / (double)page.pageSize);
+                transferFilter = transferFilter
+                    .OrderByDescending(o => o.transferDate)
+                    .Skip((page.currentPage - 1) * page.pageSize)
+                    .Take(page.pageSize);
+                #endregion
+
+                #region Kêt thúc: xuất ra dữ liệu
+                var productFilter = transferFilter.Select(x => new { productID = x.productID }).Distinct();
+
+                #region Lấy dữ liệu để tính số lượng hiện tại của sản phẩm trong kho
+                var stock = con.StockManager2
+                    .Join(
+                        productFilter,
+                        s => s.ProductID,
+                        f => f.productID,
+                        (s, f) => s
+                    );
+
+                var stockLast = stock
+                    .Join(
+                        productFilter,
+                        s => s.ProductID,
+                        f => f.productID,
+                        (s, f) => s
+                    )
+                    .GroupBy(g => new { productID = g.ProductID, productVariationID = g.ProductVariableID })
+                    .Select(x => new {
+                        productID = x.Key.productID,
+                        productVariationID = x.Key.productVariationID,
+                        lastDate = x.Max(m => m.CreatedDate)
+                    });
+
+                stock = stock
+                    .Join(
+                        stockLast,
+                        s => new
+                        {
+                            productID = s.ProductID,
+                            productVariationID = s.ProductVariableID,
+                            lastDate = s.CreatedDate
+                        },
+                        l => new
+                        {
+                            productID = l.productID,
+                            productVariationID = l.productVariationID,
+                            lastDate = l.lastDate
+                        },
+                        (s, l) => s
+                    );
+
+                var productStock = stock
+                    .Select(x => new {
+                        productID = x.ProductID,
+                        productVariationID = x.ProductVariableID,
+                        quantityAvailable = x.QuantityCurrent + x.Quantity * (x.Type == 1 ? 1 : -1)
+                    })
+                    .GroupBy(g => g.productID)
+                    .Select(x => new {
+                        productID = x.Key,
+                        quantityAvailable = x.Sum(s => s.quantityAvailable)
+                    });
+                var productVariationStock = stock
+                    .Select(x => new {
+                        productID = x.ProductID,
+                        productVariationID = x.ProductVariableID,
+                        quantityAvailable = x.QuantityCurrent + x.Quantity * (x.Type == 1 ? 1 : -1)
+                    });
+                #endregion
+
+                var data = transferFilter
+                    .Join(
+                        con.tbl_Product,
+                        f => f.productID,
+                        p => p.ID,
+                        (f, p) => new {
+                            product = p,
+                            quantityTransfer = f.quantityTransfer,
+                            transferDate = f.transferDate
+                        }
+                    )
+                    .Join(
+                        con.tbl_Category,
+                        temp => temp.product.CategoryID,
+                        c => c.ID,
+                        (temp, c) => new
+                        {
+                            category = c,
+                            product = temp.product,
+                            quantityTransfer = temp.quantityTransfer,
+                            transferDate = temp.transferDate
+                        }
+                    )
+                    .Join(
+                        productStock,
+                        temp2 => temp2.product.ID,
+                        s => s.productID,
+                        (temp2, s) => new
+                        {
+                            category = temp2.category,
+                            product = temp2.product,
+                            quantityTransfer = temp2.quantityTransfer,
+                            quantityAvailable = s.quantityAvailable,
+                            transferDate = temp2.transferDate
+                        }
+                    )
+                    .Select(x => new
+                    {
+                        categoryID = x.category.ID,
+                        categoryName = x.category.CategoryName,
+                        productID = x.product.ID,
+                        variableID = 0,
+                        sku = x.product.ProductSKU,
+                        title = x.product.ProductTitle,
+                        image = x.product.ProductImage,
+                        quantityTransfer = x.quantityTransfer,
+                        quantityAvailable = x.quantityAvailable,
+                        transferDate = x.transferDate,
+                        isVariable = x.product.ProductStyle == 2 ? true : false
+                    }
+                    );
+                var subData = transferFilter
+                    .Join(
+                        con.tbl_ProductVariable,
+                        f => f.productID,
+                        p => p.ProductID,
+                        (f, p) => new
+                        {
+                            productID = p.ProductID.HasValue ? p.ProductID.Value : 0,
+                            productVariationID = p.ID,
+                            sku = p.SKU,
+                            image = p.Image,
+                            quantityTransfer = 0,
+                            quantityAvailable = 0,
+                            transferDate = f.transferDate,
+                        }
+                    ).ToList();
+                
+                // Lấy thông tin số lượng nhận sản phẩm
+                subData = subData
+                    .Join(
+                        stockTransfer.ToList(),
+                        p => new {
+                            productID = p.productID,
+                            productVariationID = p.productVariationID,
+                            transferDate = p.transferDate
+                        },
+                        s => new {
+                            productID = s.ProductID,
+                            productVariationID = s.ProductVariableID.HasValue ? s.ProductVariableID.Value : 0,
+                            transferDate = s.CreatedDate
+                        },
+                        (p, s) => new
+                        {
+                            productID = p.productID,
+                            productVariationID = p.productVariationID,
+                            sku = p.sku,
+                            image = p.image,
+                            quantityTransfer = s.Quantity,
+                            quantityAvailable = 0,
+                            transferDate = p.transferDate
+                        }
+                    )
+                    .ToList();
+                
+                // Lấy thông tin số lượng hiện tại của sản phẩm
+                subData = subData
+                    .Join(
+                        productVariationStock.ToList(),
+                        p => new {
+                            productID = p.productID,
+                            productVariationID = p.productVariationID
+                        },
+                        s => new {
+                            productID = s.productID,
+                            productVariationID = s.productVariationID.HasValue ? s.productVariationID.Value : 0
+                        },
+                        (p, s) => new
+                        {
+                            productID = p.productID,
+                            productVariationID = p.productVariationID,
+                            sku = p.sku,
+                            image = p.image,
+                            quantityTransfer = p.quantityTransfer,
+                            quantityAvailable = s.quantityAvailable,
+                            transferDate = p.transferDate
+                        }
+                    )
+                    .ToList();
+
+                var result = data.ToList()
+                    .Select(x =>
+                    {
+                        var children = subData
+                            .Where(y => y.productID == x.productID)
+                            .Where(y => y.transferDate == x.transferDate)
+                            .Select(y => new SubStockTransferReport()
+                            {
+                                sku = y.sku,
+                                image = y.image,
+                                quantityTransfer = Convert.ToInt32(y.quantityTransfer),
+                                quantityAvailable = Convert.ToInt32(y.quantityAvailable),
+                                transferDate = y.transferDate
+                            })
+                            .ToList();
+
+                        return new StockTransferReport()
+                        {
+                            categoryID = x.categoryID,
+                            categoryName = x.categoryName,
+                            productID = x.productID,
+                            variableID = x.variableID,
+                            sku = x.sku,
+                            title = x.title,
+                            image = x.image,
+                            quantityTransfer = Convert.ToInt32(x.quantityTransfer),
+                            quantityAvailable = Convert.ToInt32(x.quantityAvailable),
+                            transferDate = x.transferDate,
+                            isVariable = x.isVariable,
+                            children = children
+                        };
+                    })
+                    .OrderByDescending(x => x.transferDate)
+                    .ToList();
+                #endregion
+
+                return result;
+            }
+        }
+        #endregion
         #endregion
     }
 }
