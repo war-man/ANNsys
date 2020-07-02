@@ -772,24 +772,19 @@ namespace IM_PJ
             StringBuilder html = new StringBuilder();
             if (product != null)
             {
-                html.AppendLine("<p>" + product.ProductSKU + " - " + product.ProductTitle + "</p>\r\n");
-                html.AppendLine("<p></p>\r\n");
-                html.AppendLine("<p>📌 Giá sỉ: " + (product.Regular_Price / 1000).ToString() + "k</p>\r\n");
-                html.AppendLine("<p></p>\r\n");
-                html.AppendLine("<p>📌 Giá lẻ: " + (product.Retail_Price / 1000).ToString() + "k</p>\r\n");
-                html.AppendLine("<p></p>\r\n");
+                html.AppendLine("<p>" + product.ProductSKU + " - Sỉ " + product.ProductTitle + "</p>\r\n");
+                html.AppendLine("<p>📌 Giá sỉ: " + (product.Regular_Price).ToString() + "</p>\r\n");
+                html.AppendLine("<p>📌 Giá lẻ: " + (product.Retail_Price).ToString() + "</p>\r\n");
 
                 if (!string.IsNullOrEmpty(product.Materials))
                 {
                     html.AppendLine("<p>🔖 " + (product.CategoryID == 44 ? "" : "Chất liệu: ")  + product.Materials + "</p>\r\n");
-                    html.AppendLine("<p></p>\r\n");
                 }
 
                 if (!string.IsNullOrEmpty(product.ProductContent))
                 {
                     string content = Regex.Replace(product.ProductContent, @"<img\s[^>]*>(?:\s*?</img>)?", "").ToString();
                     html.AppendLine("<p>🔖 " + content + "</p>\r\n");
-                    html.AppendLine("<p></p>\r\n");
                 }
 
                 // liệt kê thuộc tính sản phẩm
@@ -853,7 +848,6 @@ namespace IM_PJ
                                 Variable += count.ToString() + " mẫu khác nhau";
                             }
                             Variable += "</p>\r\n";
-                            Variable += "<p></p>\r\n";
                             Variable += "<p><strong>📐 " + vari[y].VariableName + "</strong>: " + vari[y].VariableValue + "; ";
                             stringVariable = vari[y].VariableName;
                         }
@@ -862,24 +856,22 @@ namespace IM_PJ
                     html.AppendLine(Variable);
                 }
 
-                html.AppendLine("<p></p>\r\n");
-                html.AppendLine("<p></p>\r\n");
-
-                if (product.ID%4 == 0)
+                // thông tin liên hệ
+                string categoryName = "";
+                var category = CategoryController.GetByID(product.CategoryID.Value);
+                if (category != null)
                 {
-                    // thông tin liên hệ
-                    
-                    html.AppendLine("<p>-----------------------------------------------------------</p>\r\n");
-                    html.AppendLine("<p></p>\r\n");
-                    html.AppendLine("<p>⚡⚡ KHO HÀNG SỈ ANN ⚡⚡</p>\r\n");
-                    html.AppendLine("<p></p>\r\n");
-                    html.AppendLine("<p>🏭 68 Đường C12, P.13, Tân Bình, TP.HCM</p>\r\n");
-                    html.AppendLine("<p></p>\r\n");
-                    html.AppendLine("<p>⭐ Zalo đặt hàng: 0918569400 - 0936786404 - 0913268406 - 0918567409</p>\r\n");
-                    html.AppendLine("<p></p>\r\n");
-                    html.AppendLine("<p>⭐ Ứng dụng: https://app.ann.com.vn/download </p>\r\n");
-                    html.AppendLine("<p></p>\r\n");
+                    categoryName = " " + category.CategoryName.ToUpper();
                 }
+
+                html.AppendLine("<p>--------------------------</p>\r\n");
+                html.AppendLine("<p>⚡⚡ KHO SỈ" + categoryName +" ANN ⚡⚡</p>\r\n");
+                html.AppendLine("<p>🏭 68 Đường C12, P.13, Tân Bình, TP.HCM</p>\r\n");
+                html.AppendLine("<p>⭐ Zalo: 0918569400 - 0936786404 - 0913268406 - 0918567409</p>\r\n");
+                html.AppendLine("<p>⭐ Web: https://ann.com.vn </p>\r\n");
+
+                
+                
             }
 
             return html.ToString();
