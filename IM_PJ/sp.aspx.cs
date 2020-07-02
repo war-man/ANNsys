@@ -160,25 +160,25 @@ namespace IM_PJ
 
                     html.Append("<div class='row'>");
                     html.Append("     <div class='col-xs-12'>");
-                    html.Append("          <div class='col-xs-4'>");
+                    html.Append("          <div class='col-xs-6'>");
                     html.Append("               <div class='row'>");
                     html.Append("                  <a href='javascript:;' class='btn primary-btn copy-btn h45-btn' onclick='copyProductInfo(`" + item.ID + "`);'><i class='fa fa-files-o' aria-hidden='true'></i> Copy</a>");
                     html.Append("               </div>");
                     html.Append("          </div>");
-                    html.Append("          <div class='col-xs-4'>");
+                    html.Append("          <div class='col-xs-6'>");
                     html.Append("               <div class='row'>");
                     html.Append("                  <a href ='javascript:;' class='btn primary-btn h45-btn' onclick='getAllProductImage(`" + item.ProductSKU + "`);'><i class='fa fa-cloud-download' aria-hidden='true'></i> Tải</a>");
                     html.Append("               </div>");
                     html.Append("          </div>");
-                    html.Append("          <div class='col-xs-4'>");
-                    html.Append("               <div class='row'>");
-                    html.Append("                  <a href='/dang-ky-nhap-hang?&textsearch=" + item.ProductSKU + "' class='btn primary-btn h45-btn download-btn'><i class='fa fa-cart-plus' aria-hidden='true'></i> Order</a>");
-                    html.Append("               </div>");
-                    html.Append("          </div>");
+                    //html.Append("          <div class='col-xs-4'>");
+                    //html.Append("               <div class='row'>");
+                    //html.Append("                  <a href='/dang-ky-nhap-hang?&textsearch=" + item.ProductSKU + "' class='btn primary-btn h45-btn download-btn'><i class='fa fa-cart-plus' aria-hidden='true'></i> Order</a>");
+                    //html.Append("               </div>");
+                    //html.Append("          </div>");
                     html.Append("     </div>");
                     html.Append("</div>");
 
-                    if (acc.RoleID == 0 || acc.RoleID == 1)
+                    if (acc.RoleID == 0 || acc.RoleID == 3)
                     {
                         if (config.HideProduct == 1)
                         {
@@ -186,10 +186,14 @@ namespace IM_PJ
                             html.Append("     <div class='col-xs-12'>");
                             html.Append("          <div class='col-xs-12'>");
                             html.Append("               <div class='row'>");
-                            if (item.IsHidden)
-                                html.Append("                  <a href ='javascript:;' class='btn primary-btn h45-btn hidden-" + item.ID + " download-btn product-hidden' onclick='ShowUpProductToWeb(`" + item.ProductSKU + "`, `" + item.ID + "`, `" + item.CategoryID + "`, `false`, `false`, `visible`);'><i class='fa fa-check' aria-hidden='true'></i> Hiện</a>");
-                            else
-                                html.Append("                  <a href ='javascript:;' class='btn primary-btn h45-btn hidden-" + item.ID + " download-btn' onclick='ShowUpProductToWeb(`" + item.ProductSKU + "`, `" + item.ID + "`, `" + item.CategoryID + "`, `false`, `false`, `hidden`);'><i class='fa fa-times' aria-hidden='true'></i> Ẩn</a>");
+                            if (item.TotalProductInstockQuantityLeft > 0)
+                            {
+                                html.AppendLine("       <a href='javascript:;' title='Xả hết kho' class='liquidation-product-" + item.ID + " btn primary-btn btn-red h45-btn' onclick='liquidateProduct(" + item.CategoryID + ", " + item.ID + ", `" + item.ProductSKU + "`);'><i class='glyphicon glyphicon-trash' aria-hidden='true'></i> Xả kho</a>");
+                            }
+                            else if (item.Liquidated)
+                            {
+                                html.AppendLine("       <a href='javascript:;' title='Phục hồi xả kho' class='recover-liquidation-product-" + item.ID + " btn primary-btn btn-green h45-btn' onclick='recoverLiquidatedProduct(" + item.CategoryID + ", " + item.ID + ", `" + item.ProductSKU + "`);'><i class='glyphicon glyphicon-repeat' aria-hidden='true'></i>Phục hồi kho</a>");
+                            }
                             html.Append("               </div>");
                             html.Append("          </div>");
                             html.Append("     </div>");

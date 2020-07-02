@@ -962,7 +962,7 @@ namespace IM_PJ
                     var strStock2Quantity = String.Empty;
                     if (item.HasStock2)
                         strStock2Quantity = String.Format("<br>(Kho 2: {0:N0})", item.Stock2Quantity);
-                    html.AppendLine(String.Format("   <td data-title='Số lượng'><a target='_blank' title='Xem thống kê sản phẩm' href='/thong-ke-san-pham?SKU={0}'>{1:N0}</a>{2}</td>", item.ProductSKU, item.TotalProductInstockQuantityLeft, strStock2Quantity));
+                    html.AppendLine(String.Format("   <td data-title='Số lượng'><span><a target='_blank' title='Xem thống kê sản phẩm' href='/thong-ke-san-pham?SKU={0}'>{1:N0}</a></span>{2}</td>", item.ProductSKU, item.TotalProductInstockQuantityLeft, strStock2Quantity));
                     html.AppendLine("   <td data-title='Kho'>" + item.ProductInstockStatus + "</td>");
                     html.AppendLine("   <td data-title='Danh mục'>" + item.CategoryName + "</td>");
                     string date = string.Format("<strong>{0:dd/MM/yyyy}</strong><br>{0:HH:mm}", item.CreatedDate);

@@ -373,10 +373,10 @@
             </div>
         </div>
 
-        <script src="/App_Themes/Ann/js/copy-product-info.js?v=25062020"></script>
-        <script src="/App_Themes/Ann/js/sync-product-v2.js?v=25062020"></script>
-        <script src="/App_Themes/Ann/js/download-product-image.js?v=25062020"></script>
-        <script src="/App_Themes/Ann/js/services/common/product-service.js?v=25062020"></script>
+        <script src="/App_Themes/Ann/js/copy-product-info.js?v=02072020"></script>
+        <script src="/App_Themes/Ann/js/sync-product-v2.js?v=02072020"></script>
+        <script src="/App_Themes/Ann/js/download-product-image.js?v=02072020"></script>
+        <script src="/App_Themes/Ann/js/services/common/product-service.js?v=02072020"></script>
         
         <script type="text/javascript">
             $("#<%=txtSearchProduct.ClientID%>").keyup(function (e) {
@@ -594,14 +594,14 @@
                                 if (data) {
                                     let btnLiquidateDOM = document.querySelector(".liquidation-product-" + productID);
                                     let rowDOM = btnLiquidateDOM.parentElement.parentElement;
-                                    let skuDOM = rowDOM.querySelector("[data-title='Mã']");
-                                    let quantityDOM = rowDOM.querySelector("[data-title='Số lượng']");
+                                    let skuDOM = rowDOM.querySelector("[data-title='Mã']").querySelector(".customer-name-link");
+                                    let quantityDOM = rowDOM.querySelector("[data-title='Số lượng']").querySelector("span");
                                     let stockDOM = rowDOM.querySelector("[data-title='Kho']");
 
                                     // Cập nhật trạng thái xã kho
                                     btnLiquidateDOM.remove();
-                                    rowDOM.querySelector("[data-title='Thao tác']").innerHTML += btnRecoverLiquidatedHTML(categoryID, productID, sku);
-                                    quantityDOM.innerHTML = '<a target="_blank" href="/thong-ke-san-pham?SKU=' + skuDOM.innerText + '">0</a>'
+                                    rowDOM.querySelector(".update-button").innerHTML += btnRecoverLiquidatedHTML(categoryID, productID, sku);
+                                    quantityDOM.innerHTML = '<a target="_blank" href="/thong-ke-san-pham?SKU=' + skuDOM.innerText + '">0</a>';
                                     stockDOM.innerHTML = '<span class="bg-red">Hết hàng</span>';
 
                                     setTimeout(function () {
@@ -609,8 +609,6 @@
                                             title: "Thông báo",
                                             text: "Xã kho thành công!",
                                             type: "success"
-                                        }, function () {
-                                            hiddenProduct(categoryID, productID, sku);
                                         });
                                     }, 500);
                                 }
@@ -647,14 +645,14 @@
                                 if (data) {
                                     let btnRecoverLiquidatedDOM = document.querySelector(".recover-liquidation-product-" + productID);
                                     let rowDOM = btnRecoverLiquidatedDOM.parentElement.parentElement;
-                                    let skuDOM = rowDOM.querySelector("[data-title='Mã']");
-                                    let quantityDOM = rowDOM.querySelector("[data-title='Số lượng']");
+                                    let skuDOM = rowDOM.querySelector("[data-title='Mã']").querySelector(".customer-name-link");
+                                    let quantityDOM = rowDOM.querySelector("[data-title='Số lượng']").querySelector("span");
                                     let stockDOM = rowDOM.querySelector("[data-title='Kho']");
 
                                     // Cập nhật trạng thái xã kho
                                     btnRecoverLiquidatedDOM.remove();
-                                    rowDOM.querySelector("[data-title='Thao tác']").innerHTML += btnLiquidateHTML(categoryID, productID, sku);
-                                    quantityDOM.innerHTML = '<a target="_blank" href="/thong-ke-san-pham?SKU=' + skuDOM.innerText + '">' + data.TotalProductInstockQuantityLeft  + '</a>'
+                                    rowDOM.querySelector(".update-button").innerHTML += btnLiquidateHTML(categoryID, productID, sku);
+                                    quantityDOM.innerHTML = '<a target="_blank" href="/thong-ke-san-pham?SKU=' + skuDOM.innerText + '">' + data.TotalProductInstockQuantityLeft + '</a>';
                                     stockDOM.innerHTML = '<span class="bg-green">Còn hàng</span>';
 
                                     setTimeout(function () {
@@ -662,8 +660,6 @@
                                             title: "Thông báo", 
                                             text: "Phục hồi xã kho thành công!", 
                                             type: "success"
-                                        }, function () {
-                                            unhiddenProduct(categoryID, productID, sku);
                                         });
                                     }, 500);
                                 }
@@ -794,6 +790,7 @@
                     });
                 }, 1000);
             };
+
             function copyProductID() {
                 $("body").append("<div class='copy-product-id hide'></div>");
 

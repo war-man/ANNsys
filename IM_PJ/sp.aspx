@@ -8,11 +8,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=yes">
     <meta name="format-detection" content="telephone=no">
     <meta name="robots" content="noindex, nofollow">
-    <link rel="stylesheet" href="/App_Themes/Ann/css/style.css?v=25062020" media="all">
-    <link rel="stylesheet" href="/App_Themes/Ann/css/style-P.css?v=25062020" media="all">
-    <link href="/App_Themes/Ann/css/HoldOn.css?v=25062020" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="/App_Themes/Ann/css/style.css?v=02072020" media="all">
+    <link rel="stylesheet" href="/App_Themes/Ann/css/style-P.css?v=02072020" media="all">
+    <link href="/App_Themes/Ann/css/HoldOn.css?v=02072020" rel="stylesheet" type="text/css" />
     <link href="/App_Themes/NewUI/js/select2/select2.css" rel="stylesheet" />
-    <link rel="stylesheet" href="/App_Themes/Ann/css/style-sp.css?v=25062020" media="all">
+    <link rel="stylesheet" href="/App_Themes/Ann/css/style-sp.css?v=02072020" media="all">
     <script type="text/javascript" src="/App_Themes/Ann/js/jquery-2.1.3.min.js"></script>
     <link href="/App_Themes/NewUI/js/sweet/sweet-alert.css" rel="stylesheet" />
     <script src="/App_Themes/NewUI/js/select2/select2.min.js"></script>
@@ -230,12 +230,12 @@
             <script src="/App_Themes/Ann/js/bootstrap.min.js"></script>
             <script src="/App_Themes/Ann/js/bootstrap-table/bootstrap-table.js"></script>
             <script src="/App_Themes/NewUI/js/sweet/sweet-alert.min.js"></script>
-            <script src="/App_Themes/Ann/js/master.js?v=25062020"></script>
-            <script src="/App_Themes/Ann/js/copy-product-info.js?v=25062020"></script>
-            <script src="/App_Themes/Ann/js/services/common/product-service.js?v=25062020"></script>
-            <script src="/App_Themes/Ann/js/sync-product-small.js?v=25062020"></script>
-            <script src="/App_Themes/Ann/js/download-product-image.js?v=25062020"></script>
-            <script src="/App_Themes/Ann/js/HoldOn.js?v=25062020"></script>
+            <script src="/App_Themes/Ann/js/master.js?v=02072020"></script>
+            <script src="/App_Themes/Ann/js/copy-product-info.js?v=02072020"></script>
+            <script src="/App_Themes/Ann/js/services/common/product-service.js?v=02072020"></script>
+            <script src="/App_Themes/Ann/js/sync-product-small.js?v=02072020"></script>
+            <script src="/App_Themes/Ann/js/download-product-image.js?v=02072020"></script>
+            <script src="/App_Themes/Ann/js/HoldOn.js?v=02072020"></script>
 
             <script type="text/javascript">
 
@@ -356,6 +356,124 @@
                 function isBlank(str) {
                     return (!str || /^\s*$/.test(str));
                 }
+
+                function liquidateProduct(categoryID, productID, sku) {
+                    swal({
+                        title: "Xác nhận",
+                        text: "Bạn muốn xả kho sản phẩm này?",
+                        type: "warning",
+                        showCancelButton: true,
+                        closeOnConfirm: true,
+                        cancelButtonText: "Để em xem lại...",
+                        confirmButtonText: "Đúng rồi sếp!",
+                    }, function (confirm) {
+                        if (confirm) {
+                            HoldOn.open();
+                            ProductService.liquidate(productID)
+                                .then(data => {
+                                    if (data) {
+                                        let btnLiquidateDOM = document.querySelector(".liquidation-product-" + productID);
+                                        let rowDOM = btnLiquidateDOM.parentElement;
+
+                                        // Cập nhật trạng thái xã kho
+                                        btnLiquidateDOM.remove();
+                                        rowDOM.innerHTML += btnRecoverLiquidatedHTML(categoryID, productID, sku);
+
+                                        setTimeout(function () {
+                                            swal({
+                                                title: "Thông báo",
+                                                text: "Xã kho thành công!",
+                                                type: "success"
+                                            });
+                                        }, 500);
+                                    }
+                                    else {
+                                        setTimeout(function () {
+                                            swal("Thông báo", "Có lỗi trong qua trình xã kho", "error");
+                                        }, 500);
+                                    }
+                                })
+                                .catch(err => {
+                                    setTimeout(function () {
+                                        swal("Thông báo", "Có lỗi trong qua trình xã kho", "error");
+                                    }, 500);
+                                })
+                                .finally(() => { HoldOn.close(); });
+                        }
+                    });
+                }
+
+                function recoverLiquidatedProduct(categoryID, productID, sku) {
+                    swal({
+                        title: "Xác nhận",
+                        text: "Bạn muốn phục hồi xã kho?",
+                        type: "warning",
+                        showCancelButton: true,
+                        closeOnConfirm: true,
+                        cancelButtonText: "Để em xem lại...",
+                        confirmButtonText: "Đúng rồi sếp!",
+                    }, function (confirm) {
+                        if (confirm) {
+                            HoldOn.open();
+                            ProductService.recoverLiquidated(productID, sku)
+                                .then(data => {
+                                    if (data) {
+                                        let btnRecoverLiquidatedDOM = document.querySelector(".recover-liquidation-product-" + productID);
+                                        let rowDOM = btnRecoverLiquidatedDOM.parentElement;
+
+                                        // Cập nhật trạng thái xã kho
+                                        btnRecoverLiquidatedDOM.remove();
+                                        rowDOM.innerHTML += btnLiquidateHTML(categoryID, productID, sku);
+
+                                        setTimeout(function () {
+                                            swal({
+                                                title: "Thông báo",
+                                                text: "Phục hồi xã kho thành công!",
+                                                type: "success"
+                                            });
+                                        }, 500);
+                                    }
+                                    else {
+                                        setTimeout(function () {
+                                            swal("Thông báo", "Có lỗi trong qua trình phục hồi lại xã kho", "error");
+                                        }, 500);
+                                    }
+                                })
+                                .catch(err => {
+                                    setTimeout(function () {
+                                        swal("Thông báo", "Có lỗi trong qua trình phục hồi lại xã kho", "error");
+                                    }, 500);
+                                })
+                                .finally(() => { HoldOn.close(); });
+                        }
+                    });
+                }
+
+                function btnLiquidateHTML(categoryID, productID, sku) {
+                    let strHTML = "";
+
+                    strHTML += "<a href='javascript:;' ";
+                    strHTML += "       title='Xả kho' ";
+                    strHTML += "       class='liquidation-product-" + productID + " btn primary-btn btn-red h45-btn' ";
+                    strHTML += "       onclick='liquidateProduct(" + categoryID + ", " + productID + ", `" + sku + "`);'>";
+                    strHTML += "   <i class='glyphicon glyphicon-trash' aria-hidden='true'></i> Xả kho";
+                    strHTML += "</a>";
+
+                    return strHTML;
+                };
+
+                function btnRecoverLiquidatedHTML(categoryID, productID, sku) {
+                    let strHTML = "";
+
+                    strHTML += "<a href='javascript:;' ";
+                    strHTML += "       title='Phục hồi xả kho' ";
+                    strHTML += "       class='recover-liquidation-product-" + productID + " btn primary-btn btn-green h45-btn' ";
+                    strHTML += "       onclick='recoverLiquidatedProduct(" + categoryID + ", " + productID + ", `" + sku + "`);'>";
+                    strHTML += "   <i class='glyphicon glyphicon-repeat' aria-hidden='true'></i> Phục hồi kho";
+                    strHTML += "</a>";
+
+                    return strHTML;
+                };
             </script>
         </div>
     </form>

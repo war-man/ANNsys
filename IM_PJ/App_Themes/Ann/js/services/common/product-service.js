@@ -64,16 +64,10 @@
                     "bansithoitrang.net",
                     "quanaoxuongmay.com",
                     "annshop.vn",
-                    "panpan.vn"
+                    "panpan.vn",
+                    "thoitrangann.com",
+                    "nhapsionline.com"
                 ];
-                let web_dobo = ["chuyensidobo.com"];
-                let web_vaydam = ["damgiasi.vn"];
-
-                if (categoryID == 18)
-                    web = web.concat(web_dobo);
-                if (categoryID == 17)
-                    web = web.concat(web_vaydam);
-
                 web.forEach((page, index) => {
                     if (page)
                         return false;
