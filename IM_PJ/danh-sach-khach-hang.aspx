@@ -106,7 +106,7 @@
                 $("#<%= btnSearch.ClientID%>").click();
             }
 
-            function sendSMSIntroAPP(customerPhone) {
+            function sendSMSIntroAPP(obj, customerPhone) {
                 $.ajax({
                     type: "POST",
                     url: "/danh-sach-khach-hang.aspx/sendSMSIntroAPP",
@@ -115,9 +115,14 @@
                     dataType: "json",
                     success: function (msg) {
                         if (msg.d == "true")
+                        {
+                            $(obj).hide();
                             swal("Thông báo", "Đã gửi tin SMS giới thiệu app!", "success");
-                        else  
+                        }
+                        else
+                        {
                             swal("Thông báo", msg.d, "error");
+                        }
                     },
                     error: function (xmlhttprequest, textstatus, errorthrow) {
                         alert("lỗi");

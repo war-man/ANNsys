@@ -110,7 +110,7 @@ namespace IM_PJ.Controllers
         {
             using (var dbe = new inventorymanagementEntities())
             {
-                tbl_Customer ui = dbe.tbl_Customer.Where(a => a.CustomerPhone == customerPhone).SingleOrDefault();
+                tbl_Customer ui = dbe.tbl_Customer.Where(a => a.CustomerPhone == customerPhone).FirstOrDefault();
                 if (ui != null)
                 {
                     ui.SendSMSIntroApp = 1;

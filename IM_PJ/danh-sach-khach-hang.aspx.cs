@@ -177,6 +177,8 @@ namespace IM_PJ
         [WebMethod]
         public static string sendSMSIntroAPP(string customerPhone)
         {
+            string customerPhoneWith84 = "84" + customerPhone.Substring(1, 9);
+
             string error = String.Empty;
 
             var httpWebRequest = (HttpWebRequest)WebRequest.Create("http://xuongann.com/api/sms/intro-app");
@@ -187,7 +189,7 @@ namespace IM_PJ
             {
                 string json = JsonConvert.SerializeObject(new
                 {
-                    phone = customerPhone
+                    phone = customerPhoneWith84
                 });
 
                 streamWriter.Write(json);
@@ -195,6 +197,7 @@ namespace IM_PJ
 
             try
             {
+                
                 var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
 
                 if (httpResponse.StatusCode == HttpStatusCode.OK)
@@ -220,11 +223,9 @@ namespace IM_PJ
 
                             if (respone == null)
                             {
-                                error = "Đã có lỗi trong quá trính convert giá trị JSON API SMS trả về";
+                                error = "Đã có lỗi trong quá trình convert giá trị JSON API SMS trả về";
                                 return error;
                             }
-
-                            
 
                             return respone.Message;
                         }
@@ -494,8 +495,8 @@ namespace IM_PJ
                         
                         if (viettel.Any(item.CustomerPhone.StartsWith) || vinaphone.Any(item.CustomerPhone.StartsWith))
                         {
-                            string phoneWith84 = "84" + item.CustomerPhone.Substring(1, 9);
-                            html.Append("       <a href='javascript:;' onclick='sendSMSIntroAPP(`" + phoneWith84 + "`)' title='Gửi tin giới thiệu app' class='btn primary-btn btn-yellow h45-btn'><i class='fa fa-paper-plane-o' aria-hidden='true'></i></a>");
+                            
+                            html.Append("       <a href='javascript:;' onclick='sendSMSIntroAPP($(this), `" + item.CustomerPhone + "`)' title='Gửi tin giới thiệu app' class='btn primary-btn btn-yellow h45-btn'><i class='fa fa-paper-plane-o' aria-hidden='true'></i></a>");
                         }
                     }
                     html.Append("   </td>");
