@@ -106,6 +106,22 @@ namespace IM_PJ.Controllers
                     return null;
             }
         }
+        public static string UpdateSendSMSIntroApp(string customerPhone)
+        {
+            using (var dbe = new inventorymanagementEntities())
+            {
+                tbl_Customer ui = dbe.tbl_Customer.Where(a => a.CustomerPhone == customerPhone).SingleOrDefault();
+                if (ui != null)
+                {
+                    ui.SendSMSIntroApp = 1;
+
+                    int kq = dbe.SaveChanges();
+                    return kq.ToString();
+                }
+                else
+                    return null;
+            }
+        }
         #endregion
         #region Select
         public static tbl_Customer GetByPhone(string CustomerPhone)

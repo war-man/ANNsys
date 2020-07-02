@@ -114,7 +114,10 @@
                     contentType: "application/json; charset=utf-8",
                     dataType: "json",
                     success: function (msg) {
-                        swal("Thông báo", "Đã gửi tin SMS giới thiệu app!", "success");
+                        if (msg.d == "true")
+                            swal("Thông báo", "Đã gửi tin SMS giới thiệu app!", "success");
+                        else  
+                            swal("Thông báo", msg.d, "error");
                     },
                     error: function (xmlhttprequest, textstatus, errorthrow) {
                         alert("lỗi");

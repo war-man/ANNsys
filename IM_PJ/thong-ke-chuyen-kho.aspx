@@ -156,7 +156,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
-                    <h3 class="page-title left">Thống kê nhập kho <span>(<asp:Literal ID="ltrNumberOfProduct" runat="server" EnableViewState="false"></asp:Literal>)</span></h3>
+                    <h3 class="page-title left">Thông kê chuyển kho <span>(<asp:Literal ID="ltrNumberOfProduct" runat="server" EnableViewState="false"></asp:Literal>)</span></h3>
                 </div>
             </div>
             <div class="row">
@@ -172,9 +172,9 @@
                                 </div>
                                 <div class="col-md-2 col-xs-6">
                                     <asp:DropDownList ID="ddlStock" runat="server" CssClass="form-control">
-                                        <asp:ListItem Value="0" Text="Chọn kho"></asp:ListItem>
-                                        <asp:ListItem Value="1" Text="Kho 1"></asp:ListItem>
-                                        <asp:ListItem Value="2" Text="kho 2"></asp:ListItem>
+                                        <asp:ListItem Value="0" Text="Hướng chuyển kho"></asp:ListItem>
+                                        <asp:ListItem Value="1" Text="Kho 2 -> Kho 1"></asp:ListItem>
+                                        <asp:ListItem Value="2" Text="Kho 1 -> Kho 2"></asp:ListItem>
                                     </asp:DropDownList>
                                 </div>
                                 <div class="col-md-2 col-xs-6">

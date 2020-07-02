@@ -195,113 +195,54 @@ namespace IM_PJ
 
             try
             {
-                using (var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse())
+                var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
+
+                if (httpResponse.StatusCode == HttpStatusCode.OK)
                 {
-                    using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
-                    {
-                        var result = JsonConvert.DeserializeObject<SMSBrandNameRespondModel>(streamReader.ReadToEnd());
+                    CustomerController.UpdateSendSMSIntroApp(customerPhone);
+                    return "true";
+                }
+                else
+                    return "Đã có lỗi xảy ra bên api http://xuongann.com/api/sms/intro-app (Status Code != 200(OK))";
+            }
+            catch (WebException e)
+            {
+                using (WebResponse response = e.Response)
+                {
+                    var httpResponse = (HttpWebResponse)response;
+                    Console.WriteLine("Error code: {0}", httpResponse.StatusCode);
 
-                        if (result == null)
+                    if (httpResponse.StatusCode == HttpStatusCode.BadRequest)
+                        using (Stream data = response.GetResponseStream())
+                        using (var reader = new StreamReader(data))
                         {
-                            error = "Đã có lỗi trong quá trính convert giá trị JSON API SMS trả về";
-                            return error;
-                        }
+                            var respone = JsonConvert.DeserializeObject<IntroAppRespondErrorModel>(reader.ReadToEnd());
 
-                        if (result.errorCode == "000")
-                        {
-                            error = String.Empty;
+                            if (respone == null)
+                            {
+                                error = "Đã có lỗi trong quá trính convert giá trị JSON API SMS trả về";
+                                return error;
+                            }
+
+                            
+
+                            return respone.Message;
                         }
-                        else if (result.errorCode == "001")
-                            error = "Có lỗi giá trị không phù hợp với kiểu dữ liệu mô tả";
-                        else if (result.errorCode == "002")
-                            error = "Loại tin không hợp lệ";
-                        else if (result.errorCode == "003")
-                            error = "Loại tin không được phép gửi";
-                        else if (result.errorCode == "005")
-                            error = "Số điện thoại nhận không hợp lệ";
-                        else if (result.errorCode == "006")
-                            error = "Mã nhà mạng không hợp lệ";
-                        else if (result.errorCode == "007")
-                            error = "Nội dung chứa từ bị khóa";
-                        else if (result.errorCode == "008")
-                            error = "Nội dung chứa ký tự unicode";
-                        else if (result.errorCode == "009")
-                            error = "Nội dung có ký tự không hợp lệ";
-                        else if (result.errorCode == "010")
-                            error = "Độ dài nội dung không hợp lệ";
-                        else if (result.errorCode == "011")
-                            error = "Nội dung không khớp với mẫu khai";
-                        else if (result.errorCode == "012")
-                            error = "Tài khoản không được phân gửi tới nhà mạng";
-                        else if (result.errorCode == "013")
-                            error = "Số điện thoại nhận trong danh sách cấm gửi";
-                        else if (result.errorCode == "014")
-                            error = "Tài khoản không đủ tiền để chi trả";
-                        else if (result.errorCode == "015")
-                            error = "Tài khoảng không đủ tin để gửi";
-                        else if (result.errorCode == "016")
-                            error = "Thời gian gửi tin không hợp lệ";
-                        else if (result.errorCode == "017")
-                            error = "Mã order không hợp lệ";
-                        else if (result.errorCode == "018")
-                            error = "Mã gói không hợp lệ";
-                        else if (result.errorCode == "019")
-                            error = "Số điện thoại không hợp lệ";
-                        else if (result.errorCode == "020")
-                            error = "Số điện thoại không trong danh sách nhà mạng được lọc";
-                        else if (result.errorCode == "021")
-                            error = "Gửi vào thời điểm bị cấm gửi quảng cáo";
-                        else if (result.errorCode == "022")
-                            error = "Định dạnh nội dung không hợp lệ";
-                        else if (result.errorCode == "100")
-                            error = "Token không hợp lệ";
-                        else if (result.errorCode == "101")
-                            error = "Tài khoản bị khóa";
-                        else if (result.errorCode == "102")
-                            error = "Tài khoản không đúng";
-                        else if (result.errorCode == "304")
-                            error = "Tin bị lặp trong 5 phút";
-                        else if (result.errorCode == "801")
-                            error = "Mẫu tin chưa được thiết lập";
-                        else if (result.errorCode == "802")
-                            error = "Tài khoản chưa được thiết lập profile";
-                        else if (result.errorCode == "803")
-                            error = "Tài khoản chưa được thiết lập giá";
-                        else if (result.errorCode == "804")
-                            error = "Đường gửi tin chưa được thiết lập";
-                        else if (result.errorCode == "805")
-                            error = "Đường gửi tin không hỗ trợ unicode";
-                        else if (result.errorCode == "904")
-                            error = "Brandname không hợp lệ";
-                        else if (result.errorCode == "999")
-                            error = "Lỗi khác trên hệ thống";
-                        else
-                            error = "Đã có vấn đề trong post API SMS BrandName";
-                    }
+                    else
+                        return "Đã có lỗi xảy ra bên api http://xuongann.com/api/sms/intro-app  (Status Code != 400(BadRequest))";
                 }
             }
-            catch (WebException ex)
+            catch (Exception e)
             {
-                return new StreamReader(ex.Response.GetResponseStream()).ReadToEnd();
+                return e.Message;
             }
-
-
-            if (String.IsNullOrEmpty(error))
-                return "true";
-            else
-                return error;
         }
 
-        public class SMSBrandNameRespondModel
+        public class IntroAppRespondErrorModel
         {
-            public SMSBrandNameSendMessageModel sendMessage { get; set; }
-            public int msgLength { get; set; }
-            public int mtCount { get; set; }
-            public string account { get; set; }
-            public string errorCode { get; set; }
-            public string errorMessage { get; set; }
-            public string referentId { get; set; }
+            public string Message { get; set; }
         }
+
         public class SMSBrandNameSendMessageModel
         {
             public string to { get; set; }

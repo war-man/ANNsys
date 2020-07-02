@@ -160,10 +160,10 @@ namespace IM_PJ
             html.AppendLine("        <th class='image-column'>Ảnh</th>");
             html.AppendLine("        <th class='name-column'>Sản phẩm</th>");
             html.AppendLine("        <th class='sku-column'>Mã</th>");
-            html.AppendLine("        <th class='stock-column'>Nhập mới</th>");
+            html.AppendLine("        <th class='stock-column'>Số lượng</th>");
             html.AppendLine("        <th class='stock-column'>Kho hiện tại</th>");
             html.AppendLine("        <th class='category-column'>Danh mục</th>");
-            html.AppendLine("        <th class='date-column'>Ngày nhập</th>");
+            html.AppendLine("        <th class='date-column'>Ngày chuyển</th>");
             html.AppendLine("        <th class='action-column'></th>");
             html.AppendLine("    </tr>");
             html.AppendLine("</thead>");
@@ -215,12 +215,12 @@ namespace IM_PJ
                         html.AppendLine("            </a>");
                         html.AppendLine("        </td>");
                         html.AppendLine(String.Format("        <td data-title='Mã' class='customer-name-link'>{0}</td>", subItem.sku));
-                        html.AppendLine(String.Format("        <td data-title='Nhập mới'>{0:N0}</td>", subItem.quantityTransfer));
+                        html.AppendLine(String.Format("        <td data-title='Số lượng'>{0:N0}</td>", subItem.quantityTransfer));
                         html.AppendLine("        <td data-title='Kho hiện tại'>");
                         html.AppendLine(String.Format("            <a target='_blank' href='/thong-ke-san-pham?SKU={0}'>{1:N0}</a>", subItem.sku, subItem.quantityAvailable));
                         html.AppendLine("        </td>");
                         html.AppendLine("        <td data-title='Danh mục'></td>");
-                        html.AppendLine(String.Format("        <td data-title='Ngày nhập'>{0:dd/MM/yyyy HH:mm}</td>", subItem.transferDate));
+                        html.AppendLine(String.Format("        <td data-title='Ngày chuyển'>{0:dd/MM/yyyy HH:mm}</td>", subItem.transferDate));
                         html.AppendLine("        <td data-title='Thao tác' class='update-button'></td>");
                         html.AppendLine("</tr>");
                     }
