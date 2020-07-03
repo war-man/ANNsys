@@ -759,6 +759,34 @@ namespace IM_PJ.Controllers
             }
         }
 
+        public static RefundPromotion getPromotion(int customerID)
+        {
+            var result = new RefundPromotion
+            {
+                IsPromotion = false,
+                DecreasePrice = 0
+            };
+
+            #region Kiểm tra điều kiện để đc khuyến mãi
+            var isUserApp = UserController.checkExists(customerID);
+
+            if (!isUserApp)
+                return result;
+
+            var now = DateTime.Now;
+
+            if (now < new DateTime(year: 2020, month: 7, day: 3))
+                return result;
+            if (now > new DateTime(year: 2020, month: 7, day: 31))
+                return result;
+            #endregion
+
+            result.IsPromotion = true;
+            result.DecreasePrice = 10e3;
+
+            return result;
+        }
+
         #endregion
         public class RefundReport
         {
@@ -785,6 +813,12 @@ namespace IM_PJ.Controllers
             public string CreatedBy { get; set; }
             public string RefundNote { get; set; }
             public Nullable<int> OrderSaleID { get; set; }
+        }
+
+        public class RefundPromotion
+        {
+            public bool IsPromotion { get; set; }
+            public double DecreasePrice { get; set; }
         }
     }
 }

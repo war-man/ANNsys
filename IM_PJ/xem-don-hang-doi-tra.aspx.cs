@@ -222,6 +222,10 @@ namespace IM_PJ
                             feeRefundDefault = config.FeeChangeProduct.Value;
                         }
 
+                        var refundPromotion = RefundGoodController.getPromotion(cusID);
+                        if (refundPromotion.IsPromotion)
+                            feeRefundDefault = (feeRefundDefault - refundPromotion.DecreasePrice) < 0 ? 0 : feeRefundDefault - refundPromotion.DecreasePrice;
+
                         ltrInfo.Text += "<div class='form-row refund-info'>";
                         if (feeRefundDefault == 0)
                         {
