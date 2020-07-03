@@ -775,7 +775,7 @@ namespace IM_PJ.Controllers
 
             var now = DateTime.Now;
 
-            if (now < new DateTime(year: 2020, month: 7, day: 3))
+            if (now < new DateTime(year: 2020, month: 7, day: 1))
                 return result;
             if (now > new DateTime(year: 2020, month: 7, day: 31))
                 return result;

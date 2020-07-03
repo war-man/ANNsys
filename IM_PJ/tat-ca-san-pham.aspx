@@ -373,10 +373,10 @@
             </div>
         </div>
 
-        <script src="/App_Themes/Ann/js/copy-product-info.js?v=02072020"></script>
-        <script src="/App_Themes/Ann/js/sync-product-v2.js?v=02072020"></script>
-        <script src="/App_Themes/Ann/js/download-product-image.js?v=02072020"></script>
-        <script src="/App_Themes/Ann/js/services/common/product-service.js?v=02072020"></script>
+        <script src="/App_Themes/Ann/js/copy-product-info.js?v=03072020"></script>
+        <script src="/App_Themes/Ann/js/sync-product-v2.js?v=03072020"></script>
+        <script src="/App_Themes/Ann/js/download-product-image.js?v=03072020"></script>
+        <script src="/App_Themes/Ann/js/services/common/product-service.js?v=03072020"></script>
         
         <script type="text/javascript">
             $("#<%=txtSearchProduct.ClientID%>").keyup(function (e) {
@@ -604,13 +604,13 @@
                                     quantityDOM.innerHTML = '<a target="_blank" href="/thong-ke-san-pham?SKU=' + skuDOM.innerText + '">0</a>';
                                     stockDOM.innerHTML = '<span class="bg-red">Hết hàng</span>';
 
-                                    setTimeout(function () {
-                                        swal({
-                                            title: "Thông báo",
-                                            text: "Xã kho thành công!",
-                                            type: "success"
-                                        });
-                                    }, 500);
+                                    //setTimeout(function () {
+                                    //    swal({
+                                    //        title: "Thông báo",
+                                    //        text: "Xã kho thành công!",
+                                    //        type: "success"
+                                    //    });
+                                    //}, 500);
                                 }
                                 else {
                                     setTimeout(function () {

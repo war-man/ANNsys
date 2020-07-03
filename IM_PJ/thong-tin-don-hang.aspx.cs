@@ -215,6 +215,14 @@ namespace IM_PJ
                     ltrViewDetail.Text += "<a href='chi-tiet-khach-hang?id=" + customerID + "' class='btn primary-btn fw-btn not-fullwidth edit-customer-btn' target='_blank'><i class='fa fa-pencil-square-o' aria-hidden='true'></i> Sửa</a>";
                     ltrViewDetail.Text += "<a href='danh-sach-don-hang?searchtype=1&textsearch=" + order.CustomerPhone + "' class='btn primary-btn fw-btn not-fullwidth edit-customer-btn' target='_blank'><i class='fa fa-history' aria-hidden='true'></i> Lịch sử</a>";
                     ltrViewDetail.Text += "<a href='javascript:;' class='btn primary-btn fw-btn not-fullwidth clear-btn' onclick='clearCustomerDetail()'><i class='fa fa-times' aria-hidden='true'></i> Bỏ</a>";
+                    if (UserController.checkExists(customerID))
+                    {
+                        ltrViewDetail.Text += "    <br><br><strong class='font-green'>Đã đăng ký App</strong>";
+                    }
+                    else
+                    {
+                        ltrViewDetail.Text += "    <br><br><strong class='font-red'>Chưa đăng ký App</strong>";
+                    }
                     var d = DiscountCustomerController.getbyCustID(customerID);
                     if (d.Count > 0)
                     {
@@ -222,7 +230,7 @@ namespace IM_PJ
                         hdfIsDiscount.Value = "1";
                         hdfDiscountAmount.Value = da.ToString();
                         hdfQuantityRequirement.Value = d[0].QuantityProduct.ToString();
-                        ltrDiscountInfo.Text = "<strong>* Chiết khấu của khách: " + string.Format("{0:N0}", Convert.ToDouble(da)) + " đ/cái (đơn từ " + d[0].QuantityProduct.ToString() + " cái).</strong>";
+                        ltrDiscountInfo.Text = "<strong>* Chiết khấu của khách: " + string.Format("{0:N0}", Convert.ToDouble(da)) + "/cái (đơn từ " + d[0].QuantityProduct.ToString() + " cái).</strong>";
                     }
                     else
                     {

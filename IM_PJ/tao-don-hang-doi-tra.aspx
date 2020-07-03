@@ -764,17 +764,17 @@
                 if (item.ProductStyle == 1) {
                     if (item.ChangeType == 1) {
                         html += "               <option value='2'>Đổi sản phẩm khác</option>\n";
-                        html += "               <option value='4'>Đổi SP (miễn phí)</option>\n";
+                        html += "               <option value='4'>Đổi sản phẩm khác (miễn phí)</option>\n";
                         html += "               <option value='3'>Đổi hàng lỗi</option>\n";
                     }
                     else if (item.ChangeType == 2) {
                         html += "               <option value='2' selected>Đổi sản phẩm khác</option>\n";
-                        html += "               <option value='4'>Đổi SP (miễn phí)</option>\n";
+                        html += "               <option value='4'>Đổi sản phẩm khác (miễn phí)</option>\n";
                         html += "               <option value='3'>Đổi hàng lỗi</option>\n";
                     }
                     else {
                         html += "               <option value='2'>Đổi sản phẩm khác</option>\n";
-                        html += "               <option value='4'>Đổi SP (miễn phí)</option>\n";
+                        html += "               <option value='4'>Đổi sản phẩm khác (miễn phí)</option>\n";
                         html += "               <option value='3' selected>Đổi hàng lỗi</option>\n";
                     }
                 }
@@ -782,19 +782,19 @@
                     if (item.ChangeType == 1) {
                         html += "               <option value='1' selected>Đổi size - màu</option>\n";
                         html += "               <option value='2'>Đổi sản phẩm khác</option>\n";
-                        html += "               <option value='4'>Đổi SP (miễn phí)</option>\n";
+                        html += "               <option value='4'>Đổi sản phẩm khác (miễn phí)</option>\n";
                         html += "               <option value='3'>Đổi hàng lỗi</option>\n";
                     }
                     else if (item.ChangeType == 2) {
                         html += "               <option value='1'>Đổi size - màu</option>\n";
                         html += "               <option value='2' selected>Đổi sản phẩm khác</option>\n";
-                        html += "               <option value='4'>Đổi SP (miễn phí)</option>\n";
+                        html += "               <option value='4'>Đổi sản phẩm khác (miễn phí)</option>\n";
                         html += "               <option value='3'>Đổi hàng lỗi</option>\n";
                     }
                     else {
                         html += "               <option value='1'>Đổi size - màu</option>\n";
                         html += "               <option value='2'>Đổi sản phẩm khác</option>\n";
-                        html += "               <option value='4'>Đổi SP (miễn phí)</option>\n";
+                        html += "               <option value='4'>Đổi sản phẩm khác (miễn phí)</option>\n";
                         html += "               <option value='3' selected>Đổi hàng lỗi</option>\n";
                     }
                 }

@@ -213,7 +213,7 @@ namespace IM_PJ
                             feeRefundDefault = discount.FeeRefund;
 
                             ltrInfo.Text += "<div class='form-row discount-info'>";
-                            ltrInfo.Text += String.Format("    <strong>* Chiết khấu của khách: {0:0,0}đ/cái. (đơn từ {1:N0} cái)</strong>", discount.DiscountAmount, discount.QuantityProduct);
+                            ltrInfo.Text += String.Format("    <strong>* Chiết khấu của khách: {0:0,0}/cái. (đơn từ {1:N0} cái)</strong>", discount.DiscountAmount, discount.QuantityProduct);
                             ltrInfo.Text += "</div>";
                         }
                         else
@@ -233,14 +233,20 @@ namespace IM_PJ
                         }
                         else
                         {
-                            ltrInfo.Text += String.Format("    <strong>* Phí đổi trả hàng: {0:0,0}đ/cái.</strong>", feeRefundDefault);
+                            ltrInfo.Text += String.Format("    <strong>* Phí đổi trả hàng: {0:0,0}/cái.</strong>", feeRefundDefault);
                         }
                         ltrInfo.Text += "</div>";
 
                         if (UserController.checkExists(cusID))
                         {
                             ltrInfo.Text += "<div class='form-row refund-info'>";
-                            ltrInfo.Text += "    <strong>* Khách hàng đã đăng ký sử dụng ANN (IOS | Android)</strong>";
+                            ltrInfo.Text += "    <strong class='font-green'>Đã đăng ký App</strong>";
+                            ltrInfo.Text += "</div>";
+                        }
+                        else
+                        {
+                            ltrInfo.Text += "<div class='form-row refund-info'>";
+                            ltrInfo.Text += "    <strong class='font-red'>Chưa đăng ký App</strong>";
                             ltrInfo.Text += "</div>";
                         }
                         #endregion
@@ -341,7 +347,7 @@ namespace IM_PJ
                                 else if (item.RefundType == 2)
                                     refuntTypeName = "Đổi sản phẩm khác";
                                 else if (item.RefundType == 4)
-                                    refuntTypeName = "Đổi SP (miễn phí)";
+                                    refuntTypeName = "Đổi sản phẩm khác (miễn phí)";
                                 else
                                     refuntTypeName = "Đổi hàng lỗi";
                                 html += refuntTypeName;

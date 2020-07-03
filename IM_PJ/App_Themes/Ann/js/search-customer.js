@@ -12,7 +12,7 @@ function getCustomerDiscount(custID) {
             if (msg.d !== "null") {
                 var data = JSON.parse(msg.d);
 
-                $(".discount-info").html("<strong>* Chiết khấu của khách: " + formatThousands(data.Discount, ",") + "đ/cái (đơn từ " + data.QuantityProduct + " cái).</strong>").show();
+                $(".discount-info").html("<strong>* Chiết khấu của khách: " + formatThousands(data.Discount, ",") + "/cái (đơn từ " + data.QuantityProduct + " cái).</strong>").show();
 
                 let strHTML = "";
 
@@ -20,13 +20,16 @@ function getCustomerDiscount(custID) {
                     strHTML += "<strong>* Miễn phí đổi hàng</strong>";
                 }
                 else {
-                    strHTML += "<strong>* Phí đổi trả hàng: " + formatThousands(data.FeeRefund, ",") + "đ/cái.</strong>";
+                    strHTML += "<strong>* Phí đổi trả hàng: " + formatThousands(data.FeeRefund, ",") + "/cái.</strong>";
                     strHTML += "<br><strong>* Số lượng đổi trả miễn phí: " + data.RefundQuantityNoFee + " cái.</strong>"
                     strHTML += "<br><strong>* Số lượng đổi trả có phí: " + data.RefundQuantityFee + " cái.</strong>"
                 }
 
                 if (data.IsUserApp) {
-                    strHTML += "<br><strong>* Khách hàng đã đăng ký sử dụng ANN (IOS | Android)</strong>";
+                    strHTML += "<br><br><strong class='font-green'>Đã đăng ký App</strong>";
+                }
+                else {
+                    strHTML += "<br><br><strong class='font-red'>Chưa đăng ký App</strong>";
                 }
 
                 $(".refund-info").html(strHTML).show();
