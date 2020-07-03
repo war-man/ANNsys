@@ -147,6 +147,24 @@ namespace IM_PJ.Controllers
             public int Status { get; set; }
             public DateTime CreatedDate { get; set; }
         }
+
+        public static bool checkExists(int userID)
+        {
+            using (var con = new inventorymanagementEntities())
+            {
+                var customer = con.tbl_Customer.Where(x => x.ID == userID).SingleOrDefault();
+
+                if (customer == null)
+                    return false;
+
+                var exists = con.Users.Where(x =>
+                    (x.Phone == customer.CustomerPhone) ||
+                    (x.Phone == customer.CustomerPhone2)
+                ).Any();
+
+                return exists;
+            }
+        }
         #endregion
 
     }

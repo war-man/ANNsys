@@ -204,24 +204,16 @@ namespace IM_PJ
                         ltrInfo.Text += "    <a href='javascript:;' class='btn primary-btn fw-btn not-fullwidth' onclick='viewCustomerDetail(`" + cusID + "`)'><i class='fa fa-address-card-o' aria-hidden='true'></i> Xem</a>";
                         ltrInfo.Text += "</div>";
 
+                        #region Thông tin phí đổi tra
                         double feeRefundDefault = 0;
+
                         var discount = DiscountCustomerController.getbyCustID(cusID).FirstOrDefault();
                         if (discount != null)
                         {
                             feeRefundDefault = discount.FeeRefund;
 
                             ltrInfo.Text += "<div class='form-row discount-info'>";
-                            ltrInfo.Text += String.Format("<strong>* Chiết khấu của khách: {0:0,0}đ/cái. (đơn từ {1:N0} cái)</strong>", discount.DiscountAmount, discount.QuantityProduct);
-                            ltrInfo.Text += "</div>";
-                            ltrInfo.Text += "<div class='form-row refund-info'>";
-                            if (discount.FeeRefund == 0)
-                            {
-                                ltrInfo.Text += "<strong>* Miễn phí đổi hàng</strong>";
-                            }
-                            else
-                            {
-                                ltrInfo.Text += String.Format("<strong>* Phí đổi trả hàng: {0:0,0}đ/cái.</strong>", discount.FeeRefund);
-                            }
+                            ltrInfo.Text += String.Format("    <strong>* Chiết khấu của khách: {0:0,0}đ/cái. (đơn từ {1:N0} cái)</strong>", discount.DiscountAmount, discount.QuantityProduct);
                             ltrInfo.Text += "</div>";
                         }
                         else
@@ -229,7 +221,27 @@ namespace IM_PJ
                             var config = ConfigController.GetByTop1();
                             feeRefundDefault = config.FeeChangeProduct.Value;
                         }
-                        
+
+                        ltrInfo.Text += "<div class='form-row refund-info'>";
+                        if (feeRefundDefault == 0)
+                        {
+                            ltrInfo.Text += "    <strong>* Miễn phí đổi hàng</strong>";
+                        }
+                        else
+                        {
+                            ltrInfo.Text += String.Format("    <strong>* Phí đổi trả hàng: {0:0,0}đ/cái.</strong>", feeRefundDefault);
+                        }
+                        ltrInfo.Text += "</div>";
+
+                        if (UserController.checkExists(cusID))
+                        {
+                            ltrInfo.Text += "<div class='form-row refund-info'>";
+                            ltrInfo.Text += "    <strong>* Khách hàng đã đăng ký sử dụng ANN (IOS | Android)</strong>";
+                            ltrInfo.Text += "</div>";
+                        }
+                        #endregion
+
+
                         ltrTotal.Text = string.Format("{0:N0}", Convert.ToDouble(r.TotalPrice));
                         ltrQuantity.Text = string.Format("{0:N0}", Convert.ToDouble(r.TotalQuantity));
                         ltrRefund.Text = string.Format("{0:N0}", Convert.ToDouble(r.TotalRefundFee));
@@ -324,6 +336,8 @@ namespace IM_PJ
                                     refuntTypeName = "Đổi size";
                                 else if (item.RefundType == 2)
                                     refuntTypeName = "Đổi sản phẩm khác";
+                                else if (item.RefundType == 4)
+                                    refuntTypeName = "Đổi SP (miễn phí)";
                                 else
                                     refuntTypeName = "Đổi hàng lỗi";
                                 html += refuntTypeName;

@@ -181,9 +181,12 @@ namespace IM_PJ
             var config = ConfigController.GetByTop1();
             // Khởi tao object json
             var ci = new CustomerGroup();
+            var isUserApp = UserController.checkExists(userID: ID);
 
             if (discount != null)
             {
+                // Phí đổi trả
+                var feeRefund = discount.FeeRefund;
                 // Tính số lượng hàng trã có phí
                 var refundQuantityFee = Convert.ToInt32(discount.NumOfProductCanChange - discount.RefundQuantityNoFee);
                 // Tính số lượng hàng đổi trả trong 30 ngày
@@ -193,19 +196,36 @@ namespace IM_PJ
                 var quantityNoFree = discount.RefundQuantityNoFee - (customer != null ? Convert.ToInt32(customer.refundNoFeeQuantity) : 0);
                 var quantityFree = refundQuantityFee - (customer != null ? Convert.ToInt32(customer.refundFeeQuantity) : 0);
 
+                quantityNoFree = quantityNoFree > 0 ? quantityNoFree : 0;
+                quantityFree = quantityFree > 0 ? quantityFree : 0;
+
+                if (isUserApp)
+                {
+                    feeRefund = feeRefund - 10e3;
+
+                    if (feeRefund <= 0)
+                    {
+                        feeRefund = 0;
+                        quantityNoFree = quantityFree + quantityNoFree;
+                        quantityFree = 0;
+                    }
+                }
+
                 ci.Discount = discount.DiscountAmount.ToString();
                 ci.QuantityProduct = discount.QuantityProduct;
-                ci.FeeRefund = discount.FeeRefund.ToString();
+                ci.FeeRefund = feeRefund.ToString();
                 ci.DaysExchange = Convert.ToInt32(discount.NumOfDateToChangeProduct);
-                ci.RefundQuantityNoFee = quantityNoFree > 0 ? quantityNoFree : 0;
-                ci.RefundQuantityFee = quantityFree > 0 ? quantityFree : 0;
-
+                ci.RefundQuantityNoFee = quantityNoFree;
+                ci.RefundQuantityFee = quantityFree;
+                ci.IsUserApp = isUserApp;
 
                 JavaScriptSerializer serializer = new JavaScriptSerializer();
                 return serializer.Serialize(ci);
             }
             else if (config != null)
             {
+                // Phí đổi trả
+                var feeRefund = config.FeeChangeProduct;
                 // Tính số lượng hàng trã có phí
                 var refundQuantityFee = config.NumOfProductCanChange.HasValue ? Convert.ToInt32(config.NumOfProductCanChange.Value) : 0;
                 // Tính số lượng hàng đổi trả trong 30 ngày
@@ -214,14 +234,17 @@ namespace IM_PJ
                 var toDate = now.Date;
                 var customer = CustomerController.getRefundQuantity(ID, fromDate, toDate).FirstOrDefault();
                 var quantityFree = refundQuantityFee - (customer != null ? Convert.ToInt32(customer.refundNoFeeQuantity) : 0) - (customer != null ? Convert.ToInt32(customer.refundFeeQuantity) : 0);
-                
+
+                if (isUserApp)
+                    feeRefund = (feeRefund - 10e3) < 0 ? 0 : feeRefund - 10e3;
 
                 ci.Discount = config.FeeDiscountPerProduct.ToString();
                 ci.QuantityProduct = 0;
-                ci.FeeRefund = config.FeeChangeProduct.ToString();
+                ci.FeeRefund = feeRefund.ToString();
                 ci.DaysExchange = Convert.ToInt32(config.NumOfDateToChangeProduct);
                 ci.RefundQuantityNoFee = 0;
-                ci.RefundQuantityFee = quantityFree > 0 ? refundQuantityFee : 0;
+                ci.RefundQuantityFee = quantityFree > 0 ? quantityFree : 0;
+                ci.IsUserApp = isUserApp;
 
                 JavaScriptSerializer serializer = new JavaScriptSerializer();
                 return serializer.Serialize(ci);
@@ -268,6 +291,7 @@ namespace IM_PJ
             public int DaysExchange { get; set; }
             public int RefundQuantityNoFee { get; set; }
             public int RefundQuantityFee { get; set; }
+            public bool IsUserApp { get; set; }
         }
 
         public class CustomerInfoWithDiscount

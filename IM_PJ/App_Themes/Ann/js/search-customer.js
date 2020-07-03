@@ -14,18 +14,23 @@ function getCustomerDiscount(custID) {
 
                 $(".discount-info").html("<strong>* Chiết khấu của khách: " + formatThousands(data.Discount, ",") + "đ/cái (đơn từ " + data.QuantityProduct + " cái).</strong>").show();
 
+                let strHTML = "";
+
                 if (data.FeeRefund == "0") {
-                    $(".refund-info").html("<strong>* Miễn phí đổi hàng</strong>").show();
+                    strHTML += "<strong>* Miễn phí đổi hàng</strong>";
                 }
                 else {
-                    let strHTML = "";
                     strHTML += "<strong>* Phí đổi trả hàng: " + formatThousands(data.FeeRefund, ",") + "đ/cái.</strong>";
                     strHTML += "<br><strong>* Số lượng đổi trả miễn phí: " + data.RefundQuantityNoFee + " cái.</strong>"
                     strHTML += "<br><strong>* Số lượng đổi trả có phí: " + data.RefundQuantityFee + " cái.</strong>"
-                    
-                    $(".refund-info").html(strHTML).show();
                 }
-                
+
+                if (data.IsUserApp) {
+                    strHTML += "<br><strong>* Khách hàng đã đăng ký sử dụng ANN (IOS | Android)</strong>";
+                }
+
+                $(".refund-info").html(strHTML).show();
+
                 if (data.Discount > 0)
                     $("input[id$='_hdfIsDiscount']").val("1");
                 else

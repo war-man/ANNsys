@@ -2,7 +2,7 @@
 
 <%@ Register Assembly="Telerik.Web.UI" Namespace="Telerik.Web.UI" TagPrefix="telerik" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
-    <script src="/App_Themes/Ann/js/search-customer.js?v=02072020"></script>
+    <script src="/App_Themes/Ann/js/search-customer.js?v=20200703145200"></script>
     <script src="/Scripts/moment.min.js"></script>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
@@ -608,6 +608,7 @@
                 let error = false;
                 let message = ""
 
+                let changeFeeOfCustomer = +$("#<%=hdfCustomerFeeChange.ClientID%>").val() || 0;
                 let refundNoFee = +$("#<%=hdfRefundQuantityNoFee.ClientID%>").val() || 0;
                 let refundFee = +$("#<%=hdfRefundQuantityFee.ClientID%>").val() || 0;
                 let totalRefundNow = +$(".totalProductQuantity").html().replace(/,/g, "") || 0;
@@ -636,9 +637,10 @@
                     message += 'Hiện tại: <strong>' + formatThousands(totalRefundNow, ',') + '</strong> cái<br/>';
                 }
 
-                // Kiểm tra nhưng sản phâm nào thuộc đổi 2: Đổi trả sản phẩm khác và có fee là 0 đồng
+                // Áp dụng cho trường hợp phí đổi trả của khách > 0
+                // Kiểm tra nhưng sản phâm nào thuộc (2: Đổi trả sản phẩm khác) và có fee là 0 đồng
                 // và số lượng nhập đổi trả miển phí lớn hơn sô lượng quy định thì thông báo
-                if (ChangeType == 2 && FeeRefund == 0 && totalRefundNoFeeNow > refundNoFee)
+                if (changeFeeOfCustomer > 0 && ChangeType == 2 && FeeRefund == 0 && totalRefundNoFeeNow > refundNoFee)
                 {
                     error = true;
                     message += '<h3><span class="label label-warning" style="text-align: left">Vượt quá số lượng đổi trả miễn phí:</span></h3><br/>';
@@ -654,7 +656,7 @@
                     let quantityRecommend = 0;
                     let confirmButtonText = "Vẫn thêm vào đơn";
 
-                    if (ChangeType == 2 && FeeRefund == 0 && totalRefundNoFeeNow > refundNoFee)
+                    if (changeFeeOfCustomer > 0 && ChangeType == 2 && FeeRefund == 0 && totalRefundNoFeeNow > refundNoFee)
                     {
                         quantityRecommend = Quantity - (totalRefundNoFeeNow - refundNoFee);
                         confirmButtonText = "Vẫn thêm vào đơn (" + quantityRecommend + " cái)";
@@ -672,7 +674,7 @@
                     }, function (confirm) {
                         if (confirm) {
 
-                            if (ChangeType == 2 && FeeRefund == 0 && totalRefundNoFeeNow > refundNoFee)
+                            if (changeFeeOfCustomer > 0 && ChangeType == 2 && FeeRefund == 0 && totalRefundNoFeeNow > refundNoFee)
                             {
                                 row.find(".quantityRefund").val(quantityRecommend);
                                 row.find(".quantityRefund").html(formatThousands(quantityRecommend, ","));
@@ -693,11 +695,9 @@
                             getAllPrice(update_by_hand = true);
                         }
                         else {
-                            if (ChangeType == 2 && FeeRefund == 0 && totalRefundNoFeeNow > refundNoFee) {
-                                row.find(".quantityRefund").val(quantityRefundOld);
-                                row.find(".quantityRefund").html(formatThousands(quantityRefundOld, ","));
-                                row.find(".quantityRefund").focus();
-                            }
+                            row.find(".quantityRefund").val(quantityRefundOld);
+                            row.find(".quantityRefund").html(formatThousands(quantityRefundOld, ","));
+                            row.find(".quantityRefund").focus();
                         }
                     });
                 }
@@ -764,14 +764,17 @@
                 if (item.ProductStyle == 1) {
                     if (item.ChangeType == 1) {
                         html += "               <option value='2'>Đổi sản phẩm khác</option>\n";
+                        html += "               <option value='4'>Đổi SP (miễn phí)</option>\n";
                         html += "               <option value='3'>Đổi hàng lỗi</option>\n";
                     }
                     else if (item.ChangeType == 2) {
                         html += "               <option value='2' selected>Đổi sản phẩm khác</option>\n";
+                        html += "               <option value='4'>Đổi SP (miễn phí)</option>\n";
                         html += "               <option value='3'>Đổi hàng lỗi</option>\n";
                     }
                     else {
                         html += "               <option value='2'>Đổi sản phẩm khác</option>\n";
+                        html += "               <option value='4'>Đổi SP (miễn phí)</option>\n";
                         html += "               <option value='3' selected>Đổi hàng lỗi</option>\n";
                     }
                 }
@@ -779,16 +782,19 @@
                     if (item.ChangeType == 1) {
                         html += "               <option value='1' selected>Đổi size - màu</option>\n";
                         html += "               <option value='2'>Đổi sản phẩm khác</option>\n";
+                        html += "               <option value='4'>Đổi SP (miễn phí)</option>\n";
                         html += "               <option value='3'>Đổi hàng lỗi</option>\n";
                     }
                     else if (item.ChangeType == 2) {
                         html += "               <option value='1'>Đổi size - màu</option>\n";
                         html += "               <option value='2' selected>Đổi sản phẩm khác</option>\n";
+                        html += "               <option value='4'>Đổi SP (miễn phí)</option>\n";
                         html += "               <option value='3'>Đổi hàng lỗi</option>\n";
                     }
                     else {
                         html += "               <option value='1'>Đổi size - màu</option>\n";
                         html += "               <option value='2'>Đổi sản phẩm khác</option>\n";
+                        html += "               <option value='4'>Đổi SP (miễn phí)</option>\n";
                         html += "               <option value='3' selected>Đổi hàng lỗi</option>\n";
                     }
                 }
