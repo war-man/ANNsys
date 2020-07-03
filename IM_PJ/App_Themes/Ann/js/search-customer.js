@@ -30,11 +30,8 @@ function getCustomerDiscount(custID) {
                 }
 
                 $(".refund-info").html(strHTML).show();
-
-                if (data.Discount > 0)
-                    $("input[id$='_hdfIsDiscount']").val("1");
-                else
-                    $("input[id$='_hdfIsDiscount']").val(0);
+                
+                $("input[id$='_hdfIsDiscount']").val(data.IsDiscount ? 1 : 0);
                 $("input[id$='_hdfDiscountAmount']").val(data.Discount);
                 $("input[id$='_hdfQuantityRequirement']").val(data.QuantityProduct);
                 $("input[id$='_hdfCustomerFeeChange']").val(data.FeeRefund);

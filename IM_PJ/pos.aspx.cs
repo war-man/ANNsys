@@ -180,8 +180,11 @@ namespace IM_PJ
             var discount = DiscountCustomerController.getbyCustID(ID).FirstOrDefault();
             var config = ConfigController.GetByTop1();
             // Khởi tao object json
-            var ci = new CustomerGroup();
+            bool isDiscount;
             var isUserApp = UserController.checkExists(userID: ID);
+            var ci = new CustomerGroup();
+            var promotion = RefundGoodController.getPromotion(customerID: ID);
+
 
             if (discount != null)
             {
@@ -196,12 +199,14 @@ namespace IM_PJ
                 var quantityNoFree = discount.RefundQuantityNoFee - (customer != null ? Convert.ToInt32(customer.refundNoFeeQuantity) : 0);
                 var quantityFree = refundQuantityFee - (customer != null ? Convert.ToInt32(customer.refundFeeQuantity) : 0);
 
+                isDiscount = discount.DiscountAmount > 0;
                 quantityNoFree = quantityNoFree > 0 ? quantityNoFree : 0;
                 quantityFree = quantityFree > 0 ? quantityFree : 0;
 
-                if (isUserApp)
+                if (promotion.IsPromotion)
                 {
-                    feeRefund = feeRefund - 10e3;
+                    isDiscount = true;
+                    feeRefund = feeRefund - promotion.DecreasePrice;
 
                     if (feeRefund <= 0)
                     {
@@ -211,6 +216,7 @@ namespace IM_PJ
                     }
                 }
 
+                ci.IsDiscount = isDiscount;
                 ci.Discount = discount.DiscountAmount.ToString();
                 ci.QuantityProduct = discount.QuantityProduct;
                 ci.FeeRefund = feeRefund.ToString();
@@ -235,9 +241,15 @@ namespace IM_PJ
                 var customer = CustomerController.getRefundQuantity(ID, fromDate, toDate).FirstOrDefault();
                 var quantityFree = refundQuantityFee - (customer != null ? Convert.ToInt32(customer.refundNoFeeQuantity) : 0) - (customer != null ? Convert.ToInt32(customer.refundFeeQuantity) : 0);
 
-                if (isUserApp)
-                    feeRefund = (feeRefund - 10e3) < 0 ? 0 : feeRefund - 10e3;
+                isDiscount = config.FeeDiscountPerProduct > 0;
 
+                if (promotion.IsPromotion)
+                {
+                    isDiscount = true;
+                    feeRefund = (feeRefund - promotion.DecreasePrice) < 0 ? 0 : feeRefund - promotion.DecreasePrice;
+                }
+
+                ci.IsDiscount = isDiscount;
                 ci.Discount = config.FeeDiscountPerProduct.ToString();
                 ci.QuantityProduct = 0;
                 ci.FeeRefund = feeRefund.ToString();
@@ -285,6 +297,7 @@ namespace IM_PJ
 
         public class CustomerGroup
         {
+            public bool IsDiscount { get; set; }
             public string Discount { get; set; }
             public int QuantityProduct { get; set; }
             public string FeeRefund { get; set; }
