@@ -988,6 +988,7 @@
     <Compile Include="chuyen-kho.aspx.designer.cs">
       <DependentUpon>chuyen-kho.aspx</DependentUpon>
     </Compile>
+    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Models\Pages\thong-ke-chuyen-kho\SubStockTransferReport.cs" />
     <Compile Include="Models\Pages\thong-ke-chuyen-kho\StockTransferReport.cs" />
     <Compile Include="Models\PostWordpress.cs">
