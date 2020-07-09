@@ -2980,9 +2980,7 @@ namespace IM_PJ.Controllers
 
                 var customer = con.tbl_Customer
                     .Where(x =>
-                        x.CustomerPhone.Equals(phone) ||
-                        x.CustomerPhone2.Equals(phone) ||
-                        x.CustomerPhoneBackup.Equals(phone)
+                        x.CustomerPhone.Equals(phone)
                     )
                     .FirstOrDefault();
 
