@@ -571,36 +571,6 @@ namespace IM_PJ.Controllers
                             x.CreatedDate <= filter.orderToDate
                         );
                     }
-
-                    // Table Order Detail
-                    orderDetail = orderDetail
-                        .Where(x => x.CreatedDate >= filter.orderFromDate)
-                        .Where(x => x.CreatedDate <= filter.orderToDate);
-
-                    // Table Bank Transfer
-                    bankTransfers = bankTransfers
-                        .Where(x => x.CreatedDate >= filter.orderFromDate)
-                        .Where(x => x.CreatedDate <= filter.orderToDate);
-
-                    // Table Delivery
-                    deliveries = deliveries
-                        .Where(x => x.CreatedDate >= filter.orderFromDate)
-                        .Where(x => x.CreatedDate <= filter.orderToDate);
-
-                    // Table Fee
-                    fees = fees
-                        .Where(x => x.CreatedDate >= filter.orderFromDate)
-                        .Where(x => x.CreatedDate <= filter.orderToDate);
-
-                    // Table Coupons
-                    coupons = coupons
-                        .Where(x => x.CreatedDate >= filter.orderFromDate)
-                        .Where(x => x.CreatedDate <= filter.orderToDate);
-
-                    // Table Refunds
-                    refundGoods = refundGoods
-                        .Where(x => x.CreatedDate >= filter.orderFromDate)
-                        .Where(x => x.CreatedDate <= filter.orderToDate);
                 }
                 // Filter Order Note
                 if (!String.IsNullOrEmpty(filter.orderNote))
@@ -3176,16 +3146,36 @@ namespace IM_PJ.Controllers
                 var orders = con.tbl_Order
                     .Where(x => x.CustomerID == customer.ID)
                     .Where(x => x.ExcuteStatus == (int)ExcuteStatus.Done)
+                    .Where(x => x.DateDone.HasValue)
                     .Where(x => x.DateDone >= fromDate)
                     .Where(x => x.DateDone <= toDate)
+                    .Select(x => new
+                    {
+                        CustomerID = x.CustomerID,
+                        ID = x.ID,
+                        DateDone = x.DateDone,
+                        TotalDiscount = x.TotalDiscount.HasValue ? x.TotalDiscount.Value : 0,
+                        FeeShipping = x.FeeShipping,
+                        RefundsGoodsID = x.RefundsGoodsID
+                    })
                     .OrderBy(o => o.ID);
                 #endregion
 
                 #region Kiếm những hóa đơn mà khách hàng đã đổi trả trong khoảng thời gian
                 var refunds = con.tbl_RefundGoods
                     .Where(x => x.CustomerID == customer.ID)
-                    .Where(x => x.CreatedDate >= fromDate)
-                    .Where(x => x.CreatedDate <= toDate)
+                    .Join(
+                        orders.Where(x => x.RefundsGoodsID.HasValue),
+                        rf => rf.ID,
+                        o => o.RefundsGoodsID,
+                        (rf, o) => rf
+                    )
+                    .Select(x => new {
+                        CustomerID = x.CustomerID,
+                        ID = x.ID,
+                        TotalRefundFee = String.IsNullOrEmpty(x.TotalRefundFee) ? "0" : x.TotalRefundFee,
+                        CreatedDate = x.CreatedDate
+                    })
                     .OrderBy(o => o.ID);
                 #endregion
 
@@ -3201,6 +3191,13 @@ namespace IM_PJ.Controllers
                         ord => ord.ID,
                         (det, ord) => det
                     )
+                    .Select(x => new {
+                        OrderID = x.OrderID.HasValue ? x.OrderID.Value : 0,
+                        ProductID = x.ProductID,
+                        ProductVariableID = x.ProductVariableID,
+                        Quantity = x.Quantity.HasValue ? x.Quantity.Value : 0,
+                        Price = x.Price.HasValue ? x.Price.Value : 0
+                    })
                     .OrderBy(o => o.ProductID)
                     .ThenBy(o => o.ProductVariableID);
 
@@ -3211,15 +3208,22 @@ namespace IM_PJ.Controllers
                         det => det.ProductID.Value,
                         (p, det) => new { orderDetial = det, product = p }
                     )
-                    .GroupBy(g => g.orderDetial.OrderID.Value)
+                    .Select(x => new {
+                        orderID = x.orderDetial.OrderID,
+                        quantityProduct = x.orderDetial.Quantity,
+                        costOfGoods = x.product.CostOfGood.HasValue ? x.product.CostOfGood.Value : 0,
+                        price = x.orderDetial.Price
+                    })
+                    .GroupBy(g => g.orderID)
                     .Select(x => new
                     {
                         orderID = x.Key,
-                        quantityProduct = x.Count(),
-                        costOfGoods = x.Sum(s => s.product.CostOfGood.HasValue ? s.product.CostOfGood.Value : 0),
-                        price = x.Sum(s => s.orderDetial.Price.HasValue ? s.orderDetial.Price.Value : 0)
+                        quantityProduct = x.Sum(s => s.quantityProduct),
+                        costOfGoods = x.Sum(s => s.costOfGoods * s.quantityProduct),
+                        price = x.Sum(s => s.price * s.quantityProduct)
                     })
-                    .OrderBy(o => o.orderID);
+                    .OrderBy(o => o.orderID)
+                    .ToList();
 
                 var variableOrdered = con.tbl_ProductVariable
                     .Join(
@@ -3228,15 +3232,22 @@ namespace IM_PJ.Controllers
                         det => det.ProductVariableID.Value,
                         (v, det) => new { orderDetial = det, variable = v }
                     )
-                    .GroupBy(g => g.orderDetial.OrderID.Value)
+                    .Select(x => new {
+                        orderID = x.orderDetial.OrderID,
+                        quantityProduct = x.orderDetial.Quantity,
+                        costOfGoods = x.variable.CostOfGood.HasValue ? x.variable.CostOfGood.Value : 0,
+                        price = x.orderDetial.Price
+                    })
+                    .GroupBy(g => g.orderID)
                     .Select(x => new
                     {
                         orderID = x.Key,
-                        quantityProduct = x.Count(),
-                        costOfGoods = x.Sum(s => s.variable.CostOfGood.HasValue ? s.variable.CostOfGood.Value : 0),
-                        price = x.Sum(s => s.orderDetial.Price.HasValue ? s.orderDetial.Price.Value : 0)
+                        quantityProduct = x.Sum(s => s.quantityProduct),
+                        costOfGoods = x.Sum(s => s.costOfGoods * s.quantityProduct),
+                        price = x.Sum(s => s.price * s.quantityProduct)
                     })
-                    .OrderBy(o => o.orderID);
+                    .OrderBy(o => o.orderID)
+                    .ToList();
                 #endregion
 
                 #endregion
@@ -3245,6 +3256,7 @@ namespace IM_PJ.Controllers
 
                 #region Lấy thông tin cho việc tính toán lợi nhuận trên từng đơn hàng
                 var profitInfo = orders
+                    .ToList()
                     .GroupJoin(
                         productOrdered,
                         o => o.ID,
@@ -3282,40 +3294,47 @@ namespace IM_PJ.Controllers
                         x => x.variableOrdered.DefaultIfEmpty(),
                         (parent, child) => new
                         {
-                            customerID = parent.order.ID,
+                            customerID = parent.order.CustomerID,
                             dateDone = parent.order.DateDone.Value,
                             orderID = parent.order.ID,
                             quantityProduct = parent.quantityProduct + (child != null ? child.quantityProduct : 0),
                             costOfGoods = parent.costOfGoods + (child != null ? child.costOfGoods : 0),
                             price = parent.price + (child != null ? child.price : 0),
-                            discount = parent.order.TotalDiscount.HasValue ? parent.order.TotalDiscount.Value : 0,
+                            discount = parent.order.TotalDiscount,
                             feeShipping = parent.order.FeeShipping
                         }
                     )
-                    .ToList()
-                    .GroupBy(g => new { customerID = g.customerID, dateDone = g.dateDone, orderID = g.orderID })
+                    .GroupBy(g => new { customerID = g.customerID, dateDone = g.dateDone.ToString("yyyy-MM-dd") })
                     .Select(x => new
                     {
                         customerID = x.Key.customerID,
                         dateDone = x.Key.dateDone,
+                        quantityOrder = x.Count(),
                         quantityProduct = x.Sum(s => s.quantityProduct),
                         costOfGoods = x.Sum(s => s.costOfGoods),
                         price = x.Sum(s => s.price),
                         discount = x.Sum(s => s.discount),
                         feeShipping = x.Sum(s => !String.IsNullOrEmpty(s.feeShipping) ? Convert.ToDouble(s.feeShipping) : 0)
-                    }
-                    )
-                    .OrderBy(o => o.dateDone);
+                    })
+                    .OrderBy(o => o.dateDone)
+                    .ToList();
                 #endregion
 
                 #region Lấy thông tin các hàng đổi trả
-                var refundDetail = refunds
+                var refundDetail = con.tbl_RefundGoodsDetails
                     .Join(
-                        con.tbl_RefundGoodsDetails,
-                        h => h.ID,
+                        refunds,
                         b => b.RefundGoodsID,
-                        (h, b) => b
-                    );
+                        h => h.ID,
+                        (b, h) => b
+                    )
+                    .Select(x => new {
+                        RefundGoodsID = x.RefundGoodsID.HasValue ? x.RefundGoodsID.Value : 0,
+                        ProductType = x.ProductType,
+                        SKU = x.SKU,
+                        Quantity = x.Quantity.HasValue ? x.Quantity.Value : 0,
+                        TotalPriceRow = String.IsNullOrEmpty(x.TotalPriceRow) ? "0" : x.TotalPriceRow
+                    });
 
                 var productRefund = con.tbl_Product
                     .Join(
@@ -3324,16 +3343,24 @@ namespace IM_PJ.Controllers
                         rfd => rfd.SKU,
                         (p, rfd) => new { refundDetail = rfd, product = p }
                     )
+                    .Select(x => new
+                    {
+                        refundID = x.refundDetail.RefundGoodsID,
+                        quantity = x.refundDetail.Quantity,
+                        refundCapital = x.product.CostOfGood.HasValue ? x.product.CostOfGood.Value : 0,
+                        refundMoney = x.refundDetail.TotalPriceRow
+                    })
                     .ToList()
-                    .GroupBy(g => g.refundDetail.RefundGoodsID.Value)
+                    .GroupBy(g => g.refundID)
                     .Select(x => new
                     {
                         refundID = x.Key,
-                        quantityProduct = x.Count(),
-                        refundCapital = x.Sum(s => s.product.CostOfGood.HasValue ? s.product.CostOfGood.Value : 0),
-                        refundMoney = x.Sum(s => Convert.ToInt32(s.refundDetail.TotalPriceRow))
+                        quantityProduct = x.Sum(s => s.quantity),
+                        refundCapital = x.Sum(s => s.refundCapital),
+                        refundMoney = x.Sum(s => Convert.ToInt32(s.refundMoney))
                     })
-                    .OrderBy(o => o.refundID);
+                    .OrderBy(o => o.refundID)
+                    .ToList();
 
                 var variableRefund = con.tbl_ProductVariable
                     .Join(
@@ -3342,14 +3369,21 @@ namespace IM_PJ.Controllers
                         rfd => rfd.SKU,
                         (v, rfd) => new { refundDetail = rfd, variable = v }
                     )
+                    .Select(x => new
+                    {
+                        refundID = x.refundDetail.RefundGoodsID,
+                        quantity = x.refundDetail.Quantity,
+                        refundCapital = x.variable.CostOfGood.HasValue ? x.variable.CostOfGood.Value : 0,
+                        refundMoney = x.refundDetail.TotalPriceRow
+                    })
                     .ToList()
-                    .GroupBy(g => g.refundDetail.RefundGoodsID.Value)
+                    .GroupBy(g => g.refundID)
                     .Select(x => new
                     {
                         refundID = x.Key,
-                        quantityProduct = x.Count(),
-                        refundCapital = x.Sum(s => s.variable.CostOfGood.HasValue ? s.variable.CostOfGood.Value : 0),
-                        refundMoney = x.Sum(s => Convert.ToInt32(s.refundDetail.TotalPriceRow))
+                        quantityProduct = x.Sum(s => s.quantity),
+                        refundCapital = x.Sum(s => s.refundCapital * s.quantity),
+                        refundMoney = x.Sum(s => Convert.ToInt32(s.refundMoney))
                     })
                     .OrderBy(o => o.refundID);
                 #endregion
@@ -3357,10 +3391,10 @@ namespace IM_PJ.Controllers
                 #endregion
 
                 #region Thực thi lấy dữ liệu từ dưới database lên
-                var refundFilter = refunds.ToList();
 
                 #region Thực thi lấy thông tin dữ liệu đỗi trả
-                var refundInfo = refundFilter
+                var refundInfo = refunds
+                    .ToList()
                     .GroupJoin(
                         productRefund,
                         rf => rf.ID,
@@ -3408,16 +3442,18 @@ namespace IM_PJ.Controllers
                         refundMoney = (x.productRefund != null ? x.productRefund.refundMoney : 0) + (x.variableRefund != null ? x.variableRefund.refundMoney : 0),
                         refundFee = x.refund != null ? Convert.ToInt32(x.refund.TotalRefundFee) : 0,
                     })
-                    .GroupBy(g => new { customerID = g.customerID, dateDone = g.dateDone, refundID = g.refundID })
+                    .GroupBy(g => new { customerID = g.customerID, dateDone = g.dateDone.ToString("yyyy-MM-dd") })
                     .Select(x => new {
                         customerID = x.Key.customerID,
                         dateDone = x.Key.dateDone,
+                        quantityRefund = x.Count(),
                         quantityProduct = x.Sum(s => s.quantityProduct),
                         refundCapital = x.Sum(s => s.refundCapital),
                         refundMoney = x.Sum(s => s.refundMoney),
                         refundFee = x.Sum(s => s.refundFee)
                     })
-                    .OrderBy(o => o.dateDone);
+                    .OrderBy(o => o.dateDone)
+                    .ToList();
                 #endregion
 
                 #region Tổng hợp các dữ liệu cần lấy
@@ -3434,7 +3470,7 @@ namespace IM_PJ.Controllers
                     .GroupJoin(
                         profitInfo,
                         d => d.dateDone.ToString("yyyy-MM-dd"),
-                        p => p.dateDone.ToString("yyyy-MM-dd"),
+                        p => p.dateDone,
                         (d, p) => new
                         {
                             data = d,
@@ -3452,7 +3488,7 @@ namespace IM_PJ.Controllers
                     .GroupJoin(
                         refundInfo,
                         temp => temp.data.dateDone.ToString("yyyy-MM-dd"),
-                        rf => rf.dateDone.ToString("yyyy-MM-dd"),
+                        rf => rf.dateDone,
                         (tem, rf) => new
                         {
                             data = tem.data,
@@ -3470,21 +3506,20 @@ namespace IM_PJ.Controllers
                         }
                     )
                     .Where(x => x.profit != null || x.refund != null)
-                    .GroupBy(g => g.data.dateDone.ToString("yyyy-MM-dd"))
                     .Select(x => new OrderInfoModel()
                     {
-                        dateDone = DateTime.Parse(x.Key),
-                        quantityOrder = x.Sum(s => s.profit != null ? 1 : 0),
-                        quantityProduct = x.Sum(s => s.profit != null ? s.profit.quantityProduct : 0),
-                        costOfGoods = x.Sum(s => s.profit != null ? s.profit.costOfGoods : 0),
-                        price = x.Sum(s => s.profit != null ? s.profit.price : 0),
-                        discount = x.Sum(s => s.profit != null ? s.profit.discount : 0),
-                        feeShipping = x.Sum(s => s.profit != null ? s.profit.feeShipping : 0),
-                        quantityRefund = x.Sum(s => s.refund != null ? s.refund.quantityProduct : 0),
-                        quantityProductRefund = x.Sum(s => s.refund != null ?  s.refund.quantityProduct : 0),
-                        refundCapital = x.Sum(s => s.refund != null ? s.refund.refundCapital : 0),
-                        refundMoney = x.Sum(s => s.refund != null ? s.refund.refundMoney : 0),
-                        refundFee = x.Sum(s => s.refund != null ? s.refund.refundFee : 0)
+                        dateDone = x.data.dateDone,
+                        quantityOrder = x.profit != null ? x.profit.quantityOrder : 0,
+                        quantityProduct = x.profit != null ? Convert.ToInt32(x.profit.quantityProduct) : 0,
+                        costOfGoods = x.profit != null ? x.profit.costOfGoods : 0,
+                        price = x.profit != null ? x.profit.price : 0,
+                        discount = x.profit != null ? x.profit.discount : 0,
+                        feeShipping = x.profit != null ? x.profit.feeShipping : 0,
+                        quantityRefund = x.refund != null ? x.refund.quantityRefund : 0,
+                        quantityProductRefund = x.refund != null ? Convert.ToInt32(x.refund.quantityProduct) : 0,
+                        refundCapital = x.refund != null ? x.refund.refundCapital : 0,
+                        refundMoney = x.refund != null ? x.refund.refundMoney : 0,
+                        refundFee = x.refund != null ? x.refund.refundFee : 0
                     })
                     .OrderBy(o => o.dateDone)
                     .ToList();
