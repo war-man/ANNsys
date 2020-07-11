@@ -512,7 +512,10 @@ namespace IM_PJ
                     html.AppendLine("   <td data-title='Mã' class='customer-name-link'>" + item.ProductSKU + "</td>");
                     html.AppendLine("   <td data-title='Giá sỉ'>" + string.Format("{0:N0}", item.RegularPrice) + (item.OldPrice > 0 ? " <span class='old-price'>" + string.Format("{0:N0}", item.OldPrice) + "</span>" : "") + "</td>");
                     html.AppendLine("   <td data-title='Giá lẻ'>" + string.Format("{0:N0}", item.RetailPrice) + "</td>");
-                    html.AppendLine("   <td data-title='Số lượng'>" + string.Format("{0:N0}", item.TotalProductInstockQuantityLeft) + "</td>");
+                    var strStock2Quantity = String.Empty;
+                    if (item.HasStock2)
+                        strStock2Quantity = String.Format("<br>(Kho 2: {0:N0})", item.Stock2Quantity);
+                    html.AppendLine(String.Format("   <td data-title='Số lượng'>{1:N0}{2}</td>", item.ProductSKU, item.TotalProductInstockQuantityLeft, strStock2Quantity));
                     html.AppendLine("   <td data-title='Kho'>" + item.ProductInstockStatus + "</td>");
                     html.AppendLine("   <td data-title='Danh mục'>" + item.CategoryName + "</td>");
                     string date = string.Format("<strong>{0:dd/MM/yyyy}</strong>", item.CreatedDate);
