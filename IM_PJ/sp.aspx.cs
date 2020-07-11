@@ -152,8 +152,10 @@ namespace IM_PJ
                     {
                         html.Append("   <p>🔖 " + content.Substring(0, content.Length > 100 ? 100 : content.Length) + "</p>");
                     }
-
-                    html.Append(String.Format("   <p class='product-number' data-sku='{0}' data-product-id='{1}'>🔖 {2} ({3:N0} cái)</p>", item.ProductSKU, item.ID, item.ProductInstockStatus, item.TotalProductInstockQuantityLeft));
+                    var strStock2Quantity = String.Empty;
+                    if (item.HasStock2)
+                        strStock2Quantity = String.Format(" (Kho 2: {0:N0} cái)", item.Stock2Quantity);
+                    html.Append(String.Format("   <p class='product-number' data-sku='{0}' data-product-id='{1}'>🔖 {2} ({3:N0} cái){4}</p>", item.ProductSKU, item.ID, item.ProductInstockStatus, item.TotalProductInstockQuantityLeft, strStock2Quantity));
                     html.Append("   <p>🔖 " + string.Format("{0:dd/MM/yyyy}", item.CreatedDate) + "</p>");
                     html.Append("     </div>");
                     html.Append("</div>");

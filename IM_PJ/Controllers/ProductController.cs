@@ -398,7 +398,6 @@ namespace IM_PJ.Controllers
                 return ags;
             }
         }
-        
         public static List<ProductSQL> GetProductReport(int categoryID)
         {
             var list = new List<ProductSQL>();
@@ -466,7 +465,7 @@ namespace IM_PJ.Controllers
             sql.AppendLine("     INTO #StockProduct");
             sql.AppendLine("     FROM");
             sql.AppendLine("             #Product AS PRD");
-            sql.AppendLine("     INNER JOIN tbl_StockManager AS STM");
+            sql.AppendLine("     INNER JOIN StockManager2 AS STM");
             sql.AppendLine("         ON  PRD.ProductStyle = 1");
             sql.AppendLine("         AND PRD.ID = STM.ParentID");
             sql.AppendLine("     ORDER BY");
@@ -489,7 +488,7 @@ namespace IM_PJ.Controllers
             sql.AppendLine("     INTO #StockProductVariable");
             sql.AppendLine("     FROM");
             sql.AppendLine("             #Product AS PRD");
-            sql.AppendLine("     INNER JOIN tbl_StockManager AS STM");
+            sql.AppendLine("     INNER JOIN StockManager2 AS STM");
             sql.AppendLine("         ON  PRD.ProductStyle = 2");
             sql.AppendLine("         AND PRD.ID = STM.ParentID");
             sql.AppendLine("     ORDER BY");
@@ -623,6 +622,7 @@ namespace IM_PJ.Controllers
             reader.Close();
             return list.ToList();
         }
+        
         public static List<ProductSQL> GetProductAPI(int categoryID, int limit, int showHomePage, int minQuantity, int changeProductName)
         {
             var list = new List<ProductSQL>();
@@ -1099,6 +1099,7 @@ namespace IM_PJ.Controllers
                 sql.AppendLine(String.Format("        OR PRD.ProductTitle like N'%{0}%'", filter.search));
                 sql.AppendLine(String.Format("        OR PRD.UnSignedTitle like N'%{0}%'", filter.search));
                 sql.AppendLine(String.Format("        OR PRD.Materials like N'%{0}%'", filter.search));
+                sql.AppendLine(String.Format("        OR PRD.ProductContent like N'%{0}%'", filter.search));
                 sql.AppendLine("    )");
             }
             #endregion
