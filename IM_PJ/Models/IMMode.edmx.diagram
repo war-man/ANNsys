@@ -64,7 +64,6 @@
         <EntityTypeShape EntityType="inventorymanagementModel.tbl_ProductVariableImage" Width="1.5" PointX="6.75" PointY="23.75" IsExpanded="true" />
         <EntityTypeShape EntityType="inventorymanagementModel.tbl_ProductVariableValue" Width="1.5" PointX="8.75" PointY="23.75" IsExpanded="true" />
         <EntityTypeShape EntityType="inventorymanagementModel.tbl_Province" Width="1.5" PointX="10.75" PointY="23.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="inventorymanagementModel.tbl_RefundGoods" Width="1.5" PointX="22.75" PointY="23.75" IsExpanded="true" />
         <EntityTypeShape EntityType="inventorymanagementModel.tbl_RefundGoodsDetails" Width="1.5" PointX="24.75" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="inventorymanagementModel.tbl_Role" Width="1.5" PointX="24.75" PointY="7.75" IsExpanded="true" />
         <EntityTypeShape EntityType="inventorymanagementModel.tbl_SessionInOu" Width="1.5" PointX="24.75" PointY="11.75" IsExpanded="true" />
@@ -80,6 +79,7 @@
         <EntityTypeShape EntityType="inventorymanagementModel.ZaloIndustry" Width="1.5" PointX="16.75" PointY="26.75" IsExpanded="true" />
         <EntityTypeShape EntityType="inventorymanagementModel.PostWordpress" Width="1.5" PointX="0.75" PointY="27.75" />
         <EntityTypeShape EntityType="inventorymanagementModel.NotificationCategory" Width="1.5" PointX="3.375" PointY="27.75" />
+        <EntityTypeShape EntityType="inventorymanagementModel.tbl_RefundGoods" Width="1.5" PointX="5.375" PointY="27.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

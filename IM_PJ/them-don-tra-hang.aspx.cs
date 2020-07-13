@@ -244,7 +244,7 @@ namespace IM_PJ
                             //insert ddlstatus, refundnote
                             int status = ddlRefundStatus.SelectedValue.ToInt();
                             string RefundsNote = txtRefundsNote.Text;
-                            int rID = RefundGoodController.Insert(AgentID, totalprice, status, custID, Convert.ToDouble(totalquantity),
+                            int rID = RefundGoodController.Insert(AgentID, totalprice, status, custID, Convert.ToInt32(totalquantity),
                                 totalrefund, agentName, cust.CustomerName, cust.CustomerPhone, currentDate, username, RefundsNote);
                             if (rID > 0)
                             {
