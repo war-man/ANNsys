@@ -31,5 +31,7 @@ namespace IM_PJ.Models
         public Nullable<System.DateTime> ModifiedDate { get; set; }
         public string ModifiedBy { get; set; }
         public Nullable<bool> IsCount { get; set; }
+        public int CostOfGood { get; set; }
+        public double TotalCostOfGood { get; set; }
     }
 }

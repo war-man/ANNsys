@@ -15,7 +15,7 @@ namespace IM_PJ.Controllers
     public class RefundGoodController
     {
         #region CRUD
-        public static int Insert(int AgentID, string TotalPrice, int Status, int CustomerID, double TotalQuantity, string TotalRefundFee,
+        public static int Insert(int AgentID, string TotalPrice, int Status, int CustomerID, int TotalQuantity, string TotalRefundFee,
             string AgentName, string CustomerName, string CustomerPhone, DateTime CreatedDate, string CreatedBy, string RefundNote)
         {
             using (var dbe = new inventorymanagementEntities())

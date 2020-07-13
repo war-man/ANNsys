@@ -9,7 +9,7 @@ BEGIN
 END
 
 -- Khoi tao column
---BEGIN
+-- BEGIN
 --    -- Order
 --    BEGIN
 --        IF COL_LENGTH('tbl_OrderDetail', 'TotalCostOfGood') IS NOT NULL
@@ -27,7 +27,7 @@ END
 --        END
 
 --        ALTER TABLE tbl_OrderDetail 
---        ADD [CostOfGood] INT NOT NULL 
+--        ADD [CostOfGood] MONEY NOT NULL 
 --        CONSTRAINT [DF_tbl_OrderDetail_CostOfGood] DEFAULT 0
 --        WITH VALUES;
 
@@ -60,11 +60,11 @@ END
 --        END
 
 --        ALTER TABLE tbl_Order
---        ADD [TotalCostOfGood] INT NOT NULL 
+--        ADD [TotalCostOfGood] MONEY NOT NULL 
 --        CONSTRAINT [DF_tbl_Order_TotalCostOfGood] DEFAULT 0
 --        WITH VALUES;
 --    END
---END
+-- END
 
 BEGIN
     SET NOCOUNT ON; 
@@ -118,7 +118,7 @@ BEGIN
         @ProductStyle INT,
         @SKU NVARCHAR(255),
         @Quantity INT,
-        @COGS INT;
+        @COGS MONEY;
 
     -- Cap nhat Order
     BEGIN

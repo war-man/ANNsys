@@ -294,7 +294,7 @@ namespace IM_PJ
                             string kq = CustomerController.Update(custID, CustomerName, checkCustomer.CustomerPhone, CustomerAddress, "", checkCustomer.CustomerLevelID.Value, checkCustomer.Status.Value, checkCustomer.CreatedBy, currentDate, username, false, Zalo, Facebook, checkCustomer.Note, Nick, checkCustomer.Avatar, checkCustomer.ShippingType.Value, checkCustomer.PaymentType.Value, checkCustomer.TransportCompanyID.Value, checkCustomer.TransportCompanySubID.Value, checkCustomer.CustomerPhone2, ProvinceID, DistrictID, WardID);
 
                             double totalPrice = Convert.ToDouble(hdfTotalPrice.Value);
-                            double totalQuantity = Convert.ToDouble(hdfTotalQuantity.Value);
+                            int totalQuantity = Convert.ToInt32(hdfTotalQuantity.Value);
                             double totalRefund = Convert.ToDouble(hdfTotalRefund.Value);
                             int OrderSaleID = hdfOrderSaleID.Value.ToInt(0);
                             

@@ -9,7 +9,7 @@ BEGIN
 END
 
 -- Khoi tao column
---BEGIN
+-- BEGIN
 --    -- Refund
 --    BEGIN
 --        IF COL_LENGTH('tbl_RefundGoodsDetails', 'TotalCostOfGood') IS NOT NULL
@@ -27,7 +27,7 @@ END
 --        END
 
 --        ALTER TABLE tbl_RefundGoodsDetails 
---        ADD [CostOfGood] INT NOT NULL 
+--        ADD [CostOfGood] MONEY NOT NULL 
 --        CONSTRAINT [DF_tbl_RefundGoodsDetails_CostOfGood] DEFAULT 0
 --        WITH VALUES;
 
@@ -64,7 +64,7 @@ END
 --        CONSTRAINT [DF_tbl_RefundGoods_TotalCostOfGood] DEFAULT 0
 --        WITH VALUES;
 --    END
---END
+-- END
 
 BEGIN
     SET NOCOUNT ON; 
@@ -118,7 +118,7 @@ BEGIN
         @ProductStyle INT,
         @SKU NVARCHAR(255),
         @Quantity INT,
-        @COGS INT;
+        @COGS MONEY;
 
     -- Cap nhat Refund
     BEGIN
