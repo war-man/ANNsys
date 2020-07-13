@@ -842,7 +842,7 @@
                 let parentSKU = $("#<%=txtProductSKU.ClientID%>").val();
                 let $variation = $(".item-var-gen");
                 let $variationNew = $variation.first();
-                let $ddlVariationValue = $variationNew.find("select[name='ddlVariableValue']").first();
+                let $ddlVariationValue = $variationNew.find("select[name='ddlVariableValue']");
 
                 // Cài đặt màu background default cho div biến thể
                 $variationNew.css("background-color", "#fff");
@@ -857,9 +857,11 @@
                     .attr("data-file-name", "/App_Themes/Ann/image/placeholder.png");
                 $variationNew.find(".btn-delete").addClass("hide");
                 // Drop down list biến thể
-                $ddlVariationValue.parent().find(".select2-container--default").remove();
-                $ddlVariationValue.attr("data-pre", "");
-                $ddlVariationValue.select2().val("").trigger("change");
+                $.each($ddlVariationValue, function () {
+                    $(this).parent().find(".select2-container--default").remove();
+                    $(this).attr("data-pre", "");
+                    $(this).select2().val("").trigger("change");
+                });
                 // Input Variation SKU
                 $variationNew.find(".productvariablesku").val(parentSKU);
             }
