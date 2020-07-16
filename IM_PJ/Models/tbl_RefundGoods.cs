@@ -31,6 +31,6 @@ namespace IM_PJ.Models
         public Nullable<int> OrderSaleID { get; set; }
         public string UserHelp { get; set; }
         public int TotalQuantity { get; set; }
-        public int TotalCostOfGood { get; set; }
+        public decimal TotalCostOfGood { get; set; }
     }
 }

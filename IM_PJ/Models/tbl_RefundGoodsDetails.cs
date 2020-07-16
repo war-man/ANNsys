@@ -37,7 +37,7 @@ namespace IM_PJ.Models
         public string CreatedBy { get; set; }
         public Nullable<System.DateTime> ModifiedDate { get; set; }
         public string ModifiedBy { get; set; }
-        public int CostOfGood { get; set; }
-        public double TotalCostOfGood { get; set; }
+        public decimal CostOfGood { get; set; }
+        public Nullable<double> TotalCostOfGood { get; set; }
     }
 }

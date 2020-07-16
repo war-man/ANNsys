@@ -213,7 +213,7 @@ BEGIN
             BEGIN
                 SELECT
                     @Quantity = SUM(ISNULL(OD.Quantity, 0))
-                ,   @COGS = SUM(ISNULL(OD.CostOfGood, 0))
+                ,   @COGS = SUM(ISNULL(OD.TotalCostOfGood, 0))
                 FROM
                     tbl_OrderDetail AS OD
                 WHERE

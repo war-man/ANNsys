@@ -60,6 +60,6 @@ namespace IM_PJ.Models
         public Nullable<int> GHTKFee { get; set; }
         public Nullable<double> Weight { get; set; }
         public int TotalQuantity { get; set; }
-        public int TotalCostOfGood { get; set; }
+        public decimal TotalCostOfGood { get; set; }
     }
 }

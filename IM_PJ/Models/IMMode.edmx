@@ -884,7 +884,7 @@
           <Property Name="GHTKFee" Type="int" />
           <Property Name="Weight" Type="float" />
           <Property Name="TotalQuantity" Type="int" Nullable="false" />
-          <Property Name="TotalCostOfGood" Type="int" Nullable="false" />
+          <Property Name="TotalCostOfGood" Type="money" Nullable="false" />
         </EntityType>
         <EntityType Name="tbl_OrderDetail">
           <Key>
@@ -907,8 +907,8 @@
           <Property Name="ModifiedDate" Type="datetime" />
           <Property Name="ModifiedBy" Type="nvarchar(max)" />
           <Property Name="IsCount" Type="bit" />
-          <Property Name="CostOfGood" Type="int" Nullable="false" />
-          <Property Name="TotalCostOfGood" Type="float" StoreGeneratedPattern="Computed" Nullable="false" />
+          <Property Name="CostOfGood" Type="money" Nullable="false" />
+          <Property Name="TotalCostOfGood" Type="float" StoreGeneratedPattern="Computed" />
         </EntityType>
         <EntityType Name="tbl_OrderReturnGood">
           <Key>
@@ -1103,7 +1103,7 @@
           <Property Name="OrderSaleID" Type="int" />
           <Property Name="UserHelp" Type="nvarchar(max)" />
           <Property Name="TotalQuantity" Type="int" Nullable="false" />
-          <Property Name="TotalCostOfGood" Type="int" Nullable="false" />
+          <Property Name="TotalCostOfGood" Type="money" Nullable="false" />
         </EntityType>
         <EntityType Name="tbl_RefundGoodsDetails">
           <Key>
@@ -1132,8 +1132,8 @@
           <Property Name="CreatedBy" Type="nvarchar(max)" />
           <Property Name="ModifiedDate" Type="datetime" />
           <Property Name="ModifiedBy" Type="nvarchar(max)" />
-          <Property Name="CostOfGood" Type="int" Nullable="false" />
-          <Property Name="TotalCostOfGood" Type="float" StoreGeneratedPattern="Computed" Nullable="false" />
+          <Property Name="CostOfGood" Type="money" Nullable="false" />
+          <Property Name="TotalCostOfGood" Type="float" StoreGeneratedPattern="Computed" />
         </EntityType>
         <EntityType Name="tbl_Role">
           <Key>
@@ -2195,82 +2195,6 @@
           <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
           <Property Name="ModifiedBy" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
-        <EntityType Name="tbl_Order">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="AgentID" Type="Int32" />
-          <Property Name="OrderType" Type="Int32" />
-          <Property Name="AdditionFee" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="DisCount" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="CustomerID" Type="Int32" />
-          <Property Name="CustomerName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="CustomerPhone" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="CustomerAddress" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="CustomerEmail" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="TotalPrice" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="PaymentStatus" Type="Int32" />
-          <Property Name="ExcuteStatus" Type="Int32" />
-          <Property Name="IsHidden" Type="Boolean" />
-          <Property Name="WayIn" Type="Int32" />
-          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
-          <Property Name="CreatedBy" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
-          <Property Name="ModifiedBy" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="DiscountPerProduct" Type="Double" />
-          <Property Name="TotalDiscount" Type="Double" />
-          <Property Name="FeeShipping" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="TotalPriceNotDiscount" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="GuestPaid" Type="Double" />
-          <Property Name="GuestChange" Type="Double" />
-          <Property Name="FeeRefund" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="PaymentType" Type="Int32" />
-          <Property Name="ShippingType" Type="Int32" />
-          <Property Name="OrderNote" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="DateDone" Type="DateTime" Precision="3" />
-          <Property Name="RefundsGoodsID" Type="Int32" />
-          <Property Name="ShippingCode" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="TransportCompanyID" Type="Int32" />
-          <Property Name="TransportCompanySubID" Type="Int32" />
-          <Property Name="OtherFeeName" Type="String" MaxLength="100" FixedLength="true" Unicode="true" />
-          <Property Name="OtherFeeValue" Type="Double" />
-          <Property Name="PostalDeliveryType" Type="Int32" />
-          <Property Name="CustomerNewPhone" Type="String" MaxLength="15" FixedLength="true" Unicode="true" />
-          <Property Name="UserHelp" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="VerifiedCOD" Type="Boolean" Nullable="false" />
-          <Property Name="VerifiedBy" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="CouponID" Type="Int32" />
-          <Property Name="CouponValue" Type="Decimal" Precision="19" Scale="4" />
-          <Property Name="GHTKFee" Type="Int32" />
-          <Property Name="Weight" Type="Double" />
-          <Property Name="TotalQuantity" Type="Int32" Nullable="false" />
-          <Property Name="TotalCostOfGood" Type="Int32" Nullable="false" />
-        </EntityType>
-        <EntityType Name="tbl_OrderDetail">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="AgentID" Type="Int32" />
-          <Property Name="OrderID" Type="Int32" />
-          <Property Name="SKU" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="ProductID" Type="Int32" />
-          <Property Name="ProductVariableID" Type="Int32" />
-          <Property Name="ProductVariableDescrition" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="Quantity" Type="Double" />
-          <Property Name="Price" Type="Double" />
-          <Property Name="Status" Type="Int32" />
-          <Property Name="DiscountPrice" Type="Double" />
-          <Property Name="ProductType" Type="Int32" />
-          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
-          <Property Name="CreatedBy" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
-          <Property Name="ModifiedBy" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="IsCount" Type="Boolean" />
-          <Property Name="CostOfGood" Type="Int32" Nullable="false" />
-          <Property Name="TotalCostOfGood" Type="Double" Nullable="false" annotation:StoreGeneratedPattern="Computed" />
-        </EntityType>
         <EntityType Name="tbl_OrderReturnGood">
           <Key>
             <PropertyRef Name="ID" />
@@ -2442,36 +2366,6 @@
           <Property Name="ProvinceName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="ProvinceCode" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="IsHidden" Type="Boolean" />
-        </EntityType>
-        <EntityType Name="tbl_RefundGoodsDetails">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="RefundGoodsID" Type="Int32" />
-          <Property Name="AgentID" Type="Int32" />
-          <Property Name="OrderID" Type="Int32" />
-          <Property Name="ProductName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="CustomerID" Type="Int32" />
-          <Property Name="SKU" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="Quantity" Type="Double" />
-          <Property Name="QuantityMax" Type="Double" />
-          <Property Name="PriceNotFeeRefund" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="ProductType" Type="Int32" />
-          <Property Name="IsCount" Type="Boolean" />
-          <Property Name="RefundType" Type="Int32" />
-          <Property Name="RefundFeePerProduct" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="TotalRefundFee" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="GiavonPerProduct" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="DiscountPricePerProduct" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="SoldPricePerProduct" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="TotalPriceRow" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
-          <Property Name="CreatedBy" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
-          <Property Name="ModifiedBy" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="CostOfGood" Type="Int32" Nullable="false" />
-          <Property Name="TotalCostOfGood" Type="Double" Nullable="false" annotation:StoreGeneratedPattern="Computed" />
         </EntityType>
         <EntityType Name="tbl_Role">
           <Key>
@@ -2705,8 +2599,6 @@
           <EntitySet Name="tbl_LinkImnage" EntityType="Self.tbl_LinkImnage" />
           <EntitySet Name="tbl_MovePro" EntityType="Self.tbl_MovePro" />
           <EntitySet Name="tbl_MoveProdDetail" EntityType="Self.tbl_MoveProdDetail" />
-          <EntitySet Name="tbl_Order" EntityType="Self.tbl_Order" />
-          <EntitySet Name="tbl_OrderDetail" EntityType="Self.tbl_OrderDetail" />
           <EntitySet Name="tbl_OrderReturnGood" EntityType="Self.tbl_OrderReturnGood" />
           <EntitySet Name="tbl_Post" EntityType="Self.tbl_Post" />
           <EntitySet Name="tbl_PostCategory" EntityType="Self.tbl_PostCategory" />
@@ -2717,7 +2609,6 @@
           <EntitySet Name="tbl_ProductVariableImage" EntityType="Self.tbl_ProductVariableImage" />
           <EntitySet Name="tbl_ProductVariableValue" EntityType="Self.tbl_ProductVariableValue" />
           <EntitySet Name="tbl_Province" EntityType="Self.tbl_Province" />
-          <EntitySet Name="tbl_RefundGoodsDetails" EntityType="Self.tbl_RefundGoodsDetails" />
           <EntitySet Name="tbl_Role" EntityType="Self.tbl_Role" />
           <EntitySet Name="tbl_SessionInOu" EntityType="Self.tbl_SessionInOu" />
           <EntitySet Name="tbl_StockManager" EntityType="Self.tbl_StockManager" />
@@ -2732,6 +2623,9 @@
           <EntitySet Name="ZaloIndustries" EntityType="Self.ZaloIndustry" />
           <EntitySet Name="PostWordpresses" EntityType="inventorymanagementModel.PostWordpress" />
           <EntitySet Name="NotificationCategories" EntityType="inventorymanagementModel.NotificationCategory" />
+          <EntitySet Name="tbl_Order" EntityType="inventorymanagementModel.tbl_Order" />
+          <EntitySet Name="tbl_OrderDetail" EntityType="inventorymanagementModel.tbl_OrderDetail" />
+          <EntitySet Name="tbl_RefundGoodsDetails" EntityType="inventorymanagementModel.tbl_RefundGoodsDetails" />
           <EntitySet Name="tbl_RefundGoods" EntityType="inventorymanagementModel.tbl_RefundGoods" />
         </EntityContainer>
         <EntityType Name="PostWordpress">
@@ -2768,6 +2662,112 @@
           <Property Name="ModifiedDate" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="ModifiedBy" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
+        <EntityType Name="tbl_Order">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="AgentID" Type="Int32" />
+          <Property Name="OrderType" Type="Int32" />
+          <Property Name="AdditionFee" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="DisCount" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="CustomerID" Type="Int32" />
+          <Property Name="CustomerName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="CustomerPhone" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="CustomerAddress" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="CustomerEmail" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="TotalPrice" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="PaymentStatus" Type="Int32" />
+          <Property Name="ExcuteStatus" Type="Int32" />
+          <Property Name="IsHidden" Type="Boolean" />
+          <Property Name="WayIn" Type="Int32" />
+          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+          <Property Name="CreatedBy" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
+          <Property Name="ModifiedBy" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="DiscountPerProduct" Type="Double" />
+          <Property Name="TotalDiscount" Type="Double" />
+          <Property Name="FeeShipping" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="TotalPriceNotDiscount" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="GuestPaid" Type="Double" />
+          <Property Name="GuestChange" Type="Double" />
+          <Property Name="FeeRefund" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="PaymentType" Type="Int32" />
+          <Property Name="ShippingType" Type="Int32" />
+          <Property Name="OrderNote" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="DateDone" Type="DateTime" Precision="3" />
+          <Property Name="RefundsGoodsID" Type="Int32" />
+          <Property Name="ShippingCode" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="TransportCompanyID" Type="Int32" />
+          <Property Name="TransportCompanySubID" Type="Int32" />
+          <Property Name="OtherFeeName" Type="String" MaxLength="100" FixedLength="true" Unicode="true" />
+          <Property Name="OtherFeeValue" Type="Double" />
+          <Property Name="PostalDeliveryType" Type="Int32" />
+          <Property Name="CustomerNewPhone" Type="String" MaxLength="15" FixedLength="true" Unicode="true" />
+          <Property Name="UserHelp" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="VerifiedCOD" Type="Boolean" Nullable="false" />
+          <Property Name="VerifiedBy" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="CouponID" Type="Int32" />
+          <Property Name="CouponValue" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="GHTKFee" Type="Int32" />
+          <Property Name="Weight" Type="Double" />
+          <Property Name="TotalQuantity" Type="Int32" Nullable="false" />
+          <Property Name="TotalCostOfGood" Type="Decimal" Nullable="false" Precision="19" Scale="4" />
+        </EntityType>
+        <EntityType Name="tbl_OrderDetail">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="AgentID" Type="Int32" />
+          <Property Name="OrderID" Type="Int32" />
+          <Property Name="SKU" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="ProductID" Type="Int32" />
+          <Property Name="ProductVariableID" Type="Int32" />
+          <Property Name="ProductVariableDescrition" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Quantity" Type="Double" />
+          <Property Name="Price" Type="Double" />
+          <Property Name="Status" Type="Int32" />
+          <Property Name="DiscountPrice" Type="Double" />
+          <Property Name="ProductType" Type="Int32" />
+          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+          <Property Name="CreatedBy" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
+          <Property Name="ModifiedBy" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="IsCount" Type="Boolean" />
+          <Property Name="CostOfGood" Type="Decimal" Nullable="false" Precision="19" Scale="4" />
+          <Property Name="TotalCostOfGood" Type="Double" annotation:StoreGeneratedPattern="Computed" />
+        </EntityType>
+        <EntityType Name="tbl_RefundGoodsDetails">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="RefundGoodsID" Type="Int32" />
+          <Property Name="AgentID" Type="Int32" />
+          <Property Name="OrderID" Type="Int32" />
+          <Property Name="ProductName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="CustomerID" Type="Int32" />
+          <Property Name="SKU" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Quantity" Type="Double" />
+          <Property Name="QuantityMax" Type="Double" />
+          <Property Name="PriceNotFeeRefund" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="ProductType" Type="Int32" />
+          <Property Name="IsCount" Type="Boolean" />
+          <Property Name="RefundType" Type="Int32" />
+          <Property Name="RefundFeePerProduct" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="TotalRefundFee" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="GiavonPerProduct" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="DiscountPricePerProduct" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="SoldPricePerProduct" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="TotalPriceRow" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+          <Property Name="CreatedBy" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
+          <Property Name="ModifiedBy" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="CostOfGood" Type="Decimal" Nullable="false" Precision="19" Scale="4" />
+          <Property Name="TotalCostOfGood" Type="Double" annotation:StoreGeneratedPattern="Computed" />
+        </EntityType>
         <EntityType Name="tbl_RefundGoods">
           <Key>
             <PropertyRef Name="ID" />
@@ -2789,7 +2789,7 @@
           <Property Name="OrderSaleID" Type="Int32" />
           <Property Name="UserHelp" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="TotalQuantity" Type="Int32" Nullable="false" />
-          <Property Name="TotalCostOfGood" Type="Int32" Nullable="false" />
+          <Property Name="TotalCostOfGood" Type="Decimal" Nullable="false" Precision="19" Scale="4" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -3639,84 +3639,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="tbl_Order">
-            <EntityTypeMapping TypeName="inventorymanagementModel.tbl_Order">
-              <MappingFragment StoreEntitySet="tbl_Order">
-                <ScalarProperty Name="TotalCostOfGood" ColumnName="TotalCostOfGood" />
-                <ScalarProperty Name="TotalQuantity" ColumnName="TotalQuantity" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-                <ScalarProperty Name="AgentID" ColumnName="AgentID" />
-                <ScalarProperty Name="OrderType" ColumnName="OrderType" />
-                <ScalarProperty Name="AdditionFee" ColumnName="AdditionFee" />
-                <ScalarProperty Name="DisCount" ColumnName="DisCount" />
-                <ScalarProperty Name="CustomerID" ColumnName="CustomerID" />
-                <ScalarProperty Name="CustomerName" ColumnName="CustomerName" />
-                <ScalarProperty Name="CustomerPhone" ColumnName="CustomerPhone" />
-                <ScalarProperty Name="CustomerAddress" ColumnName="CustomerAddress" />
-                <ScalarProperty Name="CustomerEmail" ColumnName="CustomerEmail" />
-                <ScalarProperty Name="TotalPrice" ColumnName="TotalPrice" />
-                <ScalarProperty Name="PaymentStatus" ColumnName="PaymentStatus" />
-                <ScalarProperty Name="ExcuteStatus" ColumnName="ExcuteStatus" />
-                <ScalarProperty Name="IsHidden" ColumnName="IsHidden" />
-                <ScalarProperty Name="WayIn" ColumnName="WayIn" />
-                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
-                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
-                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
-                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
-                <ScalarProperty Name="DiscountPerProduct" ColumnName="DiscountPerProduct" />
-                <ScalarProperty Name="TotalDiscount" ColumnName="TotalDiscount" />
-                <ScalarProperty Name="FeeShipping" ColumnName="FeeShipping" />
-                <ScalarProperty Name="TotalPriceNotDiscount" ColumnName="TotalPriceNotDiscount" />
-                <ScalarProperty Name="GuestPaid" ColumnName="GuestPaid" />
-                <ScalarProperty Name="GuestChange" ColumnName="GuestChange" />
-                <ScalarProperty Name="FeeRefund" ColumnName="FeeRefund" />
-                <ScalarProperty Name="PaymentType" ColumnName="PaymentType" />
-                <ScalarProperty Name="ShippingType" ColumnName="ShippingType" />
-                <ScalarProperty Name="OrderNote" ColumnName="OrderNote" />
-                <ScalarProperty Name="DateDone" ColumnName="DateDone" />
-                <ScalarProperty Name="RefundsGoodsID" ColumnName="RefundsGoodsID" />
-                <ScalarProperty Name="ShippingCode" ColumnName="ShippingCode" />
-                <ScalarProperty Name="TransportCompanyID" ColumnName="TransportCompanyID" />
-                <ScalarProperty Name="TransportCompanySubID" ColumnName="TransportCompanySubID" />
-                <ScalarProperty Name="OtherFeeName" ColumnName="OtherFeeName" />
-                <ScalarProperty Name="OtherFeeValue" ColumnName="OtherFeeValue" />
-                <ScalarProperty Name="PostalDeliveryType" ColumnName="PostalDeliveryType" />
-                <ScalarProperty Name="CustomerNewPhone" ColumnName="CustomerNewPhone" />
-                <ScalarProperty Name="UserHelp" ColumnName="UserHelp" />
-                <ScalarProperty Name="VerifiedCOD" ColumnName="VerifiedCOD" />
-                <ScalarProperty Name="VerifiedBy" ColumnName="VerifiedBy" />
-                <ScalarProperty Name="CouponID" ColumnName="CouponID" />
-                <ScalarProperty Name="CouponValue" ColumnName="CouponValue" />
-                <ScalarProperty Name="GHTKFee" ColumnName="GHTKFee" />
-                <ScalarProperty Name="Weight" ColumnName="Weight" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="tbl_OrderDetail">
-            <EntityTypeMapping TypeName="inventorymanagementModel.tbl_OrderDetail">
-              <MappingFragment StoreEntitySet="tbl_OrderDetail">
-                <ScalarProperty Name="TotalCostOfGood" ColumnName="TotalCostOfGood" />
-                <ScalarProperty Name="CostOfGood" ColumnName="CostOfGood" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-                <ScalarProperty Name="AgentID" ColumnName="AgentID" />
-                <ScalarProperty Name="OrderID" ColumnName="OrderID" />
-                <ScalarProperty Name="SKU" ColumnName="SKU" />
-                <ScalarProperty Name="ProductID" ColumnName="ProductID" />
-                <ScalarProperty Name="ProductVariableID" ColumnName="ProductVariableID" />
-                <ScalarProperty Name="ProductVariableDescrition" ColumnName="ProductVariableDescrition" />
-                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
-                <ScalarProperty Name="Price" ColumnName="Price" />
-                <ScalarProperty Name="Status" ColumnName="Status" />
-                <ScalarProperty Name="DiscountPrice" ColumnName="DiscountPrice" />
-                <ScalarProperty Name="ProductType" ColumnName="ProductType" />
-                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
-                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
-                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
-                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
-                <ScalarProperty Name="IsCount" ColumnName="IsCount" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="tbl_OrderReturnGood">
             <EntityTypeMapping TypeName="inventorymanagementModel.tbl_OrderReturnGood">
               <MappingFragment StoreEntitySet="tbl_OrderReturnGood">
@@ -3896,37 +3818,6 @@
                 <ScalarProperty Name="ProvinceName" ColumnName="ProvinceName" />
                 <ScalarProperty Name="ProvinceCode" ColumnName="ProvinceCode" />
                 <ScalarProperty Name="IsHidden" ColumnName="IsHidden" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="tbl_RefundGoodsDetails">
-            <EntityTypeMapping TypeName="inventorymanagementModel.tbl_RefundGoodsDetails">
-              <MappingFragment StoreEntitySet="tbl_RefundGoodsDetails">
-                <ScalarProperty Name="TotalCostOfGood" ColumnName="TotalCostOfGood" />
-                <ScalarProperty Name="CostOfGood" ColumnName="CostOfGood" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-                <ScalarProperty Name="RefundGoodsID" ColumnName="RefundGoodsID" />
-                <ScalarProperty Name="AgentID" ColumnName="AgentID" />
-                <ScalarProperty Name="OrderID" ColumnName="OrderID" />
-                <ScalarProperty Name="ProductName" ColumnName="ProductName" />
-                <ScalarProperty Name="CustomerID" ColumnName="CustomerID" />
-                <ScalarProperty Name="SKU" ColumnName="SKU" />
-                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
-                <ScalarProperty Name="QuantityMax" ColumnName="QuantityMax" />
-                <ScalarProperty Name="PriceNotFeeRefund" ColumnName="PriceNotFeeRefund" />
-                <ScalarProperty Name="ProductType" ColumnName="ProductType" />
-                <ScalarProperty Name="IsCount" ColumnName="IsCount" />
-                <ScalarProperty Name="RefundType" ColumnName="RefundType" />
-                <ScalarProperty Name="RefundFeePerProduct" ColumnName="RefundFeePerProduct" />
-                <ScalarProperty Name="TotalRefundFee" ColumnName="TotalRefundFee" />
-                <ScalarProperty Name="GiavonPerProduct" ColumnName="GiavonPerProduct" />
-                <ScalarProperty Name="DiscountPricePerProduct" ColumnName="DiscountPricePerProduct" />
-                <ScalarProperty Name="SoldPricePerProduct" ColumnName="SoldPricePerProduct" />
-                <ScalarProperty Name="TotalPriceRow" ColumnName="TotalPriceRow" />
-                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
-                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
-                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
-                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -4157,6 +4048,115 @@
                 <ScalarProperty Name="Slug" ColumnName="Slug" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="Icon" ColumnName="Icon" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_Order">
+            <EntityTypeMapping TypeName="inventorymanagementModel.tbl_Order">
+              <MappingFragment StoreEntitySet="tbl_Order">
+                <ScalarProperty Name="TotalCostOfGood" ColumnName="TotalCostOfGood" />
+                <ScalarProperty Name="TotalQuantity" ColumnName="TotalQuantity" />
+                <ScalarProperty Name="Weight" ColumnName="Weight" />
+                <ScalarProperty Name="GHTKFee" ColumnName="GHTKFee" />
+                <ScalarProperty Name="CouponValue" ColumnName="CouponValue" />
+                <ScalarProperty Name="CouponID" ColumnName="CouponID" />
+                <ScalarProperty Name="VerifiedBy" ColumnName="VerifiedBy" />
+                <ScalarProperty Name="VerifiedCOD" ColumnName="VerifiedCOD" />
+                <ScalarProperty Name="UserHelp" ColumnName="UserHelp" />
+                <ScalarProperty Name="CustomerNewPhone" ColumnName="CustomerNewPhone" />
+                <ScalarProperty Name="PostalDeliveryType" ColumnName="PostalDeliveryType" />
+                <ScalarProperty Name="OtherFeeValue" ColumnName="OtherFeeValue" />
+                <ScalarProperty Name="OtherFeeName" ColumnName="OtherFeeName" />
+                <ScalarProperty Name="TransportCompanySubID" ColumnName="TransportCompanySubID" />
+                <ScalarProperty Name="TransportCompanyID" ColumnName="TransportCompanyID" />
+                <ScalarProperty Name="ShippingCode" ColumnName="ShippingCode" />
+                <ScalarProperty Name="RefundsGoodsID" ColumnName="RefundsGoodsID" />
+                <ScalarProperty Name="DateDone" ColumnName="DateDone" />
+                <ScalarProperty Name="OrderNote" ColumnName="OrderNote" />
+                <ScalarProperty Name="ShippingType" ColumnName="ShippingType" />
+                <ScalarProperty Name="PaymentType" ColumnName="PaymentType" />
+                <ScalarProperty Name="FeeRefund" ColumnName="FeeRefund" />
+                <ScalarProperty Name="GuestChange" ColumnName="GuestChange" />
+                <ScalarProperty Name="GuestPaid" ColumnName="GuestPaid" />
+                <ScalarProperty Name="TotalPriceNotDiscount" ColumnName="TotalPriceNotDiscount" />
+                <ScalarProperty Name="FeeShipping" ColumnName="FeeShipping" />
+                <ScalarProperty Name="TotalDiscount" ColumnName="TotalDiscount" />
+                <ScalarProperty Name="DiscountPerProduct" ColumnName="DiscountPerProduct" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="WayIn" ColumnName="WayIn" />
+                <ScalarProperty Name="IsHidden" ColumnName="IsHidden" />
+                <ScalarProperty Name="ExcuteStatus" ColumnName="ExcuteStatus" />
+                <ScalarProperty Name="PaymentStatus" ColumnName="PaymentStatus" />
+                <ScalarProperty Name="TotalPrice" ColumnName="TotalPrice" />
+                <ScalarProperty Name="CustomerEmail" ColumnName="CustomerEmail" />
+                <ScalarProperty Name="CustomerAddress" ColumnName="CustomerAddress" />
+                <ScalarProperty Name="CustomerPhone" ColumnName="CustomerPhone" />
+                <ScalarProperty Name="CustomerName" ColumnName="CustomerName" />
+                <ScalarProperty Name="CustomerID" ColumnName="CustomerID" />
+                <ScalarProperty Name="DisCount" ColumnName="DisCount" />
+                <ScalarProperty Name="AdditionFee" ColumnName="AdditionFee" />
+                <ScalarProperty Name="OrderType" ColumnName="OrderType" />
+                <ScalarProperty Name="AgentID" ColumnName="AgentID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_OrderDetail">
+            <EntityTypeMapping TypeName="inventorymanagementModel.tbl_OrderDetail">
+              <MappingFragment StoreEntitySet="tbl_OrderDetail">
+                <ScalarProperty Name="TotalCostOfGood" ColumnName="TotalCostOfGood" />
+                <ScalarProperty Name="CostOfGood" ColumnName="CostOfGood" />
+                <ScalarProperty Name="IsCount" ColumnName="IsCount" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="ProductType" ColumnName="ProductType" />
+                <ScalarProperty Name="DiscountPrice" ColumnName="DiscountPrice" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Price" ColumnName="Price" />
+                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+                <ScalarProperty Name="ProductVariableDescrition" ColumnName="ProductVariableDescrition" />
+                <ScalarProperty Name="ProductVariableID" ColumnName="ProductVariableID" />
+                <ScalarProperty Name="ProductID" ColumnName="ProductID" />
+                <ScalarProperty Name="SKU" ColumnName="SKU" />
+                <ScalarProperty Name="OrderID" ColumnName="OrderID" />
+                <ScalarProperty Name="AgentID" ColumnName="AgentID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_RefundGoodsDetails">
+            <EntityTypeMapping TypeName="inventorymanagementModel.tbl_RefundGoodsDetails">
+              <MappingFragment StoreEntitySet="tbl_RefundGoodsDetails">
+                <ScalarProperty Name="TotalCostOfGood" ColumnName="TotalCostOfGood" />
+                <ScalarProperty Name="CostOfGood" ColumnName="CostOfGood" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="TotalPriceRow" ColumnName="TotalPriceRow" />
+                <ScalarProperty Name="SoldPricePerProduct" ColumnName="SoldPricePerProduct" />
+                <ScalarProperty Name="DiscountPricePerProduct" ColumnName="DiscountPricePerProduct" />
+                <ScalarProperty Name="GiavonPerProduct" ColumnName="GiavonPerProduct" />
+                <ScalarProperty Name="TotalRefundFee" ColumnName="TotalRefundFee" />
+                <ScalarProperty Name="RefundFeePerProduct" ColumnName="RefundFeePerProduct" />
+                <ScalarProperty Name="RefundType" ColumnName="RefundType" />
+                <ScalarProperty Name="IsCount" ColumnName="IsCount" />
+                <ScalarProperty Name="ProductType" ColumnName="ProductType" />
+                <ScalarProperty Name="PriceNotFeeRefund" ColumnName="PriceNotFeeRefund" />
+                <ScalarProperty Name="QuantityMax" ColumnName="QuantityMax" />
+                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+                <ScalarProperty Name="SKU" ColumnName="SKU" />
+                <ScalarProperty Name="CustomerID" ColumnName="CustomerID" />
+                <ScalarProperty Name="ProductName" ColumnName="ProductName" />
+                <ScalarProperty Name="OrderID" ColumnName="OrderID" />
+                <ScalarProperty Name="AgentID" ColumnName="AgentID" />
+                <ScalarProperty Name="RefundGoodsID" ColumnName="RefundGoodsID" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>

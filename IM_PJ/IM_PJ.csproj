@@ -989,9 +989,24 @@
       <DependentUpon>chuyen-kho.aspx</DependentUpon>
     </Compile>
     <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="Models\Common\Product\ProductCOGSModel.cs" />
+    <Compile Include="Models\Common\Product\ProductVariationCOGSModel.cs" />
+    <Compile Include="Models\Common\Refund\RefundFilterModel.cs" />
     <Compile Include="Models\Pages\thong-ke-chuyen-kho\SubStockTransferReport.cs" />
     <Compile Include="Models\Pages\thong-ke-chuyen-kho\StockTransferReport.cs" />
     <Compile Include="Models\PostWordpress.cs">
+      <DependentUpon>IMMode.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\tbl_Order.cs">
+      <DependentUpon>IMMode.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\tbl_OrderDetail.cs">
+      <DependentUpon>IMMode.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\tbl_RefundGoods.cs">
+      <DependentUpon>IMMode.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\tbl_RefundGoodsDetails.cs">
       <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
     <Compile Include="tai-khoan-app.aspx.cs">
@@ -1162,12 +1177,6 @@
     <Compile Include="Models\tbl_MoveProdDetail.cs">
       <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\tbl_Order.cs">
-      <DependentUpon>IMMode.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\tbl_OrderDetail.cs">
-      <DependentUpon>IMMode.tt</DependentUpon>
-    </Compile>
     <Compile Include="Models\tbl_OrderReturnGood.cs">
       <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
@@ -1196,12 +1205,6 @@
       <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\tbl_Province.cs">
-      <DependentUpon>IMMode.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\tbl_RefundGoods.cs">
-      <DependentUpon>IMMode.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\tbl_RefundGoodsDetails.cs">
       <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\tbl_Role.cs">
@@ -1310,7 +1313,7 @@
     <Compile Include="Models\Common\DeliveryProshipFilterModel.cs" />
     <Compile Include="Models\Common\DeliveryPostOfficeFilterModel.cs" />
     <Compile Include="Models\Common\DiscountGroupModel.cs" />
-    <Compile Include="Models\Common\OrderModel.cs" />
+    <Compile Include="Models\Common\Order\OrderModel.cs" />
     <Compile Include="Models\Common\TagModel.cs" />
     <Compile Include="Models\Pages\cron-job-product-status\FilterModel.cs" />
     <Compile Include="Models\Pages\cron-job-product-status\ProductModel.cs" />
@@ -1485,8 +1488,8 @@
     <Compile Include="Models\Common\BusinessReportModel.cs" />
     <Compile Include="Models\Common\AllTypeModel.cs" />
     <Compile Include="Models\Common\PaginationMetadataModel.cs" />
-    <Compile Include="Models\Common\OrderFilterModel.cs" />
-    <Compile Include="Models\Common\ProductFilterModel.cs" />
+    <Compile Include="Models\Common\Order\OrderFilterModel.cs" />
+    <Compile Include="Models\Common\Product\ProductFilterModel.cs" />
     <Compile Include="bv.aspx.cs">
       <DependentUpon>bv.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -1494,7 +1497,7 @@
     <Compile Include="bv.aspx.designer.cs">
       <DependentUpon>bv.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Models\Common\RegisterProductFilterModel.cs" />
+    <Compile Include="Models\Common\Product\RegisterProductFilterModel.cs" />
     <Compile Include="Models\Pages\thong-ke-nhap-kho\GoodsReceiptReport.cs" />
     <Compile Include="print-delivery.aspx.cs">
       <DependentUpon>print-delivery.aspx</DependentUpon>
