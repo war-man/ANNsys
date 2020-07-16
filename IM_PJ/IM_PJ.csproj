@@ -530,6 +530,10 @@
       <DependentUpon>IMMode.edmx</DependentUpon>
       <LastGenOutput>IMMode.cs</LastGenOutput>
     </Content>
+    <Content Include="SQL\05CREATE_STORE_PROCEDURE_SyncStock1BasedOnStock2.sql" />
+    <Content Include="SQL\Add_Quantity_COGS_Order.sql" />
+    <Content Include="SQL\Add_Quantity_COGS_Refund.sql" />
+    <Content Include="SQL\Cal_Profit.sql" />
     <Content Include="tai-khoan-app.aspx" />
     <Content Include="quan-ly-xuat-kho-2.aspx" />
     <Content Include="Content\bootstrap-datetimepicker.css" />
@@ -706,7 +710,6 @@
     <Content Include="thong-ke-nhan-vien.aspx" />
     <Content Include="thong-tin-don-hang-chuyen-hoan.aspx" />
     <Content Include="sua-bai-viet.aspx" />
-    <Content Include="uploads\avatars\no-avatar.png" />
     <Content Include="chi-tiet-san-pham.aspx" />
     <Content Include="xem-thong-bao.aspx" />
     <Content Include="xem-bai-viet-app.aspx" />
@@ -2305,6 +2308,7 @@
   <ItemGroup>
     <Folder Include="App_Themes\NewUI\js\sweet\.sass-cache\" />
     <Folder Include="App_Themes\NewUI\plugins\" />
+    <Folder Include="uploads\avatars\" />
     <Folder Include="uploads\barcodes\" />
     <Folder Include="uploads\deliveries\post_office\" />
     <Folder Include="uploads\deliveries\proship\" />
