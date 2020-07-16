@@ -2447,6 +2447,7 @@ namespace IM_PJ.Controllers
             public double TotalProfit { get; set; }
             public double TotalPrice { get; set; }
             public double TotalDiscount { get; set; }
+            public double TotalCostOfGood { get; set; }
             public double TotalRefund { get; set; }
             public double FeeShipping { get; set; }
             public string OtherFeeName { get; set; }

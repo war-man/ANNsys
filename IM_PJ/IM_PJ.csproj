@@ -520,7 +520,6 @@
     <Content Include="bao-cao.aspx" />
     <Content Include="bv.aspx" />
     <Content Include="chuyen-kho.aspx" />
-    <Content Include="tai-khoan-app.aspx" />
     <Content Include="Models\IMMode.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>IMMode.edmx</DependentUpon>
@@ -531,6 +530,7 @@
       <DependentUpon>IMMode.edmx</DependentUpon>
       <LastGenOutput>IMMode.cs</LastGenOutput>
     </Content>
+    <Content Include="tai-khoan-app.aspx" />
     <Content Include="quan-ly-xuat-kho-2.aspx" />
     <Content Include="Content\bootstrap-datetimepicker.css" />
     <Content Include="Content\bootstrap-datetimepicker.min.css" />
@@ -989,33 +989,6 @@
       <DependentUpon>chuyen-kho.aspx</DependentUpon>
     </Compile>
     <Compile Include="GlobalSuppressions.cs" />
-    <Compile Include="Models\Common\Product\ProductCOGSModel.cs" />
-    <Compile Include="Models\Common\Product\ProductVariationCOGSModel.cs" />
-    <Compile Include="Models\Common\Refund\RefundFilterModel.cs" />
-    <Compile Include="Models\Pages\thong-ke-chuyen-kho\SubStockTransferReport.cs" />
-    <Compile Include="Models\Pages\thong-ke-chuyen-kho\StockTransferReport.cs" />
-    <Compile Include="Models\PostWordpress.cs">
-      <DependentUpon>IMMode.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\tbl_Order.cs">
-      <DependentUpon>IMMode.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\tbl_OrderDetail.cs">
-      <DependentUpon>IMMode.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\tbl_RefundGoods.cs">
-      <DependentUpon>IMMode.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\tbl_RefundGoodsDetails.cs">
-      <DependentUpon>IMMode.tt</DependentUpon>
-    </Compile>
-    <Compile Include="tai-khoan-app.aspx.cs">
-      <DependentUpon>tai-khoan-app.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="tai-khoan-app.aspx.designer.cs">
-      <DependentUpon>tai-khoan-app.aspx</DependentUpon>
-    </Compile>
     <Compile Include="Models\Bank.cs">
       <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
@@ -1031,6 +1004,9 @@
     <Compile Include="Models\CheckWarehouseDetail.cs">
       <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\Common\Product\ProductCOGSModel.cs" />
+    <Compile Include="Models\Common\Product\ProductVariationCOGSModel.cs" />
+    <Compile Include="Models\Common\Refund\RefundFilterModel.cs" />
     <Compile Include="Models\Coupon.cs">
       <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
@@ -1094,8 +1070,8 @@
     <Compile Include="Models\NotifyUser.cs">
       <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\Pages\thong-tin-san-pham\ProductVariationUpdateModel.cs" />
-    <Compile Include="Models\Pages\thong-tin-san-pham\VariationValueUpdateModel.cs" />
+    <Compile Include="Models\Pages\thong-ke-chuyen-kho\SubStockTransferReport.cs" />
+    <Compile Include="Models\Pages\thong-ke-chuyen-kho\StockTransferReport.cs" />
     <Compile Include="Models\PostCategory.cs">
       <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
@@ -1106,6 +1082,9 @@
       <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\PostPublicImage.cs">
+      <DependentUpon>IMMode.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\PostWordpress.cs">
       <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ProductTag.cs">
@@ -1177,6 +1156,12 @@
     <Compile Include="Models\tbl_MoveProdDetail.cs">
       <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\tbl_Order.cs">
+      <DependentUpon>IMMode.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\tbl_OrderDetail.cs">
+      <DependentUpon>IMMode.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\tbl_OrderReturnGood.cs">
       <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
@@ -1205,6 +1190,12 @@
       <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\tbl_Province.cs">
+      <DependentUpon>IMMode.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\tbl_RefundGoods.cs">
+      <DependentUpon>IMMode.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\tbl_RefundGoodsDetails.cs">
       <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\tbl_Role.cs">
@@ -1243,6 +1234,15 @@
     <Compile Include="Models\ZaloIndustry.cs">
       <DependentUpon>IMMode.tt</DependentUpon>
     </Compile>
+    <Compile Include="tai-khoan-app.aspx.cs">
+      <DependentUpon>tai-khoan-app.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="tai-khoan-app.aspx.designer.cs">
+      <DependentUpon>tai-khoan-app.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Pages\thong-tin-san-pham\ProductVariationUpdateModel.cs" />
+    <Compile Include="Models\Pages\thong-tin-san-pham\VariationValueUpdateModel.cs" />
     <Compile Include="quan-ly-xuat-kho-2.aspx.cs">
       <DependentUpon>quan-ly-xuat-kho-2.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
