@@ -1476,8 +1476,6 @@ namespace IM_PJ.Controllers
                         // Tính lợi nhuận
                         totalProfit = Convert.ToDouble(temp.order.TotalPriceNotDiscount) - totalCOGS - temp.order.TotalDiscount;
 
-                        if (temp.refund != null)
-                            totalProfit = totalProfit - (Convert.ToDouble(temp.refund.TotalPrice) - Convert.ToDouble(temp.refund.TotalCostOfGood));
                         // OrderID
                         result.ID = temp.order.ID;
                         result.CustomerID = temp.order.CustomerID.HasValue ? temp.order.CustomerID.Value : 0;
