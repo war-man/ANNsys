@@ -78,7 +78,7 @@ namespace IM_PJ.Controllers
 
                 #region Cập nhật thôn tin giá vốn
                 List<ProductCOGSModel> product = new List<ProductCOGSModel>();
-                List<ProductCOGSModel> variation = new List<ProductCOGSModel>();
+                List<ProductVariationCOGSModel> variation = new List<ProductVariationCOGSModel>();
 
                 #region Sản phẩm đơn gian
                 var productFilter = orderDetails
@@ -118,7 +118,7 @@ namespace IM_PJ.Controllers
                         .Where(x =>
                             variationFilter.Contains(x.ID)
                         )
-                        .Select(x => new ProductCOGSModel()
+                        .Select(x => new ProductVariationCOGSModel()
                         {
                             id = x.ID,
                             cogs = x.CostOfGood.HasValue ? x.CostOfGood.Value : 0

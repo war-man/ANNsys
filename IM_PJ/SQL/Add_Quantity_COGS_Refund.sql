@@ -10,7 +10,7 @@ END
 
 -- Khoi tao column
  --BEGIN
- --    Refund
+ --   -- Refund
  --   BEGIN
  --       IF COL_LENGTH('tbl_RefundGoodsDetails', 'TotalCostOfGood') IS NOT NULL
  --           ALTER TABLE tbl_RefundGoodsDetails
@@ -98,7 +98,7 @@ BEGIN
         FROM
             tbl_RefundGoods AS RF
         ORDER BY
-            RF.ID
+            RF.ID DESC
         ;
 
         SELECT
@@ -109,7 +109,7 @@ BEGIN
         INNER JOIN #Refunds AS RF
             ON RFD.RefundGoodsID = RF.ID
         ORDER BY
-            RFD.RefundGoodsID
+            RFD.RefundGoodsID DESC
         ,   RFD.SKU
         ;
     END

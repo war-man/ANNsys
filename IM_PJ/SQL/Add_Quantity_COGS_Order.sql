@@ -98,7 +98,7 @@ BEGIN
         FROM
             tbl_Order AS O
         ORDER BY
-            O.ID
+            O.ID DESC
         ;
 
         SELECT
@@ -109,7 +109,7 @@ BEGIN
         INNER JOIN #Order AS O
             ON OD.OrderID = O.ID
         ORDER BY
-            OD.OrderID
+            OD.OrderID DESC
         ,   OD.SKU
         ;
     END

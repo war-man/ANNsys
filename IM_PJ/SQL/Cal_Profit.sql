@@ -1,6 +1,6 @@
 DECLARE @FromDate AS DATETIME,
     @ToDate AS DATETIME, 
-    @CustomerID AS INT
+    @CustomerID AS INT;
 
 SET @FromDate = CAST('2020-06-01' AS DATETIME);
 SET @ToDate = CAST('2020-06-30' AS DATETIME);
@@ -102,7 +102,7 @@ SELECT
 ,   ISNULL(R.TotalRefundFee, 0) AS RefundFee
 ,   ISNULL(R.TotalCostOfGood, 0) AS RefundCOGS
 ,   (ISNULL(R.TotalPrice, 0) - ISNULL(R.TotalCostOfGood, 0)) AS RefundProfit 
-,   (O.TotalPrice - O.TotalCostOfGood) - (ISNULL(R.TotalPrice, 0) - ISNULL(R.TotalCostOfGood, 0)) AS Profit
+,   (O.TotalPrice - O.TotalCostOfGood) - O.TotalDiscount - O.TotalCoupone - (ISNULL(R.TotalPrice, 0) - ISNULL(R.TotalCostOfGood, 0)) AS Profit
 FROM
     #Order AS O
 LEFT JOIN #Refund AS R
