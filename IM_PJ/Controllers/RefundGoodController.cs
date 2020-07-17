@@ -72,6 +72,50 @@ namespace IM_PJ.Controllers
             }
         }
 
+        /// <summary>
+        /// Cập nhật lại số lượng đổi trả và tiền vốn
+        /// </summary>
+        /// <param name="refundID">Mã đơn hàng đổi trả</param>
+        /// <returns></returns>
+        public static tbl_RefundGoods updateQuantityCOGS(int refundID)
+        {
+            using (var con = new inventorymanagementEntities())
+            {
+                var refund = con.tbl_RefundGoods.Where(x => x.ID == refundID).SingleOrDefault();
+
+                if (refund == null)
+                    return null;
+
+                var updatedData = con.tbl_RefundGoodsDetails
+                    .Where(x => x.RefundGoodsID.HasValue)
+                    .Where(x => x.RefundGoodsID.Value == refundID)
+                    .Select(x => new
+                    {
+                        Quantity = x.Quantity.HasValue ? x.Quantity.Value : 0,
+                        TotalCostOfGood = x.TotalCostOfGood.HasValue ? x.TotalCostOfGood.Value : 0
+                    })
+                    .ToList()
+                    .GroupBy(g => 1)
+                    .Select(x => new
+                    {
+                        totalQuantity = x.Sum(s => Convert.ToInt32(s.Quantity)),
+                        totalCOGS = x.Sum(s => s.TotalCostOfGood)
+                    })
+                    .SingleOrDefault();
+
+                if (updatedData != null)
+                {
+                    refund.TotalQuantity = updatedData.totalQuantity;
+                    refund.TotalCostOfGood = Convert.ToDecimal(updatedData.totalCOGS);
+                    con.SaveChanges();
+
+                    return refund;
+                }
+
+                return null;
+            }
+        }
+
         public static string UpdateCustomerPhone(int ID, string CustomerPhone)
         {
             using (var dbe = new inventorymanagementEntities())

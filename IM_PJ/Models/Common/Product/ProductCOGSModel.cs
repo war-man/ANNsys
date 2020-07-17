@@ -11,6 +11,7 @@ namespace IM_PJ.Models
     public class ProductCOGSModel
     {
         public int id { get; set; }
+        public string sku { get; set; }
         public double cogs { get; set; }
     }
 }

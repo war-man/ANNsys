@@ -48,14 +48,130 @@ namespace IM_PJ.Controllers
             }
         }
 
-        public static int Insert(tbl_RefundGoodsDetails refundDetail)
+        public static List<tbl_RefundGoodsDetails> Insert(List<tbl_RefundGoodsDetails> refundDetails)
         {
             using (var con = new inventorymanagementEntities())
             {
-                con.tbl_RefundGoodsDetails.Add(refundDetail);
-                con.SaveChanges();
-                int kq = refundDetail.ID;
-                return kq;
+                if (refundDetails == null && refundDetails.Count == 0)
+                    return null;
+
+                #region Cập nhật thôn tin giá vốn
+                List<ProductCOGSModel> product = new List<ProductCOGSModel>();
+                List<ProductVariationCOGSModel> variation = new List<ProductVariationCOGSModel>();
+
+                #region Sản phẩm đơn gian
+                var productFilter = refundDetails
+                    .Where(x => x.ProductType == 1)
+                    .Where(x => !String.IsNullOrEmpty(x.SKU))
+                    .Select(x => x.SKU)
+                    .Distinct()
+                    .ToList();
+
+                if (productFilter != null && productFilter.Count > 0)
+                {
+                    product = con.tbl_Product
+                        .Where(x => !String.IsNullOrEmpty(x.ProductSKU))
+                        .Where(x => productFilter.Contains(x.ProductSKU))
+                        .Select(x => new ProductCOGSModel()
+                        {
+                            id = x.ID,
+                            sku = x.ProductSKU,
+                            cogs = x.CostOfGood.HasValue ? x.CostOfGood.Value : 0
+                        })
+                        .OrderBy(o => o.id)
+                        .ToList();
+                }
+                #endregion
+
+                #region Sản phẩm biến thể
+                var variationFilter = refundDetails
+                    .Where(x => x.ProductType == 2)
+                    .Where(x => !String.IsNullOrEmpty(x.SKU))
+                    .Select(x => x.SKU)
+                    .Distinct()
+                    .ToList();
+
+                if (variationFilter != null && variationFilter.Count > 0)
+                {
+                    variation = con.tbl_ProductVariable
+                        .Where(x => !String.IsNullOrEmpty(x.SKU))
+                        .Where(x => variationFilter.Contains(x.SKU))
+                        .Select(x => new ProductVariationCOGSModel()
+                        {
+                            id = x.ID,
+                            sku = x.SKU,
+                            cogs = x.CostOfGood.HasValue ? x.CostOfGood.Value : 0
+                        })
+                        .OrderBy(o => o.id)
+                        .ToList();
+                }
+                #endregion
+                #endregion
+
+                #region Cập nhật chi tiết đơn hàng
+                refundDetails = refundDetails
+                    .Where(x => x.ProductType.HasValue)
+                    .Where(x => !String.IsNullOrEmpty(x.SKU))
+                    .GroupJoin(
+                        product,
+                        d => new { productStyle = d.ProductType.Value, productSKU = d.SKU },
+                        p => new { productStyle = 1, productSKU = p.sku },
+                        (d, p) => new { refund = d, product = p }
+                    )
+                    .SelectMany(
+                        x => x.product.DefaultIfEmpty(),
+                        (parent, child) => new { refund = parent.refund, product = child }
+                    )
+                    .GroupJoin(
+                        variation,
+                        temp => new { productStyle = temp.refund.ProductType.Value, variationSKU = temp.refund.SKU },
+                        v => new { productStyle = 2, variationSKU = v.sku },
+                        (temp, v) => new { order = temp.refund, product = temp.product, variation = v }
+                    )
+                    .SelectMany(
+                        x => x.variation.DefaultIfEmpty(),
+                        (parent, child) => new { order = parent.order, product = parent.product, variation = child }
+                    )
+                    .Select(x =>
+                    {
+                        var item = x.order;
+
+                        item.ModifiedDate = item.CreatedDate;
+                        item.ModifiedBy = item.ModifiedBy;
+
+                        // Cập nhật số tiền gốc
+                        if (item.ProductType == 1 && x.product != null)
+                        {
+                            item.CostOfGood += Convert.ToDecimal(x.product.cogs);
+                            item.TotalCostOfGood = (item.TotalCostOfGood.HasValue ? item.TotalCostOfGood.Value : 0) + (item.Quantity.HasValue ? item.Quantity.Value : 0) * x.product.cogs;
+                        }
+                        if (item.ProductType == 2 && x.variation != null)
+                        {
+                            item.CostOfGood += Convert.ToDecimal(x.variation.cogs);
+                            item.TotalCostOfGood = (item.TotalCostOfGood.HasValue ? item.TotalCostOfGood.Value : 0) + (item.Quantity.HasValue ? item.Quantity.Value : 0) * x.variation.cogs;
+                        }
+
+                        return item;
+                    })
+                    .ToList();
+                #endregion
+
+                #region Khởi tạo chi tiết đơn hàng
+                var size = 100;
+                var counts = Math.Ceiling(refundDetails.Count / (double)size);
+
+                for (int index = 0; index < counts; index++)
+                {
+                    var insertedData = refundDetails
+                        .Skip(index * size)
+                        .Take(size)
+                        .ToList();
+                    con.tbl_RefundGoodsDetails.AddRange(insertedData);
+                    con.SaveChanges();
+                }
+                #endregion
+
+                return refundDetails;
             }
         }
 
