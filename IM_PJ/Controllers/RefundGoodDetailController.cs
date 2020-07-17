@@ -18,8 +18,32 @@ namespace IM_PJ.Controllers
             string PriceNotFeeRefund, int ProductType, bool IsCount, int RefundType, string RefundFeePerProduct, string TotalRefundFee, string GiavonPerProduct,
             string DiscountPricePerProduct, string SoldPricePerProduct, string TotalPriceRow, DateTime CreatedDate, string CreatedBy)
         {
-            using (var dbe = new inventorymanagementEntities())
+            using (var con = new inventorymanagementEntities())
             {
+                #region Cập nhật thôn tin giá vốn
+                Nullable<double> cogs = null;
+
+                #region Sản phẩm đơn gian
+                if (ProductType == 1)
+                {
+                    cogs = con.tbl_Product
+                        .Where(x => x.ProductSKU == SKU)
+                        .Select(x => x.CostOfGood.HasValue ? x.CostOfGood.Value : 0)
+                        .SingleOrDefault();
+                }
+                #endregion
+
+                #region Sản phẩm biến thể
+                if (ProductType == 2)
+                {
+                    cogs = con.tbl_ProductVariable
+                        .Where(x => x.SKU == SKU)
+                        .Select(x => x.CostOfGood.HasValue ? x.CostOfGood.Value : 0)
+                        .SingleOrDefault();
+                }
+                #endregion
+                #endregion
+
                 tbl_RefundGoodsDetails a = new tbl_RefundGoodsDetails();
                 a.RefundGoodsID = RefundGoodsID;
                 a.AgentID = AgentID;
@@ -41,8 +65,11 @@ namespace IM_PJ.Controllers
                 a.TotalPriceRow = TotalPriceRow;
                 a.CreatedDate = CreatedDate;
                 a.CreatedBy = CreatedBy;
-                dbe.tbl_RefundGoodsDetails.Add(a);
-                dbe.SaveChanges();
+                a.ModifiedDate = CreatedDate;
+                a.ModifiedBy = CreatedBy;
+                a.CostOfGood = cogs.HasValue ? Convert.ToDecimal(cogs.Value) : 0;
+                con.tbl_RefundGoodsDetails.Add(a);
+                con.SaveChanges();
                 int kq = a.ID;
                 return kq;
             }
@@ -141,15 +168,9 @@ namespace IM_PJ.Controllers
 
                         // Cập nhật số tiền gốc
                         if (item.ProductType == 1 && x.product != null)
-                        {
                             item.CostOfGood += Convert.ToDecimal(x.product.cogs);
-                            item.TotalCostOfGood = (item.TotalCostOfGood.HasValue ? item.TotalCostOfGood.Value : 0) + (item.Quantity.HasValue ? item.Quantity.Value : 0) * x.product.cogs;
-                        }
                         if (item.ProductType == 2 && x.variation != null)
-                        {
                             item.CostOfGood += Convert.ToDecimal(x.variation.cogs);
-                            item.TotalCostOfGood = (item.TotalCostOfGood.HasValue ? item.TotalCostOfGood.Value : 0) + (item.Quantity.HasValue ? item.Quantity.Value : 0) * x.variation.cogs;
-                        }
 
                         return item;
                     })

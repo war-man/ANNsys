@@ -1181,6 +1181,8 @@ namespace IM_PJ
                                                 ProductType = 2,
                                                 CreatedDate = currentDate,
                                                 CreatedBy = username,
+                                                ModifiedDate = currentDate,
+                                                ModifiedBy = username,
                                                 IsCount = true
                                             });
                                         }

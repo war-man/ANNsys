@@ -16,8 +16,33 @@ namespace IM_PJ.Controllers
         public static string Insert(int AgentID, int OrderID, string SKU, int ProductID, int ProductVariableID, string ProductVariableDescrition, double Quantity,
             double Price, int Status, double DiscountPrice, int ProductType, DateTime CreatedDate, string CreatedBy, bool IsCount)
         {
-            using (var dbe = new inventorymanagementEntities())
+            using (var con = new inventorymanagementEntities())
             {
+                #region Cập nhật thôn tin giá vốn
+                Nullable<double> cogs = null;
+
+                #region Sản phẩm đơn gian
+                if (ProductType == 1)
+                {
+                    cogs = con.tbl_Product
+                        .Where(x => x.ID == ProductID)
+                        .Select(x => x.CostOfGood.HasValue ? x.CostOfGood.Value : 0)
+                        .SingleOrDefault();
+                }
+                #endregion
+
+                #region Sản phẩm biến thể
+                if (ProductType == 2)
+                {
+                    cogs = con.tbl_ProductVariable
+                        .Where(x => x.ID == ProductVariableID)
+                        .Select(x => x.CostOfGood.HasValue ? x.CostOfGood.Value : 0)
+                        .SingleOrDefault();
+                }
+                #endregion
+                #endregion
+
+                #region Khởi tạo chi tiết đơn hàng
                 tbl_OrderDetail ui = new tbl_OrderDetail();
                 ui.AgentID = AgentID;
                 ui.OrderID = OrderID;
@@ -32,17 +57,47 @@ namespace IM_PJ.Controllers
                 ui.ProductType = ProductType;
                 ui.CreatedDate = CreatedDate;
                 ui.CreatedBy = CreatedBy;
+                ui.ModifiedDate = CreatedDate;
+                ui.ModifiedBy = CreatedBy;
                 ui.IsCount = IsCount;
-                dbe.tbl_OrderDetail.Add(ui);
-                int kq = dbe.SaveChanges();
+                ui.CostOfGood = cogs.HasValue ? Convert.ToDecimal(cogs.Value) : 0;
+                con.tbl_OrderDetail.Add(ui);
+                int kq = con.SaveChanges();
+                #endregion
+
                 return kq.ToString();
             }
         }
 
         public static void Insert(tbl_OrderDetail orderDetail)
         {
-            using (var dbe = new inventorymanagementEntities())
+            using (var con = new inventorymanagementEntities())
             {
+                #region Cập nhật thôn tin giá vốn
+                Nullable<double> cogs = null;
+
+                #region Sản phẩm đơn gian
+                if (orderDetail.ProductType == 1)
+                {
+                    cogs = con.tbl_Product
+                        .Where(x => x.ID == orderDetail.ProductID)
+                        .Select(x => x.CostOfGood.HasValue ? x.CostOfGood.Value : 0)
+                        .SingleOrDefault();
+                }
+                #endregion
+
+                #region Sản phẩm biến thể
+                if (orderDetail.ProductType == 2)
+                {
+                    cogs = con.tbl_ProductVariable
+                        .Where(x => x.ID == orderDetail.ProductVariableID)
+                        .Select(x => x.CostOfGood.HasValue ? x.CostOfGood.Value : 0)
+                        .SingleOrDefault();
+                }
+                #endregion
+                #endregion
+
+                #region Khởi tạo chi tiết đơn hàng
                 tbl_OrderDetail ui = new tbl_OrderDetail();
                 ui.AgentID = orderDetail.AgentID;
                 ui.OrderID = orderDetail.OrderID;
@@ -60,8 +115,10 @@ namespace IM_PJ.Controllers
                 ui.ModifiedDate = orderDetail.ModifiedDate;
                 ui.ModifiedBy = orderDetail.ModifiedBy;
                 ui.IsCount = orderDetail.IsCount;
-                dbe.tbl_OrderDetail.Add(ui);
-                dbe.SaveChanges();
+                ui.CostOfGood = cogs.HasValue ? Convert.ToDecimal(cogs.Value) : 0;
+                con.tbl_OrderDetail.Add(ui);
+                con.SaveChanges();
+                #endregion
             }
         }
 
@@ -163,15 +220,9 @@ namespace IM_PJ.Controllers
 
                         // Cập nhật số tiền gốc
                         if (item.ProductType == 1 && x.product != null)
-                        {
                             item.CostOfGood += Convert.ToDecimal(x.product.cogs);
-                            item.TotalCostOfGood = (item.TotalCostOfGood.HasValue ? item.TotalCostOfGood.Value : 0) + (item.Quantity.HasValue ? item.Quantity.Value : 0) * x.product.cogs;
-                        }
                         if (item.ProductType == 2 && x.variation != null)
-                        {
                             item.CostOfGood += Convert.ToDecimal(x.variation.cogs);
-                            item.TotalCostOfGood = (item.TotalCostOfGood.HasValue ? item.TotalCostOfGood.Value : 0) + (item.Quantity.HasValue ? item.Quantity.Value : 0) * x.variation.cogs;
-                        }
 
                         return item;
                     })
